@@ -1,0 +1,11 @@
+# Gaia internal memory — local only, not project source
+.gaia/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+.DS_Store
