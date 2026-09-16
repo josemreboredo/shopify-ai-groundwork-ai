@@ -3,14 +3,32 @@
 Turns a completed discovery questionnaire into `clients/<slug>/engagement.json` — the single
 source of truth for the deck, backlog and build (ADR 0002).
 
+Two ways to run it — same code, same outputs:
+
+### Claude Code mode (default — no API billing)
+
+In Claude Code: `/discover path/to/<client>-questionnaire.md`. The skill runs:
+
+```bash
+npm run discover:prepare  -- --questionnaire q.md --client <slug>   # consent + redaction → clients/.work/<slug>/
+# Claude Code writes extraction.json from the redacted questionnaire
+npm run discover:assemble -- --work clients/.work/<slug>            # validation, offer, exit rules
+# Claude Code writes approach.json (GO only)
+npm run discover:finish   -- --work clients/.work/<slug>            # full validation → clients/<slug>/
+```
+
+> ⚠ Runs on a **personal Claude Pro** account for now. Migrate to **dentsu's Claude Enterprise** before
+> dentsu / Merkle adoption or real client data at scale (ADR 0007, adoption gate in the implementation plan).
+
+### API mode
+
 ```bash
 npm run discover -- --questionnaire path/to/<client>-questionnaire.md
 npm run discover -- --questionnaire q.md --client acme-watches --dry-run   # print result, write nothing
 ```
 
-Needs `ANTHROPIC_API_KEY` in the environment (`.env`, gitignored) or an `ant auth login` profile.
-Model: `claude-opus-5` by default; override with `DISCOVERY_MODEL`. If your API key is not scoped to a
-workspace, also set `ANTHROPIC_WORKSPACE_ID` (Console → Settings → Workspaces).
+Needs `ANTHROPIC_API_KEY` in `.env` (gitignored) and API credit. Model: `claude-opus-5` by default; override
+with `DISCOVERY_MODEL`. If the key is not scoped to a workspace, also set `ANTHROPIC_WORKSPACE_ID`.
 
 ## Pipeline
 

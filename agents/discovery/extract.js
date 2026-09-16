@@ -131,40 +131,16 @@ export function flattenAnswers(answers) {
 }
 
 /**
- * @param {{ callStructured: Function }} llm
- * @param {string} user
- */
-async function call(llm, user) {
-  return llm.callStructured({ system: EXTRACTION_SYSTEM, user, schema: buildExtractionSchema() });
-}
-
-/**
- * Run extraction, validating with `validate` and repairing once on errors.
+ * Turn raw extraction output (from the API or from Claude Code) into answers,
+ * provenance, open items and exit candidates.
  *
- * @param {{ callStructured: Function }} llm
- * @param {string} redactedQuestionnaire
+ * @param {object} data  { answers: [{pointer, value_json}], provenance, exit_candidates, open_items }
  * @param {(answers: object) => string[]} validate  Returns schema errors for assembled answers
- * @param {(step: string, detail?: unknown) => void} [onStep]  Progress callback
- * @returns {Promise<{ answers: object, provenance: object, openItems: object[], exitCandidates: object[], model: string, repaired: boolean }>}
+ * @returns {{ errors: string[], answers: object, provenance: object, openItems: object[], exitCandidates: object[] }}
  */
-export async function extractAnswers(llm, redactedQuestionnaire, validate, onStep = () => {}) {
-  const base = `Completed questionnaire:\n\n${redactedQuestionnaire}`;
-  onStep('extraction');
-  let { data, model } = await call(llm, base);
-  let { answers, errors } = assembleAnswers(data.answers ?? []);
-  errors = errors.length ? errors : validate(answers);
-  let repaired = false;
-
-  if (errors.length) {
-    repaired = true;
-    onStep('repair', errors.length);
-    const repairPrompt = `${base}\n\n---\nYour previous extraction had these problems:\n${errors.map((e) => `- ${e}`).join('\n')}\n\n` +
-      `Previous answers:\n${JSON.stringify(data.answers)}\n\nReturn the complete corrected extraction.`;
-    ({ data, model } = await call(llm, repairPrompt));
-    ({ answers, errors } = assembleAnswers(data.answers ?? []));
-    errors = errors.length ? errors : validate(answers);
-    if (errors.length) throw new ExtractionInvalidError(errors);
-  }
+export function processExtraction(data, validate) {
+  const assembled = assembleAnswers(data.answers ?? []);
+  const errors = assembled.errors.length ? assembled.errors : validate(assembled.answers);
 
   const provenance = {};
   for (const { pointer, source, status, question_id, note } of data.provenance ?? []) {
@@ -180,5 +156,43 @@ export async function extractAnswers(llm, redactedQuestionnaire, validate, onSte
     .filter((i) => schemaNodeAt(toSchemaPointer(i.pointer)))
     .map(({ pointer, question_id, why }) => ({ pointer, why, ...(/^Q\d+\.\d+\.\d+$/.test(question_id) ? { question_id } : {}) }));
 
-  return { answers, provenance, openItems, exitCandidates: data.exit_candidates ?? [], model, repaired };
+  return { errors, answers: assembled.answers, provenance, openItems, exitCandidates: data.exit_candidates ?? [] };
+}
+
+/**
+ * @param {{ callStructured: Function }} llm
+ * @param {string} user
+ */
+async function call(llm, user) {
+  return llm.callStructured({ system: EXTRACTION_SYSTEM, user, schema: buildExtractionSchema() });
+}
+
+/**
+ * Run extraction through the API adapter, repairing once on validation errors.
+ *
+ * @param {{ callStructured: Function }} llm
+ * @param {string} redactedQuestionnaire
+ * @param {(answers: object) => string[]} validate  Returns schema errors for assembled answers
+ * @param {(step: string, detail?: unknown) => void} [onStep]  Progress callback
+ * @returns {Promise<{ answers: object, provenance: object, openItems: object[], exitCandidates: object[], model: string, repaired: boolean }>}
+ */
+export async function extractAnswers(llm, redactedQuestionnaire, validate, onStep = () => {}) {
+  const base = `Completed questionnaire:\n\n${redactedQuestionnaire}`;
+  onStep('extraction');
+  let { data, model } = await call(llm, base);
+  let result = processExtraction(data, validate);
+  let repaired = false;
+
+  if (result.errors.length) {
+    repaired = true;
+    onStep('repair', result.errors.length);
+    const repairPrompt = `${base}\n\n---\nYour previous extraction had these problems:\n${result.errors.map((e) => `- ${e}`).join('\n')}\n\n` +
+      `Previous answers:\n${JSON.stringify(data.answers)}\n\nReturn the complete corrected extraction.`;
+    ({ data, model } = await call(llm, repairPrompt));
+    result = processExtraction(data, validate);
+    if (result.errors.length) throw new ExtractionInvalidError(result.errors);
+  }
+
+  const { errors, ...rest } = result;
+  return { ...rest, model, repaired };
 }

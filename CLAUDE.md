@@ -31,7 +31,8 @@ workspace for all Shopify client engagements.
 - `schema/question-bank.json` — every discovery question and the fields it fills
 - `schema/offering.json` — S/M/L offers, scope gates, exit rules (internal pricing — never client-facing)
 - `docs/discovery/client-questionnaire.md` is **generated** — edit the question bank, then `npm run questionnaire:render`
-- Discovery: `npm run discover -- --questionnaire <file>` → `clients/<slug>/engagement.json` (see `agents/discovery/README.md`)
+- Discovery: `/discover <questionnaire.md>` in Claude Code (or `npm run discover` with an API key) → `clients/<slug>/engagement.json` (see `agents/discovery/README.md`)
+- ⚠ Claude Code mode runs on a personal Claude Pro account for now — raise migrating to dentsu Claude Enterprise before any dentsu / Merkle adoption (ADR 0007)
 - Roadmap: `docs/implementation-plan.md` · decisions: `docs/adr/` · `npm test` must pass before commit
 
 ## Shopify-specific conventions

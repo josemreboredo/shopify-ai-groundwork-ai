@@ -1,6 +1,6 @@
 # ADR 0007 — LLM data handling: consent, redaction, model choice
 
-- **Status:** Accepted (2026-09-16)
+- **Status:** Accepted (2026-09-16) · Amended 2026-09-16 (execution modes, interim account tier)
 - **Date:** 2026-09-16
 - **Relates to:** CLAUDE.md security gate 3, `docs/conventions/security-gates.md` Gate 2
 
@@ -26,6 +26,21 @@ no truncation check.
 5. **Keys:** `ANTHROPIC_API_KEY` from the environment only (`.env`, gitignored).
 6. **Retention:** client files live under `clients/` (gitignored). Engagement data is not written
    to logs, caches or telemetry.
+
+## Execution modes and account tier (amended 2026-09-16)
+
+- **Claude Code mode (default for now):** `/discover` skill + `npm run discover:prepare|assemble|finish`.
+  The Claude Code session does extraction and approach drafting; consent, redaction, validation, offer and
+  exit rules stay in code. The agent reads only the redacted questionnaire in `clients/.work/<slug>/`.
+- **API mode:** `npm run discover` with `ANTHROPIC_API_KEY` — kept for automation and the Phase 5 chatbot.
+- **Interim account decision:** Claude Code mode runs on the owner's **personal Claude Pro** account.
+  "Use my chats to improve models" must be switched off in claude.ai → Settings → Privacy.
+
+> ⚠ **Migration trigger — dentsu Claude Enterprise.** Before the tool is adopted by dentsu or Merkle, used by
+> other consultants, or used on real client data at scale, move Claude Code usage to **dentsu's Claude
+> Enterprise** (commercial terms, admin controls, no training on data) and update this ADR. The reminder is
+> printed by `discover:prepare`, shown by the `/discover` skill, and tracked as the adoption gate in
+> `docs/implementation-plan.md`.
 
 ## Consequences
 

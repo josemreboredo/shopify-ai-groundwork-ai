@@ -40,6 +40,14 @@ questionnaire.md ──► consent ──► redaction ──► extraction call
 | T8 | **Runaway cost** (Denial of wallet) | One extraction + at most one approach call per run; no loops or retries beyond SDK defaults; STOP skips the approach call. | Large questionnaires cost more; monitor usage. |
 | T9 | **Supply chain** (Tampering) | Vetted dependencies only (`@anthropic-ai/sdk`, `ajv`), lockfile committed, `npm audit` clean at install. | Keep dependencies updated. |
 
+## Claude Code mode (added 2026-09-16)
+
+| # | Threat | Mitigation | Residual risk |
+|---|---|---|---|
+| T10 | The Claude Code session reads the **original** questionnaire instead of the redacted copy | `prepare` writes only the redacted copy to the work directory; the `/discover` skill instructs the agent to read only work-directory files | Instruction-based, not enforced — consultants should pass questionnaires without personal data |
+| T11 | Client data processed under **consumer (Pro) terms** | Interim: training opt-out switched off; alert printed on every `prepare`; adoption gate to migrate to dentsu Claude Enterprise | Open until migration (ADR 0007) |
+| T12 | Agent hand-edits `decision.json` / `engagement.json` or computes the offer itself | Skill forbids it; `finish` re-validates the full schema; offer and exits are recomputed only by `assemble` | A determined agent could edit `decision.json`; review `engagement.json` before sharing |
+
 ## Verification
 
 Covered by `tests/unit/discovery-engine.test.js`: consent refusal without model calls; redaction and

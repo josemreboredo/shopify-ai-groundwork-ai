@@ -10,7 +10,10 @@ Phase 2 of the implementation plan — discovery engine.
 
 ### Added
 - `agents/discovery/` — discovery engine (`npm run discover -- --questionnaire <file>`): consent check, personal-data redaction, LLM extraction with structured outputs, deterministic offer classification and exit rules 11.1–11.16, LLM-drafted approach on GO, schema validation, Markdown renderings or STOP report
-- Default model `claude-opus-5` with server-side refusal fallbacks; override with `DISCOVERY_MODEL`
+- **Claude Code mode** (default): `/discover` skill + `npm run discover:prepare|assemble|finish` — the Claude Code session extracts and drafts, code decides; no API billing
+- ⚠ Interim: Claude Code mode runs on a personal Claude Pro account — migrate to dentsu Claude Enterprise before adoption (ADR 0007 amendment, adoption gate in the plan)
+- API mode: default model `claude-opus-5` with server-side refusal fallbacks; override with `DISCOVERY_MODEL`; `ANTHROPIC_WORKSPACE_ID` for keys not scoped to a workspace
+- Structured outputs fit the API limit of 24 optional parameters: flat pointer/value extraction with one repair call; all-required approach schema
 - Threat model: `docs/architecture/discovery-engine-threat-model.md`
 - Tests: offer and exit rules against the golden fixtures; full pipeline with recorded LLM responses; redaction, consent, stop-reason and pricing-leak guards
 - Dependency: `@anthropic-ai/sdk` (D4)

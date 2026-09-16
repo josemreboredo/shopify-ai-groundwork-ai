@@ -29,7 +29,7 @@ export class EngagementInvalidError extends Error {
  * @param {object} answers
  * @param {{ today: string, clientSlug?: string }} options
  */
-function assemble(answers, { today, clientSlug }) {
+export function assemble(answers, { today, clientSlug }) {
   const { meta = {}, ...rest } = structuredClone(answers);
   return {
     schema_version: '1.0.0',
@@ -45,15 +45,79 @@ function assemble(answers, { today, clientSlug }) {
 }
 
 /**
+ * Consent check and redaction — the only step that reads the raw questionnaire.
+ *
+ * @param {string} questionnaire
+ * @returns {{ text: string, redactions: { emails: number, phones: number, names: number } }}
+ */
+export function prepareQuestionnaire(questionnaire) {
+  if (!hasConsent(questionnaire)) {
+    throw new InputRejectedError('Consent for AI processing is not recorded (Q10.5.2 must be ticked "Yes") — nothing was sent to the model.');
+  }
+  return redactQuestionnaire(questionnaire);
+}
+
+/**
+ * Validator for extracted answers, used by both the API and Claude Code paths.
+ *
+ * @param {{ today: string, clientSlug?: string }} options
+ * @returns {(answers: object) => string[]}
+ */
+export function answerValidator(options) {
+  return (answers) => {
+    const { valid, errors } = validateEngagement(assemble(answers, options));
+    return valid ? [] : errors;
+  };
+}
+
+/**
+ * Deterministic part after extraction: offer, exit rules, GO/STOP, provenance, open items.
+ *
+ * @param {{ answers: object, provenance: object, openItems: object[], exitCandidates: object[] }} extraction
+ * @param {{ today: string, clientSlug?: string }} options
+ * @returns {object}  Engagement without approach content (risks.open_items only)
+ */
+export function decide(extraction, options) {
+  /** @type {any} */
+  const doc = assemble(extraction.answers, options);
+  doc.offer = classifyOffer(doc);
+  doc.exits = evaluateExits(doc, extraction.exitCandidates);
+  doc.delivery = { ...(doc.delivery ?? {}), go: !doc.exits.triggered };
+  if (Object.keys(extraction.provenance).length) doc.provenance = extraction.provenance;
+  doc.approach = { risks: { open_items: extraction.openItems } };
+  return doc;
+}
+
+/**
+ * Merge the drafted approach (GO only) and validate the complete engagement.
+ *
+ * @param {object} doc       Output of decide()
+ * @param {object|null} approach  Output of fromApproachPayload(), or null on STOP
+ * @returns {object}
+ * @throws {EngagementInvalidError}
+ */
+export function finalize(doc, approach) {
+  const out = structuredClone(doc);
+  if (out.delivery.go) {
+    if (!approach) throw new Error('A GO engagement needs a drafted approach.');
+    out.approach = { ...approach, risks: { open_items: doc.approach.risks.open_items, assumptions: approach.risks?.assumptions ?? [] } };
+  }
+  const { valid, errors } = validateEngagement(out);
+  if (!valid) throw new EngagementInvalidError(errors);
+  return out;
+}
+
+/**
  * @typedef {Object} DiscoveryResult
  * @property {object}  engagement   Schema-valid engagement document
  * @property {boolean} go
  * @property {{ emails: number, phones: number, names: number }} redactions
  * @property {string}  model
+ * @property {boolean} repaired
  */
 
 /**
- * Run discovery for one completed questionnaire.
+ * Run discovery through the Anthropic API adapter.
  *
  * @param {Object} options
  * @param {string} options.questionnaire  Markdown text
@@ -64,36 +128,17 @@ function assemble(answers, { today, clientSlug }) {
  * @returns {Promise<DiscoveryResult>}
  */
 export async function runDiscovery({ questionnaire, llm, today, clientSlug, onStep = () => {} }) {
-  if (!hasConsent(questionnaire)) {
-    throw new InputRejectedError('Consent for AI processing is not recorded (Q10.5.2 must be ticked "Yes") — nothing was sent to the model.');
-  }
-  const { text, redactions } = redactQuestionnaire(questionnaire);
+  const { text, redactions } = prepareQuestionnaire(questionnaire);
+  const options = { today, clientSlug };
 
-  const validateAnswers = (answers) => {
-    const { valid, errors } = validateEngagement(assemble(answers, { today, clientSlug }));
-    return valid ? [] : errors;
-  };
-  const extraction = await extractAnswers(llm, text, validateAnswers, onStep);
+  const extraction = await extractAnswers(llm, text, answerValidator(options), onStep);
+  const doc = decide(extraction, options);
 
-  /** @type {any} */
-  const doc = assemble(extraction.answers, { today, clientSlug });
-
-  doc.offer = classifyOffer(doc);
-  doc.exits = evaluateExits(doc, extraction.exitCandidates);
-  doc.delivery = { ...(doc.delivery ?? {}), go: !doc.exits.triggered };
-  if (Object.keys(extraction.provenance).length) doc.provenance = extraction.provenance;
-
-  const risks = { open_items: extraction.openItems };
+  let approach = null;
   if (doc.delivery.go) {
     onStep('approach');
-    const approach = await draftApproach(llm, doc);
-    doc.approach = { ...approach, risks: { ...risks, assumptions: approach.risks?.assumptions ?? [] } };
-  } else {
-    doc.approach = { risks };
+    approach = await draftApproach(llm, doc);
   }
-
-  const { valid, errors } = validateEngagement(doc);
-  if (!valid) throw new EngagementInvalidError(errors);
-
-  return { engagement: doc, go: doc.delivery.go, redactions, model: extraction.model, repaired: extraction.repaired };
+  const engagement = finalize(doc, approach);
+  return { engagement, go: engagement.delivery.go, redactions, model: extraction.model, repaired: extraction.repaired };
 }

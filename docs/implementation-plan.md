@@ -34,6 +34,12 @@ Interview (questionnaire → chatbot)
 
 ---
 
+## ⚠ Adoption gate — Claude account (open)
+
+- [ ] **Migrate Claude Code usage from the personal Claude Pro account to dentsu's Claude Enterprise** before
+  dentsu / Merkle adoption, onboarding other consultants, or processing real client data at scale (ADR 0007).
+  Interim rule until then: "use my chats to improve models" switched off; prefer example or anonymised questionnaires.
+
 ## Phase overview
 
 | Phase | Scope | Gaia tier | Indicative effort | Depends on |
@@ -145,12 +151,13 @@ Runtime LLM + client personal data → threat model and test strategy required b
 - [ ] Validate app and capability recommendations against live Shopify docs (Shopify AI Toolkit) — deferred
 - [x] Consent gate: refuse to call the LLM without `meta.consent`; redact stakeholder names/emails before the call
 - [x] Renderers: `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` from `engagement.json`; on STOP write `stop-report.md` only
-- [x] CLI: `npm run discover -- --questionnaire <path> [--client <slug>] [--dry-run]`
+- [x] CLI: `npm run discover -- --questionnaire <path> [--client <slug>] [--dry-run]` (API mode)
+- [x] Claude Code mode: `/discover` skill + `discover:prepare|assemble|finish` — no API billing (ADR 0007 amendment)
 - [x] Retire `agents/frame-agent/frame_agent.py` (brief / interactive modes return with the Phase 5 chatbot)
 - [ ] Record explicit "none" answers for free-text fields (e.g. no affiliate platform) distinctly from unknown
 - [ ] Render filled questionnaires (e.g. the ACME example) from `engagement.json` with the committed renderer
 
-**Tests:** unit tests for classify/exits on all golden fixtures ✓; recorded-response tests for the full pipeline ✓; opt-in live run on the ACME example — pending (costs API usage).
+**Tests:** unit tests for classify/exits on all golden fixtures ✓; recorded-response tests for the full pipeline ✓; live run on the ACME example — pending (Claude Code mode, or API mode once the account has credit).
 
 **Exit criteria:** ACME → M / GO with all four artefacts ✓ (recorded responses); STOP fixture → no GO artefacts ✓; zero schema errors ✓; threat model filed ✓ (`docs/architecture/discovery-engine-threat-model.md`). Live run on ACME pending.
 
