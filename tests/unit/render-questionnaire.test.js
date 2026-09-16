@@ -29,3 +29,9 @@ test('client-facing questionnaire contains no internal pricing', () => {
   ];
   for (const term of internal) assert.ok(!rendered.includes(term), `leaks internal term: ${term}`);
 });
+
+test('the ACME example questionnaire asks the same questions in the same order as the template', () => {
+  const ids = (text) => [...text.matchAll(/\*\*(Q\d+\.\d+\.\d+)\*\*/g)].map((m) => m[1]);
+  const example = fs.readFileSync(new URL('../../docs/discovery/example-acme-questionnaire.md', import.meta.url), 'utf8');
+  assert.deepEqual(ids(example), ids(renderQuestionnaire()));
+});

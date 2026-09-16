@@ -3,6 +3,7 @@
  */
 
 import { markets, list, listOr, isB2b, integrationsOf, exitFired } from './helpers.js';
+import { appSignals } from '../../discovery/app-signals.js';
 
 const rateText = {
   calculated: 'carrier-calculated rates',
@@ -103,15 +104,18 @@ export default [
       ...(doc.shipping?.returns?.portal ? ['Given a customer with an eligible order, when they request a return in the self-service portal, then they receive a label or instructions and staff see the return request'] : ['Given a return request by email, when staff create the return in the admin, then refund, restock and label steps follow the SOP']),
       ...(doc.shipping?.returns?.exchanges ? ['Given an exchange, when it is approved, then the replacement variant is reserved and the price difference is charged or refunded'] : []),
       'Given a refund, when it is issued, then inventory restocks to the right location and the refund reaches the original payment method or store credit',
+      ...(doc.shipping?.returns?.window_days !== undefined ? [`Given an order older than ${doc.shipping.returns.window_days} days, when the customer requests a return, then the request is declined with the policy explanation`] : []),
+      ...(doc.shipping?.returns?.inspection_required ? ['Given a returned item, when it arrives, then it waits in an inspection state and no refund or exchange is released until staff approve it'] : []),
+      ...(doc.shipping?.returns?.reason_tracking ? ['Given return requests over a month, when operations review returns, then a report shows volumes by return reason and product'] : []),
     ],
     gaia_tier: 'T2',
     points: 3,
     owner: 'agent',
     depends_on: ['LWC-SHP-001'],
-    spec_refs: ['/shipping/returns/policy', '/shipping/returns/portal', '/shipping/returns/exchanges', '/shipping/returns/solution'],
+    spec_refs: ['/shipping/returns/policy', '/shipping/returns/portal', '/shipping/returns/exchanges', '/shipping/returns/solution', '/shipping/returns/label', '/shipping/returns/exchange_types', '/shipping/returns/window_days', '/post_purchase/orders_per_month'],
     security_flags: ['pii'],
     applies: () => true,
-    agent_prompt: (doc) => `Returns policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}. ${doc.shipping?.returns?.solution
+    agent_prompt: (doc) => `Returns policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}. Returns-platform signals: ${listOr(appSignals(doc).returns_platform, 'none — native Shopify returns are enough')}. ${doc.shipping?.returns?.solution
       ? `Install and configure ${doc.shipping.returns.solution}: return reasons, windows, fees per market, ${doc.shipping?.returns?.exchanges ? 'exchange-first flow, ' : ''}label generation and restock location. Link its portal from customer accounts and the footer.`
       : `Use Shopify's native return rules and ${doc.shipping?.returns?.portal ? 'self-serve returns in new customer accounts' : 'staff-created returns'}${doc.shipping?.returns?.exchanges ? ' with exchanges' : ''}.`} Update the refund policy page and notifications. Test a return, an exchange (if in scope) and a refund in test mode.`,
   },
@@ -132,5 +136,109 @@ export default [
     spec_refs: ['/shipping/notifications/custom', '/shipping/notifications/sender', '/marketing/esp/platform'],
     applies: (doc) => doc.shipping?.notifications?.custom === true,
     agent_prompt: (doc) => `Customise Shopify notification templates (Settings > Notifications): brand settings (logo, accent colour) first, then Liquid template edits only where needed. Translate notification content per language with Translate & Adapt or the agreed method. Sender: ${doc.shipping?.notifications?.sender ?? 'shopify'} — ${doc.shipping?.notifications?.sender === 'esp' || doc.shipping?.notifications?.sender === 'mixed' ? `list which transactional messages ${doc.marketing?.esp?.platform ?? 'the ESP'} sends and disable those in Shopify to avoid duplicates. ` : ''}Send test notifications and check rendering in major email clients.`,
+  },
+{
+    key: 'LWC-SHP-007',
+    epic: 'shipping',
+    title: (doc) => `Configure order cancellations${doc.post_purchase?.cancellations?.order_editing ? ' and order editing' : ''}`,
+    user_story: 'As a customer, I want to cancel or correct an order quickly when I make a mistake, so that I do not have to wait for a return.',
+    description: (doc) => `Cancellation window: ${doc.post_purchase?.cancellations?.window ?? 'to confirm'}. App signals: ${listOr(appSignals(doc).order_editing_app, 'none — staff cancel and edit orders in the admin')}.`,
+    acceptance_criteria: (doc) => {
+      const c = doc.post_purchase?.cancellations ?? {};
+      return [
+        c.self_service
+          ? `Given an order that is ${c.window === 'within_hours' ? 'within the agreed hours' : 'not yet fulfilled'}, when the customer cancels it from their account, then payment is refunded or voided, stock is restocked and the fulfilment location stops the order`
+          : 'Given a cancellation request by email or phone, when staff cancel the order in the admin, then payment is refunded or voided, stock is restocked and the customer is notified',
+        'Given an order already fulfilled, when a cancellation is requested, then it is refused and the customer is pointed to the returns process',
+        ...(c.partial ? ['Given a multi-item order, when one item is cancelled, then only that item is refunded and removed from fulfilment'] : []),
+        ...(c.order_editing ? ['Given an unfulfilled order, when the customer changes the shipping address or an item, then the order, payment difference and fulfilment request are updated before shipping'] : []),
+        ...(integrationsOf(doc, 'erp').length || integrationsOf(doc, '3pl_wms').length ? ['Given a cancellation or edit, when it is saved, then the ERP or warehouse receives it before the order is picked'] : []),
+      ];
+    },
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'agent',
+    depends_on: ['LWC-SHP-001'],
+    spec_refs: ['/post_purchase/cancellations/self_service', '/post_purchase/cancellations/window', '/post_purchase/cancellations/partial', '/post_purchase/cancellations/order_editing'],
+    security_flags: ['payments'],
+    applies: (doc) => Object.keys(doc.post_purchase?.cancellations ?? {}).length > 0,
+    agent_prompt: (doc) => {
+      const signals = appSignals(doc).order_editing_app;
+      return `Cancellation rules: self-service ${doc.post_purchase?.cancellations?.self_service ? 'yes' : 'no'}, window ${doc.post_purchase?.cancellations?.window ?? 'to confirm'}, partial ${doc.post_purchase?.cancellations?.partial ? 'yes' : 'no'}, order editing ${doc.post_purchase?.cancellations?.order_editing ? 'yes' : 'no'}. ${signals.length ? `These go beyond native Shopify (${list(signals)}): shortlist order editing / cancellation apps from the Shopify App Store that support new customer accounts and ${(doc.markets?.list ?? []).length > 1 ? 'multiple markets' : 'the store market'}, and present the choice for consultant approval.` : 'Use native admin order cancellation and editing with an SOP for the service team.'} Make sure cancellations void or refund payment, restock inventory and stop fulfilment${integrationsOf(doc, 'erp').length ? ' and reach the ERP' : ''}.`;
+    },
+  },
+  {
+    key: 'LWC-SHP-008',
+    epic: 'shipping',
+    title: 'Implement refund rules and pass refunds to finance',
+    user_story: 'As a finance manager, I want refunds issued consistently and recorded in our finance system, so that customers are treated fairly and the books reconcile.',
+    description: (doc) => {
+      const r = doc.post_purchase?.refunds ?? {};
+      return `Methods: ${listOr((r.methods ?? []).map((m) => m.replace(/_/g, ' ')), 'to confirm')}. Trigger: ${(r.trigger ?? 'to confirm').replace(/_/g, ' ')}. Shipping refunded: ${(r.shipping_refunded ?? 'to confirm').replace(/_/g, ' ')}.`;
+    },
+    acceptance_criteria: (doc) => {
+      const r = doc.post_purchase?.refunds ?? {};
+      return [
+        `Given an approved return, when the refund is issued ${r.trigger ? `(${r.trigger.replace(/_/g, ' ')})` : ''}, then it is paid by ${listOr((r.methods ?? []).map((m) => m.replace(/_/g, ' ')), 'the agreed method')}`.replace('  ', ' '),
+        `Given a return where the merchant is not at fault, when the refund is calculated, then original shipping is ${r.shipping_refunded === 'always' ? 'refunded' : 'not refunded'}${r.restocking_fee ? ' and the restocking fee is deducted' : ''}`,
+        ...(r.partial ? ['Given a damaged or incomplete return, when staff issue a partial refund, then the amount and reason are recorded on the order'] : []),
+        ...(r.approval_required ? ['Given a refund above the agreed limit, when staff prepare it, then it waits for approval by the named approver before payment'] : []),
+        ...(r.finance_sync ? [`Given a refund or cancellation, when it is completed, then ${integrationsOf(doc, 'erp').length ? list(integrationsOf(doc, 'erp').map((i) => i.system)) : 'the finance system'} receives the refund with amounts, taxes and currency`] : []),
+      ];
+    },
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'agent',
+    depends_on: ['LWC-SHP-005'],
+    spec_refs: ['/post_purchase/refunds/methods', '/post_purchase/refunds/trigger', '/post_purchase/refunds/shipping_refunded', '/post_purchase/refunds/restocking_fee', '/post_purchase/refunds/approval_required', '/post_purchase/refunds/finance_sync'],
+    security_flags: ['payments'],
+    applies: (doc) => Object.keys(doc.post_purchase?.refunds ?? {}).length > 0,
+    agent_prompt: (doc) => {
+      const r = doc.post_purchase?.refunds ?? {};
+      return `Refund rules: methods ${listOr(r.methods, 'to confirm')}, trigger ${r.trigger ?? 'to confirm'}, shipping refunded ${r.shipping_refunded ?? 'to confirm'}, restocking fee ${r.restocking_fee ? 'yes' : 'no'}, partial refunds ${r.partial ? 'yes' : 'no'}, approval ${r.approval_required ? 'required' : 'not required'}. ${r.trigger === 'on_carrier_scan' ? 'Refund on carrier scan needs the returns platform — configure it there. ' : 'Configure refunds in the returns solution or Shopify admin and write the staff SOP. '}${(r.methods ?? []).includes('store_credit') ? 'Use Shopify store credit for credit refunds. ' : ''}${r.finance_sync ? `Map refunds and cancellations to ${integrationsOf(doc, 'erp').length ? list(integrationsOf(doc, 'erp').map((i) => i.system)) : 'the finance system'} (amounts, tax lines, currency, payment method). ` : ''}Update the refund policy page to match.`;
+    },
+  },
+  {
+    key: 'LWC-SHP-009',
+    epic: 'shipping',
+    title: 'Set up post-purchase tracking and delivery updates',
+    user_story: 'As a customer, I want to follow my delivery on the brand site and hear about delays before I ask, so that I trust the brand and do not contact support.',
+    description: (doc) => `Signals beyond native Shopify: ${list(appSignals(doc).post_purchase_platform)}.`,
+    acceptance_criteria: (doc) => {
+      const t = doc.post_purchase?.tracking ?? {};
+      return [
+        ...(t.branded_tracking_page ? [`Given a shipped order, when the customer opens the tracking link, then a branded tracking page on the store shows the carrier status in ${listOr([...new Set(markets(doc).flatMap((m) => m.languages ?? []))], 'the store language')}`] : []),
+        ...((t.proactive_channels ?? []).length ? [`Given a delay or out-for-delivery event from ${listOr(doc.shipping?.carriers, 'the carrier')}, when the platform receives it, then the customer is notified by ${list(t.proactive_channels)} only if they consented to that channel`] : []),
+        ...(t.delivery_estimates ? ['Given a product page or checkout, when the shopper enters or is located in a market, then an estimated delivery date based on carrier transit times is shown'] : []),
+        'Given Shopify shipping notifications, when the platform sends tracking messages, then the customer never receives the same update twice',
+      ];
+    },
+    gaia_tier: 'T2',
+    points: 5,
+    owner: 'agent',
+    depends_on: ['LWC-SHP-001'],
+    spec_refs: ['/post_purchase/tracking/branded_tracking_page', '/post_purchase/tracking/proactive_channels', '/post_purchase/tracking/delivery_estimates', '/post_purchase/platform_preference', '/shipping/carriers'],
+    security_flags: ['pii'],
+    applies: (doc) => appSignals(doc).post_purchase_platform.length > 0,
+    agent_prompt: (doc) => `Post-purchase requirements beyond native Shopify: ${list(appSignals(doc).post_purchase_platform)}. ${doc.post_purchase?.platform_preference ? `Client platform preference (check it covers tracking, not only returns): ${doc.post_purchase.platform_preference}. ` : 'Shortlist post-purchase platforms (for example AfterShip, parcelLab, Narvar) that support the carriers and markets, and present the choice for consultant approval. '}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')}. Configure the branded tracking page, notification templates per language and consent-aware channels; decide which system sends each shipping message so customers get no duplicates.`,
+  },
+  {
+    key: 'LWC-SHP-010',
+    epic: 'shipping',
+    title: 'Set up online warranty, repair and servicing claims',
+    user_story: 'As a customer, I want to register a warranty, repair or servicing claim online, so that I know the status without calling support.',
+    acceptance_criteria: (doc) => [
+      'Given a customer with an order in their account, when they open a warranty or repair claim, then they choose the product, describe the issue, upload photos and receive a claim reference',
+      'Given a new claim, when the service team reviews it, then they can approve, request more information or reject it and the customer is notified in their language',
+      `Given an approved repair, when the item is sent in and returned, then the claim status and ${doc.shipping?.carriers?.length ? 'carrier tracking' : 'shipping details'} are visible to the customer until it is closed`,
+    ],
+    gaia_tier: 'T3',
+    points: 5,
+    owner: 'developer',
+    depends_on: ['LWC-CUS-001'],
+    spec_refs: ['/post_purchase/warranty_claims', '/post_purchase/platform_preference', '/shipping/returns/solution'],
+    security_flags: ['pii'],
+    applies: (doc) => doc.post_purchase?.warranty_claims === true,
+    agent_prompt: (doc) => `Warranty, repair and servicing claims must be opened online. First check whether ${doc.shipping?.returns?.solution ?? doc.post_purchase?.platform_preference ?? 'the chosen returns or post-purchase platform'} supports warranty or repair flows; otherwise design a claim form in customer accounts backed by a helpdesk app or a metaobject-based claim record with Shopify Flow notifications. Present the options with pros, cons and Gaia tier for consultant approval. Photos and customer details are personal data: store them only where the retention policy allows.`,
   },
 ];

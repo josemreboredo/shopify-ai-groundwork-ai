@@ -129,7 +129,7 @@ Each question: `id`, `section`, `text`, `answer_type`, `maps_to` (JSON pointer),
 - [x] Update `docs/strategy.md`: multi-consultant Merkle tool, chatbot as target interview surface, pipeline diagram
 - [ ] Align `lwc-library/README.md` tier table with ADR 001
 
-**Status (2026-09-16):** schema, question bank (184 questions), offering, generated questionnaire,
+**Status (2026-09-16):** schema, question bank (184 questions; 210 after the post-purchase additions in Phase 4), offering, generated questionnaire,
 ACME example and three golden fixtures delivered; contract + fixture tests green.
 ADRs 0001–0007 accepted and offering questions resolved (2026-09-16) — see `offering.json → resolved_questions`.
 

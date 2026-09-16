@@ -302,10 +302,19 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "policy":    { "type": "string" },
-            "portal":    { "type": "boolean" },
-            "exchanges": { "type": "boolean" },
-            "solution":  { "type": "string" }
+            "policy":               { "type": "string" },
+            "portal":               { "type": "boolean" },
+            "exchanges":            { "type": "boolean" },
+            "solution":             { "type": "string" },
+            "window_days":          { "type": "integer", "minimum": 0 },
+            "return_rate_pct":      { "type": "number", "minimum": 0, "maximum": 100 },
+            "label":                { "enum": ["prepaid_label", "qr_drop_off", "customer_arranged", "mixed"] },
+            "shipping_paid_by":     { "enum": ["merchant", "customer", "depends_on_market"] },
+            "exchange_types":       { "type": "array", "uniqueItems": true, "items": { "enum": ["same_product_variant", "any_product", "store_credit_first"] } },
+            "international_returns":{ "type": "boolean" },
+            "inspection_required":  { "type": "boolean" },
+            "reason_tracking":      { "type": "boolean" },
+            "b2b_returns_online":   { "type": "boolean" }
           }
         },
         "notifications": {
@@ -316,6 +325,48 @@
             "sender": { "enum": ["shopify", "esp", "mixed"] }
           }
         }
+      }
+    },
+
+    "post_purchase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "orders_per_month": { "type": "integer", "minimum": 0 },
+        "cancellations": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "self_service":  { "type": "boolean" },
+            "window":        { "enum": ["before_fulfilment", "within_hours", "merchant_only"] },
+            "partial":       { "type": "boolean" },
+            "order_editing": { "type": "boolean" }
+          }
+        },
+        "refunds": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "methods":           { "type": "array", "uniqueItems": true, "items": { "enum": ["original_payment", "store_credit", "gift_card"] } },
+            "trigger":           { "enum": ["on_request", "on_carrier_scan", "on_receipt", "after_inspection"] },
+            "shipping_refunded": { "enum": ["always", "on_fault_only", "never"] },
+            "restocking_fee":    { "type": "boolean" },
+            "partial":           { "type": "boolean" },
+            "approval_required": { "type": "boolean" },
+            "finance_sync":      { "type": "boolean" }
+          }
+        },
+        "tracking": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "branded_tracking_page": { "type": "boolean" },
+            "proactive_channels":    { "type": "array", "uniqueItems": true, "items": { "enum": ["email", "sms", "whatsapp", "push"] } },
+            "delivery_estimates":    { "type": "boolean" }
+          }
+        },
+        "warranty_claims":     { "type": "boolean" },
+        "platform_preference": { "type": "string" }
       }
     },
 

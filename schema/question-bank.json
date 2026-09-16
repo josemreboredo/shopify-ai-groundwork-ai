@@ -40,11 +40,13 @@
         { "id": "4.2", "title": "Checkout" },
         { "id": "4.3", "title": "Fraud & risk" }
       ] },
-    { "id": "5", "title": "Shipping & fulfilment", "intro": "Fulfilment model, locations, rates, returns and notifications.",
+    { "id": "5", "title": "Shipping & fulfilment", "intro": "Fulfilment, returns, cancellations, refunds and the post-purchase experience. These answers decide whether native Shopify is enough or a returns or post-purchase platform (e.g. Loop, AfterShip, parcelLab, Narvar) is needed.",
       "subsections": [
         { "id": "5.1", "title": "Fulfilment model" },
         { "id": "5.2", "title": "Returns & exchanges" },
-        { "id": "5.3", "title": "Notifications" }
+        { "id": "5.3", "title": "Notifications" },
+        { "id": "5.4", "title": "Cancellations & refunds" },
+        { "id": "5.5", "title": "Post-purchase experience" }
       ] },
     { "id": "6", "title": "Customers, B2B & privacy", "intro": "Customer accounts, B2B, loyalty, segmentation and personal-data obligations.",
       "subsections": [
@@ -194,8 +196,36 @@
     { "id": "Q5.2.3", "subsection": "5.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you process exchanges (not only refunds)?", "maps_to": ["/shipping/returns/exchanges"] },
     { "id": "Q5.2.4", "subsection": "5.2", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Which returns solution is used or preferred?", "maps_to": ["/shipping/returns/solution"] },
 
+    {"id": "Q5.2.5", "subsection": "5.2", "priority": "recommended", "audience": "client", "answer_type": "integer", "text": "How many days do customers have to return an order?", "maps_to": ["/shipping/returns/window_days"]},
+    {"id": "Q5.2.6", "subsection": "5.2", "priority": "recommended", "audience": "client", "answer_type": "number", "text": "What share of orders is returned today (%)?", "help": "High return rates or volumes usually justify a returns platform instead of Shopify's native self-serve returns.", "maps_to": ["/shipping/returns/return_rate_pct"]},
+    {"id": "Q5.2.7", "subsection": "5.2", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed?", "help": "Prepaid labels and QR drop-off need a carrier integration — typically a returns app.", "maps_to": ["/shipping/returns/label"]},
+    {"id": "Q5.2.8", "subsection": "5.2", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Who pays return shipping: you, the customer, or it depends on the market?", "maps_to": ["/shipping/returns/shipping_paid_by"]},
+    {"id": "Q5.2.9", "subsection": "5.2", "priority": "optional", "audience": "client", "answer_type": "multi_enum", "text": "Which exchanges do you offer: same product in another variant, any other product, or store credit first?", "help": "Exchanges for any product or store-credit-first flows usually need a returns app.", "maps_to": ["/shipping/returns/exchange_types"], "skip_if": {"question": "Q5.2.3", "equals": false}},
+    {"id": "Q5.2.10", "subsection": "5.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you accept international returns (including refunding duties)?", "maps_to": ["/shipping/returns/international_returns"]},
+    {"id": "Q5.2.11", "subsection": "5.2", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Must returned items be inspected before the refund or exchange is issued?", "maps_to": ["/shipping/returns/inspection_required"]},
+    {"id": "Q5.2.12", "subsection": "5.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you need to capture and report return reasons?", "maps_to": ["/shipping/returns/reason_tracking"]},
+    {"id": "Q5.2.13", "subsection": "5.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Should B2B customers request returns online (if you sell B2B)?", "maps_to": ["/shipping/returns/b2b_returns_online"]},
+
     { "id": "Q5.3.1", "subsection": "5.3", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do order, shipping and delivery notifications need custom design or content?", "maps_to": ["/shipping/notifications/custom"] },
     { "id": "Q5.3.2", "subsection": "5.3", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Are notifications sent by Shopify, by the email platform, or both?", "maps_to": ["/shipping/notifications/sender"] },
+
+    {"id": "Q5.4.1", "subsection": "5.4", "priority": "required", "audience": "client", "answer_type": "integer", "text": "How many orders per month do you expect in the first year?", "help": "Returns, tracking and fraud apps are priced by order volume.", "maps_to": ["/post_purchase/orders_per_month"]},
+    {"id": "Q5.4.2", "subsection": "5.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Should customers be able to cancel orders themselves?", "maps_to": ["/post_purchase/cancellations/self_service"]},
+    {"id": "Q5.4.3", "subsection": "5.4", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Until when can an order be cancelled: before fulfilment, within a few hours, or only by your team?", "maps_to": ["/post_purchase/cancellations/window"]},
+    {"id": "Q5.4.4", "subsection": "5.4", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you allow partial cancellations (some items of an order)?", "maps_to": ["/post_purchase/cancellations/partial"]},
+    {"id": "Q5.4.5", "subsection": "5.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Should customers be able to edit an order after placing it (address, items)?", "help": "Customer-initiated order editing on the storefront usually needs an app.", "maps_to": ["/post_purchase/cancellations/order_editing"]},
+    {"id": "Q5.4.6", "subsection": "5.4", "priority": "recommended", "audience": "client", "answer_type": "multi_enum", "text": "How are refunds paid: to the original payment method, as store credit, or as a gift card?", "maps_to": ["/post_purchase/refunds/methods"]},
+    {"id": "Q5.4.7", "subsection": "5.4", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "When is a refund issued: on request, when the carrier scans the return, on receipt, or after inspection?", "help": "Refunds on carrier scan need a returns platform connected to carrier tracking.", "maps_to": ["/post_purchase/refunds/trigger"]},
+    {"id": "Q5.4.8", "subsection": "5.4", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Is the original shipping cost refunded: always, only when you are at fault, or never?", "maps_to": ["/post_purchase/refunds/shipping_refunded"]},
+    {"id": "Q5.4.9", "subsection": "5.4", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you charge a restocking fee?", "maps_to": ["/post_purchase/refunds/restocking_fee"]},
+    {"id": "Q5.4.10", "subsection": "5.4", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you issue partial refunds (e.g. damaged or missing parts)?", "maps_to": ["/post_purchase/refunds/partial"]},
+    {"id": "Q5.4.11", "subsection": "5.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Must refunds be approved by someone before they are paid?", "maps_to": ["/post_purchase/refunds/approval_required"]},
+    {"id": "Q5.4.12", "subsection": "5.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Must cancellations and refunds be passed to your ERP or finance system?", "maps_to": ["/post_purchase/refunds/finance_sync"]},
+    {"id": "Q5.5.1", "subsection": "5.5", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Do you want a branded order-tracking page on your own site?", "help": "Shopify includes an order status page and shipping emails. A branded tracking page, proactive carrier alerts or delivery estimates usually need a post-purchase platform (e.g. AfterShip, parcelLab, Narvar).", "maps_to": ["/post_purchase/tracking/branded_tracking_page"]},
+    {"id": "Q5.5.2", "subsection": "5.5", "priority": "recommended", "audience": "client", "answer_type": "multi_enum", "text": "On which channels should customers get proactive delivery updates (delays, out for delivery)?", "maps_to": ["/post_purchase/tracking/proactive_channels"]},
+    {"id": "Q5.5.3", "subsection": "5.5", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Should product pages or checkout show estimated delivery dates?", "maps_to": ["/post_purchase/tracking/delivery_estimates"]},
+    {"id": "Q5.5.4", "subsection": "5.5", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Do customers need to open warranty, repair or servicing claims online?", "maps_to": ["/post_purchase/warranty_claims"]},
+    {"id": "Q5.5.5", "subsection": "5.5", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Is there a preferred or existing returns or post-purchase platform (e.g. Loop, AfterShip, parcelLab, Narvar)?", "maps_to": ["/post_purchase/platform_preference"]},
 
     { "id": "Q6.1.1", "subsection": "6.1", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Is guest checkout the default, are accounts optional, or is registration required?", "maps_to": ["/customers/account_requirement"] },
     { "id": "Q6.1.2", "subsection": "6.1", "priority": "recommended", "audience": "consultant", "answer_type": "enum", "text": "New customer accounts (passwordless) or classic accounts?", "maps_to": ["/customers/account_type"] },

@@ -323,12 +323,53 @@
       "policy": "30-day returns for unworn watches in original packaging; free returns within CH, customer-paid from DE and AT.",
       "portal": true,
       "exchanges": true,
-      "solution": "Loop Returns"
+      "solution": "Loop Returns",
+      "window_days": 30,
+      "return_rate_pct": 8,
+      "label": "prepaid_label",
+      "shipping_paid_by": "depends_on_market",
+      "exchange_types": [
+        "same_product_variant"
+      ],
+      "international_returns": true,
+      "inspection_required": true,
+      "reason_tracking": true,
+      "b2b_returns_online": false
     },
     "notifications": {
       "custom": true,
       "sender": "mixed"
     }
+  },
+  "post_purchase": {
+    "orders_per_month": 400,
+    "cancellations": {
+      "self_service": false,
+      "window": "before_fulfilment",
+      "partial": true,
+      "order_editing": false
+    },
+    "refunds": {
+      "methods": [
+        "original_payment",
+        "store_credit"
+      ],
+      "trigger": "after_inspection",
+      "shipping_refunded": "on_fault_only",
+      "restocking_fee": false,
+      "partial": true,
+      "approval_required": true,
+      "finance_sync": true
+    },
+    "tracking": {
+      "branded_tracking_page": false,
+      "proactive_channels": [
+        "email"
+      ],
+      "delivery_estimates": true
+    },
+    "warranty_claims": true,
+    "platform_preference": "Loop Returns (returns)"
   },
   "customers": {
     "account_requirement": "optional",
