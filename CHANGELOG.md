@@ -6,6 +6,27 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-09-16
+
+Phase 2 of the implementation plan — discovery engine.
+
+### Added
+- `agents/discovery/` — discovery engine (`npm run discover -- --questionnaire <file>`): consent check, personal-data redaction, LLM extraction with structured outputs, deterministic offer classification and exit rules 11.1–11.16, LLM-drafted approach on GO, schema validation, Markdown renderings or STOP report
+- **Claude Code mode** (default): `/discover` skill + `npm run discover:prepare|assemble|finish` — the Claude Code session extracts and drafts, code decides; no API billing
+- ⚠ Interim: Claude Code mode runs on a personal Claude Pro account — migrate to dentsu Claude Enterprise before adoption (ADR 0007 amendment, adoption gate in the plan)
+- API mode: default model `claude-opus-5` with server-side refusal fallbacks; override with `DISCOVERY_MODEL`; `ANTHROPIC_WORKSPACE_ID` for keys not scoped to a workspace
+- Structured outputs fit the API limit of 24 optional parameters: flat pointer/value extraction with one repair call; all-required approach schema
+- Threat model: `docs/architecture/discovery-engine-threat-model.md`
+- Tests: offer and exit rules against the golden fixtures; full pipeline with recorded LLM responses; redaction, consent, stop-reason and pricing-leak guards
+- Dependency: `@anthropic-ai/sdk` (D4)
+
+### Removed
+- Python Frame Agent (`agents/frame-agent/`) and its tests — replaced by the discovery engine; brief / interactive modes return with the Phase 5 chatbot
+- `lwc-library/store-spec.schema.yaml` — superseded by `schema/engagement.schema.json`
+
+### Known issues
+- `agents/discovery-deck/build_xml.js` still reads `store-spec.yaml`; it moves to `engagement.json` in Phase 3
+
 ## [0.2.0] — 2026-09-16
 
 Phase 1 of the implementation plan — foundation (offering model, engagement schema, question bank).
@@ -63,5 +84,6 @@ First tagged baseline. Phase 0 of the implementation plan.
 - Store-spec fields from the Frame Agent are only partly read by the story generator (Phase 1)
 - Admin setup scripts (`scripts/01–06`) are single-store, non-idempotent and lack a production guard (Phase 6)
 
+[0.3.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.3.0
 [0.2.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.2.0
 [0.1.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.1.0

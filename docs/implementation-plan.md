@@ -1,6 +1,6 @@
 # Implementation Plan — shopify-ai-builder
 
-> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 complete · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
+> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 released (v0.3.0) · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
 > **Input:** whole-project review (2026-09-16) — discovery chain, pipeline code/security, build layer.
 > **Methodology:** Gaia tiers T1–T4 (`gaia/methodology/feature-tiers.md`). Estimates are indicative
 > (one lead + AI agents) and are re-baselined at the end of Phase 1.
@@ -33,6 +33,12 @@ Interview (questionnaire → chatbot)
 | D7 | Jira | Sandbox project + Atlassian Rovo connector authorised | Needed for Phase 4 push |
 
 ---
+
+## ⚠ Adoption gate — Claude account (open)
+
+- [ ] **Migrate Claude Code usage from the personal Claude Pro account to dentsu's Claude Enterprise** before
+  dentsu / Merkle adoption, onboarding other consultants, or processing real client data at scale (ADR 0007).
+  Interim rule until then: "use my chats to improve models" switched off; prefer example or anonymised questionnaires.
 
 ## Phase overview
 
@@ -138,20 +144,22 @@ every gate and exit rule traces to ≥1 question and ≥1 schema field (automate
 Runtime LLM + client personal data → threat model and test strategy required before build.
 
 **Design principle:** the LLM extracts, code decides.
-- [ ] `agents/discovery/extract.js` — questionnaire → `engagement.json` via structured output against the schema; validate, retry on schema errors, check `stop_reason`
-- [ ] `agents/discovery/classify.js` — pure functions: scope gates → offer, L triggers, modifiers, price band (ADR 001)
-- [ ] `agents/discovery/exits.js` — canonical §11 rules; LLM-detected exits are **merged** (with evidence), never overwritten; null-safe
-- [ ] `agents/discovery/approach.js` — capability map (Native → App → Theme → Custom), app shortlist (costs flagged "verify"), risks; validated with Shopify AI Toolkit docs search
-- [ ] Consent gate: refuse to call the LLM without `meta.consent`; redact stakeholder names/emails before the call
-- [ ] Renderers: `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` from `engagement.json`; on STOP write `stop-report.md` only
-- [ ] CLI: `npm run discover -- --client <slug> --questionnaire <path> [--dry-run]`
-- [ ] Retire `agents/frame-agent/frame_agent.py` once parity is reached
+- [x] `agents/discovery/extract.js` — questionnaire → `engagement.json` via structured output against the schema; validate, check `stop_reason` *(no automatic retry on schema errors — the run fails and reports the errors)*
+- [x] `agents/discovery/classify.js` — pure functions: scope gates → offer, L triggers, modifiers, price band (ADR 001)
+- [x] `agents/discovery/exits.js` — canonical §11 rules; LLM-detected exits are **merged** (with evidence), never overwritten; null-safe
+- [x] `agents/discovery/approach.js` — capability map (Native → App → Theme → Custom), app shortlist (costs flagged "verify"), assumptions, phases
+- [ ] Validate app and capability recommendations against live Shopify docs (Shopify AI Toolkit) — deferred
+- [x] Consent gate: refuse to call the LLM without `meta.consent`; redact stakeholder names/emails before the call
+- [x] Renderers: `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` from `engagement.json`; on STOP write `stop-report.md` only
+- [x] CLI: `npm run discover -- --questionnaire <path> [--client <slug>] [--dry-run]` (API mode)
+- [x] Claude Code mode: `/discover` skill + `discover:prepare|assemble|finish` — no API billing (ADR 0007 amendment)
+- [x] Retire `agents/frame-agent/frame_agent.py` (brief / interactive modes return with the Phase 5 chatbot)
 - [ ] Record explicit "none" answers for free-text fields (e.g. no affiliate platform) distinctly from unknown
 - [ ] Render filled questionnaires (e.g. the ACME example) from `engagement.json` with the committed renderer
 
-**Tests:** unit tests for classify/exits on all golden fixtures; recorded-response test for extraction in CI; opt-in live eval (ACME key fields).
+**Tests:** unit tests for classify/exits on all golden fixtures ✓; recorded-response tests for the full pipeline ✓; live run on the ACME example ✓ (Claude Code mode, 2026-09-16: M / GO, FLAGs 11.10 and 11.14, extraction valid on first attempt).
 
-**Exit criteria:** ACME → M / GO with all four artefacts; STOP fixture → no GO artefacts; zero schema errors; threat model filed.
+**Exit criteria:** ACME → M / GO with all four artefacts ✓ (recorded responses); STOP fixture → no GO artefacts ✓; zero schema errors ✓; threat model filed ✓ (`docs/architecture/discovery-engine-threat-model.md`). Live run on ACME ✓ (Claude Code mode).
 
 ---
 
