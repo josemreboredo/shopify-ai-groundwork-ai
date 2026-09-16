@@ -8,6 +8,7 @@
  */
 
 import { buildApproachSchema } from './extraction-schema.js';
+import { appSignals } from './app-signals.js';
 
 export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect at Merkle drafting the implementation approach for a discovery engagement. A lead consultant reviews everything you write before the client sees it.
 
@@ -18,6 +19,7 @@ Capability map
 
 App shortlist
 - Recommend only apps a requirement needs; prefer native features. Include apps you considered and rejected, with rejection_reason.
+- app_signals lists, per area, the answers that go beyond native Shopify (returns platform, post-purchase tracking platform, order editing, warranty claims). An empty list means native Shopify is enough: return rules and self-serve returns, staff refunds and exchanges, the order status page and email/SMS shipping notifications. For a non-empty list, recommend one app per area that covers all listed reasons (prefer an app the client already uses or prefers, see post_purchase.platform_preference and shipping.returns.solution) and quote the reasons in rationale.
 - Costs: typical public list price as a number with currency and period, and note "verify current pricing on the Shopify App Store". If unknown, omit cost.
 
 Assumptions
@@ -41,6 +43,7 @@ export function approachInput(doc) {
   return {
     ...answers,
     offer: { code: offer.code, name: offer.name, delivery_track: offer.delivery_track, scope_gates: offer.scope_gates, l_triggers: offer.l_triggers },
+    app_signals: appSignals(doc),
     question_ids_by_answer: Object.fromEntries(
       Object.entries(provenance ?? {}).map(([pointer, p]) => [pointer, p.question_id]).filter(([, id]) => id),
     ),

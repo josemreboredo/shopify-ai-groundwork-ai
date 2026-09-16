@@ -27,7 +27,7 @@ that nothing generated. A hand-rolled YAML parser silently dropped data.
 
 ## Consequences
 
-- The old `lwc-library/store-spec.schema.yaml` was removed in Phase 2. `scripts/generate-stories/parseSpec.js` and
-  `scripts/questionnaire/` are superseded and stay until Phase 4 and Phase 5 replace them.
-- `agents/discovery-deck/parseMarkdown.js` is dropped in Phase 3.
+- The old `lwc-library/store-spec.schema.yaml` was removed in Phase 2; the old story generator (`scripts/generate-stories/`) and the
+  interactive merchant questionnaire CLI (`scripts/questionnaire/`) were removed in Phase 4 (the Phase 5 chatbot replaces the CLI).
+- The deck (Phase 3) and backlog (Phase 4) read `engagement.json` directly; `parseMarkdown.js`, `estimateCalc.js` and the old story generator were removed.
 - Contract tests guard the schema ↔ question bank ↔ offering links.

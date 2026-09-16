@@ -6,6 +6,34 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-09-16
+
+Phases 3 and 4 of the implementation plan — Discovery Closing Deck and Jira-ready backlog.
+
+### Added
+- `agents/backlog/` — story model v2 (stable keys, epics, user stories, Given/When/Then acceptance criteria, Gaia tier, points, dependencies, security flags, agent prompts), selection from `engagement.json`, `npm run backlog -- --client <slug>` → `backlog.csv` (Jira Cloud CSV import with epics), `backlog.md`, `backlog.json`
+- Story catalogue across 14 epics, including migration and redirects, shipping and tax, B2B, page builds, analytics and consent, accessibility and performance, QA/UAT, launch and hypercare
+- `agents/discovery-deck/build.js` — deck data from `engagement.json` + `backlog.json`: `npm run deck` → `discovery-deck.xml` (client-safe, price band only) and `deck-internal-notes.md` (modifiers, gate evidence, budget vs band, commercial warnings, story points); `npm run deck:check` scans the final deck for internal data
+- `/deck` Claude Code skill writes `discovery-deck.md` from the XML
+- Tests for the backlog contract, CSV structure, deck sections, STOP deck and leak guards
+
+### Changed
+- `docs/discovery/deck-template.md` and `deck-prompt.md` rewritten for `engagement.json` and D1
+
+### Removed
+- `agents/discovery-deck/build_xml.js`, `parseMarkdown.js`, `estimateCalc.js`
+- Old story generator (`scripts/generate-stories/`, YAML store-spec fixtures) — replaced by `agents/backlog/`
+- Interactive merchant questionnaire CLI (`scripts/questionnaire/`) — incompatible with the engagement schema; the Phase 5 chatbot replaces it
+
+### Added (post-purchase discovery)
+- 26 questions in § 5 (210 total): returns (window, return rate, labels, who pays, exchange types, international and B2B returns, inspection, reasons), cancellations and order editing, refunds (methods, trigger, shipping refund, restocking fee, approval, finance sync) and post-purchase experience (branded tracking page, proactive delivery updates, delivery estimates, warranty and repair claims, platform preference)
+- Engagement schema: extended `shipping.returns` and new `post_purchase` block
+- `agents/discovery/app-signals.js`: deterministic reasons a requirement goes beyond native Shopify (returns platform, post-purchase tracking platform such as Narvar/AfterShip/parcelLab, order editing app, warranty claims); passed to the approach step so apps are recommended only with evidence
+- Backlog stories LWC-SHP-007 (cancellations and order editing), SHP-008 (refund rules and finance sync), SHP-009 (post-purchase tracking and delivery updates), SHP-010 (warranty and repair claims); returns story uses the new answers
+
+### Changed (data ownership)
+- Integrations default to PIM → products, content and attributes; ERP → prices, inventory and orders. ERP stories never overwrite product content; Q8.1.1 explains the split; ACME example uses a generic ERP plus a PIM (no vendor names)
+
 ## [0.3.0] — 2026-09-16
 
 Phase 2 of the implementation plan — discovery engine.
@@ -84,6 +112,7 @@ First tagged baseline. Phase 0 of the implementation plan.
 - Store-spec fields from the Frame Agent are only partly read by the story generator (Phase 1)
 - Admin setup scripts (`scripts/01–06`) are single-store, non-idempotent and lack a production guard (Phase 6)
 
+[0.4.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.4.0
 [0.3.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.3.0
 [0.2.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.2.0
 [0.1.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.1.0

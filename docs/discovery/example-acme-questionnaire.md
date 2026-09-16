@@ -57,7 +57,7 @@
 
 **Q0.3.1** — What manual work does your team do today that the platform should automate, and which processes break most often? *(recommended)*
 
-> Answer: Inventory is synced manually with SAP Business One twice a day; Refunds and exchanges are tracked in spreadsheets
+> Answer: Inventory and prices are synced manually with the ERP twice a day; Refunds and exchanges are tracked in spreadsheets
 
 **Q0.3.2** — How many hours per week does the team spend on workarounds? *(optional)*
 
@@ -271,8 +271,8 @@
 *(tick one)*
 - [ ] shopify admin
 - [ ] spreadsheet
-- [x] erp
-- [ ] pim
+- [ ] erp
+- [x] pim
 - [ ] mixed
 
 ### 2.4 Pricing
@@ -485,7 +485,7 @@
 
 ## § 5 — Shipping & fulfilment
 
-> Fulfilment model, locations, rates, returns and notifications.
+> Fulfilment, returns, cancellations, refunds and the post-purchase experience. These answers decide whether native Shopify is enough or a returns or post-purchase platform (e.g. Loop, AfterShip, parcelLab, Narvar) is needed.
 
 ### 5.1 Fulfilment model
 
@@ -556,6 +556,60 @@
 
 > Answer: Loop Returns
 
+**Q5.2.5** — How many days do customers have to return an order? *(recommended)*
+
+> Answer: 30
+
+**Q5.2.6** — What share of orders is returned today (%)? *(recommended)*
+*High return rates or volumes usually justify a returns platform instead of Shopify's native self-serve returns.*
+
+> Answer: 8
+
+**Q5.2.7** — How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed? *(recommended)*
+*Prepaid labels and QR drop-off need a carrier integration — typically a returns app.*
+
+*(tick one)*
+- [x] prepaid label
+- [ ] qr drop off
+- [ ] customer arranged
+- [ ] mixed
+
+**Q5.2.8** — Who pays return shipping: you, the customer, or it depends on the market? *(recommended)*
+
+*(tick one)*
+- [ ] merchant
+- [ ] customer
+- [x] depends on market
+
+**Q5.2.9** — Which exchanges do you offer: same product in another variant, any other product, or store credit first? *(optional)*
+*Skip if Q5.2.3 = no.*
+*Exchanges for any product or store-credit-first flows usually need a returns app.*
+
+*(tick all that apply)*
+- [x] same product variant
+- [ ] any product
+- [ ] store credit first
+
+**Q5.2.10** — Do you accept international returns (including refunding duties)? *(optional)*
+
+- [x] Yes
+- [ ] No
+
+**Q5.2.11** — Must returned items be inspected before the refund or exchange is issued? *(recommended)*
+
+- [x] Yes
+- [ ] No
+
+**Q5.2.12** — Do you need to capture and report return reasons? *(optional)*
+
+- [x] Yes
+- [ ] No
+
+**Q5.2.13** — Should B2B customers request returns online (if you sell B2B)? *(optional)*
+
+- [ ] Yes
+- [x] No
+
 ### 5.3 Notifications
 
 **Q5.3.1** — Do order, shipping and delivery notifications need custom design or content? *(optional)*
@@ -569,6 +623,109 @@
 - [ ] shopify
 - [ ] esp
 - [x] mixed
+
+### 5.4 Cancellations & refunds
+
+**Q5.4.1** — How many orders per month do you expect in the first year? *(required)*
+*Returns, tracking and fraud apps are priced by order volume.*
+
+> Answer: 400
+
+**Q5.4.2** — Should customers be able to cancel orders themselves? *(recommended)*
+
+- [ ] Yes
+- [x] No
+
+**Q5.4.3** — Until when can an order be cancelled: before fulfilment, within a few hours, or only by your team? *(recommended)*
+
+*(tick one)*
+- [x] before fulfilment
+- [ ] within hours
+- [ ] merchant only
+
+**Q5.4.4** — Do you allow partial cancellations (some items of an order)? *(optional)*
+
+- [x] Yes
+- [ ] No
+
+**Q5.4.5** — Should customers be able to edit an order after placing it (address, items)? *(recommended)*
+*Customer-initiated order editing on the storefront usually needs an app.*
+
+- [ ] Yes
+- [x] No
+
+**Q5.4.6** — How are refunds paid: to the original payment method, as store credit, or as a gift card? *(recommended)*
+
+*(tick all that apply)*
+- [x] original payment
+- [x] store credit
+- [ ] gift card
+
+**Q5.4.7** — When is a refund issued: on request, when the carrier scans the return, on receipt, or after inspection? *(recommended)*
+*Refunds on carrier scan need a returns platform connected to carrier tracking.*
+
+*(tick one)*
+- [ ] on request
+- [ ] on carrier scan
+- [ ] on receipt
+- [x] after inspection
+
+**Q5.4.8** — Is the original shipping cost refunded: always, only when you are at fault, or never? *(optional)*
+
+*(tick one)*
+- [ ] always
+- [x] on fault only
+- [ ] never
+
+**Q5.4.9** — Do you charge a restocking fee? *(optional)*
+
+- [ ] Yes
+- [x] No
+
+**Q5.4.10** — Do you issue partial refunds (e.g. damaged or missing parts)? *(optional)*
+
+- [x] Yes
+- [ ] No
+
+**Q5.4.11** — Must refunds be approved by someone before they are paid? *(recommended)*
+
+- [x] Yes
+- [ ] No
+
+**Q5.4.12** — Must cancellations and refunds be passed to your ERP or finance system? *(recommended)*
+
+- [x] Yes
+- [ ] No
+
+### 5.5 Post-purchase experience
+
+**Q5.5.1** — Do you want a branded order-tracking page on your own site? *(recommended)*
+*Shopify includes an order status page and shipping emails. A branded tracking page, proactive carrier alerts or delivery estimates usually need a post-purchase platform (e.g. AfterShip, parcelLab, Narvar).*
+
+- [ ] Yes
+- [x] No
+
+**Q5.5.2** — On which channels should customers get proactive delivery updates (delays, out for delivery)? *(recommended)*
+
+*(tick all that apply)*
+- [x] email
+- [ ] sms
+- [ ] whatsapp
+- [ ] push
+
+**Q5.5.3** — Should product pages or checkout show estimated delivery dates? *(optional)*
+
+- [x] Yes
+- [ ] No
+
+**Q5.5.4** — Do customers need to open warranty, repair or servicing claims online? *(recommended)*
+
+- [x] Yes
+- [ ] No
+
+**Q5.5.5** — Is there a preferred or existing returns or post-purchase platform (e.g. Loop, AfterShip, parcelLab, Narvar)? *(optional)*
+
+> Answer: Loop Returns (returns); no tracking platform chosen yet
 
 ---
 
@@ -923,11 +1080,12 @@
 ### 8.1 Connected systems
 
 **Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required)*
-*Any ERP, PIM, CRM, 3PL/WMS, OMS or custom connection activates the integration gate; more than 3 is a hard stop (11.7).*
+*Typical ownership: the PIM supplies products, content and attributes; the ERP supplies prices, inventory and orders. Any ERP, PIM, CRM, 3PL/WMS, OMS or custom connection activates the integration gate; more than 3 is a hard stop (11.7).*
 
 | system | category | direction | objects | frequency | connector | middleware | owner | status |
 |---|---|---|---|---|---|---|---|---|
-| SAP Business One | erp | bidirectional | products, inventory, orders | batch | ipaas | Celigo | TBC | to build |
+| Client ERP | erp | bidirectional | inventory, prices, orders | batch | ipaas | Celigo | TBC | to build |
+| Client PIM | pim | inbound | products, content | batch | ipaas | Celigo | client | to build |
 | Klaviyo | esp | outbound | customers, orders | realtime | native app | — | client | existing |
 | Loop Returns | returns | bidirectional | orders, returns | realtime | native app | — | client | to build |
 
@@ -1220,12 +1378,12 @@
 | 11.4 | More than 6 distinct languages across all markets | STOP | Scale programme | Q3.1.1 | clear — 3 languages (de, fr, it) |
 | 11.5 | More than 3 variant options per product | STOP | Architecture review | Q2.1.2 | clear — max 2 variant options |
 | 11.6 | Custom checkout UI that cannot be built with Checkout Extensibility | STOP | Composable platform | Q4.2.1 | clear — Checkout Extensibility only |
-| 11.7 | More than 3 integrations at launch (counted per integration_definition) | STOP | Bespoke quote | Q8.1.1 | clear — 1 counted integration (SAP Business One) |
+| 11.7 | More than 3 integrations at launch (counted per integration_definition) | STOP | Bespoke quote | Q8.1.1 | clear — 2 counted integrations (ERP, PIM) |
 | 11.8 | Regulated industry (pharma, alcohol, firearms, age-restricted, financial products, medical devices) | STOP | Legal / compliance review | Q1.1.3, Q10.4.1 | clear — not a regulated industry |
 | 11.9 | PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data) | STOP | Security review (threat model mandatory) | Q4.1.5 | clear — Shopify-hosted checkout |
 | 11.10 | GDPR / CCPA data export or deletion workflow required | FLAG | Legal sign-off on data-subject request handling | Q6.4.5 | **triggered** — owner: Lead Consultant |
 | 11.11 | Grow retainer not signed on an M or L engagement | WARN | Grow retainer to be signed before delivery starts; otherwise commercial adjustment | Q10.3.4 | clear — retainer signed (12 months) |
-| 11.12 | ERP or PIM with no existing Shopify connector and no iPaaS | FLAG | Separate integration scoping track (T3/T4) | Q8.1.1 | clear — SAP Business One via Celigo (iPaaS) |
+| 11.12 | ERP or PIM with no existing Shopify connector and no iPaaS | FLAG | Separate integration scoping track (T3/T4) | Q8.1.1 | clear — ERP and PIM via Celigo (iPaaS) |
 | 11.13 | fulfilment_locations > 2 AND complex_routing is true | FLAG | Multi-location inventory scoping (T3) | Q5.1.3, Q5.1.4 | clear — 1 fulfilment location |
 | 11.14 | Migration with significant SEO equity or complex historical data | FLAG | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5 | **triggered** — owner: Tech Lead |
 | 11.15 | Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks | FLAG | Re-scope to an MVP-first delivery before any sprint begins | Q10.1.1 | clear — 17 weeks from kick-off to go-live |
