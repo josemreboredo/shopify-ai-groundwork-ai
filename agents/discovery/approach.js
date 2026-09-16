@@ -47,6 +47,81 @@ export function approachInput(doc) {
   };
 }
 
+/** Drop empty-string properties from an object. */
+const compact = (obj) => Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== '' && v !== undefined));
+
+/**
+ * Convert the all-required structured output into the engagement `approach`
+ * shape: empty strings removed, cost fields regrouped, "none" capability dropped.
+ *
+ * @param {object} payload
+ * @returns {object}  capability_map, app_shortlist, phases, risks.assumptions
+ */
+export function fromApproachPayload(payload) {
+  return {
+    capability_map: (payload.capability_map ?? []).map((row) => {
+      const out = compact(row);
+      if (!out.question_ids?.length) delete out.question_ids;
+      return out;
+    }),
+    app_shortlist: (payload.app_shortlist ?? []).map(({ cost_amount, cost_currency, cost_period, cost_note, ...app }) => {
+      const out = compact(app);
+      if (out.recommended) delete out.rejection_reason;
+      const cost = compact({
+        ...(cost_amount >= 0 && cost_period !== 'unknown' ? { amount: cost_amount, period: cost_period } : {}),
+        currency: cost_currency,
+        note: cost_note,
+      });
+      if (Object.keys(cost).length) out.cost = cost;
+      return out;
+    }),
+    phases: (payload.phases ?? []).map((phase) => ({
+      name: phase.name,
+      sprints: phase.sprints.map((sprint) => ({
+        name: sprint.name,
+        tasks: sprint.tasks.map(({ capability, deferred, ...task }) => ({
+          ...compact(task),
+          ...(capability !== 'none' ? { capability } : {}),
+          ...(deferred ? { deferred: true } : {}),
+        })),
+      })),
+    })),
+    risks: { assumptions: (payload.assumptions ?? []).map(compact) },
+  };
+}
+
+/**
+ * Inverse of fromApproachPayload — encodes a stored approach as the model's
+ * output shape. Used to replay recorded engagements in tests.
+ *
+ * @param {object} approach
+ * @returns {object}
+ */
+export function toApproachPayload(approach) {
+  return {
+    capability_map: (approach.capability_map ?? []).map((r) => ({
+      requirement: r.requirement, resolution: r.resolution, tool: r.tool ?? '', gaia_tier: r.gaia_tier ?? 'T2',
+      notes: r.notes ?? '', question_ids: r.question_ids ?? [],
+    })),
+    app_shortlist: (approach.app_shortlist ?? []).map((a) => ({
+      name: a.name, url: a.url ?? '', requirement: a.requirement ?? '', rationale: a.rationale ?? '', limitations: a.limitations ?? '',
+      cost_amount: a.cost?.amount ?? -1, cost_currency: a.cost?.currency ?? '', cost_period: a.cost?.period ?? 'unknown', cost_note: a.cost?.note ?? '',
+      integration_complexity: a.integration_complexity ?? 'none', gaia_tier: a.gaia_tier ?? 'T1',
+      recommended: a.recommended, rejection_reason: a.rejection_reason ?? '',
+    })),
+    assumptions: (approach.risks?.assumptions ?? []).map((x) => ({ statement: x.statement, impact_if_wrong: x.impact_if_wrong ?? '' })),
+    phases: (approach.phases ?? []).map((p) => ({
+      name: p.name,
+      sprints: p.sprints.map((sp) => ({
+        name: sp.name,
+        tasks: sp.tasks.map((t) => ({
+          title: t.title, capability: t.capability ?? 'none', gaia_tier: t.gaia_tier ?? 'T2', owner: t.owner ?? 'agent', deferred: t.deferred ?? false,
+        })),
+      })),
+    })),
+  };
+}
+
 /**
  * Draft the approach for a GO engagement.
  *
@@ -60,5 +135,5 @@ export async function draftApproach(llm, doc) {
     user: `Engagement (JSON):\n\n${JSON.stringify(approachInput(doc), null, 2)}`,
     schema: buildApproachSchema(),
   });
-  return data;
+  return fromApproachPayload(data);
 }

@@ -82,11 +82,21 @@ async function main() {
   const llm = createLlm();
 
   console.log(`→ Discovery: ${path.relative(process.cwd(), args.questionnaire)} (model ${llm.model})`);
+  const started = Date.now();
+  const labels = {
+    extraction: 'extracting answers',
+    repair: (n) => `repairing ${n} validation error(s)`,
+    approach: 'drafting capability map, apps and phases',
+  };
   const result = await runDiscovery({
     questionnaire,
     llm,
     today: new Date().toISOString().slice(0, 10),
     clientSlug: args.client,
+    onStep: (step, detail) => {
+      const label = typeof labels[step] === 'function' ? labels[step](detail) : labels[step] ?? step;
+      console.log(`  [${Math.round((Date.now() - started) / 1000)}s] ${label}…`);
+    },
   });
 
   const { engagement } = result;

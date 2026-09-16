@@ -1,123 +1,239 @@
 /**
  * @file extraction-schema.js
- * @description Derives the JSON schemas sent to Claude's structured outputs
- * from schema/engagement.schema.json. Structured outputs do not support
- * numeric/string constraints, pattern, uniqueItems, propertyNames, if/then or
- * map-style objects, so those are removed here (patterns become description
- * hints) and the full schema is re-validated locally with ajv afterwards.
+ * @description Output schemas for Claude's structured outputs, plus the field
+ * catalogue that tells the model which answer fields exist.
+ *
+ * The API limits structured-output schemas to 24 optional parameters in total,
+ * and does not enforce patterns, numeric limits or map-shaped objects. The
+ * engagement schema has ~250 optional fields, so the model never receives it:
+ *   - extraction returns a flat list of { pointer, value_json } pairs that code
+ *     assembles and validates against the full schema (with one repair call);
+ *   - approach uses an explicit schema where every field is required and
+ *     "empty" sentinels are removed in code.
  *
  * @module discovery/extraction-schema
  */
 
 import { engagementSchema, offering } from '../../schema/index.js';
 
-const UNSUPPORTED = ['minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf',
-  'minLength', 'maxLength', 'uniqueItems', 'maxItems', 'propertyNames', 'if', 'then', 'else'];
+/** Structured-output limit on optional (non-required) properties across a schema. */
+export const MAX_OPTIONAL_PARAMETERS = 24;
 
-/**
- * Recursively strip keywords structured outputs cannot enforce.
- *
- * @param {unknown} node
- * @returns {unknown}
- */
-export function toStructuredOutputSchema(node) {
-  if (Array.isArray(node)) return node.map(toStructuredOutputSchema);
-  if (!node || typeof node !== 'object') return node;
+/** Top-level fields the engine computes — never extracted. */
+export const COMPUTED_POINTERS = ['/schema_version', '/offer', '/exits', '/approach', '/provenance', '/notes', '/meta/source', '/delivery/go'];
 
-  const out = {};
-  for (const [key, value] of Object.entries(node)) {
-    if (UNSUPPORTED.includes(key) || key === '$schema' || key === '$id') continue;
-    if (key === 'minItems' && value > 1) continue;
-    if (key === 'pattern') continue;
-    out[key] = key === 'properties' || key === '$defs'
-      ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, toStructuredOutputSchema(v)]))
-      : toStructuredOutputSchema(value);
-  }
-  if (typeof node.pattern === 'string') {
-    out.description = [node.description, `Must match ${node.pattern}`].filter(Boolean).join(' ');
-  }
-  return out;
-}
+// ─── Extraction ───────────────────────────────────────────────────────────────
 
-/** Fields the engine computes — never requested from the model. */
-const COMPUTED_TOP_LEVEL = ['schema_version', 'offer', 'exits', 'approach', 'provenance', 'notes'];
-
-/**
- * Schema for the extraction call: answers + provenance (as an array) +
- * exit-rule candidates + open items.
- *
- * @returns {object}
- */
+/** @returns {object} */
 export function buildExtractionSchema() {
-  const answers = structuredClone(engagementSchema);
-  delete answers.$defs;
-  for (const key of COMPUTED_TOP_LEVEL) delete answers.properties[key];
-  answers.required = ['meta'];
-
-  delete answers.properties.meta.properties.source;
-  answers.properties.meta.required = ['client'];
-  delete answers.properties.delivery.properties.go;
-
-  const provenanceEntry = engagementSchema.properties.provenance.additionalProperties;
-  const openItem = engagementSchema.properties.approach.properties.risks.properties.open_items.items;
-
-  const schema = {
+  return {
     type: 'object',
     additionalProperties: false,
     required: ['answers', 'provenance', 'exit_candidates', 'open_items'],
     properties: {
       answers: {
-        ...answers,
-        description: 'Answers extracted from the questionnaire. Omit any field that was not answered, is TBC, or is unknown.',
-      },
-      provenance: {
         type: 'array',
-        description: 'One entry per extracted answer: JSON pointer into answers (array indices as numbers), who gave it, whether it is confirmed.',
+        description: 'One entry per answered field. Omit unanswered, TBC and unknown fields.',
         items: {
           type: 'object',
           additionalProperties: false,
-          required: ['pointer', ...provenanceEntry.required],
-          properties: { pointer: { $ref: '#/$defs/pointer' }, ...provenanceEntry.properties },
+          required: ['pointer', 'value_json'],
+          properties: {
+            pointer: { type: 'string', description: 'JSON pointer from the field catalogue, e.g. "/catalogue/sku_count" or "/markets/list".' },
+            value_json: { type: 'string', description: 'The value as a JSON literal: "text" in quotes, 800, true, ["de","fr"], or an array of objects for list fields.' },
+          },
+        },
+      },
+      provenance: {
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['pointer', 'source', 'status', 'question_id', 'note'],
+          properties: {
+            pointer: { type: 'string' },
+            source: { enum: ['client', 'consultant', 'inferred'] },
+            status: { enum: ['confirmed', 'tbc'] },
+            question_id: { type: 'string', description: 'Question id such as Q3.1.1' },
+            note: { type: 'string', description: 'Short caveat, or "" if none' },
+          },
         },
       },
       exit_candidates: {
         type: 'array',
-        description: 'Exit rules the answers indicate but the structured fields cannot express. Leave empty when unsure.',
         items: {
           type: 'object',
           additionalProperties: false,
           required: ['rule_id', 'evidence'],
           properties: {
             rule_id: { enum: offering.exit_rules.map((r) => r.id) },
-            evidence: { type: 'string', description: 'Quote the questionnaire answer that supports this rule.' },
+            evidence: { type: 'string' },
           },
         },
       },
       open_items: {
         type: 'array',
-        description: 'Required or recommended questions left blank or TBC.',
-        items: openItem,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: ['pointer', 'question_id', 'why'],
+          properties: {
+            pointer: { type: 'string' },
+            question_id: { type: 'string' },
+            why: { type: 'string' },
+          },
+        },
       },
     },
-    $defs: engagementSchema.$defs,
   };
+}
 
-  return toStructuredOutputSchema(schema);
+// ─── Approach ─────────────────────────────────────────────────────────────────
+
+const GAIA_TIERS = ['T1', 'T2', 'T3', 'T4'];
+
+/** @returns {object} */
+export function buildApproachSchema() {
+  const obj = (properties) => ({ type: 'object', additionalProperties: false, required: Object.keys(properties), properties });
+  const str = (description) => (description ? { type: 'string', description } : { type: 'string' });
+
+  return obj({
+    capability_map: {
+      type: 'array',
+      items: obj({
+        requirement: str(),
+        resolution: { enum: ['native', 'app', 'theme', 'custom'] },
+        tool: str('Shopify feature, app or approach; "" if none'),
+        gaia_tier: { enum: GAIA_TIERS },
+        notes: str('"" if none'),
+        question_ids: { type: 'array', items: str() },
+      }),
+    },
+    app_shortlist: {
+      type: 'array',
+      items: obj({
+        name: str(),
+        url: str('App Store URL or ""'),
+        requirement: str(),
+        rationale: str('"" for rejected apps'),
+        limitations: str('"" if none'),
+        cost_amount: { type: 'number', description: 'List price; -1 if unknown' },
+        cost_currency: str('ISO currency such as USD, or ""'),
+        cost_period: { enum: ['month', 'year', 'one_off', 'usage', 'unknown'] },
+        cost_note: str('"" if none'),
+        integration_complexity: { enum: ['none', 'config_only', 'theme_edit', 'custom'] },
+        gaia_tier: { enum: GAIA_TIERS },
+        recommended: { type: 'boolean' },
+        rejection_reason: str('"" for recommended apps'),
+      }),
+    },
+    assumptions: {
+      type: 'array',
+      items: obj({ statement: str(), impact_if_wrong: str('"" if none') }),
+    },
+    phases: {
+      type: 'array',
+      items: obj({
+        name: str(),
+        sprints: {
+          type: 'array',
+          items: obj({
+            name: str(),
+            tasks: {
+              type: 'array',
+              items: obj({
+                title: str(),
+                capability: { enum: ['native', 'app', 'theme', 'custom', 'none'] },
+                gaia_tier: { enum: GAIA_TIERS },
+                owner: { enum: ['consultant', 'agent', 'designer', 'developer', 'client'] },
+                deferred: { type: 'boolean' },
+              }),
+            },
+          }),
+        },
+      }),
+    },
+  });
+}
+
+// ─── Schema introspection ─────────────────────────────────────────────────────
+
+/**
+ * Count optional (non-required) properties across a schema, as the API does.
+ *
+ * @param {unknown} node
+ * @returns {number}
+ */
+export function countOptionalParameters(node) {
+  if (Array.isArray(node)) return node.reduce((n, child) => n + countOptionalParameters(child), 0);
+  if (!node || typeof node !== 'object') return 0;
+  let count = 0;
+  if (node.properties) {
+    const required = new Set(node.required ?? []);
+    count += Object.keys(node.properties).filter((k) => !required.has(k)).length;
+  }
+  for (const value of Object.values(node)) count += countOptionalParameters(value);
+  return count;
+}
+
+const DEF_HINTS = {
+  slug: 'kebab-case slug',
+  country: 'ISO 3166-1 alpha-2, e.g. "CH"',
+  currency: 'ISO 4217, e.g. "EUR"',
+  language: 'ISO 639-1 lowercase, e.g. "de"',
+  date: 'date "YYYY-MM-DD"',
+  pointer: 'JSON pointer',
+  question_id: 'question id, e.g. "Q3.1.1"',
+  strings: 'array of strings',
+};
+
+/** @param {object} node */
+function deref(node) {
+  let current = node;
+  let name = null;
+  while (current?.$ref) {
+    name = current.$ref.replace('#/$defs/', '');
+    current = engagementSchema.$defs[name];
+  }
+  return { node: current, name };
 }
 
 /**
- * Schema for the approach call (capability map, app shortlist, assumptions, phases).
+ * Short type description of a schema node for the field catalogue.
  *
- * @returns {object}
+ * @param {object} raw
+ * @returns {string}
  */
-export function buildApproachSchema() {
-  const approach = structuredClone(engagementSchema.properties.approach);
-  approach.properties.risks = {
-    type: 'object',
-    additionalProperties: false,
-    required: ['assumptions'],
-    properties: { assumptions: approach.properties.risks.properties.assumptions },
+function describe(raw) {
+  const { node, name } = deref(raw);
+  if (name && DEF_HINTS[name]) return DEF_HINTS[name];
+  if (node.enum) return `one of ${node.enum.join(' | ')}`;
+  if (node.const) return `"${node.const}"`;
+  if (node.type === 'array') {
+    const { node: item } = deref(node.items);
+    if (item.type === 'object') return `array of { ${Object.entries(item.properties).map(([k, v]) => `${k}: ${describe(v)}`).join('; ')} }`;
+    return `array of (${describe(node.items)})`;
+  }
+  if (node.type === 'object') return `{ ${Object.entries(node.properties).map(([k, v]) => `${k}: ${describe(v)}`).join('; ')} }`;
+  return node.type;
+}
+
+/**
+ * Catalogue of extractable fields: leaf pointers, and arrays as single values.
+ *
+ * @returns {string[]}  lines "pointer — type"
+ */
+export function fieldCatalogue() {
+  const lines = [];
+  const walk = (pointer, raw) => {
+    if (COMPUTED_POINTERS.includes(pointer)) return;
+    const { node, name } = deref(raw);
+    if (node.type === 'object' && node.properties && !(name && DEF_HINTS[name]) && name !== 'money' && name !== 'money_range') {
+      for (const [key, child] of Object.entries(node.properties)) walk(`${pointer}/${key}`, child);
+      return;
+    }
+    lines.push(`${pointer} — ${describe(raw)}`);
   };
-  approach.required = ['capability_map', 'app_shortlist', 'risks', 'phases'];
-  return toStructuredOutputSchema({ ...approach, $defs: engagementSchema.$defs });
+  for (const [key, child] of Object.entries(engagementSchema.properties)) walk(`/${key}`, child);
+  return lines;
 }

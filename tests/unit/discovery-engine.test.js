@@ -9,13 +9,16 @@ import os   from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 
-import { offering } from '../../schema/index.js';
+import { offering, validateEngagement } from '../../schema/index.js';
+
+const validateEngagementErrors = (doc) => { const r = validateEngagement(doc); return r.valid ? [] : r.errors; };
 import { runDiscovery } from '../../agents/discovery/engine.js';
 import { hasConsent, redactQuestionnaire, InputRejectedError } from '../../agents/discovery/input.js';
-import { buildExtractionSchema, buildApproachSchema } from '../../agents/discovery/extraction-schema.js';
+import { buildExtractionSchema, buildApproachSchema, countOptionalParameters, MAX_OPTIONAL_PARAMETERS, fieldCatalogue } from '../../agents/discovery/extraction-schema.js';
+import { assembleAnswers, flattenAnswers, extractAnswers, ExtractionInvalidError } from '../../agents/discovery/extract.js';
 import Anthropic from '@anthropic-ai/sdk';
 import { createLlm, parseStructured, LlmError, DEFAULT_MODEL, explainError, clientOptions } from '../../agents/discovery/llm.js';
-import { approachInput } from '../../agents/discovery/approach.js';
+import { approachInput, toApproachPayload, fromApproachPayload } from '../../agents/discovery/approach.js';
 import { renderArtefacts } from '../../agents/discovery/render.js';
 import { writeOutputs, parseArgs } from '../../agents/discovery/cli.js';
 
@@ -29,25 +32,29 @@ const ACME_MD = fs.readFileSync(path.join(ROOT, 'docs', 'discovery', 'example-ac
 
 const CONSENT = '**Q10.5.2** — Consent? *(required · consultant)*\n\n- [x] Yes\n- [ ] No\n';
 
-/** Extraction payload the model would return for a fixture. */
-function recordedExtraction(fixture) {
+/** Answers-only view of a fixture (what extraction should recover). */
+function fixtureAnswers(fixture) {
   const { schema_version, offer, exits, approach, provenance, notes, ...answers } = structuredClone(fixture);
   delete answers.meta.source;
   delete answers.meta.updated_at;
   if (answers.delivery) delete answers.delivery.go;
+  return answers;
+}
+
+/** Extraction payload the model would return for a fixture. */
+function recordedExtraction(fixture) {
   return {
-    answers,
-    provenance: Object.entries(provenance ?? {}).map(([pointer, p]) => ({ pointer, ...p })),
+    answers: flattenAnswers(fixtureAnswers(fixture)),
+    provenance: Object.entries(fixture.provenance ?? {}).map(([pointer, p]) => ({
+      pointer, source: p.source, status: p.status, question_id: p.question_id ?? '', note: p.note ?? '',
+    })),
     exit_candidates: [],
-    open_items: approach?.risks?.open_items ?? [],
+    open_items: (fixture.approach?.risks?.open_items ?? []).map((o) => ({ pointer: o.pointer, question_id: o.question_id ?? '', why: o.why })),
   };
 }
 
 /** Approach payload the model would return for a fixture. */
-function recordedApproach(fixture) {
-  const { capability_map = [], app_shortlist = [], phases = [], risks = {} } = fixture.approach ?? {};
-  return { capability_map, app_shortlist, phases, risks: { assumptions: risks.assumptions ?? [] } };
-}
+const recordedApproach = (fixture) => toApproachPayload(fixture.approach ?? {});
 
 /** Fake LLM adapter that records calls and replays fixture data. */
 function fakeLlm(fixture) {
@@ -124,6 +131,44 @@ describe('structured output schemas', () => {
     assert.deepEqual([...findKeys(buildApproachSchema(), STRUCTURED_OUTPUT_UNSUPPORTED)], []);
   });
 
+  test(`stay within the API limit of ${MAX_OPTIONAL_PARAMETERS} optional parameters`, () => {
+    assert.ok(countOptionalParameters(buildExtractionSchema()) <= MAX_OPTIONAL_PARAMETERS);
+    assert.ok(countOptionalParameters(buildApproachSchema()) <= MAX_OPTIONAL_PARAMETERS);
+    // Guard the counter itself: the full engagement schema is far over the limit.
+    assert.ok(countOptionalParameters(buildApproachSchema()) >= 0 && countOptionalParameters({ properties: { a: {}, b: {} }, required: ['a'] }) === 1);
+  });
+
+  test('field catalogue lists extractable fields and never computed ones', () => {
+    const pointers = fieldCatalogue().map((l) => l.split(' — ')[0]);
+    for (const p of ['/markets/list', '/catalogue/sku_count', '/compliance/regulated_industry/active', '/business/revenue_monthly']) assert.ok(pointers.includes(p), p);
+    for (const p of pointers) assert.doesNotMatch(p, /^\/(offer|exits|approach|provenance|notes|schema_version)\b|^\/meta\/source$|^\/delivery\/go$/);
+  });
+
+  test('answers flatten and re-assemble losslessly; approach encodes and decodes losslessly', () => {
+    for (const file of ['acme-watches.json', 'foundation-minimal.json', 'stop-custom-checkout.json']) {
+      const fixture = load(file);
+      const { answers, errors } = assembleAnswers(flattenAnswers(fixtureAnswers(fixture)));
+      assert.deepEqual(errors, []);
+      assert.deepEqual(answers, fixtureAnswers(fixture), file);
+      if (fixture.delivery.go) {
+        const { open_items, ...risks } = fixture.approach.risks;
+        const expected = { capability_map: fixture.approach.capability_map, app_shortlist: fixture.approach.app_shortlist, phases: fixture.approach.phases, risks };
+        assert.deepEqual(fromApproachPayload(toApproachPayload(fixture.approach)), expected, file);
+      }
+    }
+  });
+
+  test('assembleAnswers rejects unknown, computed and malformed entries', () => {
+    const { answers, errors } = assembleAnswers([
+      { pointer: '/catalogue/sku_count', value_json: '800' },
+      { pointer: '/catalogue/sku_counts', value_json: '1' },
+      { pointer: '/offer/code', value_json: '"S"' },
+      { pointer: '/markets/primary_market', value_json: 'CH' },
+    ]);
+    assert.deepEqual(answers, { catalogue: { sku_count: 800 } });
+    assert.equal(errors.length, 3);
+  });
+
   test('accept the recorded responses built from every fixture', () => {
     const ajv = new Ajv2020({ strict: false, allErrors: true });
     const extraction = ajv.compile(buildExtractionSchema());
@@ -142,7 +187,9 @@ describe('runDiscovery with recorded responses', () => {
       const fixture = load(file);
       const llm = fakeLlm(fixture);
       const questionnaire = file === 'acme-watches.json' ? ACME_MD : CONSENT;
-      const { engagement, go } = await runDiscovery({ questionnaire, llm, today: '2026-09-16' });
+      const steps = [];
+      const { engagement, go } = await runDiscovery({ questionnaire, llm, today: '2026-09-16', onStep: (s) => steps.push(s) });
+      assert.deepEqual(steps, go ? ['extraction', 'approach'] : ['extraction']);
 
       assert.equal(engagement.offer.code, fixture.offer.code);
       assert.equal(go, fixture.delivery.go);
@@ -178,6 +225,31 @@ describe('runDiscovery with recorded responses', () => {
   });
 });
 
+describe('extraction repair', () => {
+  const fixture = load('foundation-minimal.json');
+  const good = recordedExtraction(fixture);
+  const bad = { ...good, answers: [...good.answers.filter((a) => a.pointer !== '/checkout/customisation'), { pointer: '/checkout/customisation', value_json: '"custom ui"' }] };
+  const validate = (answers) => {
+    const doc = { schema_version: '1.0.0', ...answers, meta: { ...answers.meta, source: 'questionnaire' } };
+    return validateEngagementErrors(doc);
+  };
+
+  test('one repair call fixes invalid answers and receives the validation errors', async () => {
+    const calls = [];
+    const llm = { callStructured: async (call) => { calls.push(call); return { data: calls.length === 1 ? bad : good, model: 'fake' }; } };
+    const result = await extractAnswers(llm, CONSENT, validate);
+    assert.equal(result.repaired, true);
+    assert.equal(calls.length, 2);
+    assert.match(calls[1].user, /previous extraction had these problems/);
+    assert.match(calls[1].user, /customisation/);
+  });
+
+  test('fails with the errors when the repair is still invalid', async () => {
+    const llm = { callStructured: async () => ({ data: bad, model: 'fake' }) };
+    await assert.rejects(extractAnswers(llm, CONSENT, validate), ExtractionInvalidError);
+  });
+});
+
 describe('llm adapter', () => {
   test('rejects refusals, truncation and invalid JSON without echoing output', () => {
     const msg = (stop_reason, text = '{}') => ({ stop_reason, content: [{ type: 'text', text }] });
@@ -190,6 +262,9 @@ describe('llm adapter', () => {
   test('explains missing credentials and API errors without leaking content', () => {
     const missing = new Error('Could not resolve authentication method. Expected one of apiKey, authToken, credentials, config, or profile to be set.');
     assert.match(explainError(missing), /No Anthropic API credentials found[\s\S]*ANTHROPIC_API_KEY=/);
+
+    const billing = new Anthropic.APIError(400, { type: 'error', error: { type: 'invalid_request_error', message: 'Your credit balance is too low to access the Anthropic API.' } }, undefined, new Headers());
+    assert.match(explainError(billing), /no credit left/);
 
     const connection = new Anthropic.APIConnectionError({ message: 'socket hang up' });
     assert.match(explainError(connection), /Could not reach the Anthropic API/);

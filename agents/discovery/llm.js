@@ -114,6 +114,9 @@ export function explainError(err) {
   if (err instanceof Anthropic.APIConnectionError) {
     return 'Could not reach the Anthropic API — check the network connection or proxy.';
   }
+  if (err instanceof Anthropic.APIError && /credit balance is too low/i.test(err.message)) {
+    return 'The Anthropic account has no credit left. Add credits in Console → Plans & Billing, then run again.';
+  }
   if (err instanceof Anthropic.APIError) {
     return `Anthropic API error${err.status ? ` (${err.status})` : ''}: ${err.message}`;
   }
