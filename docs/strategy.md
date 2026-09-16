@@ -1,15 +1,28 @@
 # shopify-ai-builder — Product Strategy
 
-> **Status:** Approved · **Date:** 2025-06 · **Owner:** Jose Reboredo
+> **Status:** Approved · **Date:** 2025-06 · **Updated:** 2026-09-16 (Phase 1 — offering as data, multi-consultant scope) · **Owner:** Jose Reboredo
 
 ---
 
 ## What this is
 
-`shopify-ai-builder` is a Gaia-governed AI delivery tool for a solo functional
-(non-technical) Shopify consultant. The consultant describes what a client needs
-in plain language; AI agents produce a scoped delivery plan, recommend Shopify
-apps, and implement the solution — no technical team required.
+`shopify-ai-builder` is a Gaia-governed AI delivery tool for **Merkle Shopify Lead
+Consultants**. The consultant runs discovery with the client (questionnaire today, an
+interview chatbot next); AI agents turn the answers into an engagement spec, classify the
+offer (S/M/L), produce the implementation approach, the Discovery Closing Deck and a Jira
+backlog, and then build the store — with the consultant approving every step.
+
+```
+Interview (questionnaire → chatbot)
+   → engagement.json (offer S/M/L, scope gates, exit rules, requirements)
+      → implementation approach (capability map · app shortlist · risks · delivery plan)
+         → Discovery Closing Deck
+         → Jira backlog
+            → Build (Commerce Agent + Theme Agent, per offering)
+```
+
+Delivery roadmap and status: [`docs/implementation-plan.md`](implementation-plan.md).
+Architecture decisions: [`docs/adr/`](adr/README.md).
 
 ---
 
@@ -92,33 +105,14 @@ governance (Gaia) + non-technical operator path (consultant as UI).
 
 ## Capability phasing
 
-### Phase 1 — Foundation ✅ (approved, in progress)
-- Install Shopify AI Toolkit plugin in Claude Code
-- Authenticate Shopify CLI against a dev store
-- Write `docs/conventions/` files to give the agent Shopify domain knowledge
-- **Gate:** Agent can interact with a real Shopify store safely
-
-### Phase 2 — Discovery → Plan loop
-- Consultant describes requirement → agent maps to Shopify capabilities
-- Agent recommends: native feature vs app vs custom code
-- Agent produces a Gaia-tiered delivery plan
-- Consultant approves before anything is touched
-- **Gate:** Consultant can scope a client project in a conversation, producing
-  a professional plan, without writing a single spec document
-
-### Phase 3 — Execution layer
-Implementations in priority order:
-
-| Priority | Capability | Why first |
-|---|---|---|
-| 1 | Theme customisations (Liquid sections, schema, CSS) | Low risk, high frequency, immediately visible |
-| 2 | App configuration guidance | No code risk, huge time-saver |
-| 3 | Metafields / metaobjects | Unlocks complex requirements, reusable pattern |
-| 4 | Storefront API / Hydrogen | Only when client needs headless |
+Superseded by [`docs/implementation-plan.md`](implementation-plan.md) (Phases 0–6).
 
 ---
 
 ## Service offers & delivery tiers
+
+> **Machine-readable source:** [`schema/offering.json`](../schema/offering.json) (ADR 0001).
+> If this section and `offering.json` disagree, `offering.json` wins and this section is corrected.
 
 Two delivery tiers map to three commercial offers (S / M / L). The offer is
 determined during First Engagement discovery by **scope gates** — observable
@@ -139,7 +133,7 @@ creep post-signature.
 | **B2B / Wholesale** | B2B customer accounts, wholesale pricing, or volume discounts |
 | **Integration** | One or more live connections to ERP, PIM, CRM, or 3PL |
 | **SKU complexity** | 500+ SKUs with complex variants, metafields, or product bundling |
-| **Migration** | Platform migration from Shopware, Magento, WooCommerce, or SFCC |
+| **Migration** | Migration from any non-Shopify ecommerce platform (e.g. Shopware, Magento, WooCommerce, SFCC, BigCommerce) |
 
 **Classification rule:**
 - **0 gates → S** (Ecommerce Foundation)
@@ -150,6 +144,7 @@ creep post-signature.
 Modifiers are **internal pricing tools only** — the consultant uses them to build
 the engagement price; the client proposal always shows a single fixed number.
 Two or more active modifiers automatically re-classify the engagement to M.
+When multi-currency is the only active gate, the `+Markets` modifier applies.
 
 #### Internal scope modifiers (Tier 1 only — never shown to client)
 
@@ -221,97 +216,68 @@ Ecommerce Growth      (L)  ──► Delivery Tier 2 (Hydrogen headless)  luxury
 
 ---
 
-## Frame Agent — input/output contract
+## Discovery engine — input/output contract
 
-The Frame Agent is the **first agent in the delivery pipeline**. It is not a chatbot.
-It is a governed sub-agent that reads a completed discovery questionnaire and produces
-a structured delivery spec — no back-and-forth required.
+The discovery engine is the **first stage of the delivery pipeline** (replaces the Python
+Frame Agent in Phase 2 of the implementation plan). It reads a completed questionnaire — or,
+from Phase 5, a chatbot interview — and produces the engagement spec.
 
-### Pipeline position
+### Inputs
 
-```
-CONSULTANT fills in                FRAME AGENT runs                 DOWNSTREAM AGENTS consume
-──────────────────────             ─────────────────────            ────────────────────────
-docs/discovery/                    agents/frame-agent/              clients/<slug>/
-  <client>-questionnaire.md  ──►   frame_agent.py          ──►       store-spec.yaml
-  (§ 0–11 completed)               --questionnaire flag               delivery-plan.md
-                                                                       capability-map.md
-                                                                       app-shortlist.md
-                                                                       risks.md
-```
+| Input | Source |
+|---|---|
+| Completed questionnaire | Generated template [`docs/discovery/client-questionnaire.md`](discovery/client-questionnaire.md); worked example [`example-acme-questionnaire.md`](discovery/example-acme-questionnaire.md) |
+| Question definitions | [`schema/question-bank.json`](../schema/question-bank.json) — each question maps to engagement fields and feeds gates / exit rules |
+| Offering rules | [`schema/offering.json`](../schema/offering.json) |
 
-### How to trigger it
+Questionnaire sections: § 0 Business outcomes · § 1 Company, brand & Shopify · § 2 Catalogue ·
+§ 3 Markets · § 4 Payments & checkout · § 5 Shipping & fulfilment · § 6 Customers, B2B & privacy ·
+§ 7 Marketing & promotions · § 8 Integrations & migration · § 9 Design & experience ·
+§ 10 Delivery, governance & compliance · § 11 Exit-trigger screening (generated from the rules).
 
-```bash
-# Standard run — reads a completed questionnaire, writes spec to clients/<slug>/
-python agents/frame-agent/frame_agent.py \
-  --questionnaire docs/discovery/acme-questionnaire.md
-
-# Dry run — prints spec to stdout, nothing written
-python agents/frame-agent/frame_agent.py \
-  --questionnaire docs/discovery/acme-questionnaire.md \
-  --dry-run
-```
-
-### What it reads (input)
-
-A completed `docs/discovery/<client>-questionnaire.md` containing:
-
-| Section | What it drives |
-|---------|----------------|
-| § 0 — Business problems & growth blockers | Primary brief; frames outcome over inventory |
-| § 1 — Business & brand | Client slug, Shopify plan, brand tier |
-| § 2 — Catalogue & products | SKU count, variant depth, bundles → tier signal |
-| § 3 — Markets & internationalisation | Market count, languages → exit-trigger check |
-| § 4 — Payments & checkout | Payment providers, checkout complexity |
-| § 5 — Shipping & fulfilment | 3PL, carriers, rules complexity |
-| § 6 — Customer & account | B2B flag, loyalty, account portal |
-| § 7 — Marketing & analytics | Tracking stack, email platform, GA4 |
-| § 8 — Integrations & tech stack | Integration count → exit-trigger check |
-| § 9 — Design & UX | Theme choice, Figma source, motion |
-| § 10 — Operations & timeline | Launch date, team size, constraints |
-| § 11 — Exit-trigger screening | Hard blockers; agent stops on first STOP trigger |
-
-### What it writes (output)
-
-On **GO** — all of these are written to `clients/<slug>/`:
+### Outputs (`clients/<slug>/`, gitignored)
 
 | File | Contents |
-|------|----------|
-| `store-spec.yaml` | Structured project spec — tier, markets, integrations, flags |
-| `delivery-plan.md` | Phased delivery breakdown with Gaia tier assignments (T1–T4) |
-| `capability-map.md` | Requirement → Shopify capability (native → app → theme → custom) |
-| `app-shortlist.md` | Recommended apps with cost, limitations, integration complexity |
-| `risks.md` | Flagged risks, ambiguities, and items requiring consultant confirmation |
+|---|---|
+| `engagement.json` | Single source of truth, validated by [`schema/engagement.schema.json`](../schema/engagement.schema.json) (ADR 0002) |
+| `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` | Renderings of `engagement.json` — on GO |
+| `stop-report.md` | Open STOP rules, evidence and resolution path — on STOP (no GO artefacts are written) |
 
-On **STOP** — nothing is written. The agent prints the exit reason and stops.
-The consultant resolves the blocker and re-runs.
+The LLM extracts answers; deterministic code computes scope gates, the offer and exit rules
+(ADR 0001, 0003). The engine refuses to run without recorded consent (ADR 0007).
 
-### Exit triggers (§ 11 mapping)
+### Exit rules (§ 11)
 
-| § 11 row | Condition | Result |
-|----------|-----------|--------|
-| 11.1 | Shopify Plus feature required on Standard plan | STOP |
-| 11.2 | B2B with RFQ / custom negotiated pricing | STOP (Plus prereq) |
-| 11.3 | Markets count > 5 | STOP → Scale programme |
-| 11.4 | Languages count > 6 | STOP → Scale programme |
-| 11.5 | Variant options > 3 per product | STOP → Architecture review |
+The canonical list is `offering.json → exit_rules` (ADR 0003). Summary:
+
+| Rule | Condition | Result |
+|---|---|---|
+| 11.1 | Shopify Plus feature required but target plan is not Plus | STOP |
+| 11.2 | B2B with RFQ / negotiated pricing | STOP → Architecture review |
+| 11.3 | More than 5 markets at launch | STOP → Scale programme |
+| 11.4 | More than 6 distinct languages | STOP → Scale programme |
+| 11.5 | More than 3 variant options per product | STOP → Architecture review |
 | 11.6 | Custom checkout UI (not Checkout Extensibility) | STOP → Composable platform |
-| 11.7 | Integrations count > 3 at launch | STOP → Bespoke quote |
-| 11.8 | Regulated industry (pharma, firearms, financial advice) | STOP → Legal review |
-| 11.9 | PCI scope beyond Shopify Payments | STOP → Security review |
-| 11.10 | GDPR/CCPA data export or deletion workflow required | Flag only (not a hard stop) |
-| 11.11 | Grow retainer not signed (Medium/Large tier) | Warning printed; quote +25% |
+| 11.7 | More than 3 integrations at launch | STOP → Bespoke quote |
+| 11.8 | Regulated industry | STOP → Legal review |
+| 11.9 | PCI scope beyond Shopify-hosted payments | STOP → Security review |
+| 11.10 | GDPR/CCPA export or deletion workflow | FLAG |
+| 11.11 | Grow retainer not signed (M/L) | WARN — quote +25% |
+| 11.12 | ERP or PIM with no connector and no iPaaS | FLAG → Integration scoping track |
+| 11.13 | More than 2 fulfilment locations with complex routing | FLAG → Multi-location scoping |
+| 11.14 | Migration with significant SEO equity or historical data | FLAG → Migration scoping track |
+| 11.15 | Go-live sooner than the offer's minimum duration | FLAG → Re-scope to MVP first |
+| 11.16 | No single decision-maker or unclear budget authority | FLAG → Resolve before statement of work |
 
 ---
 
-## What we are NOT building (MVP scope boundary)
+## What we are NOT building (scope boundary)
 
-- ❌ A multi-tenant SaaS product
-- ❌ A UI / dashboard (Claude Code conversation IS the UI)
-- ❌ Automated deployment without consultant approval
-- ❌ An app recommendation database (agent uses live knowledge)
-- ❌ Non-Shopify e-commerce work
+- ❌ A public multi-tenant SaaS product — this is an internal Merkle consultant tool
+- ❌ Automated deployment or store mutation without consultant approval
+- ❌ An app recommendation database (agents use live Shopify knowledge)
+- ❌ Non-Shopify ecommerce work
+- ⏳ A client-facing interview chatbot — planned (implementation plan Phase 5), starting as a Claude Code skill pilot
 
 ---
 

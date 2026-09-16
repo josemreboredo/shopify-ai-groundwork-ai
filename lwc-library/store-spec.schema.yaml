@@ -1,5 +1,8 @@
 # =============================================================================
-# LWC STORE SPEC — CANONICAL SCHEMA
+# SUPERSEDED — use schema/engagement.schema.json (ADR 0002).
+# Kept only until the Python Frame Agent is retired in Phase 2.
+# =============================================================================
+# LWC STORE SPEC — LEGACY SCHEMA
 # Version: 1.0.0
 # =============================================================================
 #

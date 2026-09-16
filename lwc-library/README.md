@@ -16,9 +16,9 @@ lwc-library/
 │   ├── _colour.css             # Brand palette + semantic aliases + radius preset
 │   └── README.md               # How to apply to a new brand
 │
-├── store-spec.schema.yaml      # Canonical store spec schema (all fields + exit triggers)
+├── store-spec.schema.yaml      # SUPERSEDED by schema/engagement.schema.json (ADR 0002)
 │
-├── swiss-baseline/             # L-3: Swiss market baseline (drop-in per project)
+├── swiss-baseline/             # L-3: market preset for Switzerland (opt-in, ADR 0004)
 │   ├── locales/
 │   │   ├── de.json             # German (de-CH) locale pack
 │   │   ├── fr.json             # French (fr-CH) locale pack
@@ -69,67 +69,61 @@ Client brief (plain language)
 
 ---
 
-## Tier Summary
+## Offers
 
-| Tier | Price (CHF) | Markets | Languages | Components | Integrations |
-|---|---|---|---|---|---|
-| **Starter** | 45–70k | 1 | ≤ 3 | 8–15 | 0 |
-| **Medium** | 70–100k | 2–3 | ≤ 5 | 10–18 | 0–1 |
-| **Large** | 100–150k | 4–5 | ≤ 6 | 20–45 | ≤ 3 |
+The commercial model is S / M / L in EUR, defined as data in
+[`schema/offering.json`](../schema/offering.json) and explained in
+[`docs/strategy.md`](../docs/strategy.md) (ADR 0001). The earlier Starter / Medium / Large
+tiers in CHF are retired.
 
-**Lead with Medium.** It is the only tier where the price step exceeds the effort step, and it opens the Grow retainer conversation naturally.
+| Offer | Name | Triggered by | Delivery track |
+|---|---|---|---|
+| **S** | Ecommerce Foundation | 0–1 scope gates | Liquid (Horizon) |
+| **M** | Ecommerce Scale | ≥ 2 scope gates | Liquid (Horizon) |
+| **L** | Ecommerce Growth | Luxury / headless / full Figma design system | Hydrogen |
 
 ---
 
-## Exit Triggers (hard stops)
+## Exit rules
 
-These fire in the Frame Agent and block all downstream work until resolved:
-
-| Condition | Exit |
-|---|---|
-| Markets at launch > 5 | Scale programme |
-| Total languages > 6 | Scale programme |
-| Variant options > 3 | Architecture review |
-| Custom integrations > 3 | Bespoke quote |
-| B2B with RFQ workflow | Composable platform |
-| Custom checkout | Composable platform |
-| Large tier + no Shopify Plus | Upgrade plan first |
+The canonical list is `schema/offering.json → exit_rules` (ADR 0003), shown in § 11 of the
+generated questionnaire. STOP rules block all downstream work until resolved.
 
 ---
 
 ## How to Start a New Engagement
 
-### 1. Run the Frame Agent
+> Transitional: the Python Frame Agent and shell scripts below are replaced by the discovery
+> engine (Phase 2), Commerce Agent (Phase 6a) and Theme Agent (Phase 6b) of
+> [`docs/implementation-plan.md`](../docs/implementation-plan.md).
+
+### 1. Run discovery
+Complete [`docs/discovery/client-questionnaire.md`](../docs/discovery/client-questionnaire.md)
+with the client (see the ACME example), then run the Frame Agent:
 ```bash
-python agents/frame-agent/frame_agent.py --brief "path/to/brief.txt"
-# OR
-python agents/frame-agent/frame_agent.py --interactive
+python agents/frame-agent/frame_agent.py --questionnaire path/to/<client>-questionnaire.md
 ```
 
-This creates `clients/<slug>/store-spec.yaml`.
+This creates `clients/<slug>/store-spec.yaml` (to become `engagement.json` in Phase 2).
 
 ### 2. Review the spec
-Open `clients/<slug>/store-spec.yaml` and verify:
-- Tier selection matches client expectations and budget
-- All exit triggers are `false` (or flagged ones are consciously accepted)
-- `delivery.grow_retainer_signed` is `true` before Medium/Large delivery begins
+- The offer (S/M/L) matches the scope gates and the client's budget
+- No STOP exit rule is open; FLAGs have an owner
+- The Grow retainer is signed before M/L delivery begins
 
-### 3. Run Commerce Agent
+### 3. Configure Shopify Admin
 ```bash
-# Configure Shopify Admin (markets, locales, currencies, tax, shipping)
-bash scripts/shopify-check.sh          # verify current store state
-bash scripts/01-create-locations.sh    # if new store
-# Then use swiss-baseline/ runbooks for manual/scripted config steps
+bash scripts/shopify-check.sh          # verify current store state (dev store only)
 ```
+Use the market preset runbooks (e.g. `swiss-baseline/`) for markets, tax, shipping and payments.
 
 ### 4. Apply brand tokens
-Copy `lwc-library/tokens/` into the client's theme directory.
-Edit `_colour.css` (brand palette) and `_typography.css` (brand fonts).
-See `tokens/README.md` for the 30-minute brand application guide.
+Edit `tokens/_colour.css` (brand palette) and `tokens/_typography.css` (brand fonts);
+see `tokens/README.md`. Mapping tokens to Horizon theme settings is Phase 6b (ADR 0005).
 
-### 5. Assemble and push theme
+### 5. Push the theme
 ```bash
-shopify theme push --store <client>.myshopify.com
+shopify theme push --store <client-dev-store>.myshopify.com
 ```
 
 ---
@@ -154,11 +148,11 @@ The Bucherer engagement (Shopify Skeleton theme with custom `buch-*` sections) i
 |---|---|---|
 | L-1 | Token architecture | ✅ Done — `tokens/` |
 | L-2 | Brand theming kit | ✅ Done — `tokens/_colour.css` brand guide |
-| L-3 | Swiss commerce baseline | ✅ Done — `swiss-baseline/` |
+| L-3 | Market preset: Switzerland | ✅ Done — `swiss-baseline/` (first market preset, ADR 0004) |
 | L-4 | Markets + multicurrency playbook | ✅ Done — `swiss-baseline/markets-playbook.md` |
 | L-5 | ~15 component baseline library | 🔲 Planned — extracting from Bucherer reference |
 
-**Do not sell Large tier until L-5 is complete and proven on a live class-C deal.**
+**Do not sell offer L until its Hydrogen delivery track and component library are proven on a live deal.**
 
 ---
 
@@ -167,5 +161,5 @@ The Bucherer engagement (Shopify Skeleton theme with custom `buch-*` sections) i
 > LWC pricing only holds with a **12-month Grow retainer signed in the same contract**.
 > Without it, quote at list price +25% (bespoke).
 >
-> If `delivery.grow_retainer_signed: false` in the store-spec, the Frame Agent warns.
+> If the retainer is not signed on an M or L engagement, exit rule 11.11 raises a WARN.
 > Finance, Sales, and Media practice leads must agree the credit model before the first invoice.

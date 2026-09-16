@@ -1,0 +1,601 @@
+{
+  "schema_version": "1.0.0",
+  "meta": {
+    "client": {
+      "name": "ACME Watches",
+      "legal_name": "ACME Watches SA",
+      "slug": "acme-watches",
+      "industry": "Premium watches and accessories",
+      "hq_country": "CH",
+      "business_model": "hybrid",
+      "website": "https://www.acme-watches.example"
+    },
+    "consultant": { "name": "Lead Consultant (example)" },
+    "source": "questionnaire",
+    "created_at": "2026-09-10",
+    "updated_at": "2026-09-10",
+    "consent": {
+      "llm_processing": true,
+      "recorded_by": "Lead Consultant (example)",
+      "recorded_at": "2026-09-10"
+    }
+  },
+
+  "business": {
+    "primary_problem": "Mobile conversion is 40% below desktop and checkout abandonment is 68%.",
+    "problem_history": "A problem for 18 months. Product pages were redesigned and trust badges added, with no measurable improvement.",
+    "highest_impact_fix": "A fast, mobile-first storefront with a simpler product navigation and a standard Shopify checkout.",
+    "bottleneck": "conversion",
+    "revenue_monthly": { "min": 110000, "max": 130000, "currency": "EUR" },
+    "conversion_rate_pct": 1.2,
+    "underperforming_segments": [
+      "Mobile sessions (0.7% conversion)",
+      "Watches above EUR 500 convert at half the rate of watches below EUR 200"
+    ],
+    "operational_pain": [
+      "Inventory is synced manually with SAP Business One twice a day",
+      "Refunds and exchanges are tracked in spreadsheets"
+    ],
+    "workaround_hours_per_week": 8,
+    "growth_goals": [
+      "EUR 2M annual online revenue",
+      "CH, DE and AT live with local pricing and languages",
+      "B2B wholesale channel with 500 retailer accounts"
+    ],
+    "kpis": [
+      { "metric": "Mobile conversion rate", "baseline": "0.7%", "target": "1.2%", "horizon_months": 12 },
+      { "metric": "Checkout abandonment", "baseline": "68%", "target": "55%", "horizon_months": 6 },
+      { "metric": "Annual online revenue", "baseline": "EUR 1.44M", "target": "EUR 2.0M", "horizon_months": 12 }
+    ],
+    "engagement_trigger": "WooCommerce cannot keep up on performance or scale, has no native multi-currency, and the wholesale channel needs B2B before the spring collection.",
+    "must_preserve": [
+      "4,200 indexed product and category URLs",
+      "Customer accounts",
+      "Order history"
+    ],
+    "current_frustrations": [
+      "Slow page speed",
+      "No multi-currency",
+      "Admin UX"
+    ],
+    "budget": { "min": 60000, "max": 80000, "currency": "EUR", "priority": "minimise_upfront" },
+    "app_cost_ceiling_monthly": { "amount": 500, "currency": "EUR" }
+  },
+
+  "stakeholders": [
+    { "role": "Managing Director", "raci": "A", "decision_maker": true },
+    { "role": "Ecommerce Manager", "raci": "R", "decision_maker": false },
+    { "role": "Head of Wholesale", "raci": "C", "decision_maker": false },
+    { "role": "IT / ERP Lead", "raci": "C", "decision_maker": false },
+    { "role": "Finance Controller", "raci": "I", "decision_maker": false }
+  ],
+
+  "brand": {
+    "positioning": "premium",
+    "identity_ready": true,
+    "asset_formats": ["SVG", "PNG", "Figma", "Guidelines PDF"],
+    "has_guidelines": true,
+    "differentiators": ["Mechanical movements assembled in-house", "Build quality", "Heritage design language"],
+    "competitors": ["Competitor A (Swiss premium DTC watch brand)", "Competitor B (German premium watch brand)", "Competitor C (Nordic minimalist watch brand)"],
+    "ux_references": ["Competitor A product detail page", "A premium outdoor apparel store (navigation and filters)"]
+  },
+
+  "shopify": {
+    "existing_store": false,
+    "target_plan": "plus"
+  },
+
+  "offer": {
+    "code": "M",
+    "name": "Ecommerce Scale",
+    "delivery_track": "liquid",
+    "scope_gates": {
+      "markets":        { "active": true, "evidence": "Q3.1.1: 3 markets at launch (CH, DE, AT)." },
+      "multi_currency": { "active": true, "evidence": "Q3.1.1 / Q3.3.1: CHF and EUR, both transactional with manually set prices." },
+      "b2b":            { "active": true, "evidence": "Q6.2.1–Q6.2.3: B2B wholesale with company accounts and fixed-tier price lists." },
+      "integration":    { "active": true, "evidence": "Q8.1.1: SAP Business One (ERP) via Celigo — 1 counted integration; Klaviyo and Loop Returns are native apps." },
+      "sku_complexity": { "active": true, "evidence": "Q2.1.1 / Q2.3.3: ~800 SKUs with custom metafields (movement_type, case_material, water_resistance_atm)." },
+      "migration":      { "active": true, "evidence": "Q8.2.1: migrating from WooCommerce." }
+    },
+    "l_triggers": {
+      "luxury":              { "active": false, "evidence": "Q1.3.1: positioned premium, not luxury." },
+      "headless":            { "active": false, "evidence": "Q9.2.1: no headless requirement." },
+      "figma_design_system": { "active": false, "evidence": "Q9.1.2 / Q9.1.3: Figma is brand-only, no design system." }
+    },
+    "modifiers": [],
+    "price_band": { "min": 65000, "max": 100000, "currency": "EUR", "open_ended": false },
+    "duration_weeks": { "min": 6, "max": 9 },
+    "rationale": "All six scope gates are active (two or more) and no L trigger applies, so the engagement classifies as M — Ecommerce Scale on the Liquid track."
+  },
+
+  "markets": {
+    "primary_market": "CH",
+    "list": [
+      { "code": "CH", "currency": "CHF", "languages": ["de", "fr", "it"], "domain": "ch.acme-watches.example", "price_strategy": "base_currency" },
+      { "code": "DE", "currency": "EUR", "languages": ["de"], "domain": "de.acme-watches.example", "price_strategy": "manual" },
+      { "code": "AT", "currency": "EUR", "languages": ["de"], "domain": "at.acme-watches.example", "price_strategy": "manual" }
+    ],
+    "expansion_12m": ["FR", "IT"],
+    "strategy": "shopify_markets",
+    "geo_redirect": true,
+    "translation_method": "translate_and_adapt",
+    "rtl_required": false,
+    "seo_per_language": true,
+    "duties_ddp": true,
+    "vat_countries": ["CH", "DE", "AT"],
+    "us_sales_tax": false
+  },
+
+  "catalogue": {
+    "sku_count": 800,
+    "variant_options_max": 2,
+    "variants_per_product_max": 12,
+    "product_types": ["simple", "variant"],
+    "collections_estimate": 60,
+    "collection_mode": "mixed",
+    "custom_attributes": ["movement_type", "case_material", "water_resistance_atm"],
+    "data_source": "erp",
+    "pricing": {
+      "multiple_price_tiers": true,
+      "volume_pricing": false,
+      "market_specific": true
+    },
+    "inventory": {
+      "source": "erp",
+      "low_stock_alerts": true,
+      "out_of_stock_behaviour": "notify_me"
+    }
+  },
+
+  "payments": {
+    "providers": ["Shopify Payments", "PayPal"],
+    "local_methods": ["TWINT"],
+    "bnpl": [],
+    "multi_currency_settlement": true,
+    "pci_scope": "shopify_hosted"
+  },
+
+  "checkout": {
+    "customisation": "extensibility",
+    "extensions": ["PO number field for B2B orders", "Warranty and authenticity trust block"],
+    "custom_fields": ["PO number (B2B)", "VAT number (B2B)"],
+    "post_purchase_upsell": false,
+    "gift_cards": false,
+    "store_credit": false,
+    "fraud_manual_review": true,
+    "order_restrictions": []
+  },
+
+  "shipping": {
+    "model": "in_house",
+    "fulfilment_locations": 1,
+    "complex_routing": false,
+    "carriers": ["DHL Express", "Swiss Post"],
+    "rates": "mixed",
+    "special_rules": [],
+    "international": true,
+    "excluded_countries": [],
+    "returns": {
+      "policy": "30-day returns for unworn watches in original packaging; free returns within CH, customer-paid from DE and AT.",
+      "portal": true,
+      "exchanges": true,
+      "solution": "Loop Returns"
+    },
+    "notifications": {
+      "custom": true,
+      "sender": "mixed"
+    }
+  },
+
+  "customers": {
+    "account_requirement": "optional",
+    "account_type": "new_customer_accounts",
+    "account_features": ["Order history", "Addresses", "Returns"],
+    "segments": ["Retail", "Wholesale", "VIP"],
+    "segmentation_source": "esp",
+    "tags_in_use": ["wholesale", "vip_early_access"]
+  },
+
+  "b2b": {
+    "enabled": true,
+    "company_accounts": true,
+    "price_lists": true,
+    "volume_discounts": false,
+    "rfq_or_negotiated_pricing": false,
+    "approval_workflow": true,
+    "approach": "shopify_b2b",
+    "expected_accounts": 500
+  },
+
+  "loyalty": {
+    "components": ["points_purchase", "vip_tiers", "referral", "vip_early_access"],
+    "phase": "phase_2",
+    "app": "Smile.io",
+    "esp_sync": true
+  },
+
+  "compliance": {
+    "privacy_regimes": ["gdpr", "nfadp"],
+    "cookie_consent_tool": "Cookiebot",
+    "marketing_opt_in": true,
+    "sensitive_data": false,
+    "regulated_industry": { "active": false },
+    "gdpr_deletion_workflow": true,
+    "legal_pages_status": "needs_update",
+    "industry_requirements": []
+  },
+
+  "marketing": {
+    "seo": { "priority_channel": true, "custom_urls": false, "owner": "agency" },
+    "analytics": {
+      "platforms": ["GA4"],
+      "server_side": false,
+      "pixels": ["Meta", "Google Ads"],
+      "tag_manager": true,
+      "custom_events": []
+    },
+    "esp": {
+      "platform": "Klaviyo",
+      "flows": ["Welcome", "Abandoned cart", "Browse abandonment", "Post-purchase", "Win-back"],
+      "segments_master": "esp"
+    },
+    "reviews": { "app": "Judge.me", "ugc": false },
+    "affiliate": { "shopify_collabs": false, "tracking": "discount_codes" }
+  },
+
+  "promotions": {
+    "discount_types": ["percentage", "fixed_amount", "free_shipping", "automatic", "code_based", "stackable"],
+    "stacking": "one_code_plus_one_automatic",
+    "coupons": {
+      "usage": ["multi_use", "bulk"],
+      "branded": true,
+      "minimum_threshold": false,
+      "expiry": "fixed",
+      "distribution": ["Email", "Influencers"]
+    },
+    "gift_cards": { "as_product": false, "as_reward": false },
+    "campaigns": {
+      "esp_triggered": true,
+      "landing_pages": false,
+      "countdown_timer": false,
+      "market_specific": true
+    }
+  },
+
+  "integrations": [
+    {
+      "system": "SAP Business One",
+      "category": "erp",
+      "direction": "bidirectional",
+      "objects": ["products", "inventory", "orders"],
+      "frequency": "batch",
+      "connector": "ipaas",
+      "middleware": "Celigo",
+      "status": "to_build"
+    },
+    {
+      "system": "Klaviyo",
+      "category": "esp",
+      "direction": "outbound",
+      "objects": ["customers", "orders"],
+      "frequency": "realtime",
+      "connector": "native_app",
+      "owner": "client",
+      "status": "existing"
+    },
+    {
+      "system": "Loop Returns",
+      "category": "returns",
+      "direction": "bidirectional",
+      "objects": ["orders", "returns"],
+      "frequency": "realtime",
+      "connector": "native_app",
+      "owner": "client",
+      "status": "to_build"
+    }
+  ],
+
+  "migration": {
+    "source_platform": "woocommerce",
+    "data": ["products", "customers", "orders", "redirects"],
+    "volumes": { "products": 800, "customers": 25000, "orders": 60000, "redirects": 4200 },
+    "historical_orders_required": true,
+    "seo_equity": "significant"
+  },
+
+  "design": {
+    "figma": {
+      "exists": true,
+      "completeness": "brand_only",
+      "design_system": false,
+      "mapped_to_sections": false
+    },
+    "custom_design": false,
+    "headless_required": false,
+    "theme_preference": "Horizon",
+    "aesthetic": "Minimal, editorial product photography",
+    "interactive_patterns": ["Mega-menu", "Swatches", "Predictive search", "Quick-add"],
+    "motion": false,
+    "accessibility": { "target": "wcag21_aa", "audit_done": false },
+    "performance": {
+      "lcp_s": 2.5,
+      "cls": 0.1,
+      "inp_ms": 200,
+      "known_problem": true,
+      "third_party_scripts": ["Cookiebot", "Klaviyo onsite forms", "Google Tag Manager"]
+    }
+  },
+
+  "delivery": {
+    "go": true,
+    "kickoff_date": "2026-10-05",
+    "target_launch_date": "2027-02-01",
+    "hard_deadline_reason": "Spring collection launch",
+    "phased_launch": false,
+    "decision_maker_confirmed": true,
+    "budget_authority_clear": true,
+    "grow_retainer": { "signed": true, "months": 12 },
+    "support_model": "retainer",
+    "training": ["Products and metafields", "Orders and returns", "Discounts", "B2B companies and catalogs"],
+    "sops_required": true,
+    "admin_roles": ["Ecommerce Manager", "Customer Service", "Head of Wholesale", "Finance Controller"]
+  },
+
+  "jira": {
+    "project_key": "ACME",
+    "components": ["Storefront", "Markets", "B2B", "Integrations", "Migration"]
+  },
+
+  "exits": {
+    "triggered": false,
+    "items": [
+      {
+        "rule_id": "11.10",
+        "result": "FLAG",
+        "detail": "GDPR / nFADP data export and deletion workflow is required for EU and Swiss customers.",
+        "destination": "Legal sign-off on data-subject request handling",
+        "source": "rule",
+        "evidence": "Q6.4.5: workflow for customer data export or deletion requests = yes.",
+        "resolution": { "status": "open", "owner": "Lead Consultant" }
+      },
+      {
+        "rule_id": "11.14",
+        "result": "FLAG",
+        "detail": "WooCommerce migration with significant SEO equity (4,200 redirects) and ~60,000 historical orders.",
+        "destination": "Dedicated migration scoping track — not combined with the store build sprint",
+        "source": "rule",
+        "evidence": "Q8.2.5: seo_equity = significant; Q8.2.4: historical orders required; Q8.2.3: 4,200 redirects, ~60,000 orders.",
+        "resolution": { "status": "open", "owner": "Tech Lead" }
+      }
+    ]
+  },
+
+  "approach": {
+    "capability_map": [
+      {
+        "requirement": "Three markets (CH, DE, AT) with CHF and EUR prices set manually per market",
+        "resolution": "native",
+        "tool": "Shopify Markets",
+        "gaia_tier": "T2",
+        "question_ids": ["Q3.1.1", "Q3.1.4", "Q3.3.1", "Q2.4.3"]
+      },
+      {
+        "requirement": "Storefront in German, French and Italian with SEO per language",
+        "resolution": "app",
+        "tool": "Translate & Adapt",
+        "gaia_tier": "T2",
+        "question_ids": ["Q3.1.1", "Q3.2.1", "Q3.2.3"]
+      },
+      {
+        "requirement": "B2B wholesale: company accounts, fixed-tier price lists, account approval",
+        "resolution": "native",
+        "tool": "Shopify B2B (Plus)",
+        "gaia_tier": "T3",
+        "notes": "No RFQ or negotiated pricing, so native B2B catalogs cover the requirement.",
+        "question_ids": ["Q6.2.1", "Q6.2.2", "Q6.2.3", "Q6.2.6", "Q6.2.7", "Q6.2.8"]
+      },
+      {
+        "requirement": "SAP Business One sync for products, inventory and orders",
+        "resolution": "custom",
+        "tool": "Celigo iPaaS flows",
+        "gaia_tier": "T3",
+        "question_ids": ["Q8.1.1", "Q8.1.2", "Q2.5.1"]
+      },
+      {
+        "requirement": "Watch attributes (movement type, case material, water resistance) on products and filters",
+        "resolution": "native",
+        "tool": "Metafield definitions + Search & Discovery filters",
+        "gaia_tier": "T2",
+        "question_ids": ["Q2.3.3"]
+      },
+      {
+        "requirement": "WooCommerce migration of products, customers, historical orders and 4,200 redirects",
+        "resolution": "app",
+        "tool": "Matrixify",
+        "gaia_tier": "T3",
+        "notes": "Runs as a dedicated migration scoping track (exit 11.14).",
+        "question_ids": ["Q8.2.1", "Q8.2.2", "Q8.2.3", "Q8.2.4", "Q8.2.5"]
+      },
+      {
+        "requirement": "B2B PO number field and trust block in checkout",
+        "resolution": "custom",
+        "tool": "Checkout UI extension",
+        "gaia_tier": "T2",
+        "question_ids": ["Q4.2.1", "Q4.2.2", "Q4.2.3"]
+      },
+      {
+        "requirement": "Self-service returns and exchanges",
+        "resolution": "app",
+        "tool": "Loop Returns",
+        "gaia_tier": "T2",
+        "question_ids": ["Q5.2.2", "Q5.2.3", "Q5.2.4"]
+      },
+      {
+        "requirement": "Email flows and segmentation driven from the ESP",
+        "resolution": "app",
+        "tool": "Klaviyo",
+        "gaia_tier": "T2",
+        "question_ids": ["Q7.3.1", "Q7.3.2", "Q6.3.6"]
+      },
+      {
+        "requirement": "Mobile-first storefront with simpler navigation and brand tokens",
+        "resolution": "theme",
+        "tool": "Horizon",
+        "gaia_tier": "T2",
+        "question_ids": ["Q0.1.1", "Q0.1.3", "Q9.2.2", "Q9.2.4", "Q9.3.1"]
+      },
+      {
+        "requirement": "Handling of customer data export and deletion requests",
+        "resolution": "native",
+        "tool": "Shopify customer privacy requests",
+        "gaia_tier": "T2",
+        "notes": "Needs legal sign-off (exit 11.10).",
+        "question_ids": ["Q6.4.1", "Q6.4.5"]
+      }
+    ],
+
+    "app_shortlist": [
+      {
+        "name": "Translate & Adapt",
+        "requirement": "German, French and Italian storefront content",
+        "rationale": "Shopify-built, free, covers three languages with manual and automatic translation.",
+        "limitations": "Automatic translation quota is limited; brand copy still needs human review.",
+        "cost": { "amount": 0, "currency": "USD", "period": "month", "note": "Free — verify on App Store" },
+        "integration_complexity": "config_only",
+        "gaia_tier": "T2",
+        "recommended": true
+      },
+      {
+        "name": "Loop Returns",
+        "requirement": "Self-service returns portal with exchanges",
+        "rationale": "Exchange-first flow protects revenue on high-value watches; already preferred by the client.",
+        "limitations": "Entry plan limits the number of return workflows.",
+        "cost": { "amount": 155, "currency": "USD", "period": "month", "note": "Indicative entry plan — verify on App Store" },
+        "integration_complexity": "config_only",
+        "gaia_tier": "T2",
+        "recommended": true
+      },
+      {
+        "name": "Matrixify",
+        "requirement": "WooCommerce data migration (products, customers, orders, redirects)",
+        "rationale": "Handles large order and redirect imports with repeatable delta runs.",
+        "limitations": "Only needed for the migration window; downgrade after launch.",
+        "cost": { "amount": 200, "currency": "USD", "period": "month", "note": "Indicative plan for 60,000 orders, during migration only — verify on App Store" },
+        "integration_complexity": "config_only",
+        "gaia_tier": "T3",
+        "recommended": true
+      },
+      {
+        "name": "Judge.me",
+        "requirement": "Product reviews",
+        "rationale": "Low-cost reviews with multilingual widgets and Klaviyo integration.",
+        "cost": { "amount": 15, "currency": "USD", "period": "month", "note": "Indicative paid plan — verify on App Store" },
+        "integration_complexity": "theme_edit",
+        "gaia_tier": "T2",
+        "recommended": true
+      },
+      {
+        "name": "Smile.io",
+        "requirement": "Points, VIP tiers and referral programme",
+        "rationale": "Client's preferred loyalty app.",
+        "cost": { "amount": 49, "currency": "USD", "period": "month", "note": "Indicative entry plan — verify on App Store" },
+        "integration_complexity": "theme_edit",
+        "gaia_tier": "T2",
+        "recommended": false,
+        "rejection_reason": "Loyalty is phase 2 (Q6.3.2); re-evaluate after launch to stay inside the budget envelope and app ceiling."
+      }
+    ],
+
+    "risks": {
+      "open_items": [
+        {
+          "pointer": "/b2b/payment_terms",
+          "question_id": "Q6.2.5",
+          "why": "Wholesale payment terms (net 30 vs invoice) are still being agreed with Finance; they decide the B2B checkout configuration."
+        },
+        {
+          "pointer": "/integrations/0/owner",
+          "question_id": "Q8.1.1",
+          "why": "Ownership of the Celigo flows (client IT or delivery team) is not decided; it drives effort and support after launch."
+        },
+        {
+          "pointer": "/jira/site",
+          "question_id": "Q10.5.3",
+          "why": "The client has not confirmed whether the backlog lives on their Jira site or ours."
+        }
+      ],
+      "assumptions": [
+        {
+          "statement": "The budget envelope (EUR 60–80k) sits at the low end of the M band (EUR 65–100k); scope is held to the answers as given, with loyalty in phase 2.",
+          "impact_if_wrong": "Any scope added before launch (loyalty, extra markets) will not fit the budget and needs a change request."
+        },
+        {
+          "statement": "The client's existing Celigo licence includes a SAP Business One to Shopify template.",
+          "impact_if_wrong": "A custom connector would be needed, adding an integration scoping track (exit 11.12)."
+        },
+        {
+          "statement": "The Shopify Plus contract is signed before kick-off on 2026-10-05.",
+          "impact_if_wrong": "B2B and checkout extensions cannot be built; sprint 1 slips."
+        }
+      ]
+    },
+
+    "phases": [
+      {
+        "name": "Phase 1 — Launch",
+        "sprints": [
+          {
+            "name": "Sprint 1 — Foundation and data model",
+            "tasks": [
+              { "title": "Set up Plus store and Markets for CH, DE and AT", "capability": "native", "gaia_tier": "T2", "owner": "agent" },
+              { "title": "Create watch metafield definitions and filters", "capability": "native", "gaia_tier": "T2", "owner": "agent" },
+              { "title": "Install Horizon with brand tokens", "capability": "theme", "gaia_tier": "T2", "owner": "developer" },
+              { "title": "Design SAP Business One flows in Celigo", "capability": "custom", "gaia_tier": "T3", "owner": "developer" },
+              { "title": "Start migration scoping track (redirects, historical orders)", "capability": "app", "gaia_tier": "T3", "owner": "consultant" }
+            ]
+          },
+          {
+            "name": "Sprint 2 — Commerce build",
+            "tasks": [
+              { "title": "Configure B2B companies, catalogs and approval", "capability": "native", "gaia_tier": "T3", "owner": "agent" },
+              { "title": "Build checkout UI extension for PO number and trust block", "capability": "custom", "gaia_tier": "T2", "owner": "developer" },
+              { "title": "Translate storefront into de, fr, it", "capability": "app", "gaia_tier": "T2", "owner": "client" },
+              { "title": "Configure Loop Returns and Judge.me", "capability": "app", "gaia_tier": "T2", "owner": "agent" },
+              { "title": "Connect Klaviyo and rebuild flows", "capability": "app", "gaia_tier": "T2", "owner": "client" },
+              { "title": "Agree data-subject request process with legal", "capability": "native", "gaia_tier": "T2", "owner": "consultant" }
+            ]
+          },
+          {
+            "name": "Sprint 3 — Migration, QA and launch",
+            "tasks": [
+              { "title": "Run product, customer and order migration", "capability": "app", "gaia_tier": "T3", "owner": "agent" },
+              { "title": "Import and test 4,200 URL redirects", "capability": "native", "gaia_tier": "T2", "owner": "agent" },
+              { "title": "End-to-end test SAP sync", "capability": "custom", "gaia_tier": "T3", "owner": "developer" },
+              { "title": "UAT and WCAG 2.1 AA checks", "capability": "theme", "gaia_tier": "T2", "owner": "client" },
+              { "title": "Go-live and hypercare", "capability": "native", "gaia_tier": "T2", "owner": "consultant" },
+              { "title": "Loyalty programme", "capability": "app", "gaia_tier": "T2", "owner": "agent", "deferred": true }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  "provenance": {
+    "/brand/positioning":                  { "source": "consultant", "status": "confirmed", "question_id": "Q1.3.1", "note": "Premium, not luxury — confirmed with the Managing Director." },
+    "/shopify/target_plan":                { "source": "client",     "status": "confirmed", "question_id": "Q1.2.3", "note": "Plus needed for B2B and checkout extensions." },
+    "/markets/list":                       { "source": "client",     "status": "confirmed", "question_id": "Q3.1.1" },
+    "/markets/list/0/price_strategy":      { "source": "client",     "status": "confirmed", "question_id": "Q3.3.1" },
+    "/catalogue/sku_count":                { "source": "client",     "status": "confirmed", "question_id": "Q2.1.1" },
+    "/catalogue/variant_options_max":      { "source": "client",     "status": "confirmed", "question_id": "Q2.1.2" },
+    "/checkout/customisation":             { "source": "client",     "status": "confirmed", "question_id": "Q4.2.1" },
+    "/payments/pci_scope":                 { "source": "inferred",   "status": "confirmed", "question_id": "Q4.1.5", "note": "Shopify Payments and PayPal run inside Shopify checkout." },
+    "/b2b/rfq_or_negotiated_pricing":      { "source": "client",     "status": "confirmed", "question_id": "Q6.2.6", "note": "Fixed wholesale tiers only." },
+    "/integrations":                       { "source": "client",     "status": "confirmed", "question_id": "Q8.1.1" },
+    "/migration/volumes/customers":        { "source": "client",     "status": "tbc",       "question_id": "Q8.2.3", "note": "Approximate; WooCommerce export count pending." },
+    "/migration/volumes/orders":           { "source": "client",     "status": "tbc",       "question_id": "Q8.2.3", "note": "Approximate; WooCommerce export count pending." },
+    "/migration/seo_equity":               { "source": "consultant", "status": "confirmed", "question_id": "Q8.2.5", "note": "Organic search is a priority channel; 4,200 indexed URLs." },
+    "/compliance/gdpr_deletion_workflow":  { "source": "client",     "status": "confirmed", "question_id": "Q6.4.5" },
+    "/delivery/grow_retainer/signed":      { "source": "consultant", "status": "confirmed", "question_id": "Q10.3.4" }
+  }
+}

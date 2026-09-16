@@ -1,0 +1,852 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jose-reboredo/shopify-ai-builder/schema/engagement.schema.json",
+  "title": "Engagement spec",
+  "description": "Single source of truth for one client engagement (ADR 0002). Produced by the discovery engine from a questionnaire or chatbot interview; consumed by the deck, backlog and build agents. Unknown answers are omitted (never null) and listed in approach.risks.open_items; answer provenance lives in /provenance keyed by JSON pointer.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "meta"],
+
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["client", "source"],
+      "properties": {
+        "client": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "slug"],
+          "properties": {
+            "name":           { "type": "string", "minLength": 1 },
+            "legal_name":     { "type": "string" },
+            "slug":           { "$ref": "#/$defs/slug" },
+            "industry":       { "type": "string" },
+            "hq_country":     { "$ref": "#/$defs/country" },
+            "business_model": { "enum": ["dtc", "b2b", "hybrid"] },
+            "website":        { "type": "string" }
+          }
+        },
+        "consultant": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "name": { "type": "string" } }
+        },
+        "source":     { "enum": ["questionnaire", "chatbot", "brief"] },
+        "created_at": { "$ref": "#/$defs/date" },
+        "updated_at": { "$ref": "#/$defs/date" },
+        "consent": {
+          "description": "ADR 0007 — LLM processing of client answers requires recorded consent.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["llm_processing"],
+          "properties": {
+            "llm_processing": { "type": "boolean" },
+            "recorded_by":    { "type": "string" },
+            "recorded_at":    { "$ref": "#/$defs/date" }
+          }
+        }
+      }
+    },
+
+    "business": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary_problem":   { "type": "string" },
+        "problem_history":   { "type": "string" },
+        "highest_impact_fix":{ "type": "string" },
+        "bottleneck":        { "enum": ["acquisition", "conversion", "retention", "mixed", "unknown"] },
+        "revenue_monthly":   { "$ref": "#/$defs/money_range" },
+        "conversion_rate_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "underperforming_segments": { "$ref": "#/$defs/strings" },
+        "operational_pain":  { "$ref": "#/$defs/strings" },
+        "workaround_hours_per_week": { "type": "number", "minimum": 0 },
+        "growth_goals":      { "$ref": "#/$defs/strings" },
+        "kpis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["metric"],
+            "properties": {
+              "metric":         { "type": "string" },
+              "baseline":       { "type": "string" },
+              "target":         { "type": "string" },
+              "horizon_months": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "engagement_trigger": { "type": "string" },
+        "must_preserve":     { "$ref": "#/$defs/strings" },
+        "current_frustrations": { "$ref": "#/$defs/strings" },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "min":      { "type": "number", "minimum": 0 },
+            "max":      { "type": "number", "minimum": 0 },
+            "currency": { "$ref": "#/$defs/currency" },
+            "priority": { "enum": ["minimise_upfront", "own_solution", "balanced"] }
+          }
+        },
+        "app_cost_ceiling_monthly": { "$ref": "#/$defs/money" }
+      }
+    },
+
+    "stakeholders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role"],
+        "properties": {
+          "role":           { "type": "string" },
+          "raci":           { "enum": ["R", "A", "C", "I"] },
+          "decision_maker": { "type": "boolean" },
+          "name":           { "type": "string", "description": "Optional personal data — redacted before any LLM call (ADR 0007)." }
+        }
+      }
+    },
+
+    "brand": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "positioning":     { "enum": ["value", "mid_market", "premium", "luxury", "enterprise"] },
+        "identity_ready":  { "type": "boolean" },
+        "asset_formats":   { "$ref": "#/$defs/strings" },
+        "has_guidelines":  { "type": "boolean" },
+        "differentiators": { "$ref": "#/$defs/strings" },
+        "competitors":     { "$ref": "#/$defs/strings" },
+        "ux_references":   { "$ref": "#/$defs/strings" }
+      }
+    },
+
+    "shopify": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "existing_store": { "type": "boolean" },
+        "store_url":      { "type": "string" },
+        "current_plan":   { "$ref": "#/$defs/shopify_plan" },
+        "target_plan":    { "$ref": "#/$defs/shopify_plan" },
+        "current_theme":  { "type": "string" }
+      }
+    },
+
+    "offer": {
+      "description": "Computed by the discovery engine from schema/offering.json — never entered by hand.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code"],
+      "properties": {
+        "code":           { "enum": ["S", "M", "L"] },
+        "name":           { "type": "string" },
+        "delivery_track": { "enum": ["liquid", "hydrogen"] },
+        "scope_gates": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "markets":        { "$ref": "#/$defs/gate" },
+            "multi_currency": { "$ref": "#/$defs/gate" },
+            "b2b":            { "$ref": "#/$defs/gate" },
+            "integration":    { "$ref": "#/$defs/gate" },
+            "sku_complexity": { "$ref": "#/$defs/gate" },
+            "migration":      { "$ref": "#/$defs/gate" }
+          }
+        },
+        "l_triggers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "luxury":              { "$ref": "#/$defs/gate" },
+            "headless":            { "$ref": "#/$defs/gate" },
+            "figma_design_system": { "$ref": "#/$defs/gate" }
+          }
+        },
+        "modifiers": {
+          "type": "array",
+          "items": { "enum": ["+Markets", "+B2B", "+Integration", "+Migration", "+SKU"] },
+          "uniqueItems": true
+        },
+        "price_band": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min", "max", "currency"],
+          "properties": {
+            "min":        { "type": "number" },
+            "max":        { "type": "number" },
+            "currency":   { "$ref": "#/$defs/currency" },
+            "open_ended": { "type": "boolean" }
+          }
+        },
+        "duration_weeks": { "$ref": "#/$defs/number_range" },
+        "rationale":      { "type": "string" }
+      }
+    },
+
+    "markets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary_market": { "$ref": "#/$defs/country" },
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code"],
+            "properties": {
+              "code":           { "$ref": "#/$defs/country" },
+              "currency":       { "$ref": "#/$defs/currency" },
+              "languages":      { "type": "array", "items": { "$ref": "#/$defs/language" }, "uniqueItems": true },
+              "domain":         { "type": "string" },
+              "price_strategy": { "enum": ["base_currency", "auto_converted", "manual", "display_only"] }
+            }
+          }
+        },
+        "expansion_12m":      { "type": "array", "items": { "$ref": "#/$defs/country" } },
+        "strategy":           { "enum": ["shopify_markets", "expansion_stores", "hybrid"] },
+        "geo_redirect":       { "type": "boolean" },
+        "translation_method": { "enum": ["in_house", "agency", "translate_and_adapt", "third_party_app", "undecided"] },
+        "rtl_required":       { "type": "boolean" },
+        "seo_per_language":   { "type": "boolean" },
+        "duties_ddp":         { "type": "boolean" },
+        "vat_countries":      { "type": "array", "items": { "$ref": "#/$defs/country" } },
+        "us_sales_tax":       { "type": "boolean" }
+      }
+    },
+
+    "catalogue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sku_count":                { "type": "integer", "minimum": 0 },
+        "variant_options_max":      { "type": "integer", "minimum": 0 },
+        "variants_per_product_max": { "type": "integer", "minimum": 0 },
+        "product_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["simple", "variant", "bundle", "product_set", "gift_card", "digital", "subscription", "pre_order", "made_to_order", "virtual"] }
+        },
+        "subscription_app":     { "type": "string" },
+        "collections_estimate": { "type": "integer", "minimum": 0 },
+        "collection_mode":      { "enum": ["manual", "automated", "mixed"] },
+        "custom_attributes":    { "$ref": "#/$defs/strings" },
+        "data_source":          { "enum": ["shopify_admin", "spreadsheet", "erp", "pim", "mixed"] },
+        "pricing": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "multiple_price_tiers": { "type": "boolean" },
+            "volume_pricing":       { "type": "boolean" },
+            "market_specific":      { "type": "boolean" }
+          }
+        },
+        "inventory": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source":             { "enum": ["shopify", "erp", "wms", "other"] },
+            "low_stock_alerts":   { "type": "boolean" },
+            "out_of_stock_behaviour": { "enum": ["hide", "show_sold_out", "backorder", "notify_me"] }
+          }
+        }
+      }
+    },
+
+    "payments": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "providers":     { "$ref": "#/$defs/strings" },
+        "local_methods": { "$ref": "#/$defs/strings" },
+        "bnpl":          { "$ref": "#/$defs/strings" },
+        "multi_currency_settlement": { "type": "boolean" },
+        "pci_scope":     { "enum": ["shopify_hosted", "third_party_hosted", "custom_card_handling"] }
+      }
+    },
+
+    "checkout": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "customisation":        { "enum": ["none", "extensibility", "custom_ui"] },
+        "extensions":           { "$ref": "#/$defs/strings" },
+        "custom_fields":        { "$ref": "#/$defs/strings" },
+        "post_purchase_upsell": { "type": "boolean" },
+        "gift_cards":           { "type": "boolean" },
+        "store_credit":         { "type": "boolean" },
+        "fraud_manual_review":  { "type": "boolean" },
+        "order_restrictions":   { "$ref": "#/$defs/strings" }
+      }
+    },
+
+    "shipping": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model":                { "enum": ["in_house", "3pl", "hybrid"] },
+        "provider_3pl":         { "type": "string" },
+        "fulfilment_locations": { "type": "integer", "minimum": 0 },
+        "complex_routing":      { "type": "boolean" },
+        "carriers":             { "$ref": "#/$defs/strings" },
+        "rates":                { "enum": ["calculated", "flat", "free_threshold", "mixed"] },
+        "special_rules":        { "$ref": "#/$defs/strings" },
+        "international":        { "type": "boolean" },
+        "excluded_countries":   { "type": "array", "items": { "$ref": "#/$defs/country" } },
+        "returns": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "policy":    { "type": "string" },
+            "portal":    { "type": "boolean" },
+            "exchanges": { "type": "boolean" },
+            "solution":  { "type": "string" }
+          }
+        },
+        "notifications": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "custom": { "type": "boolean" },
+            "sender": { "enum": ["shopify", "esp", "mixed"] }
+          }
+        }
+      }
+    },
+
+    "customers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "account_requirement": { "enum": ["guest_default", "optional", "required"] },
+        "account_type":        { "enum": ["new_customer_accounts", "classic", "undecided"] },
+        "account_features":    { "$ref": "#/$defs/strings" },
+        "segments":            { "$ref": "#/$defs/strings" },
+        "segmentation_source": { "enum": ["shopify", "esp", "cdp", "mixed", "none"] },
+        "tags_in_use":         { "$ref": "#/$defs/strings" }
+      }
+    },
+
+    "b2b": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled":                    { "type": "boolean" },
+        "company_accounts":           { "type": "boolean" },
+        "price_lists":                { "type": "boolean" },
+        "volume_discounts":           { "type": "boolean" },
+        "payment_terms":              { "$ref": "#/$defs/strings" },
+        "rfq_or_negotiated_pricing":  { "type": "boolean" },
+        "approval_workflow":          { "type": "boolean" },
+        "approach":                   { "enum": ["shopify_b2b", "app", "undecided"] },
+        "expected_accounts":          { "type": "integer", "minimum": 0 }
+      }
+    },
+
+    "loyalty": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "components": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["points_purchase", "points_actions", "vip_tiers", "referral", "vip_early_access", "subscription_discount", "store_credit"] }
+        },
+        "phase":    { "enum": ["launch", "phase_2", "none"] },
+        "app":      { "type": "string" },
+        "esp_sync": { "type": "boolean" }
+      }
+    },
+
+    "compliance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "privacy_regimes":       { "type": "array", "uniqueItems": true, "items": { "enum": ["gdpr", "uk_gdpr", "ccpa", "nfadp", "other"] } },
+        "cookie_consent_tool":   { "type": "string" },
+        "marketing_opt_in":      { "type": "boolean" },
+        "sensitive_data":        { "type": "boolean" },
+        "regulated_industry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["active"],
+          "properties": {
+            "active":   { "type": "boolean" },
+            "category": { "type": "string" }
+          }
+        },
+        "gdpr_deletion_workflow": { "type": "boolean" },
+        "legal_pages_status":     { "enum": ["ready", "needs_update", "needs_drafting"] },
+        "industry_requirements":  { "$ref": "#/$defs/strings" }
+      }
+    },
+
+    "marketing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "seo": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "priority_channel":  { "type": "boolean" },
+            "custom_urls":       { "type": "boolean" },
+            "owner":             { "enum": ["in_house", "agency", "none"] }
+          }
+        },
+        "analytics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platforms":     { "$ref": "#/$defs/strings" },
+            "server_side":   { "type": "boolean" },
+            "pixels":        { "$ref": "#/$defs/strings" },
+            "tag_manager":   { "type": "boolean" },
+            "custom_events": { "$ref": "#/$defs/strings" }
+          }
+        },
+        "esp": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platform":              { "type": "string" },
+            "flows":                 { "$ref": "#/$defs/strings" },
+            "segments_master":       { "enum": ["shopify", "esp"] }
+          }
+        },
+        "reviews": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "app": { "type": "string" },
+            "ugc": { "type": "boolean" }
+          }
+        },
+        "affiliate": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "platform":       { "type": "string" },
+            "shopify_collabs":{ "type": "boolean" },
+            "tracking":       { "enum": ["discount_codes", "utm", "both", "none"] }
+          }
+        }
+      }
+    },
+
+    "promotions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "discount_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["percentage", "fixed_amount", "bogo", "free_shipping", "volume_tiered", "automatic", "code_based", "scheduled_sale", "stackable", "pos_only"] }
+        },
+        "stacking": { "enum": ["none", "one_code_plus_one_automatic", "advanced"] },
+        "coupons": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "usage":             { "type": "array", "uniqueItems": true, "items": { "enum": ["single_use", "multi_use", "bulk"] } },
+            "branded":           { "type": "boolean" },
+            "minimum_threshold": { "type": "boolean" },
+            "expiry":            { "enum": ["none", "fixed", "rolling"] },
+            "distribution":      { "$ref": "#/$defs/strings" }
+          }
+        },
+        "gift_cards": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "as_product": { "type": "boolean" },
+            "as_reward":  { "type": "boolean" },
+            "format":     { "enum": ["digital", "physical", "both"] },
+            "expiry":     { "type": "boolean" }
+          }
+        },
+        "campaigns": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "esp_triggered":   { "type": "boolean" },
+            "landing_pages":   { "type": "boolean" },
+            "countdown_timer": { "type": "boolean" },
+            "market_specific": { "type": "boolean" }
+          }
+        }
+      }
+    },
+
+    "integrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["system", "category"],
+        "properties": {
+          "system":    { "type": "string" },
+          "category":  { "enum": ["erp", "pim", "crm", "3pl_wms", "oms", "esp", "cdp", "returns", "reviews", "search", "loyalty", "analytics", "custom", "other"] },
+          "direction": { "enum": ["inbound", "outbound", "bidirectional"] },
+          "objects":   { "type": "array", "uniqueItems": true, "items": { "enum": ["products", "inventory", "prices", "orders", "customers", "financials", "content", "returns"] } },
+          "frequency": { "enum": ["realtime", "webhook", "batch"] },
+          "connector": { "enum": ["native_app", "ipaas", "custom", "none", "unknown"] },
+          "middleware":{ "type": "string" },
+          "owner":     { "enum": ["client", "merkle", "third_party", "unknown"] },
+          "status":    { "enum": ["existing", "to_build", "to_replace"] }
+        }
+      }
+    },
+
+    "migration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_platform": { "enum": ["none", "shopify", "woocommerce", "magento", "shopware", "sfcc", "bigcommerce", "custom", "other"] },
+        "data": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["products", "customers", "orders", "content", "redirects", "reviews", "gift_cards"] }
+        },
+        "volumes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "products":  { "type": "integer", "minimum": 0 },
+            "customers": { "type": "integer", "minimum": 0 },
+            "orders":    { "type": "integer", "minimum": 0 },
+            "redirects": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "historical_orders_required": { "type": "boolean" },
+        "seo_equity": { "enum": ["none", "moderate", "significant"] }
+      }
+    },
+
+    "design": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "figma": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "exists":             { "type": "boolean" },
+            "completeness":       { "enum": ["none", "brand_only", "key_screens", "all_templates"] },
+            "design_system":      { "type": "boolean" },
+            "mapped_to_sections": { "type": "boolean" }
+          }
+        },
+        "custom_design":        { "type": "boolean" },
+        "headless_required":    { "type": "boolean" },
+        "theme_preference":     { "type": "string" },
+        "aesthetic":            { "type": "string" },
+        "interactive_patterns": { "$ref": "#/$defs/strings" },
+        "motion":               { "type": "boolean" },
+        "accessibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "target":     { "enum": ["wcag21_aa", "wcag22_aa", "en301549", "section508", "none"] },
+            "audit_done": { "type": "boolean" }
+          }
+        },
+        "performance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "lcp_s":               { "type": "number", "minimum": 0 },
+            "cls":                 { "type": "number", "minimum": 0 },
+            "inp_ms":              { "type": "number", "minimum": 0 },
+            "known_problem":       { "type": "boolean" },
+            "third_party_scripts": { "$ref": "#/$defs/strings" }
+          }
+        }
+      }
+    },
+
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "go":                       { "type": "boolean" },
+        "kickoff_date":             { "$ref": "#/$defs/date" },
+        "target_launch_date":       { "$ref": "#/$defs/date" },
+        "hard_deadline_reason":     { "type": "string" },
+        "phased_launch":            { "type": "boolean" },
+        "decision_maker_confirmed": { "type": "boolean" },
+        "budget_authority_clear":   { "type": "boolean" },
+        "grow_retainer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "signed": { "type": "boolean" },
+            "months": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "support_model":  { "enum": ["hypercare_only", "retainer", "self_sufficient", "third_party"] },
+        "training":       { "$ref": "#/$defs/strings" },
+        "sops_required":  { "type": "boolean" },
+        "admin_roles":    { "$ref": "#/$defs/strings" }
+      }
+    },
+
+    "jira": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "site":        { "type": "string" },
+        "project_key": { "type": "string", "pattern": "^[A-Z][A-Z0-9]{1,9}$" },
+        "components":  { "$ref": "#/$defs/strings" }
+      }
+    },
+
+    "exits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["triggered", "items"],
+      "properties": {
+        "triggered": { "type": "boolean", "description": "True when any STOP item is open." },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["rule_id", "result", "source"],
+            "if": { "type": "object", "properties": { "result": { "enum": ["STOP", "FLAG"] } } },
+            "then": {
+              "type": "object",
+              "required": ["resolution"],
+              "properties": {
+                "resolution": {
+                  "type": "object",
+                  "required": ["status", "owner"],
+                  "properties": { "status": true, "owner": { "type": "string", "minLength": 1 } }
+                }
+              }
+            },
+            "properties": {
+              "rule_id":     { "type": "string", "pattern": "^11\\.[0-9]+$" },
+              "result":      { "enum": ["STOP", "FLAG", "WARN"] },
+              "detail":      { "type": "string" },
+              "destination": { "type": "string" },
+              "source":      { "enum": ["rule", "llm", "consultant"] },
+              "evidence":    { "type": "string" },
+              "resolution": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["status"],
+                "properties": {
+                  "status": { "enum": ["open", "resolved", "waived"] },
+                  "owner":  { "type": "string" },
+                  "due":    { "$ref": "#/$defs/date" },
+                  "note":   { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "approach": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capability_map": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["requirement", "resolution"],
+            "properties": {
+              "requirement":  { "type": "string" },
+              "resolution":   { "enum": ["native", "app", "theme", "custom"] },
+              "tool":         { "type": "string" },
+              "gaia_tier":    { "$ref": "#/$defs/gaia_tier" },
+              "notes":        { "type": "string" },
+              "question_ids": { "type": "array", "items": { "$ref": "#/$defs/question_id" } }
+            }
+          }
+        },
+        "app_shortlist": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "recommended"],
+            "properties": {
+              "name":        { "type": "string" },
+              "url":         { "type": "string" },
+              "requirement": { "type": "string" },
+              "rationale":   { "type": "string" },
+              "limitations": { "type": "string" },
+              "cost": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "amount":   { "type": "number", "minimum": 0 },
+                  "currency": { "$ref": "#/$defs/currency" },
+                  "period":   { "enum": ["month", "year", "one_off", "usage"] },
+                  "note":     { "type": "string" }
+                }
+              },
+              "integration_complexity": { "enum": ["none", "config_only", "theme_edit", "custom"] },
+              "gaia_tier":        { "$ref": "#/$defs/gaia_tier" },
+              "recommended":      { "type": "boolean" },
+              "rejection_reason": { "type": "string" }
+            }
+          }
+        },
+        "risks": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "open_items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["pointer", "why"],
+                "properties": {
+                  "pointer":     { "$ref": "#/$defs/pointer" },
+                  "question_id": { "$ref": "#/$defs/question_id" },
+                  "why":         { "type": "string" }
+                }
+              }
+            },
+            "assumptions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["statement"],
+                "properties": {
+                  "statement":      { "type": "string" },
+                  "impact_if_wrong":{ "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "sprints"],
+            "properties": {
+              "name": { "type": "string" },
+              "sprints": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["name", "tasks"],
+                  "properties": {
+                    "name": { "type": "string" },
+                    "tasks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["title"],
+                        "properties": {
+                          "title":      { "type": "string" },
+                          "capability": { "enum": ["native", "app", "theme", "custom"] },
+                          "gaia_tier":  { "$ref": "#/$defs/gaia_tier" },
+                          "owner":      { "enum": ["consultant", "agent", "designer", "developer", "client"] },
+                          "deferred":   { "type": "boolean" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "provenance": {
+      "description": "Per-answer provenance keyed by JSON pointer into this document (e.g. \"/markets/list\").",
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/pointer" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "status"],
+        "properties": {
+          "source":      { "enum": ["client", "consultant", "inferred", "default"] },
+          "status":      { "enum": ["confirmed", "tbc"] },
+          "question_id": { "$ref": "#/$defs/question_id" },
+          "note":        { "type": "string" }
+        }
+      }
+    },
+
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text"],
+        "properties": {
+          "author_role": { "enum": ["consultant", "client", "agent"] },
+          "at":          { "$ref": "#/$defs/date" },
+          "text":        { "type": "string" }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "slug":        { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,62}$" },
+    "country":     { "type": "string", "pattern": "^[A-Z]{2}$" },
+    "currency":    { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "language":    { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$" },
+    "date":        { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "pointer":     { "type": "string", "pattern": "^(/[^/]+)+$" },
+    "question_id": { "type": "string", "pattern": "^Q\\d+\\.\\d+\\.\\d+$" },
+    "gaia_tier":   { "enum": ["T1", "T2", "T3", "T4"] },
+    "shopify_plan":{ "enum": ["none", "basic", "grow", "advanced", "plus", "plus_expansion"] },
+    "strings":     { "type": "array", "items": { "type": "string" } },
+    "money":       {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amount", "currency"],
+      "properties": { "amount": { "type": "number", "minimum": 0 }, "currency": { "$ref": "#/$defs/currency" } }
+    },
+    "money_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency"],
+      "properties": {
+        "min":      { "type": "number", "minimum": 0 },
+        "max":      { "type": "number", "minimum": 0 },
+        "currency": { "$ref": "#/$defs/currency" }
+      }
+    },
+    "number_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max"],
+      "properties": { "min": { "type": "number" }, "max": { "type": "number" } }
+    },
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["active"],
+      "properties": {
+        "active":   { "type": "boolean" },
+        "evidence": { "type": "string" }
+      }
+    }
+  }
+}

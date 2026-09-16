@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0.0",
+  "meta": {
+    "client": {
+      "name": "Helix Audio",
+      "legal_name": "Helix Audio Ltd",
+      "slug": "helix-audio",
+      "industry": "Premium headphones and speakers",
+      "hq_country": "GB",
+      "business_model": "dtc",
+      "website": "https://www.helix-audio.example"
+    },
+    "consultant": { "name": "Lead Consultant (example)" },
+    "source": "questionnaire",
+    "created_at": "2026-09-15",
+    "updated_at": "2026-09-15",
+    "consent": {
+      "llm_processing": true,
+      "recorded_by": "Lead Consultant (example)",
+      "recorded_at": "2026-09-15"
+    }
+  },
+
+  "business": {
+    "primary_problem": "The brand sells through marketplaces and retail partners only and wants a DTC store with a distinctive purchase experience.",
+    "highest_impact_fix": "A single-page checkout with the product configurator embedded in it.",
+    "bottleneck": "acquisition",
+    "growth_goals": ["GBP 1.5M DTC revenue in 12 months", "Launch in Ireland alongside the UK"],
+    "kpis": [
+      { "metric": "DTC revenue", "baseline": "GBP 0", "target": "GBP 1.5M", "horizon_months": 12 }
+    ],
+    "budget": { "min": 70000, "max": 90000, "currency": "EUR", "priority": "own_solution" }
+  },
+
+  "stakeholders": [
+    { "role": "Chief Executive", "raci": "A", "decision_maker": true },
+    { "role": "Head of Digital", "raci": "R", "decision_maker": false }
+  ],
+
+  "brand": {
+    "positioning": "premium",
+    "identity_ready": true,
+    "has_guidelines": true
+  },
+
+  "shopify": {
+    "existing_store": false,
+    "target_plan": "plus"
+  },
+
+  "offer": {
+    "code": "M",
+    "name": "Ecommerce Scale",
+    "delivery_track": "liquid",
+    "scope_gates": {
+      "markets":        { "active": true,  "evidence": "Q3.1.1: 2 markets at launch (GB, IE)." },
+      "multi_currency": { "active": true,  "evidence": "Q3.1.1 / Q3.3.1: GBP and EUR, both transactional (IE auto-converted)." },
+      "b2b":            { "active": false, "evidence": "Q6.2.1: no B2B." },
+      "integration":    { "active": false, "evidence": "Q8.1.1: Klaviyo only, via its native app — not a counted integration." },
+      "sku_complexity": { "active": false, "evidence": "Q2.1.1: ~120 SKUs." },
+      "migration":      { "active": false, "evidence": "Q8.2.1: greenfield, no source platform." }
+    },
+    "l_triggers": {
+      "luxury":              { "active": false, "evidence": "Q1.3.1: premium positioning." },
+      "headless":            { "active": false, "evidence": "Q9.2.1: no headless requirement." },
+      "figma_design_system": { "active": false, "evidence": "Q9.1.2 / Q9.1.3: key screens only, no design system." }
+    },
+    "modifiers": [],
+    "price_band": { "min": 65000, "max": 100000, "currency": "EUR", "open_ended": false },
+    "duration_weeks": { "min": 6, "max": 9 },
+    "rationale": "Two scope gates are active (markets, multi-currency) and no L trigger applies, so the engagement classifies as M — Ecommerce Scale; delivery is blocked by exit 11.6."
+  },
+
+  "markets": {
+    "primary_market": "GB",
+    "list": [
+      { "code": "GB", "currency": "GBP", "languages": ["en"], "domain": "www.helix-audio.example", "price_strategy": "base_currency" },
+      { "code": "IE", "currency": "EUR", "languages": ["en"], "domain": "ie.helix-audio.example", "price_strategy": "auto_converted" }
+    ],
+    "strategy": "shopify_markets",
+    "vat_countries": ["GB", "IE"]
+  },
+
+  "catalogue": {
+    "sku_count": 120,
+    "variant_options_max": 2,
+    "product_types": ["variant", "bundle"]
+  },
+
+  "payments": {
+    "providers": ["Shopify Payments"],
+    "pci_scope": "shopify_hosted"
+  },
+
+  "checkout": {
+    "customisation": "custom_ui"
+  },
+
+  "shipping": {
+    "model": "3pl",
+    "fulfilment_locations": 1,
+    "complex_routing": false
+  },
+
+  "b2b": {
+    "enabled": false
+  },
+
+  "compliance": {
+    "privacy_regimes": ["uk_gdpr", "gdpr"],
+    "sensitive_data": false,
+    "regulated_industry": { "active": false },
+    "gdpr_deletion_workflow": false
+  },
+
+  "integrations": [
+    {
+      "system": "Klaviyo",
+      "category": "esp",
+      "direction": "outbound",
+      "objects": ["customers", "orders"],
+      "frequency": "realtime",
+      "connector": "native_app",
+      "owner": "client",
+      "status": "to_build"
+    }
+  ],
+
+  "migration": {
+    "source_platform": "none"
+  },
+
+  "design": {
+    "figma": { "exists": true, "completeness": "key_screens", "design_system": false },
+    "headless_required": false,
+    "accessibility": { "target": "wcag22_aa" }
+  },
+
+  "delivery": {
+    "go": false,
+    "kickoff_date": "2026-10-12",
+    "target_launch_date": "2027-03-01",
+    "decision_maker_confirmed": true,
+    "budget_authority_clear": true,
+    "grow_retainer": { "signed": true, "months": 12 }
+  },
+
+  "exits": {
+    "triggered": true,
+    "items": [
+      {
+        "rule_id": "11.6",
+        "result": "STOP",
+        "detail": "The client wants a single-page checkout with the product configurator embedded, which Checkout Extensibility cannot render.",
+        "destination": "Composable platform",
+        "source": "rule",
+        "evidence": "Q4.2.1: checkout customisation = fully custom checkout UI.",
+        "resolution": { "status": "open", "owner": "Lead Consultant" }
+      }
+    ]
+  },
+
+  "approach": {
+    "risks": {
+      "open_items": [],
+      "assumptions": [
+        {
+          "statement": "The client may accept a Checkout Extensibility design if the configurator moves to the product page.",
+          "impact_if_wrong": "The engagement leaves the Liquid offers and routes to a composable platform."
+        }
+      ]
+    }
+  },
+
+  "provenance": {
+    "/checkout/customisation": { "source": "client", "status": "confirmed", "question_id": "Q4.2.1", "note": "Confirmed twice in the discovery call." },
+    "/markets/list/1/price_strategy": { "source": "client", "status": "confirmed", "question_id": "Q3.3.1" },
+    "/shopify/target_plan": { "source": "client", "status": "confirmed", "question_id": "Q1.2.3" }
+  }
+}
