@@ -16,7 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { runDiscovery } from './engine.js';
-import { createLlm } from './llm.js';
+import { createLlm, explainError } from './llm.js';
 import { renderArtefacts } from './render.js';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -105,7 +105,7 @@ async function main() {
 
 if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((err) => {
-    console.error(`\n✗ ${err.message}\n`);
+    console.error(`\n✗ ${explainError(err)}\n`);
     process.exit(1);
   });
 }

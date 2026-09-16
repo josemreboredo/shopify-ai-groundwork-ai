@@ -13,7 +13,8 @@ import { offering } from '../../schema/index.js';
 import { runDiscovery } from '../../agents/discovery/engine.js';
 import { hasConsent, redactQuestionnaire, InputRejectedError } from '../../agents/discovery/input.js';
 import { buildExtractionSchema, buildApproachSchema } from '../../agents/discovery/extraction-schema.js';
-import { createLlm, parseStructured, LlmError, DEFAULT_MODEL } from '../../agents/discovery/llm.js';
+import Anthropic from '@anthropic-ai/sdk';
+import { createLlm, parseStructured, LlmError, DEFAULT_MODEL, explainError } from '../../agents/discovery/llm.js';
 import { approachInput } from '../../agents/discovery/approach.js';
 import { renderArtefacts } from '../../agents/discovery/render.js';
 import { writeOutputs, parseArgs } from '../../agents/discovery/cli.js';
@@ -184,6 +185,16 @@ describe('llm adapter', () => {
     assert.throws(() => parseStructured(msg('max_tokens')), (e) => e.code === 'truncated');
     assert.throws(() => parseStructured(msg('end_turn', 'SECRET not json')), (e) => e.code === 'invalid_json' && !e.message.includes('SECRET'));
     assert.deepEqual(parseStructured(msg('end_turn', '{"a":1}')), { a: 1 });
+  });
+
+  test('explains missing credentials and API errors without leaking content', () => {
+    const missing = new Error('Could not resolve authentication method. Expected one of apiKey, authToken, credentials, config, or profile to be set.');
+    assert.match(explainError(missing), /No Anthropic API credentials found[\s\S]*ANTHROPIC_API_KEY=/);
+
+    const connection = new Anthropic.APIConnectionError({ message: 'socket hang up' });
+    assert.match(explainError(connection), /Could not reach the Anthropic API/);
+
+    assert.match(explainError(new LlmError('Model output was truncated (max_tokens) — nothing was written.', 'truncated')), /truncated/);
   });
 
   test('sends model, cached system prompt, fallbacks and the JSON schema', async () => {

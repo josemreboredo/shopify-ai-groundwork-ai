@@ -71,6 +71,43 @@ export function createLlm({ client, model } = {}) {
 }
 
 /**
+ * Turn SDK and engine errors into an actionable message for consultants.
+ * Never includes request content or model output.
+ *
+ * @param {unknown} err
+ * @returns {string}
+ */
+export function explainError(err) {
+  if (err instanceof Anthropic.AuthenticationError) {
+    return 'The Anthropic API rejected the credentials (401). Check ANTHROPIC_API_KEY in .env.';
+  }
+  if (err instanceof Anthropic.PermissionDeniedError) {
+    return `The API key cannot use this model or feature (403): ${err.message}`;
+  }
+  if (err instanceof Anthropic.RateLimitError) {
+    return 'Rate limited by the Anthropic API (429) after retries — wait a minute and run again.';
+  }
+  if (err instanceof Anthropic.BadRequestError) {
+    return `The Anthropic API rejected the request (400): ${err.message}`;
+  }
+  if (err instanceof Anthropic.APIConnectionError) {
+    return 'Could not reach the Anthropic API — check the network connection or proxy.';
+  }
+  if (err instanceof Anthropic.APIError) {
+    return `Anthropic API error${err.status ? ` (${err.status})` : ''}: ${err.message}`;
+  }
+  if (err instanceof Error && /Could not resolve authentication method/.test(err.message)) {
+    return [
+      'No Anthropic API credentials found.',
+      '  Add this line to .env in the project root (never commit it):',
+      '    ANTHROPIC_API_KEY=<your key from console.anthropic.com>',
+      '  or export ANTHROPIC_API_KEY in your shell, then run the command again.',
+    ].join('\n');
+  }
+  return err instanceof Error ? err.message : String(err);
+}
+
+/**
  * Validate the stop reason and parse the JSON text of a structured response.
  *
  * @param {{ stop_reason: string|null, stop_details?: any, content: any[] }} message
