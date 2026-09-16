@@ -1,0 +1,234 @@
+{
+  "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented.",
+  "version": "1.0.0",
+  "currency": "EUR",
+
+  "offers": {
+    "S": {
+      "name": "Ecommerce Foundation",
+      "delivery_track": "liquid",
+      "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
+      "base_scope": "New Shopify Plus store · Horizon theme · core catalogue · payments · standard checkout",
+      "price_band": { "min": 40000, "max": 65000, "open_ended": false },
+      "duration_weeks": { "min": 4, "max": 5 }
+    },
+    "M": {
+      "name": "Ecommerce Scale",
+      "delivery_track": "liquid",
+      "triggered_by": "2 or more scope gates",
+      "base_scope": "Everything in S plus the qualifying gates (markets / B2B / integrations / migration)",
+      "price_band": { "min": 65000, "max": 100000, "open_ended": false },
+      "duration_weeks": { "min": 6, "max": 9 }
+    },
+    "L": {
+      "name": "Ecommerce Growth",
+      "delivery_track": "hydrogen",
+      "triggered_by": "Any L trigger (luxury / enterprise brand, headless requirement, full Figma design system) — scope gates do not apply",
+      "base_scope": "Headless Hydrogen storefront · full Figma design system · custom motion + interactions · Storefront API · Oxygen · advanced personalisation",
+      "price_band": { "min": 100000, "max": 150000, "open_ended": true },
+      "duration_weeks": { "min": 10, "max": 14 }
+    }
+  },
+
+  "classification": [
+    { "order": 1, "when": "any l_trigger active", "offer": "L" },
+    { "order": 2, "when": "active scope gates >= 2", "offer": "M" },
+    { "order": 3, "when": "active scope gates == 1", "offer": "S", "apply_modifier": true },
+    { "order": 4, "when": "active scope gates == 0", "offer": "S" }
+  ],
+
+  "scope_gates": [
+    {
+      "id": "markets",
+      "label": "Markets",
+      "condition": "2 or more Shopify Markets at launch (geo-routing, tax, payments per market)",
+      "inputs": ["/markets/list"],
+      "modifier": "+Markets"
+    },
+    {
+      "id": "multi_currency",
+      "label": "Multi-currency",
+      "condition": "More than one distinct checkout currency across markets whose price_strategy is not display_only",
+      "inputs": ["/markets/list/*/currency", "/markets/list/*/price_strategy"],
+      "modifier": null
+    },
+    {
+      "id": "b2b",
+      "label": "B2B / Wholesale",
+      "condition": "B2B customer accounts, wholesale pricing, or volume discounts",
+      "inputs": ["/b2b/enabled", "/b2b/company_accounts", "/b2b/price_lists", "/b2b/volume_discounts"],
+      "modifier": "+B2B"
+    },
+    {
+      "id": "integration",
+      "label": "Integration",
+      "condition": "One or more live connections to a counted integration category (see integration_definition)",
+      "inputs": ["/integrations/*/category", "/integrations/*/connector"],
+      "modifier": "+Integration"
+    },
+    {
+      "id": "sku_complexity",
+      "label": "SKU complexity",
+      "condition": "sku_count >= 500 AND at least one of: variant_options_max >= 2, custom attributes (metafields) needed, product types include bundle or product_set",
+      "inputs": ["/catalogue/sku_count", "/catalogue/variant_options_max", "/catalogue/custom_attributes", "/catalogue/product_types"],
+      "modifier": "+SKU"
+    },
+    {
+      "id": "migration",
+      "label": "Migration",
+      "condition": "Platform migration from another ecommerce platform (strategy names Shopware, Magento, WooCommerce, SFCC)",
+      "inputs": ["/migration/source_platform"],
+      "modifier": "+Migration"
+    }
+  ],
+
+  "l_triggers": [
+    {
+      "id": "luxury",
+      "label": "Luxury / enterprise brand",
+      "condition": "Brand positioning is luxury or enterprise",
+      "inputs": ["/brand/positioning"]
+    },
+    {
+      "id": "headless",
+      "label": "Headless requirement",
+      "condition": "Client requires a headless / custom storefront (Hydrogen, other framework, native app front end)",
+      "inputs": ["/design/headless_required"]
+    },
+    {
+      "id": "figma_design_system",
+      "label": "Full Figma design system",
+      "condition": "A complete Figma design system covering all templates is the design source",
+      "inputs": ["/design/figma/design_system", "/design/figma/completeness"]
+    }
+  ],
+
+  "modifiers": [
+    { "id": "+Markets",     "gate": "markets",        "description": "2–4 Shopify Markets, Translate & Adapt, geo-routing",  "effort_weeks": { "min": 1,   "max": 1 },   "price_add": { "min": 8000,  "max": 12000 } },
+    { "id": "+B2B",         "gate": "b2b",            "description": "Wholesale pricing, B2B accounts, volume discounts",    "effort_weeks": { "min": 1.5, "max": 1.5 }, "price_add": { "min": 10000, "max": 15000 } },
+    { "id": "+Integration", "gate": "integration",    "description": "One ERP / PIM / CRM / 3PL live connection",            "effort_weeks": { "min": 1,   "max": 2 },   "price_add": { "min": 10000, "max": 18000 } },
+    { "id": "+Migration",   "gate": "migration",      "description": "Platform migration, redirect mapping, data transfer",  "effort_weeks": { "min": 1,   "max": 2 },   "price_add": { "min": 8000,  "max": 15000 } },
+    { "id": "+SKU",         "gate": "sku_complexity", "description": "500+ SKUs, complex variants or bundles",               "effort_weeks": { "min": 0.5, "max": 0.5 }, "price_add": { "min": 5000,  "max": 8000 } }
+  ],
+
+  "integration_definition": {
+    "counted_categories": ["erp", "pim", "crm", "3pl_wms", "oms", "custom"],
+    "note": "An integration is a live system-to-system data connection. Shopify App Store apps with native connectors (ESP, reviews, search, loyalty, analytics) are apps, not integrations — unless the connector is custom-built (connector = custom), in which case they count."
+  },
+
+  "exit_results": {
+    "STOP": "Blocks GO. Discovery cannot close until resolved or waived by the lead consultant.",
+    "FLAG": "Does not block GO. Requires a named owner and resolution before build starts.",
+    "WARN": "Commercial adjustment. Recorded in the proposal; does not block GO."
+  },
+
+  "exit_rules": [
+    {
+      "id": "11.1", "result": "STOP", "status": "canonical",
+      "condition": "A Shopify Plus feature is required (B2B, Checkout Extensibility, Launchpad, expansion stores) but the target plan is not Plus",
+      "destination": "Confirm Shopify Plus or remove the feature from scope",
+      "inputs": ["/shopify/target_plan", "/b2b/enabled", "/checkout/customisation", "/markets/strategy"]
+    },
+    {
+      "id": "11.2", "result": "STOP", "status": "canonical",
+      "condition": "B2B requires RFQ / quote or custom negotiated pricing per buyer",
+      "destination": "Architecture review of the quote workflow (Shopify Plus B2B prerequisite)",
+      "inputs": ["/b2b/rfq_or_negotiated_pricing"]
+    },
+    {
+      "id": "11.3", "result": "STOP", "status": "canonical",
+      "condition": "More than 5 Shopify Markets at launch",
+      "destination": "Scale programme",
+      "inputs": ["/markets/list"]
+    },
+    {
+      "id": "11.4", "result": "STOP", "status": "canonical",
+      "condition": "More than 6 distinct languages across all markets",
+      "destination": "Scale programme",
+      "inputs": ["/markets/list/*/languages"]
+    },
+    {
+      "id": "11.5", "result": "STOP", "status": "canonical",
+      "condition": "More than 3 variant options per product",
+      "destination": "Architecture review",
+      "inputs": ["/catalogue/variant_options_max"]
+    },
+    {
+      "id": "11.6", "result": "STOP", "status": "canonical",
+      "condition": "Custom checkout UI that cannot be built with Checkout Extensibility",
+      "destination": "Composable platform",
+      "inputs": ["/checkout/customisation"]
+    },
+    {
+      "id": "11.7", "result": "STOP", "status": "canonical",
+      "condition": "More than 3 integrations at launch (counted per integration_definition)",
+      "destination": "Bespoke quote",
+      "inputs": ["/integrations/*/category", "/integrations/*/connector"]
+    },
+    {
+      "id": "11.8", "result": "STOP", "status": "canonical",
+      "condition": "Regulated industry (pharma, alcohol, firearms, age-restricted, financial products, medical devices)",
+      "destination": "Legal / compliance review",
+      "inputs": ["/compliance/regulated_industry"]
+    },
+    {
+      "id": "11.9", "result": "STOP", "status": "canonical",
+      "condition": "PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data)",
+      "destination": "Security review (threat model mandatory)",
+      "inputs": ["/payments/pci_scope"]
+    },
+    {
+      "id": "11.10", "result": "FLAG", "status": "canonical",
+      "condition": "GDPR / CCPA data export or deletion workflow required",
+      "destination": "Legal sign-off on data-subject request handling",
+      "inputs": ["/compliance/gdpr_deletion_workflow"]
+    },
+    {
+      "id": "11.11", "result": "WARN", "status": "canonical",
+      "condition": "Grow retainer not signed on an M or L engagement",
+      "destination": "Grow retainer to be signed before delivery starts; otherwise commercial adjustment",
+      "internal_note": "Quote at list price +25% (never shown to the client)",
+      "inputs": ["/delivery/grow_retainer/signed", "/offer/code"]
+    },
+    {
+      "id": "11.12", "result": "FLAG", "status": "proposed",
+      "condition": "ERP or PIM with no existing Shopify connector and no iPaaS",
+      "destination": "Separate integration scoping track (T3/T4)",
+      "inputs": ["/integrations/*/category", "/integrations/*/connector"]
+    },
+    {
+      "id": "11.13", "result": "FLAG", "status": "proposed",
+      "condition": "fulfilment_locations > 2 AND complex_routing is true",
+      "destination": "Multi-location inventory scoping (T3)",
+      "inputs": ["/shipping/fulfilment_locations", "/shipping/complex_routing"]
+    },
+    {
+      "id": "11.14", "result": "FLAG", "status": "proposed",
+      "condition": "Migration with significant SEO equity or complex historical data",
+      "destination": "Dedicated migration scoping track — not combined with the store build sprint",
+      "inputs": ["/migration/seo_equity", "/migration/historical_orders_required", "/migration/volumes"]
+    },
+    {
+      "id": "11.15", "result": "FLAG", "status": "proposed",
+      "condition": "Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks",
+      "destination": "Re-scope to an MVP-first delivery before any sprint begins",
+      "inputs": ["/delivery/target_launch_date", "/delivery/kickoff_date", "/meta/created_at", "/offer/code"]
+    },
+    {
+      "id": "11.16", "result": "STOP", "status": "proposed",
+      "condition": "No single decision-maker, or budget approval authority is unclear",
+      "destination": "Pause engagement until commercial and governance clarity is confirmed",
+      "inputs": ["/delivery/decision_maker_confirmed", "/delivery/budget_authority_clear"]
+    }
+  ],
+
+  "open_questions": [
+    "11.2 destination: strategy.md says 'STOP (Plus prereq)'; the old schema said 'composable platform'. Using an architecture review until the owner confirms.",
+    "11.12–11.16 come from the previous questionnaire and are not in strategy.md — status 'proposed' until accepted by the offering owner.",
+    "Migration gate: strategy.md names four source platforms; v1 treats any non-Shopify platform as a migration.",
+    "Multi-currency gate has no internal modifier in strategy.md.",
+    "L is triggered by luxury positioning and delivered on Hydrogen, while the Bucherer reference build (luxury) used Liquid. Confirm whether luxury alone should force L.",
+    "11.1: should a custom checkout UI on a non-Plus plan also raise 11.1, or is 11.6 (STOP) sufficient?",
+    "Migration gate: does rebuilding an existing Shopify store (source_platform = shopify) count as a migration?"
+  ]
+}

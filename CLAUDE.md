@@ -25,6 +25,14 @@ workspace for all Shopify client engagements.
 - **Lovelock:** No — this is a client-delivery biota, not a synthetic regime-test
 - **Cadence:** Standard sprint cadence per `gaia/methodology/agile-process.md`
 
+## Engagement contract (ADR 0002)
+
+- `schema/engagement.schema.json` — one client engagement (`clients/<slug>/engagement.json`, gitignored)
+- `schema/question-bank.json` — every discovery question and the fields it fills
+- `schema/offering.json` — S/M/L offers, scope gates, exit rules (internal pricing — never client-facing)
+- `docs/discovery/client-questionnaire.md` is **generated** — edit the question bank, then `npm run questionnaire:render`
+- Roadmap: `docs/implementation-plan.md` · decisions: `docs/adr/` · `npm test` must pass before commit
+
 ## Shopify-specific conventions
 
 All domain conventions live in `docs/conventions/`. Read the relevant file before

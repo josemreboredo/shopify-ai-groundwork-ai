@@ -4,6 +4,28 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
+## [Unreleased]
+
+Phase 1 of the implementation plan — foundation (offering model, engagement schema, question bank).
+
+### Added
+- `schema/offering.json` — S/M/L offers, six scope gates, L triggers, internal modifiers, integration definition and exit rules 11.1–11.16 as data (ADR 0001, 0003)
+- `schema/engagement.schema.json` — JSON Schema for one client engagement, the single source of truth between pipeline stages (ADR 0002)
+- `schema/question-bank.json` — 184 discovery questions, each mapped to schema fields and to the gates / exit rules it feeds
+- `schema/index.js` — loaders, schema validation (ajv) and pointer helpers
+- `npm run questionnaire:render` — generates `docs/discovery/client-questionnaire.md` from the question bank; § 11 is generated from the exit rules
+- ADRs 0001–0007 in `docs/adr/`
+- Contract tests: schema ↔ question bank ↔ offering traceability; rendered questionnaire must be up to date
+- Dependency: `ajv` (D4)
+
+### Changed
+- `docs/discovery/client-questionnaire.md` is now generated (new section numbering; § 10 Delivery, governance & compliance; § 11 exit screening)
+- `docs/strategy.md` — multi-consultant scope, pipeline diagram, discovery engine contract, exit rules point to `offering.json`
+- `lwc-library/README.md` — S/M/L offers replace Starter/Medium/Large (CHF); Swiss baseline is an opt-in market preset (ADR 0004)
+
+### Deprecated
+- `lwc-library/store-spec.schema.yaml` — superseded by `schema/engagement.schema.json`; removed when the Frame Agent is retired (Phase 2)
+
 ## [0.1.0] — 2026-09-16
 
 First tagged baseline. Phase 0 of the implementation plan.

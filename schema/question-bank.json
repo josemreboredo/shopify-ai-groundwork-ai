@@ -1,0 +1,318 @@
+{
+  "$comment": "Single question list (implementation plan §1.3). Drives docs/discovery/client-questionnaire.md (npm run questionnaire:render), the discovery engine prompt mapping and the Phase 5 chatbot. maps_to = JSON pointers into schema/engagement.schema.json ('*' = every array item). feeds = gate:<id> | l_trigger:<id> | exit:<rule id> from schema/offering.json. Enum options are read from the schema, never duplicated here.",
+  "version": "1.0.0",
+
+  "sections": [
+    { "id": "0", "title": "Business outcomes", "intro": "What is broken before what to build. This section is the primary brief: every capability we scope must trace back to an answer here.",
+      "subsections": [
+        { "id": "0.1", "title": "The core problem" },
+        { "id": "0.2", "title": "Revenue & conversion" },
+        { "id": "0.3", "title": "Operational pain" },
+        { "id": "0.4", "title": "Growth goals & KPIs" },
+        { "id": "0.5", "title": "Platform context" },
+        { "id": "0.6", "title": "Budget" }
+      ] },
+    { "id": "1", "title": "Company, brand & Shopify", "intro": "Store setup, Shopify plan, brand positioning and assets.",
+      "subsections": [
+        { "id": "1.1", "title": "Company identity" },
+        { "id": "1.2", "title": "Shopify account" },
+        { "id": "1.3", "title": "Brand & positioning" },
+        { "id": "1.4", "title": "Competitive context" }
+      ] },
+    { "id": "2", "title": "Catalogue & products", "intro": "Product model, variants, metafields, pricing and inventory.",
+      "subsections": [
+        { "id": "2.1", "title": "Catalogue size & variants" },
+        { "id": "2.2", "title": "Product types" },
+        { "id": "2.3", "title": "Catalogue data" },
+        { "id": "2.4", "title": "Pricing" },
+        { "id": "2.5", "title": "Inventory" }
+      ] },
+    { "id": "3", "title": "Markets & internationalisation", "intro": "Shopify Markets, currencies, languages, tax and duties.",
+      "subsections": [
+        { "id": "3.1", "title": "Markets at launch" },
+        { "id": "3.2", "title": "Language" },
+        { "id": "3.3", "title": "Currency & pricing" },
+        { "id": "3.4", "title": "Tax & duties" }
+      ] },
+    { "id": "4", "title": "Payments & checkout", "intro": "Payment providers, PCI scope and checkout customisation.",
+      "subsections": [
+        { "id": "4.1", "title": "Payments" },
+        { "id": "4.2", "title": "Checkout" },
+        { "id": "4.3", "title": "Fraud & risk" }
+      ] },
+    { "id": "5", "title": "Shipping & fulfilment", "intro": "Fulfilment model, locations, rates, returns and notifications.",
+      "subsections": [
+        { "id": "5.1", "title": "Fulfilment model" },
+        { "id": "5.2", "title": "Returns & exchanges" },
+        { "id": "5.3", "title": "Notifications" }
+      ] },
+    { "id": "6", "title": "Customers, B2B & privacy", "intro": "Customer accounts, B2B, loyalty, segmentation and personal-data obligations.",
+      "subsections": [
+        { "id": "6.1", "title": "Customer accounts" },
+        { "id": "6.2", "title": "B2B & wholesale" },
+        { "id": "6.3", "title": "Loyalty & segmentation" },
+        { "id": "6.4", "title": "Privacy & consent" }
+      ] },
+    { "id": "7", "title": "Marketing & promotions", "intro": "SEO, analytics, email, reviews, affiliates, discounts and campaigns.",
+      "subsections": [
+        { "id": "7.1", "title": "SEO" },
+        { "id": "7.2", "title": "Analytics & tracking" },
+        { "id": "7.3", "title": "Email & CRM" },
+        { "id": "7.4", "title": "Reviews & affiliates" },
+        { "id": "7.5", "title": "Discounts & coupons" },
+        { "id": "7.6", "title": "Gift cards & campaigns" }
+      ] },
+    { "id": "8", "title": "Integrations & migration", "intro": "Every system that exchanges data with the store, and what moves from the current platform.",
+      "subsections": [
+        { "id": "8.1", "title": "Connected systems" },
+        { "id": "8.2", "title": "Data migration" }
+      ] },
+    { "id": "9", "title": "Design & experience", "intro": "Design source, storefront approach, accessibility and performance.",
+      "subsections": [
+        { "id": "9.1", "title": "Design input" },
+        { "id": "9.2", "title": "Storefront" },
+        { "id": "9.3", "title": "Accessibility" },
+        { "id": "9.4", "title": "Performance" }
+      ] },
+    { "id": "10", "title": "Delivery, governance & compliance", "intro": "Timeline, decision-making, support, legal and project tooling.",
+      "subsections": [
+        { "id": "10.1", "title": "Timeline" },
+        { "id": "10.2", "title": "Team & decisions" },
+        { "id": "10.3", "title": "Support & training" },
+        { "id": "10.4", "title": "Legal & regulated industries" },
+        { "id": "10.5", "title": "Project set-up (consultant)" }
+      ] }
+  ],
+
+  "questions": [
+    { "id": "Q0.1.1", "subsection": "0.1", "priority": "required", "audience": "client", "answer_type": "long_text", "text": "What is the single biggest thing preventing your ecommerce from growing right now?", "maps_to": ["/business/primary_problem"] },
+    { "id": "Q0.1.2", "subsection": "0.1", "priority": "recommended", "audience": "client", "answer_type": "long_text", "text": "How long has this been a problem, and what have you already tried to fix it?", "maps_to": ["/business/problem_history"] },
+    { "id": "Q0.1.3", "subsection": "0.1", "priority": "recommended", "audience": "client", "answer_type": "long_text", "text": "If we solved only one thing in this engagement, what would have the highest business impact?", "maps_to": ["/business/highest_impact_fix"] },
+
+    { "id": "Q0.2.1", "subsection": "0.2", "priority": "recommended", "audience": "client", "answer_type": "money_range", "text": "What is your current monthly ecommerce revenue (range and currency)?", "maps_to": ["/business/revenue_monthly"] },
+    { "id": "Q0.2.2", "subsection": "0.2", "priority": "recommended", "audience": "client", "answer_type": "number", "text": "What is your current conversion rate (%)?", "maps_to": ["/business/conversion_rate_pct"] },
+    { "id": "Q0.2.3", "subsection": "0.2", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which product categories, markets or customer segments under-perform?", "maps_to": ["/business/underperforming_segments"] },
+    { "id": "Q0.2.4", "subsection": "0.2", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Is the main bottleneck acquisition (traffic), conversion (traffic doesn't buy) or retention (customers don't return)?", "maps_to": ["/business/bottleneck"] },
+
+    { "id": "Q0.3.1", "subsection": "0.3", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "What manual work does your team do today that the platform should automate, and which processes break most often?", "maps_to": ["/business/operational_pain"] },
+    { "id": "Q0.3.2", "subsection": "0.3", "priority": "optional", "audience": "client", "answer_type": "number", "text": "How many hours per week does the team spend on workarounds?", "maps_to": ["/business/workaround_hours_per_week"] },
+
+    { "id": "Q0.4.1", "subsection": "0.4", "priority": "required", "audience": "client", "answer_type": "list", "text": "What does success look like in 12 months (revenue, new markets, channels, customer volume)?", "maps_to": ["/business/growth_goals"] },
+    { "id": "Q0.4.2", "subsection": "0.4", "priority": "required", "audience": "client", "answer_type": "table", "text": "Which KPIs will measure success? For each: metric, today's baseline, target, horizon in months.", "maps_to": ["/business/kpis"] },
+
+    { "id": "Q0.5.1", "subsection": "0.5", "priority": "recommended", "audience": "client", "answer_type": "long_text", "text": "What triggered this engagement — why Shopify, and why now?", "maps_to": ["/business/engagement_trigger"] },
+    { "id": "Q0.5.2", "subsection": "0.5", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "If you are moving from another platform, what must not be lost in the transition?", "maps_to": ["/business/must_preserve"] },
+    { "id": "Q0.5.3", "subsection": "0.5", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "What are you most unhappy with in the current store or set-up?", "maps_to": ["/business/current_frustrations"] },
+
+    { "id": "Q0.6.1", "subsection": "0.6", "priority": "required", "audience": "client", "answer_type": "money_range", "text": "What is the approximate budget envelope for this project (range and currency)?", "maps_to": ["/business/budget/min", "/business/budget/max", "/business/budget/currency"] },
+    { "id": "Q0.6.2", "subsection": "0.6", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Is the priority to minimise upfront cost (apps and configuration), to own the solution (custom build), or a balance?", "maps_to": ["/business/budget/priority"] },
+    { "id": "Q0.6.3", "subsection": "0.6", "priority": "optional", "audience": "client", "answer_type": "money", "text": "Is there a monthly ceiling for app subscriptions?", "maps_to": ["/business/app_cost_ceiling_monthly"] },
+
+    { "id": "Q1.1.1", "subsection": "1.1", "priority": "required", "audience": "client", "answer_type": "group", "text": "Trading name and legal entity name (if different).", "maps_to": ["/meta/client/name", "/meta/client/legal_name"] },
+    { "id": "Q1.1.2", "subsection": "1.1", "priority": "required", "audience": "client", "answer_type": "country", "text": "Country of incorporation / headquarters.", "maps_to": ["/meta/client/hq_country"] },
+    { "id": "Q1.1.3", "subsection": "1.1", "priority": "required", "audience": "client", "answer_type": "text", "text": "Industry and product vertical.", "maps_to": ["/meta/client/industry"], "feeds": ["exit:11.8"] },
+    { "id": "Q1.1.4", "subsection": "1.1", "priority": "required", "audience": "client", "answer_type": "enum", "text": "Is the business direct-to-consumer, B2B, or hybrid?", "maps_to": ["/meta/client/business_model"], "feeds": ["gate:b2b"] },
+    { "id": "Q1.1.5", "subsection": "1.1", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Current website URL.", "maps_to": ["/meta/client/website"] },
+
+    { "id": "Q1.2.1", "subsection": "1.2", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Is there an existing Shopify store?", "maps_to": ["/shopify/existing_store"] },
+    { "id": "Q1.2.2", "subsection": "1.2", "priority": "recommended", "audience": "client", "answer_type": "group", "text": "Existing store URL, current Shopify plan and current theme.", "maps_to": ["/shopify/store_url", "/shopify/current_plan", "/shopify/current_theme"], "skip_if": { "question": "Q1.2.1", "equals": false } },
+    { "id": "Q1.2.3", "subsection": "1.2", "priority": "required", "audience": "client", "answer_type": "enum", "text": "Which Shopify plan will the new store run on? (All Foundation and Scale offers assume Shopify Plus.)", "maps_to": ["/shopify/target_plan"], "feeds": ["exit:11.1"] },
+
+    { "id": "Q1.3.1", "subsection": "1.3", "priority": "required", "audience": "consultant", "answer_type": "enum", "text": "How is the brand positioned (value, mid-market, premium, luxury, enterprise)?", "help": "Luxury or enterprise positioning routes the engagement to the Growth (L) offer.", "maps_to": ["/brand/positioning"], "feeds": ["l_trigger:luxury"] },
+    { "id": "Q1.3.2", "subsection": "1.3", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is the brand identity finalised (logo, colour palette, typography)?", "maps_to": ["/brand/identity_ready"] },
+    { "id": "Q1.3.3", "subsection": "1.3", "priority": "optional", "audience": "client", "answer_type": "list", "text": "In which formats are brand assets available (SVG, PNG, Figma, guidelines PDF)?", "maps_to": ["/brand/asset_formats"], "skip_if": { "question": "Q1.3.2", "equals": false } },
+    { "id": "Q1.3.4", "subsection": "1.3", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Are there strict brand guidelines that must be followed?", "maps_to": ["/brand/has_guidelines"] },
+    { "id": "Q1.3.5", "subsection": "1.3", "priority": "optional", "audience": "client", "answer_type": "list", "text": "What differentiates the brand — price, quality, exclusivity, community, sustainability?", "maps_to": ["/brand/differentiators"] },
+
+    { "id": "Q1.4.1", "subsection": "1.4", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Who are your top three online competitors?", "maps_to": ["/brand/competitors"] },
+    { "id": "Q1.4.2", "subsection": "1.4", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which stores (competitor or not) have a UX you want to reference?", "maps_to": ["/brand/ux_references"] },
+
+    { "id": "Q2.1.1", "subsection": "2.1", "priority": "required", "audience": "client", "answer_type": "integer", "text": "How many active SKUs are in the catalogue (approximate)?", "maps_to": ["/catalogue/sku_count"], "feeds": ["gate:sku_complexity"] },
+    { "id": "Q2.1.2", "subsection": "2.1", "priority": "required", "audience": "client", "answer_type": "integer", "text": "What is the maximum number of variant options on a product (e.g. size, colour, material = 3)?", "help": "More than 3 options is a hard stop (11.5).", "maps_to": ["/catalogue/variant_options_max"], "feeds": ["exit:11.5", "gate:sku_complexity"] },
+    { "id": "Q2.1.3", "subsection": "2.1", "priority": "recommended", "audience": "client", "answer_type": "integer", "text": "What is the maximum number of variants on a single product?", "maps_to": ["/catalogue/variants_per_product_max"] },
+
+    { "id": "Q2.2.1", "subsection": "2.2", "priority": "required", "audience": "client", "answer_type": "multi_enum", "text": "Which product types exist in the catalogue?", "maps_to": ["/catalogue/product_types"], "feeds": ["gate:sku_complexity"] },
+    { "id": "Q2.2.2", "subsection": "2.2", "priority": "recommended", "audience": "client", "answer_type": "text", "text": "Which subscription app is used or preferred?", "maps_to": ["/catalogue/subscription_app"], "skip_if": { "question": "Q2.2.1", "excludes": "subscription" } },
+
+    { "id": "Q2.3.1", "subsection": "2.3", "priority": "optional", "audience": "client", "answer_type": "integer", "text": "Roughly how many collections?", "maps_to": ["/catalogue/collections_estimate"] },
+    { "id": "Q2.3.2", "subsection": "2.3", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Are collections manual, rule-based (automated), or mixed?", "maps_to": ["/catalogue/collection_mode"] },
+    { "id": "Q2.3.3", "subsection": "2.3", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "Which product attributes go beyond Shopify's standard fields (technical specs, certifications, fit guides, ingredients)?", "maps_to": ["/catalogue/custom_attributes"], "feeds": ["gate:sku_complexity"] },
+    { "id": "Q2.3.4", "subsection": "2.3", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Where is catalogue data maintained today?", "maps_to": ["/catalogue/data_source"] },
+
+    { "id": "Q2.4.1", "subsection": "2.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Are there multiple price tiers (retail, trade, VIP)?", "maps_to": ["/catalogue/pricing/multiple_price_tiers"] },
+    { "id": "Q2.4.2", "subsection": "2.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is there volume or quantity-tiered pricing?", "maps_to": ["/catalogue/pricing/volume_pricing"] },
+    { "id": "Q2.4.3", "subsection": "2.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Do prices differ by market (not just currency conversion)?", "maps_to": ["/catalogue/pricing/market_specific"] },
+
+    { "id": "Q2.5.1", "subsection": "2.5", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Where is the inventory source of truth — Shopify, ERP, WMS, other?", "maps_to": ["/catalogue/inventory/source"] },
+    { "id": "Q2.5.2", "subsection": "2.5", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Are low-stock alerts needed?", "maps_to": ["/catalogue/inventory/low_stock_alerts"] },
+    { "id": "Q2.5.3", "subsection": "2.5", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "What should happen when a product is out of stock?", "maps_to": ["/catalogue/inventory/out_of_stock_behaviour"] },
+
+    { "id": "Q3.1.1", "subsection": "3.1", "priority": "required", "audience": "client", "answer_type": "table", "text": "Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain.", "help": "More than 5 markets (11.3) or more than 6 distinct languages (11.4) is a hard stop.", "maps_to": ["/markets/list"], "feeds": ["gate:markets", "gate:multi_currency", "exit:11.3", "exit:11.4"] },
+    { "id": "Q3.1.2", "subsection": "3.1", "priority": "required", "audience": "client", "answer_type": "country", "text": "Which is the primary market?", "maps_to": ["/markets/primary_market"] },
+    { "id": "Q3.1.3", "subsection": "3.1", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which countries are planned in the next 12 months?", "maps_to": ["/markets/expansion_12m"] },
+    { "id": "Q3.1.4", "subsection": "3.1", "priority": "recommended", "audience": "consultant", "answer_type": "enum", "text": "One store with Shopify Markets, separate expansion stores, or hybrid?", "help": "Expansion stores require Shopify Plus (11.1).", "maps_to": ["/markets/strategy"], "feeds": ["exit:11.1"] },
+    { "id": "Q3.1.5", "subsection": "3.1", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Should visitors be redirected to their local market automatically?", "maps_to": ["/markets/geo_redirect"] },
+
+    { "id": "Q3.2.1", "subsection": "3.2", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "How will translation be handled?", "maps_to": ["/markets/translation_method"] },
+    { "id": "Q3.2.2", "subsection": "3.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Does any language need right-to-left layout?", "maps_to": ["/markets/rtl_required"] },
+    { "id": "Q3.2.3", "subsection": "3.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Is SEO per language a priority?", "maps_to": ["/markets/seo_per_language"] },
+
+    { "id": "Q3.3.1", "subsection": "3.3", "priority": "required", "audience": "client", "answer_type": "enum", "text": "Per market: is it the store's base currency, or are prices auto-converted, manually set, or display-only (checkout in another currency)?", "help": "More than one transactional currency activates the multi-currency scope gate.", "maps_to": ["/markets/list/*/price_strategy"], "feeds": ["gate:multi_currency"] },
+
+    { "id": "Q3.4.1", "subsection": "3.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Should duties and import taxes be collected at checkout (DDP)?", "maps_to": ["/markets/duties_ddp"] },
+    { "id": "Q3.4.2", "subsection": "3.4", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "In which countries are you VAT-registered?", "maps_to": ["/markets/vat_countries"] },
+    { "id": "Q3.4.3", "subsection": "3.4", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you sell into the US with state sales tax obligations?", "maps_to": ["/markets/us_sales_tax"] },
+
+    { "id": "Q4.1.1", "subsection": "4.1", "priority": "required", "audience": "client", "answer_type": "list", "text": "Which payment providers will you use (Shopify Payments, Adyen, Stripe, PayPal…)?", "maps_to": ["/payments/providers"] },
+    { "id": "Q4.1.2", "subsection": "4.1", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "Which local payment methods are required (TWINT, iDEAL, Bancontact, SEPA, invoice…)?", "maps_to": ["/payments/local_methods"] },
+    { "id": "Q4.1.3", "subsection": "4.1", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which buy-now-pay-later providers, if any?", "maps_to": ["/payments/bnpl"] },
+    { "id": "Q4.1.4", "subsection": "4.1", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you need settlement in multiple currencies?", "maps_to": ["/payments/multi_currency_settlement"] },
+    { "id": "Q4.1.5", "subsection": "4.1", "priority": "required", "audience": "consultant", "answer_type": "enum", "text": "Will card data be handled only by Shopify-hosted checkout, by a third-party hosted payment page, or by custom card UI / tokenisation?", "help": "Custom card handling is a hard stop (11.9).", "maps_to": ["/payments/pci_scope"], "feeds": ["exit:11.9"] },
+
+    { "id": "Q4.2.1", "subsection": "4.2", "priority": "required", "audience": "client", "answer_type": "enum", "text": "What level of checkout customisation is needed: none, Checkout Extensibility (branding, extra fields, upsells), or a fully custom checkout UI?", "help": "Extensibility requires Shopify Plus (11.1); a custom checkout UI is a hard stop (11.6).", "maps_to": ["/checkout/customisation"], "feeds": ["exit:11.1", "exit:11.6"] },
+    { "id": "Q4.2.2", "subsection": "4.2", "priority": "optional", "audience": "consultant", "answer_type": "list", "text": "Which checkout extensions are needed?", "maps_to": ["/checkout/extensions"], "skip_if": { "question": "Q4.2.1", "equals": "none" } },
+    { "id": "Q4.2.3", "subsection": "4.2", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which custom checkout fields are needed (company, VAT number, PO number, delivery instructions)?", "maps_to": ["/checkout/custom_fields"] },
+    { "id": "Q4.2.4", "subsection": "4.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Are post-purchase upsells needed?", "maps_to": ["/checkout/post_purchase_upsell"] },
+    { "id": "Q4.2.5", "subsection": "4.2", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Will gift cards be sold or accepted at checkout?", "maps_to": ["/checkout/gift_cards"] },
+    { "id": "Q4.2.6", "subsection": "4.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Is store credit needed?", "maps_to": ["/checkout/store_credit"] },
+
+    { "id": "Q4.3.1", "subsection": "4.3", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Is manual fraud review needed for high-value orders?", "maps_to": ["/checkout/fraud_manual_review"] },
+    { "id": "Q4.3.2", "subsection": "4.3", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Are there order restrictions by country, customer type or order value?", "maps_to": ["/checkout/order_restrictions"] },
+
+    { "id": "Q5.1.1", "subsection": "5.1", "priority": "required", "audience": "client", "answer_type": "enum", "text": "Do you fulfil in-house, through a 3PL, or both?", "maps_to": ["/shipping/model"] },
+    { "id": "Q5.1.2", "subsection": "5.1", "priority": "recommended", "audience": "client", "answer_type": "text", "text": "Which 3PL provider?", "maps_to": ["/shipping/provider_3pl"], "skip_if": { "question": "Q5.1.1", "equals": "in_house" } },
+    { "id": "Q5.1.3", "subsection": "5.1", "priority": "required", "audience": "client", "answer_type": "integer", "text": "How many fulfilment locations are there?", "maps_to": ["/shipping/fulfilment_locations"], "feeds": ["exit:11.13"] },
+    { "id": "Q5.1.4", "subsection": "5.1", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Are there complex routing rules deciding which location fulfils an order?", "maps_to": ["/shipping/complex_routing"], "feeds": ["exit:11.13"] },
+    { "id": "Q5.1.5", "subsection": "5.1", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "Which carriers do you use?", "maps_to": ["/shipping/carriers"] },
+    { "id": "Q5.1.6", "subsection": "5.1", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Are shipping rates calculated live, flat, free above a threshold, or mixed?", "maps_to": ["/shipping/rates"] },
+    { "id": "Q5.1.7", "subsection": "5.1", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Are there product-specific shipping rules (heavy, hazardous, temperature-controlled)?", "maps_to": ["/shipping/special_rules"] },
+    { "id": "Q5.1.8", "subsection": "5.1", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Do you ship internationally?", "maps_to": ["/shipping/international"] },
+    { "id": "Q5.1.9", "subsection": "5.1", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which countries do you not ship to?", "maps_to": ["/shipping/excluded_countries"], "skip_if": { "question": "Q5.1.8", "equals": false } },
+
+    { "id": "Q5.2.1", "subsection": "5.2", "priority": "recommended", "audience": "client", "answer_type": "long_text", "text": "Summarise the returns policy (window, conditions, who pays return postage).", "maps_to": ["/shipping/returns/policy"] },
+    { "id": "Q5.2.2", "subsection": "5.2", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is a self-service returns portal needed?", "maps_to": ["/shipping/returns/portal"] },
+    { "id": "Q5.2.3", "subsection": "5.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you process exchanges (not only refunds)?", "maps_to": ["/shipping/returns/exchanges"] },
+    { "id": "Q5.2.4", "subsection": "5.2", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Which returns solution is used or preferred?", "maps_to": ["/shipping/returns/solution"] },
+
+    { "id": "Q5.3.1", "subsection": "5.3", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do order, shipping and delivery notifications need custom design or content?", "maps_to": ["/shipping/notifications/custom"] },
+    { "id": "Q5.3.2", "subsection": "5.3", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Are notifications sent by Shopify, by the email platform, or both?", "maps_to": ["/shipping/notifications/sender"] },
+
+    { "id": "Q6.1.1", "subsection": "6.1", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Is guest checkout the default, are accounts optional, or is registration required?", "maps_to": ["/customers/account_requirement"] },
+    { "id": "Q6.1.2", "subsection": "6.1", "priority": "recommended", "audience": "consultant", "answer_type": "enum", "text": "New customer accounts (passwordless) or classic accounts?", "maps_to": ["/customers/account_type"] },
+    { "id": "Q6.1.3", "subsection": "6.1", "priority": "optional", "audience": "client", "answer_type": "list", "text": "What should the account area include (order history, addresses, returns, wishlist, subscriptions)?", "maps_to": ["/customers/account_features"] },
+
+    { "id": "Q6.2.1", "subsection": "6.2", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Do you sell to business customers (B2B / wholesale)?", "maps_to": ["/b2b/enabled"], "feeds": ["gate:b2b", "exit:11.1"] },
+    { "id": "Q6.2.2", "subsection": "6.2", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Do B2B customers need company accounts with their own login?", "maps_to": ["/b2b/company_accounts"], "feeds": ["gate:b2b"], "skip_if": { "question": "Q6.2.1", "equals": false } },
+    { "id": "Q6.2.3", "subsection": "6.2", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Do B2B customers get company-specific price lists?", "maps_to": ["/b2b/price_lists"], "feeds": ["gate:b2b"], "skip_if": { "question": "Q6.2.1", "equals": false } },
+    { "id": "Q6.2.4", "subsection": "6.2", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Are there B2B volume discounts or quantity rules?", "maps_to": ["/b2b/volume_discounts"], "feeds": ["gate:b2b"], "skip_if": { "question": "Q6.2.1", "equals": false } },
+    { "id": "Q6.2.5", "subsection": "6.2", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "Which payment terms are needed (net 30, invoice, purchase order)?", "maps_to": ["/b2b/payment_terms"], "skip_if": { "question": "Q6.2.1", "equals": false } },
+    { "id": "Q6.2.6", "subsection": "6.2", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Is there a request-for-quote workflow, or is pricing negotiated per buyer?", "help": "An RFQ / negotiated-pricing workflow is a hard stop (11.2).", "maps_to": ["/b2b/rfq_or_negotiated_pricing"], "feeds": ["exit:11.2"], "skip_if": { "question": "Q6.2.1", "equals": false } },
+    { "id": "Q6.2.7", "subsection": "6.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Must B2B accounts be approved before they can order?", "maps_to": ["/b2b/approval_workflow"], "skip_if": { "question": "Q6.2.1", "equals": false } },
+    { "id": "Q6.2.8", "subsection": "6.2", "priority": "recommended", "audience": "consultant", "answer_type": "enum", "text": "Native Shopify B2B or an app?", "maps_to": ["/b2b/approach"], "skip_if": { "question": "Q6.2.1", "equals": false } },
+    { "id": "Q6.2.9", "subsection": "6.2", "priority": "optional", "audience": "client", "answer_type": "integer", "text": "How many B2B accounts are expected within 12 months?", "maps_to": ["/b2b/expected_accounts"], "skip_if": { "question": "Q6.2.1", "equals": false } },
+
+    { "id": "Q6.3.1", "subsection": "6.3", "priority": "recommended", "audience": "client", "answer_type": "multi_enum", "text": "Which loyalty components are planned?", "maps_to": ["/loyalty/components"] },
+    { "id": "Q6.3.2", "subsection": "6.3", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Is loyalty needed at launch or in a later phase?", "maps_to": ["/loyalty/phase"] },
+    { "id": "Q6.3.3", "subsection": "6.3", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Which loyalty app is used or preferred?", "maps_to": ["/loyalty/app"] },
+    { "id": "Q6.3.4", "subsection": "6.3", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Must loyalty status sync to the email platform or CRM?", "maps_to": ["/loyalty/esp_sync"] },
+    { "id": "Q6.3.5", "subsection": "6.3", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which customer segments do you use today?", "maps_to": ["/customers/segments"] },
+    { "id": "Q6.3.6", "subsection": "6.3", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Where is segmentation driven from — Shopify, the email platform, a CDP, or a mix?", "maps_to": ["/customers/segmentation_source"] },
+    { "id": "Q6.3.7", "subsection": "6.3", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which customer tags drive custom logic today (pricing, access, discounts)?", "maps_to": ["/customers/tags_in_use"] },
+
+    { "id": "Q6.4.1", "subsection": "6.4", "priority": "required", "audience": "consultant", "answer_type": "multi_enum", "text": "Which privacy regimes apply to your customers (GDPR, UK GDPR, CCPA, Swiss nFADP)?", "maps_to": ["/compliance/privacy_regimes"] },
+    { "id": "Q6.4.2", "subsection": "6.4", "priority": "recommended", "audience": "client", "answer_type": "text", "text": "Which cookie consent tool is used or preferred?", "maps_to": ["/compliance/cookie_consent_tool"] },
+    { "id": "Q6.4.3", "subsection": "6.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is explicit opt-in required for marketing emails?", "maps_to": ["/compliance/marketing_opt_in"] },
+    { "id": "Q6.4.4", "subsection": "6.4", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Do you collect sensitive personal data (health, age, biometric, financial)?", "maps_to": ["/compliance/sensitive_data"] },
+    { "id": "Q6.4.5", "subsection": "6.4", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Is a workflow needed for customer data export or deletion requests?", "help": "Flag 11.10 — needs legal sign-off.", "maps_to": ["/compliance/gdpr_deletion_workflow"], "feeds": ["exit:11.10"] },
+
+    { "id": "Q7.1.1", "subsection": "7.1", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is organic search a significant traffic channel?", "maps_to": ["/marketing/seo/priority_channel"] },
+    { "id": "Q7.1.2", "subsection": "7.1", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Are custom URL structures needed?", "maps_to": ["/marketing/seo/custom_urls"] },
+    { "id": "Q7.1.3", "subsection": "7.1", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Who manages SEO?", "maps_to": ["/marketing/seo/owner"] },
+
+    { "id": "Q7.2.1", "subsection": "7.2", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "Which analytics platforms do you use (GA4, Adobe, other)?", "maps_to": ["/marketing/analytics/platforms"] },
+    { "id": "Q7.2.2", "subsection": "7.2", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is server-side tracking needed?", "maps_to": ["/marketing/analytics/server_side"] },
+    { "id": "Q7.2.3", "subsection": "7.2", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "Which advertising pixels are needed (Meta, TikTok, Pinterest, Google Ads)?", "maps_to": ["/marketing/analytics/pixels"] },
+    { "id": "Q7.2.4", "subsection": "7.2", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Is a tag manager already configured?", "maps_to": ["/marketing/analytics/tag_manager"] },
+    { "id": "Q7.2.5", "subsection": "7.2", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which custom events must be tracked beyond standard ecommerce events?", "maps_to": ["/marketing/analytics/custom_events"] },
+
+    { "id": "Q7.3.1", "subsection": "7.3", "priority": "recommended", "audience": "client", "answer_type": "text", "text": "Which email / CRM platform do you use or plan to use?", "maps_to": ["/marketing/esp/platform"] },
+    { "id": "Q7.3.2", "subsection": "7.3", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which automated flows are needed (welcome, abandoned cart, post-purchase, win-back)?", "maps_to": ["/marketing/esp/flows"] },
+    { "id": "Q7.3.3", "subsection": "7.3", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Is Shopify or the email platform the master for customer segments?", "maps_to": ["/marketing/esp/segments_master"] },
+
+    { "id": "Q7.4.1", "subsection": "7.4", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Which product reviews app is used or preferred?", "maps_to": ["/marketing/reviews/app"] },
+    { "id": "Q7.4.2", "subsection": "7.4", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Is user-generated content important (customer photos, social embeds)?", "maps_to": ["/marketing/reviews/ugc"] },
+    { "id": "Q7.4.3", "subsection": "7.4", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Which affiliate platform, if any?", "maps_to": ["/marketing/affiliate/platform"] },
+    { "id": "Q7.4.4", "subsection": "7.4", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do you use Shopify Collabs for influencers?", "maps_to": ["/marketing/affiliate/shopify_collabs"] },
+    { "id": "Q7.4.5", "subsection": "7.4", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Are affiliate and influencer sales tracked via discount codes, UTM parameters, or both?", "maps_to": ["/marketing/affiliate/tracking"] },
+
+    { "id": "Q7.5.1", "subsection": "7.5", "priority": "recommended", "audience": "client", "answer_type": "multi_enum", "text": "Which discount types are used?", "maps_to": ["/promotions/discount_types"] },
+    { "id": "Q7.5.2", "subsection": "7.5", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Which discounts must stack (none, one code plus one automatic, or more)?", "help": "Beyond one code plus one automatic discount needs a discount function (T3).", "maps_to": ["/promotions/stacking"] },
+    { "id": "Q7.5.3", "subsection": "7.5", "priority": "optional", "audience": "client", "answer_type": "multi_enum", "text": "Are coupon codes single-use, multi-use, or bulk-generated?", "maps_to": ["/promotions/coupons/usage"] },
+    { "id": "Q7.5.4", "subsection": "7.5", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Must codes be brand-named (e.g. WELCOME20)?", "maps_to": ["/promotions/coupons/branded"] },
+    { "id": "Q7.5.5", "subsection": "7.5", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do codes need minimum order values or quantities?", "maps_to": ["/promotions/coupons/minimum_threshold"] },
+    { "id": "Q7.5.6", "subsection": "7.5", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Do codes expire on a fixed date, a rolling period, or never?", "maps_to": ["/promotions/coupons/expiry"] },
+    { "id": "Q7.5.7", "subsection": "7.5", "priority": "optional", "audience": "client", "answer_type": "list", "text": "How are codes distributed (email, SMS, print, influencers)?", "maps_to": ["/promotions/coupons/distribution"] },
+
+    { "id": "Q7.6.1", "subsection": "7.6", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Are gift cards sold as a product?", "maps_to": ["/promotions/gift_cards/as_product"] },
+    { "id": "Q7.6.2", "subsection": "7.6", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Are gift cards issued as rewards or compensation?", "maps_to": ["/promotions/gift_cards/as_reward"] },
+    { "id": "Q7.6.3", "subsection": "7.6", "priority": "optional", "audience": "client", "answer_type": "enum", "text": "Digital gift cards, physical, or both?", "maps_to": ["/promotions/gift_cards/format"] },
+    { "id": "Q7.6.4", "subsection": "7.6", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Must gift cards expire?", "maps_to": ["/promotions/gift_cards/expiry"] },
+    { "id": "Q7.6.5", "subsection": "7.6", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Are promotions triggered from email or SMS campaigns?", "maps_to": ["/promotions/campaigns/esp_triggered"] },
+    { "id": "Q7.6.6", "subsection": "7.6", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Does each campaign need its own landing page?", "maps_to": ["/promotions/campaigns/landing_pages"] },
+    { "id": "Q7.6.7", "subsection": "7.6", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Are countdown timers or urgency elements needed?", "maps_to": ["/promotions/campaigns/countdown_timer"] },
+    { "id": "Q7.6.8", "subsection": "7.6", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Do promotions differ by market?", "maps_to": ["/promotions/campaigns/market_specific"] },
+
+    { "id": "Q8.1.1", "subsection": "8.1", "priority": "required", "audience": "client", "answer_type": "table", "text": "List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status.", "help": "Any ERP, PIM, CRM, 3PL/WMS, OMS or custom connection activates the integration gate; more than 3 is a hard stop (11.7).", "maps_to": ["/integrations"], "feeds": ["gate:integration", "exit:11.7", "exit:11.12"] },
+    { "id": "Q8.1.2", "subsection": "8.1", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Is there a middleware / iPaaS layer (Celigo, Boomi, MuleSoft, custom)?", "maps_to": ["/integrations/*/middleware"] },
+
+    { "id": "Q8.2.1", "subsection": "8.2", "priority": "required", "audience": "client", "answer_type": "enum", "text": "Which platform are you migrating from (or none — greenfield)?", "maps_to": ["/migration/source_platform"], "feeds": ["gate:migration"] },
+    { "id": "Q8.2.2", "subsection": "8.2", "priority": "recommended", "audience": "client", "answer_type": "multi_enum", "text": "Which data must be migrated?", "maps_to": ["/migration/data"], "skip_if": { "question": "Q8.2.1", "equals": "none" } },
+    { "id": "Q8.2.3", "subsection": "8.2", "priority": "recommended", "audience": "client", "answer_type": "group", "text": "Approximate volumes: products, customers, orders, URL redirects.", "maps_to": ["/migration/volumes/products", "/migration/volumes/customers", "/migration/volumes/orders", "/migration/volumes/redirects"], "feeds": ["exit:11.14"], "skip_if": { "question": "Q8.2.1", "equals": "none" } },
+    { "id": "Q8.2.4", "subsection": "8.2", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Must historical orders be available inside Shopify?", "maps_to": ["/migration/historical_orders_required"], "feeds": ["exit:11.14"], "skip_if": { "question": "Q8.2.1", "equals": "none" } },
+    { "id": "Q8.2.5", "subsection": "8.2", "priority": "required", "audience": "consultant", "answer_type": "enum", "text": "How much SEO equity (rankings, backlinks) must be preserved?", "maps_to": ["/migration/seo_equity"], "feeds": ["exit:11.14"], "skip_if": { "question": "Q8.2.1", "equals": "none" } },
+
+    { "id": "Q9.1.1", "subsection": "9.1", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Is there a Figma file or design mockup for the new store?", "maps_to": ["/design/figma/exists"], "feeds": ["l_trigger:figma_design_system"] },
+    { "id": "Q9.1.2", "subsection": "9.1", "priority": "required", "audience": "client", "answer_type": "enum", "text": "How complete is it — brand only, key screens, or every template?", "maps_to": ["/design/figma/completeness"], "feeds": ["l_trigger:figma_design_system"], "skip_if": { "question": "Q9.1.1", "equals": false } },
+    { "id": "Q9.1.3", "subsection": "9.1", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Does the Figma file contain a full design system (tokens and components)?", "maps_to": ["/design/figma/design_system"], "feeds": ["l_trigger:figma_design_system"], "skip_if": { "question": "Q9.1.1", "equals": false } },
+    { "id": "Q9.1.4", "subsection": "9.1", "priority": "optional", "audience": "consultant", "answer_type": "boolean", "text": "Is the design mapped to Shopify sections and blocks?", "maps_to": ["/design/figma/mapped_to_sections"], "skip_if": { "question": "Q9.1.1", "equals": false } },
+    { "id": "Q9.1.5", "subsection": "9.1", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is a fully custom design required, rather than a theme with brand customisation?", "maps_to": ["/design/custom_design"] },
+
+    { "id": "Q9.2.1", "subsection": "9.2", "priority": "required", "audience": "client", "answer_type": "boolean", "text": "Is a headless storefront required (Hydrogen, another framework, or a native app front end)?", "help": "A headless requirement routes the engagement to the Growth (L) offer.", "maps_to": ["/design/headless_required"], "feeds": ["l_trigger:headless"] },
+    { "id": "Q9.2.2", "subsection": "9.2", "priority": "optional", "audience": "client", "answer_type": "text", "text": "Any theme preferences or existing theme licences?", "maps_to": ["/design/theme_preference"] },
+    { "id": "Q9.2.3", "subsection": "9.2", "priority": "optional", "audience": "client", "answer_type": "text", "text": "What is the aesthetic direction (minimal, editorial, luxury, playful, utilitarian)?", "maps_to": ["/design/aesthetic"] },
+    { "id": "Q9.2.4", "subsection": "9.2", "priority": "recommended", "audience": "client", "answer_type": "list", "text": "Which interactive patterns are required (mega-menu, quick-add, swatches, predictive search, lookbook, video hero)?", "maps_to": ["/design/interactive_patterns"] },
+    { "id": "Q9.2.5", "subsection": "9.2", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is custom motion or animation required?", "maps_to": ["/design/motion"] },
+
+    { "id": "Q9.3.1", "subsection": "9.3", "priority": "required", "audience": "client", "answer_type": "enum", "text": "Which accessibility standard applies?", "maps_to": ["/design/accessibility/target"] },
+    { "id": "Q9.3.2", "subsection": "9.3", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Has an accessibility audit been done on the current site?", "maps_to": ["/design/accessibility/audit_done"] },
+
+    { "id": "Q9.4.1", "subsection": "9.4", "priority": "optional", "audience": "client", "answer_type": "group", "text": "Core Web Vitals targets: LCP (seconds), CLS, INP (milliseconds).", "maps_to": ["/design/performance/lcp_s", "/design/performance/cls", "/design/performance/inp_ms"] },
+    { "id": "Q9.4.2", "subsection": "9.4", "priority": "recommended", "audience": "client", "answer_type": "boolean", "text": "Is page speed a known problem today?", "maps_to": ["/design/performance/known_problem"] },
+    { "id": "Q9.4.3", "subsection": "9.4", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which third-party scripts must load (chat, personalisation, heatmaps)?", "maps_to": ["/design/performance/third_party_scripts"] },
+
+    { "id": "Q10.1.1", "subsection": "10.1", "priority": "required", "audience": "client", "answer_type": "date", "text": "What is the target go-live date?", "help": "Fewer weeks than the offer's minimum duration raises flag 11.15.", "maps_to": ["/delivery/target_launch_date"], "feeds": ["exit:11.15"] },
+    { "id": "Q10.1.2", "subsection": "10.1", "priority": "recommended", "audience": "client", "answer_type": "text", "text": "What drives the deadline (peak season, product launch, contract end)?", "maps_to": ["/delivery/hard_deadline_reason"] },
+    { "id": "Q10.1.3", "subsection": "10.1", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Is a phased launch planned?", "maps_to": ["/delivery/phased_launch"] },
+    { "id": "Q10.1.4", "subsection": "10.1", "priority": "recommended", "audience": "client", "answer_type": "date", "text": "Preferred project kick-off date.", "maps_to": ["/delivery/kickoff_date"] },
+
+    { "id": "Q10.2.1", "subsection": "10.2", "priority": "required", "audience": "client", "answer_type": "table", "text": "Who is involved on the client side? For each: role, RACI (R/A/C/I), decision-maker (yes/no). Names are optional.", "maps_to": ["/stakeholders"] },
+    { "id": "Q10.2.2", "subsection": "10.2", "priority": "required", "audience": "consultant", "answer_type": "boolean", "text": "Is there a single decision-maker for scope, approvals and feedback?", "help": "No single decision-maker is a stop (11.16).", "maps_to": ["/delivery/decision_maker_confirmed"], "feeds": ["exit:11.16"] },
+    { "id": "Q10.2.3", "subsection": "10.2", "priority": "required", "audience": "consultant", "answer_type": "boolean", "text": "Is budget approval authority clear?", "maps_to": ["/delivery/budget_authority_clear"], "feeds": ["exit:11.16"] },
+    { "id": "Q10.2.4", "subsection": "10.2", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which roles need Shopify admin access after go-live?", "maps_to": ["/delivery/admin_roles"] },
+
+    { "id": "Q10.3.1", "subsection": "10.3", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which training is needed (products, orders, discounts, reports)?", "maps_to": ["/delivery/training"] },
+    { "id": "Q10.3.2", "subsection": "10.3", "priority": "optional", "audience": "client", "answer_type": "boolean", "text": "Are written SOPs required?", "maps_to": ["/delivery/sops_required"] },
+    { "id": "Q10.3.3", "subsection": "10.3", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "What post-launch support model is expected?", "maps_to": ["/delivery/support_model"] },
+    { "id": "Q10.3.4", "subsection": "10.3", "priority": "required", "audience": "consultant", "answer_type": "boolean", "text": "Is the Grow retainer signed?", "help": "Not signed on M or L: warning 11.11 (commercial adjustment).", "maps_to": ["/delivery/grow_retainer/signed"], "feeds": ["exit:11.11"] },
+    { "id": "Q10.3.5", "subsection": "10.3", "priority": "recommended", "audience": "consultant", "answer_type": "integer", "text": "Retainer length in months.", "maps_to": ["/delivery/grow_retainer/months"], "skip_if": { "question": "Q10.3.4", "equals": false } },
+
+    { "id": "Q10.4.1", "subsection": "10.4", "priority": "required", "audience": "client", "answer_type": "group", "text": "Is the business in a regulated industry (pharma, alcohol, firearms, age-restricted goods, financial products, medical devices)? If yes, which?", "help": "A regulated industry is a hard stop until legal review (11.8).", "maps_to": ["/compliance/regulated_industry/active", "/compliance/regulated_industry/category"], "feeds": ["exit:11.8"] },
+    { "id": "Q10.4.2", "subsection": "10.4", "priority": "recommended", "audience": "client", "answer_type": "enum", "text": "Are legal pages (terms, privacy, cookies, returns) ready, in need of updates, or still to be drafted?", "maps_to": ["/compliance/legal_pages_status"] },
+    { "id": "Q10.4.3", "subsection": "10.4", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Any other industry-specific compliance requirements?", "maps_to": ["/compliance/industry_requirements"] },
+
+    { "id": "Q10.5.1", "subsection": "10.5", "priority": "required", "audience": "consultant", "answer_type": "text", "text": "Lead consultant.", "maps_to": ["/meta/consultant/name"] },
+    { "id": "Q10.5.2", "subsection": "10.5", "priority": "required", "audience": "consultant", "answer_type": "boolean", "text": "Has the client agreed that answers may be processed by the AI discovery engine (no customer personal data included)?", "help": "ADR 0007 — the engine refuses to run without recorded consent.", "maps_to": ["/meta/consent/llm_processing"] },
+    { "id": "Q10.5.3", "subsection": "10.5", "priority": "recommended", "audience": "consultant", "answer_type": "group", "text": "Jira site and project key for the backlog.", "maps_to": ["/jira/site", "/jira/project_key"] },
+    { "id": "Q10.5.4", "subsection": "10.5", "priority": "optional", "audience": "consultant", "answer_type": "list", "text": "Jira components to use.", "maps_to": ["/jira/components"] }
+  ]
+}

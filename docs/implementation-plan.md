@@ -1,6 +1,6 @@
 # Implementation Plan — shopify-ai-builder
 
-> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 in progress · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
+> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 in review · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
 > **Input:** whole-project review (2026-09-16) — discovery chain, pipeline code/security, build layer.
 > **Methodology:** Gaia tiers T1–T4 (`gaia/methodology/feature-tiers.md`). Estimates are indicative
 > (one lead + AI agents) and are re-baselined at the end of Phase 1.
@@ -59,7 +59,7 @@ P0 ─► P1 ─► P2 ─┬─► P3
 
 **Security (do first)**
 - [x] `.gitignore`: `.env*` + `!.env.example`, `clients/`, `__pycache__/`, `*.pyc`; add `.env.example` with names only
-- [ ] **(awaiting approval)** Delete `.envx` (byte-identical duplicate of `.env`; now gitignored); rotate the Shopify Admin token if there is any doubt it left the machine
+- [x] Delete `.envx` (byte-identical duplicate of `.env`; now gitignored); rotate the Shopify Admin token if there is any doubt it left the machine
 - [x] Move `themes/bucherer/` and `bucherer-theme/` out of this repo (D5)
 - [x] Frame Agent: sanitise client slug (reject `..`, `/`, absolute paths) before writing under `clients/`
 
@@ -72,7 +72,7 @@ P0 ─► P1 ─► P2 ─┬─► P3
 
 **Harness**
 - [x] `npm test` using `node:test`; fixtures in `tests/fixtures/`
-- [ ] Commit the current untracked work (`agents/discovery-deck/`, `lwc-library/`, `scripts/`, `docs/discovery/`) as a clean baseline once the above is done
+- [x] Commit the current untracked work (`agents/discovery-deck/`, `lwc-library/`, `scripts/`, `docs/discovery/`) as a clean baseline once the above is done
 
 **Exit criteria:** `git status` shows no secrets or client data; `npm test` green; `generate-stories` runs on both fixtures.
 
@@ -115,13 +115,17 @@ Top-level blocks, one naming convention (snake_case) shared by prompt, code and 
 ### 1.3 Question bank (`schema/question-bank.json`)
 One question list that drives the Markdown questionnaire, the Frame Agent prompt mapping and (Phase 5) the chatbot.
 Each question: `id`, `section`, `text`, `answer_type`, `maps_to` (JSON pointer), `skip_if`, `feeds` (gate / exit rule).
-- [ ] Add missing questions: market count, target Shopify plan, B2B RFQ, luxury/headless/Figma triggers, source platform + migration volumes, integration detail, GDPR deletion, Grow retainer, KPIs baseline/target, stakeholders/RACI, Jira project
-- [ ] Regenerate `docs/discovery/client-questionnaire.md` from the bank (fixes duplicate 2.2, §11 mismatch)
-- [ ] Renumber `docs/discovery/example-acme-questionnaire.md`; resolve its contradictions (plan vs B2B, retainer)
+- [x] Add missing questions: market count, target Shopify plan, B2B RFQ, luxury/headless/Figma triggers, source platform + migration volumes, integration detail, GDPR deletion, Grow retainer, KPIs baseline/target, stakeholders/RACI, Jira project
+- [x] Regenerate `docs/discovery/client-questionnaire.md` from the bank (fixes duplicate 2.2, §11 mismatch)
+- [x] Renumber `docs/discovery/example-acme-questionnaire.md`; resolve its contradictions (plan vs B2B, retainer)
 
 ### 1.4 Documentation
-- [ ] Update `docs/strategy.md`: multi-consultant Merkle tool, chatbot as target interview surface, pipeline diagram
+- [x] Update `docs/strategy.md`: multi-consultant Merkle tool, chatbot as target interview surface, pipeline diagram
 - [ ] Align `lwc-library/README.md` tier table with ADR 001
+
+**Status (2026-09-16):** schema, question bank (184 questions), offering, generated questionnaire,
+ACME example and three golden fixtures delivered; contract + fixture tests green.
+Open: owner acceptance of ADRs 0001, 0003–0007 and the `offering.json → open_questions`.
 
 **Exit criteria:** ADRs 001–007 accepted; schema validates three golden fixtures —
 `acme` (expected **M / GO**), `foundation-minimal` (**S / GO**), `stop-custom-checkout` (**STOP**);
@@ -142,6 +146,8 @@ Runtime LLM + client personal data → threat model and test strategy required b
 - [ ] Renderers: `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` from `engagement.json`; on STOP write `stop-report.md` only
 - [ ] CLI: `npm run discover -- --client <slug> --questionnaire <path> [--dry-run]`
 - [ ] Retire `agents/frame-agent/frame_agent.py` once parity is reached
+- [ ] Record explicit "none" answers for free-text fields (e.g. no affiliate platform) distinctly from unknown
+- [ ] Render filled questionnaires (e.g. the ACME example) from `engagement.json` with the committed renderer
 
 **Tests:** unit tests for classify/exits on all golden fixtures; recorded-response test for extraction in CI; opt-in live eval (ACME key fields).
 
