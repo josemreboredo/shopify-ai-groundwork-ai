@@ -4,15 +4,15 @@
   "description": "Gaia-governed AI delivery platform for Shopify consultants",
   "type": "module",
   "scripts": {
-    "questionnaire": "node scripts/questionnaire/questionnaire.js",
-    "generate-stories": "node scripts/generate-stories.js",
     "test": "node --test \"tests/**/*.test.js\"",
     "questionnaire:render": "node scripts/discovery/render-questionnaire.js",
     "discover": "node --env-file-if-exists=.env agents/discovery/cli.js",
     "discover:prepare": "node agents/discovery/claude-code.js prepare",
     "discover:assemble": "node agents/discovery/claude-code.js assemble",
     "discover:finish": "node agents/discovery/claude-code.js finish",
-    "backlog": "node agents/backlog/cli.js"
+    "backlog": "node agents/backlog/cli.js",
+    "deck": "node agents/discovery-deck/build.js",
+    "deck:check": "node agents/discovery-deck/build.js check"
   },
   "engines": {
     "node": ">=22.9.0"

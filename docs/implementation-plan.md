@@ -165,12 +165,12 @@ Runtime LLM + client personal data → threat model and test strategy required b
 
 ## Phase 3 — Discovery Closing Deck (T2)
 
-- [ ] Rebase `agents/discovery-deck/build_xml.js` on `engagement.json`; drop Markdown parsing (`parseMarkdown.js`)
-- [ ] Keep `estimateCalc.js` for internal effort only
-- [ ] Investment section = offer price band (D1); modifiers/day ranges go to an internal consultant appendix, never the client XML
-- [ ] Fix known issues: STOP precedence over `delivery.go`, split percentages sum to 100, no absolute paths in output, entry-point check works via symlinks, `esc()` regex written with escapes
-- [ ] Update `docs/discovery/deck-template.md` + `deck-prompt.md`; `npm run discovery-deck -- --client <slug>`
-- [ ] Snapshot tests (ACME GO, STOP)
+- [x] Rebuild the deck on `engagement.json` (+ `backlog.json`): `agents/discovery-deck/build.js`; Markdown parsing removed
+- [x] Internal effort comes from backlog story points in `deck-internal-notes.md` (`estimateCalc.js` removed)
+- [x] Investment section = offer price band (D1); modifiers, price adds, points and commercial warnings only in `deck-internal-notes.md`; XML write refused on leaks; `npm run deck:check` scans the final deck
+- [x] Known issues fixed: STOP from `delivery.go`, percentages sum to 100, no local paths in output, control-character regex built without raw bytes
+- [x] `deck-template.md` + `deck-prompt.md` rewritten; `npm run deck -- --client <slug>`; `/deck` skill writes `discovery-deck.md` in Claude Code
+- [x] Tests: GO sections, STOP sections, band only, leak guards, internal notes, percentages (`tests/unit/deck.test.js`)
 
 **Exit criteria:** ACME deck generated and reviewed by one lead consultant; no internal pricing in client output.
 
@@ -178,13 +178,13 @@ Runtime LLM + client personal data → threat model and test strategy required b
 
 ## Phase 4 — Jira-ready backlog (T3)
 
-- [ ] Story model v2: `key` (stable, e.g. `LWC-MKT-003`), `epic`, user-story `title`, `description`, `acceptance_criteria[]` (Given/When/Then), `dod`, `gaia_tier`, `points`, `depends_on[]`, `labels` (offer, gate, domain), `component`, `spec_ref` (JSON pointer), `security_flags`, `agent_prompt` (separate)
-- [ ] Guards read the engagement schema; prompts become functions of the spec (fixes literal `${spec.integrations.erp}`)
+- [x] Story model v2: `key` (stable, e.g. `LWC-MKT-003`), `epic`, user-story `title`, `description`, `acceptance_criteria[]` (Given/When/Then), `dod`, `gaia_tier`, `points`, `depends_on[]`, `labels` (offer, gate, domain), `component`, `spec_ref` (JSON pointer), `security_flags`, `agent_prompt` (separate)
+- [x] Guards read the engagement schema; prompts are functions of the engagement
 - [ ] Correct Horizon/OS2 content (custom sections, back-in-stock, hreflang, cookie consent incl. CH)
 - [ ] New domains: migration & redirects, shipping & tax, customer accounts & B2B, page builds (home/PDP/PLP/cart/nav), analytics & consent, accessibility & performance, QA/UAT, launch/cutover, training/hypercare
-- [ ] Sanity check: backlog points vs offer weeks (base + modifiers) — warn on mismatch
-- [ ] Export 1: Jira CSV import file
-- [ ] Export 2: Jira push via Atlassian Rovo MCP / REST — dry-run default, consultant approval, idempotent upsert by `key`
+- [ ] Sanity check: backlog points vs offer weeks — deferred (needs an agreed velocity; points and duration are shown side by side in `deck-internal-notes.md`)
+- [x] Export 1: Jira CSV import file (`npm run backlog -- --client <slug>`)
+- [ ] Export 2: Jira push via Atlassian Rovo MCP / REST — dry-run default, consultant approval, idempotent upsert by `key` — deferred (CSV first, decision 2026-09-16)
 
 **Tests:** every guard fires for ≥1 fixture; every active gate yields ≥1 story; CSV snapshot; re-push creates no duplicates.
 

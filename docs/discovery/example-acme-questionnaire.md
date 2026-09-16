@@ -57,7 +57,7 @@
 
 **Q0.3.1** — What manual work does your team do today that the platform should automate, and which processes break most often? *(recommended)*
 
-> Answer: Inventory is synced manually with SAP Business One twice a day; Refunds and exchanges are tracked in spreadsheets
+> Answer: Inventory and prices are synced manually with the ERP twice a day; Refunds and exchanges are tracked in spreadsheets
 
 **Q0.3.2** — How many hours per week does the team spend on workarounds? *(optional)*
 
@@ -271,8 +271,8 @@
 *(tick one)*
 - [ ] shopify admin
 - [ ] spreadsheet
-- [x] erp
-- [ ] pim
+- [ ] erp
+- [x] pim
 - [ ] mixed
 
 ### 2.4 Pricing
@@ -923,11 +923,12 @@
 ### 8.1 Connected systems
 
 **Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required)*
-*Any ERP, PIM, CRM, 3PL/WMS, OMS or custom connection activates the integration gate; more than 3 is a hard stop (11.7).*
+*Typical ownership: the PIM supplies products, content and attributes; the ERP supplies prices, inventory and orders. Any ERP, PIM, CRM, 3PL/WMS, OMS or custom connection activates the integration gate; more than 3 is a hard stop (11.7).*
 
 | system | category | direction | objects | frequency | connector | middleware | owner | status |
 |---|---|---|---|---|---|---|---|---|
-| SAP Business One | erp | bidirectional | products, inventory, orders | batch | ipaas | Celigo | TBC | to build |
+| Client ERP | erp | bidirectional | inventory, prices, orders | batch | ipaas | Celigo | TBC | to build |
+| Client PIM | pim | inbound | products, content | batch | ipaas | Celigo | client | to build |
 | Klaviyo | esp | outbound | customers, orders | realtime | native app | — | client | existing |
 | Loop Returns | returns | bidirectional | orders, returns | realtime | native app | — | client | to build |
 
@@ -1220,12 +1221,12 @@
 | 11.4 | More than 6 distinct languages across all markets | STOP | Scale programme | Q3.1.1 | clear — 3 languages (de, fr, it) |
 | 11.5 | More than 3 variant options per product | STOP | Architecture review | Q2.1.2 | clear — max 2 variant options |
 | 11.6 | Custom checkout UI that cannot be built with Checkout Extensibility | STOP | Composable platform | Q4.2.1 | clear — Checkout Extensibility only |
-| 11.7 | More than 3 integrations at launch (counted per integration_definition) | STOP | Bespoke quote | Q8.1.1 | clear — 1 counted integration (SAP Business One) |
+| 11.7 | More than 3 integrations at launch (counted per integration_definition) | STOP | Bespoke quote | Q8.1.1 | clear — 2 counted integrations (ERP, PIM) |
 | 11.8 | Regulated industry (pharma, alcohol, firearms, age-restricted, financial products, medical devices) | STOP | Legal / compliance review | Q1.1.3, Q10.4.1 | clear — not a regulated industry |
 | 11.9 | PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data) | STOP | Security review (threat model mandatory) | Q4.1.5 | clear — Shopify-hosted checkout |
 | 11.10 | GDPR / CCPA data export or deletion workflow required | FLAG | Legal sign-off on data-subject request handling | Q6.4.5 | **triggered** — owner: Lead Consultant |
 | 11.11 | Grow retainer not signed on an M or L engagement | WARN | Grow retainer to be signed before delivery starts; otherwise commercial adjustment | Q10.3.4 | clear — retainer signed (12 months) |
-| 11.12 | ERP or PIM with no existing Shopify connector and no iPaaS | FLAG | Separate integration scoping track (T3/T4) | Q8.1.1 | clear — SAP Business One via Celigo (iPaaS) |
+| 11.12 | ERP or PIM with no existing Shopify connector and no iPaaS | FLAG | Separate integration scoping track (T3/T4) | Q8.1.1 | clear — ERP and PIM via Celigo (iPaaS) |
 | 11.13 | fulfilment_locations > 2 AND complex_routing is true | FLAG | Multi-location inventory scoping (T3) | Q5.1.3, Q5.1.4 | clear — 1 fulfilment location |
 | 11.14 | Migration with significant SEO equity or complex historical data | FLAG | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5 | **triggered** — owner: Tech Lead |
 | 11.15 | Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks | FLAG | Re-scope to an MVP-first delivery before any sprint begins | Q10.1.1 | clear — 17 weeks from kick-off to go-live |

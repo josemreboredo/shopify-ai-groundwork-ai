@@ -926,7 +926,7 @@
 ### 8.1 Connected systems
 
 **Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required)*
-*Any ERP, PIM, CRM, 3PL/WMS, OMS or custom connection activates the integration gate; more than 3 is a hard stop (11.7).*
+*Typical ownership: the PIM supplies products, content and attributes; the ERP supplies prices, inventory and orders. Any ERP, PIM, CRM, 3PL/WMS, OMS or custom connection activates the integration gate; more than 3 is a hard stop (11.7).*
 
 | system | category | direction | objects | frequency | connector | middleware | owner | status |
 |---|---|---|---|---|---|---|---|---|

@@ -6,6 +6,26 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 
 ## [Unreleased]
 
+Phases 3 and 4 of the implementation plan — Discovery Closing Deck and Jira-ready backlog.
+
+### Added
+- `agents/backlog/` — story model v2 (stable keys, epics, user stories, Given/When/Then acceptance criteria, Gaia tier, points, dependencies, security flags, agent prompts), selection from `engagement.json`, `npm run backlog -- --client <slug>` → `backlog.csv` (Jira Cloud CSV import with epics), `backlog.md`, `backlog.json`
+- Story catalogue across 14 epics, including migration and redirects, shipping and tax, B2B, page builds, analytics and consent, accessibility and performance, QA/UAT, launch and hypercare
+- `agents/discovery-deck/build.js` — deck data from `engagement.json` + `backlog.json`: `npm run deck` → `discovery-deck.xml` (client-safe, price band only) and `deck-internal-notes.md` (modifiers, gate evidence, budget vs band, commercial warnings, story points); `npm run deck:check` scans the final deck for internal data
+- `/deck` Claude Code skill writes `discovery-deck.md` from the XML
+- Tests for the backlog contract, CSV structure, deck sections, STOP deck and leak guards
+
+### Changed
+- `docs/discovery/deck-template.md` and `deck-prompt.md` rewritten for `engagement.json` and D1
+
+### Removed
+- `agents/discovery-deck/build_xml.js`, `parseMarkdown.js`, `estimateCalc.js`
+- Old story generator (`scripts/generate-stories/`, YAML store-spec fixtures) — replaced by `agents/backlog/`
+- Interactive merchant questionnaire CLI (`scripts/questionnaire/`) — incompatible with the engagement schema; the Phase 5 chatbot replaces it
+
+### Changed (data ownership)
+- Integrations default to PIM → products, content and attributes; ERP → prices, inventory and orders. ERP stories never overwrite product content; Q8.1.1 explains the split; ACME example uses a generic ERP plus a PIM (no vendor names)
+
 ## [0.3.0] — 2026-09-16
 
 Phase 2 of the implementation plan — discovery engine.

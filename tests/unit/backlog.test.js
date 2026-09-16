@@ -31,10 +31,10 @@ export function maximalEngagement() {
     product_types: ['simple', 'variant', 'bundle', 'product_set', 'gift_card', 'digital', 'subscription', 'pre_order', 'made_to_order', 'virtual'],
     subscription_app: 'Shopify Subscriptions',
   });
-  doc.markets.strategy = 'shopify_markets';
+  doc.markets.strategy = 'hybrid';
   doc.markets.us_sales_tax = true;
   doc.markets.rtl_required = true;
-  Object.assign(doc.checkout, { gift_cards: true, store_credit: true, post_purchase_upsell: true });
+  Object.assign(doc.checkout, { gift_cards: true, store_credit: true, post_purchase_upsell: true, order_restrictions: ['Maximum 2 units per limited-edition watch'] });
   doc.shipping = { ...doc.shipping, model: 'hybrid', provider_3pl: 'ShipBob', fulfilment_locations: 3, complex_routing: true, special_rules: ['Hazardous goods'] };
   doc.b2b = { ...doc.b2b, volume_discounts: true, payment_terms: ['Net 30'] };
   doc.loyalty = { components: ['points_purchase', 'vip_tiers', 'referral', 'vip_early_access', 'store_credit'], phase: 'launch', app: 'Smile.io', esp_sync: true };
@@ -50,7 +50,7 @@ export function maximalEngagement() {
   ];
   doc.migration.data = ['products', 'customers', 'orders', 'content', 'redirects', 'reviews', 'gift_cards'];
   doc.design = { ...doc.design, motion: true, custom_design: true };
-  doc.compliance = { ...doc.compliance, legal_pages_status: 'needs_drafting', sensitive_data: false };
+  doc.compliance = { ...doc.compliance, legal_pages_status: 'needs_drafting', sensitive_data: false, industry_requirements: ['EU General Product Safety Regulation product safety information'] };
   doc.delivery = { ...doc.delivery, support_model: 'hypercare_only', sops_required: true, phased_launch: true };
   doc.offer = classifyOffer(doc);
   doc.exits = evaluateExits(doc);

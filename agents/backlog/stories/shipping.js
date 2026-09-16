@@ -1,0 +1,136 @@
+/**
+ * @file shipping.js — epic "Shipping, tax & returns" (LWC-SHP-*)
+ */
+
+import { markets, list, listOr, isB2b, integrationsOf, exitFired } from './helpers.js';
+
+const rateText = {
+  calculated: 'carrier-calculated rates',
+  flat: 'flat rates',
+  free_threshold: 'flat rates with free shipping above a threshold',
+  mixed: 'a mix of flat, free-threshold and carrier-calculated rates',
+};
+
+/** @type {import('../model.js').StoryDefinition[]} */
+export default [
+  {
+    key: 'LWC-SHP-001',
+    epic: 'shipping',
+    title: 'Configure delivery profiles, zones, shipping rates and carriers',
+    description: (doc) => `Rates: ${rateText[doc.shipping?.rates] ?? 'to confirm'}. Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')}.`,
+    user_story: 'As a shopper, I want clear delivery options and costs for my country, so that I know what I pay and when it arrives.',
+    acceptance_criteria: (doc) => [
+      ...markets(doc).map((m) => `Given a ${m.code} address, when a shopper reaches the shipping step, then the agreed ${rateText[doc.shipping?.rates] ?? 'rates'} and delivery times are shown in ${m.currency ?? 'the market currency'}`),
+      ...(doc.shipping?.special_rules ?? []).map((r) => `Given the special rule "${r}", when an affected product is in the cart, then the separate delivery profile applies the correct rates or restrictions`),
+      ...(doc.shipping?.excluded_countries?.length ? [`Given an address in ${list(doc.shipping.excluded_countries)}, when a shopper checks out, then shipping is not offered`] : []),
+      'Given a cart at a rate boundary (weight or free-shipping threshold), when the shopper reaches the shipping step, then the rate on each side of the boundary is correct',
+      `Given the carriers ${listOr(doc.shipping?.carriers, 'agreed with operations')}, when a test order is fulfilled, then a label or tracking number is attached and the shipping confirmation contains the tracking link`,
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'agent',
+    depends_on: ['LWC-FND-001'],
+    spec_refs: ['/shipping/rates', '/shipping/carriers', '/shipping/special_rules', '/shipping/international', '/shipping/excluded_countries', '/markets/list'],
+    applies: () => true,
+    agent_prompt: (doc) => `Set up shipping in Settings > Shipping and delivery: a general profile with zones per market (${listOr(markets(doc).map((m) => m.code), 'primary market')})${doc.shipping?.international ? ' plus international zones' : ''}, ${rateText[doc.shipping?.rates] ?? 'agreed rates'} and delivery-time labels. ${doc.shipping?.rates === 'calculated' || doc.shipping?.rates === 'mixed' ? 'Carrier-calculated rates need Shopify Shipping carriers or third-party carrier-calculated shipping (plan-dependent) — confirm eligibility and keep carrier API credentials out of the repository. ' : ''}${doc.shipping?.special_rules?.length ? `Create separate delivery profiles for: ${list(doc.shipping.special_rules)}. ` : ''}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')} — connect via Shopify Shipping or the carrier's app for labels and tracking. Define free-shipping thresholds per market currency. Present the rate table for approval before applying it.`,
+  },
+  {
+    key: 'LWC-SHP-002',
+    epic: 'shipping',
+    title: (doc) => `Set up ${doc.shipping?.fulfilment_locations ?? 'multiple'} fulfilment locations and order routing`,
+    user_story: 'As an operations manager, I want orders routed to the best location automatically, so that we ship faster and split fewer orders.',
+    acceptance_criteria: (doc) => [
+      'Given each location, when it is created, then its address, fulfilment and local pickup settings and stocked products are correct',
+      'Given an order, when routing runs, then the order routing rules pick the location by the agreed priority (for example market, stock availability, fewest splits)',
+      ...(exitFired(doc, '11.13') ? ['Given exit rule 11.13 (multi-location routing flag), when the routing design is approved, then its scoping outcome and any Order Routing Location Rule function are signed off by the consultant'] : []),
+      'Given insufficient stock at the preferred location, when an order is placed, then it is split or rerouted as agreed and staff are notified',
+    ],
+    gaia_tier: 'T3',
+    points: 5,
+    owner: 'agent',
+    depends_on: ['LWC-SHP-001'],
+    spec_refs: ['/shipping/fulfilment_locations', '/shipping/complex_routing', '/catalogue/inventory/source'],
+    applies: (doc) => (doc.shipping?.fulfilment_locations ?? 0) > 1 || doc.shipping?.complex_routing === true,
+    agent_prompt: (doc) => `Create ${doc.shipping?.fulfilment_locations ?? 'the agreed'} locations and assign inventory. Configure order routing rules in Settings > Shipping and delivery > Order routing. ${doc.shipping?.complex_routing ? 'Routing is complex: document the rules and, only if built-in rules cannot express them, propose an Order Routing Location Rule function (Plus, T3) for approval. ' : ''}Inventory source: ${doc.catalogue?.inventory?.source ?? 'Shopify'}. Test split and single-location orders per market.`,
+  },
+  {
+    key: 'LWC-SHP-003',
+    epic: 'shipping',
+    title: (doc) => `Connect fulfilment with ${doc.shipping?.provider_3pl ?? 'the 3PL'}`,
+    user_story: 'As an operations manager, I want orders sent to our fulfilment partner automatically and tracking returned, so that nobody re-keys orders.',
+    acceptance_criteria: [
+      'Given a paid order, when it is ready to fulfil, then it is released to the fulfilment service within the agreed time and appears in the partner system',
+      'Given the partner ships the order, when tracking is returned, then the order is marked fulfilled with carrier and tracking number and the customer is notified',
+      'Given stock levels at the partner warehouse, when they change, then Shopify inventory for that location is updated on the agreed schedule',
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'agent',
+    depends_on: ['LWC-SHP-001'],
+    spec_refs: ['/shipping/model', '/shipping/provider_3pl', '/integrations/*/category'],
+    security_flags: ['pii'],
+    applies: (doc) => ['3pl', 'hybrid'].includes(doc.shipping?.model),
+    agent_prompt: (doc) => `Fulfilment model: ${doc.shipping?.model}. Partner: ${doc.shipping?.provider_3pl ?? 'to confirm'}. ${integrationsOf(doc, '3pl_wms').length ? 'The system connection itself is delivered in the integrations epic; here configure the Shopify side: ' : 'Use the partner\'s Shopify App Store fulfilment app; configure: '}fulfilment service location, which products and markets it fulfils, order release timing (for example after fraud review), tracking sync and inventory sync frequency. ${doc.shipping?.model === 'hybrid' ? 'Document which orders stay in-house. ' : ''}Only share the order data the partner needs. Test end-to-end with test orders in the partner sandbox.`,
+  },
+  {
+    key: 'LWC-SHP-004',
+    epic: 'shipping',
+    title: (doc) => `Set up taxes for ${listOr(doc.markets?.vat_countries, 'the selling countries')}${doc.markets?.us_sales_tax ? ' and US sales tax' : ''}`,
+    user_story: 'As the finance controller, I want correct taxes charged and shown for every market, so that we stay compliant and prices are transparent.',
+    acceptance_criteria: (doc) => [
+      ...(doc.markets?.vat_countries ?? []).map((c) => `Given the ${c} VAT registration, when a ${c} order is placed, then VAT is charged at the correct rate and prices display tax-inclusive where required`),
+      ...(doc.markets?.us_sales_tax ? ['Given US states where the business has nexus, when a US order is placed, then Shopify Tax collects sales tax only in the registered states'] : []),
+      ...(isB2b(doc) ? ['Given a B2B company location with a valid tax registration ID or exemption, when it checks out, then tax is applied or exempted according to the location\'s tax settings'] : []),
+      'Given products with a Standard Product Taxonomy category, when tax is calculated, then reduced or exempt rates apply only where finance confirmed them',
+      'Given tax reports, when finance reviews a month of test orders, then totals reconcile with the order export',
+    ],
+    gaia_tier: 'T2',
+    points: 2,
+    owner: 'consultant',
+    depends_on: ['LWC-MKT-001'],
+    spec_refs: ['/markets/vat_countries', '/markets/us_sales_tax', '/b2b/enabled'],
+    applies: () => true,
+    agent_prompt: (doc) => `Enter tax registrations supplied by finance for ${listOr(doc.markets?.vat_countries, 'the selling countries')} in Settings > Taxes and duties (never guess registration numbers). Set tax-inclusive pricing per market where required. Check product tax overrides and the Standard Product Taxonomy categories that drive reduced rates.${doc.markets?.us_sales_tax ? ' Activate Shopify Tax for the US and add state registrations where nexus exists.' : ''}${isB2b(doc) ? ' Configure B2B tax exemptions and tax registration IDs on company locations.' : ''} Finance signs off the tax configuration; the agent does not give tax advice.`,
+  },
+  {
+    key: 'LWC-SHP-005',
+    epic: 'shipping',
+    title: (doc) => `Set up returns${doc.shipping?.returns?.exchanges ? ' and exchanges' : ''}${doc.shipping?.returns?.solution ? ` with ${doc.shipping.returns.solution}` : ''}`,
+    user_story: 'As a shopper, I want to request a return or exchange easily, so that buying online feels safe.',
+    description: (doc) => `Policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}`,
+    acceptance_criteria: (doc) => [
+      `Given the returns policy, when a return rule is configured, then the return window, eligible items and return shipping fees match "${doc.shipping?.returns?.policy ?? 'the agreed policy'}"`,
+      ...(doc.shipping?.returns?.portal ? ['Given a customer with an eligible order, when they request a return in the self-service portal, then they receive a label or instructions and staff see the return request'] : ['Given a return request by email, when staff create the return in the admin, then refund, restock and label steps follow the SOP']),
+      ...(doc.shipping?.returns?.exchanges ? ['Given an exchange, when it is approved, then the replacement variant is reserved and the price difference is charged or refunded'] : []),
+      'Given a refund, when it is issued, then inventory restocks to the right location and the refund reaches the original payment method or store credit',
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'agent',
+    depends_on: ['LWC-SHP-001'],
+    spec_refs: ['/shipping/returns/policy', '/shipping/returns/portal', '/shipping/returns/exchanges', '/shipping/returns/solution'],
+    security_flags: ['pii'],
+    applies: () => true,
+    agent_prompt: (doc) => `Returns policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}. ${doc.shipping?.returns?.solution
+      ? `Install and configure ${doc.shipping.returns.solution}: return reasons, windows, fees per market, ${doc.shipping?.returns?.exchanges ? 'exchange-first flow, ' : ''}label generation and restock location. Link its portal from customer accounts and the footer.`
+      : `Use Shopify's native return rules and ${doc.shipping?.returns?.portal ? 'self-serve returns in new customer accounts' : 'staff-created returns'}${doc.shipping?.returns?.exchanges ? ' with exchanges' : ''}.`} Update the refund policy page and notifications. Test a return, an exchange (if in scope) and a refund in test mode.`,
+  },
+  {
+    key: 'LWC-SHP-006',
+    epic: 'shipping',
+    title: 'Brand and translate customer notification templates',
+    user_story: 'As a customer, I want order emails that look like the brand and speak my language, so that I trust them and know what happens next.',
+    acceptance_criteria: (doc) => [
+      'Given the order confirmation, shipping confirmation, refund and account emails, when a test notification is sent, then it shows the brand logo and colours and renders in Gmail, Outlook and Apple Mail',
+      `Given each storefront language (${listOr([...new Set(markets(doc).flatMap((m) => m.languages ?? []))], 'the default language')}), when a notification is sent to a customer in that language, then its content is translated`,
+      `Given the sender split "${doc.shipping?.notifications?.sender ?? 'shopify'}", when an event occurs, then exactly one system sends the message and no customer receives duplicates`,
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'agent',
+    depends_on: ['LWC-THM-001'],
+    spec_refs: ['/shipping/notifications/custom', '/shipping/notifications/sender', '/marketing/esp/platform'],
+    applies: (doc) => doc.shipping?.notifications?.custom === true,
+    agent_prompt: (doc) => `Customise Shopify notification templates (Settings > Notifications): brand settings (logo, accent colour) first, then Liquid template edits only where needed. Translate notification content per language with Translate & Adapt or the agreed method. Sender: ${doc.shipping?.notifications?.sender ?? 'shopify'} — ${doc.shipping?.notifications?.sender === 'esp' || doc.shipping?.notifications?.sender === 'mixed' ? `list which transactional messages ${doc.marketing?.esp?.platform ?? 'the ESP'} sends and disable those in Shopify to avoid duplicates. ` : ''}Send test notifications and check rendering in major email clients.`,
+  },
+];
