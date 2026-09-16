@@ -14,7 +14,7 @@ import { runDiscovery } from '../../agents/discovery/engine.js';
 import { hasConsent, redactQuestionnaire, InputRejectedError } from '../../agents/discovery/input.js';
 import { buildExtractionSchema, buildApproachSchema } from '../../agents/discovery/extraction-schema.js';
 import Anthropic from '@anthropic-ai/sdk';
-import { createLlm, parseStructured, LlmError, DEFAULT_MODEL, explainError } from '../../agents/discovery/llm.js';
+import { createLlm, parseStructured, LlmError, DEFAULT_MODEL, explainError, clientOptions } from '../../agents/discovery/llm.js';
 import { approachInput } from '../../agents/discovery/approach.js';
 import { renderArtefacts } from '../../agents/discovery/render.js';
 import { writeOutputs, parseArgs } from '../../agents/discovery/cli.js';
@@ -195,6 +195,14 @@ describe('llm adapter', () => {
     assert.match(explainError(connection), /Could not reach the Anthropic API/);
 
     assert.match(explainError(new LlmError('Model output was truncated (max_tokens) — nothing was written.', 'truncated')), /truncated/);
+  });
+
+  test('sends the workspace header only when ANTHROPIC_WORKSPACE_ID is set', () => {
+    assert.deepEqual(clientOptions({}), {});
+    assert.deepEqual(clientOptions({ ANTHROPIC_WORKSPACE_ID: ' wrkspc_123 ' }), { defaultHeaders: { 'anthropic-workspace-id': 'wrkspc_123' } });
+    const err = new Anthropic.BadRequestError(400, { type: 'error', error: { type: 'invalid_request_error',
+      message: 'This API key is not scoped to a workspace, so this request must include the anthropic-workspace-id header' } }, undefined, new Headers());
+    assert.match(explainError(err), /ANTHROPIC_WORKSPACE_ID=wrkspc_/);
   });
 
   test('sends model, cached system prompt, fallbacks and the JSON schema', async () => {

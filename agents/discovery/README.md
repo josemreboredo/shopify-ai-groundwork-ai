@@ -9,7 +9,8 @@ npm run discover -- --questionnaire q.md --client acme-watches --dry-run   # pri
 ```
 
 Needs `ANTHROPIC_API_KEY` in the environment (`.env`, gitignored) or an `ant auth login` profile.
-Model: `claude-opus-5` by default; override with `DISCOVERY_MODEL`.
+Model: `claude-opus-5` by default; override with `DISCOVERY_MODEL`. If your API key is not scoped to a
+workspace, also set `ANTHROPIC_WORKSPACE_ID` (Console → Settings → Workspaces).
 
 ## Pipeline
 

@@ -40,6 +40,19 @@ export class LlmError extends Error {
  */
 
 /**
+ * SDK client options from the environment. Organisation-level API keys that
+ * are not scoped to a workspace need the workspace id on every request
+ * (ANTHROPIC_WORKSPACE_ID, e.g. "wrkspc_…").
+ *
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {{ defaultHeaders?: Record<string, string> }}
+ */
+export function clientOptions(env = process.env) {
+  const workspaceId = env.ANTHROPIC_WORKSPACE_ID?.trim();
+  return workspaceId ? { defaultHeaders: { 'anthropic-workspace-id': workspaceId } } : {};
+}
+
+/**
  * Create the production LLM adapter. Tests inject their own object with the
  * same `callStructured` method instead.
  *
@@ -48,7 +61,7 @@ export class LlmError extends Error {
  */
 export function createLlm({ client, model } = {}) {
   const resolvedModel = model ?? process.env.DISCOVERY_MODEL ?? DEFAULT_MODEL;
-  const anthropic = client ?? new Anthropic();
+  const anthropic = client ?? new Anthropic(clientOptions());
 
   return {
     model: resolvedModel,
@@ -88,6 +101,14 @@ export function explainError(err) {
     return 'Rate limited by the Anthropic API (429) after retries — wait a minute and run again.';
   }
   if (err instanceof Anthropic.BadRequestError) {
+    if (/anthropic-workspace-id/.test(err.message)) {
+      return [
+        'This API key is not scoped to a workspace.',
+        '  Add the workspace id to .env (Console → Settings → Workspaces, starts with "wrkspc_"):',
+        '    ANTHROPIC_WORKSPACE_ID=wrkspc_…',
+        '  or create an API key inside a workspace instead.',
+      ].join('\n');
+    }
     return `The Anthropic API rejected the request (400): ${err.message}`;
   }
   if (err instanceof Anthropic.APIConnectionError) {
