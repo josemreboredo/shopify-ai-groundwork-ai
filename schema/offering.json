@@ -50,7 +50,7 @@
       "label": "Multi-currency",
       "condition": "More than one distinct checkout currency across markets whose price_strategy is not display_only",
       "inputs": ["/markets/list/*/currency", "/markets/list/*/price_strategy"],
-      "modifier": null
+      "modifier": "+Markets"
     },
     {
       "id": "b2b",
@@ -76,7 +76,7 @@
     {
       "id": "migration",
       "label": "Migration",
-      "condition": "Platform migration from another ecommerce platform (strategy names Shopware, Magento, WooCommerce, SFCC)",
+      "condition": "Migration from any non-Shopify ecommerce platform (source_platform not none or shopify), e.g. Shopware, Magento, WooCommerce, SFCC, BigCommerce, custom",
       "inputs": ["/migration/source_platform"],
       "modifier": "+Migration"
     }
@@ -104,7 +104,7 @@
   ],
 
   "modifiers": [
-    { "id": "+Markets",     "gate": "markets",        "description": "2–4 Shopify Markets, Translate & Adapt, geo-routing",  "effort_weeks": { "min": 1,   "max": 1 },   "price_add": { "min": 8000,  "max": 12000 } },
+    { "id": "+Markets",     "gate": "markets",        "description": "2–4 Shopify Markets or multi-currency set-up, Translate & Adapt, geo-routing",  "effort_weeks": { "min": 1,   "max": 1 },   "price_add": { "min": 8000,  "max": 12000 } },
     { "id": "+B2B",         "gate": "b2b",            "description": "Wholesale pricing, B2B accounts, volume discounts",    "effort_weeks": { "min": 1.5, "max": 1.5 }, "price_add": { "min": 10000, "max": 15000 } },
     { "id": "+Integration", "gate": "integration",    "description": "One ERP / PIM / CRM / 3PL live connection",            "effort_weeks": { "min": 1,   "max": 2 },   "price_add": { "min": 10000, "max": 18000 } },
     { "id": "+Migration",   "gate": "migration",      "description": "Platform migration, redirect mapping, data transfer",  "effort_weeks": { "min": 1,   "max": 2 },   "price_add": { "min": 8000,  "max": 15000 } },
@@ -125,14 +125,14 @@
   "exit_rules": [
     {
       "id": "11.1", "result": "STOP", "status": "canonical",
-      "condition": "A Shopify Plus feature is required (B2B, Checkout Extensibility, Launchpad, expansion stores) but the target plan is not Plus",
+      "condition": "A Shopify Plus feature is required (native B2B, Checkout Extensibility customisation, expansion stores) but the target plan is not Plus. A fully custom checkout UI is handled by 11.6, not here",
       "destination": "Confirm Shopify Plus or remove the feature from scope",
       "inputs": ["/shopify/target_plan", "/b2b/enabled", "/checkout/customisation", "/markets/strategy"]
     },
     {
       "id": "11.2", "result": "STOP", "status": "canonical",
       "condition": "B2B requires RFQ / quote or custom negotiated pricing per buyer",
-      "destination": "Architecture review of the quote workflow (Shopify Plus B2B prerequisite)",
+      "destination": "Architecture review: Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform",
       "inputs": ["/b2b/rfq_or_negotiated_pricing"]
     },
     {
@@ -191,44 +191,44 @@
       "inputs": ["/delivery/grow_retainer/signed", "/offer/code"]
     },
     {
-      "id": "11.12", "result": "FLAG", "status": "proposed",
+      "id": "11.12", "result": "FLAG", "status": "canonical",
       "condition": "ERP or PIM with no existing Shopify connector and no iPaaS",
       "destination": "Separate integration scoping track (T3/T4)",
       "inputs": ["/integrations/*/category", "/integrations/*/connector"]
     },
     {
-      "id": "11.13", "result": "FLAG", "status": "proposed",
+      "id": "11.13", "result": "FLAG", "status": "canonical",
       "condition": "fulfilment_locations > 2 AND complex_routing is true",
       "destination": "Multi-location inventory scoping (T3)",
       "inputs": ["/shipping/fulfilment_locations", "/shipping/complex_routing"]
     },
     {
-      "id": "11.14", "result": "FLAG", "status": "proposed",
+      "id": "11.14", "result": "FLAG", "status": "canonical",
       "condition": "Migration with significant SEO equity or complex historical data",
       "destination": "Dedicated migration scoping track — not combined with the store build sprint",
       "inputs": ["/migration/seo_equity", "/migration/historical_orders_required", "/migration/volumes"]
     },
     {
-      "id": "11.15", "result": "FLAG", "status": "proposed",
+      "id": "11.15", "result": "FLAG", "status": "canonical",
       "condition": "Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks",
       "destination": "Re-scope to an MVP-first delivery before any sprint begins",
       "inputs": ["/delivery/target_launch_date", "/delivery/kickoff_date", "/meta/created_at", "/offer/code"]
     },
     {
-      "id": "11.16", "result": "STOP", "status": "proposed",
+      "id": "11.16", "result": "FLAG", "status": "canonical",
       "condition": "No single decision-maker, or budget approval authority is unclear",
-      "destination": "Pause engagement until commercial and governance clarity is confirmed",
+      "destination": "Named client decision-maker and budget owner confirmed before the statement of work is signed",
       "inputs": ["/delivery/decision_maker_confirmed", "/delivery/budget_authority_clear"]
     }
   ],
 
-  "open_questions": [
-    "11.2 destination: strategy.md says 'STOP (Plus prereq)'; the old schema said 'composable platform'. Using an architecture review until the owner confirms.",
-    "11.12–11.16 come from the previous questionnaire and are not in strategy.md — status 'proposed' until accepted by the offering owner.",
-    "Migration gate: strategy.md names four source platforms; v1 treats any non-Shopify platform as a migration.",
-    "Multi-currency gate has no internal modifier in strategy.md.",
-    "L is triggered by luxury positioning and delivered on Hydrogen, while the Bucherer reference build (luxury) used Liquid. Confirm whether luxury alone should force L.",
-    "11.1: should a custom checkout UI on a non-Plus plan also raise 11.1, or is 11.6 (STOP) sufficient?",
-    "Migration gate: does rebuilding an existing Shopify store (source_platform = shopify) count as a migration?"
+  "resolved_questions": [
+    { "question": "11.2 destination", "decision": "STOP → architecture review of Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform", "rationale": "strategy.md keeps 11.2 as a STOP; native B2B covers price lists, quantity rules and payment terms but not negotiation workflows, which need an app or a different platform" },
+    { "question": "Proposed rules 11.12–11.16", "decision": "Accepted. 11.12–11.15 as FLAG; 11.16 changed from STOP to FLAG (resolve before statement of work)", "rationale": "Each covers effort beyond what the +Integration / +Migration modifiers and the fixed offer durations assume; governance gaps must not block the discovery deck but must be closed before contract" },
+    { "question": "Migration gate source platforms", "decision": "Any non-Shopify ecommerce platform counts", "rationale": "The migration effort (data transfer, redirect mapping) is the same whatever the source; strategy.md's four platforms are examples" },
+    { "question": "Multi-currency gate has no modifier", "decision": "Uses +Markets", "rationale": "Multi-currency set-up is Shopify Markets configuration work; it only matters as a modifier when it is the single active gate" },
+    { "question": "Luxury positioning alone forces L", "decision": "Yes, as in strategy.md", "rationale": "The Bucherer build was a test, not a delivery precedent; L prices the full design system and motion work luxury brands require" },
+    { "question": "11.1 and custom checkout UI", "decision": "11.1 covers Plus-only features; a fully custom checkout UI is covered by 11.6 only", "rationale": "Avoids two STOPs for one requirement" },
+    { "question": "Rebuilding an existing Shopify store", "decision": "Not a migration (source_platform = shopify does not activate the gate)", "rationale": "No cross-platform data transfer; URL and SEO risk is still caught by 11.14" }
   ]
 }

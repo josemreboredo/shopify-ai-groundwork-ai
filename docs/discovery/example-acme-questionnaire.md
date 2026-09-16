@@ -1120,7 +1120,7 @@
 | Finance Controller | I | no | — |
 
 **Q10.2.2** — Is there a single decision-maker for scope, approvals and feedback? *(required · consultant)*
-*No single decision-maker is a stop (11.16).*
+*No single decision-maker raises flag 11.16 — resolve before the statement of work.*
 
 - [x] Yes
 - [ ] No
@@ -1214,8 +1214,8 @@
 
 | Rule | Condition | Result | If triggered | Answered by | Outcome (triggered / clear) |
 |---|---|---|---|---|---|
-| 11.1 | A Shopify Plus feature is required (B2B, Checkout Extensibility, Launchpad, expansion stores) but the target plan is not Plus | STOP | Confirm Shopify Plus or remove the feature from scope | Q1.2.3, Q3.1.4, Q4.2.1, Q6.2.1 | clear — target plan is Shopify Plus |
-| 11.2 | B2B requires RFQ / quote or custom negotiated pricing per buyer | STOP | Architecture review of the quote workflow (Shopify Plus B2B prerequisite) | Q6.2.6 | clear — fixed wholesale tiers, no RFQ |
+| 11.1 | A Shopify Plus feature is required (native B2B, Checkout Extensibility customisation, expansion stores) but the target plan is not Plus. A fully custom checkout UI is handled by 11.6, not here | STOP | Confirm Shopify Plus or remove the feature from scope | Q1.2.3, Q3.1.4, Q4.2.1, Q6.2.1 | clear — target plan is Shopify Plus |
+| 11.2 | B2B requires RFQ / quote or custom negotiated pricing per buyer | STOP | Architecture review: Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform | Q6.2.6 | clear — fixed wholesale tiers, no RFQ |
 | 11.3 | More than 5 Shopify Markets at launch | STOP | Scale programme | Q3.1.1 | clear — 3 markets |
 | 11.4 | More than 6 distinct languages across all markets | STOP | Scale programme | Q3.1.1 | clear — 3 languages (de, fr, it) |
 | 11.5 | More than 3 variant options per product | STOP | Architecture review | Q2.1.2 | clear — max 2 variant options |
@@ -1225,11 +1225,11 @@
 | 11.9 | PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data) | STOP | Security review (threat model mandatory) | Q4.1.5 | clear — Shopify-hosted checkout |
 | 11.10 | GDPR / CCPA data export or deletion workflow required | FLAG | Legal sign-off on data-subject request handling | Q6.4.5 | **triggered** — owner: Lead Consultant |
 | 11.11 | Grow retainer not signed on an M or L engagement | WARN | Grow retainer to be signed before delivery starts; otherwise commercial adjustment | Q10.3.4 | clear — retainer signed (12 months) |
-| 11.12 | ERP or PIM with no existing Shopify connector and no iPaaS *(proposed)* | FLAG | Separate integration scoping track (T3/T4) | Q8.1.1 | clear — SAP Business One via Celigo (iPaaS) |
-| 11.13 | More than 2 fulfilment locations with complex inventory routing *(proposed)* | FLAG | Multi-location inventory scoping (T3) | Q5.1.3, Q5.1.4 | clear — 1 fulfilment location |
-| 11.14 | Migration with significant SEO equity or complex historical data *(proposed)* | FLAG | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5 | **triggered** — owner: Tech Lead |
-| 11.15 | Weeks until the target go-live are fewer than the offer's minimum delivery duration *(proposed)* | FLAG | Re-scope to an MVP-first delivery before any sprint begins | Q10.1.1 | clear — 17 weeks from kick-off to go-live |
-| 11.16 | No single decision-maker, or budget approval authority is unclear *(proposed)* | STOP | Pause engagement until commercial and governance clarity is confirmed | Q10.2.2, Q10.2.3 | clear — decision-maker and budget authority confirmed |
+| 11.12 | ERP or PIM with no existing Shopify connector and no iPaaS | FLAG | Separate integration scoping track (T3/T4) | Q8.1.1 | clear — SAP Business One via Celigo (iPaaS) |
+| 11.13 | fulfilment_locations > 2 AND complex_routing is true | FLAG | Multi-location inventory scoping (T3) | Q5.1.3, Q5.1.4 | clear — 1 fulfilment location |
+| 11.14 | Migration with significant SEO equity or complex historical data | FLAG | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5 | **triggered** — owner: Tech Lead |
+| 11.15 | Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks | FLAG | Re-scope to an MVP-first delivery before any sprint begins | Q10.1.1 | clear — 17 weeks from kick-off to go-live |
+| 11.16 | No single decision-maker, or budget approval authority is unclear | FLAG | Named client decision-maker and budget owner confirmed before the statement of work is signed | Q10.2.2, Q10.2.3 | clear — decision-maker and budget authority confirmed |
 
 **Verdict:** GO — no STOP triggered. Two FLAGs need their owners to resolve them before build starts: 11.10 (legal sign-off on data-subject requests) and 11.14 (migration runs as its own scoping track).
 

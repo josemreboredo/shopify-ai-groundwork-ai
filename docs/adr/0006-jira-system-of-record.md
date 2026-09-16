@@ -1,6 +1,6 @@
 # ADR 0006 — Jira is the backlog system of record after first push
 
-- **Status:** Proposed (Jira sandbox approach accepted as D7)
+- **Status:** Accepted (2026-09-16)
 - **Date:** 2026-09-16
 
 ## Context

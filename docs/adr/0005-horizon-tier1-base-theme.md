@@ -1,6 +1,6 @@
 # ADR 0005 — Horizon is the Delivery Tier 1 base theme
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-09-16)
 - **Date:** 2026-09-16
 
 ## Context

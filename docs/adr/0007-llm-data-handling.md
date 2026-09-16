@@ -1,6 +1,6 @@
 # ADR 0007 — LLM data handling: consent, redaction, model choice
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-09-16)
 - **Date:** 2026-09-16
 - **Relates to:** CLAUDE.md security gate 3, `docs/conventions/security-gates.md` Gate 2
 

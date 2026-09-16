@@ -1,6 +1,6 @@
 # Implementation Plan — shopify-ai-builder
 
-> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 in review · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
+> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 complete · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
 > **Input:** whole-project review (2026-09-16) — discovery chain, pipeline code/security, build layer.
 > **Methodology:** Gaia tiers T1–T4 (`gaia/methodology/feature-tiers.md`). Estimates are indicative
 > (one lead + AI agents) and are re-baselined at the end of Phase 1.
@@ -125,9 +125,9 @@ Each question: `id`, `section`, `text`, `answer_type`, `maps_to` (JSON pointer),
 
 **Status (2026-09-16):** schema, question bank (184 questions), offering, generated questionnaire,
 ACME example and three golden fixtures delivered; contract + fixture tests green.
-Open: owner acceptance of ADRs 0001, 0003–0007 and the `offering.json → open_questions`.
+ADRs 0001–0007 accepted and offering questions resolved (2026-09-16) — see `offering.json → resolved_questions`.
 
-**Exit criteria:** ADRs 001–007 accepted; schema validates three golden fixtures —
+**Exit criteria (met):** ADRs 001–007 accepted; schema validates three golden fixtures —
 `acme` (expected **M / GO**), `foundation-minimal` (**S / GO**), `stop-custom-checkout` (**STOP**);
 every gate and exit rule traces to ≥1 question and ≥1 schema field (automated traceability test).
 

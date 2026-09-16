@@ -23,6 +23,11 @@ Phase 1 of the implementation plan — foundation (offering model, engagement sc
 - `docs/strategy.md` — multi-consultant scope, pipeline diagram, discovery engine contract, exit rules point to `offering.json`
 - `lwc-library/README.md` — S/M/L offers replace Starter/Medium/Large (CHF); Swiss baseline is an opt-in market preset (ADR 0004)
 
+### Decisions
+- ADRs 0001–0007 accepted
+- Exit rules 11.12–11.15 accepted as FLAG; 11.16 (no single decision-maker) is a FLAG resolved before the statement of work
+- Migration gate counts any non-Shopify source platform; multi-currency uses the `+Markets` modifier; luxury positioning alone triggers offer L; 11.2 routes to an architecture review (see `offering.json → resolved_questions`)
+
 ### Deprecated
 - `lwc-library/store-spec.schema.yaml` — superseded by `schema/engagement.schema.json`; removed when the Frame Agent is retired (Phase 2)
 

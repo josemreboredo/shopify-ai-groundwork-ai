@@ -1,6 +1,6 @@
 # ADR 0001 — Offer model: S/M/L with scope gates as data
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-09-16)
 - **Date:** 2026-09-16
 - **Deciders:** Jose Reboredo (offering owner)
 
@@ -36,8 +36,11 @@ had three different definitions.
   `tests/unit/engagement-contract.test.js`.
 - `lwc-library/README.md` tier tables are updated to S/M/L.
 
-## Open questions for the owner
+## Resolved questions (2026-09-16)
 
-Listed in `offering.json → open_questions`: the 11.2 destination, whether any non-Shopify
-source platform counts as a migration, the missing multi-currency modifier, and whether
-luxury positioning alone should force L (the Bucherer reference build was luxury on Liquid).
+Recorded with rationale in `offering.json → resolved_questions`:
+
+- **Luxury positioning alone triggers L** (as in strategy.md). The Bucherer Liquid build was a test, not a precedent.
+- **Migration gate:** any non-Shopify ecommerce platform counts; rebuilding an existing Shopify store does not.
+- **Multi-currency gate** uses the `+Markets` modifier when it is the only active gate.
+- **11.2** (B2B RFQ / negotiated pricing) stays a STOP, routed to an architecture review of Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform.

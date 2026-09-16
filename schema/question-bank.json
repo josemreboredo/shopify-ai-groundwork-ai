@@ -296,7 +296,7 @@
     { "id": "Q10.1.4", "subsection": "10.1", "priority": "recommended", "audience": "client", "answer_type": "date", "text": "Preferred project kick-off date.", "maps_to": ["/delivery/kickoff_date"] },
 
     { "id": "Q10.2.1", "subsection": "10.2", "priority": "required", "audience": "client", "answer_type": "table", "text": "Who is involved on the client side? For each: role, RACI (R/A/C/I), decision-maker (yes/no). Names are optional.", "maps_to": ["/stakeholders"] },
-    { "id": "Q10.2.2", "subsection": "10.2", "priority": "required", "audience": "consultant", "answer_type": "boolean", "text": "Is there a single decision-maker for scope, approvals and feedback?", "help": "No single decision-maker is a stop (11.16).", "maps_to": ["/delivery/decision_maker_confirmed"], "feeds": ["exit:11.16"] },
+    { "id": "Q10.2.2", "subsection": "10.2", "priority": "required", "audience": "consultant", "answer_type": "boolean", "text": "Is there a single decision-maker for scope, approvals and feedback?", "help": "No single decision-maker raises flag 11.16 — resolve before the statement of work.", "maps_to": ["/delivery/decision_maker_confirmed"], "feeds": ["exit:11.16"] },
     { "id": "Q10.2.3", "subsection": "10.2", "priority": "required", "audience": "consultant", "answer_type": "boolean", "text": "Is budget approval authority clear?", "maps_to": ["/delivery/budget_authority_clear"], "feeds": ["exit:11.16"] },
     { "id": "Q10.2.4", "subsection": "10.2", "priority": "optional", "audience": "client", "answer_type": "list", "text": "Which roles need Shopify admin access after go-live?", "maps_to": ["/delivery/admin_roles"] },
 

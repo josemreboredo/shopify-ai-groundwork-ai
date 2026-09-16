@@ -133,7 +133,7 @@ creep post-signature.
 | **B2B / Wholesale** | B2B customer accounts, wholesale pricing, or volume discounts |
 | **Integration** | One or more live connections to ERP, PIM, CRM, or 3PL |
 | **SKU complexity** | 500+ SKUs with complex variants, metafields, or product bundling |
-| **Migration** | Platform migration from Shopware, Magento, WooCommerce, or SFCC |
+| **Migration** | Migration from any non-Shopify ecommerce platform (e.g. Shopware, Magento, WooCommerce, SFCC, BigCommerce) |
 
 **Classification rule:**
 - **0 gates → S** (Ecommerce Foundation)
@@ -144,6 +144,7 @@ creep post-signature.
 Modifiers are **internal pricing tools only** — the consultant uses them to build
 the engagement price; the client proposal always shows a single fixed number.
 Two or more active modifiers automatically re-classify the engagement to M.
+When multi-currency is the only active gate, the `+Markets` modifier applies.
 
 #### Internal scope modifiers (Tier 1 only — never shown to client)
 
@@ -252,7 +253,7 @@ The canonical list is `offering.json → exit_rules` (ADR 0003). Summary:
 | Rule | Condition | Result |
 |---|---|---|
 | 11.1 | Shopify Plus feature required but target plan is not Plus | STOP |
-| 11.2 | B2B with RFQ / negotiated pricing | STOP |
+| 11.2 | B2B with RFQ / negotiated pricing | STOP → Architecture review |
 | 11.3 | More than 5 markets at launch | STOP → Scale programme |
 | 11.4 | More than 6 distinct languages | STOP → Scale programme |
 | 11.5 | More than 3 variant options per product | STOP → Architecture review |
@@ -262,7 +263,11 @@ The canonical list is `offering.json → exit_rules` (ADR 0003). Summary:
 | 11.9 | PCI scope beyond Shopify-hosted payments | STOP → Security review |
 | 11.10 | GDPR/CCPA export or deletion workflow | FLAG |
 | 11.11 | Grow retainer not signed (M/L) | WARN — quote +25% |
-| 11.12–11.16 | ERP/PIM without connector · complex multi-location routing · migration with significant SEO equity · go-live sooner than offer duration · no single decision-maker | *Proposed* (FLAG / STOP) |
+| 11.12 | ERP or PIM with no connector and no iPaaS | FLAG → Integration scoping track |
+| 11.13 | More than 2 fulfilment locations with complex routing | FLAG → Multi-location scoping |
+| 11.14 | Migration with significant SEO equity or historical data | FLAG → Migration scoping track |
+| 11.15 | Go-live sooner than the offer's minimum duration | FLAG → Re-scope to MVP first |
+| 11.16 | No single decision-maker or unclear budget authority | FLAG → Resolve before statement of work |
 
 ---
 

@@ -1,6 +1,6 @@
 # ADR 0004 — Market-specific defaults become opt-in presets
 
-- **Status:** Proposed
+- **Status:** Accepted (2026-09-16)
 - **Date:** 2026-09-16
 
 ## Context

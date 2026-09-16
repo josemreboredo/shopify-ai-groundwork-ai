@@ -128,6 +128,10 @@ describe('offering traceability', () => {
   test('every modifier targets a scope gate and schema enum stays in sync', () => {
     const gates = new Set(offering.scope_gates.map((g) => g.id));
     for (const m of offering.modifiers) assert.ok(gates.has(m.gate), `${m.id}: unknown gate ${m.gate}`);
+    const modifierIds = new Set(offering.modifiers.map((m) => m.id));
+    for (const g of offering.scope_gates) {
+      if (g.modifier !== null) assert.ok(modifierIds.has(g.modifier), `gate ${g.id}: unknown modifier ${g.modifier}`);
+    }
     assert.deepEqual(
       [...schemaNodeAt('/offer/modifiers/*').enum].sort(),
       offering.modifiers.map((m) => m.id).sort(),
