@@ -6,6 +6,8 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-09-16
+
 Phase 2 of the implementation plan — discovery engine.
 
 ### Added
@@ -82,5 +84,6 @@ First tagged baseline. Phase 0 of the implementation plan.
 - Store-spec fields from the Frame Agent are only partly read by the story generator (Phase 1)
 - Admin setup scripts (`scripts/01–06`) are single-store, non-idempotent and lack a production guard (Phase 6)
 
+[0.3.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.3.0
 [0.2.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.2.0
 [0.1.0]: https://github.com/jose-reboredo/shopify-ai-builder/releases/tag/v0.1.0
