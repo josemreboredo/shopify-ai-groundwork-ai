@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "store-spec",
+  "title": "Shopify Store Specification",
+  "description": "Canonical merchant intent captured by the questionnaire. All biota build actions are derived from this schema.",
+  "type": "object",
+  "required": ["store", "markets", "catalog", "payments", "branding", "seo", "apps"],
+  "properties": {
+
+    "store": {
+      "type": "object",
+      "description": "Core store identity",
+      "required": ["name", "defaultLocale", "defaultCurrency", "primaryMarketCountry"],
+      "properties": {
+        "name":                  { "type": "string", "description": "Store display name" },
+        "defaultLocale":         { "type": "string", "description": "BCP-47 locale code for the primary storefront, e.g. en" },
+        "defaultCurrency":       { "type": "string", "description": "ISO 4217 currency for the primary market, e.g. USD" },
+        "primaryMarketCountry":  { "type": "string", "description": "ISO 3166-1 alpha-2 country code, e.g. US" },
+        "shopifyPlan":           { "type": "string", "enum": ["basic", "shopify", "advanced", "plus"], "default": "shopify" }
+      }
+    },
+
+    "markets": {
+      "type": "array",
+      "description": "One entry per geographic market the store will serve",
+      "items": {
+        "type": "object",
+        "required": ["name", "countries", "defaultLocale", "alternateLocales", "currency"],
+        "properties": {
+          "name":             { "type": "string", "description": "Human name, e.g. Switzerland" },
+          "countries":        { "type": "array", "items": { "type": "string" }, "description": "ISO 3166-1 alpha-2 codes" },
+          "defaultLocale":    { "type": "string", "description": "Primary language locale for this market, e.g. de" },
+          "alternateLocales": { "type": "array", "items": { "type": "string" }, "description": "Additional supported locales, e.g. [fr, en]" },
+          "currency":         { "type": "string", "description": "ISO 4217 currency code" },
+          "priceAdjustment":  {
+            "type": "object",
+            "description": "Optional price adjustment vs base prices",
+            "properties": {
+              "type":  { "type": "string", "enum": ["percentage", "fixed"], "default": "percentage" },
+              "value": { "type": "number", "description": "e.g. 10 = +10%; -5 = -5%" }
+            }
+          },
+          "taxIncluded": { "type": "boolean", "default": false, "description": "Whether prices shown include tax (VAT)" }
+        }
+      }
+    },
+
+    "catalog": {
+      "type": "object",
+      "description": "Product catalogue structure and inventory model",
+      "required": ["estimatedSkuCount", "hasVariants", "inventoryTracking"],
+      "properties": {
+        "estimatedSkuCount":  { "type": "integer", "description": "Approximate number of SKUs at launch" },
+        "hasVariants":        { "type": "boolean", "description": "Products have size/color/etc variants" },
+        "variantOptions":     { "type": "array", "items": { "type": "string" }, "description": "e.g. [Size, Color, Material]" },
+        "inventoryTracking":  { "type": "boolean", "description": "Track inventory levels per variant" },
+        "inventoryLocations": { "type": "array", "items": { "type": "string" }, "description": "Fulfillment location names" },
+        "hasDigitalProducts": { "type": "boolean", "default": false },
+        "hasSubscriptions":   { "type": "boolean", "default": false },
+        "metafields": {
+          "type": "array",
+          "description": "Custom product metafields needed",
+          "items": {
+            "type": "object",
+            "properties": {
+              "namespace": { "type": "string" },
+              "key":       { "type": "string" },
+              "type":      { "type": "string", "description": "e.g. single_line_text_field, json, boolean" }
+            }
+          }
+        }
+      }
+    },
+
+    "payments": {
+      "type": "object",
+      "description": "Payment gateway and checkout configuration",
+      "required": ["useShopifyPayments"],
+      "properties": {
+        "useShopifyPayments": { "type": "boolean" },
+        "additionalGateways": { "type": "array", "items": { "type": "string" }, "description": "e.g. [PayPal, Klarna, Stripe]" },
+        "b2bEnabled":         { "type": "boolean", "default": false, "description": "Wholesale / B2B pricing tiers needed" },
+        "giftCardsEnabled":   { "type": "boolean", "default": false },
+        "dutiesAndImportTaxes": { "type": "boolean", "default": false, "description": "Collect duties at checkout for international orders" }
+      }
+    },
+
+    "branding": {
+      "type": "object",
+      "description": "Theme and visual identity",
+      "required": ["themeSource"],
+      "properties": {
+        "themeSource": {
+          "type": "string",
+          "enum": ["dawn", "custom-existing", "purchased", "headless-hydrogen"],
+          "description": "Which theme base to use"
+        },
+        "themeRepoUrl":    { "type": "string", "description": "Git URL if custom-existing or headless-hydrogen" },
+        "primaryColor":    { "type": "string", "description": "Hex color, e.g. #1A1A1A" },
+        "secondaryColor":  { "type": "string" },
+        "logoUrl":         { "type": "string", "description": "URL or path to logo asset" },
+        "fontPrimary":     { "type": "string", "description": "e.g. Inter, Helvetica" },
+        "customSections":  { "type": "array", "items": { "type": "string" }, "description": "Bespoke Liquid sections to scaffold" }
+      }
+    },
+
+    "seo": {
+      "type": "object",
+      "description": "SEO and hreflang configuration",
+      "properties": {
+        "hreflangEnabled":    { "type": "boolean", "default": true, "description": "Auto-generate hreflang tags per market/locale" },
+        "sitemapPerMarket":   { "type": "boolean", "default": true },
+        "metaTitleTemplate":  { "type": "string", "description": "e.g. {{product}} | {{storeName}}" },
+        "robotsTxt":          { "type": "string", "enum": ["default", "custom"], "default": "default" },
+        "analyticsProvider":  { "type": "string", "enum": ["none", "ga4", "gtm", "segment"], "default": "none" }
+      }
+    },
+
+    "apps": {
+      "type": "object",
+      "description": "Third-party Shopify apps to install and configure",
+      "properties": {
+        "reviewsApp":       { "type": "string", "description": "e.g. judge.me, yotpo, stamped — or null" },
+        "emailMarketing":   { "type": "string", "description": "e.g. klaviyo, shopify-email, mailchimp — or null" },
+        "loyaltyApp":       { "type": "string", "description": "e.g. smile.io — or null" },
+        "searchApp":        { "type": "string", "description": "e.g. boost-commerce, searchpie — or null" },
+        "customApps":       { "type": "array", "items": { "type": "string" }, "description": "Any additional app handles" }
+      }
+    }
+
+  }
+}

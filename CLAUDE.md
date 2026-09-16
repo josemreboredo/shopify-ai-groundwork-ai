@@ -30,14 +30,27 @@ workspace for all Shopify client engagements.
 All domain conventions live in `docs/conventions/`. Read the relevant file before
 starting any sprint:
 
-| File | Covers |
-|---|---|
-| `docs/conventions/shopify-theme.md` | Liquid, Dawn/OS2, theme architecture, CLI |
-| `docs/conventions/shopify-app.md` | Node/Remix apps, App Bridge, webhooks, Shopify CLI |
-| `docs/conventions/shopify-hydrogen.md` | Hydrogen, Remix, Oxygen deployment |
-| `docs/conventions/shopify-api.md` | Admin API, Storefront API, versioning, rate limits |
-| `docs/conventions/shopify-ai.md` | AI builder features, LLM integration patterns |
-| `docs/conventions/security-gates.md` | Shopify-specific security gates (PCI, PII, webhooks) |
+| File | Covers | Status |
+|---|---|---|
+| `docs/conventions/shopify-delivery.md` | Requirement → capability mapping, tier guide, CLI rules | ✅ exists |
+| `docs/conventions/security-gates.md` | Store tokens, PII, scope control, production guard | ✅ exists |
+| `docs/conventions/shopify-theme.md` | Liquid, Dawn/OS2, theme architecture, CLI | planned |
+| `docs/conventions/shopify-app.md` | Node/Remix apps, App Bridge, webhooks, Shopify CLI | planned |
+| `docs/conventions/shopify-hydrogen.md` | Hydrogen, Remix, Oxygen deployment | planned |
+| `docs/conventions/shopify-api.md` | Admin API, Storefront API, versioning, rate limits | planned |
+
+## Installed tooling
+
+| Tool | Version | Purpose |
+|---|---|---|
+| Shopify AI Toolkit | 1.8.2 | Claude Code plugin — live docs, schema validation, store management |
+| Shopify CLI | 4.8.0 | Store management, theme push/pull, app deployment |
+| Node.js | 25.x | Runtime requirement for Shopify CLI |
+
+Install the plugin (already done for this workspace):
+```terminal
+claude plugin install shopify-ai-toolkit@claude-plugins-official
+```
 
 ## Tiering guidance (Shopify-specific additions)
 

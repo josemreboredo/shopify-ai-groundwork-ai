@@ -1,11 +1,20 @@
 # Gaia internal memory — local only, not project source
 .gaia/
 
-# Environment / secrets
-.env
-.env.*
+# Environment / secrets (covers .env, .env.local, .envx, …)
+.env*
 !.env.example
+
+# Client engagement data — may contain client PII / commercial detail
+clients/
 
 # Node
 node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
 .DS_Store

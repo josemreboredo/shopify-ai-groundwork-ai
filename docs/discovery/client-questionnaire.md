@@ -99,6 +99,35 @@
 - Do products have **variants** (size, colour, material)? How many options per product (maximum)?
 - Are there any products with **more than 3 variant options** or **more than 100 variants** per product?
   *(Shopify hard limits: 3 options, 100 variants — custom solutions required above this — flags § 11.3)*
+
+### 2.2 Product types inventory
+
+Confirm which product types exist in the catalogue. Each type has distinct Shopify
+implementation consequences and affects integration count and tier classification.
+
+| Product type | Present? | Shopify native? | Integration / tier impact |
+|---|---|---|---|
+| **Simple product** (no variants) | ☐ | ✅ Native | None |
+| **Variant product** (size / colour / material) | ☐ | ✅ Native — max 3 options, 100 variants hard limit | None — flags exit trigger if over limits |
+| **Bundle / kit** (multiple SKUs sold as one, inventory deducted per component) | ☐ | ✅ Shopify Bundles app (free) | +1 integration for Starter |
+| **Product set / look** (items shown together, sold separately — no inventory grouping) | ☐ | ⚠️ Metaobject + theme work — no native grouping | T3 theme work; no app integration |
+| **Gift card** | ☐ | ✅ Native product type (enable in Admin → Settings → Gift cards) | None |
+| **Digital / downloadable product** | ☐ | ⚠️ Fulfilment app required: Sky Pilot, FetchApp, SendOwl | +1 integration |
+| **Subscription product** (recurring billing) | ☐ | ✅ Shopify Subscriptions (native, basic) or Recharge (advanced) | +1 integration if Recharge needed |
+| **Pre-order product** (sell before stock, charge now or on fulfilment) | ☐ | ⚠️ App-based: Timesact, Pre-order Now, Kite | +1 integration |
+| **Made-to-order / personalised** (engravings, monograms, custom text) | ☐ | ⚠️ Checkout Extensibility or draft orders | T3 scoping; may flag custom checkout exit |
+| **Virtual / service product** (consultations, warranties, installation fees) | ☐ | ✅ Native — mark as physical, weight 0, no shipping | None |
+
+> **🛑 Exit-trigger note — integration count:** Every app-backed product type counts toward
+> the integration total. Starter = 0 integrations · Medium = 0–1 · Large ≤ 3.
+> If the product-type checklist implies ≥ 4 apps, flag to § 11.3 immediately — bespoke quote.
+
+> **Coming from Salesforce Commerce Cloud?**
+> "Variation product" → Shopify variant product (3 options max — hard limit, not config).
+> "Product set" → no native Shopify equivalent; requires metaobject + theme work (T3).
+> "Master product" → Shopify product (parent). "Gifting product" → Shopify gift card (native).
+> "Bundle" → Shopify Bundles app (free). "Subscription" → Shopify Subscriptions or Recharge.
+
 - Are there **bundles** or **kits** (multiple SKUs sold as one unit)?
 - Are there **digital / downloadable** products?
 - Are there **subscription** products (recurring billing)?
@@ -235,9 +264,42 @@
 
 ### 6.3 Loyalty & CRM
 
-- Do you have (or plan) a **loyalty / rewards programme**?
-  - Points, tiers, referrals? Which app? (LoyaltyLion, Yotpo, Smile.io, Okendo)
-- Do you have a customer **segmentation strategy** (VIP, at-risk, dormant, high-LTV)?
+> Maps to: `loyalty` block in store-spec.yaml. Each app-backed loyalty component counts +1 toward
+> the integration total. If a single app covers multiple components, count it once.
+
+#### Loyalty programme structure
+
+| Loyalty component | Planned? | Native support? | App options |
+|---|---|---|---|
+| **No loyalty programme** | ☐ | ✅ N/A | — |
+| **Points earned per purchase** | ☐ | ❌ App required | Smile.io, LoyaltyLion, Yotpo Loyalty |
+| **Points earned per action** (reviews, referrals, social shares) | ☐ | ❌ App required | Smile.io, LoyaltyLion |
+| **Tiered status / VIP levels** (Bronze → Silver → Gold, unlocking benefits) | ☐ | ❌ App required | Smile.io tiers, LoyaltyLion, Yotpo |
+| **Referral programme** (customer shares a link, earns on friend's first purchase) | ☐ | ❌ App required (may be bundled with loyalty app) | Smile.io, Referral Candy, Viral Loops |
+| **VIP early access** (exclusive products or drops for top-tier customers) | ☐ | ⚠️ Shopify customer tags + metafields + theme logic | T2–T3 depending on complexity |
+| **Subscription-linked discount** (loyalty discount auto-applied on repeat orders) | ☐ | ✅ Covered by Shopify Subscriptions or Recharge | Uses subscription integration |
+| **Store credit / cashback** (earn credit redeemable as payment method) | ☐ | ✅ Native Shopify Gift Cards (basic) or Shopify Balance | None if native; app if advanced rules needed |
+
+#### CRM & customer segmentation
+
+- Do you segment customers today? If yes, what segments exist?
+  (e.g. VIP high-LTV, at-risk / lapsing, dormant, new, wholesale, subscriber)
+- Is customer segmentation driven by **Shopify native segments** (Shopify Admin → Customers),
+  your **ESP** (Klaviyo, Braze), a dedicated **CDP** (Segment, Bloomreach), or a combination?
+- Are there **customer tags** in use today for any custom logic (pricing, access, discounts)?
+- Do loyalty points or tier status need to **sync back** to the ESP or CRM for campaign triggers?
+  (e.g. Smile.io tier upgrade → Klaviyo flow triggers VIP welcome email)
+
+#### Integration count implication
+
+- If loyalty app + referral app are separate: **+2 integrations** — check if one app covers both.
+- If loyalty syncs to ESP (Klaviyo / Braze): +1 data connection (usually via native integration,
+  not a custom build — confirm the app's native connector).
+- If loyalty requires a custom widget or theme component: **T3 theme work**.
+
+> **Total loyalty integration budget:** If the store already has ESP + review app + loyalty app
+> + referral app, that's already 4 integrations — triggers the exit threshold for Medium tier.
+> Consolidate or escalate to Large / bespoke before scoping.
 
 ### 6.4 GDPR & consent
 
@@ -281,12 +343,72 @@
 - Is **user-generated content (UGC)** important to your marketing? (Instagram feed, TikTok embeds, customer photos)
 - Do you use or plan to use **Shopify Collabs** or influencer / affiliate marketing?
 
-### 7.5 Promotions & discounts
+### 7.5 Promotions & Campaigns
 
-- What types of promotions do you run?
-  (Percentage off, fixed amount, BOGO, free shipping, tiered, automatic, code-based, flash sales)
-- Do promotions **stack**? (e.g. a discount code on top of a sale price, or free shipping + 10% off)
-- Are promotions time-limited with strict start / end scheduling requirements?
+> Maps to: `promotions` block in store-spec.yaml. Each non-native answer may add +1 integration.
+
+#### Discount types
+
+| Discount type | Present? | Shopify native? | Integration impact |
+|---|---|---|---|
+| **Percentage off** (e.g. 20% off) | ☐ | ✅ Native — Shopify Discounts | None |
+| **Fixed amount off** (e.g. £10 off) | ☐ | ✅ Native | None |
+| **Buy X get Y (BOGO)** | ☐ | ✅ Native (Shopify 2023+) | None |
+| **Free shipping discount** | ☐ | ✅ Native | None |
+| **Tiered / volume discount** (spend £100 get 10%, spend £200 get 20%) | ☐ | ⚠️ App required: Discounts Lab, Bundler, Bold Discounts | +1 integration |
+| **Automatic discounts** (applied without a code at checkout) | ☐ | ✅ Native | None |
+| **Code-based discounts** (coupon codes) | ☐ | ✅ Native | None |
+| **Flash sale / scheduled sale** (price changes with start + end time) | ☐ | ⚠️ App required: Sale Genius, Launchpad (Plus only), Mechanic | +1 integration |
+| **Stackable promotions** (discount code + automatic discount simultaneously) | ☐ | ✅ Native (Shopify 2024+ — requires configuration, not on by default) | None if enabled correctly |
+| **POS-only promotions** (in-store discounts not applied online) | ☐ | ✅ Native — POS discount codes are scoped per channel | None |
+
+> **⚠️ Stacking note:** Shopify allows up to one automatic discount + one code discount simultaneously
+> (2024+). True "unlimited stacking" (multiple automatic discounts) requires Checkout Extensibility
+> or a discount function — T3 work. Clarify with the client exactly which combinations must stack.
+
+#### Coupon configuration
+
+- Are coupon codes **single-use** (one redemption per customer), **multi-use** (unlimited), or **bulk** (one code per customer from a CSV list)?
+- Do codes need to be **client-branded** (e.g. `WELCOME20`) or system-generated?
+- Are there minimum order values or minimum quantity thresholds before a code applies?
+- Do codes expire? Is the expiry date fixed or rolling (e.g. 30 days from issue)?
+- Are codes distributed via email, SMS, printed flyer, or influencer-specific links?
+
+#### Loyalty programme
+
+| Loyalty type | Planned? | Shopify native? | Integration impact |
+|---|---|---|---|
+| **No loyalty programme** | ☐ | ✅ N/A | None |
+| **Points-based rewards** (earn points per purchase, redeem for discounts) | ☐ | ⚠️ App required: Smile.io, Loyaltylion, Yotpo Loyalty | +1 integration |
+| **Tiered / VIP status** (Bronze → Silver → Gold with escalating benefits) | ☐ | ⚠️ App required: Smile.io or Loyaltylion (both support tiers) | +1 integration |
+| **Referral programme** (share a code, earn when friend buys) | ☐ | ⚠️ App required: Referral Candy, Smile.io referrals, Viral Loops | +1 integration (may share with loyalty app) |
+| **Subscription-linked discount** (subscribers get 10% on all orders) | ☐ | ✅ Native if using Shopify Subscriptions; Recharge if advanced | Covered by subscription integration |
+| **Cashback / store credit** (earn credit redeemable at checkout) | ☐ | ✅ Native — Shopify Gift Cards / store credit (Shopify Balance) | None if using native gift cards |
+
+> **Integration consolidation note:** If the client needs both loyalty + referral, check whether
+> one app (e.g. Smile.io) covers both before counting as two integrations.
+
+#### Gift cards as a promotional instrument
+
+- Are gift cards used **as a product** (sold in the store for purchase)?
+- Are gift cards used **as a reward** (issued by the store to customers for loyalty, refunds, or compensation)?
+- Do gift cards need to be **physical** (printed, mailed) or **digital** (emailed code) or both?
+- Do gift cards have an **expiry date**? (Shopify native gift cards do not expire — check local law.)
+
+#### Affiliate & influencer marketing
+
+- Is there an **affiliate programme** (commission per referred sale, tracked via unique link)?
+  - If yes: which platform? (Refersion, UpPromote, ShareASale, Impact, in-house)
+- Is **influencer seeding** part of the marketing plan?
+  - Does the client use **Shopify Collabs**? (Native free tier available on most plans)
+- Are affiliate / influencer codes tracked as discount codes, or via UTM parameters only?
+
+#### Campaign coordination
+
+- Are promotions coordinated with **email / SMS campaigns**? (ESP triggers discount on send)
+- Are there **landing pages** needed per campaign, or does the existing PDP + collection page suffice?
+- Is there a **countdown timer** or urgency element required at checkout or on the product page?
+- Do promotions differ by **market / region**? (e.g. Black Friday US vs. EU)
 
 ---
 

@@ -1,0 +1,16 @@
+{
+  "name": "shopify-ai-builder",
+  "version": "0.1.0",
+  "description": "Gaia-governed AI delivery platform for Shopify consultants",
+  "type": "module",
+  "scripts": {
+    "questionnaire": "node scripts/questionnaire/questionnaire.js",
+    "generate-stories": "node scripts/generate-stories.js",
+    "test": "node --test \"tests/**/*.test.js\" && python3 -m unittest discover -s tests/unit -p 'test_*.py'",
+    "test:node": "node --test \"tests/**/*.test.js\"",
+    "test:python": "python3 -m unittest discover -s tests/unit -p 'test_*.py'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

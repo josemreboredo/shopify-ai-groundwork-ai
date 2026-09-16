@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 import json
 from datetime import date
@@ -309,9 +310,27 @@ def post_process_spec(spec: dict, brief: str) -> dict:
 # Output
 # ---------------------------------------------------------------------------
 
+SLUG_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]{0,62}$")
+
+
+def safe_client_slug(raw: Any) -> str:
+    """
+    Validate the client slug before it is used as a directory name.
+    The slug comes from LLM output, so it must never be able to escape clients/.
+    """
+    slug = str(raw or "").strip().lower()
+    if not SLUG_PATTERN.fullmatch(slug):
+        raise ValueError(
+            f"Invalid client slug {slug!r} — expected kebab-case [a-z0-9-], e.g. 'acme-watches'."
+        )
+    return slug
+
+
 def write_spec(spec: dict, client_slug: str) -> Path:
     """Write store-spec.yaml to clients/<slug>/store-spec.yaml."""
-    output_path = OUTPUT_DIR / client_slug / "store-spec.yaml"
+    output_path = OUTPUT_DIR / safe_client_slug(client_slug) / "store-spec.yaml"
+    if OUTPUT_DIR.resolve() not in output_path.resolve().parents:
+        raise ValueError(f"Refusing to write outside {OUTPUT_DIR}: {output_path}")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         yaml.dump(spec, f, allow_unicode=True, sort_keys=False, default_flow_style=False)
@@ -405,6 +424,13 @@ def main() -> None:
             border_style="cyan",
         ))
         brief = console.input("[bold]Brief:[/bold] ").strip()
+        if not brief:
+            console.print("[red]No brief provided. Exiting.[/red]")
+            sys.exit(1)
+
+        console.print("[cyan]Analysing brief...[/cyan]")
+        spec = run_interactive_session(brief)
+        spec = post_process_spec(spec, brief)
     else:
         brief_path = Path(args.brief)
         if brief_path.exists():
@@ -423,13 +449,18 @@ def main() -> None:
         # Post-process
         spec = post_process_spec(spec, brief)
 
-    # Write or dry-run
-    client_slug = spec.get("client", {}).get("slug") or "unknown-client"
+    # Write or dry-run — a STOP spec is never written (exit triggers block delivery)
+    client_slug = (spec.get("client") or {}).get("slug") or "unknown-client"
+    stopped = bool((spec.get("exits") or {}).get("triggered"))
     output_path = None
-    if not args.dry_run:
-        output_path = write_spec(spec, client_slug)
-    else:
+    if args.dry_run:
         console.print(yaml.dump(spec, allow_unicode=True, sort_keys=False))
+    elif not stopped:
+        try:
+            output_path = write_spec(spec, client_slug)
+        except ValueError as exc:
+            console.print(f"[red]{exc}[/red]")
+            sys.exit(1)
 
     # Print summary
     print_summary(spec, output_path)

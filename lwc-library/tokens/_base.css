@@ -1,0 +1,110 @@
+/* ==========================================================================
+   LWC LIBRARY — BASE TOKENS
+   Spacing, radius, motion, shadow, layout.
+   These values NEVER change per brand. Override colour and typography only.
+   ========================================================================== */
+
+:root {
+  /* --------------------------------------------------------------------------
+     Spacing scale (8px base grid)
+     -------------------------------------------------------------------------- */
+  --lwc-space-1:   4px;
+  --lwc-space-2:   8px;
+  --lwc-space-3:  12px;
+  --lwc-space-4:  16px;
+  --lwc-space-5:  20px;
+  --lwc-space-6:  24px;
+  --lwc-space-8:  32px;
+  --lwc-space-10: 40px;
+  --lwc-space-12: 48px;
+  --lwc-space-16: 64px;
+  --lwc-space-20: 80px;
+  --lwc-space-24: 96px;
+  --lwc-space-32: 128px;
+
+  /* --------------------------------------------------------------------------
+     Layout
+     -------------------------------------------------------------------------- */
+  --lwc-max-width-narrow:  900px;
+  --lwc-max-width-default: 1200px;
+  --lwc-max-width-wide:    1440px;
+  --lwc-page-margin:       clamp(16px, 4vw, 48px);
+  --lwc-grid-gap:          var(--lwc-space-6);
+  --lwc-section-gap:       var(--lwc-space-20);
+
+  /* --------------------------------------------------------------------------
+     Border radius
+     -------------------------------------------------------------------------- */
+  --lwc-radius-sm:   2px;
+  --lwc-radius-md:   4px;
+  --lwc-radius-lg:   8px;
+  --lwc-radius-xl:  16px;
+  --lwc-radius-full: 9999px;
+
+  /* Default: sharp (luxury preset). Brand overrides this in _colour.css */
+  --lwc-radius-card:   var(--lwc-radius-sm);
+  --lwc-radius-button: var(--lwc-radius-sm);
+  --lwc-radius-input:  var(--lwc-radius-sm);
+  --lwc-radius-badge:  var(--lwc-radius-sm);
+
+  /* --------------------------------------------------------------------------
+     Motion
+     -------------------------------------------------------------------------- */
+  --lwc-duration-fast:   150ms;
+  --lwc-duration-base:   250ms;
+  --lwc-duration-slow:   400ms;
+  --lwc-duration-slower: 600ms;
+
+  --lwc-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --lwc-ease-in:      cubic-bezier(0.4, 0, 1, 1);
+  --lwc-ease-out:     cubic-bezier(0, 0, 0.2, 1);
+  --lwc-ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --lwc-transition-fast: var(--lwc-duration-fast) var(--lwc-ease-default);
+  --lwc-transition-base: var(--lwc-duration-base) var(--lwc-ease-default);
+  --lwc-transition-slow: var(--lwc-duration-slow) var(--lwc-ease-default);
+
+  /* --------------------------------------------------------------------------
+     Elevation / Shadow
+     -------------------------------------------------------------------------- */
+  --lwc-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --lwc-shadow-md:  0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.08);
+  --lwc-shadow-lg:  0 10px 25px rgba(0, 0, 0, 0.08), 0 20px 48px rgba(0, 0, 0, 0.10);
+  --lwc-shadow-xl:  0 25px 50px rgba(0, 0, 0, 0.12);
+
+  /* --------------------------------------------------------------------------
+     Z-index scale
+     -------------------------------------------------------------------------- */
+  --lwc-z-below:   -1;
+  --lwc-z-base:     0;
+  --lwc-z-raised:   10;
+  --lwc-z-dropdown: 100;
+  --lwc-z-sticky:   200;
+  --lwc-z-overlay:  300;
+  --lwc-z-modal:    400;
+  --lwc-z-toast:    500;
+
+  /* --------------------------------------------------------------------------
+     Media breakpoints (reference — use in media queries, not as custom props)
+     sm: 640px | md: 768px | lg: 1024px | xl: 1280px | 2xl: 1536px
+     -------------------------------------------------------------------------- */
+
+  /* --------------------------------------------------------------------------
+     Image aspect ratios (used in component schemas)
+     -------------------------------------------------------------------------- */
+  --lwc-ratio-square:    1 / 1;
+  --lwc-ratio-portrait:  3 / 4;
+  --lwc-ratio-landscape: 16 / 9;
+  --lwc-ratio-product:   4 / 5;   /* Standard Shopify product image */
+  --lwc-ratio-hero:      21 / 9;
+}
+
+/* Reduced motion — always respect the OS preference */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --lwc-duration-fast:   0ms;
+    --lwc-duration-base:   0ms;
+    --lwc-duration-slow:   0ms;
+    --lwc-duration-slower: 0ms;
+  }
+}

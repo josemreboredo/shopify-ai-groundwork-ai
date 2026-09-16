@@ -1,0 +1,126 @@
+/* ==========================================================================
+   LWC LIBRARY — COLOUR TOKENS
+   SWAP THIS FILE per brand. Everything else references semantic aliases.
+
+   HOW TO BRAND:
+     1. Replace the palette section with brand colours (primitives)
+     2. Re-map semantic aliases to those primitives
+     3. Do NOT change the alias names — components use the aliases, not primitives
+     4. Set --lwc-radius-* here to control the brand's sharpness preset
+
+   PRESETS (copy-paste to brand token file):
+     luxury-sharp:   all radii → 0 | --lwc-preset-feel: luxury
+     modern-soft:    card 8px, button 4px, input 4px | --lwc-preset-feel: modern
+     playful-round:  card 16px, button 9999px, input 9999px | --lwc-preset-feel: playful
+   ========================================================================== */
+
+:root {
+  /* --------------------------------------------------------------------------
+     PRIMITIVE PALETTE — replace with brand hex values
+     Name convention: [brand-name]-[descriptor]
+     -------------------------------------------------------------------------- */
+
+  /* Neutrals */
+  --lwc-primitive-black:       #0a0a0a;
+  --lwc-primitive-grey-900:    #1a1a1a;
+  --lwc-primitive-grey-800:    #2c2c2c;
+  --lwc-primitive-grey-600:    #4a4a4a;
+  --lwc-primitive-grey-400:    #8a8a8a;
+  --lwc-primitive-grey-200:    #d4d4d4;
+  --lwc-primitive-grey-100:    #f0eeea;
+  --lwc-primitive-off-white:   #f5f3ef;
+  --lwc-primitive-white:       #ffffff;
+
+  /* Brand accent — REPLACE with client brand colour */
+  --lwc-primitive-accent-base:  #c8a96e;  /* example: warm gold */
+  --lwc-primitive-accent-light: #e8d5b0;
+  --lwc-primitive-accent-dark:  #a07840;
+
+  /* Semantic — status colours (rarely need changing per brand) */
+  --lwc-primitive-success: #16a34a;
+  --lwc-primitive-warning: #d97706;
+  --lwc-primitive-error:   #dc2626;
+  --lwc-primitive-info:    #2563eb;
+
+  /* --------------------------------------------------------------------------
+     SEMANTIC ALIASES — components use these; primitives feed them
+     -------------------------------------------------------------------------- */
+
+  /* Surfaces */
+  --lwc-color-bg:           var(--lwc-primitive-white);
+  --lwc-color-bg-subtle:    var(--lwc-primitive-off-white);
+  --lwc-color-bg-muted:     var(--lwc-primitive-grey-100);
+  --lwc-color-bg-inverse:   var(--lwc-primitive-grey-900);
+
+  /* Text */
+  --lwc-color-text:         var(--lwc-primitive-grey-900);
+  --lwc-color-text-subtle:  var(--lwc-primitive-grey-600);
+  --lwc-color-text-muted:   var(--lwc-primitive-grey-400);
+  --lwc-color-text-inverse: var(--lwc-primitive-white);
+  --lwc-color-text-on-accent: var(--lwc-primitive-white);
+
+  /* Borders */
+  --lwc-color-border:       var(--lwc-primitive-grey-200);
+  --lwc-color-border-strong: var(--lwc-primitive-grey-600);
+  --lwc-color-border-inverse: rgba(255, 255, 255, 0.2);
+
+  /* Brand accent */
+  --lwc-color-accent:       var(--lwc-primitive-accent-base);
+  --lwc-color-accent-light: var(--lwc-primitive-accent-light);
+  --lwc-color-accent-dark:  var(--lwc-primitive-accent-dark);
+
+  /* Interactive: links */
+  --lwc-color-link:         var(--lwc-primitive-grey-900);
+  --lwc-color-link-hover:   var(--lwc-primitive-accent-base);
+
+  /* Interactive: buttons */
+  --lwc-color-btn-primary-bg:     var(--lwc-primitive-grey-900);
+  --lwc-color-btn-primary-text:   var(--lwc-primitive-white);
+  --lwc-color-btn-primary-border: transparent;
+  --lwc-color-btn-primary-bg-hover:   var(--lwc-primitive-grey-800);
+
+  --lwc-color-btn-secondary-bg:     transparent;
+  --lwc-color-btn-secondary-text:   var(--lwc-primitive-grey-900);
+  --lwc-color-btn-secondary-border: var(--lwc-primitive-grey-900);
+  --lwc-color-btn-secondary-bg-hover: var(--lwc-primitive-grey-900);
+  --lwc-color-btn-secondary-text-hover: var(--lwc-primitive-white);
+
+  --lwc-color-btn-accent-bg:     var(--lwc-primitive-accent-base);
+  --lwc-color-btn-accent-text:   var(--lwc-primitive-white);
+  --lwc-color-btn-accent-border: transparent;
+  --lwc-color-btn-accent-bg-hover: var(--lwc-primitive-accent-dark);
+
+  /* Interactive: form inputs */
+  --lwc-color-input-bg:          var(--lwc-primitive-white);
+  --lwc-color-input-text:        var(--lwc-primitive-grey-900);
+  --lwc-color-input-border:      var(--lwc-primitive-grey-200);
+  --lwc-color-input-border-focus: var(--lwc-primitive-grey-900);
+  --lwc-color-input-placeholder: var(--lwc-primitive-grey-400);
+
+  /* Status */
+  --lwc-color-success: var(--lwc-primitive-success);
+  --lwc-color-warning: var(--lwc-primitive-warning);
+  --lwc-color-error:   var(--lwc-primitive-error);
+  --lwc-color-info:    var(--lwc-primitive-info);
+
+  /* Sale / badge */
+  --lwc-color-sale-bg:   var(--lwc-primitive-error);
+  --lwc-color-sale-text: var(--lwc-primitive-white);
+  --lwc-color-new-bg:    var(--lwc-primitive-grey-900);
+  --lwc-color-new-text:  var(--lwc-primitive-white);
+
+  /* --------------------------------------------------------------------------
+     BORDER RADIUS PRESET — set once per brand, all components inherit
+     Luxury = all zero. Modern = 4-8px. Playful = 12-999px.
+     -------------------------------------------------------------------------- */
+  --lwc-radius-card:   0px;
+  --lwc-radius-button: 0px;
+  --lwc-radius-input:  0px;
+  --lwc-radius-badge:  0px;
+
+  /* --------------------------------------------------------------------------
+     BRAND METADATA (used by Frame Agent for store-spec validation)
+     -------------------------------------------------------------------------- */
+  --lwc-preset-feel:    luxury;   /* luxury | modern | playful */
+  --lwc-preset-tier:    medium;   /* starter | medium | large */
+}
