@@ -1,0 +1,126 @@
+{
+  "general": {
+    "404": "Seite nicht gefunden",
+    "typography": "Schrift",
+    "fonts": "Schriftarten",
+    "primary": "Primär",
+    "layout": "Layout",
+    "colors": "Farben"
+  },
+  "labels": {
+    "background": "Hintergrund",
+    "foreground": "Vordergrund",
+    "page_width": "Seitenbreite",
+    "page_margin": "Seitenrand",
+    "input_corner_radius": "Eingabefeld-Eckenradius",
+    "add_to_cart": "In den Warenkorb",
+    "sold_out": "Ausverkauft",
+    "unavailable": "Nicht verfügbar",
+    "sale": "Sale",
+    "new": "Neu",
+    "price": "Preis",
+    "compare_at_price": "Statt",
+    "search": "Suchen",
+    "close": "Schliessen",
+    "menu": "Menü",
+    "cart": "Warenkorb",
+    "account": "Konto",
+    "checkout": "Zur Kasse",
+    "quantity": "Menge",
+    "remove": "Entfernen",
+    "edit": "Bearbeiten"
+  },
+  "options": {
+    "page_width": {
+      "narrow": "Schmal",
+      "wide": "Breit"
+    }
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "empty": "Dein Warenkorb ist leer.",
+    "subtotal": "Zwischensumme",
+    "checkout": "Zur Kasse",
+    "continue_shopping": "Weiter einkaufen",
+    "remove": "Entfernen",
+    "quantity": "Menge",
+    "note": "Bestellhinweis",
+    "note_placeholder": "Besondere Wünsche, Hinweise...",
+    "taxes_included": "Inkl. MwSt.",
+    "shipping_at_checkout": "Versandkosten werden an der Kasse berechnet."
+  },
+  "product": {
+    "add_to_cart": "In den Warenkorb",
+    "buy_now": "Jetzt kaufen",
+    "sold_out": "Ausverkauft",
+    "unavailable": "Nicht verfügbar",
+    "quantity": "Menge",
+    "sku": "Artikelnummer",
+    "description": "Beschreibung",
+    "details": "Details",
+    "care": "Pflege",
+    "materials": "Materialien",
+    "share": "Teilen",
+    "size_guide": "Grössentabelle",
+    "reviews": "Bewertungen",
+    "recently_viewed": "Zuletzt angesehen"
+  },
+  "collection": {
+    "sort_by": "Sortieren nach",
+    "filter": "Filtern",
+    "clear_filters": "Filter zurücksetzen",
+    "no_results": "Keine Produkte gefunden.",
+    "products_count": "{{ count }} Produkte",
+    "loading": "Laden..."
+  },
+  "blog": {
+    "article_metadata_html": "Von {{ author }} am {{ date }}",
+    "article_comments": "Kommentare",
+    "comment_form_title": "Kommentar hinterlassen",
+    "comment_form_name": "Name",
+    "comment_form_email": "E-Mail",
+    "comment_form_body": "Kommentar",
+    "comment_form_submit": "Absenden",
+    "comment_success": "Ihr Kommentar wurde eingereicht."
+  },
+  "404": {
+    "title": "Seite nicht gefunden",
+    "not_found": "Diese Seite existiert leider nicht.",
+    "back_to_shopping": "Zurück zum Shop"
+  },
+  "search": {
+    "placeholder": "Suchen...",
+    "no_results": "Keine Ergebnisse für \"{{ terms }}\"",
+    "results_for": "Ergebnisse für \"{{ terms }}\""
+  },
+  "account": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "register": "Konto erstellen",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgot_password": "Passwort vergessen?",
+    "orders": "Bestellungen",
+    "order_number": "Bestellnummer",
+    "order_date": "Bestelldatum",
+    "order_status": "Status"
+  },
+  "accessibility": {
+    "skip_to_content": "Zum Inhalt springen",
+    "open_menu": "Menü öffnen",
+    "close_menu": "Menü schliessen",
+    "open_cart": "Warenkorb öffnen",
+    "close_cart": "Warenkorb schliessen",
+    "open_search": "Suche öffnen",
+    "close_search": "Suche schliessen",
+    "image_of": "Bild von {{ product }}",
+    "loading": "Laden"
+  },
+  "newsletter": {
+    "title": "Newsletter",
+    "placeholder": "Ihre E-Mail-Adresse",
+    "submit": "Anmelden",
+    "success": "Vielen Dank für Ihre Anmeldung.",
+    "error": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+  }
+}

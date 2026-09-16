@@ -55,7 +55,24 @@
 ## § 2 — Catalogue & Products
 
 - SKU count: ~800 active SKUs
-- Variant options per product: 2 (size, colour)
+- Variant options per product: 2 (size, colour) — well within Shopify's 3-option limit
+- Maximum variants per product: ~12 — well within Shopify's 100-variant limit
+
+**Product types inventory:**
+
+| Product type | Present? |
+|---|---|
+| Simple product | ✅ Yes — entry-level straps & accessories |
+| Variant product (size / colour) | ✅ Yes — primary watch lines |
+| Bundle / kit | ❌ No |
+| Product set / look | ❌ No |
+| Gift card | ❌ No (phase 2) |
+| Digital / downloadable | ❌ No |
+| Subscription product | ❌ No |
+| Pre-order product | ❌ No |
+| Made-to-order / personalised | ❌ No |
+| Virtual / service product | ❌ No |
+
 - Bundles: No
 - B2B: Yes — wholesale accounts with tiered pricing (not RFQ, fixed tiers)
 - Digital products: No
@@ -100,23 +117,74 @@
 
 - Customer accounts: Required (order history, address book)
 - B2B portal: Yes (wholesale login, tiered pricing display)
-- Loyalty programme: No (phase 2)
+- Loyalty programme: No at launch (phase 2 — likely Smile.io points + tiers)
 - Customer groups: Retail + Wholesale
+
+**Loyalty & CRM (§ 6.3):**
+
+| Loyalty component | Phase 1? |
+|---|---|
+| Points-based rewards | ❌ Phase 2 |
+| Tiered VIP status | ❌ Phase 2 |
+| Referral programme | ❌ Phase 2 |
+| Store credit / cashback | ❌ Phase 2 |
+| VIP early access (customer tags) | ✅ Phase 1 — wholesale group gets early drop access via tag-gated collection |
+
+- ESP-driven segmentation: Klaviyo is master for segments; Shopify native segments used as source
+- Customer tags in use: `wholesale`, `vip_early_access`
 
 ---
 
-## § 7 — Marketing & Analytics
+## § 7 — Promotions & Campaigns (§ 7.5)
+
+**Discount types:**
+
+| Discount type | In use? | Native? |
+|---|---|---|
+| Percentage off | ✅ Yes | ✅ Native |
+| Fixed amount off | ✅ Yes | ✅ Native |
+| BOGO | ❌ No | ✅ Native (not needed) |
+| Free shipping | ✅ Yes — orders >€150 | ✅ Native |
+| Volume / tiered discount | ❌ No | ⚠️ App required if added |
+| Automatic discounts | ✅ Yes — seasonal sale | ✅ Native |
+| Code-based / coupons | ✅ Yes | ✅ Native |
+| Flash sales with scheduling | ❌ No | ⚠️ App required if added |
+| Stackable discounts | ✅ Yes — automatic sale + free shipping stack | ✅ Shopify 2024+ config |
+| POS-only promotions | ❌ No (no POS at launch) | ✅ Native |
+
+**Coupon configuration:**
+- Type: multi-use codes (seasonal campaigns) + bulk-CSV (influencer one-time codes)
+- Branded codes: Yes (e.g. `ACME20`, `PARTNER10`)
+- Expiry: Yes — all codes expire with campaign end date
+
+**Loyalty:** No programme at launch — phase 2. No integration counted in Phase 1.
+
+**Gift cards:** No (phase 2).
+
+**Affiliate / influencer:**
+- No formal affiliate programme at launch
+- Shopify Collabs: No (Acme uses agency-managed influencer outreach, not Collabs)
+
+**Campaign coordination:**
+- Promotions triggered from Klaviyo flows: Yes (code issued in welcome / win-back flows)
+- Campaign landing pages: No dedicated pages — uses collection + hero banner
+- Countdown timers: No
+- Market-specific promotions: Yes — CH and DE/AT may run different sale periods
+
+---
+
+## § 8 — Marketing & Analytics
 
 - Email platform: Klaviyo
 - GA4: Yes
 - Meta Pixel: Yes
 - Abandoned cart recovery: Klaviyo flows
-- Affiliate / referral: No
+- Affiliate / referral: No (Acme uses organic influencer outreach; see § 7 Promotions)
 - Cookie consent tool: Cookiebot
 
 ---
 
-## § 8 — Integrations & Tech Stack
+## § 9 — Integrations & Tech Stack
 
 - ERP: SAP Business One (inventory + order sync required)
 - PIM: No (Shopify as PIM)
@@ -126,7 +194,7 @@
 
 ---
 
-## § 9 — Design & UX
+## § 10 — Design & UX
 
 - Theme: Horizon (base, not Figma custom)
 - Figma source: Partial (brand guidelines only, no full design system)
@@ -136,7 +204,7 @@
 
 ---
 
-## § 10 — Operations & Timeline
+## § 11 — Operations & Timeline
 
 - Launch date: 2025-10-01 (before holiday peak)
 - Team: Consultant (Jose) + client marketing manager
@@ -145,7 +213,7 @@
 
 ---
 
-## § 11 — Exit-Trigger Screening
+## § 12 — Exit-Trigger Screening
 
 | Row | Condition | Answer |
 |-----|-----------|--------|
