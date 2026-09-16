@@ -11,7 +11,8 @@
     "discover": "node --env-file-if-exists=.env agents/discovery/cli.js",
     "discover:prepare": "node agents/discovery/claude-code.js prepare",
     "discover:assemble": "node agents/discovery/claude-code.js assemble",
-    "discover:finish": "node agents/discovery/claude-code.js finish"
+    "discover:finish": "node agents/discovery/claude-code.js finish",
+    "backlog": "node agents/backlog/cli.js"
   },
   "engines": {
     "node": ">=22.9.0"
