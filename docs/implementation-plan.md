@@ -1,6 +1,6 @@
 # Implementation Plan — shopify-ai-builder
 
-> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 in review · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
+> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 in review (live run passed) · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
 > **Input:** whole-project review (2026-09-16) — discovery chain, pipeline code/security, build layer.
 > **Methodology:** Gaia tiers T1–T4 (`gaia/methodology/feature-tiers.md`). Estimates are indicative
 > (one lead + AI agents) and are re-baselined at the end of Phase 1.
@@ -157,9 +157,9 @@ Runtime LLM + client personal data → threat model and test strategy required b
 - [ ] Record explicit "none" answers for free-text fields (e.g. no affiliate platform) distinctly from unknown
 - [ ] Render filled questionnaires (e.g. the ACME example) from `engagement.json` with the committed renderer
 
-**Tests:** unit tests for classify/exits on all golden fixtures ✓; recorded-response tests for the full pipeline ✓; live run on the ACME example — pending (Claude Code mode, or API mode once the account has credit).
+**Tests:** unit tests for classify/exits on all golden fixtures ✓; recorded-response tests for the full pipeline ✓; live run on the ACME example ✓ (Claude Code mode, 2026-09-16: M / GO, FLAGs 11.10 and 11.14, extraction valid on first attempt).
 
-**Exit criteria:** ACME → M / GO with all four artefacts ✓ (recorded responses); STOP fixture → no GO artefacts ✓; zero schema errors ✓; threat model filed ✓ (`docs/architecture/discovery-engine-threat-model.md`). Live run on ACME pending.
+**Exit criteria:** ACME → M / GO with all four artefacts ✓ (recorded responses); STOP fixture → no GO artefacts ✓; zero schema errors ✓; threat model filed ✓ (`docs/architecture/discovery-engine-threat-model.md`). Live run on ACME ✓ (Claude Code mode).
 
 ---
 
