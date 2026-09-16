@@ -16,7 +16,6 @@ lwc-library/
 │   ├── _colour.css             # Brand palette + semantic aliases + radius preset
 │   └── README.md               # How to apply to a new brand
 │
-├── store-spec.schema.yaml      # SUPERSEDED by schema/engagement.schema.json (ADR 0002)
 │
 ├── swiss-baseline/             # L-3: market preset for Switzerland (opt-in, ADR 0004)
 │   ├── locales/
@@ -93,18 +92,18 @@ generated questionnaire. STOP rules block all downstream work until resolved.
 
 ## How to Start a New Engagement
 
-> Transitional: the Python Frame Agent and shell scripts below are replaced by the discovery
-> engine (Phase 2), Commerce Agent (Phase 6a) and Theme Agent (Phase 6b) of
-> [`docs/implementation-plan.md`](../docs/implementation-plan.md).
+> Transitional: the shell scripts below are replaced by the Commerce Agent (Phase 6a) and
+> Theme Agent (Phase 6b) of [`docs/implementation-plan.md`](../docs/implementation-plan.md).
 
 ### 1. Run discovery
 Complete [`docs/discovery/client-questionnaire.md`](../docs/discovery/client-questionnaire.md)
-with the client (see the ACME example), then run the Frame Agent:
+with the client (see the ACME example), then run the discovery engine:
 ```bash
-python agents/frame-agent/frame_agent.py --questionnaire path/to/<client>-questionnaire.md
+npm run discover -- --questionnaire path/to/<client>-questionnaire.md
 ```
 
-This creates `clients/<slug>/store-spec.yaml` (to become `engagement.json` in Phase 2).
+This creates `clients/<slug>/engagement.json` plus the delivery plan, capability map, app shortlist
+and risks (or a STOP report). See [`agents/discovery/README.md`](../agents/discovery/README.md).
 
 ### 2. Review the spec
 - The offer (S/M/L) matches the scope gates and the client's budget

@@ -21,13 +21,13 @@ that nothing generated. A hand-rolled YAML parser silently dropped data.
    of `engagement.json`. Nothing parses them back.
 4. Questions live in [`schema/question-bank.json`](../../schema/question-bank.json); each maps to
    schema pointers. The Markdown questionnaire is generated from it (`npm run questionnaire:render`).
-5. Runtime is **Node** for the whole pipeline; the Python Frame Agent is retired in Phase 2.
+5. Runtime is **Node** for the whole pipeline; the Python Frame Agent was retired in Phase 2 (`agents/discovery/`).
 6. Vetted dependencies are allowed: `ajv` (now), `@anthropic-ai/sdk` and `yaml` when first needed.
 7. The schema is versioned (`schema_version`). Breaking changes bump the major version and ship a migration.
 
 ## Consequences
 
-- `scripts/generate-stories/parseSpec.js`, the old `lwc-library/store-spec.schema.yaml` and
-  `scripts/questionnaire/` are superseded; they stay until Phase 2 and Phase 4 replace their consumers.
+- The old `lwc-library/store-spec.schema.yaml` was removed in Phase 2. `scripts/generate-stories/parseSpec.js` and
+  `scripts/questionnaire/` are superseded and stay until Phase 4 and Phase 5 replace them.
 - `agents/discovery-deck/parseMarkdown.js` is dropped in Phase 3.
 - Contract tests guard the schema ↔ question bank ↔ offering links.

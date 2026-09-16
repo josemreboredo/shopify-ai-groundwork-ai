@@ -119,7 +119,7 @@
   --lwc-radius-badge:  0px;
 
   /* --------------------------------------------------------------------------
-     BRAND METADATA (used by Frame Agent for store-spec validation)
+     BRAND METADATA (used by the Theme Agent — Phase 6b)
      -------------------------------------------------------------------------- */
   --lwc-preset-feel:    luxury;   /* luxury | modern | playful */
   --lwc-preset-tier:    medium;   /* starter | medium | large */

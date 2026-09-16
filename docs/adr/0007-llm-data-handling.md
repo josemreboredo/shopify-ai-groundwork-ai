@@ -20,8 +20,9 @@ no truncation check.
 3. **Structured output:** the LLM extracts answers into the schema; deterministic code computes
    the offer, gates and exits (ADR 0001, 0003). Model output is schema-validated; on failure the
    engine logs validation errors, never the raw response.
-4. **Model:** configured in one place (default: current Claude Sonnet-class model for extraction),
-   overridable by environment variable; `stop_reason` is checked so truncated output is rejected.
+4. **Model:** configured in one place (`agents/discovery/llm.js`): default `claude-opus-5`, overridable with
+   `DISCOVERY_MODEL`; server-side refusal fallbacks enabled; `stop_reason` is checked so refused or
+   truncated output is rejected and nothing is written.
 5. **Keys:** `ANTHROPIC_API_KEY` from the environment only (`.env`, gitignored).
 6. **Retention:** client files live under `clients/` (gitignored). Engagement data is not written
    to logs, caches or telemetry.

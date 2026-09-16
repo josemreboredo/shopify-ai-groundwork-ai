@@ -218,8 +218,8 @@ Ecommerce Growth      (L)  ──► Delivery Tier 2 (Hydrogen headless)  luxury
 
 ## Discovery engine — input/output contract
 
-The discovery engine is the **first stage of the delivery pipeline** (replaces the Python
-Frame Agent in Phase 2 of the implementation plan). It reads a completed questionnaire — or,
+The discovery engine ([`agents/discovery/`](../agents/discovery/README.md), `npm run discover`) is the
+**first stage of the delivery pipeline**; it replaced the Python Frame Agent. It reads a completed questionnaire — or,
 from Phase 5, a chatbot interview — and produces the engagement spec.
 
 ### Inputs
