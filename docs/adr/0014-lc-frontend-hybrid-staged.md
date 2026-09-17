@@ -26,8 +26,8 @@ Owner; there is no documented API to create Projects.
 4. **Pilot:** the owner, with demo clients, until the hosted service and the dentsu Claude Enterprise account are
    approved.
 
-**Amendment (2026-09-17, owner decision):** sign-in can be opened to every GitHub account as consultant
-(`CONSULTANT_GITHUB_LOGINS=*`); owners stay named. Consultants see only their own engagements; creating an engagement
+**Amendment (2026-09-17, owner decision):** sign-in is open to every GitHub account as consultant by default during
+the pilot (`SIGN_IN_MODE=allowlist` restricts it to `CONSULTANT_GITHUB_LOGINS`); owners stay named. Consultants see only their own engagements; creating an engagement
 with a slug that exists elsewhere says only that the slug is not available. Recommended alternatives (company email
 domain, GitHub organisation) were declined for the pilot.
 

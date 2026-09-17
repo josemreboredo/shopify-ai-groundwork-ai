@@ -26,7 +26,15 @@ export const sessionStorage = createCookieSessionStorage({
   },
 });
 
-const allowlist = () => ({ owners: process.env.OWNER_GITHUB_LOGINS ?? '', consultants: process.env.CONSULTANT_GITHUB_LOGINS ?? '' });
+/**
+ * Interim pilot (owner decision 2026-09-17): every GitHub account can sign in as
+ * consultant. SIGN_IN_MODE=allowlist restricts consultants to CONSULTANT_GITHUB_LOGINS.
+ * Owners are always the logins in OWNER_GITHUB_LOGINS.
+ */
+const allowlist = () => ({
+  owners: process.env.OWNER_GITHUB_LOGINS ?? '',
+  consultants: process.env.SIGN_IN_MODE === 'allowlist' ? process.env.CONSULTANT_GITHUB_LOGINS ?? '' : '*',
+});
 
 /** True when every GitHub account may sign in as consultant. */
 export const openSignIn = () => isOpenSignIn(allowlist());

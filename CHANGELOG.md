@@ -18,7 +18,7 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 
 - 2.0.0: Claude connector (ADR 0015) — MCP endpoint `/mcp` with ten discovery tools, OAuth authorization server (CIMD from claude.ai, PKCE S256, hashed and rotating tokens), consent page after GitHub sign-in; shared memory with the web app: answers from documents recorded "to confirm" with citations, confirmation on the engagement page, document register, channel and author per answer; Claude Project page with connector set-up and Project instructions.
 - Table questions are answered row by row in the web app (no JSON).
-- Open sign-in (owner decision): `CONSULTANT_GITHUB_LOGINS=*` lets every GitHub account sign in as consultant; owners stay named; a taken client slug is reported without revealing another consultant's engagement.
+- Open sign-in (owner decision): every GitHub account signs in as consultant by default during the pilot (`SIGN_IN_MODE=allowlist` restores the allowlist; `CONSULTANT_GITHUB_LOGINS=*` also opens it); owners stay named; a taken client slug is reported without revealing another consultant's engagement.
 - A comment alone is a valid answer: when no value fits (e.g. “we only ship inside the EU”), the question counts as clarified by comment, leaves the queue and stays an open item for the offer and deck; web app, Claude connector (`mark_questions` commented) and CLI (`interview -- comment`).
 - Countries, currencies and languages can be entered as names in English, German, French, Italian or Spanish (“Switzerland”, “Schweiz”, “UK”, “euros”, “German”) or as codes, with suggestions in the web app; the service converts them to ISO codes before validation, for the web app and Claude.
 

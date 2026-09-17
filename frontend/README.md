@@ -31,7 +31,8 @@ Locally, `DEV_LOGIN` signs you in as owner without GitHub, and interviews are st
 | `SESSION_SECRET` | Vercel | Long random string that signs the session cookie |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | Vercel | GitHub OAuth app for sign-in |
 | `OWNER_GITHUB_LOGINS` | Vercel | Comma-separated GitHub logins with the owner role (see every engagement) |
-| `CONSULTANT_GITHUB_LOGINS` | Vercel | Comma-separated GitHub logins with the Lead Consultant role (own engagements); `*` lets every GitHub account sign in as consultant |
+| `SIGN_IN_MODE` | optional | Default: every GitHub account can sign in as consultant (interim pilot). `allowlist`: only `CONSULTANT_GITHUB_LOGINS` |
+| `CONSULTANT_GITHUB_LOGINS` | Vercel | With `SIGN_IN_MODE=allowlist`: comma-separated GitHub logins with the Lead Consultant role (own engagements) |
 
 Secrets go only into Vercel environment variables — never into the repository or chat.
 
