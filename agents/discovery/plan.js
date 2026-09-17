@@ -110,7 +110,7 @@ export function minimumPlan(doc) {
  */
 export function unmetPlanRequirements(doc) {
   const plan = doc.shopify?.target_plan;
-  if (!plan) return [];
+  if (!plan || plan === 'not_sure') return [];
   return planRequirements(doc).filter((r) => PLAN_RANK[r.plan] > PLAN_RANK[plan]);
 }
 
@@ -124,7 +124,7 @@ export const describeRequirements = (reqs) => reqs.map((r) => `${r.feature} (${P
  * @returns {{ pointer: string, value: string, reasons: string[] } | null}
  */
 export function planSuggestion(doc) {
-  if (doc.shopify?.target_plan) return null;
+  if (doc.shopify?.target_plan && doc.shopify.target_plan !== 'not_sure') return null;
   const plan = minimumPlan(doc);
   return plan ? { pointer: '/shopify/target_plan', value: plan, reasons: planRequirements(doc).map((r) => `${r.feature} (${PLAN_LABEL[r.plan]})`) } : null;
 }

@@ -29,7 +29,9 @@ Scripts and Stocky are retired.
 4. **Retail & POS is a scope gate (O5)** (`retail_pos`), without a modifier until the owner prices it; an integrated
    non-Shopify POS counts as an integration.
 5. **Plan requirements are consultant-only (O7):** the client questionnaire carries no plan information (tested); the
-   generated `docs/discovery/consultant-guide.md` and the interview show the `shopify` blocks to the consultant.
+   generated `docs/discovery/consultant-guide.md` and the interview show the `shopify` blocks to the consultant. The
+   client questionnaire also uses neutral wording — no rule numbers, offer names, STOP/FLAG or § 11 (amends ADR 0003:
+   the § 11 exit-rule table lives in the consultant guide), and STOP-only consultant questions are left out.
 6. **App registry (O8):** `schema/apps.json` lists apps with their apps.shopify.com URL and check level; apps are
    `proposed` until the lead consultant approves them after the engagement work (`npm run apps -- approve`). App signals
    (19 areas) are corrected to the native baseline and the approach receives registry candidates per signalled area.
@@ -39,7 +41,26 @@ Scripts and Stocky are retired.
    publications and public business cases. Key finding: Shopify has no infrastructure in mainland China and no public case
    of Shopify behind the Great Firewall was found — onshore selling means a separate onshore platform (PRC entity, ICP,
    onshore hosting) or marketplace channels, with Shopify as the global platform. When CN is a launch market the
-   questionnaire adds § 3.5 Mainland China (21 questions, every mode, `only_if`); otherwise those questions are not asked.
+   questionnaire adds § 3.5 Mainland China (`only_if`): 4 required triage questions in the call, 17 optional ones for the
+   China discovery; otherwise those questions are not asked.
+
+## Consultant experience review (2026-09-17)
+
+- Decisive questions stay first within a section; questions that unlock others moved earlier (orders per month Q0.2.6,
+  current platform Q0.5.4, personalisation after product types Q2.2.6).
+- One question per fact: pricing is captured in the markets table (Q3.3.1 removed); B2B follows the business model
+  (Q6.2.1 removed; DTC → no B2B); § 2.4 covers consumer pricing only; fulfilment locations and retail stores are asked
+  separately; staff users is a number.
+- China depth: 4 required triage questions in the call (selling model, channels, legal entity in China, who gives PRC
+  legal advice); the other 17 are optional for the China discovery.
+- Every question that changes the offer, the Shopify plan or an exit rule is required; app-related questions carry an
+  "Ask if" condition shown on paper and applied in quick and standard interviews (full interviews ask everything).
+- The business-case questions the deck needs are required (revenue, conversion rate, bottleneck, operational pain,
+  why now, budget priority).
+- Consultant questions are asked in a consultant wrap-up block after the client questions; a STOP is flagged to the
+  consultant when it fires and the route question opens the wrap-up. Unlock conditions only use client answers.
+- Answer options: standard `none` (nothing needed) and `not_sure` (client doesn't know; becomes an open item); readable
+  labels from `schema/option-labels.json`, codes unchanged in engagement.json.
 
 ## Consequences
 

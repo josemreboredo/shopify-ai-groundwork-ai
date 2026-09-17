@@ -97,7 +97,7 @@
       },
       "b2b": {
         "active": false,
-        "evidence": "Q6.2.1: no B2B."
+        "evidence": "Q1.1.4: direct to consumer, no B2B."
       },
       "integration": {
         "active": false,
@@ -109,7 +109,7 @@
       },
       "migration": {
         "active": false,
-        "evidence": "Q8.2.1: greenfield, no source platform."
+        "evidence": "Q0.5.4: greenfield, no source platform."
       }
     },
     "l_triggers": {

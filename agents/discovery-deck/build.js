@@ -158,7 +158,7 @@ function methodology(x, doc) {
 function asIs(x, doc) {
   const source = doc.migration?.source_platform;
   x.open('section', { id: 'as-is', n: 5 });
-  x.field('current-platform', source === 'none' ? 'New store (greenfield)' : source, 'Q8.2.1 not answered');
+  x.field('current-platform', source === 'none' ? 'New store (greenfield)' : source, 'Q0.5.4 not answered');
   x.field('engagement-trigger', doc.business?.engagement_trigger, 'Q0.5.1 not answered');
   x.list('must-preserve', doc.business?.must_preserve, 'Q0.5.2 not answered');
   x.list('current-frustrations', doc.business?.current_frustrations, 'Q0.5.3 not answered');

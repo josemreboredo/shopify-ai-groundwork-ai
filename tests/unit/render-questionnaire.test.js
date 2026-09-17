@@ -17,16 +17,36 @@ test('docs/discovery/consultant-guide.md is up to date (npm run questionnaire:re
 });
 
 test('Shopify plan requirements stay in the consultant guide, never in the client questionnaire', () => {
-  const client = renderQuestionnaire();
+  // Plan names may appear as answer options of the plan question (Q1.2.3); plan requirements may not.
+  const client = renderQuestionnaire().replace(/^- \[ \] .*$/gm, '');
   assert.doesNotMatch(client, /Shopify Plus|\bPlus\b|Advanced plan|Grow plan|Basic plan|plan_note|help\.shopify\.com/);
   const guide = renderConsultantGuide();
   assert.match(guide, /Shopify Plus/);
   for (const q of questionBank.questions.filter((x) => x.shopify)) assert.ok(guide.includes(`**${q.id}**`), q.id);
 });
 
-test('every question appears exactly once in the rendered questionnaire', () => {
+test('the client questionnaire uses neutral wording: no rule numbers, offers, STOP/FLAG or consultant-only STOP questions', () => {
+  const client = renderQuestionnaire();
+  assert.doesNotMatch(client, /\b11\.\d+\b|§ 11|Growth \(L\)|standard offers?\b|offer's|\bFLAG\b|\bSTOP\b|scope gate|hard stop|Larger Engagement|Exit-trigger/);
+  for (const q of questionBank.questions.filter((x) => x.ask_when === 'stop')) assert.ok(!client.includes(`**${q.id}**`), q.id);
+  assert.match(renderConsultantGuide(), /## § 11 — Exit rules/);
+});
+
+test('answer options read as labels, not codes; none and not sure are standard', () => {
+  const client = renderQuestionnaire();
+  const options = [...client.matchAll(/^- \[ \] (.+)$/gm)].map((m) => m[1]);
+  assert.ok(options.length > 500);
+  for (const label of options) {
+    assert.doesNotMatch(label, /_/, label);
+    assert.doesNotMatch(label, /\b(b2b|dtc|pos|erp|pim|oms|3pl|wfoe|kol|sms|url|api|us|uk|eu)\b/, `acronym not capitalised: ${label}`);
+    assert.match(label, /^([A-Z0-9i]|checkout\.liquid)/, `label must start with a capital: ${label}`);
+  }
+  assert.doesNotMatch(client, /^- \[ \] (Unknown|Undecided|None other|None of these)$/m);
+});
+
+test('every question appears exactly once in the rendered questionnaire (STOP-only questions in the consultant guide)', () => {
   const rendered = renderQuestionnaire();
-  for (const q of questionBank.questions) {
+  for (const q of questionBank.questions.filter((x) => x.ask_when !== 'stop')) {
     assert.equal(rendered.split(`**${q.id}**`).length - 1, 1, q.id);
   }
 });

@@ -234,7 +234,7 @@ from Phase 5, a chatbot interview — and produces the engagement spec.
 Questionnaire sections: § 0 Business outcomes · § 1 Company, brand & Shopify · § 2 Catalogue ·
 § 3 Markets · § 4 Payments & checkout · § 5 Shipping & fulfilment · § 6 Customers, B2B & privacy ·
 § 7 Marketing & promotions · § 8 Integrations & migration · § 9 Design & experience ·
-§ 10 Delivery, governance & compliance · § 11 Exit-trigger screening (generated from the rules).
+§ 10 Delivery, governance & compliance. Exit rules (§ 11) are listed in the consultant guide only, not in the client questionnaire (ADR 0011).
 
 ### Outputs (`clients/<slug>/`, gitignored)
 

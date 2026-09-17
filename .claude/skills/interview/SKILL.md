@@ -45,11 +45,16 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
      audience `consultant`).
    - Put the original wording in `--note` when translation could lose meaning (legal terms, product names).
    - If the CLI returns errors, explain them briefly and ask again. Never retry with a guessed value.
-5. The client does not know yet → `npm run interview -- tbc --client <slug> --question <id> --note "..."`.
+5. The client does not know yet → record `not_sure` when the question offers it (it becomes an open item), otherwise
+   `npm run interview -- tbc --client <slug> --question <id> --note "..."`. Nothing needed → record `none`. Show the
+   `option_labels` to the conversation, record the codes.
    Not applicable → `skip`. Consultant context that is not an answer → `note --text "..."`.
 6. After each answer the CLI returns the offer, GO/STOP and fired exit rules. Mention them only when they change,
-   and say "provisional" while `offer.provisional` is true. A STOP rule: tell the consultant immediately. The next
-   question is then Q10.5.5 — how Merkle proceeds: `larger_engagement` (a Merkle Enterprise Engagement with a
+   as a short **consultant note** (the client may be present), and say "provisional" while `offer.provisional` is
+   true. A STOP rule: flag it to the consultant immediately and continue the client questions. Each question has a
+   `block`: `client` questions come first; when the first `consultant_wrap_up` question arrives, say "Consultant
+   wrap-up" — these are for the consultant alone. If a STOP is open, the wrap-up opens with Q10.5.5 — how Merkle
+   proceeds: `larger_engagement` (a Merkle Enterprise Engagement with a
    dedicated Discovery Phase) or `no_bid` (source `consultant`). A Larger Engagement keeps collecting everything and
    still produces the approach, a brief and the client deck — but no Jira tickets. If the consultant has not decided,
    mark it TBC and continue.

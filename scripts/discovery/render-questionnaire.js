@@ -4,7 +4,8 @@
  * @description Generates, from schema/question-bank.json, schema/offering.json
  * and schema/apps.json:
  *   - docs/discovery/client-questionnaire.md  the questionnaire used with the client
- *     (no Shopify plan requirements — owner decision 2026-09-17)
+ *     (neutral wording: no Shopify plan requirements, rule numbers, offers or § 11 —
+ *     owner decisions 2026-09-17; STOP-only consultant questions are left out)
  *   - docs/discovery/consultant-guide.md      Shopify knowledge per question for the
  *     consultant: native features, minimum plan, docs, App Store apps, rules fed
  * Both files are outputs — edit the sources, then re-render.
@@ -25,6 +26,7 @@ import {
   schemaNodeAt,
   enumValues,
   questionsFeeding,
+  optionLabel,
 } from '../../schema/index.js';
 import { PLAN_RULES, PLAN_LABEL } from '../../agents/discovery/plan.js';
 
@@ -34,8 +36,8 @@ export const GUIDE_OUTPUT = path.join(REPO_ROOT, 'docs/discovery/consultant-guid
 
 const PRIORITY_LABEL = { required: 'required', recommended: 'recommended', optional: 'optional' };
 
-/** @param {string} value */
-const humanise = (value) => String(value).replace(/_/g, ' ');
+/** Readable option label (schema/option-labels.json + acronyms). @param {string} value */
+const humanise = (value) => optionLabel(value);
 
 /** @param {object} q */
 function answerBlock(q) {
@@ -82,31 +84,11 @@ function renderQuestion(q) {
       : `${target} does not include ${humanise(q.skip_if.excludes)}`;
     lines.push(`*Skip if ${condition}.*`);
   }
-  if (q.ask_when === 'stop') lines.push('*Only if a § 11 rule is STOP.*');
   if (q.only_if) lines.push(`*Only if ${q.only_if.map(describeCondition).join(' or ')}.*`);
+  if (q.ask_if) lines.push(`*Ask if ${q.ask_if.map(describeCondition).join(', or ')}.*`);
   if (q.help) lines.push(`*${q.help}*`);
   lines.push('', ...answerBlock(q));
   return lines.join('\n');
-}
-
-function renderExitScreening() {
-  const rows = offering.exit_rules.map((r) => {
-    const askedIn = questionsFeeding(`exit:${r.id}`).join(', ');
-    const status  = r.status === 'proposed' ? ' *(proposed)*' : '';
-    return `| ${r.id} | ${r.client_condition ?? r.condition}${status} | ${r.result} | ${r.destination} | ${askedIn} | |`;
-  });
-
-  return [
-    '## § 11 — Exit-trigger screening',
-    '',
-    '> Complete immediately after the discovery call, before any work is scoped.',
-    '> Each rule is answered by the questions listed — confirm the outcome here.',
-    '> **STOP** blocks GO · **FLAG** needs a named owner before build · **WARN** is a commercial adjustment.',
-    '',
-    '| Rule | Condition | Result | If triggered | Answered by | Outcome (triggered / clear) |',
-    '|---|---|---|---|---|---|',
-    ...rows,
-  ].join('\n');
 }
 
 /**
@@ -122,9 +104,9 @@ export function renderQuestionnaire() {
     '',
     `> **Version:** question bank ${questionBank.version} · offering ${offering.version}`,
     '>',
-    '> **How to use:** work through §§ 0–10 with the client in the discovery call (60–90 min),',
-    '> then complete § 11 straight after. Answer every *required* question — "TBC" is acceptable,',
-    '> a blank is not. Questions marked *consultant* are answered by the lead consultant, not the client.',
+    '> **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every',
+    '> *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are',
+    '> answered by the lead consultant, not the client.',
     '>',
     '> **Output:** the completed questionnaire is the input to the discovery engine, which produces',
     '> the engagement spec, offer classification, capability map, closing deck and backlog.',
@@ -144,23 +126,18 @@ export function renderQuestionnaire() {
     out.push('', `## § ${section.id} — ${section.title}`, '', `> ${section.intro}`);
     for (const sub of section.subsections) {
       out.push('', `### ${sub.id} ${sub.title}`);
-      for (const q of bySubsection.get(sub.id) ?? []) out.push('', renderQuestion(q));
+      for (const q of (bySubsection.get(sub.id) ?? []).filter((x) => x.ask_when !== 'stop')) out.push('', renderQuestion(q));
     }
     out.push('', '---');
   }
 
   out.push(
     '',
-    renderExitScreening(),
-    '',
-    '---',
-    '',
     '## Completion checklist',
     '',
     '- [ ] Every *required* question in §§ 0–10 has an answer or "TBC"',
     '- [ ] At least one KPI has a baseline and a target (Q0.4.2)',
     '- [ ] Every connected system is listed in Q8.1.1 with direction and connector',
-    '- [ ] § 11 outcome recorded for every rule; every STOP has a named resolution owner',
     '- [ ] Consent for AI processing recorded (Q10.5.2)',
     '',
   );
@@ -182,18 +159,32 @@ const REF_LABEL = new Map([
 /** Markdown table cell. @param {unknown} v */
 const cell = (v) => String(v ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
 
-/** "orders per month ≥ 1000". @param {object} c */
+/** Question that captures an answer pointer (for condition wording). @param {string} pointer */
+function sourceQuestion(pointer) {
+  return questionBank.questions.find((q) => q.maps_to.some((m) => pointer === m || pointer.startsWith(`${m}/`)));
+}
+
+/** "a, b or c". @param {string[]} items */
+const orList = (items) => (items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} or ${items.at(-1)}`);
+
+/**
+ * Plain-language condition, e.g. "Q0.2.6 is 1,000 or more" or "Q3.1.1 has 3+ languages".
+ *
+ * @param {object} c  ask_if / only_if condition
+ */
 function describeCondition(c) {
   if (c.pointer === '/markets/list/*/code' && 'includes_any' in c) return `the launch markets include ${c.includes_any.map((code) => (code === 'CN' ? 'mainland China (CN)' : code)).join(' / ')}`;
-  const field = c.pointer.replace(/^\//, '').replace(/\/\*/g, '').replace(/\//g, ' › ').replace(/_/g, ' ');
-  if ('equals' in c) return `${field} = ${c.equals === true ? 'yes' : c.equals === false ? 'no' : humanise(c.equals)}`;
-  if ('not_equals' in c) return `${field} ≠ ${humanise(c.not_equals)}`;
-  if ('in' in c) return `${field} is ${c.in.map(humanise).join(' / ')}`;
-  if ('includes_any' in c) return `${field} includes ${c.includes_any.map(humanise).join(' / ')}`;
-  if ('min' in c) return `${field} ≥ ${c.min}`;
-  if ('count_min' in c) return `${c.count_min}+ distinct ${field}`;
-  if ('matches' in c) return `${field} mentions ${c.matches.split('|').join(' / ')}`;
-  return field;
+  const id = sourceQuestion(c.pointer)?.id ?? c.pointer;
+  if (c.pointer === '/markets/list/*/languages' && 'count_min' in c) return `${id} has ${c.count_min}+ languages`;
+  if (c.pointer === '/markets/list/*/code' && 'count_min' in c) return `${id} has ${c.count_min}+ markets`;
+  if ('equals' in c) return `${id} is ${c.equals === true ? 'yes' : c.equals === false ? 'no' : humanise(c.equals)}`;
+  if ('not_equals' in c) return `${id} is not ${humanise(c.not_equals)}`;
+  if ('in' in c) return `${id} is ${orList(c.in.map(humanise))}`;
+  if ('includes_any' in c) return `${id} includes ${orList(c.includes_any.map(humanise))}`;
+  if ('min' in c) return `${id} is ${c.min.toLocaleString('en')} or more`;
+  if ('count_min' in c) return `${id} has ${c.count_min}+ answers`;
+  if ('matches' in c) return `${id} mentions ${orList(c.matches.split('|'))}`;
+  return id;
 }
 
 /** @param {object} q */
@@ -203,7 +194,7 @@ function renderGuideQuestion(q) {
   const lines = [`**${q.id}** — ${q.text} *(${tags.join(' · ')})*`];
   if (q.feeds?.length) lines.push(`Feeds: ${q.feeds.map((f) => REF_LABEL.get(f) ?? f).join(' · ')}`);
   if (q.only_if) lines.push(`Asked only if ${q.only_if.map(describeCondition).join(' or ')}`);
-  if (q.ask_if) lines.push(`Quick interview: asked when ${q.ask_if.map(describeCondition).join(' or ')}`);
+  if (q.ask_if) lines.push(`Quick interview: ask if ${q.ask_if.map(describeCondition).join(', or ')}`);
   const s = q.shopify;
   if (!s) return lines.join('\n');
   if (s.native?.length) {

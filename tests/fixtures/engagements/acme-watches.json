@@ -156,11 +156,11 @@
       },
       "multi_currency": {
         "active": true,
-        "evidence": "Q3.1.1 / Q3.3.1: CHF and EUR, both transactional with manually set prices."
+        "evidence": "Q3.1.1: CHF and EUR, both transactional with manually set prices."
       },
       "b2b": {
         "active": true,
-        "evidence": "Q6.2.1–Q6.2.3: B2B wholesale with company accounts and fixed-tier price lists."
+        "evidence": "Q1.1.4, Q6.2.2–Q6.2.3: B2B wholesale with company accounts and fixed-tier price lists."
       },
       "integration": {
         "active": true,
@@ -172,7 +172,7 @@
       },
       "migration": {
         "active": true,
-        "evidence": "Q8.2.1: migrating from WooCommerce."
+        "evidence": "Q0.5.4: migrating from WooCommerce."
       }
     },
     "l_triggers": {
@@ -699,7 +699,6 @@
         "question_ids": [
           "Q3.1.1",
           "Q3.1.4",
-          "Q3.3.1",
           "Q2.4.3"
         ]
       },
@@ -721,7 +720,7 @@
         "gaia_tier": "T3",
         "notes": "No RFQ or negotiated pricing, so native B2B catalogs cover the requirement.",
         "question_ids": [
-          "Q6.2.1",
+          "Q1.1.4",
           "Q6.2.2",
           "Q6.2.3",
           "Q6.2.6",
@@ -756,7 +755,7 @@
         "gaia_tier": "T3",
         "notes": "Runs as a dedicated migration scoping track (exit 11.14).",
         "question_ids": [
-          "Q8.2.1",
+          "Q0.5.4",
           "Q8.2.2",
           "Q8.2.3",
           "Q8.2.4",
@@ -1077,7 +1076,7 @@
     "/markets/list/0/price_strategy": {
       "source": "client",
       "status": "confirmed",
-      "question_id": "Q3.3.1"
+      "question_id": "Q3.1.1"
     },
     "/catalogue/sku_count": {
       "source": "client",

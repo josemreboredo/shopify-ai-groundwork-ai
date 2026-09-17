@@ -23,6 +23,7 @@
 
 import { offering, questionBank, apps } from '../../schema/index.js';
 import { marketsOf, distinctLanguages } from './classify.js';
+import { picked } from './values.js';
 
 /** Monthly returns above this volume make a returns platform worth evaluating. */
 export const RETURNS_VOLUME_THRESHOLD = 100;
@@ -88,12 +89,12 @@ export function appSignals(doc) {
   if (cancellations.order_editing === true) orderEditing.push('Customers edit orders after checkout');
   if (cancellations.self_service === true && cancellations.auto_approve === true) orderEditing.push('Customers cancel orders instantly, without approval');
 
-  const personalisation = (catalogue.personalisation ?? []).filter((p) => p !== 'none');
+  const personalisation = picked(catalogue.personalisation);
   const bundleNeeds = (catalogue.bundles?.requirements ?? []).filter((r) => ['customer_builds_bundle', 'bundle_with_subscription'].includes(r));
   const subscriptionNeeds = (catalogue.subscriptions?.features ?? []).filter((f) => ['build_a_box', 'subscription_bundles', 'b2b_subscriptions', 'prepaid_multi_delivery', 'migrate_existing_contracts'].includes(f));
   const languages = distinctLanguages(doc);
   const smsOutside = (doc.marketing?.sms?.countries ?? []).filter((c) => !SHOPIFY_SMS_COUNTRIES.includes(c));
-  const loyalty = (doc.loyalty?.components ?? []).filter((c) => c !== 'none' && c !== 'store_credit');
+  const loyalty = picked(doc.loyalty?.components).filter((c) => c !== 'store_credit');
 
   return {
     returns_platform: returnsPlatform,

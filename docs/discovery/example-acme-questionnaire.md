@@ -30,13 +30,13 @@
 
 ### 0.2 Revenue & conversion
 
-**Q0.2.1** — What is your current monthly ecommerce revenue (range and currency)? *(recommended)*
+**Q0.2.1** — What is your current monthly ecommerce revenue (range and currency)? *(required)*
 
 - min: 110,000
 - max: 130,000
 - currency: EUR
 
-**Q0.2.2** — What is your current conversion rate (%)? *(recommended)*
+**Q0.2.2** — What is your current conversion rate (%)? *(required)*
 
 > Answer: 1.2
 
@@ -44,7 +44,7 @@
 
 > Answer: Mobile sessions (0.7% conversion); Watches above EUR 500 convert at half the rate of watches below EUR 200
 
-**Q0.2.4** — Is the main bottleneck acquisition (traffic), conversion (traffic doesn't buy) or retention (customers don't return)? *(recommended)*
+**Q0.2.4** — Is the main bottleneck acquisition (traffic), conversion (traffic doesn't buy) or retention (customers don't return)? *(required)*
 
 *(tick one)*
 - [ ] acquisition
@@ -60,9 +60,14 @@
 |---|---|---|
 | | | |
 
+**Q0.2.6** — How many orders per month do you expect in the first year? *(required)*
+*Returns, tracking and fraud apps are priced by order volume.*
+
+> Answer: 400
+
 ### 0.3 Operational pain
 
-**Q0.3.1** — What manual work does your team do today that the platform should automate, and which processes break most often? *(recommended)*
+**Q0.3.1** — What manual work does your team do today that the platform should automate, and which processes break most often? *(required)*
 
 > Answer: Inventory and prices are synced manually with the ERP twice a day; Refunds and exchanges are tracked in spreadsheets
 
@@ -86,7 +91,7 @@
 
 ### 0.5 Platform context
 
-**Q0.5.1** — What triggered this engagement — why Shopify, and why now? *(recommended)*
+**Q0.5.1** — What triggered this engagement — why Shopify, and why now? *(required)*
 
 > Answer: WooCommerce cannot keep up on performance or scale, has no native multi-currency, and the wholesale channel needs B2B before the spring collection.
 
@@ -98,6 +103,20 @@
 
 > Answer: Slow page speed; No multi-currency; Admin UX
 
+**Q0.5.4** — Which platform are you migrating from (or none — greenfield)? *(required)*
+*Shopify's Store Migration app imports products and customers from some platforms (e.g. WooCommerce, Wix, Square); other platforms use a migration app or the API.*
+
+*(tick one)*
+- [ ] none
+- [ ] shopify
+- [x] woocommerce
+- [ ] magento
+- [ ] shopware
+- [ ] sfcc
+- [ ] bigcommerce
+- [ ] custom
+- [ ] other
+
 ### 0.6 Budget
 
 **Q0.6.1** — What is the approximate budget envelope for this project (range and currency)? *(required)*
@@ -106,7 +125,7 @@
 - max: 80,000
 - currency: EUR
 
-**Q0.6.2** — Is the priority to minimise upfront cost (apps and configuration), to own the solution (custom build), or a balance? *(recommended)*
+**Q0.6.2** — Is the priority to minimise upfront cost (apps and configuration), to own the solution (custom build), or a balance? *(required)*
 
 *(tick one)*
 - [x] minimise upfront
@@ -140,6 +159,7 @@
 > Answer: Premium watches and accessories
 
 **Q1.1.4** — Is the business direct-to-consumer, B2B, or hybrid? *(required)*
+*B2B or hybrid brings the B2B and wholesale questions (§ 6.2).*
 
 *(tick one)*
 - [ ] dtc
@@ -150,7 +170,7 @@
 
 > Answer: https://www.acme-watches.example
 
-**Q1.1.6** — Do you sell through more than one legal entity (e.g. one per country or region)? List them. *(recommended)*
+**Q1.1.6** — Do you sell through more than one legal entity (e.g. one per country or region)? List them. *(required)*
 *Several selling entities in one store, or one store per entity, changes the store set-up.*
 
 > Answer:
@@ -218,15 +238,15 @@
 - [ ] geolocation app
 - [ ] none
 
-**Q1.2.6** — How many people need their own Shopify admin login after go-live? List their roles. *(recommended)*
+**Q1.2.6** — How many people need their own Shopify admin login after go-live? *(required)*
 *Collaborator accounts and POS-only staff are not counted.*
 
 > Answer:
 
 ### 1.3 Brand & positioning
 
-**Q1.3.1** — How is the brand positioned (value, mid-market, premium, luxury, enterprise)? *(required · consultant)*
-*Luxury or enterprise positioning routes the engagement to the Growth (L) offer.*
+**Q1.3.1** — How would you describe the brand's positioning: value, mid-market, premium, luxury or enterprise? *(required)*
+*Positioning shapes the design depth and the solution approach.*
 
 *(tick one)*
 - [ ] value
@@ -277,30 +297,20 @@
 > Answer: 800
 
 **Q2.1.2** — What is the maximum number of variant options on a product (e.g. size, colour, material = 3)? *(required)*
-*Shopify allows up to 3 options per product. More options need a product model review (11.5).*
+*Shopify allows up to 3 options per product; more options need a different product model.*
 
 > Answer: 2 (case size, strap)
 
-**Q2.1.3** — What is the maximum number of variants on a single product? *(recommended)*
+**Q2.1.3** — What is the maximum number of variants on a single product? *(required)*
 *Shopify allows up to 2,048 variants per product.*
 
 > Answer: 12
 
-**Q2.1.4** — Are variants such as colours managed as separate products (own SKUs, images, URLs) that should appear as one product on the storefront? *(recommended)*
+**Q2.1.4** — Are variants such as colours managed as separate products (own SKUs, images, URLs) that should appear as one product on the storefront? *(required)*
 *This is what Shopify calls combined listings.*
 
 - [ ] Yes
 - [ ] No
-
-**Q2.1.5** — Do customers personalise products with choices that are not stock variants (engraving, file upload, paid add-ons, configurators)? *(recommended)*
-
-*(tick all that apply)*
-- [ ] text engraving
-- [ ] file upload
-- [ ] paid add ons
-- [ ] conditional options
-- [ ] configurator 3d
-- [ ] none
 
 ### 2.2 Product types
 
@@ -325,13 +335,14 @@
 - [ ] none of these
 
 **Q2.2.2** — Will subscriptions run on Shopify Subscriptions (Shopify's app) or a third-party subscription app? Name the app if known. *(recommended)*
-*Skip if Q2.2.1 does not include subscription.*
+*Ask if Q2.2.1 includes Subscription.*
 *Shopify Subscriptions: customers skip, pause and cancel in their account; not with bundles or B2B.*
 
 - approach:
 - subscription app:
 
 **Q2.2.3** — If you sell bundles: what must they do? *(recommended)*
+*Ask if Q2.2.1 includes Fixed bundle, Multipack, Mix and match bundle or Bundle.*
 *Shopify Bundles: up to 30 components; not with subscriptions or pre-orders; no nested bundles.*
 
 *(tick all that apply)*
@@ -344,7 +355,7 @@
 - [ ] bundles on marketplaces
 
 **Q2.2.4** — Which subscription features are needed? *(recommended)*
-*Skip if Q2.2.1 does not include subscription.*
+*Ask if Q2.2.1 includes Subscription.*
 
 *(tick all that apply)*
 - [ ] pay per delivery
@@ -358,13 +369,24 @@
 - [ ] migrate existing contracts
 
 **Q2.2.5** — For pre-orders, when is the customer charged? *(recommended)*
-*Skip if Q2.2.1 does not include pre order.*
+*Ask if Q2.2.1 includes Pre order.*
 *Pre-orders need a pre-order app; express checkouts (Shop Pay, Apple Pay, Google Pay) are not available for pre-orders.*
 
 *(tick one)*
 - [ ] full at order
 - [ ] deposit then balance
 - [ ] charged at fulfilment
+
+**Q2.2.6** — Do customers personalise products with choices that are not stock variants (engraving, file upload, paid add-ons, configurators)? *(recommended)*
+*Ask if Q2.1.2 is 3 or more, or Q2.2.1 includes Made to order.*
+
+*(tick all that apply)*
+- [ ] text engraving
+- [ ] file upload
+- [ ] paid add ons
+- [ ] conditional options
+- [ ] configurator 3d
+- [ ] none
 
 ### 2.3 Catalogue data
 
@@ -379,7 +401,7 @@
 - [ ] automated
 - [x] mixed
 
-**Q2.3.3** — Which product attributes go beyond Shopify's standard fields (technical specs, certifications, fit guides, ingredients)? *(recommended)*
+**Q2.3.3** — Which product attributes go beyond Shopify's standard fields (technical specs, certifications, fit guides, ingredients)? *(required)*
 *Shopify stores extra attributes as metafields and metaobjects and uses the Standard Product Taxonomy for category attributes (filters, Google and Meta feeds). With a PIM, attributes come from the PIM.*
 
 > Answer: movement_type, case_material, water_resistance_atm
@@ -401,14 +423,14 @@
 
 ### 2.4 Pricing
 
-**Q2.4.1** — Are there price lists for customer groups (retail, trade, VIP)? *(recommended)*
-*Price lists for business customers are B2B catalogs; consumer VIP pricing without B2B uses discounts or an app.*
+**Q2.4.1** — Are there special prices for consumer groups (VIP or member prices)? *(recommended)*
+*Prices for business customers are covered in § 6.2. Consumer group prices use discounts for customer segments or an app.*
 
 - [x] Yes
 - [ ] No
 
-**Q2.4.2** — Is there volume or quantity-tiered pricing? *(recommended)*
-*B2B quantity rules and volume pricing are native; for consumers, automatic discounts or a volume-discount app.*
+**Q2.4.2** — Are there volume offers for shoppers (e.g. 3 for 2, tiered discounts)? *(recommended)*
+*Automatic discounts and buy X get Y cover most volume offers natively. Business volume pricing is covered in § 6.2.*
 
 - [ ] Yes
 - [x] No
@@ -439,6 +461,7 @@
 - [ ] No
 
 **Q2.5.3** — What should happen when a product is out of stock? *(optional)*
+*Ask if Q2.2.1 includes Pre order, or Q2.1.1 is 500 or more.*
 *Continue selling (backorder) is native; back-in-stock alerts and pre-orders need apps.*
 
 *(tick all that apply)*
@@ -466,8 +489,8 @@
 
 ### 3.1 Markets at launch
 
-**Q3.1.1** — Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain. *(required)*
-*List each country or group of countries that shares prices and currency. Mainland China is handled in a separate China discovery (11.20). More than 5 markets (11.3) or more than 6 languages (11.4) is outside the standard offers.*
+**Q3.1.1** — Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain, and how prices are set (the store's base currency, auto-converted, a manual price list, or display only). *(required)*
+*List each country or group of countries that shares prices and currency. Mainland China is handled in a separate China discovery.*
 
 | code | currency | languages | domain | price strategy |
 |---|---|---|---|---|
@@ -484,7 +507,7 @@
 
 > Answer: FR; IT
 
-**Q3.1.4** — Operating model: one store with Shopify Markets, expansion stores, or hybrid? *(recommended · consultant)*
+**Q3.1.4** — Operating model: one store with Shopify Markets, expansion stores, or hybrid? *(required · consultant)*
 *Expansion stores suit teams that run each region separately.*
 
 *(tick one)*
@@ -510,7 +533,7 @@
 - [ ] third party mor app
 - [ ] undecided
 
-**Q3.1.7** — Should any market have its own theme content, section order, checkout or customer-account settings? *(recommended)*
+**Q3.1.7** — Should any market have its own theme content, section order, checkout or customer-account settings? *(required)*
 
 - [ ] Yes
 - [ ] No
@@ -518,6 +541,7 @@
 ### 3.2 Language
 
 **Q3.2.1** — How will translation be handled? *(recommended)*
+*Ask if Q3.1.1 has 3+ languages.*
 *Translate & Adapt (Shopify's free app) auto-translates up to 2 languages; more languages need manual work or a translation app. Checkout is pre-translated.*
 
 *(tick one)*
@@ -539,6 +563,7 @@
 - [ ] No
 
 **Q3.2.4** — What must be translated? *(recommended)*
+*Ask if Q3.1.1 has 3+ languages.*
 *Translate & Adapt does not auto-translate policies or URL handles.*
 
 *(tick all that apply)*
@@ -550,19 +575,6 @@
 - [ ] url handles
 - [ ] app content
 - [ ] none
-
-### 3.3 Currency & pricing
-
-**Q3.3.1** — Per market: is it the store's base currency, or are prices auto-converted, manually set, or display-only (checkout in another currency)? *(required)*
-*More than one transactional currency activates the multi-currency scope gate. Local-currency pricing with all Markets pricing features needs Shopify Payments.*
-
-*(tick one)*
-- [x] base currency
-- [ ] auto converted
-- [x] manual
-- [ ] display only
-
-> Per market: CH base currency · DE manual · AT manual
 
 ### 3.4 Tax & duties
 
@@ -633,87 +645,87 @@
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.4** — Do you have a Hong Kong or other overseas entity that can sell cross-border, and are your trademarks registered in China? *(recommended)*
+**Q3.5.4** — Do you have a Hong Kong or other overseas entity that can sell cross-border, and are your trademarks registered in China? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Cross-border marketplaces require both.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.5** — ICP status for a China website? *(required)*
+**Q3.5.5** — ICP status for a China website? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Your PRC counsel confirms whether a filing is enough or a commercial ICP licence is needed.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.6** — What is Shopify's role for mainland China? *(required · consultant)*
+**Q3.5.6** — What is Shopify's role for mainland China? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
 *Shopify can stay the global master for products, inventory and orders while China sells through local channels.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.7** — How will goods enter China: bonded warehouse (1210), direct mail (9610), general trade, or personal parcels? *(required)*
+**Q3.5.7** — How will goods enter China: bonded warehouse (1210), direct mail (9610), general trade, or personal parcels? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Cross-border channels have per-order and yearly limits per consumer.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.8** — Are your products on China's cross-border e-commerce positive list? *(recommended)*
+**Q3.5.8** — Are your products on China's cross-border e-commerce positive list? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.9** — How are your products classified in China? *(required)*
+**Q3.5.9** — How are your products classified in China? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Whitening, sunscreen and anti-hair-loss products are special cosmetics; medicines are not cross-border goods.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.10** — Registration or filing status with China's medical products administration (NMPA)? *(recommended)*
+**Q3.5.10** — Registration or filing status with China's medical products administration (NMPA)? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *General trade needs registration or filing; cross-border channels are exempt for goods on the positive list.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.11** — Do product claims need a review for China (medical, cosmeceutical or treatment claims)? *(recommended · consultant)*
+**Q3.5.11** — Do product claims need a review for China (medical, cosmeceutical or treatment claims)? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
 *China does not allow cosmeceutical or medical claims for cosmetics.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.12** — How will mainland customers pay? *(required)*
+**Q3.5.12** — How will mainland customers pay? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Inside the marketplace, Alipay and WeChat Pay through a Hong Kong Shopify Payments account (early access), a cross-border wallet provider, or domestic merchant accounts (PRC entity).*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.13** — How many mainland China customers do you expect per year? *(required)*
+**Q3.5.13** — How many mainland China customers do you expect per year? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *China's personal information law sets different data-export obligations by volume.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.14** — Do you have a representative in China for personal information protection (PIPL)? *(recommended)*
+**Q3.5.14** — Do you have a representative in China for personal information protection (PIPL)? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Required when an offshore business targets consumers in China.*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.15** — Where will China customer data (CRM, email, analytics) be stored? *(recommended)*
+**Q3.5.15** — Where will China customer data (CRM, email, analytics) be stored? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.16** — Must scripts blocked in China (Google Fonts, Google Analytics, reCAPTCHA, Meta pixels, YouTube) be replaced? *(recommended · consultant)*
+**Q3.5.16** — Must scripts blocked in China (Google Fonts, Google Analytics, reCAPTCHA, Meta pixels, YouTube) be replaced? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.17** — Which marketing channels for China? *(recommended)*
+**Q3.5.17** — Which marketing channels for China? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 > Not applicable — mainland China is not a launch market.
 
-**Q3.5.18** — Who provides Chinese-language customer service? *(recommended)*
+**Q3.5.18** — Who provides Chinese-language customer service? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 > Not applicable — mainland China is not a launch market.
@@ -776,13 +788,13 @@
 - [ ] bnpl via other gateway
 - [x] none
 
-**Q4.1.4** — Do you need payouts in more than one currency? *(optional)*
+**Q4.1.4** — Do you need payouts in more than one currency? *(required)*
 
 - [x] Yes
 - [ ] No
 
 **Q4.1.5** — Will card data be handled only by Shopify-hosted checkout, by a third-party hosted payment page, or by custom card UI / tokenisation? *(required · consultant)*
-*Custom card handling is a hard stop (11.9).*
+*Card data handled outside Shopify-hosted checkout needs a separate security review.*
 
 *(tick one)*
 - [x] shopify hosted
@@ -809,7 +821,7 @@
 ### 4.2 Checkout
 
 **Q4.2.1** — Which checkout changes are needed? *(required)*
-*Shopify checkout is customised with the checkout editor and Checkout Extensibility (blocks, fields, logic via Functions). A fully custom checkout UI is not possible on Shopify (11.6).*
+*Shopify checkout is customised with the checkout editor and Checkout Extensibility (blocks, fields, logic via Functions). A fully custom checkout UI is not possible on Shopify.*
 
 *(tick all that apply)*
 - [x] branding in editor
@@ -821,7 +833,7 @@
 - [ ] none
 
 **Q4.2.2** — Which checkout extensions are needed? *(optional · consultant)*
-*Skip if Q4.2.1 = none.*
+*Skip if Q4.2.1 = None.*
 
 *(tick all that apply)*
 - [x] custom fields
@@ -871,6 +883,7 @@
 - [x] none
 
 **Q4.3.3** — Do you want a guarantee that fraud chargebacks are reimbursed? *(optional)*
+*Ask if Q1.3.1 is Premium, Luxury or Enterprise.*
 *Outside Shopify Protect (US Shop Pay orders) this needs a fraud app.*
 
 - [ ] Yes
@@ -892,17 +905,17 @@
 - [ ] hybrid
 
 **Q5.1.2** — Which 3PL provider? *(recommended)*
-*Skip if Q5.1.1 = in house.*
+*Skip if Q5.1.1 = In house.*
 
 > Answer: n/a (skipped)
 
-**Q5.1.3** — How many fulfilment locations are there? *(required)*
-*Include warehouses, stores that ship, and 3PL locations.*
+**Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders)? *(required)*
+*Physical stores that sell in person are counted separately in § 5.6.*
 
 > Answer: 1
 
-**Q5.1.4** — How should Shopify pick the fulfilling location? *(recommended)*
-*Shopify's order routing rules: minimise split shipments, stay within the market, closest location, ranked locations, location metafields. Anything else needs a custom routing function or the ERP / OMS (11.13).*
+**Q5.1.4** — How should Shopify pick the fulfilling location? *(required)*
+*Shopify's order routing rules: minimise split shipments, stay within the market, closest location, ranked locations, location metafields. Anything else needs a custom routing function or the ERP / OMS.*
 
 *(tick all that apply)*
 - [ ] minimize split fulfillments
@@ -917,7 +930,7 @@
 
 > Answer: DHL Express; Swiss Post
 
-**Q5.1.6** — How are shipping rates calculated? *(recommended)*
+**Q5.1.6** — How are shipping rates calculated? *(required)*
 *Flat, weight or price based, free above a threshold, live carrier rates, or rates from an app.*
 
 *(tick all that apply)*
@@ -982,6 +995,7 @@
 - [ ] No
 
 **Q5.2.4** — Which returns, tracking or post-purchase apps do you use or prefer? *(optional)*
+*Ask if Q1.2.1 is yes, or Q0.2.6 is 1,000 or more.*
 
 > Answer:
 
@@ -990,11 +1004,13 @@
 > Answer: 30
 
 **Q5.2.6** — What share of orders is returned today (%)? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more.*
 *High return rates or volumes usually justify a returns platform instead of Shopify's native self-serve returns.*
 
 > Answer: 8
 
 **Q5.2.7** — How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more.*
 *Shopify creates return labels only for US fulfilment locations; other countries, or QR drop-off, need a returns app.*
 
 *(tick one)*
@@ -1012,6 +1028,7 @@
 
 **Q5.2.9** — Which exchanges do you offer: same product in another variant, any other product, or store credit first? *(optional)*
 *Skip if Q5.2.3 = no.*
+*Ask if Q0.2.6 is 1,000 or more.*
 *Customers can't choose an exchange in Shopify's return form; staff add exchange items when approving. Customer-chosen exchanges need an app.*
 
 *(tick all that apply)*
@@ -1020,6 +1037,7 @@
 - [ ] store credit first
 
 **Q5.2.10** — Do you accept international returns (including refunding duties)? *(optional)*
+*Ask if Q3.1.1 has 2+ markets.*
 
 - [x] Yes
 - [ ] No
@@ -1063,12 +1081,8 @@
 
 ### 5.4 Cancellations & refunds
 
-**Q5.4.1** — How many orders per month do you expect in the first year? *(required)*
-*Returns, tracking and fraud apps are priced by order volume.*
-
-> Answer: 400
-
 **Q5.4.2** — Should customers be able to cancel orders themselves? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more.*
 *Customers can request cancellation of unshipped orders in their account; you approve. Instant cancellation without approval needs an app.*
 
 - [ ] Yes
@@ -1090,6 +1104,7 @@
 - [ ] No
 
 **Q5.4.5** — Should customers be able to edit an order after placing it (address, items)? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more.*
 *Staff can edit orders natively; customers editing their own orders needs an app.*
 
 - [ ] Yes
@@ -1103,6 +1118,7 @@
 - [ ] gift card
 
 **Q5.4.7** — When is a refund issued: on request, when the carrier scans the return, on receipt, or after inspection? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more.*
 *Refunds on carrier scan need a returns platform connected to carrier tracking.*
 
 *(tick one)*
@@ -1141,6 +1157,7 @@
 
 **Q5.4.13** — Must cancellations be instant, without your approval? *(optional)*
 *Skip if Q5.4.2 = no.*
+*Ask if Q5.4.2 is yes.*
 
 - [ ] Yes
 - [ ] No
@@ -1148,12 +1165,14 @@
 ### 5.5 Post-purchase experience
 
 **Q5.5.1** — Do you want a branded order-tracking page on your own site? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
 *Shopify includes an order status page and shipping emails. A branded tracking page, proactive carrier alerts or delivery estimates usually need a post-purchase app.*
 
 - [ ] Yes
 - [x] No
 
 **Q5.5.2** — On which channels should customers get proactive delivery updates (delays, out for delivery)? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
 
 *(tick all that apply)*
 - [x] email
@@ -1162,12 +1181,14 @@
 - [ ] push
 
 **Q5.5.3** — Should product pages or checkout show estimated delivery dates? *(optional)*
+*Ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
 *Shopify can show delivery dates at checkout: manual dates everywhere, automatic dates only for US fulfilment locations.*
 
 - [x] Yes
 - [ ] No
 
 **Q5.5.4** — Do customers need to open warranty, repair or servicing claims online? *(recommended)*
+*Ask if Q1.1.3 mentions watch, jewel, electronic, appliance, furniture, bike, bicycle, tool, device or luxury.*
 
 - [x] Yes
 - [ ] No
@@ -1224,6 +1245,7 @@
 - [ ] required
 
 **Q6.1.3** — What should the account area include (order history, addresses, returns, wishlist, subscriptions)? *(optional)*
+*Ask if Q2.1.1 is 100 or more.*
 
 *(tick all that apply)*
 - [x] order history
@@ -1239,7 +1261,7 @@
 - [ ] extra profile fields
 - [ ] none
 
-**Q6.1.4** — How should customers sign in? *(recommended)*
+**Q6.1.4** — How should customers sign in? *(required)*
 *One-time email code and Google or Facebook sign-in are native.*
 
 *(tick all that apply)*
@@ -1251,32 +1273,27 @@
 
 ### 6.2 B2B & wholesale
 
-**Q6.2.1** — Do you sell to business customers (B2B / wholesale)? *(required)*
-
-- [x] Yes
-- [ ] No
-
 **Q6.2.2** — Do B2B customers need company accounts with their own login? *(required)*
-*Skip if Q6.2.1 = no.*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 - [x] Yes
 - [ ] No
 
 **Q6.2.3** — Do B2B customers get company-specific price lists? *(required)*
-*Skip if Q6.2.1 = no.*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 *Business price lists are B2B catalogs.*
 
 - [x] Yes
 - [ ] No
 
 **Q6.2.4** — Are there B2B volume discounts or quantity rules? *(required)*
-*Skip if Q6.2.1 = no.*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 - [ ] Yes
 - [x] No
 
-**Q6.2.5** — Which payment terms are needed (net 30, invoice, purchase order)? *(recommended)*
-*Skip if Q6.2.1 = no.*
+**Q6.2.5** — Which payment terms are needed (net 30, invoice, purchase order)? *(required)*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 *(tick all that apply)*
 - [ ] net terms
@@ -1290,21 +1307,21 @@
 - [ ] none
 
 **Q6.2.6** — Is there a request-for-quote workflow, or is pricing negotiated per buyer? *(required)*
-*Skip if Q6.2.1 = no.*
-*Shopify has no built-in request-for-quote: orders can be submitted for review as drafts, or a quote app handles negotiation (11.2).*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
+*Shopify has no built-in request-for-quote: orders can be submitted for review as drafts, or a quote app handles negotiation.*
 
 - [ ] Yes
 - [x] No
 
 **Q6.2.7** — Must B2B accounts be approved before they can order? *(optional)*
-*Skip if Q6.2.1 = no.*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 *Native: a wholesale application form (Shopify Forms) plus Flow to create and approve companies.*
 
 - [x] Yes
 - [ ] No
 
 **Q6.2.8** — Native Shopify B2B or an app? *(recommended · consultant)*
-*Skip if Q6.2.1 = no.*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 *(tick one)*
 - [x] shopify b2b
@@ -1314,25 +1331,25 @@
 - [ ] undecided
 
 **Q6.2.9** — How many B2B accounts are expected within 12 months? *(optional)*
-*Skip if Q6.2.1 = no.*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 > Answer: 500
 
 **Q6.2.10** — How many distinct B2B price lists (catalogs) do you need, and must any be specific to one company? *(required)*
-*Skip if Q6.2.1 = no.*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 - catalog count:
 - company specific catalogs:
 
-**Q6.2.11** — Should B2B buyers see a different storefront or checkout from consumers? *(recommended)*
-*Skip if Q6.2.1 = no.*
+**Q6.2.11** — Should B2B buyers see a different storefront or checkout from consumers? *(required)*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.2.12** — Do B2B orders need any of these: subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards? *(recommended · consultant)*
-*Skip if Q6.2.1 = no.*
-*Shopify B2B does not support these (11.19).*
+**Q6.2.12** — Do B2B orders need any of these: subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards? *(required · consultant)*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
+*Shopify B2B does not support these.*
 
 *(tick all that apply)*
 - [ ] subscriptions
@@ -1345,6 +1362,7 @@
 ### 6.3 Loyalty & segmentation
 
 **Q6.3.1** — Which loyalty components are planned? *(recommended)*
+*Ask if Q0.1.1 mentions loyal, retention, repeat, lifetime, churn or member, or Q0.4.1 mentions loyal, retention, repeat, lifetime, churn or member.*
 *Shopify has no native points programme; store credit can be a reward currency. Loyalty needs an app.*
 
 *(tick all that apply)*
@@ -1393,7 +1411,7 @@
 
 ### 6.4 Privacy & consent
 
-**Q6.4.1** — Which privacy regimes apply to your customers (GDPR, UK GDPR, CCPA, Swiss nFADP)? *(required · consultant)*
+**Q6.4.1** — Which privacy laws apply to your customers (GDPR, UK GDPR, CCPA, Swiss nFADP, other)? *(required)*
 
 *(tick all that apply)*
 - [x] gdpr
@@ -1403,6 +1421,7 @@
 - [ ] other
 
 **Q6.4.2** — Cookie consent: Shopify's cookie banner or a consent management platform? Name the tool if known. *(recommended)*
+*Ask if Q6.4.1 includes GDPR (EU), UK GDPR, Swiss nFADP or CCPA (US).*
 *Shopify's cookie banner is native; a third-party platform must integrate Shopify's Customer Privacy API.*
 
 - cookie consent tool: Cookiebot
@@ -1413,13 +1432,13 @@
 - [ ] No
 
 **Q6.4.4** — Do you collect sensitive personal data (health, age, biometric, financial)? *(required)*
-*Flag 11.17 — needs a data protection impact assessment and legal sign-off.*
+*Sensitive data needs a data protection impact assessment and legal sign-off.*
 
 - [ ] Yes
 - [x] No
 
 **Q6.4.5** — Must data-access or deletion requests reach systems beyond Shopify (ERP, email platform) or run without staff involvement? *(required)*
-*Shopify handles export and erasure requests in admin; 11.10 applies when other systems or automation are involved.*
+*Shopify handles export and erasure requests in admin; other systems or automation need extra design and legal sign-off.*
 
 - [x] Yes
 - [ ] No
@@ -1477,6 +1496,7 @@
 > Answer: GA4
 
 **Q7.2.2** — Is server-side tracking needed? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition.*
 *Shopify's customer events track storefront and checkout with consent; the Facebook & Instagram and Google & YouTube apps send server-side events. Anything beyond needs a tracking app. Server-side events can share customer data with ad platforms (PII gate).*
 
 - [ ] Yes
@@ -1508,6 +1528,7 @@
 > Answer: Welcome; Abandoned cart; Browse abandonment; Post-purchase; Win-back
 
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended)*
+*Ask if Q0.2.6 is 1,000 or more, or Q0.4.1 mentions sms, retention or repeat.*
 
 - enabled:
 - countries:
@@ -1521,6 +1542,7 @@
 ### 7.4 Reviews & affiliates
 
 **Q7.4.1** — Which product reviews app is used or preferred? *(optional)*
+*Ask if Q1.2.1 is yes, or Q0.5.4 is not None.*
 *Product reviews need an app.*
 
 > Answer: Judge.me
@@ -1565,7 +1587,7 @@
 - [ ] pos only
 - [ ] none
 
-**Q7.5.2** — Which discounts must combine on one order? *(recommended)*
+**Q7.5.2** — Which discounts must combine on one order? *(required)*
 *Shopify combines product, order and shipping discounts natively (up to 5 codes plus 1 shipping code, and up to 25 automatic discounts). Custom logic needs a discount function.*
 
 *(tick one)*
@@ -1663,7 +1685,7 @@
 ### 8.1 Connected systems
 
 **Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required)*
-*Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status. Any ERP, PIM, CRM, 3PL/WMS, OMS, POS or custom connection activates the integration gate; more than 3 is outside the standard offers (11.7).*
+*Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status.*
 
 | system | category | direction | objects | frequency | connector | middleware | owner | status |
 |---|---|---|---|---|---|---|---|---|
@@ -1684,22 +1706,8 @@
 
 ### 8.2 Data migration
 
-**Q8.2.1** — Which platform are you migrating from (or none — greenfield)? *(required)*
-*Shopify's Store Migration app imports products and customers from some platforms (e.g. WooCommerce, Wix, Square); other platforms use a migration app or the API.*
-
-*(tick one)*
-- [ ] none
-- [ ] shopify
-- [x] woocommerce
-- [ ] magento
-- [ ] shopware
-- [ ] sfcc
-- [ ] bigcommerce
-- [ ] custom
-- [ ] other
-
 **Q8.2.2** — Which data must be migrated? *(recommended)*
-*Skip if Q8.2.1 = none.*
+*Skip if Q0.5.4 = None.*
 *Customer passwords can't be migrated; customers sign in with a one-time code.*
 
 *(tick all that apply)*
@@ -1717,30 +1725,30 @@
 - [ ] blog posts pages
 - [ ] none
 
-**Q8.2.3** — Approximate volumes: products, customers, orders, URL redirects. *(recommended)*
-*Skip if Q8.2.1 = none.*
+**Q8.2.3** — Approximate volumes: products, customers, orders, URL redirects. *(required)*
+*Skip if Q0.5.4 = None.*
 
 - products: 800
 - customers: 25,000 (approximate — to be confirmed)
 - orders: 60,000 (approximate — to be confirmed)
 - redirects: 4,200
 
-**Q8.2.4** — Must historical orders be available inside Shopify? *(recommended)*
-*Skip if Q8.2.1 = none.*
+**Q8.2.4** — Must historical orders be available inside Shopify? *(required)*
+*Skip if Q0.5.4 = None.*
 
 - [x] Yes
 - [ ] No
 
 **Q8.2.5** — How much SEO equity (rankings, backlinks) must be preserved? *(required · consultant)*
-*Skip if Q8.2.1 = none.*
+*Skip if Q0.5.4 = None.*
 
 *(tick one)*
 - [ ] none
 - [ ] moderate
 - [x] significant
 
-**Q8.2.6** — Must active subscriptions move to the new store without customers re-entering cards? *(recommended)*
-*Skip if Q8.2.1 = none.*
+**Q8.2.6** — Must active subscriptions move to the new store without customers re-entering cards? *(required)*
+*Skip if Q0.5.4 = None.*
 
 - [ ] Yes
 - [ ] No
@@ -1787,7 +1795,7 @@
 ### 9.2 Storefront
 
 **Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required)*
-*A headless requirement routes the engagement to the Growth (L) offer. Checkout stays Shopify checkout.*
+*Headless means a custom front end built on Shopify; checkout stays Shopify checkout.*
 
 - [ ] Yes
 - [x] No
@@ -1802,6 +1810,7 @@
 > Answer: Minimal, editorial product photography
 
 **Q9.2.4** — Which interactive patterns are required (mega-menu, quick-add, swatches, predictive search, lookbook, video hero)? *(recommended)*
+*Ask if Q2.1.1 is 100 or more.*
 
 *(tick all that apply)*
 - [x] mega menu
@@ -1864,7 +1873,7 @@
 - [ ] shopify analytics consent
 - [ ] multiple storefronts
 
-**Q9.2.10** — Do you want to A/B test themes or checkout configurations? *(optional)*
+**Q9.2.10** — Do you want to A/B test themes or checkout configurations? *(required)*
 *Native with Shopify Rollouts experiments.*
 
 - [ ] Yes
@@ -1914,7 +1923,7 @@
 ### 10.1 Timeline
 
 **Q10.1.1** — What is the target go-live date? *(required)*
-*Fewer weeks than the offer's minimum duration raises flag 11.15.*
+*A date sooner than the delivery time the scope needs leads to a phased, MVP-first plan.*
 
 > Answer: 2027-02-01
 
@@ -1944,7 +1953,7 @@
 | Finance Controller | I | no | — |
 
 **Q10.2.2** — Is there a single decision-maker for scope, approvals and feedback? *(required · consultant)*
-*No single decision-maker raises flag 11.16 — resolve before the statement of work.*
+*A single decision-maker must be named before the statement of work.*
 
 - [x] Yes
 - [ ] No
@@ -1974,7 +1983,6 @@
 - [ ] third party
 
 **Q10.3.4** — Is the Grow retainer signed? *(required · consultant)*
-*Not signed on M or L: warning 11.11 (commercial adjustment).*
 
 - [x] Yes
 - [ ] No
@@ -1992,7 +2000,7 @@
 ### 10.4 Legal & regulated industries
 
 **Q10.4.1** — Is the business in a regulated industry (pharma, alcohol, firearms, age-restricted goods, financial products, medical devices)? If yes, which? *(required)*
-*A regulated industry needs legal review (11.8). Shopify has its own rules: e.g. alcohol needs age verification; some business types can't use Shopify Payments.*
+*A regulated industry needs legal review. Shopify has its own rules: e.g. alcohol needs age verification; some business types can't use Shopify Payments.*
 
 - active: no
 - category: n/a
@@ -2034,46 +2042,6 @@
 
 > Answer: Storefront; Markets; B2B; Integrations; Migration
 
-**Q10.5.5** — Discovery hit a STOP. How will Merkle proceed: Larger Engagement or no bid? *(recommended · consultant)*
-*Only if a § 11 rule is STOP.*
-*Larger Engagement: Merkle proposes an Enterprise Engagement with a dedicated Discovery Phase; the approach, a brief and the client deck are still produced, Jira tickets are not. No bid produces the STOP report only.*
-
-*(tick one — not applicable: no STOP)*
-- [ ] larger engagement
-- [ ] no bid
-
----
-
-## § 11 — Exit-trigger screening
-
-> Complete immediately after the discovery call, before any work is scoped.
-> Each rule is answered by the questions listed — confirm the outcome here.
-> **STOP** blocks GO · **FLAG** needs a named owner before build · **WARN** is a commercial adjustment.
-
-| Rule | Condition | Result | If triggered | Answered by | Outcome (triggered / clear) |
-|---|---|---|---|---|---|
-| 11.1 | A required Shopify feature needs a higher Shopify plan than the chosen plan (the consultant checks the plan requirements) | STOP | Confirm the plan the requirements need, or remove the feature from scope | Q1.1.6, Q1.2.3, Q1.2.6, Q2.1.4, Q3.1.1, Q3.1.4, Q3.1.7, Q4.1.4, Q4.2.1, Q5.1.3, Q5.1.6, Q6.1.4, Q6.2.3, Q6.2.5, Q6.2.10, Q6.2.11, Q7.5.2, Q9.2.10 | clear — target plan is Shopify Plus |
-| 11.2 | B2B requires request-for-quote or prices negotiated per buyer (Shopify has no built-in RFQ) | FLAG | B2B architecture review: Shopify B2B draft-order review or a quote app (App Store category "Pricing quotes"), before build | Q6.2.6 | clear — fixed wholesale tiers, no RFQ |
-| 11.3 | More than 5 Shopify Markets at launch | STOP | Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase | Q3.1.1 | clear — 3 markets |
-| 11.4 | More than 6 distinct languages across all markets | STOP | Larger Engagement: translation and content operations in the Discovery Phase | Q3.1.1 | clear — 3 languages (de, fr, it) |
-| 11.5 | More than 3 variant options per product (Shopify limit), or more than 2,048 variants on one product | FLAG | Product model review: combined listings, a product options app for non-stock options, or splitting products | Q2.1.2, Q2.1.3 | clear — max 2 variant options |
-| 11.6 | Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility) | STOP | Composable platform | Q4.2.1 | clear — Checkout Extensibility only |
-| 11.7 | More than 3 integrations at launch (counted per integration_definition) | STOP | Larger Engagement: integration architecture in the Discovery Phase | Q8.1.1 | clear — 2 counted integrations (ERP, PIM) |
-| 11.8 | Regulated industry (pharma, alcohol, firearms, age-restricted, financial products, medical devices) | STOP | Legal / compliance review | Q1.1.3, Q10.4.1 | clear — not a regulated industry |
-| 11.9 | PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data) | STOP | Security review (threat model mandatory) | Q4.1.5 | clear — Shopify-hosted checkout |
-| 11.10 | GDPR / CCPA data export or deletion workflow required | FLAG | Legal sign-off on data-subject request handling | Q6.4.5 | **triggered** — owner: Lead Consultant |
-| 11.11 | Grow retainer not signed on an M or L engagement | WARN | Grow retainer to be signed before delivery starts; otherwise commercial adjustment | Q10.3.4 | clear — retainer signed (12 months) |
-| 11.12 | ERP or PIM with no existing Shopify connector and no iPaaS | FLAG | Separate integration scoping track (T3/T4) | Q8.1.1 | clear — ERP and PIM via Celigo (iPaaS) |
-| 11.13 | fulfilment_locations > 2 AND routing beyond Shopify's native order routing rules (a custom routing Function or the ERP / OMS decides) | FLAG | Multi-location inventory scoping (T3) | Q5.1.3, Q5.1.4 | clear — 1 fulfilment location |
-| 11.14 | Migration with significant SEO equity or complex historical data | FLAG | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5, Q8.2.6 | **triggered** — owner: Tech Lead |
-| 11.15 | Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks | FLAG | Re-scope to an MVP-first delivery before any sprint begins | Q10.1.1 | clear — 17 weeks from kick-off to go-live |
-| 11.16 | No single decision-maker, or budget approval authority is unclear | FLAG | Named client decision-maker and budget owner confirmed before the statement of work is signed | Q10.2.2, Q10.2.3 | clear — decision-maker and budget authority confirmed |
-| 11.17 | Sensitive personal data is collected (health, age, biometric or financial data; special-category data under GDPR art. 9) | FLAG | Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build | Q6.4.4 | clear — no sensitive data collected |
-| 11.18 | Existing Shopify store uses retired or deprecated features (Shopify Scripts, checkout.liquid / additional scripts, online store script tags, legacy customer accounts, Stocky, Geolocation app) | FLAG | Deprecation migration scoped as its own workstream (e.g. Scripts to Functions, legacy to customer accounts) | Q1.2.5 | clear — no existing Shopify store |
-| 11.19 | B2B requirement that Shopify B2B does not support (subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards) | FLAG | B2B architecture review: app or process change before build | Q6.2.12 | clear — no unsupported B2B needs |
-| 11.20 | Mainland China is a launch market — handled in a separate China discovery, outside this engagement | FLAG | Separate China discovery (docs/discovery/china-mainland.md); mainland China excluded from this engagement's scope | Q3.1.1 | clear — no mainland China |
-| 11.21 | Mainland China is the only launch market — not part of the Merkle offering | STOP | China discovery (docs/discovery/china-mainland.md) | Q3.1.1 | clear — no mainland China |
-
 ---
 
 ## Completion checklist
@@ -2081,5 +2049,4 @@
 - [ ] Every *required* question in §§ 0–10 has an answer or "TBC"
 - [ ] At least one KPI has a baseline and a target (Q0.4.2)
 - [ ] Every connected system is listed in Q8.1.1 with direction and connector
-- [ ] § 11 outcome recorded for every rule; every STOP has a named resolution owner
 - [ ] Consent for AI processing recorded (Q10.5.2)

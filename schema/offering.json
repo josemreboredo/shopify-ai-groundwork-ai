@@ -52,8 +52,8 @@
     {
       "id": "b2b",
       "label": "B2B / Wholesale",
-      "condition": "B2B customer accounts, wholesale pricing, or volume discounts",
-      "inputs": ["/b2b/enabled", "/b2b/company_accounts", "/b2b/price_lists", "/b2b/volume_discounts"],
+      "condition": "B2B or hybrid business model (B2B selling unless answered otherwise), with B2B customer accounts, wholesale pricing, or volume discounts",
+      "inputs": ["/meta/client/business_model", "/b2b/company_accounts", "/b2b/price_lists", "/b2b/volume_discounts"],
       "modifier": "+B2B"
     },
     {
@@ -162,7 +162,6 @@
       "result": "STOP",
       "status": "canonical",
       "condition": "A required Shopify feature needs a higher plan than the target plan, per Shopify's plan documentation (Plus: company-specific or more than 3 B2B catalogs, B2B deposits and partial payments, checkout step extensions / Checkout Branding API, expansion stores, several legal entities, combined listings, Multipass sign-in, more than 10 locations, more than 20 languages, several product discounts on one item; Advanced: B2B contextual experience, per-market customisation, carrier-calculated rates, multi-currency payouts, more than 5 staff users; Grow: A/B testing with Rollouts). Shopify B2B itself runs on every plan from Basic. A fully custom checkout UI is handled by 11.6, not here",
-      "client_condition": "A required Shopify feature needs a higher Shopify plan than the chosen plan (the consultant checks the plan requirements)",
       "destination": "Confirm the plan the requirements need, or remove the feature from scope",
       "inputs": [
         "/shopify/target_plan",
@@ -341,7 +340,6 @@
       "result": "FLAG",
       "status": "canonical",
       "condition": "Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope",
-      "client_condition": "Mainland China is a launch market — handled in a separate China discovery, outside this engagement",
       "destination": "Separate China discovery (questions § 3.5, docs/discovery/china-mainland.md); mainland China excluded from this engagement's scope",
       "inputs": ["/markets/list"]
     },

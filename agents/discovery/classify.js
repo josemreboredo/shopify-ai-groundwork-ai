@@ -8,6 +8,7 @@
  */
 
 import { offering } from '../../schema/index.js';
+import { picked } from './values.js';
 
 const COUNTED = new Set(offering.integration_definition.counted_categories);
 const NON_MIGRATION_SOURCES = new Set(['none', 'shopify']);
@@ -111,7 +112,7 @@ const GATE_EVALUATORS = {
   retail_pos: (doc) => {
     const r = doc.retail ?? {};
     const stores = r.store_count ?? 0;
-    const services = (r.omnichannel ?? []).filter((s) => s !== 'none');
+    const services = picked(r.omnichannel);
     const pos = r.pos === 'shopify_pos' || r.pos === 'other_pos_integrated';
     const active = stores > 0 && (pos || services.length > 0);
     return {

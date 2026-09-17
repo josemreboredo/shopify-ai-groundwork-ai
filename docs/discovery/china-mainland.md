@@ -15,8 +15,10 @@
 | Mainland China is the only launch market | **11.21 STOP** | Discovery stops; route to the China discovery (Larger Engagement or no bid) |
 | Hong Kong SAR, Macao SAR, Taiwan | — | Separate markets, not mainland China; handled by the normal offer rules |
 
-When CN is a launch market, the questionnaire and the interview add **§ 3.5 Mainland China** (21 questions, in every
-interview mode) drawn from the checklist in section 6; without CN these questions are not asked. The answers are stored
+When CN is a launch market, the questionnaire and the interview add **§ 3.5 Mainland China**, drawn from the checklist in
+section 6; without CN these questions are not asked. The discovery call only triages China with 4 required questions
+(selling model, channels, legal entity in China, who gives PRC legal advice); the other 17 are optional and are covered
+in a full interview or the separate China discovery session. The answers are stored
 in `engagement.china` and shown in the Larger Engagement brief and in deck section 18.
 
 ## What "behind the wall" means with Shopify — read this first

@@ -10,6 +10,7 @@
 import { offering } from '../../schema/index.js';
 import { countedIntegrations, marketsOf, distinctLanguages, hasChinaMainland } from './classify.js';
 import { unmetPlanRequirements, describeRequirements } from './plan.js';
+import { picked } from './values.js';
 
 const RULES = new Map(offering.exit_rules.map((r) => [r.id, r]));
 const DEFAULT_OWNER = 'Lead Consultant';
@@ -84,14 +85,14 @@ const EVALUATORS = {
   '11.12': (doc) => {
     const risky = (doc.integrations ?? []).filter(
       (i) => (i.category === 'erp' || i.category === 'pim') &&
-             (i.connector === 'none' || i.connector === 'unknown' || (i.connector === 'custom' && i.status !== 'existing')),
+             (i.connector === 'none' || i.connector === 'not_sure' || (i.connector === 'custom' && i.status !== 'existing')),
     );
     return risky.length ? `No existing connector or iPaaS for: ${risky.map((i) => `${i.system} (${i.category})`).join(', ')}` : null;
   },
 
   '11.13': (doc) => {
     const s = doc.shipping ?? {};
-    const beyondNative = (s.routing_rules ?? []).filter((r) => r === 'custom_rule_function' || r === 'erp_or_oms_decides');
+    const beyondNative = picked(s.routing_rules).filter((r) => r === 'custom_rule_function' || r === 'erp_or_oms_decides');
     const complex = beyondNative.length > 0 || s.complex_routing === true;
     return (s.fulfilment_locations ?? 0) > 2 && complex
       ? `${s.fulfilment_locations} fulfilment locations with routing beyond Shopify's native rules${beyondNative.length ? ` (${beyondNative.join(', ').replace(/_/g, ' ')})` : ''}`
@@ -133,12 +134,12 @@ const EVALUATORS = {
   '11.21': (doc) => (hasChinaMainland(doc) && marketsOf(doc).length === 0 ? 'Mainland China is the only launch market' : null),
 
   '11.18': (doc) => {
-    const used = (doc.shopify?.deprecated_features ?? []).filter((f) => f !== 'none');
+    const used = picked(doc.shopify?.deprecated_features);
     return doc.shopify?.existing_store === true && used.length ? `Existing store uses ${used.join(', ').replace(/_/g, ' ')}` : null;
   },
 
   '11.19': (doc) => {
-    const needs = (doc.b2b?.unsupported_needs ?? []).filter((n) => n !== 'none');
+    const needs = picked(doc.b2b?.unsupported_needs);
     return doc.b2b?.enabled === true && needs.length ? `B2B needs Shopify B2B does not support: ${needs.join(', ').replace(/_/g, ' ')}` : null;
   },
 };

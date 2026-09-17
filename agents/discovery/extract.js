@@ -33,7 +33,7 @@ Output
 - Enum values must be copied exactly from the catalogue (underscores, lowercase).
 
 How to extract
-- Record only what the questionnaire says. When a question is blank, "TBC", "unknown" or "n/a", do not add an answer; add an open_items entry for required or recommended questions. Never guess.
+- Record only what the questionnaire says. When a question is blank, "TBC" or "n/a", do not add an answer; add an open_items entry for required or recommended questions. A ticked "None" option is recorded as none and "Not sure yet" as not_sure (it becomes an open item automatically). Never guess.
 - Every question is marked "**Q<id>**". The question mapping shows which fields each question fills.
 - Ticked checkboxes are "- [x] option"; option labels use spaces where values use underscores ("fully custom checkout ui" → "fully_custom_checkout_ui").
 - meta.client.slug is the client name in lowercase kebab-case ("ACME Watches SA" → "acme-watches").

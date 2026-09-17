@@ -56,7 +56,7 @@
         "primary_problem": {"type": "string"},
         "problem_history": {"type": "string"},
         "highest_impact_fix": {"type": "string"},
-        "bottleneck": {"enum": ["acquisition", "conversion", "retention", "mixed", "unknown"]},
+        "bottleneck": {"enum": ["acquisition", "conversion", "retention", "mixed", "not_sure"]},
         "revenue_monthly": {"$ref": "#/$defs/money_range"},
         "conversion_rate_pct": {"type": "number", "minimum": 0, "maximum": 100},
         "underperforming_segments": {"$ref": "#/$defs/strings"},
@@ -125,7 +125,8 @@
               "b2b_online",
               "headless_or_mobile_app",
               "ai_agents",
-              "none_other"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -176,7 +177,7 @@
             "properties": {
               "app": {"type": "string", "minLength": 1},
               "purpose": {"type": "string"},
-              "decision": {"enum": ["keep", "replace", "remove", "undecided"]}
+              "decision": {"enum": ["keep", "replace", "remove", "not_sure"]}
             },
             "required": ["app"]
           }
@@ -192,7 +193,8 @@
               "legacy_customer_accounts",
               "stocky",
               "geolocation_app",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -280,7 +282,7 @@
         "expansion_12m": {"type": "array", "items": {"$ref": "#/$defs/country"}},
         "strategy": {"enum": ["shopify_markets", "expansion_stores", "hybrid"]},
         "geo_redirect": {"enum": ["automatic_redirect", "country_selector_only", "suggest_banner", "none"]},
-        "translation_method": {"enum": ["in_house", "agency", "translate_and_adapt", "third_party_app", "pim_supplied", "undecided"]},
+        "translation_method": {"enum": ["in_house", "agency", "translate_and_adapt", "third_party_app", "pim_supplied", "not_sure"]},
         "rtl_required": {"type": "boolean"},
         "seo_per_language": {"type": "boolean"},
         "duties_ddp": {"type": "boolean"},
@@ -298,21 +300,22 @@
               "notifications",
               "url_handles",
               "app_content",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
-        "cross_border_model": {"enum": ["self_managed_markets", "managed_markets", "third_party_mor_app", "undecided"]},
+        "cross_border_model": {"enum": ["self_managed_markets", "managed_markets", "third_party_mor_app", "not_sure"]},
         "per_market_customisation": {"type": "boolean"},
         "tax_display": {"enum": ["include_everywhere", "exclude_everywhere", "dynamic_by_market"]},
-        "tax_service": {"enum": ["shopify_tax", "tax_app", "manual_rates", "undecided"]}
+        "tax_service": {"enum": ["shopify_tax", "tax_app", "manual_rates", "not_sure"]}
       }
     },
     "china": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "selling_model": {"enum": ["cross_border_offshore", "onshore_behind_firewall", "both", "undecided"]},
+        "selling_model": {"enum": ["cross_border_offshore", "onshore_behind_firewall", "both", "not_sure"]},
         "channels": {
           "type": "array",
           "uniqueItems": true,
@@ -326,21 +329,21 @@
               "own_site_offshore",
               "own_site_onshore",
               "hong_kong_store",
-              "undecided"
+              "not_sure"
             ]
           }
         },
         "prc_entity": {"enum": ["none", "wfoe", "joint_venture", "representative_office", "planned"]},
         "overseas_entity": {"type": "boolean"},
         "trademarks_registered_in_china": {"type": "boolean"},
-        "icp_status": {"enum": ["none", "filing", "commercial_licence", "via_partner", "not_needed", "unknown"]},
-        "shopify_role": {"enum": ["global_master_products_orders", "china_channel_storefront", "not_involved", "undecided"]},
+        "icp_status": {"enum": ["none", "filing", "commercial_licence", "via_partner", "not_needed", "not_sure"]},
+        "shopify_role": {"enum": ["global_master_products_orders", "china_channel_storefront", "not_involved", "not_sure"]},
         "customs_modes": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"enum": ["bonded_1210", "direct_mail_9610", "general_trade", "personal_parcels", "undecided"]}
+          "items": {"enum": ["bonded_1210", "direct_mail_9610", "general_trade", "personal_parcels", "not_sure"]}
         },
-        "positive_list": {"enum": ["all_on_list", "some_on_list", "none_on_list", "unknown"]},
+        "positive_list": {"enum": ["all_on_list", "some_on_list", "none_on_list", "not_sure"]},
         "product_classes": {
           "type": "array",
           "uniqueItems": true,
@@ -352,11 +355,11 @@
               "medical_devices",
               "food_supplements",
               "general_goods",
-              "unknown"
+              "not_sure"
             ]
           }
         },
-        "nmpa_status": {"enum": ["registered", "filed", "in_progress", "not_started", "not_needed_cbec", "unknown"]},
+        "nmpa_status": {"enum": ["registered", "filed", "in_progress", "not_started", "not_needed_cbec", "not_sure"]},
         "claims_review_needed": {"type": "boolean"},
         "payments": {
           "type": "array",
@@ -367,20 +370,20 @@
               "shopify_payments_hong_kong_wallets",
               "cross_border_wallet_provider",
               "domestic_merchant_accounts",
-              "undecided"
+              "not_sure"
             ]
           }
         },
-        "customers_per_year": {"enum": ["under_100k", "100k_to_1m", "over_1m", "unknown"]},
+        "customers_per_year": {"enum": ["under_100k", "100k_to_1m", "over_1m", "not_sure"]},
         "pipl_representative": {"type": "boolean"},
-        "customer_data_location": {"enum": ["inside_china", "outside_china", "both", "undecided"]},
+        "customer_data_location": {"enum": ["inside_china", "outside_china", "both", "not_sure"]},
         "blocked_services_review": {"type": "boolean"},
         "marketing_channels": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"enum": ["kol_koc", "red_xiaohongshu", "douyin", "wechat", "baidu", "tmall_ads", "none"]}
+          "items": {"enum": ["kol_koc", "red_xiaohongshu", "douyin", "wechat", "baidu", "tmall_ads", "none", "not_sure"]}
         },
-        "customer_service": {"enum": ["in_house", "partner", "platform", "undecided"]},
+        "customer_service": {"enum": ["in_house", "partner", "platform", "not_sure"]},
         "local_partner": {"type": "string"},
         "target_launch_date": {"$ref": "#/$defs/date"},
         "legal_advice": {"enum": ["client_prc_counsel", "partner", "not_yet"]}
@@ -413,7 +416,8 @@
               "made_to_order",
               "virtual",
               "try_before_you_buy",
-              "none_of_these"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -440,7 +444,16 @@
             "out_of_stock_behaviour": {
               "type": "array",
               "uniqueItems": true,
-              "items": {"enum": ["hide", "show_sold_out", "continue_selling_backorder", "back_in_stock_alert", "pre_order"]}
+              "items": {
+                "enum": [
+                  "hide",
+                  "show_sold_out",
+                  "continue_selling_backorder",
+                  "back_in_stock_alert",
+                  "pre_order",
+                  "not_sure"
+                ]
+              }
             },
             "operations": {
               "type": "array",
@@ -451,7 +464,8 @@
                   "stock_transfers",
                   "stock_counts_pos",
                   "damaged_quality_control_safety_stock",
-                  "none_erp_managed"
+                  "none",
+                  "not_sure"
                 ]
               }
             }
@@ -462,7 +476,15 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "enum": ["text_engraving", "file_upload", "paid_add_ons", "conditional_options", "configurator_3d", "none"]
+            "enum": [
+              "text_engraving",
+              "file_upload",
+              "paid_add_ons",
+              "conditional_options",
+              "configurator_3d",
+              "none",
+              "not_sure"
+            ]
           }
         },
         "bundles": {
@@ -480,7 +502,9 @@
                   "bundle_with_subscription",
                   "bundle_discount_tiers",
                   "sell_bundles_on_pos",
-                  "bundles_on_marketplaces"
+                  "bundles_on_marketplaces",
+                  "none",
+                  "not_sure"
                 ]
               }
             }
@@ -490,7 +514,7 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "approach": {"enum": ["shopify_subscriptions", "third_party_app", "undecided"]},
+            "approach": {"enum": ["shopify_subscriptions", "third_party_app", "not_sure"]},
             "features": {
               "type": "array",
               "uniqueItems": true,
@@ -504,7 +528,8 @@
                   "subscriptions_on_pos",
                   "b2b_subscriptions",
                   "international_subscriptions",
-                  "migrate_existing_contracts"
+                  "migrate_existing_contracts",
+                  "not_sure"
                 ]
               }
             }
@@ -544,21 +569,24 @@
               "wechat_pay",
               "sepa_or_invoice_via_gateway",
               "other",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
         "bnpl": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"enum": ["shop_pay_installments", "klarna_via_shopify_payments", "bnpl_via_other_gateway", "none"]}
+          "items": {
+            "enum": ["shop_pay_installments", "klarna_via_shopify_payments", "bnpl_via_other_gateway", "none", "not_sure"]
+          }
         },
         "multi_currency_settlement": {"type": "boolean"},
         "pci_scope": {"enum": ["shopify_hosted", "third_party_hosted", "custom_card_handling"]},
         "accelerated_checkouts": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"enum": ["shop_pay", "apple_pay", "google_pay", "paypal", "amazon_pay", "none"]}
+          "items": {"enum": ["shop_pay", "apple_pay", "google_pay", "paypal", "amazon_pay", "none", "not_sure"]}
         },
         "method_rules": {"type": "boolean"}
       }
@@ -578,7 +606,8 @@
               "checkout_branding_api_styling",
               "backend_logic_functions",
               "fully_custom_checkout_ui",
-              "none"
+              "none",
+              "not_sure"
             ]
           },
           "description": "Checkout changes in Shopify terms. Editor branding and Thank you / Order status blocks: all plans; step extensions and Checkout Branding API: Plus; a fully custom checkout UI is not possible on Shopify (11.6)."
@@ -597,7 +626,9 @@
               "payment_customization",
               "cart_checkout_validation",
               "address_validation",
-              "pickup_point_generator"
+              "pickup_point_generator",
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -616,7 +647,8 @@
               "quantity_limits",
               "customer_type_restrictions",
               "product_combination_rules",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -635,7 +667,16 @@
         "rates": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"enum": ["flat", "weight_or_price_based", "free_above_threshold", "carrier_calculated", "app_calculated"]}
+          "items": {
+            "enum": [
+              "flat",
+              "weight_or_price_based",
+              "free_above_threshold",
+              "carrier_calculated",
+              "app_calculated",
+              "not_sure"
+            ]
+          }
         },
         "special_rules": {"$ref": "#/$defs/strings"},
         "international": {"type": "boolean"},
@@ -655,7 +696,7 @@
             "exchange_types": {
               "type": "array",
               "uniqueItems": true,
-              "items": {"enum": ["same_product_variant", "any_product", "store_credit_first"]}
+              "items": {"enum": ["same_product_variant", "any_product", "store_credit_first", "none", "not_sure"]}
             },
             "international_returns": {"type": "boolean"},
             "inspection_required": {"type": "boolean"},
@@ -680,7 +721,8 @@
               "ranked_locations",
               "location_metafields",
               "custom_rule_function",
-              "erp_or_oms_decides"
+              "erp_or_oms_decides",
+              "not_sure"
             ]
           }
         },
@@ -709,7 +751,9 @@
               "pickup_in_store",
               "pickup_points",
               "scheduled_delivery_slots",
-              "ship_from_store"
+              "ship_from_store",
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -739,7 +783,7 @@
             "methods": {
               "type": "array",
               "uniqueItems": true,
-              "items": {"enum": ["original_payment", "store_credit", "gift_card"]}
+              "items": {"enum": ["original_payment", "store_credit", "gift_card", "not_sure"]}
             },
             "trigger": {"enum": ["on_request", "on_carrier_scan", "on_receipt", "after_inspection"]},
             "shipping_refunded": {"enum": ["always", "on_fault_only", "never"]},
@@ -754,7 +798,11 @@
           "additionalProperties": false,
           "properties": {
             "branded_tracking_page": {"type": "boolean"},
-            "proactive_channels": {"type": "array", "uniqueItems": true, "items": {"enum": ["email", "sms", "whatsapp", "push"]}},
+            "proactive_channels": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"enum": ["email", "sms", "whatsapp", "push", "none", "not_sure"]}
+            },
             "delivery_estimates": {"type": "boolean"}
           }
         },
@@ -772,7 +820,7 @@
       "additionalProperties": false,
       "properties": {
         "store_count": {"type": "integer", "minimum": 0},
-        "pos": {"enum": ["shopify_pos", "other_pos_integrated", "other_pos_separate", "undecided"]},
+        "pos": {"enum": ["shopify_pos", "other_pos_integrated", "other_pos_separate", "not_sure"]},
         "omnichannel": {
           "type": "array",
           "uniqueItems": true,
@@ -786,7 +834,8 @@
               "stock_transfers_counts",
               "retail_prices_or_catalogs",
               "staff_roles_permissions",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -818,7 +867,8 @@
               "loyalty_widget",
               "wishlist",
               "extra_profile_fields",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -829,7 +879,14 @@
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "enum": ["email_code", "google_facebook", "shop", "company_sso_identity_provider", "sign_in_from_another_site"]
+            "enum": [
+              "email_code",
+              "google_facebook",
+              "shop",
+              "company_sso_identity_provider",
+              "sign_in_from_another_site",
+              "not_sure"
+            ]
           }
         }
       }
@@ -855,15 +912,14 @@
               "deposits",
               "partial_payments",
               "pay_per_fulfilment",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
         "rfq_or_negotiated_pricing": {"type": "boolean"},
         "approval_workflow": {"type": "boolean"},
-        "approach": {
-          "enum": ["shopify_b2b", "shopify_b2b_plus_apps", "b2b_app_only", "separate_b2b_expansion_store", "undecided"]
-        },
+        "approach": {"enum": ["shopify_b2b", "shopify_b2b_plus_apps", "b2b_app_only", "separate_b2b_expansion_store", "not_sure"]},
         "expected_accounts": {"type": "integer", "minimum": 0},
         "catalog_count": {"type": "integer", "minimum": 0},
         "company_specific_catalogs": {"type": "boolean"},
@@ -878,7 +934,8 @@
               "express_checkouts",
               "over_500_line_items",
               "gift_cards",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -901,7 +958,8 @@
               "vip_early_access",
               "subscription_discount",
               "store_credit",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -914,7 +972,11 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "privacy_regimes": {"type": "array", "uniqueItems": true, "items": {"enum": ["gdpr", "uk_gdpr", "ccpa", "nfadp", "other"]}},
+        "privacy_regimes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["gdpr", "uk_gdpr", "ccpa", "nfadp", "other", "none", "not_sure"]}
+        },
         "cookie_consent_tool": {"type": "string"},
         "marketing_opt_in": {"type": "boolean"},
         "sensitive_data": {"type": "boolean"},
@@ -927,12 +989,12 @@
         "gdpr_deletion_workflow": {"type": "boolean"},
         "legal_pages_status": {"enum": ["ready", "needs_update", "needs_drafting"]},
         "industry_requirements": {"$ref": "#/$defs/strings"},
-        "consent_approach": {"enum": ["shopify_cookie_banner", "third_party_cmp", "undecided"]},
+        "consent_approach": {"enum": ["shopify_cookie_banner", "third_party_cmp", "not_sure"]},
         "data_sale_opt_out": {"type": "boolean"},
         "consent_capture_points": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"enum": ["checkout", "customer_account_sign_in", "forms_popups", "pos", "none"]}
+          "items": {"enum": ["checkout", "customer_account_sign_in", "forms_popups", "pos", "none", "not_sure"]}
         },
         "shopify_payments_eligible": {"type": "boolean"}
       }
@@ -1015,7 +1077,8 @@
               "scheduled_sale",
               "stackable",
               "pos_only",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -1024,7 +1087,11 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "usage": {"type": "array", "uniqueItems": true, "items": {"enum": ["single_use", "multi_use", "bulk"]}},
+            "usage": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {"enum": ["single_use", "multi_use", "bulk", "none", "not_sure"]}
+            },
             "branded": {"type": "boolean"},
             "minimum_threshold": {"type": "boolean"},
             "expiry": {"enum": ["none", "fixed", "rolling"]},
@@ -1055,7 +1122,7 @@
         "targeting": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"enum": ["market", "customer_segment", "sales_channel_pos_only", "b2b_company", "none"]}
+          "items": {"enum": ["market", "customer_segment", "sales_channel_pos_only", "b2b_company", "none", "not_sure"]}
         }
       }
     },
@@ -1116,9 +1183,9 @@
             }
           },
           "frequency": {"enum": ["realtime", "webhook", "batch"]},
-          "connector": {"enum": ["native_app", "ipaas", "custom", "none", "unknown"]},
+          "connector": {"enum": ["native_app", "ipaas", "custom", "none", "not_sure"]},
           "middleware": {"type": "string"},
-          "owner": {"enum": ["client", "merkle", "third_party", "unknown"]},
+          "owner": {"enum": ["client", "merkle", "third_party", "not_sure"]},
           "status": {"enum": ["existing", "to_build", "to_replace"]},
           "daily_updates": {"type": "integer", "minimum": 0},
           "latency_minutes": {"type": "integer", "minimum": 0}
@@ -1147,7 +1214,8 @@
               "b2b_companies",
               "subscription_contracts",
               "blog_posts_pages",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -1200,7 +1268,8 @@
               "store_locator",
               "lookbook",
               "video_hero",
-              "none"
+              "none",
+              "not_sure"
             ]
           }
         },
@@ -1239,12 +1308,13 @@
                   "native_mobile_app",
                   "multiple_frontends_one_backend",
                   "url_structure_control",
-                  "other"
+                  "other",
+                  "not_sure"
                 ]
               }
             },
-            "hosting": {"enum": ["oxygen", "self_hosted_js_runtime", "undecided"]},
-            "content_source": {"enum": ["shopify_metaobjects", "headless_cms", "pim", "undecided"]},
+            "hosting": {"enum": ["oxygen", "self_hosted_js_runtime", "not_sure"]},
+            "content_source": {"enum": ["shopify_metaobjects", "headless_cms", "pim", "not_sure"]},
             "features": {
               "type": "array",
               "uniqueItems": true,
@@ -1256,7 +1326,9 @@
                   "subscriptions",
                   "bundles_combined_listings",
                   "shopify_analytics_consent",
-                  "multiple_storefronts"
+                  "multiple_storefronts",
+                  "none",
+                  "not_sure"
                 ]
               }
             }
@@ -1503,7 +1575,7 @@
     "pointer": {"type": "string", "pattern": "^(/[^/]+)+$"},
     "question_id": {"type": "string", "pattern": "^Q\\d+\\.\\d+\\.\\d+$"},
     "gaia_tier": {"enum": ["T1", "T2", "T3", "T4"]},
-    "shopify_plan": {"enum": ["none", "starter", "basic", "grow", "advanced", "plus", "enterprise", "retail"]},
+    "shopify_plan": {"enum": ["none", "starter", "basic", "grow", "advanced", "plus", "enterprise", "retail", "not_sure"]},
     "strings": {"type": "array", "items": {"type": "string"}},
     "money": {
       "type": "object",

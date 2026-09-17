@@ -373,7 +373,7 @@
       "name": "Combined Listings (Plus)",
       "url": "https://apps.shopify.com/combined-listings",
       "requirements": [
-        "Options beyond 3 / personalisation (Q2.1.2, Q2.1.5)"
+        "Options beyond 3 / personalisation (Q2.1.2, Q2.2.6)"
       ],
       "category": {
         "name": "Custom products",
@@ -389,7 +389,7 @@
       "url": "https://apps.shopify.com/custom-options",
       "developer": "ShopPad",
       "requirements": [
-        "Options beyond 3 / personalisation (Q2.1.2, Q2.1.5)"
+        "Options beyond 3 / personalisation (Q2.1.2, Q2.2.6)"
       ],
       "category": {
         "name": "Custom products",
@@ -404,7 +404,7 @@
       "name": "Globo Product Options, Variant",
       "url": "https://apps.shopify.com/product-options-pro",
       "requirements": [
-        "Options beyond 3 / personalisation (Q2.1.2, Q2.1.5)"
+        "Options beyond 3 / personalisation (Q2.1.2, Q2.2.6)"
       ],
       "category": {
         "name": "Custom products",
@@ -419,7 +419,7 @@
       "name": "Easify Custom Product Options",
       "url": "https://apps.shopify.com/easify-product-options",
       "requirements": [
-        "Options beyond 3 / personalisation (Q2.1.2, Q2.1.5)"
+        "Options beyond 3 / personalisation (Q2.1.2, Q2.2.6)"
       ],
       "category": {
         "name": "Custom products",

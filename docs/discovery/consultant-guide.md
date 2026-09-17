@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 100 of 277 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 98 of 275 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -52,19 +52,21 @@ The offers do not assume Shopify Plus. The minimum plan is the highest plan any 
 
 ### 0.2 Revenue & conversion
 
-**Q0.2.1** — What is your current monthly ecommerce revenue (range and currency)? *(recommended · client)*
+**Q0.2.1** — What is your current monthly ecommerce revenue (range and currency)? *(required · client)*
 
-**Q0.2.2** — What is your current conversion rate (%)? *(recommended · client)*
+**Q0.2.2** — What is your current conversion rate (%)? *(required · client)*
 
 **Q0.2.3** — Which product categories, markets or customer segments under-perform? *(optional · client)*
 
-**Q0.2.4** — Is the main bottleneck acquisition (traffic), conversion (traffic doesn't buy) or retention (customers don't return)? *(recommended · client)*
+**Q0.2.4** — Is the main bottleneck acquisition (traffic), conversion (traffic doesn't buy) or retention (customers don't return)? *(required · client)*
 
 **Q0.2.5** — What share of revenue comes from each channel today (online store, retail stores, marketplaces, social commerce, wholesale / B2B, other)? *(recommended · client)*
 
+**Q0.2.6** — How many orders per month do you expect in the first year? *(required · client)*
+
 ### 0.3 Operational pain
 
-**Q0.3.1** — What manual work does your team do today that the platform should automate, and which processes break most often? *(recommended · client)*
+**Q0.3.1** — What manual work does your team do today that the platform should automate, and which processes break most often? *(required · client)*
 
 **Q0.3.2** — How many hours per week does the team spend on workarounds? *(optional · client)*
 
@@ -76,17 +78,27 @@ The offers do not assume Shopify Plus. The minimum plan is the highest plan any 
 
 ### 0.5 Platform context
 
-**Q0.5.1** — What triggered this engagement — why Shopify, and why now? *(recommended · client)*
+**Q0.5.1** — What triggered this engagement — why Shopify, and why now? *(required · client)*
 
 **Q0.5.2** — If you are moving from another platform, what must not be lost in the transition? *(recommended · client)*
 
 **Q0.5.3** — What are you most unhappy with in the current store or set-up? *(recommended · client)*
 
+**Q0.5.4** — Which platform are you migrating from (or none — greenfield)? *(required · client)*
+Feeds: gate Migration
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Store Migration app | Basic |  | https://apps.shopify.com/store-migration |
+
+If native is not enough: [Store data importer](https://apps.shopify.com/categories/sales-channels-selling-online-store-data-importer/all) — [Shopify Store Migration](https://apps.shopify.com/store-migration), [Matrixify](https://apps.shopify.com/excel-export-import)
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
 ### 0.6 Budget
 
 **Q0.6.1** — What is the approximate budget envelope for this project (range and currency)? *(required · client)*
 
-**Q0.6.2** — Is the priority to minimise upfront cost (apps and configuration), to own the solution (custom build), or a balance? *(recommended · client)*
+**Q0.6.2** — Is the priority to minimise upfront cost (apps and configuration), to own the solution (custom build), or a balance? *(required · client)*
 
 **Q0.6.3** — Is there a monthly ceiling for app subscriptions? *(optional · client)*
 
@@ -108,7 +120,7 @@ Feeds: gate B2B / Wholesale
 
 **Q1.1.5** — Current website URL. *(optional · client)*
 
-**Q1.1.6** — Do you sell through more than one legal entity (e.g. one per country or region)? List them. *(recommended · client)*
+**Q1.1.6** — Do you sell through more than one legal entity (e.g. one per country or region)? List them. *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -151,7 +163,7 @@ Feeds: rule 11.18 (FLAG)
 Build with: Shopify Functions · Theme app extensions (replace script tags)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q1.2.6** — How many people need their own Shopify admin login after go-live? List their roles. *(recommended · client)*
+**Q1.2.6** — How many people need their own Shopify admin login after go-live? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -161,7 +173,7 @@ Feeds: rule 11.1 (STOP)
 
 ### 1.3 Brand & positioning
 
-**Q1.3.1** — How is the brand positioned (value, mid-market, premium, luxury, enterprise)? *(required · consultant)*
+**Q1.3.1** — How would you describe the brand's positioning: value, mid-market, premium, luxury or enterprise? *(required · client)*
 Feeds: L trigger Luxury / enterprise brand
 
 **Q1.3.2** — Is the brand identity finalised (logo, colour palette, typography)? *(recommended · client)*
@@ -198,7 +210,7 @@ Feeds: rule 11.5 (FLAG) · gate SKU complexity
 If native is not enough: [Custom products](https://apps.shopify.com/categories/selling-products-custom-products) — [Infinite Options](https://apps.shopify.com/custom-options), [Globo Product Options, Variant](https://apps.shopify.com/product-options-pro), [Easify Custom Product Options](https://apps.shopify.com/easify-product-options)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q2.1.3** — What is the maximum number of variants on a single product? *(recommended · client)*
+**Q2.1.3** — What is the maximum number of variants on a single product? *(required · client)*
 Feeds: rule 11.5 (FLAG)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -206,19 +218,12 @@ Feeds: rule 11.5 (FLAG)
 | Up to 2,048 variants per product | Basic | Apps must use the current GraphQL product APIs above 100 variants | https://shopify.dev/changelog/the-product-variant-limit-is-now-2048-for-all-merchants |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q2.1.4** — Are variants such as colours managed as separate products (own SKUs, images, URLs) that should appear as one product on the storefront? *(recommended · client)*
+**Q2.1.4** — Are variants such as colours managed as separate products (own SKUs, images, URLs) that should appear as one product on the storefront? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Combined listings | Shopify Plus |  | https://help.shopify.com/en/manual/products/combined-listings-app |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
-
-**Q2.1.5** — Do customers personalise products with choices that are not stock variants (engraving, file upload, paid add-ons, configurators)? *(recommended · client)*
-Feeds: app signal Product options and personalisation
-Quick interview: asked when catalogue › variant options max ≥ 3 or catalogue › product types includes made to order
-
-If native is not enough: [Custom products](https://apps.shopify.com/categories/selling-products-custom-products) — [Infinite Options](https://apps.shopify.com/custom-options), [Globo Product Options, Variant](https://apps.shopify.com/product-options-pro), [Easify Custom Product Options](https://apps.shopify.com/easify-product-options)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 2.2 Product types
@@ -237,7 +242,7 @@ If native is not enough: [Product bundles](https://apps.shopify.com/categories/m
 
 **Q2.2.2** — Will subscriptions run on Shopify Subscriptions (Shopify's app) or a third-party subscription app? Name the app if known. *(recommended · client)*
 Feeds: app signal Subscriptions beyond Shopify Subscriptions
-Quick interview: asked when catalogue › product types includes subscription
+Quick interview: ask if Q2.2.1 includes Subscription
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -248,7 +253,7 @@ If native is not enough: [Subscriptions](https://apps.shopify.com/categories/sel
 
 **Q2.2.3** — If you sell bundles: what must they do? *(recommended · client)*
 Feeds: app signal Bundles beyond Shopify Bundles
-Quick interview: asked when catalogue › product types includes fixed bundle / multipack / mix and match bundle / bundle
+Quick interview: ask if Q2.2.1 includes Fixed bundle, Multipack, Mix and match bundle or Bundle
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -260,7 +265,7 @@ Build with: Cart Transform Function
 
 **Q2.2.4** — Which subscription features are needed? *(recommended · client)*
 Feeds: app signal Subscriptions beyond Shopify Subscriptions
-Quick interview: asked when catalogue › product types includes subscription
+Quick interview: ask if Q2.2.1 includes Subscription
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -271,7 +276,7 @@ If native is not enough: [Subscriptions](https://apps.shopify.com/categories/sel
 
 **Q2.2.5** — For pre-orders, when is the customer charged? *(recommended · client)*
 Feeds: app signal Pre-orders
-Quick interview: asked when catalogue › product types includes pre order
+Quick interview: ask if Q2.2.1 includes Pre order
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -280,13 +285,20 @@ Quick interview: asked when catalogue › product types includes pre order
 If native is not enough: [Pre-orders](https://apps.shopify.com/categories/selling-products-purchase-options-pre-orders) — [Preorder, Back In Stock ‑ STOQ](https://apps.shopify.com/back-in-stock-restock-alerts), [Preorder Now Presale Timesact](https://apps.shopify.com/timesact-discount-pre-order)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
+**Q2.2.6** — Do customers personalise products with choices that are not stock variants (engraving, file upload, paid add-ons, configurators)? *(recommended · client)*
+Feeds: app signal Product options and personalisation
+Quick interview: ask if Q2.1.2 is 3 or more, or Q2.2.1 includes Made to order
+
+If native is not enough: [Custom products](https://apps.shopify.com/categories/selling-products-custom-products) — [Infinite Options](https://apps.shopify.com/custom-options), [Globo Product Options, Variant](https://apps.shopify.com/product-options-pro), [Easify Custom Product Options](https://apps.shopify.com/easify-product-options)
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
 ### 2.3 Catalogue data
 
 **Q2.3.1** — Roughly how many collections? *(optional · client)*
 
 **Q2.3.2** — Are collections manual, rule-based (automated), or mixed? *(optional · client)*
 
-**Q2.3.3** — Which product attributes go beyond Shopify's standard fields (technical specs, certifications, fit guides, ingredients)? *(recommended · client)*
+**Q2.3.3** — Which product attributes go beyond Shopify's standard fields (technical specs, certifications, fit guides, ingredients)? *(required · client)*
 Feeds: gate SKU complexity
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -308,7 +320,7 @@ If native is not enough: App Store — [Algolia AI Search & Discovery](https://a
 
 ### 2.4 Pricing
 
-**Q2.4.1** — Are there price lists for customer groups (retail, trade, VIP)? *(recommended · client)*
+**Q2.4.1** — Are there special prices for consumer groups (VIP or member prices)? *(recommended · client)*
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -316,7 +328,7 @@ If native is not enough: App Store — [Algolia AI Search & Discovery](https://a
 | Company-specific catalogs | Shopify Plus |  | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q2.4.2** — Is there volume or quantity-tiered pricing? *(recommended · client)*
+**Q2.4.2** — Are there volume offers for shoppers (e.g. 3 for 2, tiered discounts)? *(recommended · client)*
 
 **Q2.4.3** — Do prices differ by market (not just currency conversion)? *(recommended · client)*
 
@@ -338,7 +350,7 @@ If native is not enough: App Store — [Algolia AI Search & Discovery](https://a
 
 **Q2.5.3** — What should happen when a product is out of stock? *(optional · client)*
 Feeds: app signal Back-in-stock alerts · app signal Pre-orders
-Quick interview: asked when catalogue › product types includes pre order or catalogue › sku count ≥ 500
+Quick interview: ask if Q2.2.1 includes Pre order, or Q2.1.1 is 500 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -360,7 +372,7 @@ If native is not enough: [Stock alerts](https://apps.shopify.com/categories/stor
 
 ### 3.1 Markets at launch
 
-**Q3.1.1** — Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain. *(required · client)*
+**Q3.1.1** — Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain, and how prices are set (the store's base currency, auto-converted, a manual price list, or display only). *(required · client)*
 Feeds: gate Markets · gate Multi-currency · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -373,7 +385,7 @@ Feeds: gate Markets · gate Multi-currency · rule 11.3 (STOP) · rule 11.4 (STO
 
 **Q3.1.3** — Which countries are planned in the next 12 months? *(optional · client)*
 
-**Q3.1.4** — Operating model: one store with Shopify Markets, expansion stores, or hybrid? *(recommended · consultant)*
+**Q3.1.4** — Operating model: one store with Shopify Markets, expansion stores, or hybrid? *(required · consultant)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -396,7 +408,7 @@ Feeds: rule 11.1 (STOP)
 | Shopify Tax | Basic |  | https://help.shopify.com/en/manual/taxes/shopify-tax |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q3.1.7** — Should any market have its own theme content, section order, checkout or customer-account settings? *(recommended · client)*
+**Q3.1.7** — Should any market have its own theme content, section order, checkout or customer-account settings? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -408,7 +420,7 @@ Feeds: rule 11.1 (STOP)
 
 **Q3.2.1** — How will translation be handled? *(recommended · client)*
 Feeds: app signal Translation beyond Translate & Adapt
-Quick interview: asked when 3+ distinct markets › list › languages
+Quick interview: ask if Q3.1.1 has 3+ languages
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -423,23 +435,13 @@ If native is not enough: [Internationalization](https://apps.shopify.com/categor
 
 **Q3.2.4** — What must be translated? *(recommended · client)*
 Feeds: app signal Translation beyond Translate & Adapt
-Quick interview: asked when 3+ distinct markets › list › languages
+Quick interview: ask if Q3.1.1 has 3+ languages
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Translate & Adapt | Basic |  | https://help.shopify.com/en/manual/international/translate-adapt-app |
 
 If native is not enough: [Internationalization](https://apps.shopify.com/categories/store-design-internationalization) — [Weglot: AI Translation & SEO](https://apps.shopify.com/weglot), [langify](https://apps.shopify.com/langify), [Transcy](https://apps.shopify.com/transcy-multiple-languages)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
-
-### 3.3 Currency & pricing
-
-**Q3.3.1** — Per market: is it the store's base currency, or are prices auto-converted, manually set, or display-only (checkout in another currency)? *(required · client)*
-Feeds: gate Multi-currency
-
-| Shopify feature | Minimum plan | Note | Docs |
-|---|---|---|---|
-| Market pricing and currencies | Basic | All Markets pricing features need Shopify Payments | https://help.shopify.com/en/manual/markets/pricing |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 3.4 Tax & duties
@@ -496,13 +498,13 @@ If native is not enough: App Store — [WalktheChat WeChat Connector](https://ap
 **Q3.5.3** — Do you have a legal entity in mainland China? *(required · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.4** — Do you have a Hong Kong or other overseas entity that can sell cross-border, and are your trademarks registered in China? *(recommended · client)*
+**Q3.5.4** — Do you have a Hong Kong or other overseas entity that can sell cross-border, and are your trademarks registered in China? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.5** — ICP status for a China website? *(required · client)*
+**Q3.5.5** — ICP status for a China website? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.6** — What is Shopify's role for mainland China? *(required · consultant)*
+**Q3.5.6** — What is Shopify's role for mainland China? *(optional · consultant)*
 Asked only if the launch markets include mainland China (CN)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -510,22 +512,22 @@ Asked only if the launch markets include mainland China (CN)
 | Shopify in China: Shopify's servers are not located in mainland China | Basic |  | https://help.shopify.com/en/manual/intro-to-shopify/initial-setup/sell-in-china/china-getting-started-to-do |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q3.5.7** — How will goods enter China: bonded warehouse (1210), direct mail (9610), general trade, or personal parcels? *(required · client)*
+**Q3.5.7** — How will goods enter China: bonded warehouse (1210), direct mail (9610), general trade, or personal parcels? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.8** — Are your products on China's cross-border e-commerce positive list? *(recommended · client)*
+**Q3.5.8** — Are your products on China's cross-border e-commerce positive list? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.9** — How are your products classified in China? *(required · client)*
+**Q3.5.9** — How are your products classified in China? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.10** — Registration or filing status with China's medical products administration (NMPA)? *(recommended · client)*
+**Q3.5.10** — Registration or filing status with China's medical products administration (NMPA)? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.11** — Do product claims need a review for China (medical, cosmeceutical or treatment claims)? *(recommended · consultant)*
+**Q3.5.11** — Do product claims need a review for China (medical, cosmeceutical or treatment claims)? *(optional · consultant)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.12** — How will mainland customers pay? *(required · client)*
+**Q3.5.12** — How will mainland customers pay? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -534,16 +536,16 @@ Asked only if the launch markets include mainland China (CN)
 | Alipay via Shopify Payments | Basic | Hong Kong SAR Shopify Payments account; early access | https://help.shopify.com/en/manual/payments/shopify-payments/local-payment-methods/alipay |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q3.5.13** — How many mainland China customers do you expect per year? *(required · client)*
+**Q3.5.13** — How many mainland China customers do you expect per year? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.14** — Do you have a representative in China for personal information protection (PIPL)? *(recommended · client)*
+**Q3.5.14** — Do you have a representative in China for personal information protection (PIPL)? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.15** — Where will China customer data (CRM, email, analytics) be stored? *(recommended · client)*
+**Q3.5.15** — Where will China customer data (CRM, email, analytics) be stored? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.16** — Must scripts blocked in China (Google Fonts, Google Analytics, reCAPTCHA, Meta pixels, YouTube) be replaced? *(recommended · consultant)*
+**Q3.5.16** — Must scripts blocked in China (Google Fonts, Google Analytics, reCAPTCHA, Meta pixels, YouTube) be replaced? *(optional · consultant)*
 Asked only if the launch markets include mainland China (CN)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -551,10 +553,10 @@ Asked only if the launch markets include mainland China (CN)
 | Shopify notes that firewalls in China frequently block Google Fonts | Basic |  | https://help.shopify.com/en/manual/intro-to-shopify/initial-setup/sell-in-china/online-store-setup |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q3.5.17** — Which marketing channels for China? *(recommended · client)*
+**Q3.5.17** — Which marketing channels for China? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
-**Q3.5.18** — Who provides Chinese-language customer service? *(recommended · client)*
+**Q3.5.18** — Who provides Chinese-language customer service? *(optional · client)*
 Asked only if the launch markets include mainland China (CN)
 
 **Q3.5.19** — Do you work with a local partner or trade partner for China? Name it. *(optional · client)*
@@ -593,7 +595,7 @@ Asked only if the launch markets include mainland China (CN)
 | Shop Pay Installments | Basic | US, Canada and UK stores | https://help.shopify.com/en/manual/payments/shop-pay-installments/eligibility |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q4.1.4** — Do you need payouts in more than one currency? *(optional · client)*
+**Q4.1.4** — Do you need payouts in more than one currency? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -664,7 +666,7 @@ Build with: Cart and Checkout Validation Function
 
 **Q4.3.3** — Do you want a guarantee that fraud chargebacks are reimbursed? *(optional · client)*
 Feeds: app signal Chargeback guarantee
-Quick interview: asked when brand › positioning is premium / luxury / enterprise
+Quick interview: ask if Q1.3.1 is Premium, Luxury or Enterprise
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -683,7 +685,7 @@ If native is not enough: [Fraud](https://apps.shopify.com/categories/store-manag
 
 **Q5.1.2** — Which 3PL provider? *(recommended · client)*
 
-**Q5.1.3** — How many fulfilment locations are there? *(required · client)*
+**Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders)? *(required · client)*
 Feeds: rule 11.1 (STOP) · rule 11.13 (FLAG)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -691,7 +693,7 @@ Feeds: rule 11.1 (STOP) · rule 11.13 (FLAG)
 | Locations | Basic | 10 locations below Plus, 200 on Plus; app locations not counted | https://help.shopify.com/en/manual/fulfillment/setup/locations/setup |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q5.1.4** — How should Shopify pick the fulfilling location? *(recommended · client)*
+**Q5.1.4** — How should Shopify pick the fulfilling location? *(required · client)*
 Feeds: rule 11.13 (FLAG)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -702,7 +704,7 @@ Build with: Order Routing Location Rule Function
 
 **Q5.1.5** — Which carriers do you use? *(recommended · client)*
 
-**Q5.1.6** — How are shipping rates calculated? *(recommended · client)*
+**Q5.1.6** — How are shipping rates calculated? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -753,7 +755,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.2.4** — Which returns, tracking or post-purchase apps do you use or prefer? *(optional · client)*
 Feeds: app signal Returns platform · app signal Post-purchase tracking platform
-Quick interview: asked when shopify › existing store = yes or post purchase › orders per month ≥ 1000
+Quick interview: ask if Q1.2.1 is yes, or Q0.2.6 is 1,000 or more
 
 If native is not enough: [Returns and exchanges](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all) — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [AfterShip Returns & Exchanges](https://apps.shopify.com/returns-center-by-aftership), [Narvar Return and Exchange](https://apps.shopify.com/narvar-returns), [Redo](https://apps.shopify.com/redo), [AfterShip Order Tracking](https://apps.shopify.com/aftership), [parcelLab Order Tracking](https://apps.shopify.com/parcellab-engage)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
@@ -762,7 +764,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.2.6** — What share of orders is returned today (%)? *(recommended · client)*
 Feeds: app signal Returns platform
-Quick interview: asked when post purchase › orders per month ≥ 1000
+Quick interview: ask if Q0.2.6 is 1,000 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -773,7 +775,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.2.7** — How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed? *(recommended · client)*
 Feeds: app signal Returns platform
-Quick interview: asked when post purchase › orders per month ≥ 1000
+Quick interview: ask if Q0.2.6 is 1,000 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -786,7 +788,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.2.9** — Which exchanges do you offer: same product in another variant, any other product, or store credit first? *(optional · client)*
 Feeds: app signal Returns platform
-Quick interview: asked when post purchase › orders per month ≥ 1000
+Quick interview: ask if Q0.2.6 is 1,000 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -797,7 +799,7 @@ If native is not enough: App Store — [Loop Returns & Exchanges](https://apps.s
 
 **Q5.2.10** — Do you accept international returns (including refunding duties)? *(optional · client)*
 Feeds: app signal Returns platform
-Quick interview: asked when 2+ distinct markets › list › code
+Quick interview: ask if Q3.1.1 has 2+ markets
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -822,11 +824,9 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 ### 5.4 Cancellations & refunds
 
-**Q5.4.1** — How many orders per month do you expect in the first year? *(required · client)*
-
 **Q5.4.2** — Should customers be able to cancel orders themselves? *(recommended · client)*
 Feeds: app signal Order editing / cancellation app
-Quick interview: asked when post purchase › orders per month ≥ 1000
+Quick interview: ask if Q0.2.6 is 1,000 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -841,7 +841,7 @@ If native is not enough: [Order editing](https://apps.shopify.com/categories/ord
 
 **Q5.4.5** — Should customers be able to edit an order after placing it (address, items)? *(recommended · client)*
 Feeds: app signal Order editing / cancellation app
-Quick interview: asked when post purchase › orders per month ≥ 1000
+Quick interview: ask if Q0.2.6 is 1,000 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -854,7 +854,7 @@ If native is not enough: [Order editing](https://apps.shopify.com/categories/ord
 
 **Q5.4.7** — When is a refund issued: on request, when the carrier scans the return, on receipt, or after inspection? *(recommended · client)*
 Feeds: app signal Returns platform
-Quick interview: asked when post purchase › orders per month ≥ 1000
+Quick interview: ask if Q0.2.6 is 1,000 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -875,7 +875,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.4.13** — Must cancellations be instant, without your approval? *(optional · client)*
 Feeds: app signal Order editing / cancellation app
-Quick interview: asked when post purchase › cancellations › self service = yes
+Quick interview: ask if Q5.4.2 is yes
 
 If native is not enough: [Order editing](https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all) — [Revize: Order Editing & Upsell](https://apps.shopify.com/revize), [OrderEditing.com](https://apps.shopify.com/order-editing), [Orderify ‑ Order Edit Cancel](https://apps.shopify.com/orderify)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
@@ -884,7 +884,7 @@ If native is not enough: [Order editing](https://apps.shopify.com/categories/ord
 
 **Q5.5.1** — Do you want a branded order-tracking page on your own site? *(recommended · client)*
 Feeds: app signal Post-purchase tracking platform
-Quick interview: asked when post purchase › orders per month ≥ 1000 or brand › positioning is premium / luxury / enterprise
+Quick interview: ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -895,7 +895,7 @@ If native is not enough: [Order tracking](https://apps.shopify.com/categories/or
 
 **Q5.5.2** — On which channels should customers get proactive delivery updates (delays, out for delivery)? *(recommended · client)*
 Feeds: app signal Post-purchase tracking platform
-Quick interview: asked when post purchase › orders per month ≥ 1000 or brand › positioning is premium / luxury / enterprise
+Quick interview: ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -906,7 +906,7 @@ If native is not enough: [Order tracking](https://apps.shopify.com/categories/or
 
 **Q5.5.3** — Should product pages or checkout show estimated delivery dates? *(optional · client)*
 Feeds: app signal Post-purchase tracking platform
-Quick interview: asked when post purchase › orders per month ≥ 1000 or brand › positioning is premium / luxury / enterprise
+Quick interview: ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -917,7 +917,7 @@ If native is not enough: [Delivery and pickup](https://apps.shopify.com/categori
 
 **Q5.5.4** — Do customers need to open warranty, repair or servicing claims online? *(recommended · client)*
 Feeds: app signal Warranty claims solution
-Quick interview: asked when meta › client › industry mentions watch / jewel / electronic / appliance / furniture / bike / bicycle / tool / device / luxury
+Quick interview: ask if Q1.1.3 mentions watch, jewel, electronic, appliance, furniture, bike, bicycle, tool, device or luxury
 
 If native is not enough: [Returns and warranty](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty) — [Extend Shopper Operations](https://apps.shopify.com/extend-protection), [Clyde | Warranty Platform](https://apps.shopify.com/clyde-warranty-platform), [Route ‑ Protection & Tracking](https://apps.shopify.com/route)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
@@ -960,7 +960,7 @@ Feeds: gate Retail & POS
 
 **Q6.1.3** — What should the account area include (order history, addresses, returns, wishlist, subscriptions)? *(optional · client)*
 Feeds: app signal Wishlist
-Quick interview: asked when catalogue › sku count ≥ 100
+Quick interview: ask if Q2.1.1 is 100 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -970,7 +970,7 @@ If native is not enough: [Wishlists](https://apps.shopify.com/categories/marketi
 Build with: Customer account UI extensions
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q6.1.4** — How should customers sign in? *(recommended · client)*
+**Q6.1.4** — How should customers sign in? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -980,16 +980,6 @@ Feeds: rule 11.1 (STOP)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 6.2 B2B & wholesale
-
-**Q6.2.1** — Do you sell to business customers (B2B / wholesale)? *(required · client)*
-Feeds: gate B2B / Wholesale
-
-| Shopify feature | Minimum plan | Note | Docs |
-|---|---|---|---|
-| Shopify B2B (companies, catalogs, payment terms, quantity rules) | Basic | Available on Basic, Grow, Advanced and Plus since 2026-04-02 | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
-
-If native is not enough: [Wholesale](https://apps.shopify.com/categories/finding-products-sourcing-options-wholesale/all) — [SparkLayer B2B & Wholesale](https://apps.shopify.com/sparklayer), [BSS B2B Wholesale Pricing](https://apps.shopify.com/b2b-solution-custom-pricing)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q6.2.2** — Do B2B customers need company accounts with their own login? *(required · client)*
 Feeds: gate B2B / Wholesale
@@ -1006,7 +996,7 @@ Feeds: gate B2B / Wholesale · rule 11.1 (STOP)
 **Q6.2.4** — Are there B2B volume discounts or quantity rules? *(required · client)*
 Feeds: gate B2B / Wholesale
 
-**Q6.2.5** — Which payment terms are needed (net 30, invoice, purchase order)? *(recommended · client)*
+**Q6.2.5** — Which payment terms are needed (net 30, invoice, purchase order)? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -1045,7 +1035,7 @@ Feeds: rule 11.1 (STOP)
 | Unlimited and company-specific catalogs | Shopify Plus |  | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q6.2.11** — Should B2B buyers see a different storefront or checkout from consumers? *(recommended · client)*
+**Q6.2.11** — Should B2B buyers see a different storefront or checkout from consumers? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -1053,7 +1043,7 @@ Feeds: rule 11.1 (STOP)
 | Contextual B2B storefront and checkout (Markets) | Advanced |  | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q6.2.12** — Do B2B orders need any of these: subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards? *(recommended · consultant)*
+**Q6.2.12** — Do B2B orders need any of these: subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards? *(required · consultant)*
 Feeds: rule 11.19 (FLAG)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -1065,7 +1055,7 @@ Feeds: rule 11.19 (FLAG)
 
 **Q6.3.1** — Which loyalty components are planned? *(recommended · client)*
 Feeds: app signal Loyalty programme
-Quick interview: asked when business › primary problem mentions loyal / retention / repeat / lifetime / churn / member or business › growth goals mentions loyal / retention / repeat / lifetime / churn / member
+Quick interview: ask if Q0.1.1 mentions loyal, retention, repeat, lifetime, churn or member, or Q0.4.1 mentions loyal, retention, repeat, lifetime, churn or member
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1088,11 +1078,11 @@ If native is not enough: [Loyalty and rewards](https://apps.shopify.com/categori
 
 ### 6.4 Privacy & consent
 
-**Q6.4.1** — Which privacy regimes apply to your customers (GDPR, UK GDPR, CCPA, Swiss nFADP)? *(required · consultant)*
+**Q6.4.1** — Which privacy laws apply to your customers (GDPR, UK GDPR, CCPA, Swiss nFADP, other)? *(required · client)*
 
 **Q6.4.2** — Cookie consent: Shopify's cookie banner or a consent management platform? Name the tool if known. *(recommended · client)*
 Feeds: app signal Consent management platform
-Quick interview: asked when compliance › privacy regimes includes gdpr / uk gdpr / nfadp / ccpa
+Quick interview: ask if Q6.4.1 includes GDPR (EU), UK GDPR, Swiss nFADP or CCPA (US)
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1139,7 +1129,7 @@ Feeds: rule 11.10 (FLAG)
 
 **Q7.2.2** — Is server-side tracking needed? *(recommended · client)*
 Feeds: app signal Server-side tracking beyond Shopify
-Quick interview: asked when post purchase › orders per month ≥ 1000 or business › primary problem mentions conversion / tracking / attribution / advert / ads / roas / acquisition
+Quick interview: ask if Q0.2.6 is 1,000 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1169,7 +1159,7 @@ If native is not enough: [Email marketing](https://apps.shopify.com/categories/m
 
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended · client)*
 Feeds: app signal SMS marketing outside Shopify Messaging countries
-Quick interview: asked when post purchase › orders per month ≥ 1000 or business › growth goals mentions sms / retention / repeat
+Quick interview: ask if Q0.2.6 is 1,000 or more, or Q0.4.1 mentions sms, retention or repeat
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1184,7 +1174,7 @@ If native is not enough: [SMS marketing](https://apps.shopify.com/categories/mar
 
 **Q7.4.1** — Which product reviews app is used or preferred? *(optional · client)*
 Feeds: app signal Product reviews
-Quick interview: asked when shopify › existing store = yes or migration › source platform ≠ none
+Quick interview: ask if Q1.2.1 is yes, or Q0.5.4 is not None
 
 If native is not enough: [Product reviews](https://apps.shopify.com/categories/marketing-and-conversion-social-trust-product-reviews/all) — [Judge.me Product Reviews App](https://apps.shopify.com/judgeme), [Yotpo: Product Reviews App](https://apps.shopify.com/yotpo-social-reviews), [Okendo: Reviews & Loyalty](https://apps.shopify.com/okendo-reviews), [Stamped Reviews & Loyalty](https://apps.shopify.com/product-reviews-addon)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
@@ -1201,7 +1191,7 @@ If native is not enough: [Product reviews](https://apps.shopify.com/categories/m
 
 **Q7.5.1** — Which discount types are used? *(recommended · client)*
 
-**Q7.5.2** — Which discounts must combine on one order? *(recommended · client)*
+**Q7.5.2** — Which discounts must combine on one order? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |
@@ -1275,28 +1265,18 @@ If native is not enough: [ERP](https://apps.shopify.com/categories/orders-and-sh
 
 ### 8.2 Data migration
 
-**Q8.2.1** — Which platform are you migrating from (or none — greenfield)? *(required · client)*
-Feeds: gate Migration
-
-| Shopify feature | Minimum plan | Note | Docs |
-|---|---|---|---|
-| Store Migration app | Basic |  | https://apps.shopify.com/store-migration |
-
-If native is not enough: [Store data importer](https://apps.shopify.com/categories/sales-channels-selling-online-store-data-importer/all) — [Shopify Store Migration](https://apps.shopify.com/store-migration), [Matrixify](https://apps.shopify.com/excel-export-import)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
-
 **Q8.2.2** — Which data must be migrated? *(recommended · client)*
 
-**Q8.2.3** — Approximate volumes: products, customers, orders, URL redirects. *(recommended · client)*
+**Q8.2.3** — Approximate volumes: products, customers, orders, URL redirects. *(required · client)*
 Feeds: rule 11.14 (FLAG)
 
-**Q8.2.4** — Must historical orders be available inside Shopify? *(recommended · client)*
+**Q8.2.4** — Must historical orders be available inside Shopify? *(required · client)*
 Feeds: rule 11.14 (FLAG)
 
 **Q8.2.5** — How much SEO equity (rankings, backlinks) must be preserved? *(required · consultant)*
 Feeds: rule 11.14 (FLAG)
 
-**Q8.2.6** — Must active subscriptions move to the new store without customers re-entering cards? *(recommended · client)*
+**Q8.2.6** — Must active subscriptions move to the new store without customers re-entering cards? *(required · client)*
 Feeds: rule 11.14 (FLAG)
 
 ---
@@ -1334,7 +1314,7 @@ Feeds: L trigger Headless requirement
 
 **Q9.2.4** — Which interactive patterns are required (mega-menu, quick-add, swatches, predictive search, lookbook, video hero)? *(recommended · client)*
 Feeds: app signal Wishlist
-Quick interview: asked when catalogue › sku count ≥ 100
+Quick interview: ask if Q2.1.1 is 100 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1365,7 +1345,7 @@ If native is not enough: [Wishlists](https://apps.shopify.com/categories/marketi
 | Hydrogen analytics and consent | Basic | Cookie banner does not work on default Oxygen URLs | https://shopify.dev/docs/storefronts/headless/hydrogen/analytics/consent |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q9.2.10** — Do you want to A/B test themes or checkout configurations? *(optional · client)*
+**Q9.2.10** — Do you want to A/B test themes or checkout configurations? *(required · client)*
 Feeds: rule 11.1 (STOP)
 
 | Shopify feature | Minimum plan | Note | Docs |

@@ -47,7 +47,7 @@ function stopInterview(route) {
   assert.equal(stop.go, false);
   assert.equal(stop.route, 'not decided');
   answer('Q3.1.2', '/markets/primary_markets', ['US', 'DE']);
-  answer('Q6.2.1', '/b2b/enabled', true);
+  answer('Q1.1.4', '/meta/client/business_model', 'hybrid');
   answer('Q6.2.3', '/b2b/price_lists', true);
   answer('Q6.4.4', '/compliance/sensitive_data', true);
   assert.equal(run('note', { client, text: 'Offer a Larger Engagement with all collected information' }, env).ok, true);

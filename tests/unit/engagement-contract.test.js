@@ -208,6 +208,7 @@ describe('Shopify knowledge (question bank 1.1.0)', () => {
         assert.equal(kinds.filter((k) => k in c).length, 1, `${q.id}: one condition kind per entry`);
         const source = questions.find((x) => x.id !== q.id && x.maps_to.some((p) => covers(p, c.pointer)));
         assert.ok(source && quick(source), `${q.id}: ${c.pointer} must be captured by a question a quick interview asks`);
+        assert.equal(source.audience, 'client', `${q.id}: ${c.pointer} must come from a client question (consultant questions are asked in the wrap-up)`);
         if ('matches' in c) assert.doesNotThrow(() => new RegExp(c.matches, 'i'));
       }
     }
