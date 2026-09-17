@@ -12,7 +12,7 @@ import { createDiscoveryService, userFor, ServiceError } from '../../service/ind
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 import { createFileStore } from '../../service/stores/file-store.js';
 import { createPostgresStore, TABLE_SQL } from '../../service/stores/postgres-store.js';
-import { fieldSpecs, parseField, parseTable, cellName } from '../../service/fields.js';
+import { fieldSpecs, normalizeValue, parseField, parseTable, cellName } from '../../service/fields.js';
 import { run } from '../../agents/interview/cli.js';
 import { toExtraction } from '../../agents/interview/finish.js';
 import { preview } from '../../agents/interview/preview.js';
@@ -126,6 +126,21 @@ describe('discovery service', () => {
     );
     const hq = fieldSpecs({ fields: ['/meta/client/hq_country'], answer_type: 'country' })[0];
     assert.deepEqual([hq.kind, hq.vocabulary], ['text', 'country']);
+  });
+
+  test('dates: a calendar input, and typed dates day first (01/05/27, 1.5.2027) or ISO are stored as YYYY-MM-DD', async () => {
+    const store = createMemoryStore();
+    const svc = await started(store);
+    const spec = fieldSpecs({ fields: ['/delivery/target_launch_date'], answer_type: 'date' })[0];
+    assert.equal(spec.kind, 'date');
+    for (const [typed, stored] of [['01/05/27', '2027-05-01'], ['1.5.2027', '2027-05-01'], ['2027-05-01', '2027-05-01'], ['31-12-2026', '2026-12-31']]) {
+      await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q10.1.1', values: { '/delivery/target_launch_date': [typed] } });
+      assert.equal((await store.get('demo-client')).answers.delivery.target_launch_date, stored, typed);
+    }
+    await rejects(svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q10.1.1', values: { '/delivery/target_launch_date': ['31/02/27'] } }), 400);
+    const { value, errors } = normalizeValue('/delivery/target_launch_date', '05/13/27');
+    assert.equal(value, '05/13/27');
+    assert.match(errors[0], /not a date — type it day first/);
   });
 
   test('a comment alone answers a question: it leaves the queue, counts as clarified and stays an open item for the offer', async () => {

@@ -65,6 +65,30 @@ const VOCABULARIES = {
 /** Extra codes the schema allows beyond ISO names (e.g. EU as a market group). */
 const EXTRA = { country: new Set(['EU']), currency: new Set(), language: new Set() };
 
+export const DATE_PATTERN = '^\\d{4}-\\d{2}-\\d{2}$';
+
+/**
+ * A date as people type it → YYYY-MM-DD. Day first, as in Europe: 01/05/27,
+ * 1.5.2027 and 01-05-2027 are 1 May 2027; 2027-05-01 is kept. Two-digit years
+ * are 20xx. Returns null for anything that is not a real calendar date.
+ *
+ * @param {string} input
+ */
+export function resolveDate(input) {
+  const text = String(input ?? '').trim();
+  let y;
+  let m;
+  let d;
+  let match;
+  if ((match = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(text))) [, y, m, d] = match;
+  else if ((match = /^(\d{1,2})[./-](\d{1,2})[./-](\d{2}|\d{4})$/.exec(text))) [, d, m, y] = match;
+  else return null;
+  const year = Number(y.length === 2 ? `20${y}` : y);
+  const date = new Date(Date.UTC(year, Number(m) - 1, Number(d)));
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== Number(m) - 1 || date.getUTCDate() !== Number(d)) return null;
+  return date.toISOString().slice(0, 10);
+}
+
 /** Pattern in the engagement schema → vocabulary. @param {string|undefined} pattern */
 export function vocabularyForPattern(pattern) {
   if (pattern === '^[A-Z]{2}$') return 'country';

@@ -8,9 +8,8 @@
  */
 
 import { schemaNodeAt, enumValues, optionLabel } from '../schema/index.js';
-import { resolveCode, vocabularyExample, vocabularyForPattern } from './vocabularies.js';
+import { DATE_PATTERN, resolveCode, resolveDate, vocabularyExample, vocabularyForPattern } from './vocabularies.js';
 
-const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
  * @typedef {{ pointer: string, label?: string, root?: string, vocabulary?: 'country'|'currency'|'language', kind: 'boolean'|'enum'|'multi_enum'|'integer'|'number'|'date'|'text'|'long_text'|'list'|'table'|'json',
@@ -45,7 +44,7 @@ function specsFor(pointer, answerType, label, root) {
   if (node?.type === 'integer') return [{ ...base, kind: 'integer' }];
   if (node?.type === 'number') return [{ ...base, kind: 'number' }];
   if (node?.type === 'string') {
-    if (node.format === 'date') return [{ ...base, kind: 'date' }];
+    if (node.format === 'date' || node.pattern === DATE_PATTERN) return [{ ...base, kind: 'date' }];
     const vocabulary = vocabularyForPattern(node.pattern);
     if (vocabulary) return [{ ...base, kind: 'text', vocabulary }];
     return [{ ...base, kind: answerType === 'long_text' ? 'long_text' : 'text' }];
@@ -128,8 +127,10 @@ export function parseField(spec, raw) {
       return /^-?\d+$/.test(first) ? { value: Number(first) } : { error: `${spec.pointer}: whole number expected` };
     case 'number':
       return Number.isFinite(Number(first)) ? { value: Number(first) } : { error: `${spec.pointer}: number expected` };
-    case 'date':
-      return DATE.test(first) ? { value: first } : { error: `${spec.pointer}: date expected (YYYY-MM-DD)` };
+    case 'date': {
+      const date = resolveDate(first);
+      return date ? { value: date } : { error: `${spec.pointer}: “${first}” is not a date — pick it in the calendar or type it day first, e.g. 01.05.2027` };
+    }
     case 'list':
       return { value: first.split(/\n|,/).map((s) => s.trim()).filter(Boolean) };
     case 'json':
@@ -160,6 +161,11 @@ export function normalizeValue(pointer, value) {
     if (node.type === 'array' && Array.isArray(v)) return v.map((item, i) => walk(`${nodePointer}/*`, item, `${label} row ${i + 1}`));
     if (node.type === 'object' && typeof v === 'object' && !Array.isArray(v)) {
       return Object.fromEntries(Object.entries(v).map(([k, child]) => [k, walk(`${nodePointer}/${k}`, child, `${label} › ${k}`)]));
+    }
+    if (node.type === 'string' && typeof v === 'string' && node.pattern === DATE_PATTERN) {
+      const date = resolveDate(v);
+      if (!date) errors.push(`${label}: “${v}” is not a date — type it day first, e.g. 01.05.2027, or as 2027-05-01`);
+      return date ?? v;
     }
     const vocabulary = node.type === 'string' && typeof v === 'string' ? vocabularyForPattern(node.pattern) : null;
     if (!vocabulary) return v;
