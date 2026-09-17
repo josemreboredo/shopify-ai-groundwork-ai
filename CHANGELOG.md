@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
+## [0.7.0] — 2026-09-17
+
+### Changed
+- Repository split into the discovery AI tool (`discovery/`: agents, schema, scripts, docs, tests) and the build AI tool (`build/`: lwc-library, build conventions), with the shared engagement contract in `contracts/engagement.schema.json` (ADR 0013). Repository paths come from `discovery/paths.js`; npm commands are unchanged.
+- README rewritten: what the repository is for, the discovery-to-build flow, structure, commands, data and security; `discovery/README.md` and `build/README.md` added.
+
+### Removed
+- `forms/client-brief.md` (replaced by the questionnaire), the demo-store shell scripts (`scripts/01…06`, `shopify-check.sh`) and the Shopify store variables in `.env.example`.
+- Client name in an offering rationale; 38 exports used only inside their own file.
+
 ## [0.6.2] — 2026-09-17
 
 ### Fixed

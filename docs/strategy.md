@@ -111,7 +111,7 @@ Superseded by [`docs/implementation-plan.md`](implementation-plan.md) (Phases 0�
 
 ## Service offers & delivery tiers
 
-> **Machine-readable source:** [`schema/offering.json`](../schema/offering.json) (ADR 0001).
+> **Machine-readable source:** [`discovery/schema/offering.json`](../discovery/schema/offering.json) (ADR 0001).
 > If this section and `offering.json` disagree, `offering.json` wins and this section is corrected.
 
 Two delivery tiers map to three commercial offers (S / M / L). The offer is
@@ -222,7 +222,7 @@ Ecommerce Growth      (L)  ──► Delivery Tier 2 (Hydrogen headless)  luxury
 
 ## Discovery engine — input/output contract
 
-The discovery engine ([`agents/discovery/`](../agents/discovery/README.md), `npm run discover`) is the
+The discovery engine ([`discovery/agents/discovery/`](../discovery/agents/discovery/README.md), `npm run discover`) is the
 **first stage of the delivery pipeline**; it replaced the Python Frame Agent. It reads a completed questionnaire — or,
 from Phase 5, a chatbot interview — and produces the engagement spec.
 
@@ -230,9 +230,9 @@ from Phase 5, a chatbot interview — and produces the engagement spec.
 
 | Input | Source |
 |---|---|
-| Completed questionnaire | Generated template [`docs/discovery/client-questionnaire.md`](discovery/client-questionnaire.md); worked example [`example-acme-questionnaire.md`](discovery/example-acme-questionnaire.md) |
-| Question definitions | [`schema/question-bank.json`](../schema/question-bank.json) — each question maps to engagement fields and feeds gates / exit rules |
-| Offering rules | [`schema/offering.json`](../schema/offering.json) |
+| Completed questionnaire | Generated template [`discovery/docs/client-questionnaire.md`](../discovery/docs/client-questionnaire.md); worked example [`example-acme-questionnaire.md`](../discovery/docs/example-acme-questionnaire.md) |
+| Question definitions | [`discovery/schema/question-bank.json`](../discovery/schema/question-bank.json) — each question maps to engagement fields and feeds gates / exit rules |
+| Offering rules | [`discovery/schema/offering.json`](../discovery/schema/offering.json) |
 
 Questionnaire sections: § 0 Business outcomes · § 1 Company, brand & Shopify · § 2 Catalogue ·
 § 3 Markets · § 4 Payments & checkout · § 5 Shipping & fulfilment · § 6 Customers, B2B & privacy ·
@@ -243,7 +243,7 @@ Questionnaire sections: § 0 Business outcomes · § 1 Company, brand & Shopify 
 
 | File | Contents |
 |---|---|
-| `engagement.json` | Single source of truth, validated by [`schema/engagement.schema.json`](../schema/engagement.schema.json) (ADR 0002) |
+| `engagement.json` | Single source of truth, validated by [`contracts/engagement.schema.json`](../contracts/engagement.schema.json) (ADR 0002) |
 | `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` | Renderings of `engagement.json` — on GO |
 | `stop-report.md` | Open STOP rules, evidence and resolution path — on STOP (no GO artefacts are written) |
 

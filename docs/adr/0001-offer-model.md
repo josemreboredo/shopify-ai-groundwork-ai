@@ -7,7 +7,7 @@
 ## Context
 
 Three incompatible tier models existed: S/M/L in EUR with scope gates (`docs/strategy.md`),
-Starter/Medium/Large in CHF counting markets and components (`lwc-library/README.md`, the old
+Starter/Medium/Large in CHF counting markets and components (`build/lwc-library/README.md`, the old
 store-spec schema, `frame_agent.py`), and Gaia T1–T4 feature tiers. Run on the ACME example,
 the Frame Agent code would classify Large → STOP while the offering says M → GO. "Integration"
 had three different definitions.
@@ -16,7 +16,7 @@ had three different definitions.
 
 1. The commercial model is the one in `docs/strategy.md`: **S Ecommerce Foundation**,
    **M Ecommerce Scale**, **L Ecommerce Growth**, priced in **EUR**.
-2. The offering is encoded as data in [`schema/offering.json`](../../schema/offering.json):
+2. The offering is encoded as data in [`discovery/schema/offering.json`](../../discovery/schema/offering.json):
    offers (price band, duration, delivery track), six scope gates, three L triggers,
    internal modifiers, the integration definition and the exit rules (ADR 0003).
 3. Classification, in order: any L trigger → **L**; ≥ 2 active gates → **M**;
@@ -33,8 +33,8 @@ had three different definitions.
 
 - The discovery engine (Phase 2) computes `offer` from answers; nobody sets it by hand.
 - Every gate and trigger is fed by at least one question — enforced by
-  `tests/unit/engagement-contract.test.js`.
-- `lwc-library/README.md` tier tables are updated to S/M/L.
+  `discovery/tests/unit/engagement-contract.test.js`.
+- `build/lwc-library/README.md` tier tables are updated to S/M/L.
 
 ## Resolved questions (2026-09-16)
 

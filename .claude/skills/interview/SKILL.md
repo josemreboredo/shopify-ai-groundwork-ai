@@ -33,7 +33,7 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
    feature, its minimum plan, the docs link and App Store candidates. Use it to steer toward what Shopify does
    natively and flag plan or app implications to the consultant (e.g. "consultant note: combined listings need
    Shopify Plus"); never present plan requirements as a question to the client unless the consultant asks.
-   Full reference: `docs/discovery/consultant-guide.md`.
+   Full reference: `discovery/docs/consultant-guide.md`.
 4. For each answer, map it to the returned `fields` and record it in **English**:
    ```bash
    npm run interview -- answer --client <slug> --question <id> --pointer <field> --value '<json>' \
@@ -62,7 +62,7 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
    with its reasons, while the plan is open. Tell the consultant once and offer to record it
    (`--source inferred --note "Minimum plan for …"`); never record it silently. Do not assume Shopify Plus.
 8. **Mainland China** (market code `CN`) is not part of the offering: rule 11.20 excludes it and routes it to a
-   separate China discovery (`docs/discovery/china-mainland.md`: onshore selling needs a PRC entity, ICP and onshore
+   separate China discovery (`discovery/docs/china-mainland.md`: onshore selling needs a PRC entity, ICP and onshore
    hosting, and Shopify has no infrastructure in mainland China). The CLI then adds the § 3.5 Mainland China questions;
    without CN they are never asked.
    Tell the consultant when a client lists it; Hong Kong, Macau and Taiwan are separate markets.
