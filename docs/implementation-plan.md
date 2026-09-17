@@ -1,6 +1,6 @@
 # Implementation Plan — shopify-ai-builder
 
-> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 released (v0.3.0) · Phases 3–4 released (v0.4.0) · Phase 5 released (v0.5.0), pilot pending · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
+> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 released (v0.3.0) · Phases 3–4 released (v0.4.0) · Phase 5 released (v0.5.0), pilot pending · Larger Engagement and Lead Consultant deck released (v0.5.1) · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
 > **Input:** whole-project review (2026-09-16) — discovery chain, pipeline code/security, build layer.
 > **Methodology:** Gaia tiers T1–T4 (`gaia/methodology/feature-tiers.md`). Estimates are indicative
 > (one lead + AI agents) and are re-baselined at the end of Phase 1.
