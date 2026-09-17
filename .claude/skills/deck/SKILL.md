@@ -7,12 +7,15 @@ description: Generate the Discovery Closing Deck for a client from clients/<slug
 
 The deck is client-facing. It shows the offer's **price band** only — never internal modifiers, price adds,
 effort, story points or commercial warnings (decision D1). Those live in `deck-internal-notes.md`.
+A **Larger Engagement** deck (`mode="LARGER_ENGAGEMENT"`) shows no offer and no price band at all: it recommends a
+Merkle Enterprise Engagement with a dedicated Discovery Phase (ADR 0009).
 
 ## Steps
 
 1. You need the client slug (`clients/<slug>/engagement.json` must exist; if not, run `/discover` first).
    If `clients/<slug>/backlog.json` is missing and the engagement is GO, offer to run
-   `npm run backlog -- --client <slug>` first so the epic and story sections are complete.
+   `npm run backlog -- --client <slug>` first so the epic and story sections are complete. A Larger Engagement
+   has no backlog — do not offer it.
 2. Generate the data:
    ```bash
    npm run deck -- --client <slug>
@@ -25,5 +28,5 @@ effort, story points or commercial warnings (decision D1). Those live in `deck-i
    npm run deck:check -- --client <slug>
    ```
    If it reports internal data, remove it from `discovery-deck.md` and run the check again.
-5. Report: GO/STOP, offer and price band, number of sections completed, fields marked
+5. Report: GO / Larger Engagement / STOP, offer and price band (GO only), number of sections completed, fields marked
    `[TBC — consultant to complete]`, and remind the consultant that `deck-internal-notes.md` is internal.

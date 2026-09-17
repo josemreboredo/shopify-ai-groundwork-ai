@@ -9,9 +9,9 @@
 
 import { offering } from '../../schema/index.js';
 import { countedIntegrations, marketsOf, distinctLanguages } from './classify.js';
+import { PLUS_PLANS, plusRequirements } from './plan.js';
 
 const RULES = new Map(offering.exit_rules.map((r) => [r.id, r]));
-const PLUS_PLANS = new Set(['plus', 'plus_expansion']);
 const DEFAULT_OWNER = 'Lead Consultant';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -36,10 +36,7 @@ const EVALUATORS = {
   '11.1': (doc) => {
     const plan = doc.shopify?.target_plan;
     if (!plan || PLUS_PLANS.has(plan)) return null;
-    const needs = [];
-    if (doc.b2b?.enabled === true && doc.b2b?.approach !== 'app') needs.push('native B2B');
-    if (doc.checkout?.customisation === 'extensibility') needs.push('Checkout Extensibility');
-    if (['expansion_stores', 'hybrid'].includes(doc.markets?.strategy)) needs.push('expansion stores');
+    const needs = plusRequirements(doc);
     return needs.length ? `Target plan "${plan}" but requires ${needs.join(', ')}` : null;
   },
 
@@ -121,6 +118,8 @@ const EVALUATORS = {
     if (d.budget_authority_clear === false) gaps.push('budget authority unclear');
     return gaps.length ? gaps.join('; ') : null;
   },
+
+  '11.17': (doc) => (doc.compliance?.sensitive_data === true ? 'Sensitive personal data collected (health, age, biometric or financial)' : null),
 };
 
 /**

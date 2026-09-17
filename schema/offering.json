@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "currency": "EUR",
 
   "offers": {
@@ -138,13 +138,13 @@
     {
       "id": "11.3", "result": "STOP", "status": "canonical",
       "condition": "More than 5 Shopify Markets at launch",
-      "destination": "Scale programme",
+      "destination": "Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase",
       "inputs": ["/markets/list"]
     },
     {
       "id": "11.4", "result": "STOP", "status": "canonical",
       "condition": "More than 6 distinct languages across all markets",
-      "destination": "Scale programme",
+      "destination": "Larger Engagement: translation and content operations in the Discovery Phase",
       "inputs": ["/markets/list/*/languages"]
     },
     {
@@ -162,7 +162,7 @@
     {
       "id": "11.7", "result": "STOP", "status": "canonical",
       "condition": "More than 3 integrations at launch (counted per integration_definition)",
-      "destination": "Bespoke quote",
+      "destination": "Larger Engagement: integration architecture in the Discovery Phase",
       "inputs": ["/integrations/*/category", "/integrations/*/connector"]
     },
     {
@@ -219,7 +219,25 @@
       "condition": "No single decision-maker, or budget approval authority is unclear",
       "destination": "Named client decision-maker and budget owner confirmed before the statement of work is signed",
       "inputs": ["/delivery/decision_maker_confirmed", "/delivery/budget_authority_clear"]
+    },
+    {
+      "id": "11.17", "result": "FLAG", "status": "canonical",
+      "condition": "Sensitive personal data is collected (health, age, biometric or financial data; special-category data under GDPR art. 9)",
+      "destination": "Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build",
+      "inputs": ["/compliance/sensitive_data"]
     }
+  ],
+
+  "routes": [
+    { "id": "larger_engagement", "label": "Larger Engagement", "proposal": "Merkle Enterprise Engagement with a dedicated Discovery Phase", "brief": "larger-engagement-brief.md", "description": "The requirements go beyond the S/M/L offers. Merkle proposes an Enterprise Engagement that starts with a dedicated Discovery Phase; the approach drafted here is its starting point. The client deck is generated; Jira tickets are not, because the backlog is defined in the Discovery Phase." },
+    { "id": "no_bid", "label": "No bid", "description": "Merkle does not propose. Only the STOP report is produced." }
+  ],
+
+  "app_signals": [
+    { "id": "returns_platform", "label": "Returns platform", "inputs": ["/shipping/returns/label", "/shipping/returns/exchange_types", "/shipping/returns/international_returns", "/shipping/returns/b2b_returns_online", "/shipping/returns/return_rate_pct", "/shipping/returns/solution", "/post_purchase/refunds/trigger", "/post_purchase/orders_per_month", "/integrations/*/category"] },
+    { "id": "post_purchase_platform", "label": "Post-purchase tracking platform", "inputs": ["/post_purchase/tracking/branded_tracking_page", "/post_purchase/tracking/proactive_channels", "/post_purchase/tracking/delivery_estimates", "/post_purchase/platform_preference"] },
+    { "id": "order_editing_app", "label": "Order editing / cancellation app", "inputs": ["/post_purchase/cancellations/self_service", "/post_purchase/cancellations/order_editing"] },
+    { "id": "warranty_claims", "label": "Warranty claims solution", "inputs": ["/post_purchase/warranty_claims"] }
   ],
 
   "resolved_questions": [
@@ -229,6 +247,9 @@
     { "question": "Multi-currency gate has no modifier", "decision": "Uses +Markets", "rationale": "Multi-currency set-up is Shopify Markets configuration work; it only matters as a modifier when it is the single active gate" },
     { "question": "Luxury positioning alone forces L", "decision": "Yes, as in strategy.md", "rationale": "The Bucherer build was a test, not a delivery precedent; L prices the full design system and motion work luxury brands require" },
     { "question": "11.1 and custom checkout UI", "decision": "11.1 covers Plus-only features; a fully custom checkout UI is covered by 11.6 only", "rationale": "Avoids two STOPs for one requirement" },
-    { "question": "Rebuilding an existing Shopify store", "decision": "Not a migration (source_platform = shopify does not activate the gate)", "rationale": "No cross-platform data transfer; URL and SEO risk is still caught by 11.14" }
+    { "question": "Rebuilding an existing Shopify store", "decision": "Not a migration (source_platform = shopify does not activate the gate)", "rationale": "No cross-platform data transfer; URL and SEO risk is still caught by 11.14" },
+    { "question": "Sensitive personal data (11.17)", "decision": "FLAG, not STOP", "rationale": "Health or biometric data (e.g. skin analysis for a pharmaceutical brand) needs a DPIA and legal sign-off, but Shopify can still be the right platform; a regulated industry is already a STOP through 11.8" },
+    { "question": "What happens after a STOP", "decision": "The lead consultant records delivery.route: larger_engagement drafts the full approach, a brief and the client deck for a Merkle Enterprise Engagement with a dedicated Discovery Phase — no Jira tickets; no_bid produces the STOP report only", "rationale": "A STOP means the standard offers do not fit, not that discovery is wasted. The client still needs the findings and a recommended approach; the backlog belongs to the enterprise Discovery Phase" },
+    { "question": "Scale programme and bespoke quote destinations (11.3, 11.4, 11.7)", "decision": "Renamed to Larger Engagement", "rationale": "Owner decision 2026-09-17: one route for every engagement beyond the offers, delivered as a Merkle Enterprise Engagement with a dedicated Discovery Phase" }
   ]
 }

@@ -24,7 +24,7 @@ hype, no filler. Use the client's own words for problems and goals. Sentence-cas
    `<missing reason="…"/>`, write `[TBC — consultant to complete]`.
 2. **If `<warnings count>` is above 0**, start the document with a short "Before presenting" list of the
    warnings for the consultant, clearly marked to be deleted before sharing.
-3. **Pricing:** state the offer's price band exactly as given (`from`–`to`, or "from" when open-ended), with the
+3. **Pricing (GO):** state the offer's price band exactly as given (`from`–`to`, or "from" when open-ended), with the
    note that a single fixed price follows in the proposal. Do not break the band down, estimate effort in days
    or points, or mention discounts, surcharges or retainers.
 4. **Estimates are ranges** (delivery duration in weeks from `<timeline>`), never single numbers.
@@ -38,6 +38,19 @@ hype, no filler. Use the client's own words for problems and goals. Sentence-cas
 Follow the XML sections in order (`n` attribute). For a **STOP** document (`mode="STOP"`) write only:
 cover, a summary explaining that discovery cannot close yet and why, the blockers with their resolution paths,
 open questions and next steps.
+
+For a **Larger Engagement** document (`mode="LARGER_ENGAGEMENT"`) write every section present in the XML, with
+these differences:
+- **Executive summary:** explain positively that the ambition goes beyond a standard Shopify project and why
+  (`<why-larger-engagement>` — the findings, not rule numbers), and recommend the engagement in `<engagement>`: a
+  Merkle Enterprise Engagement that starts with a dedicated Discovery Phase to agree launch waves, architecture and
+  investment.
+- **Scope and phases:** present them as the recommended roadmap and starting point for the Discovery Phase.
+- **Risks:** `<discovery-phase-topics>` are the topics the Discovery Phase resolves (table: Topic | Finding |
+  Discovery Phase workstream | Owner).
+- **Timeline and investment:** no duration range, offer name or price; say they are defined at the end of the
+  Discovery Phase and that the Discovery Phase is quoted in the proposal. Recurring third-party costs still apply.
+- There is no scope-by-epic or user-story appendix: the build backlog is created in the Discovery Phase.
 
 1. **Cover** — client, project name, consultant, date, confidentiality line.
 2. **Executive summary** — three short paragraphs or bullets: the problem, the proposed solution (offer, Shopify

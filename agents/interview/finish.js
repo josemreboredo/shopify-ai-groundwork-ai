@@ -50,7 +50,10 @@ export function toExtraction(session) {
 export function finishInterview(session, { workDir, today }) {
   fs.mkdirSync(workDir, { recursive: true });
   const write = (name, value) => fs.writeFileSync(path.join(workDir, name), `${JSON.stringify(value, null, 2)}\n`, 'utf8');
-  write(WORK_FILES.state, { client: session.client, today, redactions: { emails: 0, phones: 0, names: 0 }, source: 'chatbot', language: session.language });
+  write(WORK_FILES.state, {
+    client: session.client, today, redactions: { emails: 0, phones: 0, names: 0 }, source: 'chatbot', language: session.language,
+    notes: session.notes.map((n) => ({ author_role: 'consultant', at: n.at, text: n.text })),
+  });
   const extraction = toExtraction(session);
   write(WORK_FILES.extraction, extraction);
   if (session.notes.length) {

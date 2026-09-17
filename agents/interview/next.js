@@ -1,13 +1,18 @@
 /**
  * @file next.js
  * @description Chooses the next interview questions: consent first, then the
- * question bank order filtered by mode, skip logic and what is already known;
- * questions that feed a scope gate or exit rule come first within their section.
+ * route decision while a STOP is open, then the question bank order filtered by
+ * mode, skip logic and what is already known. Questions that feed a scope gate,
+ * L trigger, exit rule or app signal are asked in every mode, and come first
+ * within their section.
  *
  * @module interview/next
  */
 
 import { questionBank, schemaNodeAt, enumValues } from '../../schema/index.js';
+import { assemble } from '../discovery/engine.js';
+import { classifyOffer } from '../discovery/classify.js';
+import { evaluateExits } from '../discovery/exits.js';
 import { isAnswered, valuesAt } from './session.js';
 
 export const CONSENT_QUESTION = 'Q10.5.2';
@@ -28,6 +33,31 @@ export const questionById = (id) => BY_ID.get(id);
 
 /** True when consent for AI processing has been recorded as yes. @param {object} answers */
 export const hasConsent = (answers) => valuesAt(answers, CONSENT_POINTER)[0] === true;
+
+/**
+ * True when the answers so far fire an open STOP rule.
+ *
+ * @param {import('./session.js').Session} session
+ */
+export function hasOpenStop(session) {
+  const doc = assemble(session.answers, { today: session.updated_at, clientSlug: session.client, source: 'chatbot' });
+  doc.offer = classifyOffer(doc);
+  return evaluateExits(doc).triggered;
+}
+
+/**
+ * Whether a question belongs to the session's interview: its priority is in the
+ * mode, or it feeds the offer, an exit rule or an app signal. STOP-only
+ * questions belong only while a STOP is open.
+ *
+ * @param {object} q
+ * @param {import('./session.js').Session} session
+ * @param {boolean} stopOpen
+ */
+export function inInterview(q, session, stopOpen) {
+  if (q.ask_when === 'stop') return stopOpen;
+  return PRIORITIES_BY_MODE[session.mode].includes(q.priority) || Boolean(q.feeds?.length);
+}
 
 /**
  * Whether a question's skip_if condition is met by the current answers.
@@ -73,6 +103,7 @@ export function describeQuestion(q) {
     ...(node && enumValues(node) ? { allowed_values: enumValues(node) } : {}),
     ...(fields ? { item_fields: fields } : {}),
     ...(q.feeds?.length ? { feeds: q.feeds } : {}),
+    ...(q.ask_when ? { ask_when: q.ask_when } : {}),
   };
 }
 
@@ -87,16 +118,17 @@ export function nextQuestions(session, { limit = 3 } = {}) {
   if (!hasConsent(session.answers)) {
     return { questions: [describeQuestion(BY_ID.get(CONSENT_QUESTION))], remaining: 1, consent_required: true };
   }
-  const allowed = new Set(PRIORITIES_BY_MODE[session.mode]);
+  const stopOpen = hasOpenStop(session);
   const sectionOrder = questionBank.sections.map((s) => s.id);
 
   const open = questionBank.questions
     .map((q, index) => ({ q, index }))
-    .filter(({ q }) => allowed.has(q.priority))
+    .filter(({ q }) => inInterview(q, session, stopOpen))
     .filter(({ q }) => !(q.id in session.tbc) && !(q.id in session.skipped))
     .filter(({ q }) => !isKnown(q, session.answers))
     .filter(({ q }) => !isSkippedByRule(q, session.answers))
     .sort((a, b) =>
+      (b.q.ask_when === 'stop' ? 1 : 0) - (a.q.ask_when === 'stop' ? 1 : 0) ||
       sectionOrder.indexOf(SECTION_OF.get(a.q.subsection).id) - sectionOrder.indexOf(SECTION_OF.get(b.q.subsection).id) ||
       (b.q.feeds?.length ? 1 : 0) - (a.q.feeds?.length ? 1 : 0) ||
       a.index - b.index);
@@ -105,12 +137,12 @@ export function nextQuestions(session, { limit = 3 } = {}) {
 }
 
 /**
- * Required / in-mode questions not answered, not TBC and not skipped by rule — for coverage and open items.
+ * Interview questions not answered, not skipped and not skipped by rule — for coverage and open items.
  *
  * @param {import('./session.js').Session} session
  */
 export function unansweredInMode(session) {
-  const allowed = new Set(PRIORITIES_BY_MODE[session.mode]);
+  const stopOpen = hasOpenStop(session);
   return questionBank.questions.filter((q) =>
-    allowed.has(q.priority) && !isKnown(q, session.answers) && !(q.id in session.skipped) && !isSkippedByRule(q, session.answers));
+    inInterview(q, session, stopOpen) && !isKnown(q, session.answers) && !(q.id in session.skipped) && !isSkippedByRule(q, session.answers));
 }

@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
  * @file cli.js
- * @description Generate the Jira-ready backlog for a GO engagement.
+ * @description Generate the Jira-ready backlog for a GO engagement. A Larger
+ * Engagement gets no Jira tickets: its backlog is defined in the dedicated
+ * Discovery Phase of the Merkle Enterprise Engagement.
  *
  *   npm run backlog -- --client <slug> [--clients-dir clients]
  *
@@ -14,6 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { validateEngagement } from '../../schema/index.js';
+import { stopRoute } from '../discovery/engine.js';
 import { selectStories, summariseByEpic } from './select.js';
 import { toJiraCsv, toMarkdown } from './export.js';
 
@@ -33,7 +36,14 @@ export function buildBacklog({ clientDir }) {
 
   const { valid, errors } = validateEngagement(doc);
   if (!valid) throw new Error(`engagement.json is invalid:\n  • ${errors.slice(0, 10).join('\n  • ')}`);
-  if (!doc.delivery?.go) throw new Error('Engagement is STOP — resolve the open hard blockers before generating a backlog.');
+  if (!doc.delivery?.go) {
+    const route = stopRoute(doc);
+    throw new Error(route?.id === 'larger_engagement'
+      ? 'Larger Engagement — no Jira tickets: the backlog is defined in the dedicated Discovery Phase of the Merkle Enterprise Engagement.'
+      : route
+        ? `Engagement is STOP with route "${route.label}" — no backlog is generated.`
+        : 'Engagement is STOP — resolve the open hard blockers before generating a backlog.');
+  }
 
   const stories = selectStories(doc);
   const summary = summariseByEpic(stories);

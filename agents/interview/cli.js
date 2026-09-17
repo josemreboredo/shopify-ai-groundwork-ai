@@ -24,6 +24,7 @@ import { nextQuestions } from './next.js';
 import { recordAnswer, markQuestion, addNote } from './answer.js';
 import { preview } from './preview.js';
 import { finishInterview } from './finish.js';
+import { needsApproach, stopRoute } from '../discovery/engine.js';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -81,7 +82,12 @@ export function run(command, flags, { workRoot = DEFAULT_WORK_ROOT, date = today
       if (!result.ok) return result;
       save();
       const p = preview(session, date);
-      return { ok: true, offer: p.offer, go: p.go, exit_rules: p.exit_rules, next: nextQuestions(session) };
+      return {
+        ok: true, offer: p.offer, go: p.go, exit_rules: p.exit_rules,
+        ...(p.route ? { route: p.route } : {}),
+        ...(p.plan_suggestion ? { plan_suggestion: p.plan_suggestion } : {}),
+        next: nextQuestions(session),
+      };
     }
 
     case 'tbc':
@@ -104,14 +110,19 @@ export function run(command, flags, { workRoot = DEFAULT_WORK_ROOT, date = today
       const result = finishInterview(session, { workDir: path.dirname(file), today: date });
       if (!result.ok) return result;
       const doc = result.doc;
+      const route = stopRoute(doc);
+      const p = preview(session, date);
       return {
         ok: true,
         client: doc.meta.client.slug,
-        offer: { code: doc.offer.code, name: doc.offer.name },
+        offer: { code: doc.offer.code, name: doc.offer.name, ...(p.offer.provisional ? { provisional: true, unknown_gates_or_triggers: p.offer.unknown_gates_or_triggers } : {}) },
         go: doc.delivery.go,
+        ...(doc.delivery.go ? {} : { route: route?.id ?? 'not decided' }),
         exit_rules: doc.exits.items.map((i) => ({ rule: i.rule_id, result: i.result, evidence: i.evidence })),
         open_items: result.open_items,
-        next_step: doc.delivery.go
+        ...(p.plan_suggestion ? { plan_suggestion: p.plan_suggestion } : {}),
+        ...(p.offer.provisional ? { warning: 'The offer is provisional: a question that decides a scope gate or L trigger is still TBC or unanswered.' } : {}),
+        next_step: needsApproach(doc)
           ? `Follow ${path.relative(process.cwd(), path.join(path.dirname(file), 'approach-instructions.md'))}, write approach.json, then npm run discover:finish -- --work ${path.relative(process.cwd(), path.dirname(file))}`
           : `npm run discover:finish -- --work ${path.relative(process.cwd(), path.dirname(file))}`,
       };

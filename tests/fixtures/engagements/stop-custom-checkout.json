@@ -72,7 +72,7 @@
   },
 
   "markets": {
-    "primary_market": "GB",
+    "primary_markets": ["GB"],
     "list": [
       { "code": "GB", "currency": "GBP", "languages": ["en"], "domain": "www.helix-audio.example", "price_strategy": "base_currency" },
       { "code": "IE", "currency": "EUR", "languages": ["en"], "domain": "ie.helix-audio.example", "price_strategy": "auto_converted" }

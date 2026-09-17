@@ -38,8 +38,8 @@ with `DISCOVERY_MODEL`. If the key is not scoped to a workspace, also set `ANTHR
 | 2. Redaction — e-mails, international phone numbers, stakeholder names; refuses card numbers and customer e-mail lists | `input.js` | no |
 | 3. Extraction — answers, provenance, open items, exit-rule candidates | `extract.js` | yes (structured output) |
 | 4. Offer — scope gates, L triggers, S/M/L, modifiers, price band | `classify.js` | no |
-| 5. Exit rules 11.1–11.16, merged with LLM candidates | `exits.js` | no |
-| 6. Approach — capability map, app shortlist, assumptions, phases (GO only) | `approach.js` | yes (structured output) |
+| 5. Exit rules 11.1–11.17, merged with LLM candidates | `exits.js` | no |
+| 6. Approach — capability map, app shortlist, assumptions, phases (GO, or Larger Engagement) | `approach.js` | yes (structured output) |
 | 7. Validation against `schema/engagement.schema.json` | `engine.js` | no |
 | 8. Output — `engagement.json` + Markdown renderings, or `stop-report.md` | `render.js`, `cli.js` | no |
 
@@ -52,9 +52,11 @@ schema and the full schema is enforced locally before anything is written.
 | Status | Files in `clients/<slug>/` |
 |---|---|
 | GO | `engagement.json`, `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` |
-| STOP | `engagement.json`, `stop-report.md` |
+| STOP, route not decided or `no_bid` | `engagement.json`, `stop-report.md` |
+| Larger Engagement (STOP → `larger_engagement`) | `engagement.json`, `larger-engagement-brief.md`, `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` — client deck yes, Jira backlog no |
 
-Re-running replaces the Markdown files. Internal pricing and modifiers never appear in them.
+The route is the consultant's decision after a STOP (`delivery.route`, question Q10.5.5 — ADR 0009); the STOP stays
+open. Re-running replaces the Markdown files. Internal pricing and modifiers never appear in them.
 
 ## Tests
 

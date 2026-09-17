@@ -9,6 +9,9 @@
  *
  * The client sees the offer's price band only (D1). Modifiers, price adds,
  * effort weeks, story points and commercial warnings never enter the XML.
+ * A Larger Engagement (STOP routed to a Merkle Enterprise Engagement, ADR 0009)
+ * gets the solution sections without offer, price band or backlog: investment
+ * and backlog are defined in the dedicated Discovery Phase.
  *
  *   npm run deck -- --client <slug> [--clients-dir clients]
  *   npm run deck:check -- --client <slug>        # verify discovery-deck.md has no internal data
@@ -20,6 +23,7 @@ import { fileURLToPath } from 'node:url';
 
 import { offering, validateEngagement } from '../../schema/index.js';
 import { XmlWriter, esc } from './xml.js';
+import { stopRoute } from '../discovery/engine.js';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
@@ -59,6 +63,18 @@ export function monthlyAppCosts(apps = []) {
   return totals;
 }
 
+/** GO, LARGER_ENGAGEMENT or STOP. @param {object} doc */
+export function deckMode(doc) {
+  if (doc.delivery.go) return 'GO';
+  return stopRoute(doc)?.id === 'larger_engagement' ? 'LARGER_ENGAGEMENT' : 'STOP';
+}
+
+/** @param {object} doc */
+const isLarger = (doc) => deckMode(doc) === 'LARGER_ENGAGEMENT';
+
+/** The route entry for a Larger Engagement. @param {object} doc */
+const larger = (doc) => stopRoute(doc);
+
 /** @param {object} doc */
 const openStops = (doc) => doc.exits.items.filter((i) => i.result === 'STOP' && i.resolution?.status === 'open');
 /** @param {object} doc */
@@ -70,7 +86,7 @@ function cover(x, doc) {
   const c = doc.meta.client;
   x.open('section', { id: 'cover', n: 1 });
   x.field('client-name', c.legal_name ?? c.name);
-  x.field('project-name', `Shopify ${doc.offer.name}`);
+  x.field('project-name', isLarger(doc) ? `Shopify ${larger(doc).label}` : `Shopify ${doc.offer.name}`);
   x.field('consultant', doc.meta.consultant?.name, 'Q10.5.1 not answered');
   x.field('date', doc.meta.updated_at ?? doc.meta.created_at);
   x.field('confidentiality', `Confidential — prepared for ${c.legal_name ?? c.name}`);
@@ -79,15 +95,20 @@ function cover(x, doc) {
 
 function executiveSummary(x, doc) {
   x.open('section', { id: 'executive-summary', n: 2 });
-  x.field('status', doc.delivery.go ? 'GO' : 'STOP');
-  if (!doc.delivery.go) {
+  x.field('status', isLarger(doc) ? larger(doc).label : doc.delivery.go ? 'GO' : 'STOP');
+  if (isLarger(doc)) {
+    x.open('why-larger-engagement');
+    for (const i of openStops(doc)) x.field('reason', `${i.detail}: ${i.evidence}`, undefined, { rule: i.rule_id, 'discovery-phase-workstream': i.destination });
+    x.close();
+  } else if (!doc.delivery.go) {
     x.open('stop-reasons');
     for (const i of openStops(doc)) x.field('reason', `${i.rule_id}: ${i.evidence} → ${i.destination}`);
     x.close();
   }
   x.field('core-problem', doc.business?.primary_problem, 'Q0.1.1 not answered');
   x.open('proposed-solution');
-  x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
+  if (isLarger(doc)) x.field('engagement', larger(doc).proposal);
+  else x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
   x.field('delivery-track', TRACK_LABEL[doc.offer.delivery_track]);
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
   x.list('key-capabilities', (doc.approach?.capability_map ?? []).slice(0, 4).map((r) => r.requirement), 'No approach drafted (STOP or not yet run)');
@@ -119,7 +140,9 @@ function businessContext(x, doc) {
 function methodology(x, doc) {
   const provenance = Object.values(doc.provenance ?? {});
   x.open('section', { id: 'methodology', n: 4 });
-  x.field('approach', 'Structured discovery questionnaire (sections 0–11) → engagement specification → rules-based offer and risk screening → solution design → backlog');
+  x.field('approach', isLarger(doc)
+    ? 'Structured discovery questionnaire (sections 0–11) → engagement specification → rules-based offer and risk screening → recommended solution approach; the backlog is defined in the dedicated Discovery Phase'
+    : 'Structured discovery questionnaire (sections 0–11) → engagement specification → rules-based offer and risk screening → solution design → backlog');
   x.field('input', doc.meta.source);
   x.field('confirmed-answers-traced', provenance.filter((p) => p.status === 'confirmed').length);
   x.field('answers-to-confirm', provenance.filter((p) => p.status === 'tbc').length);
@@ -142,12 +165,13 @@ function solutionDesign(x, doc) {
   const markets = doc.markets?.list ?? [];
   const b2b = doc.b2b ?? {};
   x.open('section', { id: 'solution-design', n: 6 });
-  x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
+  if (isLarger(doc)) x.field('engagement', larger(doc).proposal);
+  else x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
   x.field('delivery-track', TRACK_LABEL[doc.offer.delivery_track]);
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
   x.field('architecture', `${doc.offer.delivery_track === 'hydrogen' ? 'Headless' : 'Online Store 2.0'} · ${markets.length > 1 ? `multi-market (${markets.length} markets)` : 'single market'}${b2b.enabled ? ' · B2B and DTC on one store' : ''}`);
   x.field('theme', doc.offer.delivery_track === 'liquid' ? `Horizon${doc.design?.theme_preference && doc.design.theme_preference !== 'Horizon' ? ` (client preference noted: ${doc.design.theme_preference})` : ''}` : 'Hydrogen');
-  x.open('markets', { strategy: doc.markets?.strategy, primary: doc.markets?.primary_market });
+  x.open('markets', { strategy: doc.markets?.strategy, primary: doc.markets?.primary_markets?.join(', ') });
   for (const mk of markets) x.empty('market', { code: mk.code, currency: mk.currency, languages: (mk.languages ?? []).join(', '), domain: mk.domain, pricing: mk.price_strategy });
   x.close();
   x.open('payments-and-checkout');
@@ -174,7 +198,8 @@ function solutionDesign(x, doc) {
   }
   x.close();
   x.open('migration', { from: doc.migration?.source_platform });
-  x.list('data', doc.migration?.data, 'No migration');
+  const source = doc.migration?.source_platform;
+  x.list('data', doc.migration?.data, source && source !== 'none' ? 'Q8.2.2 not answered' : 'No migration');
   x.close();
   x.close();
 }
@@ -262,7 +287,7 @@ function scopeByEpic(x, backlog) {
 function risks(x, doc) {
   x.open('section', { id: 'risks', n: 12 });
   for (const result of ['STOP', 'FLAG']) {
-    x.open(result === 'STOP' ? 'hard-blockers' : 'flags');
+    x.open(result === 'FLAG' ? 'flags' : isLarger(doc) ? 'discovery-phase-topics' : 'hard-blockers');
     for (const i of clientExits(doc).filter((e) => e.result === result)) {
       x.open('risk', { rule: i.rule_id, status: i.resolution?.status, owner: i.resolution?.owner });
       x.field('finding', i.evidence);
@@ -292,19 +317,26 @@ function nextSteps(x, doc) {
   x.open('section', { id: 'next-steps', n: 14 });
   x.list('owner-actions', clientExits(doc).filter((i) => i.resolution?.status === 'open').map((i) => `${i.resolution.owner}: ${i.destination} (${i.rule_id})`), 'No open exit rules');
   x.list('client-to-confirm', (doc.approach?.risks?.open_items ?? []).map((o) => o.why), 'No open questions');
-  x.list('standard', [
-    'Client reviews and signs off this Discovery Closing Document',
-    'Client confirms scope, exclusions and risk register',
-    'Merkle issues the fixed-price proposal',
-    'Sprint 1 kick-off',
-  ]);
+  x.list('standard', isLarger(doc)
+    ? [
+      'Client reviews this Discovery Closing Document',
+      'Client confirms priorities, launch waves and the topics for the Discovery Phase',
+      `Merkle issues the proposal for the ${larger(doc).proposal}`,
+      'Discovery Phase kick-off; the build backlog, plan and investment are agreed at its end',
+    ]
+    : [
+      'Client reviews and signs off this Discovery Closing Document',
+      'Client confirms scope, exclusions and risk register',
+      'Merkle issues the fixed-price proposal',
+      'Sprint 1 kick-off',
+    ]);
   x.close();
 }
 
 function timeline(x, doc) {
   const w = doc.offer.duration_weeks;
   x.open('section', { id: 'timeline', n: 15 });
-  x.field('delivery-duration', `${w.min}–${w.max} weeks`);
+  x.field('delivery-duration', isLarger(doc) ? 'Defined in the Discovery Phase' : `${w.min}–${w.max} weeks`);
   x.field('kick-off', doc.delivery?.kickoff_date, 'Q10.1.4 not answered');
   x.field('go-live-target', doc.delivery?.target_launch_date, 'Q10.1.1 not answered', { reason: doc.delivery?.hard_deadline_reason });
   x.list('phases', (doc.approach?.phases ?? []).map((p) => p.name), 'No approach drafted');
@@ -316,14 +348,19 @@ function timeline(x, doc) {
 function investment(x, doc) {
   const band = doc.offer.price_band;
   x.open('section', { id: 'investment', n: 16 });
-  x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
-  x.empty('price-band', { currency: band.currency, from: band.min, to: band.open_ended ? undefined : band.max, 'open-ended': band.open_ended ? 'true' : undefined });
-  x.field('note', 'Indicative band for the offer. A single fixed price is issued in the proposal after sprint planning.');
+  if (isLarger(doc)) {
+    x.field('engagement', larger(doc).proposal);
+    x.field('note', 'The Discovery Phase is quoted in the Enterprise Engagement proposal. Build investment is defined at the end of the Discovery Phase, once scope, launch waves and architecture are agreed.');
+  } else {
+    x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
+    x.empty('price-band', { currency: band.currency, from: band.min, to: band.open_ended ? undefined : band.max, 'open-ended': band.open_ended ? 'true' : undefined });
+    x.field('note', 'Indicative band for the offer. A single fixed price is issued in the proposal after sprint planning.');
+  }
   if (doc.business?.budget?.min !== undefined) {
     x.empty('client-budget', { currency: doc.business.budget.currency, from: doc.business.budget.min, to: doc.business.budget.max });
   }
   const totals = monthlyAppCosts(doc.approach?.app_shortlist);
-  x.open('recurring-costs', { note: 'Billed by third parties, not included in the band' });
+  x.open('recurring-costs', { note: isLarger(doc) ? 'Billed by third parties' : 'Billed by third parties, not included in the band' });
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Plan not recorded');
   for (const [currency, amount] of Object.entries(totals)) x.empty('apps-monthly', { currency, amount });
   x.close();
@@ -360,13 +397,15 @@ export function buildDeckXml(doc, backlog = null) {
     scopeByEpic(x, backlog);
     for (const section of [risks, outOfScope, nextSteps, timeline, investment]) section(x, doc);
     appendixStories(x, backlog);
+  } else if (isLarger(doc)) {
+    for (const section of [businessContext, methodology, asIs, solutionDesign, capabilityMap, scope, apps, workSplit, risks, outOfScope, nextSteps, timeline, investment]) section(x, doc);
   } else {
     for (const section of [risks, nextSteps]) section(x, doc);
   }
 
   const head = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    `<discovery-deck client="${esc(doc.meta.client.slug)}" mode="${doc.delivery.go ? 'GO' : 'STOP'}" template="docs/discovery/deck-template.md">`,
+    `<discovery-deck client="${esc(doc.meta.client.slug)}" mode="${deckMode(doc)}" template="docs/discovery/deck-template.md">`,
     `  <warnings count="${x.warnings.length}">`,
     ...x.warnings.map((w) => `    <warning>${esc(w)}</warning>`),
     '  </warnings>',
@@ -387,7 +426,10 @@ export function buildInternalNotes(doc, backlog = null) {
     '',
     '> **INTERNAL — never share with the client.** Generated with `discovery-deck.xml`.',
     '',
-    `## Offer ${doc.offer.code} — ${doc.offer.name}`,
+    ...(isLarger(doc)
+      ? [`## Larger Engagement — ${larger(doc).proposal}`, '', 'The client deck shows no offer and no price band. The nearest standard offer below is for internal reference only.', '']
+      : []),
+    `## ${isLarger(doc) ? 'Nearest offer' : 'Offer'} ${doc.offer.code} — ${doc.offer.name}`,
     '',
     doc.offer.rationale ?? '',
     '',
@@ -449,6 +491,10 @@ export function internalTerms(doc, backlog = null) {
   for (const rule of offering.exit_rules) if (rule.internal_note) terms.add(rule.internal_note);
   for (const i of doc.exits.items.filter((e) => e.result === 'WARN')) terms.add(i.evidence);
   if (backlog) terms.add(`${backlog.summary.reduce((n, r) => n + r.points, 0)} points`);
+  if (isLarger(doc)) {
+    // No standard offer or band is proposed to a Larger Engagement client.
+    for (const t of ['price-band', 'price band', doc.offer.name]) terms.add(t);
+  }
   return [...terms];
 }
 
@@ -477,7 +523,8 @@ export function loadClient(clientDir) {
   const { valid, errors } = validateEngagement(doc);
   if (!valid) throw new Error(`engagement.json is invalid:\n  • ${errors.slice(0, 10).join('\n  • ')}`);
   const backlogFile = path.join(clientDir, 'backlog.json');
-  const backlog = fs.existsSync(backlogFile) ? JSON.parse(fs.readFileSync(backlogFile, 'utf8')) : null;
+  // Only GO engagements have a Jira backlog; a stale file from an earlier run is ignored.
+  const backlog = deckMode(doc) === 'GO' && fs.existsSync(backlogFile) ? JSON.parse(fs.readFileSync(backlogFile, 'utf8')) : null;
   return { doc, backlog };
 }
 
@@ -525,7 +572,8 @@ function main() {
   }
 
   const { doc, backlog, warnings, written } = writeDeck({ clientDir });
-  console.log(`✓ ${doc.meta.client.name} · ${doc.delivery.go ? 'GO' : 'STOP'} deck data${backlog ? ` · ${backlog.stories.length} stories` : ' · no backlog yet'}`);
+  const mode = { GO: 'GO', STOP: 'STOP', LARGER_ENGAGEMENT: 'Larger Engagement' }[deckMode(doc)];
+  console.log(`✓ ${doc.meta.client.name} · ${mode} deck data${deckMode(doc) !== 'GO' ? '' : backlog ? ` · ${backlog.stories.length} stories` : ' · no backlog yet'}`);
   if (warnings.length) {
     console.log(`  ${warnings.length} field(s) to complete:`);
     for (const w of warnings) console.log(`  • ${w}`);

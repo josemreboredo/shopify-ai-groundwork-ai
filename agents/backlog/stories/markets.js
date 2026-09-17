@@ -21,17 +21,17 @@ export default [
     description: (doc) => `Markets at launch: ${markets(doc).map((m) => `${m.code} (${m.currency ?? 'currency TBC'}, ${(m.languages ?? []).join('/') || 'languages TBC'}${m.domain ? `, ${m.domain}` : ''})`).join('; ')}.`,
     acceptance_criteria: (doc) => [
       ...markets(doc).map((m) => `Given a visitor from ${m.code}, when they open the storefront, then prices show in ${m.currency ?? 'the market currency'}${m.domain ? ` on ${m.domain}` : ''}`),
-      `Given the primary market ${doc.markets?.primary_market ?? ''}, when Markets are reviewed in the admin, then it is the primary market and the others are active`.trim(),
+      `Given the primary market${(doc.markets?.primary_markets ?? []).length > 1 ? 's' : ''} ${listOr(doc.markets?.primary_markets, '')}, when Markets are reviewed in the admin, then the store's primary market is ${doc.markets?.primary_markets?.[0] ?? 'set'} and the others are active`.trim(),
       ...(doc.markets?.geo_redirect ? ['Given a visitor lands on the wrong market, when geo-redirect runs, then they are offered their local market without losing the current page'] : []),
     ],
     gaia_tier: 'T2',
     points: 5,
     owner: 'agent',
     depends_on: ['LWC-FND-001'],
-    spec_refs: ['/markets/list', '/markets/primary_market', '/markets/geo_redirect'],
+    spec_refs: ['/markets/list', '/markets/primary_markets', '/markets/geo_redirect'],
     gates: ['markets', 'multi_currency'],
     applies: (doc) => gate(doc, 'markets'),
-    agent_prompt: (doc) => `Configure Shopify Markets for: ${markets(doc).map((m) => `${m.code} currency ${m.currency}, languages ${(m.languages ?? []).join('/')}, price strategy ${m.price_strategy ?? 'TBC'}${m.domain ? `, domain ${m.domain}` : ''}`).join('; ')}. Set ${doc.markets?.primary_market} as primary. Use Shopify Markets (not expansion stores) unless engagement.markets.strategy says otherwise. Enable geo-redirect: ${doc.markets?.geo_redirect ? 'yes' : 'no'}. Present the plan for consultant approval before applying it.`,
+    agent_prompt: (doc) => `Configure Shopify Markets for: ${markets(doc).map((m) => `${m.code} currency ${m.currency}, languages ${(m.languages ?? []).join('/')}, price strategy ${m.price_strategy ?? 'TBC'}${m.domain ? `, domain ${m.domain}` : ''}`).join('; ')}. Set ${doc.markets?.primary_markets?.[0] ?? 'the primary market (to confirm)'} as the store's primary market${(doc.markets?.primary_markets ?? []).length > 1 ? ` (lead markets: ${doc.markets.primary_markets.join(', ')})` : ''}. Use Shopify Markets (not expansion stores) unless engagement.markets.strategy says otherwise. Enable geo-redirect: ${doc.markets?.geo_redirect ? 'yes' : 'no'}. Present the plan for consultant approval before applying it.`,
   },
   {
     key: 'LWC-MKT-002',
@@ -77,7 +77,7 @@ export default [
     title: 'Collect duties and import taxes at checkout (DDP)',
     user_story: 'As an international shopper, I want to pay duties and import taxes at checkout, so that there are no surprise charges on delivery.',
     acceptance_criteria: (doc) => [
-      `Given a cross-border order to ${listOr(markets(doc).filter((m) => m.code !== doc.markets?.primary_market).map((m) => m.code), 'an international market')}, when the shopper reaches checkout, then duties and import taxes are calculated and shown as a separate line`,
+      `Given a cross-border order to ${listOr(markets(doc).filter((m) => !(doc.markets?.primary_markets ?? []).includes(m.code)).map((m) => m.code), 'an international market')}, when the shopper reaches checkout, then duties and import taxes are calculated and shown as a separate line`,
       'Given every product, when duties are calculated, then it has an HS code and country of origin in the product admin',
       'Given the shipping labels, when a DDP order ships, then the carrier service and customs documents match delivered-duty-paid terms',
     ],
@@ -88,7 +88,7 @@ export default [
     spec_refs: ['/markets/duties_ddp', '/markets/list', '/shipping/carriers'],
     gates: ['markets'],
     applies: (doc) => doc.markets?.duties_ddp === true,
-    agent_prompt: (doc) => `Enable collection of duties and import taxes for the international markets in Shopify Markets. Check eligibility first (Shopify Payments, plan and carrier requirements) and report if a market is not eligible. Add HS codes and country of origin to every product (bulk via Admin API or Matrixify). Align carrier services (${listOr(doc.shipping?.carriers, 'carriers to confirm')}) with DDP terms and test orders crossing the ${doc.markets?.primary_market ?? 'primary market'} border in each direction.`,
+    agent_prompt: (doc) => `Enable collection of duties and import taxes for the international markets in Shopify Markets. Check eligibility first (Shopify Payments, plan and carrier requirements) and report if a market is not eligible. Add HS codes and country of origin to every product (bulk via Admin API or Matrixify). Align carrier services (${listOr(doc.shipping?.carriers, 'carriers to confirm')}) with DDP terms and test orders crossing the ${listOr(doc.markets?.primary_markets, 'primary market')} border in each direction.`,
   },
   {
     key: 'LWC-MKT-005',

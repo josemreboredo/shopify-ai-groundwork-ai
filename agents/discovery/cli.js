@@ -15,6 +15,7 @@ import fs   from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { offering } from '../../schema/index.js';
 import { runDiscovery } from './engine.js';
 import { createLlm, explainError } from './llm.js';
 import { renderArtefacts } from './render.js';
@@ -63,8 +64,9 @@ export function writeOutputs(outDir, engagement) {
   }
   fs.mkdirSync(dir, { recursive: true });
 
-  // Drop artefacts from a previous run whose GO/STOP status differs.
-  for (const stale of ['delivery-plan.md', 'capability-map.md', 'app-shortlist.md', 'risks.md', 'stop-report.md']) {
+  // Drop artefacts from a previous run whose GO/STOP status or route differs.
+  const briefs = offering.routes.map((r) => r.brief).filter(Boolean);
+  for (const stale of ['delivery-plan.md', 'capability-map.md', 'app-shortlist.md', 'risks.md', 'stop-report.md', ...briefs]) {
     fs.rmSync(path.join(dir, stale), { force: true });
   }
 

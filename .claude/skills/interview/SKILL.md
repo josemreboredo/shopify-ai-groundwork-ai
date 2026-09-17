@@ -15,7 +15,8 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
    Claude Enterprise before dentsu / Merkle adoption or real client data at scale. Use example or anonymised clients
    until then.
 2. Get the client slug (kebab-case, e.g. `acme-watches`), the language of the conversation and the mode:
-   `quick` (required questions only), `standard` (required + recommended, default) or `full` (everything).
+   `quick` (required questions), `standard` (required + recommended, default) or `full` (everything). Every mode
+   also asks the questions that change the offer, an exit rule or an app signal.
 
 ## Loop
 
@@ -41,9 +42,16 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
 5. The client does not know yet → `npm run interview -- tbc --client <slug> --question <id> --note "..."`.
    Not applicable → `skip`. Consultant context that is not an answer → `note --text "..."`.
 6. After each answer the CLI returns the offer, GO/STOP and fired exit rules. Mention them only when they change,
-   and say "provisional" while `offer.provisional` is true. A STOP rule: tell the consultant immediately and ask
-   whether to continue.
-7. Call `npm run interview -- next --client <slug>` when you need more questions, and
+   and say "provisional" while `offer.provisional` is true. A STOP rule: tell the consultant immediately. The next
+   question is then Q10.5.5 — how Merkle proceeds: `larger_engagement` (a Merkle Enterprise Engagement with a
+   dedicated Discovery Phase) or `no_bid` (source `consultant`). A Larger Engagement keeps collecting everything and
+   still produces the approach, a brief and the client deck — but no Jira tickets. If the consultant has not decided,
+   mark it TBC and continue.
+7. `plan_suggestion` in the output means the answers already require Shopify Plus while the plan is open. Tell the
+   consultant once and offer to record it (`--source inferred --note "Required by …"`); never record it silently.
+8. Decisions and context that are not answers (e.g. "we will propose a Larger Engagement") go in `note`: notes are
+   kept in `engagement.json` and shown in the STOP report, risks and brief.
+9. Call `npm run interview -- next --client <slug>` when you need more questions, and
    `npm run interview -- preview --client <slug>` when the consultant asks where things stand (coverage, app
    signals).
 
@@ -58,9 +66,12 @@ numbers; stakeholder names are optional — record roles only unless the consult
    ```bash
    npm run interview -- finish --client <slug>
    ```
-   Unanswered and TBC questions become open items.
-2. On GO: follow the returned `next_step` — read `approach-instructions.md` in the work directory, write
-   `approach.json`, then `npm run discover:finish -- --work clients/.work/<slug>`.
-   On STOP: run `npm run discover:finish -- --work clients/.work/<slug>` for the STOP report.
-3. Offer the next steps: `npm run backlog -- --client <slug>` and `/deck <slug>`.
-4. Report: offer, GO/STOP, exit rules with evidence, open items, files written — in the conversation language.
+   Unanswered and TBC questions become open items. If the result has `warning` (provisional offer), tell the
+   consultant which decisive question is still open before continuing.
+2. On GO, or STOP with route `larger_engagement`: follow the returned `next_step` — read
+   `approach-instructions.md` in the work directory, write `approach.json`, then
+   `npm run discover:finish -- --work clients/.work/<slug>`.
+   On STOP without a route, or `no_bid`: run `npm run discover:finish -- --work clients/.work/<slug>` for the STOP report.
+3. Offer the next steps: GO → `npm run backlog -- --client <slug>` and `/deck <slug>`; Larger Engagement →
+   `/deck <slug>` only (no Jira tickets: the backlog is defined in the Discovery Phase).
+4. Report: offer, GO/STOP and route, exit rules with evidence, open items, files written — in the conversation language.

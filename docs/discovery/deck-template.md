@@ -35,6 +35,13 @@
 **STOP engagements** produce sections 1, 2, 12 and 14 only: the document explains the blockers and how to
 resolve them instead of presenting a solution.
 
+**Larger Engagement** (`mode="LARGER_ENGAGEMENT"` — a STOP the consultant routed to a Merkle Enterprise Engagement
+with a dedicated Discovery Phase, ADR 0009) produces sections 1–10 and 12–16, without 11 and 17 (no Jira backlog).
+Differences: the executive summary has `<why-larger-engagement>` (each STOP rule with its Discovery Phase
+workstream) and `<engagement>` instead of the offer; in risks the STOP rules are `<discovery-phase-topics>`; next
+steps lead to the Enterprise Engagement proposal and Discovery Phase kick-off; timeline duration and investment are
+defined in the Discovery Phase — **no offer name and no price band** (`deck:check` fails if they appear).
+
 **Missing data** appears as `<missing reason="…"/>` and is listed in `<warnings>` at the top of the XML.
 The deck writes `[TBC — consultant to complete]` for each.
 

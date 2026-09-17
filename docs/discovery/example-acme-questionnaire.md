@@ -4,7 +4,7 @@
 
 > **Client:** ACME Watches SA · **Date:** 2026-09-10 · **Consultant:** Lead Consultant (example)
 >
-> **Version:** question bank 1.0.0 · offering 1.0.0
+> **Version:** question bank 1.0.0 · offering 1.1.0
 >
 > **Example:** every client, answer and figure in this file is fictional. "TBC" marks answers still open after the call.
 
@@ -332,7 +332,8 @@
 | DE | EUR | de | de.acme-watches.example | manual |
 | AT | EUR | de | at.acme-watches.example | manual |
 
-**Q3.1.2** — Which is the primary market? *(required)*
+**Q3.1.2** — Which are the primary markets (one or more country or market codes)? *(required)*
+*The markets that lead revenue and launch priority, e.g. US and EU for a global brand.*
 
 > Answer: CH
 
@@ -876,6 +877,7 @@
 - [ ] No
 
 **Q6.4.4** — Do you collect sensitive personal data (health, age, biometric, financial)? *(required)*
+*Flag 11.17 — needs a data protection impact assessment and legal sign-off.*
 
 - [ ] Yes
 - [x] No
@@ -1362,6 +1364,14 @@
 
 > Answer: Storefront; Markets; B2B; Integrations; Migration
 
+**Q10.5.5** — Discovery hit a STOP. How will Merkle proceed: Larger Engagement or no bid? *(recommended · consultant)*
+*Only if a § 11 rule is STOP.*
+*Larger Engagement: Merkle proposes an Enterprise Engagement with a dedicated Discovery Phase; the approach, a brief and the client deck are still produced, Jira tickets are not. No bid produces the STOP report only.*
+
+*(tick one — not applicable: no STOP)*
+- [ ] larger engagement
+- [ ] no bid
+
 ---
 
 ## § 11 — Exit-trigger screening
@@ -1374,7 +1384,7 @@
 |---|---|---|---|---|---|
 | 11.1 | A Shopify Plus feature is required (native B2B, Checkout Extensibility customisation, expansion stores) but the target plan is not Plus. A fully custom checkout UI is handled by 11.6, not here | STOP | Confirm Shopify Plus or remove the feature from scope | Q1.2.3, Q3.1.4, Q4.2.1, Q6.2.1 | clear — target plan is Shopify Plus |
 | 11.2 | B2B requires RFQ / quote or custom negotiated pricing per buyer | STOP | Architecture review: Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform | Q6.2.6 | clear — fixed wholesale tiers, no RFQ |
-| 11.3 | More than 5 Shopify Markets at launch | STOP | Scale programme | Q3.1.1 | clear — 3 markets |
+| 11.3 | More than 5 Shopify Markets at launch | STOP | Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase | Q3.1.1 | clear — 3 markets |
 | 11.4 | More than 6 distinct languages across all markets | STOP | Scale programme | Q3.1.1 | clear — 3 languages (de, fr, it) |
 | 11.5 | More than 3 variant options per product | STOP | Architecture review | Q2.1.2 | clear — max 2 variant options |
 | 11.6 | Custom checkout UI that cannot be built with Checkout Extensibility | STOP | Composable platform | Q4.2.1 | clear — Checkout Extensibility only |
@@ -1388,6 +1398,7 @@
 | 11.14 | Migration with significant SEO equity or complex historical data | FLAG | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5 | **triggered** — owner: Tech Lead |
 | 11.15 | Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks | FLAG | Re-scope to an MVP-first delivery before any sprint begins | Q10.1.1 | clear — 17 weeks from kick-off to go-live |
 | 11.16 | No single decision-maker, or budget approval authority is unclear | FLAG | Named client decision-maker and budget owner confirmed before the statement of work is signed | Q10.2.2, Q10.2.3 | clear — decision-maker and budget authority confirmed |
+| 11.17 | Sensitive personal data is collected (health, age, biometric or financial data; special-category data under GDPR art. 9) | FLAG | Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build | Q6.4.4 | clear — no sensitive data collected |
 
 **Verdict:** GO — no STOP triggered. Two FLAGs need their owners to resolve them before build starts: 11.10 (legal sign-off on data-subject requests) and 11.14 (migration runs as its own scoping track).
 

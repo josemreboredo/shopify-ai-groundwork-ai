@@ -10,7 +10,7 @@
  *   npm run discover:prepare  -- --questionnaire <file.md> [--client <slug>]
  *   (Claude Code writes extraction.json)
  *   npm run discover:assemble -- --work <dir>
- *   (Claude Code writes approach.json — GO only)
+ *   (Claude Code writes approach.json — GO, or STOP routed to a Larger Engagement)
  *   npm run discover:finish   -- --work <dir> [--out-dir clients] [--dry-run]
  */
 
@@ -19,7 +19,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 
-import { prepareQuestionnaire, answerValidator, decide, finalize } from './engine.js';
+import { prepareQuestionnaire, answerValidator, decide, finalize, needsApproach, stopRoute } from './engine.js';
 import { EXTRACTION_SYSTEM, processExtraction } from './extract.js';
 import { APPROACH_SYSTEM, approachInput, fromApproachPayload } from './approach.js';
 import { buildExtractionSchema, buildApproachSchema } from './extraction-schema.js';
@@ -117,8 +117,9 @@ value_json is a string containing JSON (e.g. "\\"CH\\"", "800", "true").
 // ─── assemble ─────────────────────────────────────────────────────────────────
 
 /**
- * Validate extraction.json, compute offer and exit rules, and (on GO) write
- * the approach instructions.
+ * Validate extraction.json, compute offer and exit rules, and (when an approach
+ * is needed) write the approach instructions. Consultant notes come from
+ * state.json (interview) and are kept in the engagement.
  *
  * @param {{ workDir: string }} options
  * @returns {{ ok: false, errors: string[] } | { ok: true, doc: object }}
@@ -141,11 +142,12 @@ export function assembleWork({ workDir }) {
   const { errors, ...extraction } = processExtraction(data, answerValidator(options));
   if (errors.length) return { ok: false, errors };
 
-  const doc = decide(extraction, options);
+  const doc = decide({ ...extraction, notes: state.notes ?? [] }, options);
   writeJson(path.join(workDir, WORK_FILES.decision), doc);
   fs.rmSync(path.join(workDir, WORK_FILES.approach), { force: true });
+  fs.rmSync(path.join(workDir, WORK_FILES.approachInstructions), { force: true });
 
-  if (doc.delivery.go) {
+  if (needsApproach(doc)) {
     writeJson(path.join(workDir, WORK_FILES.approachSchema), buildApproachSchema());
     fs.writeFileSync(path.join(workDir, WORK_FILES.approachInstructions), `${APPROACH_SYSTEM}
 
@@ -181,9 +183,12 @@ export function finishWork({ workDir, outDir = path.join(REPO_ROOT, 'clients'), 
   const doc = readJson(decisionFile);
 
   let approach = null;
-  if (doc.delivery.go) {
+  if (needsApproach(doc)) {
     const file = path.join(workDir, WORK_FILES.approach);
-    if (!fs.existsSync(file)) return { ok: false, errors: [`${WORK_FILES.approach} not found — GO engagements need a drafted approach`] };
+    if (!fs.existsSync(file)) {
+      const who = doc.delivery.go ? 'GO engagements' : `STOP engagements routed to ${stopRoute(doc).label}`;
+      return { ok: false, errors: [`${WORK_FILES.approach} not found — ${who} need a drafted approach`] };
+    }
     let payload;
     try {
       payload = readJson(file);
@@ -220,7 +225,9 @@ function flags(argv) {
 
 /** @param {object} doc */
 function printDecision(doc) {
-  console.log(`✓ ${doc.meta.client.name} · offer ${doc.offer.code} (${doc.offer.name}) · ${doc.delivery.go ? 'GO' : 'STOP'}`);
+  const route = stopRoute(doc);
+  const status = doc.delivery.go ? `offer ${doc.offer.code} (${doc.offer.name}) · GO` : route?.brief ? `${route.label} (nearest offer ${doc.offer.code})` : `offer ${doc.offer.code} (${doc.offer.name}) · STOP${route ? ` → ${route.label}` : ''}`;
+  console.log(`✓ ${doc.meta.client.name} · ${status}`);
   for (const item of doc.exits.items) console.log(`  ${item.result.padEnd(4)} ${item.rule_id} ${item.evidence}`);
   console.log(`  open items: ${doc.approach.risks.open_items.length}`);
 }
@@ -261,7 +268,10 @@ function main() {
     const result = assembleWork({ workDir });
     if (!result.ok) return printErrors(result.errors);
     printDecision(result.doc);
-    console.log(result.doc.delivery.go
+    if (!result.doc.delivery.go && !stopRoute(result.doc)) {
+      console.log('  route: not decided — record delivery.route (Q10.5.5): larger_engagement or no_bid');
+    }
+    console.log(needsApproach(result.doc)
       ? `  next: follow ${rel}/${WORK_FILES.approachInstructions} → write ${rel}/${WORK_FILES.approach}\n        then npm run discover:finish -- --work ${rel}`
       : `  next: npm run discover:finish -- --work ${rel}`);
     return;

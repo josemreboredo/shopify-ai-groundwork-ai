@@ -2,13 +2,14 @@
  * @file approach.js
  * @description LLM drafting of the implementation approach (capability map,
  * app shortlist, assumptions, phased plan) from the engagement answers.
- * Only runs on GO. The model never sees internal pricing or modifiers.
+ * Runs on GO, and on a STOP the consultant routed to a Larger Engagement. The model never sees internal pricing, modifiers or consultant notes.
  *
  * @module discovery/approach
  */
 
 import { buildApproachSchema } from './extraction-schema.js';
 import { appSignals } from './app-signals.js';
+import { planSuggestion } from './plan.js';
 
 export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect at Merkle drafting the implementation approach for a discovery engagement. A lead consultant reviews everything you write before the client sees it.
 
@@ -29,6 +30,12 @@ Phases
 - Phase 1 delivers the launch scope in sprints; later phases hold deferred items (mark tasks deferred: true). Owner is consultant, agent, designer, developer or client.
 - The delivery track is given (liquid = Shopify Horizon theme; hydrogen = headless Hydrogen storefront). Plan accordingly.
 - Respect open exit-rule flags: plan the scoping work they require.
+- If shopify.target_plan is missing, plan_suggestion gives the plan the answers already require; plan on it and state it as an assumption.
+
+Larger Engagement
+- If delivery.route is larger_engagement, the engagement hit a STOP and goes beyond the S/M/L offers: Merkle proposes an Enterprise Engagement that starts with a dedicated Discovery Phase. Cover the full scope the client described — do not cut it to fit an offer or its duration.
+- Phase 1 is the Discovery Phase: one workstream per open STOP in exits.items following its destination (e.g. market roll-out, integration architecture, legal review), plus the FLAG resolutions. Build phases follow and depend on it.
+- Put markets, languages or integrations beyond a sensible first launch into later phases with deferred: true, and say why in assumptions.
 
 Never include prices for Merkle's services, internal modifiers or commercial terms.`;
 
@@ -44,6 +51,7 @@ export function approachInput(doc) {
     ...answers,
     offer: { code: offer.code, name: offer.name, delivery_track: offer.delivery_track, scope_gates: offer.scope_gates, l_triggers: offer.l_triggers },
     app_signals: appSignals(doc),
+    ...(planSuggestion(doc) ? { plan_suggestion: planSuggestion(doc) } : {}),
     question_ids_by_answer: Object.fromEntries(
       Object.entries(provenance ?? {}).map(([pointer, p]) => [pointer, p.question_id]).filter(([, id]) => id),
     ),
@@ -126,7 +134,7 @@ export function toApproachPayload(approach) {
 }
 
 /**
- * Draft the approach for a GO engagement.
+ * Draft the approach for a GO engagement or a routed STOP.
  *
  * @param {{ callStructured: Function }} llm
  * @param {object} doc  Engagement with offer and exits computed

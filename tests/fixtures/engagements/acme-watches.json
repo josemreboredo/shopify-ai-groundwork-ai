@@ -203,7 +203,7 @@
     "rationale": "All six scope gates are active (two or more) and no L trigger applies, so the engagement classifies as M — Ecommerce Scale on the Liquid track."
   },
   "markets": {
-    "primary_market": "CH",
+    "primary_markets": ["CH"],
     "list": [
       {
         "code": "CH",
