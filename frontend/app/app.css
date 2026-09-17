@@ -191,6 +191,8 @@ main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320p
 .signin-panel { background: #fff; padding: 72px 48px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
 .signin-panel h2 { margin-top: 0; font-size: 1.5rem; }
 .signin-panel button { width: 100%; }
+/* The sign-in hero is full-bleed black: the footer continues it, with no white band. */
+main.signin + .site-footer { margin-top: 0; }
 .signin-pilot { color: var(--red-ink); font-weight: 600; font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 18px; }
 @media (max-width: 860px) {
   main.signin { grid-template-columns: 1fr; min-height: 0; }
@@ -209,19 +211,25 @@ main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320p
 main > details { margin: 18px 0; }
 
 /* Site footer, in merkle.com's order: mark, legal, social, copyright, dentsu */
-.site-footer { background: #000; color: #fff; margin-top: 64px; padding: 56px 32px 48px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 26px; }
-.footer-mark img { display: block; height: 22px; width: auto; }
-.footer-links { display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; }
-.footer-links a { color: #fff; text-decoration: none; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; position: relative; padding-bottom: 5px; }
+.site-footer { position: relative; background: #000; color: #fff; margin-top: 64px; padding: 64px 40px 28px; overflow: hidden; }
+.footer-inner { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
+.footer-main { display: flex; flex-direction: column; align-items: flex-start; gap: 34px; }
+.footer-mark img { display: block; height: 26px; width: auto; }
+.footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+.footer-links a { color: #fff; text-decoration: none; font-size: 1.05rem; position: relative; padding-bottom: 4px; }
 .footer-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
 .footer-links a:hover::after, .footer-links a:focus-visible::after { transform: scaleX(1); }
-.footer-social { display: flex; gap: 22px; }
-.footer-social a { color: #fff; opacity: 0.8; display: inline-flex; padding: 4px; }
-.footer-social a:hover { opacity: 1; color: var(--red); }
-.footer-copy { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.75); }
-.footer-note { margin: -16px 0 0; font-size: 0.78rem; color: rgba(255, 255, 255, 0.45); max-width: 60ch; }
-.footer-dentsu img { display: block; height: 12px; width: auto; opacity: 0.9; }
-@media (max-width: 760px) {
-  .site-footer { padding: 40px 16px 32px; gap: 20px; }
-  .footer-links { gap: 18px; }
+.footer-social { display: flex; gap: 16px; }
+.footer-social a { color: #fff; display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--red); border-radius: 12px; transition: background 0.2s ease, color 0.2s ease; }
+.footer-social a:hover, .footer-social a:focus-visible { background: var(--red); color: #fff; }
+.footer-note { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); max-width: 62ch; }
+.footer-watermark { position: absolute; right: -8px; top: 26px; width: min(46vw, 660px); height: auto; z-index: 0; pointer-events: none; }
+.footer-base { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1280px; margin: 40px auto 0; }
+.footer-dentsu img { display: block; height: 14px; width: auto; opacity: 0.9; }
+.footer-copy { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
+@media (max-width: 860px) {
+  .site-footer { padding: 44px 16px 24px; }
+  .footer-main { gap: 26px; }
+  .footer-watermark { display: none; }
+  .footer-base { margin-top: 28px; }
 }

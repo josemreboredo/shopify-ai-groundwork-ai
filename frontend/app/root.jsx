@@ -52,39 +52,52 @@ export function Layout({ children }) {
 }
 
 const SOCIAL = [
-  ['Instagram', 'https://www.instagram.com/merkle', <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none" /></>],
-  ['YouTube', 'https://www.youtube.com/@MerkleOfficial', <><rect x="2" y="5" width="20" height="14" rx="4" /><path d="M10 9.2v5.6l5-2.8z" fill="currentColor" stroke="none" /></>],
-  ['LinkedIn', 'https://www.linkedin.com/company/merkle/posts/?feedView=all', <><rect x="3" y="3" width="18" height="18" rx="3" /><path d="M7.5 10v7M7.5 7.2v.1M12 17v-4a2 2 0 0 1 4 0v4" /></>],
+  ['Instagram', 'https://www.instagram.com/merkle', <><rect x="4" y="4" width="16" height="16" rx="4.5" /><circle cx="12" cy="12" r="4" /><circle cx="17" cy="7" r="1.1" fill="currentColor" stroke="none" /></>],
+  ['YouTube', 'https://www.youtube.com/@MerkleOfficial', <><rect x="2.5" y="6" width="19" height="12" rx="3.5" fill="currentColor" stroke="none" /><path d="M10.2 9.4v5.2l4.6-2.6z" fill="#000" stroke="none" /></>],
+  ['LinkedIn', 'https://www.linkedin.com/company/merkle/posts/?feedView=all', <><path d="M6.6 10.2v7.2M6.6 6.9v.1M11 17.4v-4.3a2.6 2.6 0 0 1 5.2 0v4.3" /></>],
 ];
 
-/** The footer as on merkle.com: mark, legal links, social, copyright, dentsu. */
+/**
+ * The footer as merkle.com builds it: the mark and the links on the left, the
+ * outlined M watermark on the right, dentsu and the copyright on the base line.
+ */
 function SiteFooter() {
   return (
     <footer className="site-footer">
-      <a className="footer-mark" href="https://www.merkle.com" target="_blank" rel="noreferrer" aria-label="Merkle">
-        <img src="/brand/merkle-mark.svg" alt="" width="32" height="18" />
-      </a>
-
-      <nav className="footer-links" aria-label="Legal">
-        <a href="https://www.merkle.com/en/legal-terms.html" target="_blank" rel="noreferrer">Legal Terms</a>
-        <a href="https://www.merkle.com/en/privacy-policy.html" target="_blank" rel="noreferrer">Privacy Policy</a>
-        <a href="https://www.merkle.com/en/privacy-policy/data-product-privacy-notice/control-your-personal-information.html" target="_blank" rel="noreferrer">Your Privacy Choices</a>
-      </nav>
-
-      <nav className="footer-social" aria-label="Merkle on social media">
-        {SOCIAL.map(([name, href, paths]) => (
-          <a key={name} href={href} target="_blank" rel="noreferrer" aria-label={name} title={name}>
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">{paths}</svg>
+      <div className="footer-inner">
+        <div className="footer-main">
+          <a className="footer-mark" href="https://www.merkle.com" target="_blank" rel="noreferrer" aria-label="Merkle">
+            <img src="/brand/merkle-mark.svg" alt="" width="32" height="18" />
           </a>
-        ))}
-      </nav>
 
-      <p className="footer-copy">© {new Date().getFullYear()} Merkle</p>
-      <p className="footer-note">Merkle Discovery — internal pilot tool. Demo or anonymised engagements only.</p>
+          <nav className="footer-links" aria-label="Legal">
+            <a href="https://www.merkle.com/en/legal-terms.html" target="_blank" rel="noreferrer">Legal Terms</a>
+            <a href="https://www.merkle.com/en/privacy-policy.html" target="_blank" rel="noreferrer">Privacy Policy</a>
+            <a href="https://www.merkle.com/en/privacy-policy/data-product-privacy-notice/control-your-personal-information.html" target="_blank" rel="noreferrer">Your Privacy Choices</a>
+          </nav>
 
-      <a className="footer-dentsu" href="https://www.dentsu.com/" target="_blank" rel="noreferrer">
-        <img src="/brand/dentsu-company.svg" alt="a dentsu company" width="104" height="10" />
-      </a>
+          <nav className="footer-social" aria-label="Merkle on social media">
+            {SOCIAL.map(([name, href, paths]) => (
+              <a key={name} href={href} target="_blank" rel="noreferrer" aria-label={name} title={name}>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true">{paths}</svg>
+              </a>
+            ))}
+          </nav>
+
+          <p className="footer-note">Merkle Discovery — internal pilot tool. Demo or anonymised engagements only.</p>
+        </div>
+
+        <svg className="footer-watermark" viewBox="0 0 32 18" aria-hidden="true" focusable="false">
+          <path d="M30.0227 0L22.6909 7.52548L15.3636 0H13.3818V18H17.105V7.30368L22.6896 13.0377L28.2756 7.30368V18H32V0H30.0227Z" fill="none" stroke="#2440D8" strokeWidth="0.18" />
+        </svg>
+      </div>
+
+      <div className="footer-base">
+        <a className="footer-dentsu" href="https://www.dentsu.com/" target="_blank" rel="noreferrer">
+          <img src="/brand/dentsu-company.svg" alt="a dentsu company" width="104" height="10" />
+        </a>
+        <p className="footer-copy">© {new Date().getFullYear()} Merkle</p>
+      </div>
     </footer>
   );
 }
