@@ -192,7 +192,7 @@ function renderGuideQuestion(q) {
   const tags = [q.priority, q.audience];
   if (q.ask_when === 'stop') tags.push('only on STOP');
   const lines = [`**${q.id}** — ${q.text} *(${tags.join(' · ')})*`];
-  if (q.feeds?.length) lines.push(`Feeds: ${q.feeds.map((f) => REF_LABEL.get(f) ?? f).join(' · ')}`);
+  if (q.feeds?.length) lines.push(`Drives: ${q.feeds.map((f) => REF_LABEL.get(f) ?? f).join(' · ')}`);
   if (q.only_if) lines.push(`Asked only if ${q.only_if.map(describeCondition).join(' or ')}`);
   if (q.ask_if) lines.push(`Quick interview: ask if ${q.ask_if.map(describeCondition).join(', or ')}`);
   const t = q.teach;

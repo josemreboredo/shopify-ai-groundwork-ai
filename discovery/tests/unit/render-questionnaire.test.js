@@ -67,3 +67,18 @@ test('the ACME example questionnaire asks the same questions in the same order a
   const example = fs.readFileSync(new URL('../../docs/example-acme-questionnaire.md', import.meta.url), 'utf8');
   assert.deepEqual(ids(example), ids(renderQuestionnaire()));
 });
+
+test('every question explains to the consultant why it is asked', () => {
+  const missing = questionBank.questions.filter((q) => !q.teach?.why?.trim()).map((q) => q.id);
+  assert.deepEqual(missing, [], 'questions without "why it matters"');
+});
+
+test('explanations stay short and cite official sources only', () => {
+  const OFFICIAL = /^https:\/\/(help\.shopify\.com|shopify\.dev|www\.shopify\.com|changelog\.shopify\.com|apps\.shopify\.com|shopify\.engineering|www\.w3\.org)\//;
+  for (const q of questionBank.questions) {
+    const { why, options = [], sources = [] } = q.teach;
+    assert.ok(why.split(/\s+/).length <= 60, `${q.id}: "why it matters" is too long for a question card`);
+    for (const o of options) assert.ok(o.option && o.pros && o.cons, `${q.id}: an option is missing pros or cons`);
+    for (const url of sources) assert.match(url, OFFICIAL, `${q.id}: ${url} is not an official source`);
+  }
+});

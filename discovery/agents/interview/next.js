@@ -12,7 +12,7 @@
  * @module interview/next
  */
 
-import { questionBank, schemaNodeAt, enumValues, optionLabel } from '../../schema/index.js';
+import { questionBank, offering, schemaNodeAt, enumValues, optionLabel } from '../../schema/index.js';
 import { assemble } from '../discovery/engine.js';
 import { classifyOffer } from '../discovery/classify.js';
 import { evaluateExits } from '../discovery/exits.js';
@@ -116,6 +116,14 @@ const isKnown = (question, answers) => question.maps_to.some((p) => isAnswered(a
  *
  * @param {object} q
  */
+/** What an answer changes in the engagement, in words (scope gate, L trigger, exit rule, app signal). */
+const DRIVES = new Map([
+  ...(offering.scope_gates ?? []).map((g) => [`gate:${g.id}`, `scope gate: ${g.label}`]),
+  ...(offering.l_triggers ?? []).map((t) => [`l_trigger:${t.id}`, `larger-engagement trigger: ${t.label ?? t.id}`]),
+  ...(offering.exit_rules ?? []).map((r) => [`exit:${r.id}`, `exit rule ${r.id} (${r.result})`]),
+  ...(offering.app_signals ?? []).map((a) => [`app:${a.id}`, `app signal: ${String(a.id).replace(/_/g, ' ')}`]),
+]);
+
 export function describeQuestion(q) {
   const node = q.maps_to.length === 1 ? schemaNodeAt(q.maps_to[0]) : null;
   const itemNode = node?.type === 'array' ? schemaNodeAt(`${q.maps_to[0]}/*`) : null;
@@ -138,6 +146,7 @@ export function describeQuestion(q) {
     ...(q.ask_when ? { ask_when: q.ask_when } : {}),
     ...(q.shopify ? { shopify: q.shopify } : {}),
     ...(q.teach ? { teach: q.teach } : {}),
+    ...((q.feeds ?? []).length ? { drives: q.feeds.map((f) => DRIVES.get(f) ?? f) } : {}),
   };
 }
 
