@@ -18,3 +18,4 @@ One file per decision: `NNNN-short-title.md`. Status is **Proposed** until the o
 | [0011](0011-shopify-knowledge-questionnaire.md) | A Shopify-knowledge questionnaire: plan benchmark, app registry, Retail & POS gate, mainland China | Accepted |
 | [0012](0012-tax-shipping-questions-and-configuration-workbook.md) | Tax and shipping: discovery questions and a store configuration workbook | Accepted |
 | [0013](0013-discovery-and-build-tools.md) | Discovery and build tools in one repository | Accepted |
+| [0014](0014-lc-frontend-hybrid-staged.md) | Lead Consultant frontend: hybrid, staged, React Router | Accepted |

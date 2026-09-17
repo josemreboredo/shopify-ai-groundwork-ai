@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
+## [Unreleased] — 2.0.0
+
+### Added
+- Architecture for the Lead Consultant frontend (`discovery/docs/architecture/lc-frontend-2.0.md`) and ADR 0014: one discovery service used by a web app and by a connector in each consultant's private Claude Project; staged data location (local beta, EU-hosted 2.0.0); React with React Router; owner pilot with demo clients.
+- Hosting and sign-in requirements for dentsu IT (`discovery/docs/architecture/lc-frontend-hosting-requirements.md`); implementation plan Phase 7.
+- Interim hosting decision: Vercel Pro on a personal account (functions in `fra1`), Postgres in an EU region, GitHub login with an allowlist, demo data only; migration to dentsu systems in 2.x.
+
 ## [1.0.0] — 2026-09-17
 
 **Discovery AI tool — first major release.** Same code as 0.7.0, released as the 1.0.0 baseline. Version 2.0.0 adds the

@@ -51,6 +51,7 @@ Interview (questionnaire → chatbot)
 | **4** | Jira-ready backlog + export/push | T3 | 1.5–2 weeks | 2 |
 | **5** | Consultant interview chatbot | **T4** | 3–4 weeks (after validation) | 1, 2 |
 | **6** | Build layer: Commerce Agent + Theme Agent | T3 each | 3–5 weeks | 1, 4 |
+| **7** | Lead Consultant frontend and Claude Projects connector (2.0.0) | **T4** | alpha → beta → 2.0.0 | 5 |
 
 ```
 P0 ─► P1 ─► P2 ─┬─► P3
@@ -217,13 +218,44 @@ Starts with validation (Gaia Track A `01-validation`) with 2–3 Merkle Lead Con
 - [ ] Harvest `buch-*` sections into brand-neutral `build/lwc-library/components/`
 - [ ] Theme Check in CI; self-hosted fonts (GDPR)
 
-**6c Conventions:** `docs/conventions/shopify-theme.md`, `shopify-api.md` (app/hydrogen when needed)
+**6c Conventions:** `build/docs/conventions/shopify-theme.md`, `shopify-api.md` (app/hydrogen when needed)
 
 **6d Backlog → build:** agent takes a Jira story by key, uses `agent_prompt` + `spec_ref`, opens PR, links back to Jira; Gaia plan-approval gate on T2+.
 
 **Deferred:** Delivery Tier 2 (Hydrogen, offer L) — ADR on whether L is sold before it exists.
 
 **Exit criteria:** ACME dev store configured and themed from `engagement.json`; re-run is a no-op; verify step green.
+
+---
+
+## Phase 7 — Lead Consultant frontend, version 2.0.0 (T4)
+
+Design: `discovery/docs/architecture/lc-frontend-2.0.md` · ADR 0014 (hybrid, staged, React Router) · interim hosting:
+Vercel Pro (personal, `fra1`), Postgres in the EU, GitHub login allowlist, demo data only · target hosting and SSO:
+dentsu IT (`discovery/docs/architecture/lc-frontend-hosting-requirements.md`).
+
+**2.0.0-alpha — discovery service and interview screens (local and Vercel preview, demo data)**
+- [ ] Owner set-up: Vercel Pro account, Neon Postgres (EU region) from the Vercel Marketplace, GitHub OAuth app, allowlist
+- [ ] `discovery/service/`: REST API over `discovery/agents` (engagements, interview next / answer / tbc / skip / preview / finish) with storage adapter (files locally, Postgres on Vercel) and auth adapter (GitHub allowlist), contract tests against the CLI behaviour; `vercel.json` regions `fra1`
+- [ ] `frontend/`: React + React Router app — engagement list, interview screens (questions, validation errors, live offer, scope gates, exit rules, Shopify plan)
+- [ ] Consent gate and no-personal-data checks in the service; internal pricing only in consultant views
+
+**2.0.0-beta — outputs and pilot (Vercel, demo data)**
+- [ ] Approach step (Claude API), discovery finish, deck draft and client check, backlog, workbook, Larger Engagement brief
+- [ ] App approvals; Project kit download (instructions and knowledge files for a private Claude Project)
+- [ ] Owner pilot with ACME and ReboLabs
+
+**2.0.0 — Claude Projects connector (Vercel, demo data)**
+- [ ] MCP server ("Merkle Discovery" connector, `mcp-handler`) with OAuth via the interim GitHub login, same operations as the REST API; added to the owner's Claude account for the pilot
+- [ ] Roles (Lead Consultant, Reviewer, Owner); audit log; import of demo engagements from `clients/`
+
+**2.x — migration to dentsu systems**
+- [ ] Hosting, SSO and storage per dentsu IT; security review; connector added by the dentsu Claude Enterprise Owner; first real client data
+
+**2.1:** interactive connector (question cards and live offer inside Claude); reviewer workflow.
+
+**Exit criteria (2.0.0):** the owner runs an ACME-equivalent interview in the web app on Vercel, continues it in a private
+Claude Project through the connector, and exports a deck that passes `deck:check` — with demo data.
 
 ---
 
