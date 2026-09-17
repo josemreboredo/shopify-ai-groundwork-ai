@@ -8,6 +8,10 @@
  * @module discovery/service/pptx
  */
 
+// Bundled into the server build (vite.config.js ssr.noExternal): a bare import
+// left external cannot be resolved in the deployed function.
+import PptxGenJS from 'pptxgenjs';
+
 
 const BULLETS_PER_SLIDE = 7;
 const ROWS_PER_SLIDE = 9;
@@ -153,7 +157,6 @@ const LINE = 'E3E3E8';
  * @returns {Promise<Buffer>}
  */
 export async function closingDocumentPptx(markdown, { client, internal = false, annex = false, date = '' }) {
-  const { default: PptxGenJS } = await import('pptxgenjs');
   const model = slidesFromMarkdown(markdown, { internal, annex });
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_16x9';
