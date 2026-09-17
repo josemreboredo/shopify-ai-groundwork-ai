@@ -2,17 +2,41 @@
  * @file engine.js
  * @description Discovery engine orchestration (implementation plan Phase 2):
  *   consent → redaction → LLM extraction → offer (code) → exit rules (code)
- *   → approach (LLM, GO only) → schema validation.
+ *   → approach (LLM, on GO or when a STOP is routed to a Larger Engagement)
+ *   → schema validation.
  *
  * @module discovery/engine
  */
 
-import { validateEngagement } from '../../schema/index.js';
+import { validateEngagement, offering } from '../../schema/index.js';
 import { hasConsent, redactQuestionnaire, InputRejectedError } from './input.js';
 import { extractAnswers } from './extract.js';
 import { classifyOffer } from './classify.js';
 import { evaluateExits } from './exits.js';
 import { draftApproach } from './approach.js';
+import { planSuggestion } from './plan.js';
+
+/** Routes after a STOP that still draft the full approach (Larger Engagement). */
+const DRAFTING_ROUTES = new Set(offering.routes.filter((r) => r.brief).map((r) => r.id));
+
+/**
+ * The route a STOP engagement follows, or null on GO / no decision.
+ *
+ * @param {object} doc
+ * @returns {object|null}  offering.routes entry
+ */
+export function stopRoute(doc) {
+  if (doc.delivery?.go !== false || !doc.delivery?.route) return null;
+  return offering.routes.find((r) => r.id === doc.delivery.route) ?? null;
+}
+
+/**
+ * Whether an approach must be drafted: on GO, or on a STOP routed to a Larger
+ * Engagement.
+ *
+ * @param {object} doc
+ */
+export const needsApproach = (doc) => doc.delivery?.go === true || DRAFTING_ROUTES.has(stopRoute(doc)?.id);
 
 export class EngagementInvalidError extends Error {
   /** @param {string[]} errors */
@@ -71,9 +95,11 @@ export function answerValidator(options) {
 }
 
 /**
- * Deterministic part after extraction: offer, exit rules, GO/STOP, provenance, open items.
+ * Deterministic part after extraction: offer, exit rules, GO/STOP, provenance,
+ * open items and consultant notes. An open item for the Shopify plan says which
+ * answers already require Plus.
  *
- * @param {{ answers: object, provenance: object, openItems: object[], exitCandidates: object[] }} extraction
+ * @param {{ answers: object, provenance: object, openItems: object[], exitCandidates: object[], notes?: object[] }} extraction
  * @param {{ today: string, clientSlug?: string }} options
  * @returns {object}  Engagement without approach content (risks.open_items only)
  */
@@ -84,22 +110,27 @@ export function decide(extraction, options) {
   doc.exits = evaluateExits(doc, extraction.exitCandidates);
   doc.delivery = { ...(doc.delivery ?? {}), go: !doc.exits.triggered };
   if (Object.keys(extraction.provenance).length) doc.provenance = extraction.provenance;
-  doc.approach = { risks: { open_items: extraction.openItems } };
+  if (extraction.notes?.length) doc.notes = extraction.notes;
+  const plan = planSuggestion(doc);
+  const openItems = extraction.openItems.map((item) => (plan && item.pointer === plan.pointer
+    ? { ...item, why: `${item.why} — minimum plan for these answers: ${plan.value} (${plan.reasons.join('; ')})` }
+    : item));
+  doc.approach = { risks: { open_items: openItems } };
   return doc;
 }
 
 /**
- * Merge the drafted approach (GO only) and validate the complete engagement.
+ * Merge the drafted approach and validate the complete engagement.
  *
  * @param {object} doc       Output of decide()
- * @param {object|null} approach  Output of fromApproachPayload(), or null on STOP
+ * @param {object|null} approach  Output of fromApproachPayload(), or null when no approach is needed
  * @returns {object}
  * @throws {EngagementInvalidError}
  */
 export function finalize(doc, approach) {
   const out = structuredClone(doc);
-  if (out.delivery.go) {
-    if (!approach) throw new Error('A GO engagement needs a drafted approach.');
+  if (needsApproach(out)) {
+    if (!approach) throw new Error(out.delivery.go ? 'A GO engagement needs a drafted approach.' : `A STOP routed to ${stopRoute(out).label} needs a drafted approach.`);
     out.approach = { ...approach, risks: { open_items: doc.approach.risks.open_items, assumptions: approach.risks?.assumptions ?? [] } };
   }
   const { valid, errors } = validateEngagement(out);
@@ -135,7 +166,7 @@ export async function runDiscovery({ questionnaire, llm, today, clientSlug, onSt
   const doc = decide(extraction, options);
 
   let approach = null;
-  if (doc.delivery.go) {
+  if (needsApproach(doc)) {
     onStep('approach');
     approach = await draftApproach(llm, doc);
   }

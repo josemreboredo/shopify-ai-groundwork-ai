@@ -75,6 +75,7 @@ function renderQuestion(q) {
       : `${target} does not include ${humanise(q.skip_if.excludes)}`;
     lines.push(`*Skip if ${condition}.*`);
   }
+  if (q.ask_when === 'stop') lines.push('*Only if a § 11 rule is STOP.*');
   if (q.help) lines.push(`*${q.help}*`);
   lines.push('', ...answerBlock(q));
   return lines.join('\n');

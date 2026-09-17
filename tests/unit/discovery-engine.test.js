@@ -163,7 +163,7 @@ describe('structured output schemas', () => {
       { pointer: '/catalogue/sku_count', value_json: '800' },
       { pointer: '/catalogue/sku_counts', value_json: '1' },
       { pointer: '/offer/code', value_json: '"S"' },
-      { pointer: '/markets/primary_market', value_json: 'CH' },
+      { pointer: '/markets/primary_markets', value_json: 'CH' },
     ]);
     assert.deepEqual(answers, { catalogue: { sku_count: 800 } });
     assert.equal(errors.length, 3);

@@ -7,10 +7,10 @@ validation plan: [`docs/validation/interview-chatbot-validation.md`](../../docs/
 | Module | Does |
 |---|---|
 | `session.js` | Resumable session in `clients/.work/<slug>/interview.json` |
-| `next.js` | Next questions: consent first, mode (quick / standard / full), skip logic, gate-feeding questions first |
+| `next.js` | Next questions: consent first, route decision while a STOP is open, mode (quick / standard / full) plus every question that feeds the offer, an exit rule or an app signal, skip logic |
 | `answer.js` | Validates each answer against the engagement schema, refuses personal data, records provenance; TBC, skip, notes |
-| `preview.js` | Offer, scope gates (active / inactive / unknown), L triggers, exit rules, app signals, coverage |
-| `finish.js` | Writes `extraction.json` for the discovery pipeline and runs `assemble` |
+| `preview.js` | Offer, scope gates (active / inactive / unknown), L triggers, exit rules, route, Shopify plan suggestion, app signals, coverage |
+| `finish.js` | Writes `extraction.json` and `state.json` (with consultant notes) for the discovery pipeline and runs `assemble` |
 | `cli.js` | JSON CLI used by the skill: `npm run interview -- <start\|next\|answer\|tbc\|skip\|note\|preview\|finish> --client <slug>` |
 
 The model only converses, translates (answers stored in English) and maps answers to fields. Tests

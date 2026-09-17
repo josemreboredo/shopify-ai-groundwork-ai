@@ -254,11 +254,11 @@ The canonical list is `offering.json → exit_rules` (ADR 0003). Summary:
 |---|---|---|
 | 11.1 | Shopify Plus feature required but target plan is not Plus | STOP |
 | 11.2 | B2B with RFQ / negotiated pricing | STOP → Architecture review |
-| 11.3 | More than 5 markets at launch | STOP → Scale programme |
-| 11.4 | More than 6 distinct languages | STOP → Scale programme |
+| 11.3 | More than 5 markets at launch | STOP → Larger Engagement |
+| 11.4 | More than 6 distinct languages | STOP → Larger Engagement |
 | 11.5 | More than 3 variant options per product | STOP → Architecture review |
 | 11.6 | Custom checkout UI (not Checkout Extensibility) | STOP → Composable platform |
-| 11.7 | More than 3 integrations at launch | STOP → Bespoke quote |
+| 11.7 | More than 3 integrations at launch | STOP → Larger Engagement |
 | 11.8 | Regulated industry | STOP → Legal review |
 | 11.9 | PCI scope beyond Shopify-hosted payments | STOP → Security review |
 | 11.10 | GDPR/CCPA export or deletion workflow | FLAG |

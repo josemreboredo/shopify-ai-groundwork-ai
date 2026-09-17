@@ -5,6 +5,9 @@
  * model as evidence) and by backlog stories. Signals are reasons, not
  * decisions: the consultant confirms the app choice.
  *
+ * A tool the client already uses or prefers is also a signal, so the approach
+ * confirms it instead of silently recommending native features.
+ *
  * Native baseline assumed: Shopify return rules and self-serve returns in new
  * customer accounts, staff-created refunds and exchanges, the order status
  * page, and email/SMS shipping notifications.
@@ -14,6 +17,9 @@
 
 /** Monthly returns above this volume make a returns platform worth evaluating. */
 export const RETURNS_VOLUME_THRESHOLD = 100;
+
+/** A named tool that is really Shopify's own feature is not a reason for an app. */
+const isNamedApp = (name) => typeof name === 'string' && name.trim() !== '' && !/^(shopify|native|none|n\/?a)\b/i.test(name.trim());
 
 /**
  * @typedef {Object} AppSignals
@@ -47,12 +53,17 @@ export function appSignals(doc) {
     ? Math.round((pp.orders_per_month * returns.return_rate_pct) / 100)
     : undefined;
   if (volume !== undefined && volume >= RETURNS_VOLUME_THRESHOLD) returnsPlatform.push(`About ${volume} returns per month`);
+  if (isNamedApp(returns.solution)) returnsPlatform.push(`Client uses or prefers ${returns.solution.trim()} for returns`);
+  for (const i of (doc.integrations ?? []).filter((x) => x.category === 'returns' && isNamedApp(x.system))) {
+    returnsPlatform.push(`${i.system} is in the client's system landscape (${i.status ?? 'status unknown'})`);
+  }
 
   const postPurchase = [];
   if (tracking.branded_tracking_page === true) postPurchase.push('Branded order-tracking page');
   const extraChannels = (tracking.proactive_channels ?? []).filter((c) => c === 'whatsapp' || c === 'push');
   if (extraChannels.length) postPurchase.push(`Proactive delivery updates by ${extraChannels.join(' and ')}`);
   if (tracking.delivery_estimates === true) postPurchase.push('Estimated delivery dates on product page or checkout');
+  if (isNamedApp(pp.platform_preference)) postPurchase.push(`Client uses or prefers ${pp.platform_preference.trim()} for post-purchase`);
 
   const orderEditing = [];
   if (cancellations.self_service === true) orderEditing.push('Customers cancel orders themselves');

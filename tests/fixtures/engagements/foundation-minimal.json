@@ -76,7 +76,7 @@
   },
 
   "markets": {
-    "primary_market": "DE",
+    "primary_markets": ["DE"],
     "list": [
       { "code": "DE", "currency": "EUR", "languages": ["de"], "domain": "www.nordlicht-apparel.example", "price_strategy": "base_currency" }
     ],

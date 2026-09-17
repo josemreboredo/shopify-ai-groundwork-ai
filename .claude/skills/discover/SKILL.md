@@ -36,8 +36,10 @@ rules yourself, and never edit `decision.json` or `engagement.json` by hand — 
    If it lists problems, fix `extraction.json` and run it again (at most 3 attempts; then stop and show the
    remaining problems to the user).
 
-4. **Approach** (only if assemble printed GO) — read `<work>/approach-instructions.md` and write
-   `<work>/approach.json` as described.
+4. **Approach** (only if assemble printed GO or Larger Engagement) — read `<work>/approach-instructions.md` and
+   write `<work>/approach.json` as described. On a STOP without a route, assemble says so: ask the user whether
+   Merkle proceeds with a Larger Engagement (Merkle Enterprise Engagement with a dedicated Discovery Phase) or no
+   bid; the route comes from Q10.5.5 in the questionnaire.
 
 5. **Finish** — full validation and output:
    ```bash
@@ -47,5 +49,5 @@ rules yourself, and never edit `decision.json` or `engagement.json` by hand — 
 
 ## Report back
 
-In a few lines: client, offer (code and name), GO or STOP, each exit rule that fired with its evidence, the
+In a few lines: client, offer (code and name), GO or STOP (and the route), each exit rule that fired with its evidence, the
 number of open items, and the files written. Do not show internal pricing or modifiers.

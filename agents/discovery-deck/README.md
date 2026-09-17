@@ -1,19 +1,21 @@
 # Discovery Closing Deck
 
-Client-facing closing document for a discovery engagement, built from `clients/<slug>/engagement.json`
-(and `backlog.json` when present). Section specification: [`docs/discovery/deck-template.md`](../../docs/discovery/deck-template.md).
+Discovery Closing Document built from `clients/<slug>/engagement.json` (and `backlog.json` when present). Section
+specification: [`docs/discovery/deck-template.md`](../../docs/discovery/deck-template.md).
 
 ```bash
-npm run backlog -- --client <slug>     # optional but recommended: epic and story sections
-npm run deck -- --client <slug>        # → discovery-deck.xml (client-safe) + deck-internal-notes.md (internal)
+npm run backlog -- --client <slug>     # GO only: epic and story sections
+npm run deck -- --client <slug>        # → discovery-deck.xml (full information for the Lead Consultant)
 # In Claude Code: /deck <slug>  → writes discovery-deck.md from the XML and deck-prompt.md
-npm run deck:check -- --client <slug>  # verify discovery-deck.md has no internal data
+npm run deck:check -- --client <slug> [--file <client version>]  # passes only when internal data is removed
 ```
 
-**Client sees the price band only (D1).** Modifiers, price adds, effort weeks, story points and commercial
-warnings (exit rule 11.11) never enter the XML; `build.js` refuses to write XML that contains them, and
-`deck:check` scans the final document. They are summarised for the consultant in `deck-internal-notes.md`.
+**The deck is the Lead Consultant's draft (ADR 0010).** It carries all information: sections 1–17 are written
+for the client, section 18 *Consultant notes* holds offer rationale, price band, modifiers, budget vs band,
+commercial warnings, story points, answers to confirm and consultant notes. The LC filters before sharing;
+sections 1–17 never contain internal pricing, so removing section 18 gives a client-safe version (D1).
 
-STOP engagements produce a short document: cover, summary, blockers with resolution paths, next steps.
+Modes: GO (17 client sections), Larger Engagement (no offer, price band or backlog in the client sections — ADR
+0009), STOP (cover, summary, blockers, next steps). Every mode ends with section 18.
 
 Tests: `tests/unit/deck.test.js`.

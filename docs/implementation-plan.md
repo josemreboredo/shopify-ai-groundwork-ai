@@ -1,6 +1,6 @@
 # Implementation Plan — shopify-ai-builder
 
-> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 released (v0.3.0) · Phases 3–4 released (v0.4.0) · Phase 5 released (v0.5.0), pilot pending · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
+> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 released (v0.3.0) · Phases 3–4 released (v0.4.0) · Phase 5 released (v0.5.0), pilot pending · Larger Engagement and Lead Consultant deck released (v0.5.1) · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
 > **Input:** whole-project review (2026-09-16) — discovery chain, pipeline code/security, build layer.
 > **Methodology:** Gaia tiers T1–T4 (`gaia/methodology/feature-tiers.md`). Estimates are indicative
 > (one lead + AI agents) and are re-baselined at the end of Phase 1.
@@ -24,7 +24,7 @@ Interview (questionnaire → chatbot)
 
 | # | Decision | Recommendation | Why |
 |---|---|---|---|
-| D1 | What price does the client deck show? | Offer price band (S/M/L); modifiers and day ranges stay internal | `docs/strategy.md` — client sees one number, modifiers never shown |
+| D1 | What price does the client deck show? | Offer price band (S/M/L); modifiers and day ranges stay internal. *Amended by ADR 0010: the generated deck is the Lead Consultant's full-information draft; the LC filters before sharing* | `docs/strategy.md` — client sees one number, modifiers never shown |
 | D2 | Source of truth between pipeline stages | One `engagement.json` validated by JSON Schema; Markdown/XML/Jira are renderings of it | Today 3 incompatible spec shapes; deck parses Markdown nothing generates |
 | D3 | Frame Agent runtime | Port to Node (same runtime, one schema validator) | Only Python component; duplicated field logic drifted |
 | D4 | Dependency policy | Allow a small vetted set: `@anthropic-ai/sdk`, `ajv`, `yaml` | Hand-rolled YAML parser is the source of several data-loss bugs |

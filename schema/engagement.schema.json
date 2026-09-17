@@ -192,7 +192,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "primary_market": { "$ref": "#/$defs/country" },
+        "primary_markets": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/country" }, "description": "One or more markets that lead revenue and launch priority (e.g. US and EU for a global brand)." },
         "list": {
           "type": "array",
           "items": {
@@ -626,6 +626,7 @@
       "additionalProperties": false,
       "properties": {
         "go":                       { "type": "boolean" },
+        "route":                    { "enum": ["larger_engagement", "no_bid"], "description": "Consultant decision after a STOP: larger_engagement = Merkle Enterprise Engagement with a dedicated Discovery Phase (outside the S/M/L offers); no_bid = Merkle does not propose. Ignored on GO." },
         "kickoff_date":             { "$ref": "#/$defs/date" },
         "target_launch_date":       { "$ref": "#/$defs/date" },
         "hard_deadline_reason":     { "type": "string" },

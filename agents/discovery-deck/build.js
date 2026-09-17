@@ -3,23 +3,32 @@
  * @file build.js
  * @description Discovery Closing Deck (implementation plan Phase 3).
  *
- * Reads clients/<slug>/engagement.json (and backlog.json when present) and writes:
- *   - discovery-deck.xml        client-safe data for the deck (docs/discovery/deck-template.md)
- *   - deck-internal-notes.md    consultant-only: modifiers, gate evidence, story points, commercial warnings
+ * Reads clients/<slug>/engagement.json (and backlog.json when present) and writes
+ * discovery-deck.xml (docs/discovery/deck-template.md).
  *
- * The client sees the offer's price band only (D1). Modifiers, price adds,
- * effort weeks, story points and commercial warnings never enter the XML.
+ * The deck is the Lead Consultant's working draft (ADR 0010): it carries all
+ * information. Sections 1–17 are written for the client; section 18
+ * `consultant-notes` holds what the client normally does not see (offer
+ * rationale, modifiers, price adds, budget vs band, commercial warnings, story
+ * points, answers to confirm, consultant notes). The Lead Consultant filters
+ * before sharing and runs `deck:check` on the client version.
+ * A Larger Engagement (STOP routed to a Merkle Enterprise Engagement, ADR 0009)
+ * gets the solution sections without offer, price band or backlog: investment
+ * and backlog are defined in the dedicated Discovery Phase.
  *
  *   npm run deck -- --client <slug> [--clients-dir clients]
- *   npm run deck:check -- --client <slug>        # verify discovery-deck.md has no internal data
+ *   npm run deck:check -- --client <slug> [--file discovery-deck.client.md]   # client version has no internal data
  */
 
 import fs   from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { offering, validateEngagement } from '../../schema/index.js';
+import { offering, validateEngagement, questionsFeeding } from '../../schema/index.js';
 import { XmlWriter, esc } from './xml.js';
+import { stopRoute } from '../discovery/engine.js';
+import { planRequirements, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
+import { appSignals } from '../discovery/app-signals.js';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
@@ -59,6 +68,18 @@ export function monthlyAppCosts(apps = []) {
   return totals;
 }
 
+/** GO, LARGER_ENGAGEMENT or STOP. @param {object} doc */
+export function deckMode(doc) {
+  if (doc.delivery.go) return 'GO';
+  return stopRoute(doc)?.id === 'larger_engagement' ? 'LARGER_ENGAGEMENT' : 'STOP';
+}
+
+/** @param {object} doc */
+const isLarger = (doc) => deckMode(doc) === 'LARGER_ENGAGEMENT';
+
+/** The route entry for a Larger Engagement. @param {object} doc */
+const larger = (doc) => stopRoute(doc);
+
 /** @param {object} doc */
 const openStops = (doc) => doc.exits.items.filter((i) => i.result === 'STOP' && i.resolution?.status === 'open');
 /** @param {object} doc */
@@ -70,7 +91,7 @@ function cover(x, doc) {
   const c = doc.meta.client;
   x.open('section', { id: 'cover', n: 1 });
   x.field('client-name', c.legal_name ?? c.name);
-  x.field('project-name', `Shopify ${doc.offer.name}`);
+  x.field('project-name', isLarger(doc) ? `Shopify ${larger(doc).label}` : `Shopify ${doc.offer.name}`);
   x.field('consultant', doc.meta.consultant?.name, 'Q10.5.1 not answered');
   x.field('date', doc.meta.updated_at ?? doc.meta.created_at);
   x.field('confidentiality', `Confidential — prepared for ${c.legal_name ?? c.name}`);
@@ -79,15 +100,20 @@ function cover(x, doc) {
 
 function executiveSummary(x, doc) {
   x.open('section', { id: 'executive-summary', n: 2 });
-  x.field('status', doc.delivery.go ? 'GO' : 'STOP');
-  if (!doc.delivery.go) {
+  x.field('status', isLarger(doc) ? larger(doc).label : doc.delivery.go ? 'GO' : 'STOP');
+  if (isLarger(doc)) {
+    x.open('why-larger-engagement');
+    for (const i of openStops(doc)) x.field('reason', `${i.detail}: ${i.evidence}`, undefined, { rule: i.rule_id, 'discovery-phase-workstream': i.destination });
+    x.close();
+  } else if (!doc.delivery.go) {
     x.open('stop-reasons');
     for (const i of openStops(doc)) x.field('reason', `${i.rule_id}: ${i.evidence} → ${i.destination}`);
     x.close();
   }
   x.field('core-problem', doc.business?.primary_problem, 'Q0.1.1 not answered');
   x.open('proposed-solution');
-  x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
+  if (isLarger(doc)) x.field('engagement', larger(doc).proposal);
+  else x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
   x.field('delivery-track', TRACK_LABEL[doc.offer.delivery_track]);
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
   x.list('key-capabilities', (doc.approach?.capability_map ?? []).slice(0, 4).map((r) => r.requirement), 'No approach drafted (STOP or not yet run)');
@@ -119,7 +145,9 @@ function businessContext(x, doc) {
 function methodology(x, doc) {
   const provenance = Object.values(doc.provenance ?? {});
   x.open('section', { id: 'methodology', n: 4 });
-  x.field('approach', 'Structured discovery questionnaire (sections 0–11) → engagement specification → rules-based offer and risk screening → solution design → backlog');
+  x.field('approach', isLarger(doc)
+    ? 'Structured discovery questionnaire (sections 0–11) → engagement specification → rules-based offer and risk screening → recommended solution approach; the backlog is defined in the dedicated Discovery Phase'
+    : 'Structured discovery questionnaire (sections 0–11) → engagement specification → rules-based offer and risk screening → solution design → backlog');
   x.field('input', doc.meta.source);
   x.field('confirmed-answers-traced', provenance.filter((p) => p.status === 'confirmed').length);
   x.field('answers-to-confirm', provenance.filter((p) => p.status === 'tbc').length);
@@ -142,12 +170,13 @@ function solutionDesign(x, doc) {
   const markets = doc.markets?.list ?? [];
   const b2b = doc.b2b ?? {};
   x.open('section', { id: 'solution-design', n: 6 });
-  x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
+  if (isLarger(doc)) x.field('engagement', larger(doc).proposal);
+  else x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
   x.field('delivery-track', TRACK_LABEL[doc.offer.delivery_track]);
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
   x.field('architecture', `${doc.offer.delivery_track === 'hydrogen' ? 'Headless' : 'Online Store 2.0'} · ${markets.length > 1 ? `multi-market (${markets.length} markets)` : 'single market'}${b2b.enabled ? ' · B2B and DTC on one store' : ''}`);
   x.field('theme', doc.offer.delivery_track === 'liquid' ? `Horizon${doc.design?.theme_preference && doc.design.theme_preference !== 'Horizon' ? ` (client preference noted: ${doc.design.theme_preference})` : ''}` : 'Hydrogen');
-  x.open('markets', { strategy: doc.markets?.strategy, primary: doc.markets?.primary_market });
+  x.open('markets', { strategy: doc.markets?.strategy, primary: doc.markets?.primary_markets?.join(', ') });
   for (const mk of markets) x.empty('market', { code: mk.code, currency: mk.currency, languages: (mk.languages ?? []).join(', '), domain: mk.domain, pricing: mk.price_strategy });
   x.close();
   x.open('payments-and-checkout');
@@ -174,7 +203,8 @@ function solutionDesign(x, doc) {
   }
   x.close();
   x.open('migration', { from: doc.migration?.source_platform });
-  x.list('data', doc.migration?.data, 'No migration');
+  const source = doc.migration?.source_platform;
+  x.list('data', doc.migration?.data, source && source !== 'none' ? 'Q8.2.2 not answered' : 'No migration');
   x.close();
   x.close();
 }
@@ -262,7 +292,7 @@ function scopeByEpic(x, backlog) {
 function risks(x, doc) {
   x.open('section', { id: 'risks', n: 12 });
   for (const result of ['STOP', 'FLAG']) {
-    x.open(result === 'STOP' ? 'hard-blockers' : 'flags');
+    x.open(result === 'FLAG' ? 'flags' : isLarger(doc) ? 'discovery-phase-topics' : 'hard-blockers');
     for (const i of clientExits(doc).filter((e) => e.result === result)) {
       x.open('risk', { rule: i.rule_id, status: i.resolution?.status, owner: i.resolution?.owner });
       x.field('finding', i.evidence);
@@ -292,19 +322,26 @@ function nextSteps(x, doc) {
   x.open('section', { id: 'next-steps', n: 14 });
   x.list('owner-actions', clientExits(doc).filter((i) => i.resolution?.status === 'open').map((i) => `${i.resolution.owner}: ${i.destination} (${i.rule_id})`), 'No open exit rules');
   x.list('client-to-confirm', (doc.approach?.risks?.open_items ?? []).map((o) => o.why), 'No open questions');
-  x.list('standard', [
-    'Client reviews and signs off this Discovery Closing Document',
-    'Client confirms scope, exclusions and risk register',
-    'Merkle issues the fixed-price proposal',
-    'Sprint 1 kick-off',
-  ]);
+  x.list('standard', isLarger(doc)
+    ? [
+      'Client reviews this Discovery Closing Document',
+      'Client confirms priorities, launch waves and the topics for the Discovery Phase',
+      `Merkle issues the proposal for the ${larger(doc).proposal}`,
+      'Discovery Phase kick-off; the build backlog, plan and investment are agreed at its end',
+    ]
+    : [
+      'Client reviews and signs off this Discovery Closing Document',
+      'Client confirms scope, exclusions and risk register',
+      'Merkle issues the fixed-price proposal',
+      'Sprint 1 kick-off',
+    ]);
   x.close();
 }
 
 function timeline(x, doc) {
   const w = doc.offer.duration_weeks;
   x.open('section', { id: 'timeline', n: 15 });
-  x.field('delivery-duration', `${w.min}–${w.max} weeks`);
+  x.field('delivery-duration', isLarger(doc) ? 'Defined in the Discovery Phase' : `${w.min}–${w.max} weeks`);
   x.field('kick-off', doc.delivery?.kickoff_date, 'Q10.1.4 not answered');
   x.field('go-live-target', doc.delivery?.target_launch_date, 'Q10.1.1 not answered', { reason: doc.delivery?.hard_deadline_reason });
   x.list('phases', (doc.approach?.phases ?? []).map((p) => p.name), 'No approach drafted');
@@ -316,14 +353,19 @@ function timeline(x, doc) {
 function investment(x, doc) {
   const band = doc.offer.price_band;
   x.open('section', { id: 'investment', n: 16 });
-  x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
-  x.empty('price-band', { currency: band.currency, from: band.min, to: band.open_ended ? undefined : band.max, 'open-ended': band.open_ended ? 'true' : undefined });
-  x.field('note', 'Indicative band for the offer. A single fixed price is issued in the proposal after sprint planning.');
+  if (isLarger(doc)) {
+    x.field('engagement', larger(doc).proposal);
+    x.field('note', 'The Discovery Phase is quoted in the Enterprise Engagement proposal. Build investment is defined at the end of the Discovery Phase, once scope, launch waves and architecture are agreed.');
+  } else {
+    x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
+    x.empty('price-band', { currency: band.currency, from: band.min, to: band.open_ended ? undefined : band.max, 'open-ended': band.open_ended ? 'true' : undefined });
+    x.field('note', 'Indicative band for the offer. A single fixed price is issued in the proposal after sprint planning.');
+  }
   if (doc.business?.budget?.min !== undefined) {
     x.empty('client-budget', { currency: doc.business.budget.currency, from: doc.business.budget.min, to: doc.business.budget.max });
   }
   const totals = monthlyAppCosts(doc.approach?.app_shortlist);
-  x.open('recurring-costs', { note: 'Billed by third parties, not included in the band' });
+  x.open('recurring-costs', { note: isLarger(doc) ? 'Billed by third parties' : 'Billed by third parties, not included in the band' });
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Plan not recorded');
   for (const [currency, amount] of Object.entries(totals)) x.empty('apps-monthly', { currency, amount });
   x.close();
@@ -360,13 +402,16 @@ export function buildDeckXml(doc, backlog = null) {
     scopeByEpic(x, backlog);
     for (const section of [risks, outOfScope, nextSteps, timeline, investment]) section(x, doc);
     appendixStories(x, backlog);
+  } else if (isLarger(doc)) {
+    for (const section of [businessContext, methodology, asIs, solutionDesign, capabilityMap, scope, apps, workSplit, risks, outOfScope, nextSteps, timeline, investment]) section(x, doc);
   } else {
     for (const section of [risks, nextSteps]) section(x, doc);
   }
+  consultantNotes(x, doc, backlog);
 
   const head = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    `<discovery-deck client="${esc(doc.meta.client.slug)}" mode="${doc.delivery.go ? 'GO' : 'STOP'}" template="docs/discovery/deck-template.md">`,
+    `<discovery-deck client="${esc(doc.meta.client.slug)}" mode="${deckMode(doc)}" audience="lead-consultant" template="docs/discovery/deck-template.md">`,
     `  <warnings count="${x.warnings.length}">`,
     ...x.warnings.map((w) => `    <warning>${esc(w)}</warning>`),
     '  </warnings>',
@@ -375,65 +420,93 @@ export function buildDeckXml(doc, backlog = null) {
 }
 
 /**
- * Consultant-only notes: why the offer is what it is, internal pricing levers,
- * commercial warnings and delivery effort.
+ * Section 18 — everything the Lead Consultant needs and the client normally does
+ * not see. The consultant decides what to keep.
  *
+ * @param {XmlWriter} x
  * @param {object} doc
  * @param {object|null} backlog
  */
-export function buildInternalNotes(doc, backlog = null) {
-  const lines = [
-    `# Deck internal notes — ${doc.meta.client.name}`,
-    '',
-    '> **INTERNAL — never share with the client.** Generated with `discovery-deck.xml`.',
-    '',
-    `## Offer ${doc.offer.code} — ${doc.offer.name}`,
-    '',
-    doc.offer.rationale ?? '',
-    '',
-    '| Scope gate | Active | Evidence |',
-    '|---|---|---|',
-    ...Object.entries(doc.offer.scope_gates).map(([id, g]) => `| ${id} | ${g.active ? 'yes' : 'no'} | ${g.evidence ?? ''} |`),
-    '',
-    '| L trigger | Active | Evidence |',
-    '|---|---|---|',
-    ...Object.entries(doc.offer.l_triggers ?? {}).map(([id, g]) => `| ${id} | ${g.active ? 'yes' : 'no'} | ${g.evidence ?? ''} |`),
-    '',
-    '## Internal modifiers',
-    '',
-  ];
-  const modifiers = offering.modifiers.filter((mod) => doc.offer.modifiers?.includes(mod.id));
-  lines.push(modifiers.length
-    ? ['| Modifier | Effort | Price add |', '|---|---|---|', ...modifiers.map((mod) => `| ${mod.id} | +${mod.effort_weeks.min}–${mod.effort_weeks.max} weeks | +${offering.currency} ${mod.price_add.min}–${mod.price_add.max} |`)].join('\n')
-    : '_None applied._');
-
+function consultantNotes(x, doc, backlog) {
   const band = doc.offer.price_band;
+  const route = stopRoute(doc);
+  x.open('section', { id: 'consultant-notes', n: 18, audience: 'lead-consultant' });
+  x.field('purpose', 'Internal information for the Lead Consultant. Keep, rewrite or remove before the document reaches the client.');
+
+  x.open('engagement', { status: isLarger(doc) ? 'LARGER_ENGAGEMENT' : doc.delivery.go ? 'GO' : 'STOP', route: route?.id });
+  if (route) x.field('route', route.label, undefined, { proposal: route.proposal });
+  x.field(isLarger(doc) || !doc.delivery.go ? 'nearest-offer' : 'offer', doc.offer.name, undefined, { code: doc.offer.code, track: doc.offer.delivery_track });
+  x.empty('price-band', { currency: band.currency, from: band.min, to: band.open_ended ? undefined : band.max, 'open-ended': band.open_ended ? 'true' : undefined, 'reference-only': doc.delivery.go ? undefined : 'true' });
+  x.empty('duration-weeks', { from: doc.offer.duration_weeks.min, to: doc.offer.duration_weeks.max });
+  if (doc.offer.rationale) x.field('rationale', doc.offer.rationale);
+  x.close();
+
+  x.open('scope-gates');
+  for (const [id, g] of Object.entries(doc.offer.scope_gates)) x.field('gate', g.evidence ?? '—', undefined, { id, active: String(g.active) });
+  for (const [id, g] of Object.entries(doc.offer.l_triggers ?? {})) x.field('l-trigger', g.evidence ?? '—', undefined, { id, active: String(g.active) });
+  x.close();
+
+  const modifiers = offering.modifiers.filter((mod) => doc.offer.modifiers?.includes(mod.id));
+  x.open('modifiers');
+  for (const mod of modifiers) x.empty('modifier', { id: mod.id, 'effort-weeks': `${mod.effort_weeks.min}–${mod.effort_weeks.max}`, 'price-add': `${offering.currency} ${mod.price_add.min}–${mod.price_add.max}` });
+  x.close();
+
   const budget = doc.business?.budget;
-  lines.push('', '## Budget vs band', '');
-  lines.push(budget?.min !== undefined
-    ? `Client budget ${budget.currency} ${budget.min}–${budget.max} · offer band ${band.currency} ${band.min}–${band.open_ended ? '…' : band.max}${budget.currency === band.currency && budget.max < band.min ? ' · **budget below the band**' : budget.currency === band.currency && budget.min < band.min ? ' · **budget overlaps only the low end of the band**' : ''}`
-    : 'Client budget not recorded.');
+  x.field('budget-vs-band', budget?.min !== undefined
+    ? `Client budget ${budget.currency} ${budget.min}–${budget.max} · ${doc.delivery.go ? 'offer' : 'reference'} band ${band.currency} ${band.min}–${band.open_ended ? '…' : band.max}${budget.currency === band.currency && budget.max < band.min ? ' · budget below the band' : budget.currency === band.currency && budget.min < band.min ? ' · budget overlaps only the low end of the band' : ''}`
+    : 'Client budget not recorded (Q0.6.1)');
 
-  const warns = doc.exits.items.filter((i) => i.result === 'WARN');
-  lines.push('', '## Commercial warnings', '');
-  lines.push(warns.length ? warns.map((i) => {
+  x.open('exit-rules');
+  for (const i of doc.exits.items) {
     const rule = offering.exit_rules.find((r) => r.id === i.rule_id);
-    return `- ${i.rule_id}: ${i.evidence} — ${rule?.internal_note ?? i.destination}`;
-  }).join('\n') : '_None._');
-
-  lines.push('', '## Delivery effort (backlog)', '');
-  if (backlog) {
-    const total = backlog.summary.reduce((n, r) => n + r.points, 0);
-    lines.push('| Epic | Stories | Points |', '|---|---|---|', ...backlog.summary.map((r) => `| ${r.name} | ${r.stories} | ${r.points} |`), `| **Total** | **${backlog.stories.length}** | **${total}** |`);
-    lines.push('', `Offer duration: ${doc.offer.duration_weeks.min}–${doc.offer.duration_weeks.max} weeks.`);
-  } else {
-    lines.push('_No backlog yet._');
+    x.open('rule', { id: i.rule_id, result: i.result, source: i.source, status: i.resolution?.status, owner: i.resolution?.owner, questions: questionsFeeding(`exit:${i.rule_id}`).join(', ') || undefined });
+    x.field('evidence', i.evidence ?? '—');
+    x.field('destination', i.destination ?? '—');
+    if (rule?.internal_note) x.field('internal-note', rule.internal_note);
+    x.close();
   }
+  x.close();
 
-  const tbc = Object.entries(doc.provenance ?? {}).filter(([, p]) => p.status === 'tbc');
-  lines.push('', '## Answers to confirm before presenting', '');
-  lines.push(tbc.length ? tbc.map(([pointer, p]) => `- \`${pointer}\` (${p.question_id ?? '?'})${p.note ? ` — ${p.note}` : ''}`).join('\n') : '_None._');
-  return `${lines.join('\n')}\n`;
+  x.open('shopify-plan', { target: doc.shopify?.target_plan });
+  for (const r of planRequirements(doc)) x.field('requirement', r.feature, undefined, { plan: PLAN_NAME[r.plan], docs: r.docs });
+  x.close();
+
+  x.open('app-signals');
+  for (const [area, reasons] of Object.entries(appSignals(doc))) {
+    for (const reason of reasons) x.field('signal', reason, undefined, { area });
+  }
+  x.close();
+
+  x.open('delivery-effort');
+  if (backlog) {
+    for (const row of backlog.summary) x.empty('epic', { name: row.name, stories: row.stories, points: row.points });
+    x.field('total-points', backlog.summary.reduce((n, r) => n + r.points, 0));
+  } else {
+    x.field('note', isLarger(doc) || !doc.delivery.go ? 'No Jira backlog: defined in the Discovery Phase' : 'No backlog yet — npm run backlog -- --client <slug>');
+  }
+  x.close();
+
+  x.open('answers-to-confirm');
+  for (const [pointer, p] of Object.entries(doc.provenance ?? {}).filter(([, v]) => v.status === 'tbc')) {
+    x.field('answer', p.note || pointer, undefined, { pointer, question: p.question_id, source: p.source });
+  }
+  x.close();
+
+  x.open('notes');
+  for (const n of doc.notes ?? []) x.field('note', n.text, undefined, { at: n.at, author: n.author_role });
+  x.close();
+  x.close();
+}
+
+/**
+ * The client-facing part of a deck text: everything except section 18.
+ *
+ * @param {string} text  XML or Markdown
+ */
+export function clientPart(text) {
+  return text
+    .replace(/<section id="consultant-notes"[\s\S]*?<\/section>\n?/, '')
+    .replace(/\n## Consultant notes[\s\S]*$/, '\n');
 }
 
 /**
@@ -449,6 +522,10 @@ export function internalTerms(doc, backlog = null) {
   for (const rule of offering.exit_rules) if (rule.internal_note) terms.add(rule.internal_note);
   for (const i of doc.exits.items.filter((e) => e.result === 'WARN')) terms.add(i.evidence);
   if (backlog) terms.add(`${backlog.summary.reduce((n, r) => n + r.points, 0)} points`);
+  if (isLarger(doc)) {
+    // No standard offer or band is proposed to a Larger Engagement client.
+    for (const t of ['price-band', 'price band', doc.offer.name]) terms.add(t);
+  }
   return [...terms];
 }
 
@@ -477,21 +554,23 @@ export function loadClient(clientDir) {
   const { valid, errors } = validateEngagement(doc);
   if (!valid) throw new Error(`engagement.json is invalid:\n  • ${errors.slice(0, 10).join('\n  • ')}`);
   const backlogFile = path.join(clientDir, 'backlog.json');
-  const backlog = fs.existsSync(backlogFile) ? JSON.parse(fs.readFileSync(backlogFile, 'utf8')) : null;
+  // Only GO engagements have a Jira backlog; a stale file from an earlier run is ignored.
+  const backlog = deckMode(doc) === 'GO' && fs.existsSync(backlogFile) ? JSON.parse(fs.readFileSync(backlogFile, 'utf8')) : null;
   return { doc, backlog };
 }
 
 /**
- * Write discovery-deck.xml and deck-internal-notes.md.
+ * Write discovery-deck.xml (the Lead Consultant's full-information draft data).
  *
  * @param {{ clientDir: string }} options
  */
 export function writeDeck({ clientDir }) {
   const { doc, backlog } = loadClient(clientDir);
   const { xml, warnings } = buildDeckXml(doc, backlog);
-  const leaks = findLeaks(xml, doc, backlog);
-  if (leaks.length) throw new Error(`Refusing to write: client XML contains internal data (${leaks.join(', ')})`);
-  const files = { 'discovery-deck.xml': xml, 'deck-internal-notes.md': buildInternalNotes(doc, backlog) };
+  const leaks = findLeaks(clientPart(xml), doc, backlog);
+  if (leaks.length) throw new Error(`Internal data outside the consultant-notes section (${leaks.join(', ')}) — fix the deck builder`);
+  fs.rmSync(path.join(clientDir, 'deck-internal-notes.md'), { force: true }); // replaced by section 18
+  const files = { 'discovery-deck.xml': xml };
   const written = Object.entries(files).map(([name, content]) => {
     const target = path.join(clientDir, name);
     fs.writeFileSync(target, content, 'utf8');
@@ -513,24 +592,27 @@ function main() {
 
   if (maybeCommand === 'check') {
     const { doc, backlog } = loadClient(clientDir);
-    const deckFile = path.join(clientDir, 'discovery-deck.md');
-    if (!fs.existsSync(deckFile)) throw new Error('discovery-deck.md not found — generate it first (/deck skill).');
+    const name = get('--file') ?? 'discovery-deck.md';
+    const deckFile = path.join(clientDir, path.basename(name));
+    if (!fs.existsSync(deckFile)) throw new Error(`${name} not found — generate the deck first (/deck skill).`);
     const leaks = findLeaks(fs.readFileSync(deckFile, 'utf8'), doc, backlog);
     if (leaks.length) {
-      console.error(`✗ discovery-deck.md contains internal data — remove before sharing:\n  • ${leaks.join('\n  • ')}`);
+      console.error(`✗ ${path.basename(deckFile)} still contains internal data — remove it before the document goes to the client:\n  • ${leaks.join('\n  • ')}`);
       process.exit(2);
     }
-    console.log('✓ discovery-deck.md contains no internal pricing, modifiers, points or commercial warnings');
+    console.log(`✓ ${path.basename(deckFile)} contains no internal pricing, modifiers, points or commercial warnings — ready for the client`);
     return;
   }
 
   const { doc, backlog, warnings, written } = writeDeck({ clientDir });
-  console.log(`✓ ${doc.meta.client.name} · ${doc.delivery.go ? 'GO' : 'STOP'} deck data${backlog ? ` · ${backlog.stories.length} stories` : ' · no backlog yet'}`);
+  const mode = { GO: 'GO', STOP: 'STOP', LARGER_ENGAGEMENT: 'Larger Engagement' }[deckMode(doc)];
+  console.log(`✓ ${doc.meta.client.name} · ${mode} deck data${deckMode(doc) !== 'GO' ? '' : backlog ? ` · ${backlog.stories.length} stories` : ' · no backlog yet'}`);
   if (warnings.length) {
     console.log(`  ${warnings.length} field(s) to complete:`);
     for (const w of warnings) console.log(`  • ${w}`);
   }
   for (const file of written) console.log(`  wrote ${path.relative(process.cwd(), file)}`);
+  console.log('  Lead Consultant draft: all information included (section 18 = consultant notes). Filter before sharing, then run deck:check on the client version.');
 }
 
 if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {

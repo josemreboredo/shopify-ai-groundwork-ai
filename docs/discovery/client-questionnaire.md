@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.0.0 · offering 1.0.0
+> **Version:** question bank 1.0.0 · offering 1.1.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call (60–90 min),
 > then complete § 11 straight after. Answer every *required* question — "TBC" is acceptable,
@@ -333,7 +333,8 @@
 |---|---|---|---|---|
 | | | | | |
 
-**Q3.1.2** — Which is the primary market? *(required)*
+**Q3.1.2** — Which are the primary markets (one or more country or market codes)? *(required)*
+*The markets that lead revenue and launch priority, e.g. US and EU for a global brand.*
 
 > Answer:
 
@@ -438,7 +439,7 @@
 ### 4.2 Checkout
 
 **Q4.2.1** — What level of checkout customisation is needed: none, Checkout Extensibility (branding, extra fields, upsells), or a fully custom checkout UI? *(required)*
-*Extensibility requires Shopify Plus (11.1); a custom checkout UI is a hard stop (11.6).*
+*Branding in the checkout editor and blocks on the Thank you / Order status pages work on every plan; extensions on the information, shipping or payment steps and the Checkout Branding API need Shopify Plus (11.1). A fully custom checkout UI is not possible on Shopify (11.6).*
 
 *(tick one)*
 - [ ] none
@@ -755,6 +756,7 @@
 ### 6.2 B2B & wholesale
 
 **Q6.2.1** — Do you sell to business customers (B2B / wholesale)? *(required)*
+*Shopify B2B runs on every plan from Basic (up to 3 shared catalogs); company-specific catalogs need Shopify Plus.*
 
 - [ ] Yes
 - [ ] No
@@ -767,6 +769,7 @@
 
 **Q6.2.3** — Do B2B customers get company-specific price lists? *(required)*
 *Skip if Q6.2.1 = no.*
+*Company-specific B2B catalogs need Shopify Plus (11.1); other plans share up to 3 active B2B catalogs.*
 
 - [ ] Yes
 - [ ] No
@@ -875,6 +878,7 @@
 - [ ] No
 
 **Q6.4.4** — Do you collect sensitive personal data (health, age, biometric, financial)? *(required)*
+*Flag 11.17 — needs a data protection impact assessment and legal sign-off.*
 
 - [ ] Yes
 - [ ] No
@@ -1358,6 +1362,14 @@
 
 > Answer:
 
+**Q10.5.5** — Discovery hit a STOP. How will Merkle proceed: Larger Engagement or no bid? *(recommended · consultant)*
+*Only if a § 11 rule is STOP.*
+*Larger Engagement: Merkle proposes an Enterprise Engagement with a dedicated Discovery Phase; the approach, a brief and the client deck are still produced, Jira tickets are not. No bid produces the STOP report only.*
+
+*(tick one)*
+- [ ] larger engagement
+- [ ] no bid
+
 ---
 
 ## § 11 — Exit-trigger screening
@@ -1368,13 +1380,13 @@
 
 | Rule | Condition | Result | If triggered | Answered by | Outcome (triggered / clear) |
 |---|---|---|---|---|---|
-| 11.1 | A Shopify Plus feature is required (native B2B, Checkout Extensibility customisation, expansion stores) but the target plan is not Plus. A fully custom checkout UI is handled by 11.6, not here | STOP | Confirm Shopify Plus or remove the feature from scope | Q1.2.3, Q3.1.4, Q4.2.1, Q6.2.1 | |
+| 11.1 | A required Shopify feature needs a higher plan than the target plan, per Shopify's plan documentation (Plus: company-specific B2B catalogs, checkout step extensions / Checkout Branding API, expansion stores). Shopify B2B itself runs on every plan from Basic. A fully custom checkout UI is handled by 11.6, not here | STOP | Confirm the plan the requirements need, or remove the feature from scope | Q1.2.3, Q3.1.4, Q4.2.1, Q6.2.3 | |
 | 11.2 | B2B requires RFQ / quote or custom negotiated pricing per buyer | STOP | Architecture review: Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform | Q6.2.6 | |
-| 11.3 | More than 5 Shopify Markets at launch | STOP | Scale programme | Q3.1.1 | |
-| 11.4 | More than 6 distinct languages across all markets | STOP | Scale programme | Q3.1.1 | |
+| 11.3 | More than 5 Shopify Markets at launch | STOP | Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase | Q3.1.1 | |
+| 11.4 | More than 6 distinct languages across all markets | STOP | Larger Engagement: translation and content operations in the Discovery Phase | Q3.1.1 | |
 | 11.5 | More than 3 variant options per product | STOP | Architecture review | Q2.1.2 | |
 | 11.6 | Custom checkout UI that cannot be built with Checkout Extensibility | STOP | Composable platform | Q4.2.1 | |
-| 11.7 | More than 3 integrations at launch (counted per integration_definition) | STOP | Bespoke quote | Q8.1.1 | |
+| 11.7 | More than 3 integrations at launch (counted per integration_definition) | STOP | Larger Engagement: integration architecture in the Discovery Phase | Q8.1.1 | |
 | 11.8 | Regulated industry (pharma, alcohol, firearms, age-restricted, financial products, medical devices) | STOP | Legal / compliance review | Q1.1.3, Q10.4.1 | |
 | 11.9 | PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data) | STOP | Security review (threat model mandatory) | Q4.1.5 | |
 | 11.10 | GDPR / CCPA data export or deletion workflow required | FLAG | Legal sign-off on data-subject request handling | Q6.4.5 | |
@@ -1384,6 +1396,7 @@
 | 11.14 | Migration with significant SEO equity or complex historical data | FLAG | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5 | |
 | 11.15 | Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks | FLAG | Re-scope to an MVP-first delivery before any sprint begins | Q10.1.1 | |
 | 11.16 | No single decision-maker, or budget approval authority is unclear | FLAG | Named client decision-maker and budget owner confirmed before the statement of work is signed | Q10.2.2, Q10.2.3 | |
+| 11.17 | Sensitive personal data is collected (health, age, biometric or financial data; special-category data under GDPR art. 9) | FLAG | Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build | Q6.4.4 | |
 
 ---
 

@@ -1,7 +1,8 @@
 /**
  * @file preview.js
  * @description Live preview during the interview: offer, scope gates,
- * L triggers, exit rules and coverage, computed by the same code as discovery.
+ * L triggers, exit rules, route, plan suggestion and coverage, computed by the
+ * same code as discovery.
  * A gate or trigger whose inputs are all unanswered is "unknown", not "inactive".
  *
  * @module interview/preview
@@ -12,6 +13,7 @@ import { assemble } from '../discovery/engine.js';
 import { classifyOffer } from '../discovery/classify.js';
 import { evaluateExits } from '../discovery/exits.js';
 import { appSignals } from '../discovery/app-signals.js';
+import { planSuggestion } from '../discovery/plan.js';
 import { isAnswered } from './session.js';
 import { unansweredInMode } from './next.js';
 
@@ -40,7 +42,7 @@ export function preview(session, today) {
 
   const required = questionBank.questions.filter((q) => q.priority === 'required');
   const requiredIds = new Set(required.map((q) => q.id));
-  const openRequired = unansweredInMode({ ...session, mode: 'quick' }).filter((q) => !(q.id in session.tbc));
+  const openRequired = unansweredInMode(session).filter((q) => q.priority === 'required' && !(q.id in session.tbc));
   const tbcRequired = Object.keys(session.tbc).filter((id) => requiredIds.has(id)).length;
 
   return {
@@ -54,6 +56,8 @@ export function preview(session, today) {
     l_triggers: lTriggers,
     exit_rules: exits.items.map((i) => ({ rule: i.rule_id, result: i.result, evidence: i.evidence })),
     go: !exits.triggered,
+    ...(exits.triggered ? { route: doc.delivery?.route ?? 'not decided' } : {}),
+    ...(planSuggestion(doc) ? { plan_suggestion: planSuggestion(doc) } : {}),
     app_signals: appSignals(doc),
     coverage: {
       required_answered: required.filter((q) => q.maps_to.some((p) => isAnswered(session.answers, p))).length,

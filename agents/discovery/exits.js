@@ -9,9 +9,9 @@
 
 import { offering } from '../../schema/index.js';
 import { countedIntegrations, marketsOf, distinctLanguages } from './classify.js';
+import { unmetPlanRequirements, describeRequirements } from './plan.js';
 
 const RULES = new Map(offering.exit_rules.map((r) => [r.id, r]));
-const PLUS_PLANS = new Set(['plus', 'plus_expansion']);
 const DEFAULT_OWNER = 'Lead Consultant';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -34,13 +34,8 @@ function weeksBetween(from, to) {
  */
 const EVALUATORS = {
   '11.1': (doc) => {
-    const plan = doc.shopify?.target_plan;
-    if (!plan || PLUS_PLANS.has(plan)) return null;
-    const needs = [];
-    if (doc.b2b?.enabled === true && doc.b2b?.approach !== 'app') needs.push('native B2B');
-    if (doc.checkout?.customisation === 'extensibility') needs.push('Checkout Extensibility');
-    if (['expansion_stores', 'hybrid'].includes(doc.markets?.strategy)) needs.push('expansion stores');
-    return needs.length ? `Target plan "${plan}" but requires ${needs.join(', ')}` : null;
+    const unmet = unmetPlanRequirements(doc);
+    return unmet.length ? `Target plan "${doc.shopify.target_plan}" but the answers need ${describeRequirements(unmet)}` : null;
   },
 
   '11.2': (doc) => (doc.b2b?.rfq_or_negotiated_pricing === true ? 'B2B requires RFQ / negotiated pricing' : null),
@@ -121,6 +116,8 @@ const EVALUATORS = {
     if (d.budget_authority_clear === false) gaps.push('budget authority unclear');
     return gaps.length ? gaps.join('; ') : null;
   },
+
+  '11.17': (doc) => (doc.compliance?.sensitive_data === true ? 'Sensitive personal data collected (health, age, biometric or financial)' : null),
 };
 
 /**

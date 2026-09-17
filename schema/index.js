@@ -100,7 +100,8 @@ export function enumValues(node) {
 // ─── Offering references ──────────────────────────────────────────────────────
 
 /**
- * All ids a question may reference in `feeds`, e.g. "gate:markets", "exit:11.3".
+ * All ids a question may reference in `feeds`, e.g. "gate:markets", "exit:11.3",
+ * "app:returns_platform".
  *
  * @returns {Map<string, { kind: string, id: string, inputs: string[] }>}
  */
@@ -109,6 +110,7 @@ export function offeringReferences() {
   for (const g of offering.scope_gates) refs.set(`gate:${g.id}`, { kind: 'gate', id: g.id, inputs: g.inputs });
   for (const t of offering.l_triggers)  refs.set(`l_trigger:${t.id}`, { kind: 'l_trigger', id: t.id, inputs: t.inputs });
   for (const r of offering.exit_rules)  refs.set(`exit:${r.id}`, { kind: 'exit', id: r.id, inputs: r.inputs });
+  for (const a of offering.app_signals) refs.set(`app:${a.id}`, { kind: 'app', id: a.id, inputs: a.inputs });
   return refs;
 }
 

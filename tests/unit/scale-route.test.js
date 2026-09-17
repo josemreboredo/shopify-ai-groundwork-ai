@@ -1,0 +1,170 @@
+/**
+ * v0.5.1: what happens after a STOP (route, Larger Engagement brief and deck, no backlog),
+ * consultant notes in the output, sensitive data flag 11.17, several primary
+ * markets, client app preferences as app signals, and the Plus suggestion.
+ */
+import { test, describe } from 'node:test';
+import assert from 'node:assert/strict';
+import fs   from 'node:fs';
+import os   from 'node:os';
+import path from 'node:path';
+
+import { validateEngagement } from '../../schema/index.js';
+import { run } from '../../agents/interview/cli.js';
+import { finishWork, WORK_FILES } from '../../agents/discovery/claude-code.js';
+import { toApproachPayload } from '../../agents/discovery/approach.js';
+import { evaluateExits } from '../../agents/discovery/exits.js';
+import { appSignals } from '../../agents/discovery/app-signals.js';
+import { needsApproach } from '../../agents/discovery/engine.js';
+import { buildBacklog } from '../../agents/backlog/cli.js';
+import { buildDeckXml, writeDeck, findLeaks, clientPart } from '../../agents/discovery-deck/build.js';
+
+const TODAY = '2026-09-17';
+const FIXTURES = path.join(import.meta.dirname, '..', 'fixtures', 'engagements');
+const load = (name) => JSON.parse(fs.readFileSync(path.join(FIXTURES, name), 'utf8'));
+const tmp = (prefix) => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+
+/**
+ * Interview a global client that hits STOP 11.3 (8 markets), optionally record a route, and finish.
+ *
+ * @param {string|null} route
+ */
+function stopInterview(route) {
+  const workRoot = tmp('route-');
+  const env = { workRoot, date: TODAY };
+  const client = 'global-demo';
+  const answer = (question, pointer, value, source = 'client') => {
+    const r = run('answer', { client, question, pointer, value: JSON.stringify(value), source }, env);
+    assert.equal(r.ok, true, `${pointer}: ${JSON.stringify(r.errors)}`);
+    return r;
+  };
+  run('start', { client, mode: 'quick' }, env);
+  answer('Q10.5.2', '/meta/consent/llm_processing', true, 'consultant');
+  answer('Q1.1.1', '/meta/client/name', 'Global Demo');
+  const codes = ['CH', 'DE', 'GB', 'US', 'HK', 'CN', 'AU', 'SG'];
+  const stop = answer('Q3.1.1', '/markets/list', codes.map((code) => ({ code, currency: 'EUR', languages: ['en'] })));
+  assert.equal(stop.go, false);
+  assert.equal(stop.route, 'not decided');
+  answer('Q3.1.2', '/markets/primary_markets', ['US', 'DE']);
+  answer('Q6.2.1', '/b2b/enabled', true);
+  answer('Q6.2.3', '/b2b/price_lists', true);
+  answer('Q6.4.4', '/compliance/sensitive_data', true);
+  assert.equal(run('note', { client, text: 'Offer a Larger Engagement with all collected information' }, env).ok, true);
+  if (route) answer('Q10.5.5', '/delivery/route', route, 'consultant');
+  const finished = run('finish', { client }, env);
+  assert.equal(finished.ok, true, JSON.stringify(finished.errors));
+  return { workDir: path.join(workRoot, client), finished, outDir: tmp('route-out-') };
+}
+
+describe('route after a STOP', () => {
+  test('Larger Engagement: approach, brief and client deck are produced; no Jira tickets; notes are kept', () => {
+    const { workDir, finished, outDir } = stopInterview('larger_engagement');
+    assert.equal(finished.route, 'larger_engagement');
+    assert.match(finished.next_step, /approach-instructions\.md/);
+    assert.match(fs.readFileSync(path.join(workDir, WORK_FILES.approachInstructions), 'utf8'), /Phase 1 is the Discovery Phase/);
+
+    const missing = finishWork({ workDir, outDir });
+    assert.equal(missing.ok, false);
+    assert.match(missing.errors[0], /Larger Engagement need a drafted approach/);
+
+    fs.writeFileSync(path.join(workDir, WORK_FILES.approach), JSON.stringify(toApproachPayload(load('acme-watches.json').approach)));
+    const done = finishWork({ workDir, outDir });
+    assert.equal(done.ok, true, JSON.stringify(done.errors));
+    const doc = done.engagement;
+    assert.equal(doc.delivery.go, false);
+    assert.equal(doc.delivery.route, 'larger_engagement');
+    assert.ok(doc.approach.capability_map.length > 0);
+    assert.deepEqual(doc.notes.map((n) => n.text), ['Offer a Larger Engagement with all collected information']);
+    assert.deepEqual(doc.markets.primary_markets, ['US', 'DE']);
+    const planItem = doc.approach.risks.open_items.find((o) => o.pointer === '/shopify/target_plan');
+    assert.match(planItem.why, /minimum plan for these answers: plus \(company-specific B2B catalogs/);
+
+    const clientDir = path.join(outDir, 'global-demo');
+    const files = done.written.map((f) => path.basename(f)).sort();
+    assert.deepEqual(files, ['app-shortlist.md', 'capability-map.md', 'delivery-plan.md', 'engagement.json', 'larger-engagement-brief.md', 'risks.md']);
+    const brief = fs.readFileSync(path.join(clientDir, 'larger-engagement-brief.md'), 'utf8');
+    for (const text of ['Status: **Larger Engagement**', 'Merkle Enterprise Engagement with a dedicated Discovery Phase', '8 markets at launch', 'Integration landscape', 'Offer a Larger Engagement', 'US, DE', 'minimum plus: company-specific B2B catalogs', 'No Jira tickets']) {
+      assert.ok(brief.includes(text), `brief should include "${text}"`);
+    }
+    assert.doesNotMatch(brief, /€|price band|\+25%|WARN/);
+
+    assert.throws(() => buildBacklog({ clientDir }), /Larger Engagement — no Jira tickets/);
+
+    fs.writeFileSync(path.join(clientDir, 'backlog.json'), JSON.stringify({ summary: [{ name: 'Stale', stories: 1, points: 5, deferred: 0 }], stories: [] }));
+    const deck = writeDeck({ clientDir });
+    const xml = fs.readFileSync(path.join(clientDir, 'discovery-deck.xml'), 'utf8');
+    assert.match(xml, /mode="LARGER_ENGAGEMENT"/);
+    assert.deepEqual([...xml.matchAll(/<section id="([^"]+)"/g)].map((m) => m[1]), ['cover', 'executive-summary', 'business-context', 'methodology', 'as-is',
+      'solution-design', 'capability-map', 'scope', 'apps', 'work-split', 'risks', 'out-of-scope', 'next-steps', 'timeline', 'investment', 'consultant-notes']);
+    assert.match(xml, /<why-larger-engagement>/);
+    assert.match(xml, /Discovery Phase kick-off/);
+    assert.doesNotMatch(xml, /scope-by-epic|appendix-stories|Stale/);
+    assert.doesNotMatch(clientPart(xml), /price-band/);
+    assert.ok(!clientPart(xml).includes(doc.offer.name), 'no standard offer name in the client sections of a Larger Engagement deck');
+    assert.deepEqual(findLeaks(clientPart(xml), deck.doc, null), []);
+    assert.deepEqual(findLeaks('Investment: price band EUR 100,000+', deck.doc, null), ['price band']);
+    const notes = xml.slice(xml.indexOf('<section id="consultant-notes"'));
+    for (const text of ['route="larger_engagement"', '<nearest-offer', 'reference-only="true"', 'Offer a Larger Engagement with all collected information', 'company-specific B2B catalogs']) {
+      assert.ok(notes.includes(text), `consultant notes should include ${text}`);
+    }
+  });
+
+  test('no route: STOP report only, it asks for the decision, and no backlog', () => {
+    const { workDir, finished, outDir } = stopInterview(null);
+    assert.equal(finished.route, 'not decided');
+    assert.equal(fs.existsSync(path.join(workDir, WORK_FILES.approachInstructions)), false);
+    const done = finishWork({ workDir, outDir });
+    assert.equal(done.ok, true, JSON.stringify(done.errors));
+    assert.deepEqual(done.written.map((f) => path.basename(f)).sort(), ['engagement.json', 'stop-report.md']);
+    const report = fs.readFileSync(path.join(outDir, 'global-demo', 'stop-report.md'), 'utf8');
+    assert.match(report, /Q10\.5\.5/);
+    assert.match(report, /Offer a Larger Engagement with all collected information/);
+    assert.throws(() => buildBacklog({ clientDir: path.join(outDir, 'global-demo') }), /resolve the open hard blockers/);
+  });
+
+  test('no bid: STOP report records the decision, no approach and no backlog', () => {
+    const { workDir, outDir } = stopInterview('no_bid');
+    const done = finishWork({ workDir, outDir });
+    assert.equal(done.ok, true, JSON.stringify(done.errors));
+    assert.equal(needsApproach(done.engagement), false);
+    assert.deepEqual(done.written.map((f) => path.basename(f)).sort(), ['engagement.json', 'stop-report.md']);
+    assert.match(fs.readFileSync(path.join(outDir, 'global-demo', 'stop-report.md'), 'utf8'), /Decision: \*\*No bid\*\*/);
+    assert.throws(() => buildBacklog({ clientDir: path.join(outDir, 'global-demo') }), /No bid/);
+  });
+
+  test('a route on a GO engagement changes nothing', () => {
+    const doc = load('acme-watches.json');
+    doc.delivery.route = 'larger_engagement';
+    assert.equal(validateEngagement(doc).valid, true);
+    assert.equal(needsApproach(doc), true);
+    const dir = tmp('route-go-');
+    fs.writeFileSync(path.join(dir, 'engagement.json'), JSON.stringify(doc));
+    assert.ok(buildBacklog({ clientDir: dir }).stories.length > 0);
+    assert.match(buildDeckXml(doc).xml, /mode="GO"/);
+  });
+});
+
+describe('rules and signals', () => {
+  test('11.17 flags sensitive personal data', () => {
+    const doc = load('acme-watches.json');
+    assert.ok(!evaluateExits(doc).items.some((i) => i.rule_id === '11.17'));
+    doc.compliance.sensitive_data = true;
+    const item = evaluateExits(doc).items.find((i) => i.rule_id === '11.17');
+    assert.equal(item.result, 'FLAG');
+    assert.equal(item.resolution.owner, 'Lead Consultant');
+  });
+
+  test('a returns or post-purchase tool the client uses or prefers is an app signal; Shopify native is not', () => {
+    const doc = load('foundation-minimal.json');
+    const base = appSignals(doc);
+    assert.deepEqual(base.returns_platform, []);
+    doc.shipping = { ...doc.shipping, returns: { ...doc.shipping?.returns, solution: 'Shopify native returns' } };
+    assert.deepEqual(appSignals(doc).returns_platform, []);
+    doc.shipping.returns.solution = 'Loop Returns';
+    doc.post_purchase = { ...doc.post_purchase, platform_preference: 'parcelLab' };
+    doc.integrations = [...(doc.integrations ?? []), { system: 'Returns hub', category: 'returns', status: 'to_build' }];
+    const s = appSignals(doc);
+    assert.deepEqual(s.returns_platform, ['Client uses or prefers Loop Returns for returns', "Returns hub is in the client's system landscape (to_build)"]);
+    assert.deepEqual(s.post_purchase_platform, ['Client uses or prefers parcelLab for post-purchase']);
+  });
+});

@@ -4,6 +4,29 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
+## [0.5.1] — 2026-09-17
+
+Fixes from the ReboLabs demo interview (ADR 0009).
+
+### Added
+- **Larger Engagement:** after a STOP the lead consultant records the route (`delivery.route`, question Q10.5.5, asked in every interview mode while a STOP is open): `larger_engagement` (Merkle Enterprise Engagement with a dedicated Discovery Phase) or `no_bid`. The STOP stays open
+- Larger Engagement output: drafted approach (Phase 1 = Discovery Phase, one workstream per open STOP), `larger-engagement-brief.md`, capability map, delivery plan, app shortlist and risks
+- Larger Engagement client deck (`mode="LARGER_ENGAGEMENT"`): solution sections without offer, price band, epics or stories; investment and build backlog defined in the Discovery Phase; `deck:check` fails on an offer name or price band
+- Exit rule 11.17 (FLAG): sensitive personal data (health, age, biometric, financial) needs a DPIA and legal sign-off
+- Minimum Shopify plan suggestion while the plan is open — in the interview preview, the plan open item and the approach input
+- App signals from a returns or post-purchase tool the client uses or prefers, or a returns system in the integration landscape
+
+### Changed
+- **Deck = Lead Consultant draft (ADR 0010, amends D1):** one full-information document; sections 1–17 for the client, section 18 *Consultant notes* with offer rationale, price band, modifiers, budget vs band, commercial warnings, story points, answers to confirm and consultant notes. `deck-internal-notes.md` is no longer written; `deck:check --file` checks the LC's client version
+- **Shopify plan logic per Shopify's documentation:** Shopify B2B runs on every plan from Basic, so native B2B no longer fires 11.1; company-specific B2B catalogs, checkout step extensions / Checkout Branding API and expansion stores need Plus. The plan suggestion names the minimum plan and its reasons
+- Exit rule destinations "Scale programme" (11.3, 11.4) and "Bespoke quote" (11.7) are now Larger Engagement workstreams
+- No Jira backlog for a Larger Engagement (`npm run backlog` explains why)
+- `markets.primary_market` (one country) is now `markets.primary_markets` (one or more) — re-run discovery for existing engagements
+- Consultant notes from the interview are stored in `engagement.notes` and shown in the STOP report, risks and brief (never sent to the model, never in the client deck)
+- Every interview mode asks the questions that feed the offer, an exit rule or an app signal (quick mode previously skipped e.g. SKU complexity, 11.1, 11.13, 11.14 and all returns / post-purchase signals)
+- `interview finish` warns when the offer is still provisional and returns the route
+- Offering 1.1.0
+
 ## [0.5.0] — 2026-09-17
 
 Phase 5 of the implementation plan — consultant interview.
