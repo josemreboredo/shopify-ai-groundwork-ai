@@ -124,15 +124,15 @@ export default function Manual({ loaderData }) {
             <li>researches every Shopify fact on help.shopify.com, shopify.dev, the Shopify App Store and the Shopify changelog;</li>
             <li>drafts the approach — architecture decisions with options, integration architecture, data model, non-functional requirements, capability map, apps, risk register, phases;</li>
             <li>saves it; the engine <strong>rejects</strong> anything without an official source, without the question it comes from, or incomplete, and Claude fixes it and saves again;</li>
-            <li>writes and saves two documents: the deck narrative and the annex.</li>
+            <li>builds the deck as slide templates and writes the annex, then saves both.</li>
           </ul>
         </li>
         <li>This can take up to 45 minutes and can need a few rounds. Let Claude finish; if it stops, ask it to continue.</li>
-        <li>Reload the <strong>Closing document</strong> tab and download what you need: <strong>PowerPoint (client version)</strong> for the meeting, <strong>PowerPoint (with consultant notes)</strong> for your own preparation, the <strong>Markdown</strong> of the narrative, and the <strong>annex document</strong> with the detailed analysis, the Shopify reference chapters and the bibliography. Each new version keeps the previous ones.</li>
+        <li>Reload the <strong>Closing document</strong> tab and download what you need: the <strong>deck</strong> and the <strong>annex</strong> as PowerPoint, the same two as Markdown, and a deck version that keeps the consultant notes for your own preparation. Every file carries its version number (v1.0, v1.1 …) and previous versions are kept.</li>
       </ol>
       <div className="card">
         <p className="question">What the document contains</p>
-        <p><strong>Deck:</strong> cover · executive summary · business context · how discovery was run · where the client is today · solution design with architecture decisions, integration architecture, data model and non-functional requirements · capability map · scope and phases · apps · configuration vs customisation · scope by epic · risks · out of scope · next steps · timeline · investment · <strong>Consultant notes</strong> (internal, left out of the client PowerPoint).</p>
+        <p><strong>Deck:</strong> title and agenda · the recommendation as a statement · business context and KPIs · where the client is today · a slide per architecture decision, with the options weighed and the chosen one marked · markets, integrations and capabilities as tables · configuration versus customisation · the risk register · the roadmap · apps and costs · investment · next steps. Consultant notes stay in the annex and out of the client deck.</p>
         <p><strong>Annex:</strong> the analysis behind each decision (criteria, every option with pros and cons, why the rejected options were rejected, what would change the decision) · the capability analysis · appendices and user stories · the bibliography · Merkle's verified Shopify reference chapters (plans, Markets, Managed Markets, payments and multi-currency, Liquid vs Hydrogen, B2B, migration, AI and agentic commerce), added automatically.</p>
         <p className="muted">Standard: each section starts with its conclusion; client facts cite their question (e.g. [Q3.1.1]) and are quoted in the annex; Shopify facts cite numbered official sources with a quote and the date they were checked.</p>
       </div>

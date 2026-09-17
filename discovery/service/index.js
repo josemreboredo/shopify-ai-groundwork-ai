@@ -23,6 +23,8 @@ import { displayValue } from './summary.js';
 import { approachBrief, closingStatus, deckBrief, decideFromSession, finaliseEngagement, needsApproach } from './closing.js';
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
+import { deckErrors } from './deck-template.js';
+import { deckToMarkdown } from './pptx.js';
 
 /**
  * @typedef {object} InterviewStore
@@ -95,6 +97,12 @@ export function citation({ document, location, quote }) {
  *   visibility: 'own' (consultants see their own engagements, owners all) or
  *   'all' (every signed-in user sees and works on every engagement).
  */
+/** Document versions: 1.0 on the first save, then 1.1, 1.2 … @param {string|undefined} previous */
+function nextVersion(previous) {
+  const [major, minor] = String(previous ?? '').split('.').map(Number);
+  return Number.isFinite(major) && Number.isFinite(minor) ? `${major}.${minor + 1}` : '1.0';
+}
+
 export function createDiscoveryService({ store, today = isoToday, visibility = 'own' }) {
   /** @param {User} user @param {object} session */
   const allowed = (user, session) => Boolean(user) && (visibility === 'all' || canAccess(user, session));
@@ -477,23 +485,52 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
      * @param {User} user @param {string} client @param {{ markdown: string, annex?: string }} input
      * @param {{ via?: Channel }} [options]
      */
-    async saveClosingDocument(user, client, { markdown, annex }, { via = 'claude' } = {}) {
+    async saveClosingDocument(user, client, { deck, annex, markdown }, { via = 'claude' } = {}) {
       const session = await load(user, client);
-      const text = String(markdown ?? '').trim();
       const annexText = String(annex ?? '').trim();
-      if (text.length < 500) throw new ServiceError(400, 'The document is too short — write the complete Discovery Closing Document');
+      let text = String(markdown ?? '').trim();
+      if (deck) {
+        const problems = deckErrors(deck);
+        if (problems.length) throw new ServiceError(400, 'Deck not saved', problems);
+        text = deckToMarkdown(deck);
+      } else if (text.length < 500) {
+        throw new ServiceError(400, 'Nothing to save — fill the deck templates (deck) or send the document as markdown');
+      }
+      if (annexText && annexText.length < 500) throw new ServiceError(400, 'The annex is too short — write the analysis, or leave it out');
       const personal = findPersonalData(`${text}\n${annexText}`);
       if (personal.length) throw new ServiceError(400, 'Document not saved', [`the document ${personal.join(' and ')} — remove personal data`]);
       const previous = session.closing?.document;
+      const version = nextVersion(previous?.version);
       session.closing = {
         ...session.closing,
         document: { markdown: `${text}
-`, ...(annexText ? { annex: `${annexText}\n` } : {}), saved_at: today(), by: user.login, via, answers: answerSnapshot(session) },
-        history: [...(previous ? [{ saved_at: previous.saved_at, by: previous.by, via: previous.via, markdown: previous.markdown, ...(previous.annex ? { annex: previous.annex } : {}) }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
+`, ...(deck ? { deck } : {}), ...(annexText ? { annex: `${annexText}\n` } : {}), version, saved_at: today(), by: user.login, via, answers: answerSnapshot(session) },
+        history: [...(previous ? [{ version: previous.version ?? '1.0', saved_at: previous.saved_at, by: previous.by, via: previous.via, markdown: previous.markdown, ...(previous.deck ? { deck: previous.deck } : {}), ...(previous.annex ? { annex: previous.annex } : {}) }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
       };
       session.updated_at = today();
       await store.save(session);
-      return { ok: true, saved_at: today(), annex: Boolean(annexText), versions: 1 + session.closing.history.length };
+      return { ok: true, saved_at: today(), version, annex: Boolean(annexText), versions: 1 + session.closing.history.length };
+    },
+
+    /**
+     * Everything needed to build a download: the deck Claude filled, the annex
+     * with the reference chapters appended, and the version for the file name.
+     *
+     * @param {User} user @param {string} client
+     */
+    async getClosingDownloads(user, client) {
+      const session = await load(user, client);
+      const doc = session.closing?.document;
+      if (!doc) return null;
+      const decided = decideFromSession(session, today());
+      const engagement = decided.ok ? decided.doc : {};
+      return {
+        version: doc.version ?? '1.0',
+        saved_at: doc.saved_at,
+        deck: doc.deck ?? null,
+        markdown: doc.markdown,
+        annex: doc.annex ? annexWithChapters(doc.annex, engagement) : null,
+      };
     },
 
     /**
@@ -521,12 +558,14 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const freshness = session.closing?.document
         ? answerChanges(session.closing.document.answers, session, describe)
         : { known: false, up_to_date: true, changes: [] };
+      const doc = session.closing?.document;
       return {
         freshness: { ...freshness, redraft_prompt: redraftPrompt(client, freshness.changes) },
+        version: doc?.version ?? (doc ? '1.0' : null),
         engagement: summary(session),
         approach: session.closing?.approach ? { saved_at: session.closing.approach.saved_at, by: session.closing.approach.by, via: session.closing.approach.via } : null,
         document: session.closing?.document ?? null,
-        history: (session.closing?.history ?? []).map(({ saved_at, by, via }) => ({ saved_at, by, via })),
+        history: (session.closing?.history ?? []).map(({ saved_at, by, via, version }) => ({ saved_at, by, via, version: version ?? '1.0' })),
       };
     },
 

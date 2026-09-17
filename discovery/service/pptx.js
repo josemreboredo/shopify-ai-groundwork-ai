@@ -1,23 +1,16 @@
 /**
  * @file pptx.js
- * @description The saved Discovery Closing Document (Markdown) as a PowerPoint
- * deck: `slidesFromMarkdown` turns the document into a slide model (pure, tested),
- * `closingDocumentPptx` renders that model with pptxgenjs. The client version
- * stops before "Consultant notes" (ADR 0010: internal content is section 18).
+ * @description Bridges Markdown and the deck templates: the annex document
+ * becomes deck slides, and a filled deck becomes Markdown for the text download.
+ * The deck itself is written by Claude as filled templates (`deck-template.js`)
+ * and rendered by `deck-render.js`.
  *
  * @module discovery/service/pptx
  */
 
-// Bundled into the server build (vite.config.js ssr.noExternal): a bare import
-// left external cannot be resolved in the deployed function.
-import PptxGenJS from 'pptxgenjs';
-
-
-const BULLETS_PER_SLIDE = 7;
-const ROWS_PER_SLIDE = 9;
+const BULLETS_PER_SLIDE = 6;
+const ROWS_PER_SLIDE = 8;
 const CONSULTANT_SECTION = /^consultant notes/i;
-/** Long reference material belongs in the annex document, not in the deck. */
-const ANNEX_SECTION = /^(appendix|annex|references|bibliography|sources)\b/i;
 
 /** Markdown emphasis, links and code spans as plain text. @param {string} text */
 export function plainText(text) {
@@ -35,93 +28,67 @@ export function plainText(text) {
 const isTableRow = (line) => /^\s*\|.*\|\s*$/.test(line);
 const isSeparator = (line) => /^\s*\|[\s:|-]+\|\s*$/.test(line);
 const cells = (line) => line.trim().replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map((c) => plainText(c));
-
-/** Chunk an array into slices of at most `size`. */
 const chunk = (items, size) => items.reduce((out, item, i) => (i % size ? out[out.length - 1].push(item) : out.push([item]), out), []);
 
 /**
- * Slide model for the closing document.
+ * The annex document as deck slides: `##` becomes a section divider, `###` a
+ * slide, bullets and tables the slide body. Long lists and tables are split.
  *
- * @param {string} markdown  The saved document
- * @param {{ internal?: boolean, annex?: boolean }} [options]  internal: keep the Consultant
- *   notes section · annex: keep appendices, references and bibliography
- * @returns {{ title: string, subtitle: string[], slides: Array<object> }}
+ * @param {string} markdown
+ * @param {{ internal?: boolean, title?: string, client?: string, date?: string }} [options]
+ * @returns {{ slides: Array<object> }}
  */
-export function slidesFromMarkdown(markdown, { internal = false, annex = false } = {}) {
+export function annexDeckFromMarkdown(markdown, { internal = false, title = 'Annex', client = '', date = '' } = {}) {
   const lines = String(markdown ?? '').split('\n');
-  let title = '';
-  const subtitle = [];
-  /** @type {Array<object>} */
   const slides = [];
+  let docTitle = title;
   let section = '';
   let heading = '';
-  /** @type {string[]} */
+  let sectionNumber = 0;
   let bullets = [];
-  /** @type {string[][]} */
   let table = [];
   let skipping = false;
   let inCode = false;
-  /** @type {string[]} */
-  let code = [];
 
   const flush = () => {
     if (bullets.length) {
-      for (const part of chunk(bullets, BULLETS_PER_SLIDE)) slides.push({ kind: 'bullets', section, heading, bullets: part });
+      for (const part of chunk(bullets, BULLETS_PER_SLIDE)) slides.push({ layout: 'bullets', headline: heading || section, bullets: part });
       bullets = [];
     }
     if (table.length > 1) {
       const [header, ...rows] = table;
       const parts = chunk(rows, ROWS_PER_SLIDE);
-      parts.forEach((part, i) => slides.push({ kind: 'table', section, heading: parts.length > 1 ? `${heading} (${i + 1}/${parts.length})` : heading, header, rows: part }));
+      parts.forEach((part, i) => slides.push({
+        layout: 'table',
+        headline: parts.length > 1 ? `${heading || section} (${i + 1}/${parts.length})` : heading || section,
+        columns: header.slice(0, 6),
+        rows: part.map((row) => row.slice(0, 6)),
+      }));
     }
     table = [];
-    if (code.length) {
-      slides.push({ kind: 'code', section, heading, lines: code });
-      code = [];
-    }
   };
 
   for (const raw of lines) {
     const line = raw.replace(/\s+$/, '');
-    if (/^```/.test(line)) {
-      if (inCode) flush();
-      inCode = !inCode;
-      continue;
-    }
-    if (inCode) {
-      if (!skipping) code.push(raw);
-      continue;
-    }
+    if (/^```/.test(line)) { inCode = !inCode; continue; }
+    if (inCode) continue;
     const h = /^(#{1,4})\s+(.*)$/.exec(line);
     if (h) {
       flush();
       const level = h[1].length;
-      const text = plainText(h[2]);
-      if (level === 1) {
-        title = text;
-        continue;
-      }
+      const value = plainText(h[2]);
+      if (level === 1) { docTitle = value; continue; }
       if (level === 2) {
-        const name = text.replace(/^\d+\.\s*/, '');
-        skipping = (!internal && CONSULTANT_SECTION.test(name)) || (!annex && ANNEX_SECTION.test(name));
-        section = text;
-        heading = text;
-        if (!skipping) slides.push({ kind: 'section', section, heading: text });
+        skipping = !internal && CONSULTANT_SECTION.test(value.replace(/^[A-Z]\.\s*|^\d+\.\s*/, ''));
+        section = value;
+        heading = value;
+        if (!skipping) slides.push({ layout: 'section', number: String(++sectionNumber).padStart(2, '0'), title: value.slice(0, 60) });
         continue;
       }
-      heading = text;
-      if (!skipping) slides.push({ kind: 'heading', section, heading: text });
+      heading = value;
       continue;
     }
-    if (skipping) continue;
-    if (!line.trim()) {
-      flush();
-      continue;
-    }
-    if (/^(---|\*\*\*)\s*$/.test(line)) {
-      flush();
-      continue;
-    }
+    if (skipping || !line.trim() || /^(---|\*\*\*)\s*$/.test(line)) { flush(); continue; }
     if (isTableRow(line)) {
       if (bullets.length) flush();
       if (!isSeparator(line)) table.push(cells(line));
@@ -130,88 +97,85 @@ export function slidesFromMarkdown(markdown, { internal = false, annex = false }
     if (table.length) flush();
     const bullet = /^\s*([-*+]|\d+\.)\s+(.*)$/.exec(line);
     const quote = /^>\s?(.*)$/.exec(line);
-    const text = plainText(bullet ? bullet[2] : quote ? quote[1] : line);
-    if (!text) continue;
-    if (!section && !bullet && !quote) {
-      subtitle.push(text);
-      continue;
-    }
-    bullets.push(text);
+    const value = plainText(bullet ? bullet[2] : quote ? quote[1] : line);
+    if (value) bullets.push(value);
   }
   flush();
-  // A heading slide is only kept when nothing else carries that heading (content slides repeat it in their header).
-  const withContent = new Set(slides.filter((s) => s.kind !== 'heading' && s.kind !== 'section').map((s) => s.heading));
-  return { title, subtitle, slides: slides.filter((s) => s.kind !== 'heading' || !withContent.has(s.heading)) };
+
+  return {
+    slides: [
+      { layout: 'title', client, project: docTitle, subtitle: 'The analysis, the sources and the reference chapters behind the closing deck', date },
+      ...slides,
+    ],
+  };
 }
 
-const INK = '1D1D1F';
-const MUTED = '6B6B73';
-const ACCENT = '0B57D0';
-const LINE = 'E3E3E8';
+const mdTable = (columns, rows) => [
+  `| ${columns.join(' | ')} |`,
+  `|${columns.map(() => '---').join('|')}|`,
+  ...rows.map((r) => `| ${r.map((c) => String(c ?? '').replace(/\|/g, '/')).join(' | ')} |`),
+].join('\n');
 
 /**
- * Render the closing document as a PowerPoint file.
+ * The filled deck as Markdown, for the text download and for reading in a chat.
  *
- * @param {string} markdown
- * @param {{ client: string, internal?: boolean, annex?: boolean, date?: string }} options
- * @returns {Promise<Buffer>}
+ * @param {{ slides: Array<object> }} deck
+ * @returns {string}
  */
-export async function closingDocumentPptx(markdown, { client, internal = false, annex = false, date = '' }) {
-  const model = slidesFromMarkdown(markdown, { internal, annex });
-  const pptx = new PptxGenJS();
-  pptx.layout = 'LAYOUT_16x9';
-  pptx.author = 'Merkle';
-  pptx.company = 'Merkle';
-  pptx.title = model.title || `Discovery Closing Document — ${client}`;
-
-  const footer = [client, date, internal ? 'Lead Consultant draft — contains internal notes' : 'Confidential'].filter(Boolean).join(' · ');
-  pptx.defineSlideMaster({
-    title: 'MERKLE',
-    background: { color: 'FFFFFF' },
-    objects: [
-      { rect: { x: 0, y: 5.05, w: '100%', h: 0.02, fill: { color: LINE } } },
-      { text: { text: footer, options: { x: 0.5, y: 5.1, w: 8, h: 0.3, fontSize: 9, color: MUTED } } },
-    ],
-    slideNumber: { x: 9.2, y: 5.1, fontSize: 9, color: MUTED },
-  });
-
-  const title = pptx.addSlide();
-  title.addText(model.title || `Discovery Closing Document — ${client}`, { x: 0.6, y: 1.6, w: 8.8, h: 1.0, fontSize: 32, bold: true, color: INK });
-  if (model.subtitle.length) {
-    title.addText(model.subtitle.slice(0, 3).join('\n'), { x: 0.6, y: 2.7, w: 8.8, h: 1.2, fontSize: 14, color: MUTED });
+export function deckToMarkdown(deck) {
+  const out = [];
+  for (const s of deck?.slides ?? []) {
+    switch (s.layout) {
+      case 'title':
+        out.push(`# ${s.project} — ${s.client}`, '', [s.subtitle, s.consultant, s.date].filter(Boolean).join(' · '), '');
+        break;
+      case 'agenda':
+        out.push(`## ${s.headline}`, '', ...(s.items ?? []).map((i, n) => `${n + 1}. ${i}`), '');
+        break;
+      case 'section':
+        out.push(`## ${s.number} ${s.title}`, '', ...(s.kicker ? [s.kicker, ''] : []));
+        break;
+      case 'statement':
+        out.push(`### ${s.headline}`, '', ...(s.support ?? []).map((b) => `- ${b}`), ...(s.evidence ? ['', `_Evidence: ${s.evidence}_`] : []), '');
+        break;
+      case 'bullets':
+        out.push(`### ${s.headline}`, '', ...(s.bullets ?? []).map((b) => `- ${b}`), ...(s.footnote ? ['', `_${s.footnote}_`] : []), '');
+        break;
+      case 'two_column':
+        out.push(`### ${s.headline}`, '', `**${s.left?.title}**`, ...(s.left?.bullets ?? []).map((b) => `- ${b}`), '', `**${s.right?.title}**`, ...(s.right?.bullets ?? []).map((b) => `- ${b}`), '');
+        break;
+      case 'kpis':
+        out.push(`### ${s.headline}`, '', mdTable(['KPI', 'Today', 'Target', 'By when'], (s.cards ?? []).map((c) => [c.metric, c.baseline, c.target, c.horizon ?? ''])), '');
+        break;
+      case 'decision':
+        out.push(`### ${s.topic} — ${s.decision}`, '', `**Question:** ${s.question}`, '',
+          mdTable(['Option', 'Pros', 'Cons'], (s.options ?? []).map((o) => [`${o.chosen ? '**' : ''}${o.option}${o.chosen ? '** (chosen)' : ''}`, o.pros, o.cons])), '',
+          `**Rationale:** ${s.rationale}`, '',
+          [s.status && `Status: ${s.status}`, s.plan_impact && `Plan impact: ${s.plan_impact}`, s.evidence && `Evidence: ${s.evidence}`].filter(Boolean).join(' · '),
+          ...(s.sources?.length ? ['', `Sources: ${s.sources.join(' · ')}`] : []), '');
+        break;
+      case 'table':
+        out.push(`### ${s.headline}`, '', mdTable(s.columns ?? [], s.rows ?? []), ...(s.footnote ? ['', `_${s.footnote}_`] : []), '');
+        break;
+      case 'risks':
+        out.push(`### ${s.headline}`, '', mdTable(['Risk', 'Likelihood', 'Impact', 'Mitigation', 'Owner', 'Evidence'],
+          (s.risks ?? []).map((r) => [r.risk, r.likelihood, r.impact, r.mitigation, r.owner, r.evidence ?? ''])), '');
+        break;
+      case 'roadmap':
+        out.push(`### ${s.headline}`, '', ...(s.phases ?? []).flatMap((p) => [`**${p.name}**${p.timing ? ` — ${p.timing}` : ''}`, ...(p.items ?? []).map((i) => `- ${i}`), '']));
+        break;
+      case 'split':
+        out.push(`### ${s.headline}`, '', mdTable(['Share', 'Value', 'Percent'], (s.segments ?? []).map((g) => [g.label, g.value, `${g.percent}%`])), ...(s.footnote ? ['', s.footnote] : []), '');
+        break;
+      case 'next_steps':
+        out.push(`### ${s.headline}`, '', '**Merkle**', ...(s.merkle ?? []).map((b) => `- ${b}`), '', '**Client**', ...(s.client ?? []).map((b) => `- ${b}`), ...(s.dates ? ['', s.dates] : []), '');
+        break;
+      case 'investment':
+        out.push(`### ${s.headline}`, '', `**${s.offer}** — ${s.band}`, ...(s.note ? ['', s.note] : []), ...(s.recurring?.length ? ['', '**Recurring, billed by third parties**', ...s.recurring.map((r) => `- ${r}`)] : []), '');
+        break;
+      default:
+        break;
+    }
   }
-  title.addShape('rect', { x: 0.6, y: 1.35, w: 1.2, h: 0.08, fill: { color: ACCENT } });
-
-  const head = (slide, s) => {
-    slide.addText(s.heading, { x: 0.5, y: 0.35, w: 9, h: 0.6, fontSize: 20, bold: true, color: INK });
-    if (s.section && s.section !== s.heading) {
-      slide.addText(s.section, { x: 0.5, y: 0.12, w: 9, h: 0.25, fontSize: 10, color: ACCENT });
-    }
-  };
-
-  for (const s of model.slides) {
-    const slide = pptx.addSlide({ masterName: 'MERKLE' });
-    if (s.kind === 'section') {
-      slide.addShape('rect', { x: 0.5, y: 2.1, w: 1.2, h: 0.08, fill: { color: ACCENT } });
-      slide.addText(s.heading, { x: 0.5, y: 2.3, w: 9, h: 0.9, fontSize: 26, bold: true, color: INK });
-      continue;
-    }
-    head(slide, s);
-    if (s.kind === 'bullets') {
-      slide.addText(s.bullets.map((t) => ({ text: t, options: { bullet: true, breakLine: true } })), {
-        x: 0.5, y: 1.1, w: 9, h: 3.7, fontSize: 13, color: INK, lineSpacingMultiple: 1.2, shrinkText: true,
-      });
-    } else if (s.kind === 'table') {
-      const header = s.header.map((t) => ({ text: t, options: { bold: true, color: MUTED, fontSize: 10 } }));
-      const rows = s.rows.map((r) => r.map((t) => ({ text: t, options: { fontSize: 10, color: INK } })));
-      slide.addTable([header, ...rows], {
-        x: 0.4, y: 1.1, w: 9.2, colW: undefined, border: { type: 'solid', color: LINE, pt: 0.5 },
-        autoPage: false, fontSize: 10, valign: 'top',
-      });
-    } else if (s.kind === 'code') {
-      slide.addText(s.lines.join('\n'), { x: 0.5, y: 1.1, w: 9, h: 3.7, fontSize: 9, fontFace: 'Courier New', color: INK, shrinkText: true });
-    }
-  }
-  const out = await pptx.write({ outputType: 'nodebuffer' });
-  return Buffer.isBuffer(out) ? out : Buffer.from(out);
+  return `${out.join('\n').trim()}\n`;
 }

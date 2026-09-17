@@ -7,98 +7,116 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-import { slidesFromMarkdown, plainText, closingDocumentPptx } from '../../service/pptx.js';
+import { annexDeckFromMarkdown, deckToMarkdown, plainText } from '../../service/pptx.js';
+import { buildDeckSchema, deckErrors, LAYOUTS } from '../../service/deck-template.js';
+import { renderDeckPptx } from '../../service/deck-render.js';
 import { REFERENCE_CHAPTERS, selectChapters, topicsFor, annexWithChapters, chapterBrief } from '../../service/reference.js';
 import { readChapters, renderChaptersModule, OUTPUT } from '../../scripts/render-reference-chapters.js';
 
-const DOC = `# Discovery Closing Document — ACME
+const DECK = {
+  slides: [
+    { layout: 'title', client: 'ACME Watches SA', project: 'Discovery Closing Document', subtitle: 'One Shopify Plus store for three markets and 500 retailers', date: '2026-09-17', consultant: 'Lead Consultant' },
+    { layout: 'agenda', headline: 'What we agreed and what is still open', items: ['Recommendation', 'Solution design', 'Risks', 'Next steps'] },
+    { layout: 'section', number: '02', title: 'Solution design', kicker: 'The decisions that shape the build' },
+    { layout: 'decision', topic: 'Store structure', question: 'One store with Markets, or a store per country?',
+      options: [
+        { option: 'One store with Markets', pros: 'One catalogue and one integration', cons: 'Market differences limited to Markets', chosen: true },
+        { option: 'Store per country', pros: 'Full separation', cons: 'Three integrations to run', chosen: false },
+      ],
+      decision: 'One store with Shopify Markets for CH, DE and AT', rationale: 'Three markets, one team, one warehouse.',
+      plan_impact: 'none', status: 'Recommended', evidence: 'Q3.1.1 · Q3.1.4', sources: ['https://help.shopify.com/en/manual/markets/getting-started/market-types'] },
+    { layout: 'kpis', headline: 'Three numbers decide whether this worked', cards: [
+      { metric: 'Mobile conversion', baseline: '0.7%', target: '1.2%', horizon: '12 months' },
+      { metric: 'Checkout abandonment', baseline: '68%', target: '55%', horizon: '6 months' },
+    ] },
+    { layout: 'risks', headline: 'Tax and migration carry the launch risk', risks: [
+      { risk: 'Import VAT configured wrongly', likelihood: 'medium', impact: 'high', mitigation: 'Tax adviser decides in sprint 0', owner: 'shared', evidence: 'Q3.4.1' },
+    ] },
+    { layout: 'next_steps', headline: 'Four decisions unblock the build', client: ['Confirm the tax model'], merkle: ['Legal sign-off on data requests'], dates: 'Kick-off 2026-10-05' },
+  ],
+};
 
-Prepared by Lead Consultant · 2026-09-17
+describe('the deck is filled templates, not prose', () => {
+  test('a complete deck passes', () => {
+    assert.deepEqual(deckErrors(DECK), []);
+  });
 
-## 1. Cover
+  test('missing fields, unknown layouts and stray fields are named', () => {
+    const errors = deckErrors({ slides: [
+      { layout: 'bullets', headline: 'No bullets here' },
+      { layout: 'hero', headline: 'Not a layout' },
+      { layout: 'table', headline: 'Markets', columns: ['Market', 'Currency'], rows: [['CH']], mood: 'blue' },
+    ] });
+    assert.ok(errors.some((e) => /slide 1 \(bullets\): bullets is required/.test(e)));
+    assert.ok(errors.some((e) => /slide 2 \(hero\): unknown layout/.test(e)));
+    assert.ok(errors.some((e) => /row 1 has 1 cells, the table has 2 columns/.test(e)));
+    assert.ok(errors.some((e) => /mood is not a field of the table layout/.test(e)));
+    assert.ok(errors.some((e) => /first slide must be the title/.test(e)));
+  });
 
-| | |
+  test('a decision slide must mark the option that was chosen', () => {
+    const deck = structuredClone(DECK);
+    deck.slides[3].options.forEach((o) => { o.chosen = false; });
+    assert.ok(deckErrors(deck).some((e) => /mark the chosen option/.test(e)));
+  });
+
+  test('every layout in the catalogue is offered to Claude in the schema', () => {
+    const schema = buildDeckSchema();
+    const offered = schema.properties.slides.items.anyOf.map((s) => s.properties.layout.const);
+    assert.deepEqual(offered.sort(), Object.keys(LAYOUTS).sort());
+  });
+
+  test('the deck renders as a PowerPoint', async () => {
+    const file = await renderDeckPptx(DECK, { client: 'acme-watches', version: '1.0' });
+    assert.ok(Buffer.isBuffer(file) && file.length > 20000);
+    assert.equal(file.subarray(0, 2).toString(), 'PK', 'pptx is a zip container');
+  });
+
+  test('the deck reads back as Markdown for the text download', () => {
+    const md = deckToMarkdown(DECK);
+    assert.match(md, /^# Discovery Closing Document — ACME Watches SA/);
+    assert.match(md, /\*\*One store with Markets\*\* \(chosen\)/);
+    assert.match(md, /Mobile conversion/);
+  });
+});
+
+describe('the annex becomes its own deck', () => {
+  const ANNEX = `# Annex — ACME
+
+## A. Decision analysis
+
+### A.1 Store structure
+
+- Three markets share one catalogue
+- Expansion stores would triple the integration work
+
+| Option | Cost |
 |---|---|
-| Client | ACME |
-
-## 2. Executive summary
-
-**Recommendation: one store with Shopify Markets.**
-
-- Three markets [Q3.1.1]
-- Native B2B on Plus [5]
-
-### Why Shopify Plus
-
-- Company-specific catalogs [5]
-- Checkout step extensions [6]
-
-## 12. Risks
-
-| Risk | Impact |
-|---|---|
-${Array.from({ length: 12 }, (_, i) => `| Risk ${i + 1} | High |`).join('\n')}
-
-## 17. Appendix — user stories
-
-| Key | Story |
-|---|---|
-| LWC-1 | Set up the store |
-
-### References
-
-1. Shopify Help Center: https://help.shopify.com/en/manual/markets
+| One store | Lower |
+| Expansion stores | Higher |
 
 ## Consultant notes
 
-> Lead Consultant only — remove before sharing.
-
-| Item | Value |
-|---|---|
-| Price band | EUR 65,000–100,000 |
+- Internal only: price band EUR 65,000–100,000
 `;
 
-describe('closing document as a PowerPoint deck', () => {
+  test('sections become dividers, bullets and tables become slides', () => {
+    const deck = annexDeckFromMarkdown(ANNEX, { client: 'acme-watches', date: '2026-09-17' });
+    assert.equal(deck.slides[0].layout, 'title');
+    assert.ok(deck.slides.some((s) => s.layout === 'section' && /Decision analysis/.test(s.title)));
+    assert.ok(deck.slides.some((s) => s.layout === 'bullets' && s.bullets.some((b) => /one catalogue/.test(b))));
+    const table = deck.slides.find((s) => s.layout === 'table');
+    assert.deepEqual(table.columns, ['Option', 'Cost']);
+    assert.deepEqual(deckErrors({ slides: deck.slides.filter((s) => s.layout !== 'section') }).filter((e) => !/needs (a slide per|the risk)/.test(e) && !/first slide/.test(e)), []);
+  });
+
+  test('consultant notes stay out unless asked for', () => {
+    assert.ok(!JSON.stringify(annexDeckFromMarkdown(ANNEX)).includes('65,000'));
+    assert.ok(JSON.stringify(annexDeckFromMarkdown(ANNEX, { internal: true })).includes('65,000'));
+  });
+
   test('plain text drops Markdown formatting but keeps the words', () => {
     assert.equal(plainText('**Bold** and `code` and [a link](https://x.test)'), 'Bold and code and a link');
-    assert.equal(plainText('one<br>two'), 'one · two');
-  });
-
-  test('the client deck leaves out consultant notes, appendices and references', () => {
-    const model = slidesFromMarkdown(DOC);
-    const text = JSON.stringify(model).toLowerCase();
-    assert.equal(model.title, 'Discovery Closing Document — ACME');
-    assert.ok(model.subtitle.some((s) => s.includes('Lead Consultant')));
-    assert.ok(!text.includes('price band'), 'no internal pricing in the client deck');
-    assert.ok(!text.includes('appendix'), 'appendices belong in the annex');
-    assert.ok(!text.includes('help.shopify.com'), 'the bibliography belongs in the annex');
-    const sections = model.slides.filter((s) => s.kind === 'section').map((s) => s.heading);
-    assert.deepEqual(sections, ['1. Cover', '2. Executive summary', '12. Risks']);
-  });
-
-  test('internal and annex options add the sections back', () => {
-    const internal = JSON.stringify(slidesFromMarkdown(DOC, { internal: true }));
-    assert.ok(internal.includes('Price band'), 'consultant notes are in the internal deck');
-    const annex = JSON.stringify(slidesFromMarkdown(DOC, { annex: true }));
-    assert.ok(annex.includes('LWC-1'), 'appendices are in the annex deck');
-  });
-
-  test('long tables are split across slides and bullets are chunked', () => {
-    const model = slidesFromMarkdown(DOC);
-    const risk = model.slides.filter((s) => s.kind === 'table' && s.section === '12. Risks');
-    assert.equal(risk.length, 2, '12 rows become two slides');
-    assert.ok(risk.every((s) => s.rows.length <= 9));
-    assert.match(risk[0].heading, /\(1\/2\)$/);
-    assert.deepEqual(risk[0].header, ['Risk', 'Impact']);
-    const bullets = model.slides.filter((s) => s.kind === 'bullets');
-    assert.ok(bullets.every((s) => s.bullets.length <= 7));
-    assert.ok(bullets.some((s) => s.bullets.includes('Three markets [Q3.1.1]')));
-  });
-
-  test('renders a PowerPoint file', async () => {
-    const file = await closingDocumentPptx(DOC, { client: 'acme', date: '2026-09-17' });
-    assert.ok(Buffer.isBuffer(file) && file.length > 10000);
-    assert.equal(file.subarray(0, 2).toString(), 'PK', 'pptx is a zip container');
   });
 });
 

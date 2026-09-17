@@ -20,6 +20,7 @@ import { DECK_PROMPT } from '../agents/discovery-deck/prompt.js';
 import { selectStories, summariseByEpic } from '../agents/backlog/select.js';
 import { openItems } from '../agents/interview/open-items.js';
 import { chapterBrief } from './reference.js';
+import { buildDeckSchema, layoutGuide } from './deck-template.js';
 
 let approachValidator;
 
@@ -104,8 +105,9 @@ export function deckBrief(engagement) {
   const backlog = stories ? { stories, summary: summariseByEpic(stories) } : null;
   const { xml, warnings } = buildDeckXml(engagement, backlog);
   return {
-    instructions: `${DECK_PROMPT}\n\nThe deck data below (deck_xml) is the content of discovery-deck.xml. Write the deck narrative and the annex document in Markdown and save both with save_closing_document (markdown = deck narrative, annex = annex document).`,
+    instructions: `${DECK_PROMPT}\n\nThe deck data below (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`,
     deck_xml: xml,
+    deck_schema: buildDeckSchema(),
     reference_chapters: chapterBrief(engagement),
     warnings,
   };

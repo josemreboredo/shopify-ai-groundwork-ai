@@ -13,7 +13,7 @@ export async function loader({ request, params }) {
   return new Response(saved.document.markdown, {
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
-      'Content-Disposition': `attachment; filename="${params.client}-discovery-closing-document-${saved.document.saved_at}.md"`,
+      'Content-Disposition': `attachment; filename="${params.client}-discovery-closing-document-v${saved.version ?? '1.0'}.md"`,
       'Cache-Control': 'no-store',
     },
   });

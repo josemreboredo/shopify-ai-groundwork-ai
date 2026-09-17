@@ -29,7 +29,7 @@ export async function loader({ request, params }) {
 const VIA = { claude: 'Claude', web: 'web app', cli: 'CLI' };
 
 export default function Closing({ loaderData }) {
-  const { engagement, approach, document, history, readiness, preview, origin, freshness } = loaderData;
+  const { engagement, approach, document, history, readiness, preview, origin, freshness, version } = loaderData;
   const client = engagement.client;
   return (
     <main>
@@ -43,7 +43,7 @@ export default function Closing({ loaderData }) {
       {document ? (
         <section className="card">
           <p className="question">
-            Saved {document.saved_at} by {document.by} ({VIA[document.via] ?? document.via}){' '}
+            Version {version} · saved {document.saved_at} by {document.by} ({VIA[document.via] ?? document.via}){' '}
             {freshness.known ? <span className={`badge ${freshness.up_to_date ? 'go' : 'flag'}`}>{freshness.up_to_date ? 'up to date' : `${freshness.changes.length} answer${freshness.changes.length > 1 ? 's' : ''} changed since`}</span> : null}
           </p>
           {freshness.changes.length ? (
@@ -64,11 +64,12 @@ export default function Closing({ loaderData }) {
             </>
           ) : null}
           <div className="actions">
-            <a className="button" href={`/engagements/${client}/closing-document.pptx`} download>PowerPoint (client version)</a>
-            <a className="button secondary" href={`/engagements/${client}/closing-document.pptx?internal=1`} download>PowerPoint (with consultant notes)</a>
-            <a className="button secondary" href={`/engagements/${client}/closing-document.md`} download>Markdown</a>
-            {document.annex ? <a className="button secondary" href={`/engagements/${client}/closing-annex.md`} download>Annex document</a> : null}
-            {history.length ? <span className="muted">{history.length} previous version{history.length > 1 ? 's' : ''} kept</span> : null}
+            <a className="button" href={`/engagements/${client}/closing-document.pptx`} download>Deck (PowerPoint)</a>
+            {document.annex ? <a className="button" href={`/engagements/${client}/closing-document.pptx?part=annex`} download>Annex (PowerPoint)</a> : null}
+            <a className="button secondary" href={`/engagements/${client}/closing-document.pptx?internal=1`} download>Deck with consultant notes</a>
+            <a className="button secondary" href={`/engagements/${client}/closing-document.md`} download>Deck (Markdown)</a>
+            {document.annex ? <a className="button secondary" href={`/engagements/${client}/closing-annex.md`} download>Annex (Markdown)</a> : null}
+            {history.length ? <span className="muted">previous: {history.map((h) => `v${h.version}`).join(', ')}</span> : null}
           </div>
           <p className="muted">The client version of the deck stops before the Consultant notes; check the slides before presenting, and remove any “Before presenting” block.</p>
           {preview.length ? (<><h3>Contents</h3><ol>{preview.map((h) => <li key={h}>{h}</li>)}</ol></>) : null}

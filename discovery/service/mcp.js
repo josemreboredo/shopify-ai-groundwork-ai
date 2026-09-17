@@ -226,10 +226,14 @@ export function registerDiscoveryTools(server, { service, userOf }) {
 
   tool('save_closing_document', {
     title: 'Save the Discovery Closing Document',
-    description: 'Step 3: save the Discovery Closing Document. "markdown" is the deck narrative the Lead Consultant presents (sections 1–16 plus the consultant notes section); the web app turns it into a PowerPoint, so keep each heading to one message with short bullets and tables of at most eight rows. "annex" is the annex document: the detailed pros-and-cons analysis per decision, the Shopify reference chapters, the user stories and the bibliography. The previous version is kept.',
-    inputSchema: z.object({ client: slug, markdown: z.string().min(500), annex: z.string().optional().describe('Annex document in Markdown: detailed analysis, reference chapters, appendices and bibliography') }),
+    description: 'Step 3: save the Discovery Closing Document. "deck" is the deck as filled slide templates — follow deck_schema from the previous step, one message per slide, the headline of every slide is the takeaway. The web app renders it as a PowerPoint. "annex" is the annex document in Markdown: the analysis per decision, the capability analysis, appendices and the bibliography; Merkle\'s verified Shopify reference chapters are appended automatically. Each save gets its own version number and the previous version is kept.',
+    inputSchema: z.object({
+      client: slug,
+      deck: z.record(z.string(), z.unknown()).describe('The filled deck: { slides: [...] } matching deck_schema'),
+      annex: z.string().optional().describe('Annex document in Markdown'),
+    }),
     annotations: write,
-  }, (user, { client, markdown, annex }) => service.saveClosingDocument(user, client, { markdown, annex }, { via: 'claude' }));
+  }, (user, { client, deck, annex }) => service.saveClosingDocument(user, client, { deck, annex }, { via: 'claude' }));
 
   tool('get_closing_document', {
     title: 'Saved Discovery Closing Document',
