@@ -31,7 +31,10 @@ export default function Home({ loaderData, actionData }) {
   const { engagements } = loaderData;
   return (
     <main>
-      <h1>Engagements</h1>
+      <div className="page-head">
+        <h1>Engagements</h1>
+        <p>Every engagement in the pilot, shared across consultants.</p>
+      </div>
       <h2>Start an interview</h2>
       <Form method="post" className="inline-form">
         <div className="field">

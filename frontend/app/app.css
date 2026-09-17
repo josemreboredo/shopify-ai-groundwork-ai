@@ -137,3 +137,31 @@ main { padding-top: 28px; }
 .tabs { gap: 2px; }
 .errors { background: rgba(221, 48, 57, 0.06); border-radius: 8px; padding: 10px 10px 10px 28px; list-style-position: outside; }
 .panel h2:first-child, .panel h3:first-child { margin-top: 0; }
+
+/* Black and white rhythm, as on merkle.com: black for statements, white for work */
+.page-head {
+  background: #000; color: #fff; margin: -28px -24px 24px; padding: 40px 24px 36px;
+}
+.page-head h1 { color: #fff; margin: 0 0 6px; font-size: 2.4rem; text-transform: uppercase; letter-spacing: 0.01em; }
+.page-head p { margin: 0; color: rgba(255, 255, 255, 0.72); font-size: 0.95rem; }
+
+main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr); gap: 0; max-width: none; padding: 0; min-height: calc(100vh - 118px); }
+.signin-hero { background: #000; color: #fff; padding: 72px 56px; display: flex; flex-direction: column; justify-content: center; }
+.signin-hero img { margin-bottom: 28px; }
+.signin-hero h1 { color: #fff; font-size: 3.4rem; line-height: 1.05; text-transform: uppercase; letter-spacing: 0.01em; margin: 0 0 18px; }
+.signin-hero p { max-width: 46ch; color: rgba(255, 255, 255, 0.78); font-size: 1.05rem; margin: 0 0 28px; }
+.signin-hero ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.signin-hero li { padding-left: 20px; position: relative; color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; }
+.signin-hero li::before { content: ''; position: absolute; left: 0; top: 7px; width: 9px; height: 9px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
+.signin-panel { background: #fff; padding: 72px 48px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+.signin-panel h2 { margin-top: 0; font-size: 1.5rem; }
+.signin-panel button { width: 100%; }
+.signin-pilot { color: var(--red-ink); font-weight: 600; font-size: 0.85rem; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 18px; }
+@media (max-width: 860px) {
+  main.signin { grid-template-columns: 1fr; min-height: 0; }
+  .signin-hero { padding: 48px 20px; }
+  .signin-hero h1 { font-size: 2.4rem; }
+  .signin-panel { padding: 36px 20px 48px; }
+  .page-head { margin: -28px -16px 20px; padding: 32px 16px 28px; }
+  .page-head h1 { font-size: 1.9rem; }
+}

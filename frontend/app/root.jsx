@@ -4,6 +4,9 @@ import { getUser } from './auth.server.js';
 import stylesheet from './app.css?url';
 
 export const links = () => [
+  { rel: 'icon', href: '/favicon.ico', sizes: '128x128' },
+  { rel: 'icon', href: '/brand/icon.svg', type: 'image/svg+xml' },
+  { rel: 'apple-touch-icon', href: '/brand/icon.svg' },
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
   { rel: 'stylesheet', href: stylesheet },
