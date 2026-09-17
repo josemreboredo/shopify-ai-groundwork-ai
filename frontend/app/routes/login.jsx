@@ -16,7 +16,6 @@ export default function Login({ loaderData }) {
   return (
     <main className="signin">
       <section className="signin-hero">
-        <img src="/brand/merkle-mark.svg" alt="" width="32" height="18" />
         <h1>Discovery</h1>
         <p>The Lead Consultant workspace for Shopify discovery: run the questionnaire with the client, and close it with a sourced consulting document.</p>
         <ul>
