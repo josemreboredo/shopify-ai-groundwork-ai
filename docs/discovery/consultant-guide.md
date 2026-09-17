@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.1.0 · offering 1.2.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 1.3.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 98 of 275 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 107 of 284 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -416,6 +416,13 @@ Feeds: rule 11.1 (STOP)
 | Theme customisation per market | Advanced |  | https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
+**Q3.1.8** — Are some products not allowed to be sold in certain markets (regulation, registration, licensing or distribution agreements)? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Market catalogs: include or exclude products per market | Basic |  | https://help.shopify.com/en/manual/markets/customizations/catalogs |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
 ### 3.2 Language
 
 **Q3.2.1** — How will translation be handled? *(recommended · client)*
@@ -450,7 +457,7 @@ If native is not enough: [Internationalization](https://apps.shopify.com/categor
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Duties and import taxes at checkout | Basic | Needs HS codes and country of origin | https://help.shopify.com/en/manual/international/duties-and-import-taxes/charging-duties |
+| Duties and import taxes at checkout (DDP or DAP per country) | Basic | Plan not stated by Shopify; fee per order; not with tax overrides, manual rates or exemptions | https://help.shopify.com/en/manual/international/duties-and-import-taxes/considerations |
 
 If native is not enough: App Store — [Zonos Duty and Tax](https://apps.shopify.com/duty-and-tax-calculator-iglobal-stores), [ESW International](https://apps.shopify.com/esw-international)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
@@ -478,6 +485,53 @@ If native is not enough: App Store — [Tax: TaxJar Sales Tax Automation](https:
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q3.4.7** — Do business customers buy tax-exempt (VAT number validation, reverse charge)? *(optional · client)*
+
+**Q3.4.8** — In which countries should duties and import taxes be collected at checkout (DDP)? In the others the customer pays on delivery (DAP). *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| DDP or DAP per country or region | Basic | Not available for some destinations (e.g. Northern Ireland) or the Rest of world zone | https://help.shopify.com/en/manual/international/duties-and-import-taxes/considerations |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q3.4.9** — When you ship low-value parcels into these territories from outside them, are you registered to collect the import VAT or GST at checkout? *(recommended · client)*
+Quick interview: ask if Q3.1.1 has 2+ markets
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Low-value goods taxes (EU, UK, Switzerland, Norway, Australia, New Zealand) | Basic | Registration needed; Shopify recommends DDP so orders above the threshold get duties calculated | https://help.shopify.com/en/manual/international/duties-and-import-taxes |
+| EU IOSS: collect VAT at checkout on low-value orders | Basic |  | https://help.shopify.com/en/manual/taxes/eu/eu-tax-reference |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q3.4.10** — Do some products have reduced or zero tax rates, or tax exemptions, in any market (e.g. medicines, books, food, children's clothing)? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Product categories for reduced rates and exemptions (Shopify Tax: US, EU, UK) | Basic |  | https://help.shopify.com/en/manual/taxes/shopify-tax/product-categories-tax |
+| Product tax overrides per country or state (manual collections) | Basic | Ignored where duties are collected at checkout | https://help.shopify.com/en/manual/taxes/tax-overrides |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q3.4.11** — Who issues invoices to customers? *(recommended · client)*
+Feeds: app signal Invoicing and e-invoicing
+Quick interview: ask if Q1.1.4 is Business to business (B2B) or Hybrid (DTC and B2B), or the launch markets include GB / DE / FR / IT / PL / BE / ES / EU / AT / NL / PT / IE / SE / DK / FI
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| VAT invoices for EU and UK orders | Basic | Shopify Tax; not emailed; not for orders with duties; Portugal not supported | https://help.shopify.com/en/manual/taxes/shopify-tax/vat-invoices |
+| Shopify Order Printer (invoices, packing slips) | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/printing-orders/shopify-order-printer |
+
+If native is not enough: App Store — [Sufio: Professional Invoices](https://apps.shopify.com/sufio), [Order Printer Pro: Invoice App](https://apps.shopify.com/order-printer-pro)
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q3.4.12** — Which electronic invoicing (e-invoicing) obligations apply to your sales? *(recommended · client)*
+Feeds: app signal Invoicing and e-invoicing
+Quick interview: ask if Q1.1.4 is Business to business (B2B) or Hybrid (DTC and B2B), or the launch markets include DE / FR / IT / PL / BE / ES / EU
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| VAT invoices for EU and UK orders (not e-invoicing) | Basic |  | https://help.shopify.com/en/manual/taxes/shopify-tax/vat-invoices |
+
+If native is not enough: App Store — [Sufio: Professional Invoices](https://apps.shopify.com/sufio), [Order Printer Pro: Invoice App](https://apps.shopify.com/order-printer-pro), [POP: compliant EU invoicing](https://apps.shopify.com/pop-european-invoicing)
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 3.5 Mainland China
 
@@ -731,12 +785,28 @@ Feeds: app signal Delivery slots and pickup points
 |---|---|---|---|
 | Local delivery | Basic |  | https://help.shopify.com/en/manual/fulfillment/setup/delivery-methods/local-delivery |
 | Pickup in store | Basic |  | https://help.shopify.com/en/manual/fulfillment/setup/delivery-methods/pickup-in-store |
+| Pickup points (native carriers in France, Italy, Spain, UK) | Basic | Elsewhere: custom app with the pickup point Function on Plus; not for B2B or express wallets | https://help.shopify.com/en/manual/fulfillment/setup/delivery-methods/pickup-points |
 
 If native is not enough: [Delivery and pickup](https://apps.shopify.com/categories/orders-and-shipping-shipping-solutions-delivery-and-pickup/all) — [Zapiet ‑ Pickup + Delivery](https://apps.shopify.com/click-and-collect)
 Build with: Pickup Point Delivery Option Generator
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q5.1.12** — How are shipping labels created? *(optional · client)*
+
+**Q5.1.13** — Do all products have accurate weights (and package sizes), and where does that data come from? *(recommended · client)*
+Quick interview: ask if Q5.1.6 includes Weight or price based, Live carrier rates or Rates from an app
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Product weights and saved packages | Basic | Labels need accurate weights and a default package | https://help.shopify.com/en/manual/fulfillment/setup/packaging/packages-and-weights |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q5.1.14** — Do any products count as dangerous goods for shipping? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shipping dangerous goods (merchant responsibility; restricted with Shopify Shipping labels) | Basic | USPS and FedEx labels bought in Shopify don't support hazardous materials | https://help.shopify.com/en/manual/compliance/legal/shipping-dangerous-goods |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 5.2 Returns & exchanges
 
@@ -755,7 +825,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.2.4** — Which returns, tracking or post-purchase apps do you use or prefer? *(optional · client)*
 Feeds: app signal Returns platform · app signal Post-purchase tracking platform
-Quick interview: ask if Q1.2.1 is yes, or Q0.2.6 is 1,000 or more
+Quick interview: ask if Q1.2.1 is yes, or Q0.2.6 is 500 or more
 
 If native is not enough: [Returns and exchanges](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all) — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [AfterShip Returns & Exchanges](https://apps.shopify.com/returns-center-by-aftership), [Narvar Return and Exchange](https://apps.shopify.com/narvar-returns), [Redo](https://apps.shopify.com/redo), [AfterShip Order Tracking](https://apps.shopify.com/aftership), [parcelLab Order Tracking](https://apps.shopify.com/parcellab-engage)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
@@ -764,7 +834,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.2.6** — What share of orders is returned today (%)? *(recommended · client)*
 Feeds: app signal Returns platform
-Quick interview: ask if Q0.2.6 is 1,000 or more
+Quick interview: ask if Q0.2.6 is 500 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -775,7 +845,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.2.7** — How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed? *(recommended · client)*
 Feeds: app signal Returns platform
-Quick interview: ask if Q0.2.6 is 1,000 or more
+Quick interview: ask if Q0.2.6 is 500 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -788,7 +858,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.2.9** — Which exchanges do you offer: same product in another variant, any other product, or store credit first? *(optional · client)*
 Feeds: app signal Returns platform
-Quick interview: ask if Q0.2.6 is 1,000 or more
+Quick interview: ask if Q0.2.6 is 500 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -826,7 +896,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 
 **Q5.4.2** — Should customers be able to cancel orders themselves? *(recommended · client)*
 Feeds: app signal Order editing / cancellation app
-Quick interview: ask if Q0.2.6 is 1,000 or more
+Quick interview: ask if Q0.2.6 is 500 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -841,7 +911,7 @@ If native is not enough: [Order editing](https://apps.shopify.com/categories/ord
 
 **Q5.4.5** — Should customers be able to edit an order after placing it (address, items)? *(recommended · client)*
 Feeds: app signal Order editing / cancellation app
-Quick interview: ask if Q0.2.6 is 1,000 or more
+Quick interview: ask if Q0.2.6 is 500 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -854,7 +924,7 @@ If native is not enough: [Order editing](https://apps.shopify.com/categories/ord
 
 **Q5.4.7** — When is a refund issued: on request, when the carrier scans the return, on receipt, or after inspection? *(recommended · client)*
 Feeds: app signal Returns platform
-Quick interview: ask if Q0.2.6 is 1,000 or more
+Quick interview: ask if Q0.2.6 is 500 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -884,7 +954,7 @@ If native is not enough: [Order editing](https://apps.shopify.com/categories/ord
 
 **Q5.5.1** — Do you want a branded order-tracking page on your own site? *(recommended · client)*
 Feeds: app signal Post-purchase tracking platform
-Quick interview: ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise
+Quick interview: ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -895,7 +965,7 @@ If native is not enough: [Order tracking](https://apps.shopify.com/categories/or
 
 **Q5.5.2** — On which channels should customers get proactive delivery updates (delays, out for delivery)? *(recommended · client)*
 Feeds: app signal Post-purchase tracking platform
-Quick interview: ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise
+Quick interview: ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -906,7 +976,7 @@ If native is not enough: [Order tracking](https://apps.shopify.com/categories/or
 
 **Q5.5.3** — Should product pages or checkout show estimated delivery dates? *(optional · client)*
 Feeds: app signal Post-purchase tracking platform
-Quick interview: ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise
+Quick interview: ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -925,7 +995,7 @@ If native is not enough: [Returns and warranty](https://apps.shopify.com/categor
 ### 5.6 Retail & POS
 
 **Q5.6.1** — How many physical retail stores (including pop-ups) will sell with Shopify? *(required · client)*
-Feeds: gate Retail & POS
+Feeds: gate Retail & POS · rule 11.22 (WARN)
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -958,9 +1028,8 @@ Feeds: gate Retail & POS
 
 **Q6.1.1** — Is guest checkout the default, are accounts optional, or is registration required? *(recommended · client)*
 
-**Q6.1.3** — What should the account area include (order history, addresses, returns, wishlist, subscriptions)? *(optional · client)*
+**Q6.1.3** — What should the account area include (order history, addresses, returns, wishlist, subscriptions)? *(required · client)*
 Feeds: app signal Wishlist
-Quick interview: ask if Q2.1.1 is 100 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1051,11 +1120,19 @@ Feeds: rule 11.19 (FLAG)
 | B2B considerations (unsupported features) | Basic |  | https://help.shopify.com/en/manual/b2b/getting-started/considerations |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
+**Q6.2.13** — Which shipping rules differ for B2B buyers? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| B2B shipping methods (same as consumers by default; customise per buyer) | Basic | Custom apps with Shopify Functions need Plus; public apps with functions work on any plan | https://help.shopify.com/en/manual/b2b/checkout-and-orders/shipping-methods |
+| Submit B2B orders as drafts for review | Basic |  | https://help.shopify.com/en/manual/b2b/checkout-and-orders/checkout-settings |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
 ### 6.3 Loyalty & segmentation
 
 **Q6.3.1** — Which loyalty components are planned? *(recommended · client)*
 Feeds: app signal Loyalty programme
-Quick interview: ask if Q0.1.1 mentions loyal, retention, repeat, lifetime, churn or member, or Q0.4.1 mentions loyal, retention, repeat, lifetime, churn or member
+Quick interview: ask if Q1.1.4 is Direct to consumer (DTC) or Hybrid (DTC and B2B)
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1129,7 +1206,7 @@ Feeds: rule 11.10 (FLAG)
 
 **Q7.2.2** — Is server-side tracking needed? *(recommended · client)*
 Feeds: app signal Server-side tracking beyond Shopify
-Quick interview: ask if Q0.2.6 is 1,000 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition
+Quick interview: ask if Q0.2.6 is 500 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1159,7 +1236,7 @@ If native is not enough: [Email marketing](https://apps.shopify.com/categories/m
 
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended · client)*
 Feeds: app signal SMS marketing outside Shopify Messaging countries
-Quick interview: ask if Q0.2.6 is 1,000 or more, or Q0.4.1 mentions sms, retention or repeat
+Quick interview: ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1312,9 +1389,8 @@ Feeds: L trigger Headless requirement
 
 **Q9.2.3** — What is the aesthetic direction (minimal, editorial, luxury, playful, utilitarian)? *(optional · client)*
 
-**Q9.2.4** — Which interactive patterns are required (mega-menu, quick-add, swatches, predictive search, lookbook, video hero)? *(recommended · client)*
+**Q9.2.4** — Which interactive patterns are required (mega-menu, quick-add, swatches, predictive search, lookbook, video hero)? *(required · client)*
 Feeds: app signal Wishlist
-Quick interview: ask if Q2.1.1 is 100 or more
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -1476,3 +1552,4 @@ If native is not enough: App Store — [Age Verifier by OTG](https://apps.shopif
 | 11.19 | FLAG | B2B requirement that Shopify B2B does not support (subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards) | B2B architecture review: app or process change before build | Q6.2.12 |
 | 11.20 | FLAG | Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope | Separate China discovery (questions § 3.5, docs/discovery/china-mainland.md); mainland China excluded from this engagement's scope | Q3.1.1 |
 | 11.21 | STOP | Mainland China is the only launch market — not part of the Merkle offering | China discovery (docs/discovery/china-mainland.md) | Q3.1.1 |
+| 11.22 | WARN | More than 5 retail stores in scope | Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team | Q5.6.1 |

@@ -72,6 +72,11 @@
     "registered": "Registered", "filed": "Filed", "planned": "Planned", "representative_office": "Representative office", "joint_venture": "Joint venture",
     "ordinary_cosmetics": "Ordinary cosmetics", "special_cosmetics": "Special cosmetics (e.g. whitening, sunscreen)", "medical_devices": "Medical devices", "food_supplements": "Food supplements", "general_goods": "General goods",
     "general_trade": "General trade", "personal_parcels": "Personal parcels", "platform_internal": "Inside the marketplace", "cross_border_wallet_provider": "Cross-border wallet provider", "domestic_merchant_accounts": "Domestic merchant accounts (PRC entity)",
-    "inside_china": "Inside China", "outside_china": "Outside China", "not_involved": "Not involved", "not_yet": "Not yet"
+    "inside_china": "Inside China", "outside_china": "Outside China", "not_involved": "Not involved", "not_yet": "Not yet",
+    "eu_ioss": "EU Import One-Stop Shop (IOSS)", "uk_low_value_vat": "UK low-value VAT", "switzerland_low_value_vat": "Switzerland low-value VAT", "norway_voec": "Norway VOEC", "australia_low_value_gst": "Australia GST on low-value imports", "new_zealand_low_value_gst": "New Zealand GST on low-value imports",
+    "shopify_vat_invoices": "Shopify VAT invoices (EU and UK)", "order_printer": "Shopify Order Printer", "invoicing_app": "Invoicing app", "billing_or_tax_service": "Billing or tax service",
+    "peppol": "Peppol", "de_xrechnung_or_zugferd": "Germany: XRechnung or ZUGFeRD", "fr_factur_x": "France: Factur-X", "it_sdi": "Italy: SdI", "pl_ksef": "Poland: KSeF", "es_verifactu": "Spain: VeriFactu",
+    "pim_or_erp": "From the PIM or ERP", "maintained_in_shopify": "Maintained in Shopify", "partial": "Only for some products", "not_available": "Not available yet", "other_hazmat": "Other hazardous materials",
+    "separate_rates_or_methods": "Separate rates or methods", "free_shipping_above_order_value": "Free shipping above an order value", "freight_or_pallet_delivery": "Freight or pallet delivery", "customer_carrier_account": "Buyer's own carrier account", "shipping_quoted_after_order": "Shipping quoted after the order"
   }
 }

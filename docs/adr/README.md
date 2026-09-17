@@ -16,3 +16,4 @@ One file per decision: `NNNN-short-title.md`. Status is **Proposed** until the o
 | [0009](0009-stop-routes-and-larger-engagement.md) | What happens after a STOP: Larger Engagement or no bid | Accepted |
 | [0010](0010-deck-is-the-lead-consultant-draft.md) | The deck is the Lead Consultant's full-information draft (amends D1) | Accepted |
 | [0011](0011-shopify-knowledge-questionnaire.md) | A Shopify-knowledge questionnaire: plan benchmark, app registry, Retail & POS gate, mainland China | Accepted |
+| [0012](0012-tax-shipping-questions-and-configuration-workbook.md) | Tax and shipping: discovery questions and a store configuration workbook | Accepted |

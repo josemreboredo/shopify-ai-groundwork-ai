@@ -24,7 +24,7 @@ in `engagement.china` and shown in the Larger Engagement brief and in deck secti
 ## What "behind the wall" means with Shopify — read this first
 
 Selling **onshore** to mainland consumers (a storefront hosted inside mainland China, behind the Great Firewall) needs a
-PRC-registered entity, an ICP filing or licence (per PRC counsel) and onshore hosting [O Order 292; O Alibaba Cloud ICP].
+PRC-registered entity, an ICP filing (a licence only if third parties sell on the site or paid information services are offered) and onshore hosting [O Order 292; O MIIT 2022; O Alibaba Cloud ICP].
 **Shopify does not operate inside mainland China:** "Shopify's servers aren't located in mainland China, so connection
 speeds might vary" [O, verified]; its China guides are written for merchants operating from mainland China or Hong Kong SAR
 who sell abroad [O, verified]; Cloudflare proxy set-ups in front of Shopify "aren't supported" [O, verified]. We found **no
@@ -40,7 +40,7 @@ wants **cross-border** selling (offshore, options A, B, C, F) or **onshore** sel
 1. **Shopify doesn't offer an in-China ("onshore") platform.** Shopify says its "servers aren't located in mainland China, so connection speeds might vary". Its "Selling in China" guides are written mainly for **China-based merchants who export**, not for brands selling *into* the mainland [O, help.shopify.com sell-in-china pages].
 2. **Shopify Payments isn't available to mainland entities.** Mainland merchants must use third-party gateways. Shopify Payments **Hong Kong SAR** offers UnionPay cards and, in early access, **Alipay and WeChat Pay** (customers see CNY; no card-style chargebacks) [O]. Macao and Taiwan are not on the Shopify Payments country list [O].
 3. **Hosting in the mainland triggers ICP obligations.** An ICP filing (备案) is required when a domain resolves to a server in mainland China. It can only be obtained by a **PRC-registered entity** (a WFOE is enough for a filing). Hong Kong hosting does not need one [O Alibaba Cloud; S]. After the filing, a public-security (公安) filing is due within 30 days [O/S].
-4. **Filing or commercial licence? Sources disagree for a brand selling its own goods.** One PRC law firm cites a 2010 MOFCOM notice that a filing is enough. Dezan Shira (China Briefing) and PTS say a commercial ICP licence is needed for monetised sites. Marketplaces also need an EDI (B21) licence. Foreign ownership of licensed businesses was capped at 50%. Since April 2024, 100% foreign ownership is allowed in Beijing, Shanghai (Lingang/Pudong), Shenzhen and Hainan pilots [O MIIT via S]. **Confirm with PRC counsel.**
+4. **Filing, not licence, for a brand selling its own goods (MIIT position, checked 2026-09-17).** MIIT's 2022 notice, repeated in the Guangdong Communications Administration FAQ of 2025-10-17, says a company selling its own or other companies' goods on its own site or app, with no third party selling there in its own name, is **not** a value-added telecom service and needs **no licence** [O]. The onshore site still needs an **ICP filing** (备案) [O Order 292]. An EDI (B21) licence is needed only when third parties sell on the site; a commercial ICP (B25) licence only for paid information services [O/S]. Earlier secondary sources saying any monetised site needs a licence (China Briefing, PTS) are too broad for this model. Foreign ownership caps apply to licences, not to a filing; since April 2024, 100% foreign ownership of some licences is piloted in Beijing, Shanghai, Shenzhen and Hainan [O MIIT via S]. For drugs and medical devices, providing online information needs a **filing with the provincial drug regulator** since 2025-01-20 (was an approval) [O Order 797 via S]. **PRC counsel confirms the client's model** (§ 6.10).
 5. **Shopify can't legitimately sit behind an onshore CDN or proxy on its own.** Onshore CDNs (e.g. Cloudflare China Network via JD Cloud) require an ICP number and content vetting [O Cloudflare]. Shopify says Cloudflare proxy setups, including O2O, "aren't supported" [O]. Vendors such as Chinafy and 21YunBox sell an "optimisation layer" in front of Shopify, some holding the ICP filing on that layer; Shopify does not endorse this [S-v].
 6. **Headless with an onshore front end is possible in theory, but no public case was found.** Shopify's Storefront API and checkout stay offshore. The cart's `checkoutUrl` "redirects customers through Shopify's web checkout" [O shopify.dev]. We found **no public case study** of an ICP-licensed onshore storefront running on the Storefront API. Merchants reported in early 2024 that Shopify URLs were intermittently inaccessible from China; Shopify support blamed "third parties" [S community]. Treat this as high risk [I].
 7. **Most documented foreign-brand volume goes through cross-border e-commerce (CBEC) channels.** Tmall Global, JD Worldwide, Douyin Global, RED and WeChat mini-programs run in two customs modes: 1210 (bonded warehouse) and 9610 (direct mail). CBEC goods are treated as personal-use items and are **exempt from first-import registration or filing** (e.g. NMPA cosmetics registration). Conditions: the product is on the **positive list** and within the **RMB 5,000 per-order / RMB 26,000 per-year** limits [O MOFCOM 2018 No.486; MOF 2018 No.49].
@@ -110,11 +110,15 @@ wants **cross-border** selling (offshore, options A, B, C, F) or **onshore** sel
 | Point | Finding | Level | Source |
 |---|---|---|---|
 | Legal basis | State Council Order 292 (2000, amended 2011), 互联网信息服务管理办法. **Commercial** internet information services (经营性) need a **licence**; **non-commercial** services (非经营性) need a **filing**. "未取得许可或者未履行备案手续的，不得从事互联网信息服务" (no licence or filing, no internet information service). | O | https://www.cac.gov.cn/2000-09/30/c_126193701.htm ; https://www.gov.cn/gongbao/content/2000/content_60531.htm |
+| Order 292 amendment | State Council Order No. 797 (December 2024, in force 2025-01-20) rewrote Art. 5: services that need a sector authority's consent (news, publishing, education, etc.) get it before the licence or filing; healthcare, drugs and medical devices are no longer listed. | O (via S) | https://www.cn-healthcare.com/articlewm/20250425/content-1649193.html ; http://xzfg.moj.gov.cn/front/law/detail?LawID=1756 |
+| Drug and medical-device information online | Since 2025-01-20 the "药品、医疗器械互联网信息服务审批" is a **filing with the provincial drug regulator** (NMPA 药监综法函〔2025〕37号); conditions unchanged (qualified staff, including two people who know drug or device law). Relevant if any SKU is a drug or medical device. | S (describing O) | https://www.cn-healthcare.com/articlewm/20250425/content-1649193.html ; https://www.nmpa.gov.cn/xxgk/fgwj/gzwj/gzwjzh/20250116094147131.html |
+| Online drug sales | SAMR Order 58 (in force 2022-12-01): only marketing authorisation holders or licensed drug distributors may sell drugs online; selling to consumers needs a retail qualification; some drug classes may not be sold online. Whether a foreign brand can sell drugs to mainland consumers online at all: **counsel** [I]. | O | https://www.gov.cn/gongbao/content/2022/content_5717002.htm |
+| Online cosmetics sales | NMPA Announcement 2023 No. 36, 《化妆品网络经营监督管理办法》 (in force 2023-09-01): a brand selling cosmetics through its **own website** has the same obligations as a seller on a platform (incoming inspection, product information display, risk control, recalls, storage and transport). | O | https://www.gov.cn/zhengce/zhengceku/2023-04/04/content_5750049.htm |
 | Filing rules | MIIT Order 33 (2005): Non-commercial Internet Information Service Filing Measures (filing number issued within 20 working days; published in the MIIT system). | O | https://www.gov.cn/gongbao/content/2005/content_93018.htm |
 | When hosting triggers ICP | Filing is required when a domain resolves to a server in **mainland China**. Hong Kong or other offshore nodes need no MIIT filing. Filing goes through the hosting provider; the Alibaba Cloud **International** site does not support filing (a China-site account is needed). Page updated 2026-05-22. | O (Alibaba Cloud) | https://www.alibabacloud.com/help/en/icp-filing/faq-about-icp-filing-applications-in-different-scenarios/ ; https://www.alibabacloud.com/help/en/icp-filing/basic-icp-service/product-overview/icp-filing-application-for-enterprises-outside-the-chinese-mainland |
 | Who can file | Filing needs a PRC-registered entity; a WFOE can file; an overseas company cannot file directly. | S | https://www.ptsconsulting.com.hk/blog/china-icp-licence-explained ; https://appinchina.co/how-can-i-get-an-icp-license-for-china/ |
-| Brand site selling own goods: **conflicting positions** | (a) Landing Law Offices (2020-04-08) cites a 2010 MOFCOM notice: FIEs "who sell their own products on their online platforms shall need to do the filing"; a licence may be needed if they sell advertising. (b) China Briefing / Dezan Shira: an ICP **licence** is needed for "any website or app that charges users or monetizes in any way"; EDI is not needed for self-operated sites. (c) PTS Consulting: direct online sales "typically necessitates the licence". | S (conflict) | https://www.sinoblawg.com/selling-products-online-in-china-license-requirements/ ; https://www.china-briefing.com/news/china-internet-business-licenses-foreign-companies/ ; https://www.ptsconsulting.com.hk/blog/china-icp-licence-explained |
-| EDI (B21) licence | Needed for **platforms** where third parties transact (marketplace model), not for a brand selling only its own goods. | S | https://appinchina.co/edi-electronic-data-interchange-b21-online-data-processing-and-transaction-processing-services/ ; China Briefing (above) |
+| Brand site selling own goods: **filing, no licence** | MIIT notice (2022-04-07), repeated in the Guangdong Communications Administration FAQ (2025-10-17): "企业利用自身网站、APP并以自营方式直接销售自身或其它企业的商品或服务，无其它单位或个人以自身名义入驻该网站、APP实施销售行为的，不属于增值电信业务，无需取得《增值电信业务经营许可证》" (own-site, self-operated sales with no third-party sellers are not a value-added telecom service; no licence). The onshore site still needs the ICP filing (Order 292). Superseded positions: the 2010 MOFCOM notice 商资字〔2010〕272号 ("直接从事商品销售的，应向电信管理部门备案") reached the same result but was listed for repeal in MOFCOM Announcement 2019 No. 59 (search result; the page was not retrieved); China Briefing and PTS say any monetised site needs a licence — too broad for self-operated sales. | O | https://gdca.miit.gov.cn/bsfw/bszn/jyxk/tzgg/art/2022/art_da255ff756604fd5afe158c2fa96a17f.html ; https://gdca.miit.gov.cn/bsfw/bszn/jyxk/tzgg/art/2025/art_6bcbfa4f041247868c0de08e765b33e9.html ; https://doc.jiangsu.gov.cn/art/2020/12/8/art_80617_9595020.html |
+| EDI (B21) licence | Needed for **platforms** where third parties transact (marketplace model), not for a brand selling only its own goods (confirmed by the MIIT notice above). | S | https://appinchina.co/edi-electronic-data-interchange-b21-online-data-processing-and-transaction-processing-services/ ; China Briefing (above) |
 | Foreign ownership | Historically a 50% cap on value-added telecom (VATS) licensees. MIIT Circular [2024] No.107 (April 2024) pilot allows **100% foreign ownership** for B11 IDC, B12 CDN, B14 ISP, **B21 online data/transaction processing** and parts of B25 information services. Pilot areas: Beijing, Shanghai (Lingang / Pudong), Shenzhen, Hainan. Entity **and facilities** must be in the pilot area. | S (describing an O circular) | https://www.mofo.com/resources/insights/240418-china-pilots-relaxed-foreign-ownership ; https://investmentpolicy.unctad.org/investment-policy-monitor/measures/4636/-allows-100-per-cent-foreign-ownership-in-certain-value-added-telecommunication-services |
 | Public-security filing | Within 30 days of the site going live, file with the Ministry of Public Security platform and show the 公网安备 number in the footer. | O (MPS portal) / O (Alibaba Cloud help) | https://beian.mps.gov.cn/ ; https://help.aliyun.com/zh/icp-filing/basic-icp-service/the-public-security-network-for-record-and-cancellation |
 | Apps and mini-programs | MIIT 工信部信管〔2023〕105号: apps **and mini-programs** must be filed (new ones from Sept 2023; existing ones by end of March 2024). | O | https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2023/art_920db564162e4312916a01bed6540ad8.html |
@@ -309,7 +313,7 @@ Legend: **Wall** = whether the option puts the storefront behind the Great Firew
 
 | # | Question | Why / source |
 |---|---|---|
-| 7 | Has PRC counsel confirmed ICP **filing vs commercial licence** for this model? | Conflicting secondary sources (§3.1) |
+| 7 | Has PRC counsel confirmed the model is self-operated (ICP filing, no licence) — no third-party sellers, no paid information services? | MIIT 2022 notice (§3.1); questions in § 6.10 |
 | 8 | Domains: .cn or other; registrar; real-name verification; public-security filing plan (30 days); footer numbers | MIIT Order 33 [O]; MPS portal [O]; Shopify .cn note [O] |
 | 9 | Mini-program or app filing owner (MIIT 2023)? | [O] 工信部信管〔2023〕105号 |
 | 10 | Business licence display on the homepage (E-Commerce Law Art. 15) and market-entity registration (Art. 10) | [O] NPC |
@@ -375,11 +379,35 @@ Legend: **Wall** = whether the option puts the storefront behind the Great Firew
 | 35 | Security: MLPS (等保) grading for onshore systems | [I] not researched; confirm with counsel |
 | 36 | Account and tooling: PRC data must not flow to non-approved LLMs or tools (PIPL export) | [O] PIPL Art. 38–39; project security gate on PII |
 
+### 6.10 Questions for PRC counsel — onshore own site
+
+Merkle does not give PRC legal advice. When the client wants an onshore own site (options D or E), send these questions to the
+client's PRC counsel and record the written answers in the China discovery. A client-specific brief lives in
+`clients/<slug>/prc-counsel-brief.md` (gitignored).
+
+**A. Licence or filing**
+1. Our reading of the MIIT 2022 notice is that self-operated sales of our own goods on our own site or mini-program need an ICP filing and no value-added telecom licence. Do you agree for the model described?
+2. Would any of these change that: B2B buyers (e.g. pharmacies) ordering on the site; distributors or pharmacies listed as sellers or fulfilling orders in their own name; paid memberships, paid content or advertising for others; marketplace-style "buy from a partner" features?
+3. Which entity must hold the filing, and does its business scope need to cover online retail? Must the domain be registered to the same entity?
+4. What is the lead time and sequence: entity, domain real-name verification, onshore hosting, ICP filing, public-security filing (30 days), mini-program filing?
+
+**B. Sector rules for the products**
+5. How is each product classified in China: ordinary cosmetic, special cosmetic (e.g. sunscreen), drug, or medical device? What registration or filing must exist before it may be sold onshore?
+6. If any product is a drug or medical device: is the provincial drug-regulator filing for online information services needed, and can the client's entity sell it online to consumers (SAMR Order 58)?
+7. For cosmetics sold on our own site: which obligations of the 2023 online cosmetics measures apply, and what must the product pages show?
+8. Which claims are prohibited on the site and in marketing (e.g. "药妆", medical efficacy), and who must review content before publication?
+
+**C. Data, security and operations**
+9. Must customer personal data stay in mainland China, and which PIPL steps apply (sensitive personal information such as skin or health data, separate consent, impact assessment, cross-border transfer to global systems)?
+10. Which cybersecurity grading (MLPS / 等保) applies to the onshore systems, and who files it?
+11. What must the site display (business licence information, ICP and public-security numbers) and which consumer-law rules apply (returns, pricing, invoices)?
+12. Can payments be collected through domestic merchant accounts of the client's entity, and are there foreign-exchange rules for sending profits abroad that affect the model?
+
 ---
 
 ## 7. Open points that could not be verified
 
-1. **ICP filing vs commercial ICP licence** for a brand's own-goods site: sources conflict (Landing Law 2020 citing a 2010 MOFCOM notice vs China Briefing / PTS). The primary 2010 MOFCOM notice was not retrieved.
+1. **ICP filing vs licence — resolved on the regulator's position (2026-09-17):** MIIT's 2022 notice says self-operated own-site sales need no licence (§3.1). Still for PRC counsel: confirming the client's exact model (§ 6.10). The repeal of MOFCOM 272 in 2019 comes from a search result; the announcement page was not retrieved.
 2. **Status of the JD Marketplace channel:** the listing says "not currently available"; no Shopify or JD sunset announcement was found, so the date and reason are unknown.
 3. **Whether Shopify's 2020 US Alipay gateway still exists**, and whether Alipay and WeChat Pay via Shopify Payments Hong Kong are still early access (help pages say early access; no date shown).
 4. **No public case** of an ICP-licensed onshore storefront using the Shopify Storefront API or Hydrogen, and no Shopify staff statement on it. Latency and reliability figures are vendor claims only.
@@ -437,6 +465,13 @@ Legend: **Wall** = whether the option puts the storefront behind the Great Firew
 - https://www.gov.cn/gongbao/content/2005/content_93018.htm (MIIT Order 33)
 - https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2023/art_920db564162e4312916a01bed6540ad8.html (app / mini-program filing)
 - https://beian.mps.gov.cn/ (public-security filing)
+- https://gdca.miit.gov.cn/bsfw/bszn/jyxk/tzgg/art/2022/art_da255ff756604fd5afe158c2fa96a17f.html (MIIT notice 2022-04-07: self-operated sales need no licence)
+- https://gdca.miit.gov.cn/bsfw/bszn/jyxk/tzgg/art/2025/art_6bcbfa4f041247868c0de08e765b33e9.html (Guangdong Communications Administration licence FAQ, 2025-10-17)
+- https://doc.jiangsu.gov.cn/art/2020/12/8/art_80617_9595020.html (MOFCOM 商资字〔2010〕272号, repealed 2019)
+- http://xzfg.moj.gov.cn/front/law/detail?LawID=1756 (Order 292, current text, national administrative regulations database)
+- https://www.nmpa.gov.cn/xxgk/fgwj/gzwj/gzwjzh/20250116094147131.html (NMPA 药监综法函〔2025〕37号)
+- https://www.gov.cn/gongbao/content/2022/content_5717002.htm (SAMR Order 58, online drug sales)
+- https://www.gov.cn/zhengce/zhengceku/2023-04/04/content_5750049.htm (NMPA 2023 No. 36, online cosmetics sales)
 - https://www.cac.gov.cn/2024-03/22/c_1712776611775634.htm (cross-border data flow provisions)
 - http://www.npc.gov.cn/npc/c2597/c5854/bfflywwb/202311/t20231117_433007.html (PIPL bilingual)
 - https://english.www.gov.cn/policies/latestreleases/202409/30/content_WS66fab6c8c6d0868f4e8eb720.html (Network Data Security Management Regulations)
@@ -474,6 +509,7 @@ Legend: **Wall** = whether the option puts the storefront behind the Great Firew
 - https://www.china-briefing.com/news/china-cybersecurity-law-amendment/
 - https://www.reedsmith.com/articles/china-approves-major-amendments-to-cybersecurity-law/
 - https://www.sinoblawg.com/selling-products-online-in-china-license-requirements/ (Landing Law Offices, 2020-04-08)
+- https://www.cn-healthcare.com/articlewm/20250425/content-1649193.html (健康界, 2025-04-25: drug and device information services move to filing)
 - https://www.ptsconsulting.com.hk/blog/china-icp-licence-explained
 - https://appinchina.co/how-can-i-get-an-icp-license-for-china/ ; https://appinchina.co/edi-electronic-data-interchange-b21-online-data-processing-and-transaction-processing-services/ ; https://appinchina.co/blog/why-does-my-website-not-work-in-china-common-causes-and-fixes/
 - https://digichina.stanford.edu/work/translation-personal-information-protection-law-of-the-peoples-republic-of-china-effective-nov-1-2021/ (Stanford DigiChina)

@@ -13,7 +13,9 @@
  * the order status page, email/SMS shipping notifications, Shopify Bundles
  * (fixed bundles, multipacks), Shopify Subscriptions, store credit, Shopify
  * Messaging (email, SMS in supported countries, WhatsApp), Translate & Adapt
- * (auto-translates 2 languages), Shopify's cookie banner, customer events.
+ * (auto-translates 2 languages), Shopify's cookie banner, customer events,
+ * pickup points for stores in France, Italy, Spain and the UK, VAT invoices for
+ * EU and UK orders (not for orders with duties; no e-invoicing).
  *
  * A tool the client already uses or prefers is also a signal, so the approach
  * confirms it instead of silently recommending native features.
@@ -30,6 +32,12 @@ export const RETURNS_VOLUME_THRESHOLD = 100;
 
 /** Languages Translate & Adapt can auto-translate (Shopify documentation). */
 export const AUTO_TRANSLATED_LANGUAGES = 2;
+
+/** Store countries with native pickup points (Evri, Colissimo, Correos, Mondial Relay, Poste Italiane). */
+export const NATIVE_PICKUP_POINT_COUNTRIES = ['FR', 'IT', 'ES', 'GB'];
+
+/** Store countries where Shopify's VAT invoices are not supported. */
+const VAT_INVOICE_UNSUPPORTED = ['PT'];
 
 /** Countries where Shopify Messaging sends SMS marketing (Spain paused since 2026-09-15). */
 export const SHOPIFY_SMS_COUNTRIES = ['AT', 'CA', 'DK', 'FI', 'IT', 'LU', 'PL', 'PT', 'SE', 'GB', 'US'];
@@ -95,6 +103,16 @@ export function appSignals(doc) {
   const languages = distinctLanguages(doc);
   const smsOutside = (doc.marketing?.sms?.countries ?? []).filter((c) => !SHOPIFY_SMS_COUNTRIES.includes(c));
   const loyalty = picked(doc.loyalty?.components).filter((c) => c !== 'store_credit');
+  const deliveryBeyondNative = (doc.shipping?.delivery_methods ?? []).filter((m) => m === 'scheduled_delivery_slots'
+    || (m === 'pickup_points' && !NATIVE_PICKUP_POINT_COUNTRIES.includes(doc.meta?.client?.hq_country)));
+  const invoicing = doc.compliance?.invoicing ?? {};
+  const eInvoicing = picked(invoicing.e_invoicing);
+  const invoicingNeeds = [
+    ...(invoicing.issuer === 'invoicing_app' ? ['Client prefers an invoicing app'] : []),
+    ...(eInvoicing.length && !['erp', 'billing_or_tax_service'].includes(invoicing.issuer) ? [`E-invoicing obligations (${eInvoicing.join(', ').replace(/_/g, ' ')}); Shopify has no built-in e-invoicing`] : []),
+    ...(invoicing.issuer === 'shopify_vat_invoices' && doc.markets?.duties_ddp === true ? ['Shopify VAT invoices are not generated for orders with duties collected at checkout'] : []),
+    ...(invoicing.issuer === 'shopify_vat_invoices' && marketsOf(doc).some((m) => VAT_INVOICE_UNSUPPORTED.includes(m.code)) ? ['Shopify VAT invoices do not support Portugal'] : []),
+  ];
 
   return {
     returns_platform: returnsPlatform,
@@ -127,9 +145,10 @@ export function appSignals(doc) {
     consent_app: doc.compliance?.consent_approach === 'third_party_cmp' ? [`Consent management platform${isNamedApp(doc.compliance?.cookie_consent_tool) ? `: ${doc.compliance.cookie_consent_tool}` : ''} (must use the Customer Privacy API)`] : [],
     fraud_guarantee_app: doc.checkout?.chargeback_guarantee === true ? ['Chargeback guarantee beyond Shopify Protect (US Shop Pay orders only)'] : [],
     sms_app: doc.marketing?.sms?.enabled === true && smsOutside.length ? [`SMS marketing in countries Shopify Messaging does not cover: ${smsOutside.join(', ')}`] : [],
-    delivery_scheduling_app: has(doc.shipping?.delivery_methods, 'scheduled_delivery_slots', 'pickup_points') ? [`Delivery methods beyond native: ${(doc.shipping.delivery_methods ?? []).filter((m) => ['scheduled_delivery_slots', 'pickup_points'].includes(m)).join(', ').replace(/_/g, ' ')}`] : [],
+    delivery_scheduling_app: deliveryBeyondNative.length ? [`Delivery methods beyond native: ${deliveryBeyondNative.join(', ').replace(/_/g, ' ')}${deliveryBeyondNative.includes('pickup_points') ? ' (native pickup points only for stores in France, Italy, Spain and the UK)' : ''}`] : [],
     tracking_app: doc.marketing?.analytics?.server_side === true ? ['Server-side tracking beyond Shopify customer events and channel apps'] : [],
     wishlist_app: has(doc.customers?.account_features, 'wishlist') || has(doc.design?.interactive_patterns, 'wishlist') ? ['Wishlist (no native wishlist)'] : [],
+    invoicing_app: invoicingNeeds,
   };
 }
 

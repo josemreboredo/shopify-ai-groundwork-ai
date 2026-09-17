@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "currency": "EUR",
   "offers": {
     "S": {
@@ -87,7 +87,7 @@
       "label": "Retail & POS",
       "condition": "One or more physical stores sell with Shopify POS or an integrated POS, or omnichannel services are needed (pickup in store, ship from store, in-store returns of online orders, endless aisle, stock transfers, retail catalogs)",
       "inputs": ["/retail/store_count", "/retail/pos", "/retail/omnichannel"],
-      "modifier": null
+      "modifier": "+Retail"
     }
   ],
   "l_triggers": [
@@ -145,6 +145,13 @@
       "description": "500+ SKUs, complex variants or bundles",
       "effort_weeks": {"min": 0.5, "max": 0.5},
       "price_add": {"min": 5000, "max": 8000}
+    },
+    {
+      "id": "+Retail",
+      "gate": "retail_pos",
+      "description": "Shopify POS or integrated POS set-up, store locations, pick-up in store, in-store returns — up to 5 stores (more stores: rule 11.22, never a per-store price)",
+      "effort_weeks": {"min": 1, "max": 1},
+      "price_add": {"min": 8000, "max": 12000}
     }
   ],
   "integration_definition": {
@@ -350,6 +357,15 @@
       "condition": "Mainland China is the only launch market — not part of the Merkle offering",
       "destination": "China discovery (docs/discovery/china-mainland.md)",
       "inputs": ["/markets/list"]
+    },
+    {
+      "id": "11.22",
+      "result": "WARN",
+      "status": "canonical",
+      "condition": "More than 5 retail stores in scope",
+      "destination": "Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team",
+      "internal_note": "Never quote a per-store price: a store with its own line item gets compared to 40 hours. Quote programme and increment, or a rate-carded run team (never shown to the client)",
+      "inputs": ["/retail/store_count"]
     }
   ],
   "routes": [
@@ -440,7 +456,7 @@
     {
       "id": "delivery_scheduling_app",
       "label": "Delivery slots and pickup points",
-      "inputs": ["/shipping/delivery_methods"]
+      "inputs": ["/shipping/delivery_methods", "/meta/client/hq_country"]
     },
     {
       "id": "tracking_app",
@@ -451,6 +467,11 @@
       "id": "wishlist_app",
       "label": "Wishlist",
       "inputs": ["/customers/account_features", "/design/interactive_patterns"]
+    },
+    {
+      "id": "invoicing_app",
+      "label": "Invoicing and e-invoicing",
+      "inputs": ["/compliance/invoicing/issuer", "/compliance/invoicing/e_invoicing", "/markets/duties_ddp", "/markets/list/*/code"]
     }
   ],
   "resolved_questions": [

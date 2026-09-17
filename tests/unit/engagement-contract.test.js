@@ -251,8 +251,8 @@ describe('Shopify knowledge (question bank 1.1.0)', () => {
 
   test('exit rules 11.2 and 11.5 are FLAGs (Shopify benchmark); mainland China and POS are modelled', () => {
     const result = (id) => offering.exit_rules.find((r) => r.id === id)?.result;
-    assert.deepEqual(['11.2', '11.5', '11.18', '11.19', '11.20', '11.21'].map(result), ['FLAG', 'FLAG', 'FLAG', 'FLAG', 'FLAG', 'STOP']);
-    assert.ok(offering.scope_gates.some((g) => g.id === 'retail_pos'));
+    assert.deepEqual(['11.2', '11.5', '11.18', '11.19', '11.20', '11.21', '11.22'].map(result), ['FLAG', 'FLAG', 'FLAG', 'FLAG', 'FLAG', 'STOP', 'WARN']);
+    assert.equal(offering.scope_gates.find((g) => g.id === 'retail_pos').modifier, '+Retail');
     assert.ok(!offering.offers.S.base_scope.includes('Plus'), 'offers do not assume Shopify Plus');
   });
 });

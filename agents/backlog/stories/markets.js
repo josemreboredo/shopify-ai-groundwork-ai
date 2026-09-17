@@ -85,10 +85,10 @@ export default [
     points: 3,
     owner: 'agent',
     depends_on: ['LWC-MKT-001', 'LWC-CAT-001'],
-    spec_refs: ['/markets/duties_ddp', '/markets/list', '/shipping/carriers'],
+    spec_refs: ['/markets/duties_ddp', '/markets/ddp_markets', '/markets/list', '/shipping/carriers'],
     gates: ['markets'],
     applies: (doc) => doc.markets?.duties_ddp === true,
-    agent_prompt: (doc) => `Enable collection of duties and import taxes for the international markets in Shopify Markets. Check eligibility first (Shopify Payments, plan and carrier requirements) and report if a market is not eligible. Add HS codes and country of origin to every product (bulk via Admin API or Matrixify). Align carrier services (${listOr(doc.shipping?.carriers, 'carriers to confirm')}) with DDP terms and test orders crossing the ${listOr(doc.markets?.primary_markets, 'primary market')} border in each direction.`,
+    agent_prompt: (doc) => `Enable collection of duties and import taxes ${doc.markets?.ddp_markets?.length ? `(DDP) for ${list(doc.markets.ddp_markets)} and DAP for the other international markets` : 'for the international markets'} in Settings > Taxes and duties (DDP or DAP per country, never both). Check eligibility first (unsupported destinations, carriers that support DDP labels) and report if a market is not eligible; duties can't be combined with tax overrides, manual tax rates or customer tax exemptions. Add HS codes and country of origin to every product (bulk via Admin API or Matrixify). Align carrier services (${listOr(doc.shipping?.carriers, 'carriers to confirm')}) with DDP terms and test orders crossing the ${listOr(doc.markets?.primary_markets, 'primary market')} border in each direction.`,
   },
   {
     key: 'LWC-MKT-005',

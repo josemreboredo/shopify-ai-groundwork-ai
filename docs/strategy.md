@@ -134,7 +134,7 @@ creep post-signature.
 | **Integration** | One or more live connections to ERP, PIM, CRM, or 3PL |
 | **SKU complexity** | 500+ SKUs with complex variants, metafields, or product bundling |
 | **Migration** | Migration from any non-Shopify ecommerce platform (e.g. Shopware, Magento, WooCommerce, SFCC, BigCommerce) |
-| **Retail & POS** | Physical stores selling with Shopify POS or an integrated POS, or omnichannel services (pickup in store, ship from store, in-store returns) — no modifier until priced (ADR 0011) |
+| **Retail & POS** | Physical stores selling with Shopify POS or an integrated POS, or omnichannel services (pickup in store, ship from store, in-store returns) — `+Retail` modifier, up to 5 stores (ADR 0011) |
 
 **Classification rule:**
 - **0 gates → S** (Ecommerce Foundation)
@@ -156,6 +156,9 @@ When multi-currency is the only active gate, the `+Markets` modifier applies.
 | `+Integration` — one ERP / PIM / CRM / 3PL live connection | +1–2 weeks | +€10–18k |
 | `+Migration` — platform migration, redirect mapping, data transfer | +1–2 weeks | +€8–15k |
 | `+SKU` — 500+ SKUs, complex variants or bundles | +0.5 weeks | +€5–8k |
+| `+Retail` — Shopify POS or integrated POS, store locations, pick-up in store, in-store returns; up to 5 stores | +1 week | +€8–12k |
+
+**Retail roll-outs are never priced per store.** A store with its own line item gets compared to 40 hours of work. Above 5 stores (rule 11.22, WARN) quote the programme and its roll-out increments, or a rate-carded run team.
 
 ---
 
@@ -274,6 +277,7 @@ The canonical list is `offering.json → exit_rules` (ADR 0003). Summary:
 | 11.19 | B2B needs Shopify B2B does not support | FLAG → B2B architecture review |
 | 11.20 | Mainland China is a launch market (Great Firewall: ICP licence, onshore hosting) | FLAG → Excluded from the offering; separate China discovery |
 | 11.21 | Mainland China is the only launch market | STOP → China discovery |
+| 11.22 | More than 5 retail stores | WARN — programme and increments or rate-carded run team, never per store |
 
 ---
 

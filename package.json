@@ -1,6 +1,6 @@
 {
   "name": "shopify-ai-builder",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Gaia-governed AI delivery platform for Shopify consultants",
   "type": "module",
   "scripts": {
@@ -14,7 +14,8 @@
     "deck": "node agents/discovery-deck/build.js",
     "deck:check": "node agents/discovery-deck/build.js check",
     "interview": "node agents/interview/cli.js",
-    "apps": "node scripts/apps/cli.js"
+    "apps": "node scripts/apps/cli.js",
+    "workbook": "node agents/workbook/build.js"
   },
   "engines": {
     "node": ">=22.9.0"
