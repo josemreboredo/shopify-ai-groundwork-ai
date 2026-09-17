@@ -67,6 +67,21 @@ describe('client deck XML', () => {
     assert.match(xml, /reference-only="true"/);
   });
 
+  test('expected outcomes list a goal that restates a KPI only once', () => {
+    const doc = load('acme-watches.json');
+    doc.business = { ...doc.business, kpis: [{ metric: 'Conversion rate', baseline: '0.3%', target: '1%', horizon_months: 12 }],
+      growth_goals: ['Increase conversion rate from 0.3% to 1% within 12 months', 'Open two new markets'] };
+    const outcomes = buildDeckXml(doc, backlogFor(doc)).xml.match(/<expected-outcomes>[\s\S]*?<\/expected-outcomes>/)?.[0] ?? '';
+    assert.equal((outcomes.match(/0\.3%/g) ?? []).length, 1, outcomes);
+    assert.match(outcomes, /Open two new markets/);
+  });
+
+  test('a launch market without a pricing approach is a field to complete', () => {
+    const doc = load('acme-watches.json');
+    doc.markets = { ...doc.markets, list: [...doc.markets.list, { code: 'GB', currency: 'GBP' }] };
+    assert.ok(buildDeckXml(doc, backlogFor(doc)).warnings.some((w) => w.includes('pricing not answered for GB')));
+  });
+
   test('investment shows the offer band only; L is open-ended', () => {
     const doc = load('acme-watches.json');
     const { xml } = buildDeckXml(doc, backlogFor(doc));

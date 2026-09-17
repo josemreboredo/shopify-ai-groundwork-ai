@@ -135,6 +135,8 @@ describe('exit rule edge cases', () => {
     const warn = items.find((i) => i.rule_id === '11.11');
     assert.equal(warn.result, 'WARN');
     assert.equal(warn.resolution, undefined);
+    const routed = { ...doc, delivery: { route: 'larger_engagement' } };
+    assert.ok(!evaluateExits(withOffer(routed)).items.some((i) => i.rule_id === '11.11'), 'a routed STOP quotes no S/M/L offer');
   });
 
   test('11.22 warns above 5 retail stores: programme pricing, never a per-store price', () => {

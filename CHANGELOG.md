@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
+## [0.6.2] — 2026-09-17
+
+### Fixed
+- Exit rule 11.11 (Grow retainer) no longer fires on a routed STOP (Larger Engagement or no bid): no S/M/L offer is quoted.
+- App Store candidates stay in their area: apps a question lists for several areas carry `areas` in the app registry (tracking apps are no longer returns candidates, bundle apps no longer pre-order candidates).
+- Deck: a launch market without a pricing approach is a field to complete; expected outcomes list a goal that restates a KPI only once.
+
 ## [0.6.1] — 2026-09-17
 
 Open items from 0.6.0: Retail & POS pricing, ask_if thresholds, mainland China licensing, tax and shipping set-up (ADR 0012).

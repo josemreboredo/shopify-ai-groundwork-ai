@@ -91,6 +91,10 @@ test('App Store candidates come from the registry for signalled areas only; appr
   assert.deepEqual(Object.keys(candidates), ['b2b_quote_app']);
   const urls = new Set(apps.apps.map((a) => a.url));
   assert.ok(candidates.b2b_quote_app.length > 0 && candidates.b2b_quote_app.every((a) => urls.has(a.url) && a.status));
+  const returns = appCandidates({ ...base, markets: { list: [{ code: 'DE' }] }, shipping: { returns: { label: 'qr_drop_off' } }, post_purchase: { tracking: { branded_tracking_page: true } } });
+  assert.ok(returns.returns_platform.every((c) => !/tracking/i.test(c.name)), 'tracking apps are not returns candidates');
+  assert.ok(returns.post_purchase_platform.every((c) => !/returns/i.test(c.name)), 'returns apps are not tracking candidates');
+  for (const app of apps.apps.filter((x) => x.areas)) for (const area of app.areas) assert.ok(areas.includes(area), `${app.handle}: ${area}`);
   const input = approachInput(doc);
   assert.deepEqual(input.app_signals, appSignals(doc));
   assert.deepEqual(input.app_candidates, candidates);

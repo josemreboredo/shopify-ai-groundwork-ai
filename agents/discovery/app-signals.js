@@ -156,7 +156,8 @@ const APP_BY_HANDLE = new Map(apps.apps.map((a) => [a.handle, a]));
 
 /**
  * App Store candidates for every area with a signal: apps named in the
- * `shopify.apps` of questions that feed the area, from schema/apps.json.
+ * `shopify.apps` of questions that feed the area, from schema/apps.json. An app
+ * with `areas` is a candidate only for those areas.
  *
  * @param {object} doc
  * @returns {Record<string, { name: string, url: string, status: string }[]>}
@@ -169,7 +170,7 @@ export function appCandidates(doc) {
     const handles = [...new Set(questionBank.questions
       .filter((q) => q.feeds?.includes(`app:${area}`))
       .flatMap((q) => q.shopify?.apps ?? []))];
-    out[area] = handles.map((h) => APP_BY_HANDLE.get(h)).filter(Boolean).map((a) => ({ name: a.name, url: a.url, status: a.status }));
+    out[area] = handles.map((h) => APP_BY_HANDLE.get(h)).filter((a) => a && (!a.areas || a.areas.includes(area))).map((a) => ({ name: a.name, url: a.url, status: a.status }));
   }
   return out;
 }
