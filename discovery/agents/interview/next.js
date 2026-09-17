@@ -137,6 +137,7 @@ export function describeQuestion(q) {
     ...(q.feeds?.length ? { feeds: q.feeds } : {}),
     ...(q.ask_when ? { ask_when: q.ask_when } : {}),
     ...(q.shopify ? { shopify: q.shopify } : {}),
+    ...(q.teach ? { teach: q.teach } : {}),
   };
 }
 

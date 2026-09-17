@@ -163,6 +163,28 @@ function FieldInput({ spec, showLabel, value }) {
   );
 }
 
+function WhyItMatters({ teach }) {
+  if (!teach) return null;
+  return (
+    <details className="teach" open>
+      <summary>Why this matters — and the trade-offs</summary>
+      <p>{teach.why}</p>
+      {teach.options?.length ? (
+        <table>
+          <thead><tr><th>Option</th><th>Pros</th><th>Cons</th></tr></thead>
+          <tbody>{teach.options.map((o) => <tr key={o.option}><td>{o.option}</td><td>{o.pros}</td><td>{o.cons}</td></tr>)}</tbody>
+        </table>
+      ) : null}
+      {teach.limits ? <p><strong>Limits.</strong> {teach.limits}</p> : null}
+      {teach.sources?.length ? (
+        <p className="muted">Sources: {teach.sources.map((url, i) => (
+          <span key={url}>{i > 0 ? ' · ' : ''}<a href={url} target="_blank" rel="noreferrer">{url.replace(/^https:\/\/(www\.)?/, '').split('/')[0]}</a></span>
+        ))}</p>
+      ) : null}
+    </details>
+  );
+}
+
 function ShopifyKnowledge({ shopify }) {
   if (!shopify) return null;
   return (
@@ -196,6 +218,7 @@ export function QuestionCard({ question, actionData, busy, values = {}, note = '
       </div>
       <p className="question">{question.text}</p>
       {question.help ? <p className="muted">{question.help}</p> : null}
+      <WhyItMatters teach={question.teach} />
       <ShopifyKnowledge shopify={question.shopify} />
       <Form method="post" key={question.id}>
         <input type="hidden" name="question_id" value={question.id} />

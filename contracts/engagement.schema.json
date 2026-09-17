@@ -3364,10 +3364,6 @@
       "additionalProperties": false,
       "description": "AI and agent-driven commerce: how the store appears to AI shopping assistants and which AI capabilities the merchant uses (Shopify agentic storefronts, Catalog, UCP).",
       "properties": {
-        "agentic_reviewed": {
-          "type": "boolean",
-          "description": "The merchant has reviewed the agentic sales-channel settings in the admin"
-        },
         "agentic_enrolment": {
           "enum": [
             "shopify_managed",
@@ -3389,14 +3385,6 @@
         "us_buyers": {
           "type": "boolean",
           "description": "Sells to buyers in the United States (eligibility for some agentic channels)"
-        },
-        "terms_accepted": {
-          "enum": [
-            "accepted",
-            "not_accepted",
-            "not_sure"
-          ],
-          "description": "Agentic Storefronts supplemental terms accepted by someone with authority"
         },
         "customer_data_sharing": {
           "enum": [
@@ -3454,6 +3442,14 @@
             ]
           },
           "description": "Merchant-facing Shopify AI features in scope"
+        },
+        "sell_through_agents": {
+          "type": "boolean",
+          "description": "Wants products found and bought inside AI assistants"
+        },
+        "terms_owner": {
+          "type": "string",
+          "description": "Who can accept Shopify's supplemental terms for AI channels (role, not a name)"
         }
       }
     }

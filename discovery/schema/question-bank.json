@@ -5664,10 +5664,10 @@
       "priority": "recommended",
       "audience": "client",
       "answer_type": "boolean",
-      "text": "Have you reviewed your AI shopping-channel settings in Shopify (Sales channels → Agentic)?",
-      "help": "Shopify enrols eligible stores in AI shopping channels by default, so these settings are usually already live.",
+      "text": "Do you want your products to be found and bought inside AI assistants such as ChatGPT, Google AI or Copilot?",
+      "help": "AI assistants are becoming a shopping channel. Shopify already switches eligible stores on by default, so this is a decision to confirm or reverse, not one to postpone.",
       "maps_to": [
-        "/ai/agentic_reviewed"
+        "/ai/sell_through_agents"
       ],
       "shopify": {
         "native": [
@@ -5682,6 +5682,26 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "This decides whether a new sales channel is open or closed. Shopify enrols eligible stores automatically, so doing nothing is itself a decision — the channel is on.",
+        "options": [
+          {
+            "option": "Sell through AI assistants",
+            "pros": "Reaches shoppers who start in an assistant instead of a search engine; no build work — Shopify feeds the catalogue",
+            "cons": "Less control over presentation; the assistant owns the conversation; customer data is shared when checkout happens inside it"
+          },
+          {
+            "option": "Stay out",
+            "pros": "Full control of the journey and the data",
+            "cons": "Invisible where a growing share of product research starts; competitors listed instead"
+          }
+        ],
+        "limits": "Eligibility is decided by Shopify: Starter plan or higher, not a private store, and some channels only for merchants selling to US buyers. Business-to-business products are excluded automatically.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home",
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements"
+        ]
       }
     },
     {
@@ -5690,8 +5710,8 @@
       "priority": "recommended",
       "audience": "client",
       "answer_type": "enum",
-      "text": "Should Shopify enrol you automatically in current and future AI shopping channels, or do you want to approve each channel?",
-      "help": "The default lets Shopify manage enrolment, including channels that do not exist yet.",
+      "text": "Should Shopify enrol you automatically in new AI channels as they appear, or do you want to approve each one?",
+      "help": "The default setting also enrols you in channels that do not exist yet.",
       "maps_to": [
         "/ai/agentic_enrolment"
       ],
@@ -5708,6 +5728,25 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "AI channels are being added regularly. This decides whether the brand appears in a new one automatically, or only after your review.",
+        "options": [
+          {
+            "option": "Let Shopify manage it",
+            "pros": "No admin work; the brand is present as new channels launch",
+            "cons": "The brand can appear in a channel nobody reviewed, with terms and data sharing accepted in advance"
+          },
+          {
+            "option": "Approve each channel",
+            "pros": "Brand, legal and data review before each launch",
+            "cons": "Someone must own the review; the brand is late to new channels"
+          }
+        ],
+        "limits": "The default is Shopify-managed enrolment, with catalogue access and checkout inside the assistant switched on.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home"
+        ]
       }
     },
     {
@@ -5716,8 +5755,8 @@
       "priority": "recommended",
       "audience": "client",
       "answer_type": "enum",
-      "text": "Should shoppers be able to complete the purchase inside the AI assistant, or come to your store to check out?",
-      "help": "Direct checkout converts better but changes attribution, upsells and analytics; ChatGPT always sends shoppers to your checkout.",
+      "text": "Should shoppers be able to pay inside the AI assistant, or should they come to your store to check out?",
+      "help": "Paying in the assistant converts better; sending them to your store keeps the full journey, the upsells and the analytics.",
       "maps_to": [
         "/ai/direct_checkout"
       ],
@@ -5735,6 +5774,27 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "This is the commercial trade-off of the channel: conversion against ownership of the customer journey and the data.",
+        "options": [
+          {
+            "option": "Checkout inside the assistant",
+            "pros": "Fewer steps, so better conversion from an assistant conversation",
+            "cons": "Your storefront, upsells and analytics are skipped; the channel receives the customer's name, e-mail, phone and address"
+          },
+          {
+            "option": "Send them to your store",
+            "pros": "You keep merchandising, upsells, tracking and the customer relationship",
+            "cons": "More steps between intent and purchase"
+          }
+        ],
+        "limits": "ChatGPT always sends shoppers to your checkout; other channels can be set per channel.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements",
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/chatgpt",
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/data-privacy"
+        ]
       }
     },
     {
@@ -5743,8 +5803,8 @@
       "priority": "recommended",
       "audience": "client",
       "answer_type": "boolean",
-      "text": "Do you sell to buyers in the United States?",
-      "help": "Some AI channels are limited to merchants selling to US buyers.",
+      "text": "Do you sell to customers in the United States?",
+      "help": "Some AI channels are only open to merchants selling to US buyers, wherever the business is based.",
       "maps_to": [
         "/ai/us_buyers"
       ],
@@ -5762,6 +5822,13 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "It decides which AI channels are available at all, so it decides whether this section matters for launch.",
+        "limits": "ChatGPT and Copilot need US buyers; Google's AI channels are limited to selected US-based shops. A European merchant selling only in Europe may not be eligible today.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements"
+        ]
       }
     },
     {
@@ -5769,11 +5836,11 @@
       "subsection": "7.7",
       "priority": "recommended",
       "audience": "client",
-      "answer_type": "enum",
-      "text": "Has someone with authority accepted Shopify's supplemental terms for AI shopping channels?",
-      "help": "Selling through AI channels requires accepting separate terms; legal or procurement usually has not seen them.",
+      "answer_type": "text",
+      "text": "Who can accept Shopify's additional terms for selling through AI channels?",
+      "help": "Selling through these channels requires accepting separate terms — usually legal or procurement, not the ecommerce team.",
       "maps_to": [
-        "/ai/terms_accepted"
+        "/ai/terms_owner"
       ],
       "shopify": {
         "native": [
@@ -5788,6 +5855,13 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "The channel cannot go live until someone with authority accepts separate terms. Naming that person early avoids a launch-week block.",
+        "limits": "The supplemental terms are accepted in the Shopify admin, and acceptance covers the channels the store is enrolled in.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements"
+        ]
       }
     },
     {
@@ -5796,8 +5870,8 @@
       "priority": "recommended",
       "audience": "client",
       "answer_type": "enum",
-      "text": "Are you comfortable that AI channels receive customer name, e-mail, phone and address for orders placed inside the assistant?",
-      "help": "This is a data-protection decision: under GDPR it usually needs a documented review.",
+      "text": "Are you comfortable sharing the customer's name, e-mail, phone and address with an AI channel when they buy inside it?",
+      "help": "This is a data-protection decision. Under GDPR it usually needs a documented review before launch.",
       "maps_to": [
         "/ai/customer_data_sharing"
       ],
@@ -5814,6 +5888,25 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "Checkout inside the assistant means order data reaches a third party. It is the same kind of decision as adding a new processor, and it belongs with the data-protection owner.",
+        "options": [
+          {
+            "option": "Approve sharing",
+            "pros": "Checkout inside the assistant stays available, with its conversion benefit",
+            "cons": "A third party processes customer data; needs a record and probably a contract"
+          },
+          {
+            "option": "Refuse or postpone",
+            "pros": "No new processor; simpler privacy position",
+            "cons": "Checkout in the assistant must be switched off; the channel becomes referral only"
+          }
+        ],
+        "limits": "The data is shared only for orders placed through direct checkout in the channel.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/data-privacy"
+        ]
       }
     },
     {
@@ -5823,7 +5916,7 @@
       "audience": "client",
       "answer_type": "enum",
       "text": "How complete is your product data — titles, images, prices, descriptions and variants?",
-      "help": "Products that do not meet Shopify Catalog requirements are invisible to every AI channel.",
+      "help": "AI channels only list products whose data is complete. Gaps make products invisible rather than badly presented.",
       "maps_to": [
         "/ai/catalog_readiness"
       ],
@@ -5840,6 +5933,13 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "Product-data quality decides visibility in AI channels, and it is the cheapest thing to fix before launch.",
+        "limits": "A product needs a title, at least one image, a price above zero, an identifiable URL and publication to the online store. Eligibility is reviewed over time, not only once.",
+        "sources": [
+          "https://help.shopify.com/en/manual/shopify-catalog/requirements"
+        ]
       }
     },
     {
@@ -5848,8 +5948,8 @@
       "priority": "optional",
       "audience": "client",
       "answer_type": "boolean",
-      "text": "Is important product information kept in metafields, metaobjects or inside product titles?",
-      "help": "That data needs catalog mapping before AI channels can read it correctly.",
+      "text": "Is important product information kept in custom fields, separate records or inside the product title (for example “Steel 40mm — Automatic”)?",
+      "help": "Data that lives in custom fields or in the title needs mapping before AI channels can read it.",
       "maps_to": [
         "/ai/catalog_mapping_needed"
       ],
@@ -5866,6 +5966,13 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "It decides whether there is a data workstream. Attributes that matter commercially — material, size, movement — are often in custom fields or packed into titles, where an assistant cannot read them reliably.",
+        "limits": "Shopify supports mapping custom fields and title patterns into the catalogue it sends to AI channels; that mapping is work to plan.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products"
+        ]
       }
     },
     {
@@ -5874,8 +5981,8 @@
       "priority": "optional",
       "audience": "client",
       "answer_type": "enum",
-      "text": "Should AI crawlers be allowed, restricted or blocked on your storefront?",
-      "help": "Theme-level robots rules affect open-web AI crawling only; they do not stop Shopify Catalog sending product data to AI channels.",
+      "text": "Should AI crawlers be allowed, restricted or blocked on your website?",
+      "help": "Blocking crawlers does not remove your products from AI shopping channels; it only affects what they read from your public site.",
       "maps_to": [
         "/ai/crawler_policy"
       ],
@@ -5892,6 +5999,25 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "Brands often want to block AI crawlers to protect content, then find their products still appear — the two routes are separate.",
+        "options": [
+          {
+            "option": "Allow all",
+            "pros": "Editorial content, guides and brand story can be cited by assistants",
+            "cons": "Content can be summarised without a visit to the site"
+          },
+          {
+            "option": "Selective or blocked",
+            "pros": "Protects editorial content and images from open-web crawling",
+            "cons": "No effect on the product data Shopify sends to AI channels; can reduce visibility in AI answers"
+          }
+        ],
+        "limits": "Crawler rules are advisory and are set in the theme; they do not stop the Shopify product feed.",
+        "sources": [
+          "https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt"
+        ]
       }
     },
     {
@@ -5900,8 +6026,8 @@
       "priority": "optional",
       "audience": "client",
       "answer_type": "boolean",
-      "text": "Do you want to control the answers AI assistants give about your shop (shipping, returns, sizing)?",
-      "help": "Shopify's free Knowledge Base app publishes FAQs for AI assistants and logs what shoppers ask.",
+      "text": "Do you want to control the answers AI assistants give about shipping, returns and sizing?",
+      "help": "Shopify has a free app that publishes your FAQs for assistants and logs what shoppers ask.",
       "maps_to": [
         "/ai/knowledge_base"
       ],
@@ -5918,6 +6044,13 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "Assistants answer service questions whether or not you supply the answers. Publishing them keeps the answers right and shows what customers actually ask.",
+        "limits": "The FAQ content is a free Shopify app; the query log shows what shoppers asked about the store.",
+        "sources": [
+          "https://help.shopify.com/en/manual/promoting-marketing/knowledge-base"
+        ]
       }
     },
     {
@@ -5926,8 +6059,8 @@
       "priority": "optional",
       "audience": "client",
       "answer_type": "enum",
-      "text": "Do you plan to expose your own AI agent or shopping assistant on top of the store?",
-      "help": "Shopify publishes agent interfaces (UCP, storefront MCP); parts are still early access, so treat this as research, not fixed scope.",
+      "text": "Do you plan to offer your own AI shopping assistant, or connect the store to agent platforms yourself?",
+      "help": "Parts of this are still early access at Shopify, so treat it as exploration rather than fixed scope.",
       "maps_to": [
         "/ai/own_agent_surface"
       ],
@@ -5950,6 +6083,14 @@
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
+      },
+      "teach": {
+        "why": "It separates “be present where assistants already are” from “build your own assistant”. The second is a project in its own right and partly on pre-release technology.",
+        "limits": "Shopify publishes an open protocol and store endpoints for agents; the cart part is early access, and plan requirements are not documented yet.",
+        "sources": [
+          "https://shopify.dev/docs/agents",
+          "https://shopify.dev/docs/apps/build/storefront-mcp/servers/storefront"
+        ]
       }
     },
     {
@@ -5958,8 +6099,8 @@
       "priority": "optional",
       "audience": "client",
       "answer_type": "multi_enum",
-      "text": "Which Shopify AI features do you want your team to use?",
-      "help": "Sidekick and Shopify Magic are included; semantic search needs a specific plan and a catalogue under 200,000 products.",
+      "text": "Which Shopify AI tools do you want your team to use in day-to-day work?",
+      "help": "These are back-office tools for your team, not customer-facing.",
       "maps_to": [
         "/ai/merchant_ai_tools"
       ],
@@ -5976,6 +6117,51 @@
             "plan": "grow",
             "plan_note": "Shopify or Advanced plan; under 200,000 products",
             "docs": "https://changelog.shopify.com/posts/semantic-search-is-now-available-on-more-plans"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com",
+          "edition": "Spring '26"
+        }
+      },
+      "teach": {
+        "why": "It separates customer-facing AI from staff productivity, and flags a training and governance need rather than a build.",
+        "limits": "The assistant and content tools are included in the plans, with limits varying by plan; better on-site search needs a specific plan and a catalogue under 200,000 products.",
+        "sources": [
+          "https://help.shopify.com/en/manual/ai-powered-tools",
+          "https://help.shopify.com/en/manual/online-store/storefront-search/search-and-discovery-modify-search"
+        ]
+      }
+    },
+    {
+      "id": "Q7.7.13",
+      "subsection": "7.7",
+      "priority": "recommended",
+      "audience": "consultant",
+      "answer_type": "enum",
+      "text": "Existing Shopify store: what do the agentic sales-channel settings show today (Sales channels → Agentic)?",
+      "help": "Check the admin with the client: enrolment mode, which channels are on, and whether checkout inside the assistant is enabled.",
+      "maps_to": [
+        "/ai/agentic_enrolment"
+      ],
+      "skip_if": {
+        "question": "Q1.2.1",
+        "equals": false
+      },
+      "teach": {
+        "why": "On an existing store the settings are already live, so the consultant reads the current state instead of asking the client to imagine it.",
+        "limits": "Turning enrolment off can take up to seven days to take effect in some channels.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home"
+        ]
+      },
+      "shopify": {
+        "native": [
+          {
+            "feature": "Agentic sales channel settings",
+            "plan": "basic",
+            "docs": "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home"
           }
         ],
         "verified": {

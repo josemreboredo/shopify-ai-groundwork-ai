@@ -1901,14 +1901,14 @@
 
 ### 7.7 AI & agentic commerce
 
-**Q7.7.1** — Have you reviewed your AI shopping-channel settings in Shopify (Sales channels → Agentic)? *(recommended)*
-*Shopify enrols eligible stores in AI shopping channels by default, so these settings are usually already live.*
+**Q7.7.1** — Do you want your products to be found and bought inside AI assistants such as ChatGPT, Google AI or Copilot? *(recommended)*
+*AI assistants are becoming a shopping channel. Shopify already switches eligible stores on by default, so this is a decision to confirm or reverse, not one to postpone.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.7.2** — Should Shopify enrol you automatically in current and future AI shopping channels, or do you want to approve each channel? *(recommended)*
-*The default lets Shopify manage enrolment, including channels that do not exist yet.*
+**Q7.7.2** — Should Shopify enrol you automatically in new AI channels as they appear, or do you want to approve each one? *(recommended)*
+*The default setting also enrols you in channels that do not exist yet.*
 
 *(tick one)*
 - [ ] Shopify managed
@@ -1916,8 +1916,8 @@
 - [ ] Off
 - [ ] Not sure yet
 
-**Q7.7.3** — Should shoppers be able to complete the purchase inside the AI assistant, or come to your store to check out? *(recommended)*
-*Direct checkout converts better but changes attribution, upsells and analytics; ChatGPT always sends shoppers to your checkout.*
+**Q7.7.3** — Should shoppers be able to pay inside the AI assistant, or should they come to your store to check out? *(recommended)*
+*Paying in the assistant converts better; sending them to your store keeps the full journey, the upsells and the analytics.*
 
 *(tick one)*
 - [ ] All channels
@@ -1925,22 +1925,19 @@
 - [ ] Off
 - [ ] Not sure yet
 
-**Q7.7.4** — Do you sell to buyers in the United States? *(recommended)*
-*Some AI channels are limited to merchants selling to US buyers.*
+**Q7.7.4** — Do you sell to customers in the United States? *(recommended)*
+*Some AI channels are only open to merchants selling to US buyers, wherever the business is based.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.7.5** — Has someone with authority accepted Shopify's supplemental terms for AI shopping channels? *(recommended)*
-*Selling through AI channels requires accepting separate terms; legal or procurement usually has not seen them.*
+**Q7.7.5** — Who can accept Shopify's additional terms for selling through AI channels? *(recommended)*
+*Selling through these channels requires accepting separate terms — usually legal or procurement, not the ecommerce team.*
 
-*(tick one)*
-- [ ] Accepted
-- [ ] Not accepted
-- [ ] Not sure yet
+> Answer:
 
-**Q7.7.6** — Are you comfortable that AI channels receive customer name, e-mail, phone and address for orders placed inside the assistant? *(recommended)*
-*This is a data-protection decision: under GDPR it usually needs a documented review.*
+**Q7.7.6** — Are you comfortable sharing the customer's name, e-mail, phone and address with an AI channel when they buy inside it? *(recommended)*
+*This is a data-protection decision. Under GDPR it usually needs a documented review before launch.*
 
 *(tick one)*
 - [ ] Approved
@@ -1948,21 +1945,21 @@
 - [ ] Needs legal review
 
 **Q7.7.7** — How complete is your product data — titles, images, prices, descriptions and variants? *(recommended)*
-*Products that do not meet Shopify Catalog requirements are invisible to every AI channel.*
+*AI channels only list products whose data is complete. Gaps make products invisible rather than badly presented.*
 
 *(tick one)*
 - [ ] Complete
 - [ ] Only for some products
 - [ ] Not sure yet
 
-**Q7.7.8** — Is important product information kept in metafields, metaobjects or inside product titles? *(optional)*
-*That data needs catalog mapping before AI channels can read it correctly.*
+**Q7.7.8** — Is important product information kept in custom fields, separate records or inside the product title (for example “Steel 40mm — Automatic”)? *(optional)*
+*Data that lives in custom fields or in the title needs mapping before AI channels can read it.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.7.9** — Should AI crawlers be allowed, restricted or blocked on your storefront? *(optional)*
-*Theme-level robots rules affect open-web AI crawling only; they do not stop Shopify Catalog sending product data to AI channels.*
+**Q7.7.9** — Should AI crawlers be allowed, restricted or blocked on your website? *(optional)*
+*Blocking crawlers does not remove your products from AI shopping channels; it only affects what they read from your public site.*
 
 *(tick one)*
 - [ ] Allow all
@@ -1970,14 +1967,14 @@
 - [ ] Block
 - [ ] Not sure yet
 
-**Q7.7.10** — Do you want to control the answers AI assistants give about your shop (shipping, returns, sizing)? *(optional)*
-*Shopify's free Knowledge Base app publishes FAQs for AI assistants and logs what shoppers ask.*
+**Q7.7.10** — Do you want to control the answers AI assistants give about shipping, returns and sizing? *(optional)*
+*Shopify has a free app that publishes your FAQs for assistants and logs what shoppers ask.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.7.11** — Do you plan to expose your own AI agent or shopping assistant on top of the store? *(optional)*
-*Shopify publishes agent interfaces (UCP, storefront MCP); parts are still early access, so treat this as research, not fixed scope.*
+**Q7.7.11** — Do you plan to offer your own AI shopping assistant, or connect the store to agent platforms yourself? *(optional)*
+*Parts of this are still early access at Shopify, so treat it as exploration rather than fixed scope.*
 
 *(tick one)*
 - [ ] Now
@@ -1985,8 +1982,8 @@
 - [ ] No
 - [ ] Not sure yet
 
-**Q7.7.12** — Which Shopify AI features do you want your team to use? *(optional)*
-*Sidekick and Shopify Magic are included; semantic search needs a specific plan and a catalogue under 200,000 products.*
+**Q7.7.12** — Which Shopify AI tools do you want your team to use in day-to-day work? *(optional)*
+*These are back-office tools for your team, not customer-facing.*
 
 *(tick all that apply)*
 - [ ] Sidekick
@@ -1994,6 +1991,16 @@
 - [ ] Semantic search
 - [ ] Knowledge base
 - [ ] None
+- [ ] Not sure yet
+
+**Q7.7.13** — Existing Shopify store: what do the agentic sales-channel settings show today (Sales channels → Agentic)? *(recommended · consultant)*
+*Skip if Q1.2.1 = no.*
+*Check the admin with the client: enrolment mode, which channels are on, and whether checkout inside the assistant is enabled.*
+
+*(tick one)*
+- [ ] Shopify managed
+- [ ] Per channel
+- [ ] Off
 - [ ] Not sure yet
 
 ---

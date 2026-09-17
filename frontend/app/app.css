@@ -81,3 +81,7 @@ main.manual h2 { scroll-margin-top: 12px; }
 .toc { columns: 2; column-gap: 32px; padding-left: 20px; }
 @media (max-width: 640px) { .toc { columns: 1; } .topbar { flex-wrap: wrap; } }
 .callout { background: var(--panel); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 6px; margin: 8px 0; }
+.teach { background: var(--panel); border-radius: 8px; padding: 10px 12px; margin: 8px 0; font-size: 0.92rem; }
+.teach > summary { cursor: pointer; font-weight: 600; }
+.teach table { margin: 8px 0; }
+.teach td, .teach th { padding: 5px 6px; font-size: 0.85rem; }

@@ -195,6 +195,16 @@ function renderGuideQuestion(q) {
   if (q.feeds?.length) lines.push(`Feeds: ${q.feeds.map((f) => REF_LABEL.get(f) ?? f).join(' · ')}`);
   if (q.only_if) lines.push(`Asked only if ${q.only_if.map(describeCondition).join(' or ')}`);
   if (q.ask_if) lines.push(`Quick interview: ask if ${q.ask_if.map(describeCondition).join(', or ')}`);
+  const t = q.teach;
+  if (t) {
+    lines.push('', `**Why it matters.** ${t.why}`);
+    if (t.options?.length) {
+      lines.push('', '| Option | Pros | Cons |', '|---|---|---|',
+        ...t.options.map((o) => `| ${cell(o.option)} | ${cell(o.pros)} | ${cell(o.cons)} |`));
+    }
+    if (t.limits) lines.push('', `**Limits.** ${t.limits}`);
+    if (t.sources?.length) lines.push('', `Sources: ${t.sources.join(' · ')}`);
+  }
   const s = q.shopify;
   if (!s) return lines.join('\n');
   if (s.native?.length) {
