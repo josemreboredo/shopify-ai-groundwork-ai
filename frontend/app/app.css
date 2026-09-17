@@ -80,3 +80,4 @@ main.manual code { background: var(--panel); padding: 1px 5px; border-radius: 4p
 main.manual h2 { scroll-margin-top: 12px; }
 .toc { columns: 2; column-gap: 32px; padding-left: 20px; }
 @media (max-width: 640px) { .toc { columns: 1; } .topbar { flex-wrap: wrap; } }
+.callout { background: var(--panel); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 6px; margin: 8px 0; }

@@ -114,7 +114,9 @@ export default function Manual({ loaderData }) {
       <h2 id="closing">7. Generate the Discovery Closing Document</h2>
       <ol>
         <li>Open the engagement’s <strong>Closing document</strong> tab. It says <strong>Ready</strong> (with GO or STOP and the offer) or what must be fixed first.</li>
-        <li>In your Claude Project chat — strongest model, web search on, Merkle Discovery enabled — ask: <code>Draft the Discovery Closing Document for &lt;client slug&gt;.</code></li>
+        <li>Ask Claude for the draft — strongest model, web search on, Merkle Discovery enabled: <code>Draft the Discovery Closing Document for &lt;client slug&gt;.</code>
+          <p className="callout"><strong>Tip: ask for the draft in Claude Cowork rather than a regular chat.</strong> Generating the document can take up to 45 minutes, and Cowork is better suited to long-running work that produces a file.</p>
+        </li>
         <li>Claude works as a Shopify Solution Architect:
           <ul>
             <li>reads the whole engagement;</li>
@@ -124,7 +126,7 @@ export default function Manual({ loaderData }) {
             <li>writes and saves the document.</li>
           </ul>
         </li>
-        <li>This takes several minutes and can need a few rounds. Let Claude finish; if it stops, ask it to continue.</li>
+        <li>This can take up to 45 minutes and can need a few rounds. Let Claude finish; if it stops, ask it to continue.</li>
         <li>Reload the <strong>Closing document</strong> tab and click <strong>Download Markdown</strong>. Each new version keeps the previous ones.</li>
       </ol>
       <div className="card">
