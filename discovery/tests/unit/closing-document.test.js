@@ -13,21 +13,39 @@ import { renderDeckPptx } from '../../service/deck-render.js';
 import { REFERENCE_CHAPTERS, selectChapters, topicsFor, annexWithChapters, chapterBrief } from '../../service/reference.js';
 import { readChapters, renderChaptersModule, OUTPUT } from '../../scripts/render-reference-chapters.js';
 
+const requirementSlide = (n) => ({
+  layout: 'requirement', requirement: `Requirement ${n} in the client's words`, evidence: 'Q5.2.7',
+  shopify_standard: 'What Shopify does natively, and where it stops', decision: `Decision ${n}`, level: n % 2 ? 'app' : 'native',
+  why: 'Why this level and not a cheaper one', covers: ['What it covers'], not_covered: ['What it does not cover'],
+  sources: ['https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/self-serve-returns'],
+});
+const decisionSlide = (n) => ({
+  layout: 'decision', topic: `Decision topic ${n}`, question: 'What had to be decided?',
+  options: [{ option: 'Chosen option', pros: 'Pros', cons: 'Cons', chosen: true }, { option: 'Other option', pros: 'Pros', cons: 'Cons', chosen: false }],
+  decision: `We will do ${n}`, rationale: 'Tied to the client answers', status: 'Recommended',
+});
+const problemSlide = (n) => ({
+  layout: 'problem_solution', problem: `Problem ${n} in the client's words`, cost_today: 'What it costs today',
+  shopify_answer: 'How Shopify solves it', what_changes: ['What changes'], measure: 'The KPI',
+});
+
 const DECK = {
   slides: [
     { layout: 'title', client: 'ACME Watches SA', project: 'Discovery Closing Document', subtitle: 'One Shopify Plus store for three markets and 500 retailers', date: '2026-09-17', consultant: 'Lead Consultant' },
-    { layout: 'agenda', headline: 'What we agreed and what is still open', items: ['Recommendation', 'Solution design', 'Risks', 'Next steps'] },
+    { layout: 'agenda', headline: 'What we agreed and what is still open', items: ['Recommendation', 'Solution design', 'Risks'] },
+    problemSlide(1), problemSlide(2),
     { layout: 'section', number: '02', title: 'Solution design', kicker: 'The decisions that shape the build' },
-    { layout: 'decision', topic: 'Store structure', question: 'One store with Markets, or a store per country?',
-      options: [
-        { option: 'One store with Markets', pros: 'One catalogue and one integration', cons: 'Market differences limited to Markets', chosen: true },
-        { option: 'Store per country', pros: 'Full separation', cons: 'Three integrations to run', chosen: false },
-      ],
-      decision: 'One store with Shopify Markets for CH, DE and AT', rationale: 'Three markets, one team, one warehouse.',
-      plan_impact: 'none', status: 'Recommended', evidence: 'Q3.1.1 · Q3.1.4', sources: ['https://help.shopify.com/en/manual/markets/getting-started/market-types'] },
+    requirementSlide(1), requirementSlide(2), requirementSlide(3), requirementSlide(4), requirementSlide(5),
+    { layout: 'app_case', app: 'Loop Returns', requirement: 'Prepaid labels for CH, DE and AT', native_gap: 'Shopify issues return labels for US domestic orders only',
+      covers: ['Prepaid labels'], not_covered: ['CH labels unconfirmed'], cost: 'USD 155/month',
+      alternatives: [{ option: 'Native returns with carrier labels', why_not: 'Manual work for 32 returns a month' }] },
+    { layout: 'gaps', headline: 'Four things Shopify will not solve', items: [
+      { requirement: 'Collect EU VAT from Switzerland', status: 'not covered', consequence: 'DE and AT need duties at checkout', option: 'Decide with the tax adviser in sprint 0' },
+    ] },
+    { layout: 'architecture', headline: 'One store, the ERP still owning stock', layers: [{ name: 'Storefront', items: ['Horizon theme'] }, { name: 'Shopify Plus', items: ['Markets', 'B2B'] }] },
+    decisionSlide(1), decisionSlide(2), decisionSlide(3),
     { layout: 'kpis', headline: 'Three numbers decide whether this worked', cards: [
       { metric: 'Mobile conversion', baseline: '0.7%', target: '1.2%', horizon: '12 months' },
-      { metric: 'Checkout abandonment', baseline: '68%', target: '55%', horizon: '6 months' },
     ] },
     { layout: 'risks', headline: 'Tax and migration carry the launch risk', risks: [
       { risk: 'Import VAT configured wrongly', likelihood: 'medium', impact: 'high', mitigation: 'Tax adviser decides in sprint 0', owner: 'shared', evidence: 'Q3.4.1' },
@@ -56,7 +74,7 @@ describe('the deck is filled templates, not prose', () => {
 
   test('a decision slide must mark the option that was chosen', () => {
     const deck = structuredClone(DECK);
-    deck.slides[3].options.forEach((o) => { o.chosen = false; });
+    deck.slides.find((x) => x.layout === 'decision').options.forEach((o) => { o.chosen = false; });
     assert.ok(deckErrors(deck).some((e) => /mark the chosen option/.test(e)));
   });
 
@@ -75,7 +93,9 @@ describe('the deck is filled templates, not prose', () => {
   test('the deck reads back as Markdown for the text download', () => {
     const md = deckToMarkdown(DECK);
     assert.match(md, /^# Discovery Closing Document — ACME Watches SA/);
-    assert.match(md, /\*\*One store with Markets\*\* \(chosen\)/);
+    assert.match(md, /\*\*Chosen option\*\* \(chosen\)/);
+    assert.match(md, /\*\*What it does not cover\*\*/, 'the limits survive into the text version');
+    assert.match(md, /Why an app at all/);
     assert.match(md, /Mobile conversion/);
   });
 });
@@ -107,7 +127,9 @@ describe('the annex becomes its own deck', () => {
     assert.ok(deck.slides.some((s) => s.layout === 'bullets' && s.bullets.some((b) => /one catalogue/.test(b))));
     const table = deck.slides.find((s) => s.layout === 'table');
     assert.deepEqual(table.columns, ['Option', 'Cost']);
-    assert.deepEqual(deckErrors({ slides: deck.slides.filter((s) => s.layout !== 'section') }).filter((e) => !/needs (a slide per|the risk)/.test(e) && !/first slide/.test(e)), []);
+    const shapeOnly = deckErrors({ slides: deck.slides.filter((s) => s.layout !== 'section') })
+      .filter((e) => !/the deck needs|first slide must be/.test(e));
+    assert.deepEqual(shapeOnly, [], 'annex slides are individually valid');
   });
 
   test('consultant notes stay out unless asked for', () => {

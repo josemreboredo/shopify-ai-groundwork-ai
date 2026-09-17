@@ -64,6 +64,7 @@ export default function Closing({ loaderData }) {
             </>
           ) : null}
           <div className="actions">
+            <a className="button" href={`/engagements/${client}/closing-preview`} target="_blank" rel="noreferrer">Preview the deck</a>
             <a className="button" href={`/engagements/${client}/closing-document.pptx`} download>Deck (PowerPoint)</a>
             {document.annex ? <a className="button" href={`/engagements/${client}/closing-document.pptx?part=annex`} download>Annex (PowerPoint)</a> : null}
             <a className="button secondary" href={`/engagements/${client}/closing-document.pptx?internal=1`} download>Deck with consultant notes</a>

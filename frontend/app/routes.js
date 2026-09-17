@@ -14,6 +14,7 @@ export default [
   route('engagements/:client/closing-document.md', 'routes/engagement.closing-md.js'),
   route('engagements/:client/closing-document.pptx', 'routes/engagement.closing-pptx.js'),
   route('engagements/:client/closing-annex.md', 'routes/engagement.closing-annex.js'),
+  route('engagements/:client/closing-preview', 'routes/engagement.closing-preview.js'),
   route('engagements/:client/questions/:questionId', 'routes/engagement.question.jsx'),
   route('claude', 'routes/claude.jsx'),
   route('manual', 'routes/manual.jsx'),

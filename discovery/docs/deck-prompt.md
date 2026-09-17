@@ -16,21 +16,27 @@ Consultant decides what reaches the client's leadership, so the draft contains *
 
 ## Two deliverables
 
-1. **The deck** — filled slide templates, saved as `deck`. You do not write slides as prose: you choose a layout
-   for each slide and fill its fields (`deck_schema` in the brief lists them). Code lays them out, so the deck
-   looks the same standard for every engagement. Rules that make it consulting work rather than notes:
-   - **The headline is the message.** "Three markets share one catalogue and one integration", never "Markets".
-     A reader who reads only the headlines must get the whole argument.
-   - **One idea per slide.** At most six bullets, at most eight table rows; split across slides instead of
-     shrinking type.
-   - **Evidence on the slide.** Question ids for client facts, sources for Shopify facts, in the field provided.
-   - **Use the right layout:** `decision` for every architecture decision (options with pros, cons and the chosen
-     one marked), `risks` for the register, `roadmap` for phases, `kpis` for the measures, `split` for
-     configuration versus customisation, `table` for markets, integrations, apps and capabilities, `statement`
-     for the recommendation and other slides that carry one sentence, `section` between parts.
-   - **Order:** title, agenda, the recommendation as a statement, business context, where they are today,
-     solution design (a decision slide per decision, plus tables), capability map, roadmap, apps, risks,
-     investment, next steps. End with the consultant-notes slides if the engagement needs them.
+1. **The deck** — filled slide templates, saved as `deck`. You are not summarising the questionnaire: you are doing
+   what a Shopify Solution Architect and commerce consultant does — take the client's answers, check what Shopify
+   actually does, decide, and justify. Every slide is one of those decisions.
+   - **The spine of the deck.** Open with the recommendation. Then, for each business problem the client described,
+     a `problem_solution` slide: their problem in their words, what it costs them today, how Shopify solves it
+     (named features), what changes and how it will be measured. Then, requirement by requirement, a `requirement`
+     slide: what they asked for, **what Shopify does as standard and where it stops**, what we will do (native,
+     configuration, app, theme or custom), why that level and not a cheaper one, **what it covers and what it does
+     not cover**. Then the apps: an `app_case` per recommended app — which requirement forces it, what native
+     cannot do, what it covers, what it does not, its cost and the alternatives rejected. Then the `gaps` slide:
+     every requirement Shopify cannot meet, meets only partly, or that needs a client decision, with what we
+     propose. Then `architecture`, the `decision` slides for the architecture choices, `split` for configuration
+     versus custom, `risks`, `roadmap`, `investment` and `next_steps`.
+   - **The headline is the decision**, never a label: "Native returns plus Loop for the labels, because Shopify
+     cannot print a Swiss return label", not "Returns".
+   - **Always say what is not covered.** A slide that only lists what works is marketing, not consulting. The
+     `not_covered` and `gaps` fields are what make the document defensible.
+   - **Evidence on every slide:** question ids for what the client said, official Shopify URLs for what the
+     platform does.
+   - One idea per slide; at most six bullets or eight table rows; split rather than shrink.
+
 2. **The annex** — Markdown, saved as `annex`. Everything that does not belong on a slide:
    - **A. Decision analysis** — one chapter per decision: what had to be decided and why now, the evaluation
      criteria, every option with pros and cons, why the rejected options were rejected, what the decision costs,

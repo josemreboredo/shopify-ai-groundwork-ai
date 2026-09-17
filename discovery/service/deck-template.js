@@ -76,6 +76,76 @@ export const LAYOUTS = {
     },
     required: ['topic', 'question', 'options', 'decision', 'rationale', 'status'],
   },
+  problem_solution: {
+    purpose: "A business problem the client described and how Shopify solves it. This is the spine of the first half of the deck: their problem, what it costs today, the Shopify answer, what changes, and how it will be measured.",
+    fields: {
+      problem: str("The problem in the client's own words", 200),
+      cost_today: str('What it costs them today — money, hours, conversion, risk', 220),
+      shopify_answer: str('How Shopify solves it, naming the features or capabilities', 300),
+      what_changes: list(str('What changes for the business or the team', 160), 'Two to four lines', 4),
+      measure: str('How we will know it worked (the KPI and its target)', 160),
+      evidence: str('Question ids behind it', 80),
+      sources: list(str('Official Shopify URL'), 'Sources for the Shopify facts', 3),
+    },
+    required: ['problem', 'cost_today', 'shopify_answer', 'what_changes'],
+  },
+  requirement: {
+    purpose: 'The consulting unit: one client requirement, what Shopify does as standard, what we decide, and what it does not cover. Use it for every requirement area that carries cost, risk or a licence.',
+    fields: {
+      requirement: str("The requirement in the client's own words", 200),
+      evidence: str('Question ids behind it, e.g. "Q5.2.7 · Q5.2.10"', 80),
+      shopify_standard: str('What Shopify does natively for this, and where it stops', 300),
+      decision: str('What we will do: native setting, configuration, app, theme work or custom build — name the feature or app', 200),
+      level: str('native | configuration | app | theme | custom', 16),
+      why: str('Why this level and not a cheaper one, in one or two sentences', 300),
+      covers: list(str('What this covers', 160), 'What the client gets', 4),
+      not_covered: list(str('What it does not cover, or the limit that remains', 160), 'Be explicit — this is what protects the proposal', 4),
+      sources: list(str('Official Shopify URL'), 'Sources for the Shopify facts', 4),
+    },
+    required: ['requirement', 'shopify_standard', 'decision', 'level', 'why', 'covers', 'not_covered'],
+  },
+  app_case: {
+    purpose: 'One app, argued: which requirement forces it, what native cannot do, what it covers, what it does not, and what it costs.',
+    fields: {
+      app: str('App name', 80),
+      requirement: str('The requirement it serves', 200),
+      native_gap: str('What Shopify cannot do natively, so the app is needed', 300),
+      covers: list(str('What the app covers', 160), 'Concrete capabilities', 4),
+      not_covered: list(str('What it still does not cover, or its limits', 160), 'Limits, languages, countries, plan', 3),
+      cost: str('List price as published, with the period', 60),
+      alternatives: list({ type: 'object', properties: { option: str('Alternative considered', 80), why_not: str('Why it was not chosen', 200) }, required: ['option', 'why_not'], additionalProperties: false }, 'Alternatives weighed, including doing it natively', 3),
+      sources: list(str('App Store listing or Shopify documentation URL'), 'Sources', 3),
+    },
+    required: ['app', 'requirement', 'native_gap', 'covers', 'not_covered'],
+  },
+  gaps: {
+    purpose: 'The requirements Shopify cannot meet, meets only partly, or that need a decision. Every deck needs this slide — it is what keeps the proposal honest.',
+    fields: {
+      headline: str('Slide message', 200),
+      items: list({
+        type: 'object',
+        properties: {
+          requirement: str('Requirement', 160),
+          status: str('not covered | partly covered | needs custom build | needs a client decision', 32),
+          consequence: str('What it means for the client', 200),
+          option: str('What we propose to do about it', 200),
+        },
+        required: ['requirement', 'status', 'consequence', 'option'],
+        additionalProperties: false,
+      }, 'At most six per slide', 6),
+      footnote: str('Evidence', 160),
+    },
+    required: ['headline', 'items'],
+  },
+  architecture: {
+    purpose: 'The solution architecture as layers: storefront, Shopify core, integrations, external systems.',
+    fields: {
+      headline: str('Slide message — what the architecture achieves', 200),
+      layers: list({ type: 'object', properties: { name: str('Layer', 60), items: list(str('Component', 60), 'Components in this layer', 6) }, required: ['name', 'items'], additionalProperties: false }, 'Three to five layers', 5),
+      footnote: str('The principle behind it, or the evidence', 200),
+    },
+    required: ['headline', 'layers'],
+  },
   table: {
     purpose: 'Structured detail: markets, integrations, apps, capabilities, data model.',
     fields: {
@@ -201,7 +271,15 @@ export function deckErrors(deck) {
     }
   });
   if (slides[0]?.layout !== 'title') errors.push('the first slide must be the title slide');
-  if (!slides.some((s) => s.layout === 'decision')) errors.push('the deck needs a slide per architecture decision');
-  if (!slides.some((s) => s.layout === 'risks')) errors.push('the deck needs the risk register');
+  const count = (layout) => slides.filter((s) => s.layout === layout).length;
+  if (count('decision') < 3) errors.push(`the deck needs a slide per architecture decision (found ${count('decision')}, at least three)`);
+  if (count('requirement') < 5) errors.push(`the deck needs requirement slides — what the client asked for, what Shopify does as standard, what we decide and what it does not cover (found ${count('requirement')}, at least five)`);
+  if (!count('gaps')) errors.push('the deck needs the gaps slide: what Shopify cannot cover, only partly covers, or what needs a client decision');
+  if (!count('architecture')) errors.push('the deck needs the solution architecture slide');
+  if (count('problem_solution') < 2) errors.push(`the deck needs problem slides — the client's problem, what it costs today and how Shopify solves it (found ${count('problem_solution')}, at least two)`);
+  if (!count('risks')) errors.push('the deck needs the risk register');
+  for (const s of slides.filter((x) => x.layout === 'requirement')) {
+    if (!/^(native|configuration|app|theme|custom)$/i.test(String(s.level ?? ''))) errors.push(`requirement "${s.requirement}": level must be native, configuration, app, theme or custom`);
+  }
   return errors;
 }

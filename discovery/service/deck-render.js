@@ -149,6 +149,96 @@ const LAYOUT_RENDERERS = {
     footnote(slide, (s.sources ?? []).join('  ·  '));
   },
 
+  problem_solution(slide, s) {
+    headline(slide, s.shopify_answer, `${text(s.problem)}${s.evidence ? `   ·   ${text(s.evidence)}` : ''}`);
+    slide.addShape('rect', { x: MARGIN, y: 2.15, w: BODY_W, h: 0.8, fill: { color: BLACK } });
+    slide.addText('WHAT IT COSTS TODAY', { x: MARGIN + 0.25, y: 2.24, w: 3, h: 0.24, fontFace: FONT, fontSize: 9, bold: true, color: 'C9C9D6' });
+    slide.addText(text(s.cost_today), { x: MARGIN + 0.25, y: 2.48, w: BODY_W - 0.5, h: 0.42, fontFace: FONT, fontSize: 13, color: 'FFFFFF', valign: 'top' });
+    slide.addShape('rect', { x: MARGIN, y: 3.25, w: BODY_W, h: 1.75, fill: { color: PANEL } });
+    slide.addText('WHAT CHANGES', { x: MARGIN + 0.25, y: 3.38, w: 3, h: 0.24, fontFace: FONT, fontSize: 9, bold: true, color: MUTED });
+    slide.addText((s.what_changes ?? []).map((b) => ({ text: text(b), options: { bullet: { code: '25AA' }, breakLine: true } })), {
+      x: MARGIN + 0.25, y: 3.66, w: BODY_W - 0.5, h: 1.2, fontFace: FONT, fontSize: 12.5, color: INK, valign: 'top', lineSpacingMultiple: 1.25,
+    });
+    if (s.measure) {
+      slide.addShape('rect', { x: MARGIN, y: 5.2, w: BODY_W, h: 0.55, fill: { color: 'FFFFFF' }, line: { color: RED, pt: 1.2 } });
+      slide.addText(`Measured by: ${text(s.measure)}`, { x: MARGIN + 0.25, y: 5.3, w: BODY_W - 0.5, h: 0.35, fontFace: FONT, fontSize: 12, bold: true, color: RED });
+    }
+    footnote(slide, (s.sources ?? []).join('  ·  '));
+  },
+
+  requirement(slide, s) {
+    const level = String(s.level ?? '').toLowerCase();
+    headline(slide, s.decision, `${text(s.requirement)}${s.evidence ? `   ·   ${text(s.evidence)}` : ''}`);
+    const colW = (BODY_W - 0.35) / 2;
+    const boxes = [
+      ['What Shopify does as standard', [text(s.shopify_standard)], MARGIN, 2.2, PANEL, INK],
+      ['Why this and not less', [text(s.why)], MARGIN + colW + 0.35, 2.2, PANEL, INK],
+      ['What this covers', s.covers ?? [], MARGIN, 3.85, 'FFFFFF', INK],
+      ['What it does not cover', s.not_covered ?? [], MARGIN + colW + 0.35, 3.85, 'FFF3F3', INK],
+    ];
+    boxes.forEach(([title, lines, x, y, fill, colour], i) => {
+      const h = i < 2 ? 1.5 : 1.75;
+      slide.addShape('rect', { x, y, w: colW, h, fill: { color: fill }, line: { color: i === 3 ? RED : LINE, pt: i === 3 ? 1.2 : 1 } });
+      slide.addText(String(title), { x: x + 0.2, y: y + 0.12, w: colW - 0.4, h: 0.3, fontFace: FONT, fontSize: 10.5, bold: true, color: i === 3 ? RED : MUTED });
+      slide.addText(lines.map((l) => ({ text: text(l), options: { bullet: lines.length > 1 ? { code: '25AA' } : false, breakLine: true } })), {
+        x: x + 0.2, y: y + 0.45, w: colW - 0.4, h: h - 0.6, fontFace: FONT, fontSize: 11, color: colour, valign: 'top', lineSpacingMultiple: 1.2, shrinkText: true,
+      });
+    });
+    slide.addShape('rect', { x: MARGIN, y: 1.95, w: 1.5, h: 0.22, fill: { color: level === 'custom' ? RED : level === 'app' ? '41547D' : NAVY } });
+    slide.addText(level.toUpperCase(), { x: MARGIN, y: 1.96, w: 1.5, h: 0.2, fontFace: FONT, fontSize: 9, bold: true, color: 'FFFFFF', align: 'center' });
+    footnote(slide, (s.sources ?? []).join('  ·  '));
+  },
+
+  app_case(slide, s) {
+    headline(slide, `${text(s.app)} — ${text(s.requirement)}`, s.cost ? `List price: ${text(s.cost)}` : '');
+    slide.addShape('rect', { x: MARGIN, y: 2.15, w: BODY_W, h: 0.85, fill: { color: PANEL } });
+    slide.addShape('rect', { x: MARGIN, y: 2.15, w: 0.06, h: 0.85, fill: { color: RED } });
+    slide.addText('Why an app at all', { x: MARGIN + 0.25, y: 2.24, w: BODY_W - 0.5, h: 0.25, fontFace: FONT, fontSize: 10, bold: true, color: MUTED });
+    slide.addText(text(s.native_gap), { x: MARGIN + 0.25, y: 2.5, w: BODY_W - 0.5, h: 0.45, fontFace: FONT, fontSize: 11.5, color: INK, valign: 'top' });
+    const colW = (BODY_W - 0.35) / 2;
+    [['What it covers', s.covers ?? [], MARGIN, 'FFFFFF', LINE], ['What it does not cover', s.not_covered ?? [], MARGIN + colW + 0.35, 'FFF3F3', RED]].forEach(([title, lines, x, fill, border]) => {
+      slide.addShape('rect', { x, y: 3.2, w: colW, h: 1.5, fill: { color: fill }, line: { color: border, pt: 1 } });
+      slide.addText(String(title), { x: x + 0.2, y: 3.32, w: colW - 0.4, h: 0.3, fontFace: FONT, fontSize: 10.5, bold: true, color: border === RED ? RED : MUTED });
+      slide.addText(lines.map((l) => ({ text: text(l), options: { bullet: { code: '25AA' }, breakLine: true } })), {
+        x: x + 0.2, y: 3.65, w: colW - 0.4, h: 1.0, fontFace: FONT, fontSize: 11, color: INK, valign: 'top', lineSpacingMultiple: 1.2, shrinkText: true,
+      });
+    });
+    if ((s.alternatives ?? []).length) {
+      slide.addText('Also considered', { x: MARGIN, y: 4.85, w: BODY_W, h: 0.25, fontFace: FONT, fontSize: 10, bold: true, color: MUTED });
+      slide.addText((s.alternatives ?? []).map((a) => ({ text: `${text(a.option)} — ${text(a.why_not)}`, options: { bullet: { code: '25AA' }, breakLine: true } })), {
+        x: MARGIN, y: 5.1, w: BODY_W, h: 0.9, fontFace: FONT, fontSize: 10.5, color: INK, valign: 'top', lineSpacingMultiple: 1.15,
+      });
+    }
+    footnote(slide, (s.sources ?? []).join('  ·  '));
+  },
+
+  gaps(slide, s) {
+    headline(slide, s.headline);
+    table(slide, ['Requirement', 'Status', 'What it means', 'What we propose'], (s.items ?? []).map((i) => [
+      text(i.requirement), text(i.status), text(i.consequence), text(i.option),
+    ]), { y: 2.15, colW: [3.1, 1.9, 3.4, 3.43], fontSize: 10.5 });
+    footnote(slide, s.footnote);
+  },
+
+  architecture(slide, s) {
+    headline(slide, s.headline);
+    const layers = s.layers ?? [];
+    const h = Math.min(0.95, (H - 3.4) / Math.max(layers.length, 1));
+    layers.forEach((layer, i) => {
+      const y = 2.2 + i * (h + 0.18);
+      slide.addShape('rect', { x: MARGIN, y, w: 2.5, h, fill: { color: i === 0 ? NAVY : PANEL } });
+      slide.addText(text(layer.name), { x: MARGIN + 0.18, y: y + h / 2 - 0.16, w: 2.2, h: 0.32, fontFace: FONT, fontSize: 11.5, bold: true, color: i === 0 ? 'FFFFFF' : INK });
+      const items = layer.items ?? [];
+      const boxW = (BODY_W - 2.75 - 0.15 * (items.length - 1)) / Math.max(items.length, 1);
+      items.forEach((item, j) => {
+        const x = MARGIN + 2.75 + j * (boxW + 0.15);
+        slide.addShape('rect', { x, y, w: boxW, h, fill: { color: 'FFFFFF' }, line: { color: LINE, pt: 1 } });
+        slide.addText(text(item), { x: x + 0.1, y: y + 0.08, w: boxW - 0.2, h: h - 0.16, fontFace: FONT, fontSize: 10, color: INK, align: 'center', valign: 'middle', shrinkText: true });
+      });
+    });
+    footnote(slide, s.footnote);
+  },
+
   table(slide, s) {
     headline(slide, s.headline);
     table(slide, s.columns ?? [], s.rows ?? []);

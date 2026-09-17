@@ -154,6 +154,34 @@ export function deckToMarkdown(deck) {
           [s.status && `Status: ${s.status}`, s.plan_impact && `Plan impact: ${s.plan_impact}`, s.evidence && `Evidence: ${s.evidence}`].filter(Boolean).join(' · '),
           ...(s.sources?.length ? ['', `Sources: ${s.sources.join(' · ')}`] : []), '');
         break;
+      case 'problem_solution':
+        out.push(`### ${s.shopify_answer}`, '', `**The problem:** ${s.problem}${s.evidence ? ` [${s.evidence}]` : ''}`, '',
+          `**What it costs today:** ${s.cost_today}`, '', '**What changes**', ...(s.what_changes ?? []).map((b) => `- ${b}`),
+          ...(s.measure ? ['', `**Measured by:** ${s.measure}`] : []),
+          ...(s.sources?.length ? ['', `Sources: ${s.sources.join(' · ')}`] : []), '');
+        break;
+      case 'requirement':
+        out.push(`### ${s.decision}`, '', `**Requirement:** ${s.requirement}${s.evidence ? ` [${s.evidence}]` : ''} · **Level:** ${s.level}`, '',
+          `**What Shopify does as standard:** ${s.shopify_standard}`, '', `**Why this and not less:** ${s.why}`, '',
+          '**What this covers**', ...(s.covers ?? []).map((b) => `- ${b}`), '',
+          '**What it does not cover**', ...(s.not_covered ?? []).map((b) => `- ${b}`),
+          ...(s.sources?.length ? ['', `Sources: ${s.sources.join(' · ')}`] : []), '');
+        break;
+      case 'app_case':
+        out.push(`### ${s.app} — ${s.requirement}`, '', `**Why an app at all:** ${s.native_gap}`, '',
+          '**What it covers**', ...(s.covers ?? []).map((b) => `- ${b}`), '',
+          '**What it does not cover**', ...(s.not_covered ?? []).map((b) => `- ${b}`),
+          ...(s.cost ? ['', `**Cost:** ${s.cost}`] : []),
+          ...((s.alternatives ?? []).length ? ['', '**Also considered**', ...(s.alternatives ?? []).map((a) => `- ${a.option} — ${a.why_not}`)] : []),
+          ...(s.sources?.length ? ['', `Sources: ${s.sources.join(' · ')}`] : []), '');
+        break;
+      case 'gaps':
+        out.push(`### ${s.headline}`, '', mdTable(['Requirement', 'Status', 'What it means', 'What we propose'],
+          (s.items ?? []).map((i) => [i.requirement, i.status, i.consequence, i.option])), ...(s.footnote ? ['', `_${s.footnote}_`] : []), '');
+        break;
+      case 'architecture':
+        out.push(`### ${s.headline}`, '', ...(s.layers ?? []).map((l) => `- **${l.name}:** ${(l.items ?? []).join(' · ')}`), ...(s.footnote ? ['', s.footnote] : []), '');
+        break;
       case 'table':
         out.push(`### ${s.headline}`, '', mdTable(s.columns ?? [], s.rows ?? []), ...(s.footnote ? ['', `_${s.footnote}_`] : []), '');
         break;
