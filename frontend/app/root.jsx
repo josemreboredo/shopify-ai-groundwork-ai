@@ -25,17 +25,20 @@ export function Layout({ children }) {
       </head>
       <body>
         <header className="topbar">
-          <Link to="/" className="brand">Merkle <span className="product">Discovery</span></Link>
-          <span className="notice">Demo or anonymised engagements only</span>
-          <Link to="/manual">Manual</Link>
-          {root?.user ? <Link to="/claude">Claude Project</Link> : null}
+          <Link to="/" className="brand" aria-label="Merkle Discovery — home"><span className="mark" aria-hidden="true" />Merkle</Link>
+          <nav className="topnav">
+            {root?.user ? <Link to="/">Engagements</Link> : null}
+            <Link to="/manual">Manual</Link>
+            {root?.user ? <Link to="/claude">Claude Project</Link> : null}
+          </nav>
           {root?.user ? (
             <Form method="post" action="/logout" className="user">
-              <span>{root.user.login} · {root.user.role}</span>
-              <button type="submit" className="link">Sign out</button>
+              <span className="who">{root.user.login} · {root.user.role}</span>
+              <button type="submit" className="cta">Sign out</button>
             </Form>
-          ) : null}
+          ) : <Link to="/login" className="cta">Sign in</Link>}
         </header>
+        <p className="pilot">Pilot — demo or anonymised engagements only</p>
         {children}
         <ScrollRestoration />
         <Scripts />
