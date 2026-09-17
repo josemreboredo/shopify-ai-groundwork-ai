@@ -55,7 +55,8 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }) {
-  const title = isRouteErrorResponse(error) ? `${error.status} ${error.statusText}` : 'Something went wrong';
+  const STATUS = { 400: 'Cannot do that yet', 401: 'Sign in again', 403: 'No access to this engagement', 404: 'Not found', 409: 'Something is missing first' };
+  const title = isRouteErrorResponse(error) ? STATUS[error.status] ?? `Something went wrong (${error.status})` : 'Something went wrong';
   const details = isRouteErrorResponse(error) ? (typeof error.data === 'string' ? error.data : error.data?.error) : error instanceof Error ? error.message : '';
   return (
     <main className="narrow">

@@ -75,14 +75,16 @@ th { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: 
 .badge.flag, .badge.warn, .badge.provisional { color: var(--warn); border-color: var(--warn); }
 .inline-form { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: end; }
 .layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 24px; align-items: start; }
-.card { border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-bottom: 16px; background: #fff; box-shadow: 0 1px 2px rgba(10, 21, 64, 0.04); }
+.card { border: 1px solid var(--line); border-radius: 12px; padding: 24px 26px; margin-bottom: 20px; background: #fff; box-shadow: 0 1px 2px rgba(10, 21, 64, 0.04); }
+.card > * + * { margin-top: 14px; }
+.card > p + p { margin-top: 8px; }
 .card .meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
 .question { font-weight: 600; font-size: 1.02rem; margin: 4px 0 6px; }
 .field { margin: 10px 0; }
 .field > label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
 .options { display: flex; flex-wrap: wrap; gap: 6px 14px; }
 .options label { display: flex; gap: 6px; align-items: center; font-size: 0.9rem; }
-.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 16px 0; }
 .panel { background: var(--panel); border-radius: 12px; padding: 18px; position: sticky; top: 12px; border-top: 3px solid var(--navy); }
 .panel ul { padding-left: 18px; margin: 4px 0; }
 .panel li { margin: 3px 0; font-size: 0.9rem; }
@@ -104,7 +106,11 @@ a.button.secondary:hover { background: var(--panel); color: var(--navy); border-
 .table-input table { min-width: 100%; margin-bottom: 8px; }
 .table-input td { padding: 4px; min-width: 120px; }
 .table-input th { white-space: nowrap; }
-details summary { cursor: pointer; color: var(--accent); font-size: 0.85rem; }
+details { margin: 14px 0; }
+details summary { cursor: pointer; color: var(--accent); font-size: 0.9rem; padding: 4px 0; font-weight: 500; }
+details summary:hover { color: var(--navy); }
+details[open] > summary { margin-bottom: 10px; }
+details > :not(summary) { margin-left: 2px; }
 @media (max-width: 900px) {
   .layout, .inline-form { grid-template-columns: 1fr; }
   main { padding: 16px; }
@@ -124,12 +130,18 @@ main.manual h2 { scroll-margin-top: 12px; }
   .pilot { padding: 7px 16px; }
 }
 .callout { background: var(--panel); border-left: 3px solid var(--red); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 10px 0; }
+/* Readable measure: long lines are hard to scan at 1280px */
+.card p, .card li, main > p, main > ol li, main > ul li { max-width: 92ch; }
+
 /* Closing document: action first, then the files */
 .card.start { border-left: 4px solid var(--red); }
 .card.start.current { border-left-color: var(--ok); }
+.card.start.blocked { border-left-color: var(--warn); }
+.card .question { font-size: 1.05rem; }
+.card > .question:first-child { padding-bottom: 12px; border-bottom: 1px solid var(--line-soft); }
 .card.start textarea { margin-top: 8px; font-size: 0.85rem; }
-.start-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 12px; }
-.start-head .question { margin: 0 0 4px; font-size: 1.1rem; }
+.start-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 4px; }
+.start-head .question { margin: 0 0 6px; font-size: 1.15rem; }
 .start-head .muted { margin: 0; }
 details.card > summary { font-weight: 600; color: var(--ink); font-size: 0.95rem; }
 details.card[open] > summary { margin-bottom: 10px; }
@@ -182,3 +194,10 @@ main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320p
   .page-head { margin: -28px -16px 20px; padding: 32px 16px 28px; }
   .page-head h1 { font-size: 1.9rem; }
 }
+
+/* Cards: the first element never needs a top margin, the last no bottom */
+.card > *:first-child { margin-top: 0; }
+.card > *:last-child { margin-bottom: 0; }
+.card .errors { margin: 10px 0; }
+.card .question + .muted { margin-top: 0; }
+main > details { margin: 18px 0; }

@@ -57,7 +57,7 @@ export default function Closing({ loaderData }) {
       <h2>Discovery Closing Document</h2>
 
       {/* 1 — what to do now */}
-      <section className={`card start ${status}`}>
+      <section className={`card start ${readiness.ok ? status : 'blocked'}`}>
         <div className="start-head">
           <div>
             <p className="question">{status === 'none' ? 'Not generated yet' : status === 'current' ? `Version ${version} · up to date` : `Version ${version} · out of date`}</p>
@@ -116,9 +116,9 @@ export default function Closing({ loaderData }) {
         <section className="card">
           <p className="question">The files</p>
           <div className="actions">
-            <a className="button" href={`/engagements/${client}/closing-preview`} target="_blank" rel="noreferrer">Preview the deck</a>
             <a className="button" href={`/engagements/${client}/closing-document.pptx`} download>Deck · PowerPoint</a>
             {document.annex ? <a className="button" href={`/engagements/${client}/closing-document.pptx?part=annex`} download>Annex · PowerPoint</a> : null}
+            <a className="button secondary" href={`/engagements/${client}/closing-preview`} target="_blank" rel="noreferrer">Preview in the browser</a>
           </div>
           <details>
             <summary>Other formats and the internal version</summary>
