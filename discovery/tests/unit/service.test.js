@@ -159,7 +159,8 @@ test('the web app declares every package the discovery code it bundles imports (
   const visit = (file) => {
     if (seen.has(file)) return;
     seen.add(file);
-    for (const [, spec] of fs.readFileSync(file, 'utf8').matchAll(/^\s*(?:import|export)\s[^'"]*?['"]([^'"]+)['"]/gm)) {
+    for (const [, from, bare] of fs.readFileSync(file, 'utf8').matchAll(/^\s*(?:import|export)\b[^;'"]*?\bfrom\s*['"]([^'"]+)['"]|^\s*import\s*['"]([^'"]+)['"]/gm)) {
+      const spec = from ?? bare;
       if (spec.startsWith('.')) {
         if (spec.endsWith('.js')) visit(path.resolve(path.dirname(file), spec));
       } else if (!spec.startsWith('node:')) {
