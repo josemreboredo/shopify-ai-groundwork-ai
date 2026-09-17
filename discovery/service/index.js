@@ -20,6 +20,7 @@ import { findPersonalData } from '../agents/discovery/input.js';
 import { questionBank } from '../schema/index.js';
 import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js';
 import { displayValue } from './summary.js';
+import { approachBrief, closingStatus, deckBrief, decideFromSession, finaliseEngagement, needsApproach } from './closing.js';
 
 /**
  * @typedef {object} InterviewStore
@@ -43,6 +44,9 @@ export class ServiceError extends Error {
 }
 
 const isoToday = () => new Date().toISOString().slice(0, 10);
+
+/** A STOP engagement has a recorded route (Larger Engagement or no bid). @param {object} doc */
+const stopRouteChosen = (doc) => Boolean(doc.delivery?.route);
 const QUOTE_MAX = 300;
 
 /**
@@ -117,6 +121,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       route: p.route ?? null,
       coverage: p.coverage,
       to_review: Object.values(session.provenance).filter((p) => p.status === 'tbc').length,
+      closing_document_at: session.closing?.document?.saved_at ?? null,
     };
   }
 
@@ -418,6 +423,82 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         documents: session.documents ?? [],
         notes: session.notes,
         generated_at: today(),
+      };
+    },
+
+    /**
+     * Start the Discovery Closing Document: the engine decides the engagement
+     * from the answers; returns what Claude drafts next — the approach, or
+     * directly the document when no approach is needed (no bid).
+     *
+     * @param {User} user @param {string} client
+     */
+    async prepareClosingDocument(user, client) {
+      const session = await load(user, client);
+      const decided = decideFromSession(session, today());
+      if (!decided.ok) throw new ServiceError(400, 'The answers can’t be turned into an engagement yet', decided.errors);
+      const { doc } = decided;
+      const status = closingStatus(doc);
+      if (!doc.delivery.go && !stopRouteChosen(doc)) {
+        throw new ServiceError(409, 'Discovery hit a STOP: record how Merkle proceeds (Q10.5.5 — Larger Engagement or no bid) before the closing document', doc.exits.items.filter((i) => i.result === 'STOP').map((i) => `${i.rule_id}: ${i.evidence}`));
+      }
+      if (needsApproach(doc)) return { status, step: 'approach', ...approachBrief(doc) };
+      const final = finaliseEngagement(doc, null);
+      if (!final.ok) throw new ServiceError(400, 'Engagement not valid', final.errors);
+      return { status, step: 'document', ...deckBrief(final.engagement) };
+    },
+
+    /**
+     * Save the implementation approach Claude drafted (validated against the
+     * approach schema and the engagement); returns the deck data and prompt.
+     *
+     * @param {User} user @param {string} client @param {object} approach
+     * @param {{ via?: Channel }} [options]
+     */
+    async saveApproach(user, client, approach, { via = 'claude' } = {}) {
+      const session = await load(user, client);
+      const decided = decideFromSession(session, today());
+      if (!decided.ok) throw new ServiceError(400, 'The answers can’t be turned into an engagement yet', decided.errors);
+      const final = finaliseEngagement(decided.doc, approach);
+      if (!final.ok) throw new ServiceError(400, 'Approach not saved', final.errors);
+      session.closing = { ...session.closing, approach: { payload: approach, saved_at: today(), by: user.login, via } };
+      session.updated_at = today();
+      await store.save(session);
+      return { status: closingStatus(decided.doc), step: 'document', ...deckBrief(final.engagement) };
+    },
+
+    /**
+     * Save the Discovery Closing Document (Markdown); the previous version is kept.
+     *
+     * @param {User} user @param {string} client @param {{ markdown: string }} input
+     * @param {{ via?: Channel }} [options]
+     */
+    async saveClosingDocument(user, client, { markdown }, { via = 'claude' } = {}) {
+      const session = await load(user, client);
+      const text = String(markdown ?? '').trim();
+      if (text.length < 500) throw new ServiceError(400, 'The document is too short — write the complete Discovery Closing Document');
+      const personal = findPersonalData(text);
+      if (personal.length) throw new ServiceError(400, 'Document not saved', [`the document ${personal.join(' and ')} — remove personal data`]);
+      const previous = session.closing?.document;
+      session.closing = {
+        ...session.closing,
+        document: { markdown: `${text}
+`, saved_at: today(), by: user.login, via },
+        history: [...(previous ? [{ saved_at: previous.saved_at, by: previous.by, via: previous.via, markdown: previous.markdown }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
+      };
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, saved_at: today(), versions: 1 + session.closing.history.length };
+    },
+
+    /** The saved closing document and approach status. @param {User} user @param {string} client */
+    async getClosingDocument(user, client) {
+      const session = await load(user, client);
+      return {
+        engagement: summary(session),
+        approach: session.closing?.approach ? { saved_at: session.closing.approach.saved_at, by: session.closing.approach.by, via: session.closing.approach.via } : null,
+        document: session.closing?.document ?? null,
+        history: (session.closing?.history ?? []).map(({ saved_at, by, via }) => ({ saved_at, by, via })),
       };
     },
 

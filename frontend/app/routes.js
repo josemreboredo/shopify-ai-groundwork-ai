@@ -10,6 +10,8 @@ export default [
   route('engagements/:client/review', 'routes/engagement.review.jsx'),
   route('engagements/:client/summary', 'routes/engagement.summary.jsx'),
   route('engagements/:client/summary.md', 'routes/engagement.summary-md.js'),
+  route('engagements/:client/closing-document', 'routes/engagement.closing.jsx'),
+  route('engagements/:client/closing-document.md', 'routes/engagement.closing-md.js'),
   route('engagements/:client/questions/:questionId', 'routes/engagement.question.jsx'),
   route('claude', 'routes/claude.jsx'),
   // Claude connector (ADR 0015): MCP endpoint and OAuth

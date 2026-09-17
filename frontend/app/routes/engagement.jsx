@@ -97,6 +97,7 @@ export default function Engagement({ loaderData, actionData }) {
               <div className="actions">
                 <Link className="button" to={`/engagements/${engagement.client}/summary`}>See the summary</Link>
                 <Link className="button secondary" to={`/engagements/${engagement.client}/review`}>Review or change answers</Link>
+                <Link className="button secondary" to={`/engagements/${engagement.client}/closing-document`}>Discovery Closing Document</Link>
               </div>
             </section>
           )}

@@ -210,6 +210,34 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     annotations: read,
   }, async (user, { client }) => compactPreview((await service.getInterview(user, client, { limit: 1 })).preview));
 
+  tool('prepare_closing_document', {
+    title: 'Start the Discovery Closing Document',
+    description: 'Step 1 of the Discovery Closing Document. The engine decides the engagement from the answers (offer, gates, exit rules, open items). If step is "approach": draft the implementation approach as one JSON object following instructions and approach_schema from the engagement data, then call save_approach. If step is "document": write the document from deck_xml following instructions, then call save_closing_document.',
+    inputSchema: z.object({ client: slug }),
+    annotations: read,
+  }, (user, { client }) => service.prepareClosingDocument(user, client));
+
+  tool('save_approach', {
+    title: 'Save the implementation approach',
+    description: 'Step 2: save the approach JSON (capability_map, app_shortlist, assumptions, phases). It is validated against the schema and the engagement; errors come back to fix. On success returns deck_xml and the instructions to write the Discovery Closing Document (step 3).',
+    inputSchema: z.object({ client: slug, approach: z.record(z.string(), z.unknown()).describe('The approach object matching approach_schema') }),
+    annotations: write,
+  }, (user, { client, approach }) => service.saveApproach(user, client, approach, { via: 'claude' }));
+
+  tool('save_closing_document', {
+    title: 'Save the Discovery Closing Document',
+    description: 'Step 3: save the complete Discovery Closing Document (Markdown, Lead Consultant draft including the consultant notes section). The Lead Consultant downloads it from the engagement in the web app; the previous version is kept.',
+    inputSchema: z.object({ client: slug, markdown: z.string().min(500) }),
+    annotations: write,
+  }, (user, { client, markdown }) => service.saveClosingDocument(user, client, { markdown }, { via: 'claude' }));
+
+  tool('get_closing_document', {
+    title: 'Saved Discovery Closing Document',
+    description: 'The latest saved Discovery Closing Document (Markdown) with when and by whom it was saved, and whether an approach is saved.',
+    inputSchema: z.object({ client: slug }),
+    annotations: read,
+  }, (user, { client }) => service.getClosingDocument(user, client));
+
   tool('get_summary', {
     title: 'Engagement summary',
     description: 'Summary computed by the engine (no AI): offer, GO or STOP, scope gates, exit rules, minimum Shopify plan, app signals, open items, all answers by section in words, documents and notes. Returns Markdown for the Lead Consultant (internal, not a client document).',

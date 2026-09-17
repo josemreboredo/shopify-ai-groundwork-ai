@@ -5,6 +5,8 @@
  */
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 
 import { createMcpHandler, withMcpAuth } from 'mcp-handler';
 
@@ -14,6 +16,11 @@ import { createOAuthServer, authorizationServerMetadata, protectedResourceMetada
 import { createOAuthMemoryStore } from '../../service/stores/oauth-memory-store.js';
 import { createOAuthPostgresStore } from '../../service/stores/oauth-postgres-store.js';
 import { registerDiscoveryTools } from '../../service/mcp.js';
+import { recordAnswer } from '../../agents/interview/answer.js';
+import { flattenAnswers } from '../../agents/discovery/extract.js';
+import { toApproachPayload } from '../../agents/discovery/approach.js';
+import { DECK_PROMPT } from '../../agents/discovery-deck/prompt.js';
+import { promptBody, SOURCE } from '../../scripts/render-deck-prompt.js';
 
 const ORIGIN = 'https://discovery.example.test';
 const TODAY = '2026-09-17';
@@ -202,7 +209,7 @@ describe('MCP connector tools', () => {
   test('lists the discovery tools and runs the document workflow as the signed-in consultant', async () => {
     const { rpc, call, service } = await connector();
     const tools = (await rpc('tools/list', {})).payload.result.tools.map((t) => t.name).sort();
-    assert.deepEqual(tools, ['add_note', 'find_questions', 'get_interview', 'get_preview', 'get_summary', 'list_answers', 'list_engagements', 'mark_questions', 'record_answers', 'register_document', 'start_interview']);
+    assert.deepEqual(tools, ['add_note', 'find_questions', 'get_closing_document', 'get_interview', 'get_preview', 'get_summary', 'list_answers', 'list_engagements', 'mark_questions', 'prepare_closing_document', 'record_answers', 'register_document', 'save_approach', 'save_closing_document', 'start_interview']);
 
     assert.equal((await call('list_engagements', {})).data[0].client, 'rfp-demo');
     const view = (await call('get_interview', { client: 'rfp-demo', limit: 5 })).data;
@@ -231,5 +238,68 @@ describe('MCP connector tools', () => {
     const r = await call('list_engagements', {});
     assert.equal(r.isError, true);
     assert.match(r.data, /allowlist/);
+  });
+});
+
+describe('Discovery Closing Document from the shared engagement', () => {
+  const fixture = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, '..', 'fixtures', 'engagements', 'acme-watches.json'), 'utf8'));
+
+  /** An engagement whose interview answers match the ACME fixture. */
+  async function acme() {
+    const store = createMemoryStore();
+    const svc = createDiscoveryService({ store, today: () => TODAY });
+    await svc.startInterview(lc, { client: 'acme-watches', mode: 'standard' });
+    const session = await store.get('acme-watches');
+    const { schema_version, offer, exits, approach, provenance, notes, ...answers } = structuredClone(fixture);
+    delete answers.meta.source;
+    delete answers.meta.updated_at;
+    delete answers.delivery.go;
+    for (const pair of [{ pointer: '/meta/consent/llm_processing', value_json: 'true' }, ...flattenAnswers(answers).filter((p) => p.pointer !== '/meta/consent/llm_processing')]) {
+      const r = recordAnswer(session, { pointer: pair.pointer, value: JSON.parse(pair.value_json), source: 'client', today: TODAY });
+      assert.equal(r.ok, true, `${pair.pointer}: ${JSON.stringify(r.errors)}`);
+    }
+    await store.save(session);
+    return { svc, store };
+  }
+
+  test('prepare → approach → deck data → saved document, with validation errors returned to Claude', async () => {
+    const { svc, store } = await acme();
+    const prepared = await svc.prepareClosingDocument(lc, 'acme-watches');
+    assert.equal(prepared.step, 'approach');
+    assert.equal(prepared.status.decision, fixture.delivery.go ? 'GO' : 'STOP');
+    assert.ok(prepared.instructions.includes('Capability map'));
+    assert.ok(prepared.engagement.meta && prepared.approach_schema.properties.capability_map);
+    assert.doesNotMatch(JSON.stringify(prepared.engagement), /price_band|price_add/, 'the approach step never sees internal pricing');
+
+    await assert.rejects(svc.saveApproach(lc, 'acme-watches', { capability_map: 'nope' }), (err) => err instanceof ServiceError && err.errors.length > 0);
+
+    const deck = await svc.saveApproach(lc, 'acme-watches', toApproachPayload(fixture.approach));
+    assert.equal(deck.step, 'document');
+    assert.match(deck.deck_xml, /^<\?xml|<discovery-deck /);
+    assert.ok(deck.instructions.startsWith(DECK_PROMPT.slice(0, 40)));
+    assert.equal((await store.get('acme-watches')).closing.approach.via, 'claude');
+
+    await assert.rejects(svc.saveClosingDocument(lc, 'acme-watches', { markdown: 'too short' }), ServiceError);
+    const markdown = `# Discovery Closing Document — ACME Watches\n\n${'Section text. '.repeat(60)}`;
+    await svc.saveClosingDocument(lc, 'acme-watches', { markdown });
+    const again = await svc.saveClosingDocument(lc, 'acme-watches', { markdown: `${markdown}\nRevised.` });
+    assert.equal(again.versions, 2);
+    const saved = await svc.getClosingDocument(lc, 'acme-watches');
+    assert.match(saved.document.markdown, /Revised\./);
+    assert.equal(saved.history.length, 1);
+    assert.equal((await svc.listEngagements(lc))[0].closing_document_at, TODAY);
+  });
+
+  test('a STOP without a chosen route asks for the route first', async () => {
+    const svc = await engagement();
+    await svc.recordAnswers(lc, 'rfp-demo', [
+      { question_id: 'Q1.1.1', values: { '/meta/client/name': 'RFP Demo' } },
+      { question_id: 'Q4.2.1', values: { '/checkout/customisation': ['fully_custom_checkout_ui'] } },
+    ]);
+    await assert.rejects(svc.prepareClosingDocument(lc, 'rfp-demo'), (err) => err instanceof ServiceError && err.status === 409 && /Q10\.5\.5/.test(err.message));
+  });
+
+  test('the deck prompt module matches discovery/docs/deck-prompt.md (npm run deck:prompt)', () => {
+    assert.equal(DECK_PROMPT, promptBody(fs.readFileSync(SOURCE, 'utf8')));
   });
 });
