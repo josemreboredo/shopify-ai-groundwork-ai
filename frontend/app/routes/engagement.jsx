@@ -3,6 +3,7 @@ import { Form, Link, useNavigation } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
+import { vocabularyExample, vocabularyOptions } from '../../../discovery/service/vocabularies.js';
 
 export const meta = ({ params }) => [{ title: `${params.client} · Merkle Discovery` }];
 
@@ -13,7 +14,10 @@ export async function loader({ request, params }) {
       discovery().getInterview(user, params.client, { limit: 3 }),
       discovery().listAnswers(user, params.client),
     ]);
-    return { ...view, answers };
+    // Name suggestions only for the countries, currencies and languages the shown questions ask for.
+    const used = new Set(view.next.questions.flatMap((q) => q.inputs.flatMap((i) => [i.vocabulary, ...(i.columns ?? []).map((c) => c.vocabulary)])).filter(Boolean));
+    const vocabularies = Object.fromEntries([...used].map((v) => [v, { example: vocabularyExample(v), options: vocabularyOptions(v).map((o) => `${o.label} (${o.value})`) }]));
+    return { ...view, answers, vocabularies };
   } catch (err) {
     throw serviceFailure(err);
   }
@@ -48,6 +52,17 @@ export async function action({ request, params }) {
 
 const words = (id) => id.replace(/_/g, ' ');
 
+/** Placeholder examples per vocabulary (set from loader data). */
+const examples = { country: 'Switzerland or CH', currency: 'Swiss franc or CHF', language: 'German or de' };
+
+function Vocabularies({ vocabularies }) {
+  return Object.entries(vocabularies).map(([name, v]) => (
+    <datalist key={name} id={`vocabulary-${name}`}>
+      {v.options.map((o) => <option key={o} value={o} />)}
+    </datalist>
+  ));
+}
+
 /** Same naming as the service's parseTable: "/markets/list[0][code]". */
 const cellName = (pointer, row, key) => `${pointer}[${row}][${key}]`;
 
@@ -80,9 +95,11 @@ function Cell({ column, name }) {
     case 'date':
       return <input type="date" name={name} />;
     case 'list':
-      return <input type="text" name={name} placeholder="comma-separated" />;
+      return <input type="text" name={name} placeholder={column.vocabulary ? 'names or codes, comma-separated' : 'comma-separated'} />;
     default:
-      return <input type="text" name={name} />;
+      return column.vocabulary
+        ? <input type="text" name={name} list={`vocabulary-${column.vocabulary}`} placeholder="name or code" autoComplete="off" />
+        : <input type="text" name={name} />;
   }
 }
 
@@ -156,7 +173,7 @@ function FieldInput({ spec, showLabel }) {
       control = <textarea name={name} />;
       break;
     case 'list':
-      control = <textarea name={name} placeholder="One per line" />;
+      control = <textarea name={name} placeholder={spec.vocabulary ? `One per line or comma-separated, e.g. ${examples[spec.vocabulary]}` : 'One per line'} />;
       break;
     case 'table':
       control = <TableInput spec={spec} />;
@@ -165,7 +182,9 @@ function FieldInput({ spec, showLabel }) {
       control = <textarea name={name} rows={6} />;
       break;
     default:
-      control = <input type="text" name={name} />;
+      control = spec.vocabulary
+        ? <input type="text" name={name} list={`vocabulary-${spec.vocabulary}`} placeholder={`e.g. ${examples[spec.vocabulary]}`} autoComplete="off" />
+        : <input type="text" name={name} />;
   }
   return (
     <div className="field">
@@ -322,10 +341,11 @@ function PreviewPanel({ preview }) {
 }
 
 export default function Engagement({ loaderData, actionData }) {
-  const { engagement, next, preview, notes, tbc, answers, documents } = loaderData;
+  const { engagement, next, preview, notes, tbc, answers, documents, vocabularies } = loaderData;
   const busy = useNavigation().state !== 'idle';
   return (
     <main>
+      <Vocabularies vocabularies={vocabularies} />
       <p><Link to="/">← Engagements</Link></p>
       <h1>{engagement.client}</h1>
       <p className="muted">

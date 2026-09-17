@@ -40,10 +40,11 @@ const compactQuestion = (q) => ({
     pointer: i.pointer,
     kind: i.kind,
     ...(i.label ? { label: i.label } : {}),
+    ...(i.vocabulary ? { accepts: `${i.vocabulary} name or code` } : {}),
     ...(i.options ? { allowed_values: i.options.map((o) => o.value) } : {}),
     ...(i.columns ? {
       value: 'array of objects, one per row',
-      columns: i.columns.map((c) => ({ key: c.key, kind: c.kind, required: c.required, ...(c.options ? { allowed_values: c.options.map((o) => o.value) } : {}) })),
+      columns: i.columns.map((c) => ({ key: c.key, kind: c.kind, required: c.required, ...(c.vocabulary ? { accepts: `${c.vocabulary} name or code` } : {}), ...(c.options ? { allowed_values: c.options.map((o) => o.value) } : {}) })),
     } : {}),
   })),
   ...(q.state ? { state: q.state } : {}),

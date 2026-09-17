@@ -17,7 +17,7 @@ import { recordAnswer, markQuestion, addNote } from '../agents/interview/answer.
 import { preview } from '../agents/interview/preview.js';
 import { findPersonalData } from '../agents/discovery/input.js';
 import { questionBank } from '../schema/index.js';
-import { fieldSpecs, parseField, parseTable } from './fields.js';
+import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js';
 
 /**
  * @typedef {object} InterviewStore
@@ -118,7 +118,9 @@ export function createDiscoveryService({ store, today = isoToday }) {
    */
   function applyAnswers(draft, question, records, { user, via, source, status = 'confirmed', note }) {
     const src = source ?? (question.audience === 'consultant' ? 'consultant' : 'client');
-    for (const [pointer, value] of records) {
+    for (const [pointer, raw] of records) {
+      const { value, errors } = normalizeValue(pointer, raw);
+      if (errors.length) throw new ServiceError(400, `${question.id}: answer not recorded`, errors);
       const r = recordAnswer(draft, { pointer, value, question_id: question.id, source: src, status, note: note?.trim() || undefined, today: today() });
       if (!r.ok) throw new ServiceError(400, `${question.id}: answer not recorded`, r.errors);
       // Channel and author stay in the session only (the engagement contract keeps source, status and note).

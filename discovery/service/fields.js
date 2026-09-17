@@ -8,11 +8,12 @@
  */
 
 import { schemaNodeAt, enumValues, optionLabel } from '../schema/index.js';
+import { resolveCode, vocabularyExample, vocabularyForPattern } from './vocabularies.js';
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
- * @typedef {{ pointer: string, label?: string, root?: string, kind: 'boolean'|'enum'|'multi_enum'|'integer'|'number'|'date'|'text'|'long_text'|'list'|'table'|'json',
+ * @typedef {{ pointer: string, label?: string, root?: string, vocabulary?: 'country'|'currency'|'language', kind: 'boolean'|'enum'|'multi_enum'|'integer'|'number'|'date'|'text'|'long_text'|'list'|'table'|'json',
  *   options?: { value: string, label: string }[], columns?: (FieldSpec & { key: string, required: boolean })[] }} FieldSpec
  */
 
@@ -45,6 +46,8 @@ function specsFor(pointer, answerType, label, root) {
   if (node?.type === 'number') return [{ ...base, kind: 'number' }];
   if (node?.type === 'string') {
     if (node.format === 'date') return [{ ...base, kind: 'date' }];
+    const vocabulary = vocabularyForPattern(node.pattern);
+    if (vocabulary) return [{ ...base, kind: 'text', vocabulary }];
     return [{ ...base, kind: answerType === 'long_text' ? 'long_text' : 'text' }];
   }
   if (node?.type === 'object' && node.properties) {
@@ -52,7 +55,10 @@ function specsFor(pointer, answerType, label, root) {
     return Object.keys(node.properties).flatMap((key) => specsFor(`${pointer}/${key}`, answerType, label ? `${label} › ${key}` : key, root));
   }
   const items = node?.type === 'array' ? schemaNodeAt(`${pointer}/*`) : null;
-  if (items?.type === 'string') return [{ ...base, kind: 'list' }];
+  if (items?.type === 'string') {
+    const vocabulary = vocabularyForPattern(items.pattern);
+    return [{ ...base, kind: 'list', ...(vocabulary ? { vocabulary } : {}) }];
+  }
   if (items?.type === 'object' && items.properties) {
     // A table: one row per item, one column per item field (no JSON for the consultant).
     const required = new Set(items.required ?? []);
@@ -135,4 +141,31 @@ export function parseField(spec, raw) {
     default:
       return { value: first };
   }
+}
+
+/**
+ * Resolve countries, currencies and languages typed as names ("Switzerland",
+ * "euros", "German") to the codes the schema stores, anywhere in a value
+ * (fields, lists, groups, table rows). Unknown entries are reported in plain words.
+ *
+ * @param {string} pointer  Schema pointer of the value
+ * @param {unknown} value
+ * @returns {{ value: unknown, errors: string[] }}
+ */
+export function normalizeValue(pointer, value) {
+  const errors = [];
+  const walk = (nodePointer, v, label) => {
+    const node = schemaNodeAt(nodePointer);
+    if (!node || v === null || v === undefined) return v;
+    if (node.type === 'array' && Array.isArray(v)) return v.map((item, i) => walk(`${nodePointer}/*`, item, `${label} row ${i + 1}`));
+    if (node.type === 'object' && typeof v === 'object' && !Array.isArray(v)) {
+      return Object.fromEntries(Object.entries(v).map(([k, child]) => [k, walk(`${nodePointer}/${k}`, child, `${label} › ${k}`)]));
+    }
+    const vocabulary = node.type === 'string' && typeof v === 'string' ? vocabularyForPattern(node.pattern) : null;
+    if (!vocabulary) return v;
+    const code = resolveCode(vocabulary, v);
+    if (!code) errors.push(`${label}: “${v}” is not a known ${vocabulary} — use a name or code, e.g. ${vocabularyExample(vocabulary)}`);
+    return code ?? v;
+  };
+  return { value: walk(pointer, value, pointer), errors };
 }

@@ -69,7 +69,7 @@ describe('discovery service', () => {
     const q = (await svc.getInterview(consultant, 'demo-client', { limit: 50 })).next.questions.find((x) => x.id === 'Q0.2.1');
     assert.deepEqual(q.inputs.map((i) => i.label), ['min', 'max', 'currency']);
 
-    await rejects(svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q0.2.1', values: { '/business/revenue_monthly/min': ['40000'], '/business/revenue_monthly/currency': ['euros'] } }), 400);
+    await rejects(svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q0.2.1', values: { '/business/revenue_monthly/min': ['40000'], '/business/revenue_monthly/currency': ['moon coins'] } }), 400);
     assert.equal((await store.get('demo-client')).answers.business?.revenue_monthly, undefined, 'nothing recorded when one field is invalid');
 
     const r = await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q0.2.1', values: { '/business/revenue_monthly/min': ['40000'], '/business/revenue_monthly/max': ['60000'], '/business/revenue_monthly/currency': ['EUR'] } });
@@ -98,6 +98,23 @@ describe('discovery service', () => {
     assert.match(missing.error, /Row 1: fill in channel/);
     const markets = fieldSpecs({ fields: ['/markets/list'], answer_type: 'table' })[0];
     assert.deepEqual(parseTable(markets, { [cellName('/markets/list', 0, 'code')]: ['CH'], [cellName('/markets/list', 0, 'languages')]: ['de, fr'] }), { value: [{ code: 'CH', languages: ['de', 'fr'] }] });
+  });
+
+  test('countries, currencies and languages can be typed as names in any discovery language; unknown ones get a plain message', async () => {
+    const store = createMemoryStore();
+    const svc = await started(store);
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q1.1.2', values: { '/meta/client/hq_country': ['switzerland'] } });
+    assert.equal((await store.get('demo-client')).answers.meta.client.hq_country, 'CH');
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q0.2.1', values: { '/business/revenue_monthly/min': ['1'], '/business/revenue_monthly/max': ['2'], '/business/revenue_monthly/currency': ['Schweizer Franken'] } });
+    assert.equal((await store.get('demo-client')).answers.business.revenue_monthly.currency, 'CHF');
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q3.1.1', values: { [cellName('/markets/list', 0, 'code')]: ['Suisse'], [cellName('/markets/list', 0, 'languages')]: ['German, French'], [cellName('/markets/list', 1, 'code')]: ['UK'] } });
+    assert.deepEqual((await store.get('demo-client')).answers.markets.list.map((m) => [m.code, m.languages ?? []]), [['CH', ['de', 'fr']], ['GB', []]]);
+    await assert.rejects(
+      svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q1.1.2', values: { '/meta/client/hq_country': ['Narnia'] } }),
+      (err) => err instanceof ServiceError && /“Narnia” is not a known country — use a name or code, e\.g\. Switzerland or CH/.test(err.errors[0]),
+    );
+    const hq = fieldSpecs({ fields: ['/meta/client/hq_country'], answer_type: 'country' })[0];
+    assert.deepEqual([hq.kind, hq.vocabulary], ['text', 'country']);
   });
 
   test('TBC, skip and notes go through the engine checks (no personal data, consent cannot be skipped)', async () => {

@@ -125,11 +125,11 @@ describe('shared memory: answers from documents, review and documents', () => {
     const svc = await engagement();
     const { results, preview } = await svc.recordAnswers(lc, 'rfp-demo', [
       { question_id: 'Q0.1.1', values: { '/business/primary_problem': 'Mobile checkout friction' }, evidence: { document: 'RFP-2026.pdf', location: '§2.1', quote: 'Our mobile checkout loses half of the sessions' } },
-      { question_id: 'Q0.2.1', values: { '/business/revenue_monthly': { min: 40000, max: 60000, currency: 'euros' } }, evidence: { document: 'RFP-2026.pdf' } },
+      { question_id: 'Q0.2.1', values: { '/business/revenue_monthly': { min: 40000, max: 60000, currency: 'moon coins' } }, evidence: { document: 'RFP-2026.pdf' } },
       { question_id: 'Q9.9.9', values: { '/x': 1 } },
     ]);
     assert.deepEqual(results.map((r) => [r.question_id, r.ok]), [['Q0.1.1', true], ['Q0.2.1', false], ['Q9.9.9', false]]);
-    assert.ok(results[1].errors.some((e) => /currency/.test(e)));
+    assert.ok(results[1].errors.some((e) => /“moon coins” is not a known currency/.test(e)));
     assert.ok(preview.coverage.required_answered >= 1);
 
     const [answer] = (await svc.listAnswers(lc, 'rfp-demo')).filter((a) => a.question_id === 'Q0.1.1');
