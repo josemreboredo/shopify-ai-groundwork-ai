@@ -1,5 +1,5 @@
 {
-  "$comment": "App Store registry (question bank 1.1.0). Apps referenced by question-bank shopify.apps and suggested for the approach shortlist. Listings checked on apps.shopify.com on checked_on (check: listing_loaded or search_result). status stays proposed until the lead consultant approves the app after the engagement work (owner decision 2026-09-17): npm run apps -- approve --handle <handle> --by \"<role>\". No prices are stored here.",
+  "$comment": "App Store registry (question bank 1.1.0). Apps referenced by question-bank shopify.apps and suggested for the approach shortlist. Listings checked on apps.shopify.com on checked_on (check: listing_loaded or search_result). status stays proposed until the lead consultant approves the app after the engagement work (owner decision 2026-09-17): npm run apps -- approve --handle <handle> --by \"<role>\". No prices are stored here. Optional areas: the app signal areas an app serves, when a question lists it for several areas.",
   "checked_on": "2026-09-17",
   "apps": [
     {
@@ -8,6 +8,9 @@
       "url": "https://apps.shopify.com/loop-returns",
       "requirements": [
         "Returns and exchanges beyond native (Q5.2.x)"
+      ],
+      "areas": [
+        "returns_platform"
       ],
       "category": {
         "name": "Returns and exchanges",
@@ -24,6 +27,9 @@
       "requirements": [
         "Returns and exchanges beyond native (Q5.2.x)"
       ],
+      "areas": [
+        "returns_platform"
+      ],
       "category": {
         "name": "Returns and exchanges",
         "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all"
@@ -38,6 +44,9 @@
       "url": "https://apps.shopify.com/narvar-returns",
       "requirements": [
         "Returns and exchanges beyond native (Q5.2.x)"
+      ],
+      "areas": [
+        "returns_platform"
       ],
       "category": {
         "name": "Returns and exchanges",
@@ -54,6 +63,9 @@
       "requirements": [
         "Returns and exchanges beyond native (Q5.2.x)"
       ],
+      "areas": [
+        "returns_platform"
+      ],
       "category": {
         "name": "Returns and exchanges",
         "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all"
@@ -69,6 +81,9 @@
       "requirements": [
         "Branded tracking and proactive delivery updates (Q5.5.1–2)"
       ],
+      "areas": [
+        "post_purchase_platform"
+      ],
       "category": {
         "name": "Order tracking",
         "url": "https://apps.shopify.com/categories/orders-and-shipping-orders-order-tracking/all"
@@ -83,6 +98,9 @@
       "url": "https://apps.shopify.com/parcellab-engage",
       "requirements": [
         "Branded tracking and proactive delivery updates (Q5.5.1–2)"
+      ],
+      "areas": [
+        "post_purchase_platform"
       ],
       "category": {
         "name": "Order tracking",
@@ -162,6 +180,10 @@
       "requirements": [
         "Back-in-stock alerts (Q2.5.3)"
       ],
+      "areas": [
+        "back_in_stock_app",
+        "pre_order_app"
+      ],
       "category": {
         "name": "Stock alerts",
         "url": "https://apps.shopify.com/categories/store-design-store-alerts-back-in-stock-alert"
@@ -177,6 +199,10 @@
       "requirements": [
         "Back-in-stock alerts (Q2.5.3)"
       ],
+      "areas": [
+        "back_in_stock_app",
+        "pre_order_app"
+      ],
       "category": {
         "name": "Stock alerts",
         "url": "https://apps.shopify.com/categories/store-design-store-alerts-back-in-stock-alert"
@@ -191,6 +217,9 @@
       "url": "https://apps.shopify.com/customer-back-in-stock-alert-user-notification-app",
       "requirements": [
         "Back-in-stock alerts (Q2.5.3)"
+      ],
+      "areas": [
+        "back_in_stock_app"
       ],
       "category": {
         "name": "Stock alerts",
@@ -330,6 +359,9 @@
       "requirements": [
         "Mix-and-match bundles (Q2.2.3)"
       ],
+      "areas": [
+        "bundle_app"
+      ],
       "category": {
         "name": "Product bundles",
         "url": "https://apps.shopify.com/categories/marketing-and-conversion-upsell-and-bundles-product-bundles/all"
@@ -344,6 +376,9 @@
       "url": "https://apps.shopify.com/bundler-product-bundles",
       "requirements": [
         "Mix-and-match bundles (Q2.2.3)"
+      ],
+      "areas": [
+        "bundle_app"
       ],
       "category": {
         "name": "Product bundles",

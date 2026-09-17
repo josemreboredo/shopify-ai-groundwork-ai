@@ -82,6 +82,7 @@ const EVALUATORS = {
   '11.11': (doc) => {
     const code = doc.offer?.code;
     if (code !== 'M' && code !== 'L') return null;
+    if (doc.delivery?.route) return null; // routed STOP: Larger Engagement or no bid, no S/M/L offer is quoted
     return doc.delivery?.grow_retainer?.signed === true ? null : `Offer ${code} without a signed Grow retainer`;
   },
 

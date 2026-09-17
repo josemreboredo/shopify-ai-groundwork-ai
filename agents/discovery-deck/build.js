@@ -118,9 +118,12 @@ function executiveSummary(x, doc) {
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
   x.list('key-capabilities', (doc.approach?.capability_map ?? []).slice(0, 4).map((r) => r.requirement), 'No approach drafted (STOP or not yet run)');
   x.close();
+  const kpis = doc.business?.kpis ?? [];
+  // A goal that only restates a KPI (same metric, baseline and target) is listed once.
+  const restatesKpi = (goal) => kpis.some((k) => [k.metric, k.baseline, k.target].every((v) => v && goal.toLowerCase().includes(String(v).toLowerCase())));
   x.list('expected-outcomes', [
-    ...(doc.business?.kpis ?? []).map((k) => `${k.metric}: ${k.baseline ?? '?'} → ${k.target ?? '?'}${k.horizon_months ? ` in ${k.horizon_months} months` : ''}`),
-    ...(doc.business?.growth_goals ?? []),
+    ...kpis.map((k) => `${k.metric}: ${k.baseline ?? '?'} → ${k.target ?? '?'}${k.horizon_months ? ` in ${k.horizon_months} months` : ''}`),
+    ...(doc.business?.growth_goals ?? []).filter((g) => !restatesKpi(g)),
   ], 'Q0.4 not answered');
   x.close();
 }
@@ -178,6 +181,7 @@ function solutionDesign(x, doc) {
   x.field('theme', doc.offer.delivery_track === 'liquid' ? `Horizon${doc.design?.theme_preference && doc.design.theme_preference !== 'Horizon' ? ` (client preference noted: ${doc.design.theme_preference})` : ''}` : 'Hydrogen');
   x.open('markets', { strategy: doc.markets?.strategy, primary: doc.markets?.primary_markets?.join(', ') });
   for (const mk of markets) x.empty('market', { code: mk.code, currency: mk.currency, languages: (mk.languages ?? []).join(', '), domain: mk.domain, pricing: mk.price_strategy, scope: mk.code === 'CN' ? 'separate China discovery' : undefined });
+  for (const mk of markets.filter((m) => m.code !== 'CN' && !m.price_strategy)) x.missing('market-pricing', `Q3.1.1 pricing not answered for ${mk.code}`, { code: mk.code });
   x.close();
   x.open('payments-and-checkout');
   x.list('providers', doc.payments?.providers, 'Q4.1.1 not answered');
