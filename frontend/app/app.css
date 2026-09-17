@@ -124,9 +124,15 @@ main.manual h2 { scroll-margin-top: 12px; }
   .pilot { padding: 7px 16px; }
 }
 .callout { background: var(--panel); border-left: 3px solid var(--red); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 10px 0; }
-/* Start the generation */
+/* Closing document: action first, then the files */
 .card.start { border-left: 4px solid var(--red); }
+.card.start.current { border-left-color: var(--ok); }
 .card.start textarea { margin-top: 8px; font-size: 0.85rem; }
+.start-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 12px; }
+.start-head .question { margin: 0 0 4px; font-size: 1.1rem; }
+.start-head .muted { margin: 0; }
+details.card > summary { font-weight: 600; color: var(--ink); font-size: 0.95rem; }
+details.card[open] > summary { margin-bottom: 10px; }
 .teach { background: var(--panel); border-radius: 10px; border-left: 3px solid var(--navy); padding: 12px 14px; margin: 10px 0; font-size: 0.92rem; }
 .teach > summary { cursor: pointer; font-weight: 600; }
 .teach table { margin: 8px 0; }

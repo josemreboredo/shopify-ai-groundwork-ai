@@ -45,6 +45,9 @@ export default function Closing({ loaderData }) {
     }, 20000);
     return () => clearInterval(id);
   }, [revalidator, waiting]);
+  const status = !document ? 'none' : freshness.up_to_date ? 'current' : 'stale';
+  const action = status === 'none' ? 'Generate the document' : `Update the document${freshness.changes.length ? ` · ${freshness.changes.length} answer${freshness.changes.length > 1 ? 's' : ''} changed` : ''}`;
+
   return (
     <main>
       <p><Link to="/">← Engagements</Link></p>
@@ -52,87 +55,105 @@ export default function Closing({ loaderData }) {
       <EngagementNav client={client} />
 
       <h2>Discovery Closing Document</h2>
-      <p className="muted">The Shopify consulting deliverable for this engagement: executive summary, business context, solution design with sourced architecture decisions, capability map, roadmap, apps, configuration vs customisation, risk register, next steps, timeline, investment and consultant notes. Claude drafts it as Solution Architect from the answers here and Shopify's official documentation; the engine checks it.</p>
 
+      {/* 1 — what to do now */}
+      <section className={`card start ${status}`}>
+        <div className="start-head">
+          <div>
+            <p className="question">{status === 'none' ? 'Not generated yet' : status === 'current' ? `Version ${version} · up to date` : `Version ${version} · out of date`}</p>
+            <p className="muted">
+              {status === 'none'
+                ? 'Claude writes the deck and the annex from the answers here and Shopify’s documentation.'
+                : `Saved ${document.saved_at} by ${document.by} (${VIA[document.via] ?? document.via}).${status === 'stale' ? ' Answers changed since — update it so the decisions, risks and plan match.' : ''}`}
+            </p>
+          </div>
+          {status !== 'none' ? <span className={`badge ${status === 'current' ? 'go' : 'flag'}`}>{status === 'current' ? 'up to date' : 'out of date'}</span> : null}
+        </div>
+
+        {readiness.ok ? (
+          <>
+            <div className="actions">
+              <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(startPrompt)}`} target="_blank" rel="noreferrer">{action}</a>
+              <button type="button" className="secondary" onClick={() => navigator.clipboard?.writeText(startPrompt)}>Copy the instruction</button>
+              {waiting ? <span className="muted">This page updates itself when Claude saves.</span> : null}
+            </div>
+            <p className="muted">
+              Opens a Claude chat with the instruction written — you only press Enter. Check that the <strong>Merkle Discovery</strong> connector is on and the strongest model is selected. To use the RFPs you uploaded, start it inside your Claude Project and pick <strong>Draft the Discovery Closing Document</strong> from the connector’s prompts. It can take up to 45 minutes, so <strong>Cowork</strong> suits it better than a normal chat.
+            </p>
+            <details>
+              <summary>The instruction it sends</summary>
+              <textarea readOnly rows={5} value={startPrompt} />
+            </details>
+          </>
+        ) : (
+          <>
+            <p className="error">Not ready: {readiness.error}</p>
+            {readiness.errors?.length ? <ul className="errors">{readiness.errors.map((e) => <li key={e}>{e}</li>)}</ul> : null}
+            <p className="muted">Fix it in <Link to={`/engagements/${client}/review`}>Review answers</Link>, then come back.</p>
+          </>
+        )}
+      </section>
+
+      {/* 2 — what changed, when it is out of date */}
+      {freshness.changes.length ? (
+        <details className="card">
+          <summary>{freshness.changes.length} answer{freshness.changes.length > 1 ? 's' : ''} changed since version {version}</summary>
+          <table>
+            <thead><tr><th>Question</th><th>Was</th><th>Now</th></tr></thead>
+            <tbody>{freshness.changes.map((c) => (
+              <tr key={c.pointer || c.question_id}>
+                <td>{c.question_id ?? c.pointer}{c.question ? <div className="muted">{c.question}</div> : null}</td>
+                <td className="muted">{c.before || '—'}</td>
+                <td>{c.after || '—'}</td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </details>
+      ) : null}
+
+      {/* 3 — the files */}
       {document ? (
         <section className="card">
-          <p className="question">
-            Version {version} · saved {document.saved_at} by {document.by} ({VIA[document.via] ?? document.via}){' '}
-            {freshness.known ? <span className={`badge ${freshness.up_to_date ? 'go' : 'flag'}`}>{freshness.up_to_date ? 'up to date' : `${freshness.changes.length} answer${freshness.changes.length > 1 ? 's' : ''} changed since`}</span> : null}
-          </p>
-          {freshness.changes.length ? (
-            <>
-              <p className="muted">These answers moved after the document was written. Redraft it so the decisions, risks and plan match.</p>
-              <table>
-                <thead><tr><th>Question</th><th>Was</th><th>Now</th></tr></thead>
-                <tbody>{freshness.changes.map((c) => (
-                  <tr key={c.pointer || c.question_id}>
-                    <td>{c.question_id ?? c.pointer}{c.question ? <div className="muted">{c.question}</div> : null}</td>
-                    <td className="muted">{c.before || '—'}</td>
-                    <td>{c.after || '—'}</td>
-                  </tr>
-                ))}</tbody>
-              </table>
-              <p><strong>Ask Claude:</strong></p>
-              <textarea readOnly rows={4} value={freshness.redraft_prompt} />
-            </>
-          ) : null}
+          <p className="question">The files</p>
           <div className="actions">
             <a className="button" href={`/engagements/${client}/closing-preview`} target="_blank" rel="noreferrer">Preview the deck</a>
-            <a className="button" href={`/engagements/${client}/closing-document.pptx`} download>Deck (PowerPoint)</a>
-            {document.annex ? <a className="button" href={`/engagements/${client}/closing-document.pptx?part=annex`} download>Annex (PowerPoint)</a> : null}
-            <a className="button secondary" href={`/engagements/${client}/closing-document.pptx?internal=1`} download>Deck with consultant notes</a>
-            <a className="button secondary" href={`/engagements/${client}/closing-document.md`} download>Deck (Markdown)</a>
-            {document.annex ? <a className="button secondary" href={`/engagements/${client}/closing-annex.md`} download>Annex (Markdown)</a> : null}
-            {history.length ? <span className="muted">previous: {history.map((h) => `v${h.version}`).join(', ')}</span> : null}
+            <a className="button" href={`/engagements/${client}/closing-document.pptx`} download>Deck · PowerPoint</a>
+            {document.annex ? <a className="button" href={`/engagements/${client}/closing-document.pptx?part=annex`} download>Annex · PowerPoint</a> : null}
           </div>
-          <p className="muted">The client version of the deck stops before the Consultant notes; check the slides before presenting, and remove any “Before presenting” block.</p>
-          {preview.length ? (<><h3>Contents</h3><ol>{preview.map((h) => <li key={h}>{h}</li>)}</ol></>) : null}
+          <details>
+            <summary>Other formats and the internal version</summary>
+            <div className="actions">
+              <a className="button secondary" href={`/engagements/${client}/closing-document.pptx?internal=1`} download>Deck with consultant notes</a>
+              <a className="button secondary" href={`/engagements/${client}/closing-document.md`} download>Deck · Markdown</a>
+              {document.annex ? <a className="button secondary" href={`/engagements/${client}/closing-annex.md`} download>Annex · Markdown</a> : null}
+              <a className="button secondary" href={`/engagements/${client}/closing-preview?part=annex`} target="_blank" rel="noreferrer">Preview the annex</a>
+            </div>
+            {history.length ? <p className="muted">Previous versions kept: {history.map((h) => `v${h.version}`).join(', ')}</p> : null}
+          </details>
+          <p className="muted">Every file carries its version. The client deck stops before the consultant notes; check the slides before presenting. {document.annex ? '' : 'No annex saved for this version yet.'}</p>
+          {preview.length ? (
+            <details>
+              <summary>What is in it ({preview.length} sections)</summary>
+              <ol>{preview.map((h) => <li key={h}>{h}</li>)}</ol>
+            </details>
+          ) : null}
         </section>
-      ) : <p className="error">No Discovery Closing Document saved yet.</p>}
+      ) : null}
 
-      <h2>Generate or update it in Claude</h2>
-      {readiness.ok ? (
-        <p>Ready: <strong>{readiness.status.decision}</strong> · offer {readiness.status.offer}{readiness.status.route ? ` · route ${readiness.status.route}` : ''}. {approach ? `Approach saved ${approach.saved_at} by ${approach.by}.` : 'No approach saved yet.'}</p>
-      ) : (
-        <div className="card">
-          <p className="error">Not ready: {readiness.error}</p>
-          {readiness.errors?.length ? <ul className="errors">{readiness.errors.map((e) => <li key={e}>{e}</li>)}</ul> : null}
-          <p className="muted">Fix it in <Link to={`/engagements/${client}/review`}>Review answers</Link>.</p>
-        </div>
-      )}
-      <div className="card start">
-        <p className="question">Start the generation</p>
-        <p className="muted">The tool cannot start Claude by itself — Claude has to be asked from a chat. These two buttons do it for you: the instruction is already written.</p>
-        <div className="actions">
-          <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(startPrompt)}`} target="_blank" rel="noreferrer">Open Claude and generate</a>
-          <button type="button" className="secondary" onClick={() => navigator.clipboard?.writeText(startPrompt)}>Copy the instruction</button>
-        </div>
-        <p className="muted">
-          In the chat, make sure the <strong>Merkle Discovery</strong> connector is on and pick the strongest model. To use the RFPs you uploaded, start it inside your Claude Project instead — or pick
-          <strong> Draft the Discovery Closing Document</strong> from the connector's prompts, which carries the same instruction.
-        </p>
-        <details>
-          <summary>The instruction it sends</summary>
-          <textarea readOnly rows={5} value={startPrompt} />
-        </details>
-      </div>
-
-      <h3>What happens next</h3>
-      <ol>
-        <li>Claude reads the engagement, researches every Shopify fact, then saves the approach and the deck. It can take up to 45 minutes; <strong>Cowork</strong> suits it better than a normal chat.</li>
-        <li>This page refreshes itself while you wait — the version appears here as soon as Claude saves it.</li>
-        <li>Download the deck and the annex, or open the preview. Uploading them back into your Claude Project is optional: Claude can always read the saved document through the connector.</li>
-      </ol>
+      {/* 4 — the rest, out of the way */}
       <details>
-        <summary>Advanced: Solution Architect in Claude Code</summary>
+        <summary>Advanced: run it from Claude Code</summary>
         <p>For complex integrations or tax questions, or when a draft keeps failing the checks. Claude Code adds the Shopify Dev MCP for deeper documentation research.</p>
         <ol>
           <li>Add the connector once: <code>claude mcp add --transport http merkle-discovery {origin}/mcp</code> and the Shopify Dev MCP: <code>claude mcp add shopify-dev-mcp -- npx -y @shopify/dev-mcp@latest</code>.</li>
           <li>In the repository, run <code>/architect {client}</code>. It saves the approach and the document here.</li>
         </ol>
       </details>
-      <p className="muted">After changing answers, ask Claude to draft it again: each save keeps the previous version.</p>
+      <p className="muted">
+        {approach ? `Approach saved ${approach.saved_at} by ${approach.by}.` : 'No approach saved yet.'}
+        {readiness.ok ? ` Engine decision: ${readiness.status.decision} · offer ${readiness.status.offer}${readiness.status.route ? ` · route ${readiness.status.route}` : ''}.` : ''}
+        {' '}Full guide: <Link to="/manual">Lead Consultant manual</Link>.
+      </p>
     </main>
   );
 }
