@@ -235,7 +235,7 @@ Vercel Pro (personal, London `lhr1`), Postgres (Neon) in London, GitHub login al
 dentsu IT (`discovery/docs/architecture/lc-frontend-hosting-requirements.md`).
 
 **2.0.0-alpha — discovery service and interview screens (local and Vercel preview, demo data)**
-- [ ] Owner set-up: Vercel Pro account, Neon Postgres (EU region) from the Vercel Marketplace, GitHub OAuth app, allowlist; first deploy (`frontend/README.md`)
+- [x] Owner set-up: Vercel Pro project (root `frontend`, production branch `v2.0.0-lc-frontend` until 2.0.0 is merged), Neon Postgres in London, GitHub OAuth app, allowlist; first deploy live at `shopify-ai-builder-two.vercel.app` with sign-in, interview start, consent and answers verified (2026-09-17)
 - [x] `discovery/service/`: shared operations over `discovery/agents` (engagements, interview next / answer / TBC / skip / notes / preview) with stores (files locally — shared with the CLI —, Postgres on Vercel, memory for tests), access by owner and role, GitHub allowlist; tests
 - [x] `frontend/`: React Router 7 app (the Vercel preset supports React Router 7) — GitHub sign-in, engagement list, interview screens with inputs from the schema, validation errors, live offer, scope gates, exit rules, Shopify plan, app signals, notes, TBC; `vercel.json` regions `lhr1` (London)
 - [x] Consent gate and no-personal-data checks from the engine; internal offer data only in the signed-in consultant views

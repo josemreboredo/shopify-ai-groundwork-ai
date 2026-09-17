@@ -16,6 +16,9 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 ### Changed
 - The schema loader imports its JSON files as modules so bundled server code carries them.
 
+### Deployed
+- 2.0.0-alpha on Vercel (interim, demo data only): GitHub sign-in, engagement list and interview verified end to end with Neon Postgres in London. Fixes found on the first deploy: `ajv` declared by the web app (Vercel installs `frontend/` only), framework pinned to React Router in `vercel.json`.
+
 ## [1.0.0] — 2026-09-17
 
 **Discovery AI tool — first major release.** Same code as 0.7.0, released as the 1.0.0 baseline. Version 2.0.0 adds the
