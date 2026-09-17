@@ -1,4 +1,4 @@
-import { Form, Link, Links, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteLoaderData } from 'react-router';
+import { Form, Link, Links, Meta, NavLink, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteLoaderData } from 'react-router';
 
 import { getUser } from './auth.server.js';
 import stylesheet from './app.css?url';
@@ -30,9 +30,9 @@ export function Layout({ children }) {
         <header className="topbar">
           <Link to="/" className="brand" aria-label="Merkle Discovery — home"><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
           <nav className="topnav">
-            {root?.user ? <Link to="/">Engagements</Link> : null}
-            <Link to="/manual">Manual</Link>
-            {root?.user ? <Link to="/claude">Claude Project</Link> : null}
+            {root?.user ? <NavLink to="/" end>Engagements</NavLink> : null}
+            <NavLink to="/manual">Manual</NavLink>
+            {root?.user ? <NavLink to="/claude">Claude Project</NavLink> : null}
           </nav>
           {root?.user ? (
             <Form method="post" action="/logout" className="user">

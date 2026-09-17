@@ -50,7 +50,13 @@ textarea { min-height: 70px; }
   color: #fff; text-decoration: none; font-size: 0.82rem; font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase;
 }
-.topnav a:hover { color: var(--red); }
+.topnav a { position: relative; padding: 6px 0; }
+.topnav a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--red);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease;
+}
+.topnav a:hover::after, .topnav a:focus-visible::after, .topnav a.active::after { transform: scaleX(1); }
+.topnav a:hover { color: #fff; }
 .user { margin-left: auto; display: flex; gap: 16px; align-items: center; color: rgba(255, 255, 255, 0.75); font-size: 0.78rem; }
 .user .who { letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
 .cta {
