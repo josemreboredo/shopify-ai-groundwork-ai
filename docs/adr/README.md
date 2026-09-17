@@ -12,3 +12,4 @@ One file per decision: `NNNN-short-title.md`. Status is **Proposed** until the o
 | [0005](0005-horizon-tier1-base-theme.md) | Horizon is the Delivery Tier 1 base theme | Accepted |
 | [0006](0006-jira-system-of-record.md) | Jira is the backlog system of record after first push | Accepted |
 | [0007](0007-llm-data-handling.md) | LLM data handling: consent, redaction, model choice | Accepted |
+| [0008](0008-interview-surface-and-session.md) | Interview surface and session model | Accepted |

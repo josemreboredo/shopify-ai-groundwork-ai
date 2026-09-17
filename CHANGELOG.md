@@ -6,6 +6,17 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 
 ## [Unreleased]
 
+Phase 5 of the implementation plan — consultant interview.
+
+### Added
+- `agents/interview/` and the `/interview` Claude Code skill: consultant-run discovery interview in any language with answers stored in English; consent first; quick / standard / full modes; skip logic; gate-feeding questions first; per-answer schema validation with personal-data refusal; provenance, TBC, skip and notes; resumable sessions; live preview of offer, scope gates, exit rules, app signals and coverage; `finish` hands over to the discovery pipeline
+- `npm run interview -- <start|next|answer|tbc|skip|note|preview|finish> --client <slug>` (JSON output)
+- ADR 0008 (interview surface and session model), architecture note and validation plan for the consultant pilot
+- Parity tests: the same answers through the interview and the questionnaire give identical offer, exit rules and GO/STOP
+
+### Changed
+- `meta.source` is `chatbot` for interview engagements
+
 ## [0.4.0] — 2026-09-16
 
 Phases 3 and 4 of the implementation plan — Discovery Closing Deck and Jira-ready backlog.

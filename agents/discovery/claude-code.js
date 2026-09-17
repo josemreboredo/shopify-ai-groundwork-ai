@@ -137,7 +137,7 @@ export function assembleWork({ workDir }) {
   if (shape.length) return { ok: false, errors: shape };
 
   const state = readJson(path.join(workDir, WORK_FILES.state));
-  const options = { today: state.today, clientSlug: state.client ?? undefined };
+  const options = { today: state.today, clientSlug: state.client ?? undefined, source: state.source ?? 'questionnaire' };
   const { errors, ...extraction } = processExtraction(data, answerValidator(options));
   if (errors.length) return { ok: false, errors };
 
