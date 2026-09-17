@@ -4,7 +4,7 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
-## [0.5.1] — 2026-09-17
+## [0.6.0] — 2026-09-17
 
 Shopify-knowledge questionnaire (ADR 0011) — owner decisions on `docs/discovery/questionnaire-shopify-proposal.md`.
 
@@ -29,7 +29,7 @@ Shopify-knowledge questionnaire (ADR 0011) — owner decisions on `docs/discover
 - Removed or merged: Q4.2.5, Q5.1.8, Q5.5.5, Q6.1.2 (legacy accounts deprecated), Q7.3.3, Q7.6.8, Q10.2.4
 - Offering 1.2.0
 
-## [0.5.1] — unreleased (PR #7)
+## [0.5.1] — 2026-09-17
 
 Fixes from the ReboLabs demo interview (ADR 0009).
 
