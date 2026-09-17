@@ -47,8 +47,9 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
    dedicated Discovery Phase) or `no_bid` (source `consultant`). A Larger Engagement keeps collecting everything and
    still produces the approach, a brief and the client deck — but no Jira tickets. If the consultant has not decided,
    mark it TBC and continue.
-7. `plan_suggestion` in the output means the answers already require Shopify Plus while the plan is open. Tell the
-   consultant once and offer to record it (`--source inferred --note "Required by …"`); never record it silently.
+7. `plan_suggestion` in the output is the minimum Shopify plan the answers need (from Shopify's plan documentation),
+   with its reasons, while the plan is open. Tell the consultant once and offer to record it
+   (`--source inferred --note "Minimum plan for …"`); never record it silently. Do not assume Shopify Plus.
 8. Decisions and context that are not answers (e.g. "we will propose a Larger Engagement") go in `note`: notes are
    kept in `engagement.json` and shown in the STOP report, risks and brief.
 9. Call `npm run interview -- next --client <slug>` when you need more questions, and

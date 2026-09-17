@@ -13,10 +13,12 @@ Fixes from the ReboLabs demo interview (ADR 0009).
 - Larger Engagement output: drafted approach (Phase 1 = Discovery Phase, one workstream per open STOP), `larger-engagement-brief.md`, capability map, delivery plan, app shortlist and risks
 - Larger Engagement client deck (`mode="LARGER_ENGAGEMENT"`): solution sections without offer, price band, epics or stories; investment and build backlog defined in the Discovery Phase; `deck:check` fails on an offer name or price band
 - Exit rule 11.17 (FLAG): sensitive personal data (health, age, biometric, financial) needs a DPIA and legal sign-off
-- Shopify Plus suggestion while the plan is open and native B2B, Checkout Extensibility or expansion stores are in scope — in the interview preview, the plan open item and the approach input
+- Minimum Shopify plan suggestion while the plan is open — in the interview preview, the plan open item and the approach input
 - App signals from a returns or post-purchase tool the client uses or prefers, or a returns system in the integration landscape
 
 ### Changed
+- **Deck = Lead Consultant draft (ADR 0010, amends D1):** one full-information document; sections 1–17 for the client, section 18 *Consultant notes* with offer rationale, price band, modifiers, budget vs band, commercial warnings, story points, answers to confirm and consultant notes. `deck-internal-notes.md` is no longer written; `deck:check --file` checks the LC's client version
+- **Shopify plan logic per Shopify's documentation:** Shopify B2B runs on every plan from Basic, so native B2B no longer fires 11.1; company-specific B2B catalogs, checkout step extensions / Checkout Branding API and expansion stores need Plus. The plan suggestion names the minimum plan and its reasons
 - Exit rule destinations "Scale programme" (11.3, 11.4) and "Bespoke quote" (11.7) are now Larger Engagement workstreams
 - No Jira backlog for a Larger Engagement (`npm run backlog` explains why)
 - `markets.primary_market` (one country) is now `markets.primary_markets` (one or more) — re-run discovery for existing engagements

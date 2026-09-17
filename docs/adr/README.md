@@ -14,3 +14,4 @@ One file per decision: `NNNN-short-title.md`. Status is **Proposed** until the o
 | [0007](0007-llm-data-handling.md) | LLM data handling: consent, redaction, model choice | Accepted |
 | [0008](0008-interview-surface-and-session.md) | Interview surface and session model | Accepted |
 | [0009](0009-stop-routes-and-larger-engagement.md) | What happens after a STOP: Larger Engagement or no bid | Accepted |
+| [0010](0010-deck-is-the-lead-consultant-draft.md) | The deck is the Lead Consultant's full-information draft (amends D1) | Accepted |

@@ -226,7 +226,7 @@ function scopeRows(doc) {
     ['Storefront', `${doc.offer.delivery_track === 'hydrogen' ? 'headless (Hydrogen)' : 'Horizon theme'} · headless required: ${yesNo(doc.design?.headless_required)}`],
     ['Design', `Figma: ${yesNo(figma.exists)}${figma.completeness ? ` (${human(figma.completeness)})` : ''} · design system: ${yesNo(figma.design_system)} · accessibility: ${orNa(human(doc.design?.accessibility?.target))}`],
     ['Compliance', `privacy: ${orNa(comp.privacy_regimes)} · sensitive data: ${yesNo(comp.sensitive_data)} · regulated: ${comp.regulated_industry?.active ? (comp.regulated_industry.category ?? 'yes') : yesNo(comp.regulated_industry?.active)} · export/deletion workflow: ${yesNo(comp.gdpr_deletion_workflow)}`],
-    ['Shopify plan', doc.shopify?.target_plan ? human(doc.shopify.target_plan) : plan ? `not decided — Plus required by ${plan.reasons.join(', ')}` : 'not answered'],
+    ['Shopify plan', doc.shopify?.target_plan ? human(doc.shopify.target_plan) : plan ? `not decided — minimum ${plan.value}: ${plan.reasons.join('; ')}` : 'not decided — no feature above Basic identified'],
     ['Target go-live', orNa(doc.delivery?.target_launch_date)],
   ];
 }

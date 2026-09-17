@@ -9,7 +9,7 @@
 
 import { offering } from '../../schema/index.js';
 import { countedIntegrations, marketsOf, distinctLanguages } from './classify.js';
-import { PLUS_PLANS, plusRequirements } from './plan.js';
+import { unmetPlanRequirements, describeRequirements } from './plan.js';
 
 const RULES = new Map(offering.exit_rules.map((r) => [r.id, r]));
 const DEFAULT_OWNER = 'Lead Consultant';
@@ -34,10 +34,8 @@ function weeksBetween(from, to) {
  */
 const EVALUATORS = {
   '11.1': (doc) => {
-    const plan = doc.shopify?.target_plan;
-    if (!plan || PLUS_PLANS.has(plan)) return null;
-    const needs = plusRequirements(doc);
-    return needs.length ? `Target plan "${plan}" but requires ${needs.join(', ')}` : null;
+    const unmet = unmetPlanRequirements(doc);
+    return unmet.length ? `Target plan "${doc.shopify.target_plan}" but the answers need ${describeRequirements(unmet)}` : null;
   },
 
   '11.2': (doc) => (doc.b2b?.rfq_or_negotiated_pricing === true ? 'B2B requires RFQ / negotiated pricing' : null),

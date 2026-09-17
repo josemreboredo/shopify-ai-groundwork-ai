@@ -5,10 +5,11 @@
 > `npm run deck -- --client <slug>`, which writes `discovery-deck.xml`. The `/deck` skill (or
 > [`deck-prompt.md`](deck-prompt.md) pasted into Claude) turns the XML into `discovery-deck.md`.
 >
-> **Client-safe by construction (decision D1):** the client sees the offer's **price band** only.
-> Internal modifiers, price adds, effort weeks, story points and commercial warnings (exit rule 11.11) never
-> enter the XML — they go to `deck-internal-notes.md` for the consultant. `npm run deck:check` verifies the
-> final deck.
+> **Lead Consultant draft (ADR 0010):** the deck is delivered to the Lead Consultant with all information.
+> Sections 1–17 are written for the client and never contain internal pricing (D1); section 18 *Consultant
+> notes* holds modifiers, price adds, budget vs band, commercial warnings (e.g. 11.11), story points, answers to
+> confirm and consultant notes. The LC filters before sharing; `npm run deck:check` passes only on a version
+> without internal data.
 
 ---
 
@@ -31,12 +32,13 @@
 | 15 | Timeline | `timeline` | `offer.duration_weeks`, kick-off, go-live target, phases, rule 11.15 if fired |
 | 16 | Investment | `investment` | `offer.price_band` (open-ended for L), client budget, recurring third-party costs (Shopify plan, apps) |
 | 17 | Appendix — user stories | `appendix-stories` | `backlog.json` stories: key, epic, title — **no points** |
+| 18 | Consultant notes | `consultant-notes` | Lead Consultant only: offer / nearest offer, price band, duration, rationale, gate and L-trigger evidence, modifiers (effort, price add), budget vs band, all exit rules with source, questions and internal notes, plan requirements, app signals, story points, answers to confirm, consultant notes |
 
-**STOP engagements** produce sections 1, 2, 12 and 14 only: the document explains the blockers and how to
+**STOP engagements** produce sections 1, 2, 12, 14 and 18 only: the document explains the blockers and how to
 resolve them instead of presenting a solution.
 
 **Larger Engagement** (`mode="LARGER_ENGAGEMENT"` — a STOP the consultant routed to a Merkle Enterprise Engagement
-with a dedicated Discovery Phase, ADR 0009) produces sections 1–10 and 12–16, without 11 and 17 (no Jira backlog).
+with a dedicated Discovery Phase, ADR 0009) produces sections 1–10, 12–16 and 18, without 11 and 17 (no Jira backlog).
 Differences: the executive summary has `<why-larger-engagement>` (each STOP rule with its Discovery Phase
 workstream) and `<engagement>` instead of the offer; in risks the STOP rules are `<discovery-phase-topics>`; next
 steps lead to the Enterprise Engagement proposal and Discovery Phase kick-off; timeline duration and investment are
@@ -49,6 +51,6 @@ The deck writes `[TBC — consultant to complete]` for each.
 
 | File | Audience |
 |---|---|
-| `discovery-deck.xml` | Input for the deck — client-safe |
-| `discovery-deck.md` | The Discovery Closing Document — client-facing |
-| `deck-internal-notes.md` | Consultant only — offer rationale, gate evidence, modifiers, budget vs band, commercial warnings, story points |
+| `discovery-deck.xml` | Input for the deck — full information |
+| `discovery-deck.md` | The Discovery Closing Document draft for the Lead Consultant (sections 1–17 for the client, 18 consultant notes) |
+| client version (the LC's copy) | Client — after filtering; check with `npm run deck:check -- --client <slug> --file <name>` |

@@ -104,7 +104,9 @@ describe('exit rule edge cases', () => {
   const base = { schema_version: '1.0.0', meta: { client: { name: 'X', slug: 'x' }, source: 'questionnaire', created_at: '2026-09-01' } };
   const ids = (doc, llm) => evaluateExits(withOffer(doc), llm).items.map((i) => i.rule_id);
 
-  test('11.1 fires for Plus features on a non-Plus plan, not for a custom checkout UI', () => {
+  test('11.1 fires for Plus features on a non-Plus plan, not for B2B alone or a custom checkout UI', () => {
+    assert.deepEqual(ids({ ...base, shopify: { target_plan: 'basic' }, b2b: { enabled: true } }), []);
+    assert.deepEqual(ids({ ...base, shopify: { target_plan: 'advanced' }, b2b: { enabled: true, price_lists: true } }), ['11.1']);
     assert.deepEqual(ids({ ...base, shopify: { target_plan: 'grow' }, checkout: { customisation: 'extensibility' } }), ['11.1']);
     assert.deepEqual(ids({ ...base, shopify: { target_plan: 'grow' }, checkout: { customisation: 'custom_ui' } }), ['11.6']);
   });

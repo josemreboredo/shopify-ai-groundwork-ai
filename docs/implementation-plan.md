@@ -24,7 +24,7 @@ Interview (questionnaire → chatbot)
 
 | # | Decision | Recommendation | Why |
 |---|---|---|---|
-| D1 | What price does the client deck show? | Offer price band (S/M/L); modifiers and day ranges stay internal | `docs/strategy.md` — client sees one number, modifiers never shown |
+| D1 | What price does the client deck show? | Offer price band (S/M/L); modifiers and day ranges stay internal. *Amended by ADR 0010: the generated deck is the Lead Consultant's full-information draft; the LC filters before sharing* | `docs/strategy.md` — client sees one number, modifiers never shown |
 | D2 | Source of truth between pipeline stages | One `engagement.json` validated by JSON Schema; Markdown/XML/Jira are renderings of it | Today 3 incompatible spec shapes; deck parses Markdown nothing generates |
 | D3 | Frame Agent runtime | Port to Node (same runtime, one schema validator) | Only Python component; duplicated field logic drifted |
 | D4 | Dependency policy | Allow a small vetted set: `@anthropic-ai/sdk`, `ajv`, `yaml` | Hand-rolled YAML parser is the source of several data-loss bugs |

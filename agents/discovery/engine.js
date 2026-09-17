@@ -113,7 +113,7 @@ export function decide(extraction, options) {
   if (extraction.notes?.length) doc.notes = extraction.notes;
   const plan = planSuggestion(doc);
   const openItems = extraction.openItems.map((item) => (plan && item.pointer === plan.pointer
-    ? { ...item, why: `${item.why} — Shopify Plus is required by: ${plan.reasons.join(', ')}` }
+    ? { ...item, why: `${item.why} — minimum plan for these answers: ${plan.value} (${plan.reasons.join('; ')})` }
     : item));
   doc.approach = { risks: { open_items: openItems } };
   return doc;

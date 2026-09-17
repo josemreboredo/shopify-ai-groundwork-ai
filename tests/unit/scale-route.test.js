@@ -17,7 +17,7 @@ import { evaluateExits } from '../../agents/discovery/exits.js';
 import { appSignals } from '../../agents/discovery/app-signals.js';
 import { needsApproach } from '../../agents/discovery/engine.js';
 import { buildBacklog } from '../../agents/backlog/cli.js';
-import { buildDeckXml, writeDeck, findLeaks } from '../../agents/discovery-deck/build.js';
+import { buildDeckXml, writeDeck, findLeaks, clientPart } from '../../agents/discovery-deck/build.js';
 
 const TODAY = '2026-09-17';
 const FIXTURES = path.join(import.meta.dirname, '..', 'fixtures', 'engagements');
@@ -47,6 +47,7 @@ function stopInterview(route) {
   assert.equal(stop.route, 'not decided');
   answer('Q3.1.2', '/markets/primary_markets', ['US', 'DE']);
   answer('Q6.2.1', '/b2b/enabled', true);
+  answer('Q6.2.3', '/b2b/price_lists', true);
   answer('Q6.4.4', '/compliance/sensitive_data', true);
   assert.equal(run('note', { client, text: 'Offer a Larger Engagement with all collected information' }, env).ok, true);
   if (route) answer('Q10.5.5', '/delivery/route', route, 'consultant');
@@ -76,13 +77,13 @@ describe('route after a STOP', () => {
     assert.deepEqual(doc.notes.map((n) => n.text), ['Offer a Larger Engagement with all collected information']);
     assert.deepEqual(doc.markets.primary_markets, ['US', 'DE']);
     const planItem = doc.approach.risks.open_items.find((o) => o.pointer === '/shopify/target_plan');
-    assert.match(planItem.why, /Shopify Plus is required by: native B2B/);
+    assert.match(planItem.why, /minimum plan for these answers: plus \(company-specific B2B catalogs/);
 
     const clientDir = path.join(outDir, 'global-demo');
     const files = done.written.map((f) => path.basename(f)).sort();
     assert.deepEqual(files, ['app-shortlist.md', 'capability-map.md', 'delivery-plan.md', 'engagement.json', 'larger-engagement-brief.md', 'risks.md']);
     const brief = fs.readFileSync(path.join(clientDir, 'larger-engagement-brief.md'), 'utf8');
-    for (const text of ['Status: **Larger Engagement**', 'Merkle Enterprise Engagement with a dedicated Discovery Phase', '8 markets at launch', 'Integration landscape', 'Offer a Larger Engagement', 'US, DE', 'Plus required by native B2B', 'No Jira tickets']) {
+    for (const text of ['Status: **Larger Engagement**', 'Merkle Enterprise Engagement with a dedicated Discovery Phase', '8 markets at launch', 'Integration landscape', 'Offer a Larger Engagement', 'US, DE', 'minimum plus: company-specific B2B catalogs', 'No Jira tickets']) {
       assert.ok(brief.includes(text), `brief should include "${text}"`);
     }
     assert.doesNotMatch(brief, /€|price band|\+25%|WARN/);
@@ -94,14 +95,18 @@ describe('route after a STOP', () => {
     const xml = fs.readFileSync(path.join(clientDir, 'discovery-deck.xml'), 'utf8');
     assert.match(xml, /mode="LARGER_ENGAGEMENT"/);
     assert.deepEqual([...xml.matchAll(/<section id="([^"]+)"/g)].map((m) => m[1]), ['cover', 'executive-summary', 'business-context', 'methodology', 'as-is',
-      'solution-design', 'capability-map', 'scope', 'apps', 'work-split', 'risks', 'out-of-scope', 'next-steps', 'timeline', 'investment']);
+      'solution-design', 'capability-map', 'scope', 'apps', 'work-split', 'risks', 'out-of-scope', 'next-steps', 'timeline', 'investment', 'consultant-notes']);
     assert.match(xml, /<why-larger-engagement>/);
     assert.match(xml, /Discovery Phase kick-off/);
-    assert.doesNotMatch(xml, /price-band|scope-by-epic|appendix-stories|Stale/);
-    assert.ok(!xml.includes(doc.offer.name), 'no standard offer name in a Larger Engagement deck');
-    assert.deepEqual(findLeaks(xml, deck.doc, null), []);
+    assert.doesNotMatch(xml, /scope-by-epic|appendix-stories|Stale/);
+    assert.doesNotMatch(clientPart(xml), /price-band/);
+    assert.ok(!clientPart(xml).includes(doc.offer.name), 'no standard offer name in the client sections of a Larger Engagement deck');
+    assert.deepEqual(findLeaks(clientPart(xml), deck.doc, null), []);
     assert.deepEqual(findLeaks('Investment: price band EUR 100,000+', deck.doc, null), ['price band']);
-    assert.match(fs.readFileSync(path.join(clientDir, 'deck-internal-notes.md'), 'utf8'), /Larger Engagement/);
+    const notes = xml.slice(xml.indexOf('<section id="consultant-notes"'));
+    for (const text of ['route="larger_engagement"', '<nearest-offer', 'reference-only="true"', 'Offer a Larger Engagement with all collected information', 'company-specific B2B catalogs']) {
+      assert.ok(notes.includes(text), `consultant notes should include ${text}`);
+    }
   });
 
   test('no route: STOP report only, it asks for the decision, and no backlog', () => {

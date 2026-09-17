@@ -132,12 +132,16 @@ describe('preview', () => {
     assert.equal(p.offer.code, 'M');
   });
 
-  test('Shopify Plus is suggested while the plan is open and Plus-only features are in scope', () => {
+  test('the minimum Shopify plan is suggested while the plan is open (B2B alone does not need Plus)', () => {
     const s = consented();
     assert.equal(preview(s, TODAY).plan_suggestion, undefined);
     recordAnswer(s, { pointer: '/b2b/enabled', value: true, question_id: 'Q6.2.1', today: TODAY });
+    assert.equal(preview(s, TODAY).plan_suggestion, undefined, 'Shopify B2B runs on every plan from Basic');
+    recordAnswer(s, { pointer: '/b2b/price_lists', value: true, question_id: 'Q6.2.3', today: TODAY });
     recordAnswer(s, { pointer: '/checkout/customisation', value: 'extensibility', question_id: 'Q4.2.1', today: TODAY });
-    assert.deepEqual(preview(s, TODAY).plan_suggestion, { pointer: '/shopify/target_plan', value: 'plus', reasons: ['native B2B', 'Checkout Extensibility'] });
+    const suggestion = preview(s, TODAY).plan_suggestion;
+    assert.equal(suggestion.value, 'plus');
+    assert.deepEqual(suggestion.reasons, ['company-specific B2B catalogs (Shopify Plus)', 'checkout UI extensions on the information, shipping or payment steps / Checkout Branding API (Shopify Plus)']);
     recordAnswer(s, { pointer: '/shopify/target_plan', value: 'plus', question_id: 'Q1.2.3', today: TODAY });
     assert.equal(preview(s, TODAY).plan_suggestion, undefined);
   });

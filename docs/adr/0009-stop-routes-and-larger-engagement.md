@@ -29,12 +29,12 @@ The decision itself was only in the work folder's consultant notes.
 4. **No bid** writes the STOP report with the decision; no approach, deck solution sections or backlog.
 5. **Consultant notes** from the interview are stored in `engagement.notes` and shown in the STOP report, risks and
    brief. They are never sent to the approach model and never enter the client deck.
-6. The brief shows the nearest standard offer for internal reference only; the client deck shows no offer name or
+6. The brief shows the nearest standard offer for internal reference only; the client sections of the deck show no offer name or
    price band (`deck:check` enforces it).
 
 Same release: exit rule 11.17 (FLAG, sensitive personal data), `markets.primary_markets` (one or more), app
 signals from tools the client uses or prefers, questions feeding the offer, exit rules or app signals asked in
-every mode, and a Shopify Plus suggestion while the plan is open.
+every mode, and a minimum Shopify plan suggestion while the plan is open.
 
 ## Consequences
 

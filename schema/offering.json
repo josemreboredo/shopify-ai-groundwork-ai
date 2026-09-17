@@ -125,9 +125,9 @@
   "exit_rules": [
     {
       "id": "11.1", "result": "STOP", "status": "canonical",
-      "condition": "A Shopify Plus feature is required (native B2B, Checkout Extensibility customisation, expansion stores) but the target plan is not Plus. A fully custom checkout UI is handled by 11.6, not here",
-      "destination": "Confirm Shopify Plus or remove the feature from scope",
-      "inputs": ["/shopify/target_plan", "/b2b/enabled", "/checkout/customisation", "/markets/strategy"]
+      "condition": "A required Shopify feature needs a higher plan than the target plan, per Shopify's plan documentation (Plus: company-specific B2B catalogs, checkout step extensions / Checkout Branding API, expansion stores). Shopify B2B itself runs on every plan from Basic. A fully custom checkout UI is handled by 11.6, not here",
+      "destination": "Confirm the plan the requirements need, or remove the feature from scope",
+      "inputs": ["/shopify/target_plan", "/b2b/price_lists", "/checkout/customisation", "/markets/strategy"]
     },
     {
       "id": "11.2", "result": "STOP", "status": "canonical",
@@ -246,6 +246,7 @@
     { "question": "Migration gate source platforms", "decision": "Any non-Shopify ecommerce platform counts", "rationale": "The migration effort (data transfer, redirect mapping) is the same whatever the source; strategy.md's four platforms are examples" },
     { "question": "Multi-currency gate has no modifier", "decision": "Uses +Markets", "rationale": "Multi-currency set-up is Shopify Markets configuration work; it only matters as a modifier when it is the single active gate" },
     { "question": "Luxury positioning alone forces L", "decision": "Yes, as in strategy.md", "rationale": "The Bucherer build was a test, not a delivery precedent; L prices the full design system and motion work luxury brands require" },
+    { "question": "11.1 and Shopify B2B below Plus", "decision": "Native B2B no longer triggers 11.1; company-specific B2B catalogs, checkout step extensions / Checkout Branding API and expansion stores do", "rationale": "Shopify B2B is available on Basic, Grow, Advanced and Plus since 2026-04-02 (help.shopify.com/en/manual/b2b/getting-started/plan-features); checkout step extensions and the Branding API stay Plus-only (help.shopify.com/en/manual/checkout-settings/checkout-extensibility)" },
     { "question": "11.1 and custom checkout UI", "decision": "11.1 covers Plus-only features; a fully custom checkout UI is covered by 11.6 only", "rationale": "Avoids two STOPs for one requirement" },
     { "question": "Rebuilding an existing Shopify store", "decision": "Not a migration (source_platform = shopify does not activate the gate)", "rationale": "No cross-platform data transfer; URL and SEO risk is still caught by 11.14" },
     { "question": "Sensitive personal data (11.17)", "decision": "FLAG, not STOP", "rationale": "Health or biometric data (e.g. skin analysis for a pharmaceutical brand) needs a DPIA and legal sign-off, but Shopify can still be the right platform; a regulated industry is already a STOP through 11.8" },

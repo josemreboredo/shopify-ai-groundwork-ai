@@ -45,7 +45,7 @@ export default [
     gates: ['b2b'],
     security_flags: ['pii', 'auth'],
     applies: (doc) => isB2b(doc),
-    agent_prompt: (doc) => `Approach: ${doc.b2b?.approach ?? 'shopify_b2b'} (native B2B on Shopify Plus). Define the company data model (company, locations, contacts, roles such as Location admin and Ordering only, external IDs from ${doc.integrations?.find((i) => i.category === 'erp')?.system ?? 'the source system'}). Import about ${count(doc.b2b?.expected_accounts, 'the agreed number of')} companies with Admin API companyCreate/companyLocationCreate in batches or the B2B company CSV import, never logging contact personal data. ${doc.b2b?.approval_workflow ? 'Configure the company account request form and staff approval process (Shopify Flow notification to the wholesale team). ' : ''}Present the data model and a 10-row sample for approval before the full import.`,
+    agent_prompt: (doc) => `Approach: ${doc.b2b?.approach ?? 'shopify_b2b'} (Shopify B2B; company-specific catalogs need Shopify Plus). Define the company data model (company, locations, contacts, roles such as Location admin and Ordering only, external IDs from ${doc.integrations?.find((i) => i.category === 'erp')?.system ?? 'the source system'}). Import about ${count(doc.b2b?.expected_accounts, 'the agreed number of')} companies with Admin API companyCreate/companyLocationCreate in batches or the B2B company CSV import, never logging contact personal data. ${doc.b2b?.approval_workflow ? 'Configure the company account request form and staff approval process (Shopify Flow notification to the wholesale team). ' : ''}Present the data model and a 10-row sample for approval before the full import.`,
   },
   {
     key: 'LWC-CUS-003',

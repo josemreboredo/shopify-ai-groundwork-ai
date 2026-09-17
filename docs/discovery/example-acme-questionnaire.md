@@ -440,7 +440,7 @@
 ### 4.2 Checkout
 
 **Q4.2.1** — What level of checkout customisation is needed: none, Checkout Extensibility (branding, extra fields, upsells), or a fully custom checkout UI? *(required)*
-*Extensibility requires Shopify Plus (11.1); a custom checkout UI is a hard stop (11.6).*
+*Branding in the checkout editor and blocks on the Thank you / Order status pages work on every plan; extensions on the information, shipping or payment steps and the Checkout Branding API need Shopify Plus (11.1). A fully custom checkout UI is not possible on Shopify (11.6).*
 
 *(tick one)*
 - [ ] none
@@ -757,6 +757,7 @@
 ### 6.2 B2B & wholesale
 
 **Q6.2.1** — Do you sell to business customers (B2B / wholesale)? *(required)*
+*Shopify B2B runs on every plan from Basic (up to 3 shared catalogs); company-specific catalogs need Shopify Plus.*
 
 - [x] Yes
 - [ ] No
@@ -768,6 +769,7 @@
 - [ ] No
 
 **Q6.2.3** — Do B2B customers get company-specific price lists? *(required)*
+*Company-specific B2B catalogs need Shopify Plus (11.1); other plans share up to 3 active B2B catalogs.*
 *Skip if Q6.2.1 = no.*
 
 - [x] Yes
@@ -1382,7 +1384,7 @@
 
 | Rule | Condition | Result | If triggered | Answered by | Outcome (triggered / clear) |
 |---|---|---|---|---|---|
-| 11.1 | A Shopify Plus feature is required (native B2B, Checkout Extensibility customisation, expansion stores) but the target plan is not Plus. A fully custom checkout UI is handled by 11.6, not here | STOP | Confirm Shopify Plus or remove the feature from scope | Q1.2.3, Q3.1.4, Q4.2.1, Q6.2.1 | clear — target plan is Shopify Plus |
+| 11.1 | A required Shopify feature needs a higher plan than the target plan, per Shopify's plan documentation (Plus: company-specific B2B catalogs, checkout step extensions / Checkout Branding API, expansion stores). Shopify B2B itself runs on every plan from Basic. A fully custom checkout UI is handled by 11.6, not here | STOP | Confirm the plan the requirements need, or remove the feature from scope | Q1.2.3, Q3.1.4, Q4.2.1, Q6.2.3 | clear — target plan is Shopify Plus |
 | 11.2 | B2B requires RFQ / quote or custom negotiated pricing per buyer | STOP | Architecture review: Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform | Q6.2.6 | clear — fixed wholesale tiers, no RFQ |
 | 11.3 | More than 5 Shopify Markets at launch | STOP | Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase | Q3.1.1 | clear — 3 markets |
 | 11.4 | More than 6 distinct languages across all markets | STOP | Scale programme | Q3.1.1 | clear — 3 languages (de, fr, it) |

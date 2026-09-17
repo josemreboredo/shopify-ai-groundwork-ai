@@ -30,7 +30,7 @@ Phases
 - Phase 1 delivers the launch scope in sprints; later phases hold deferred items (mark tasks deferred: true). Owner is consultant, agent, designer, developer or client.
 - The delivery track is given (liquid = Shopify Horizon theme; hydrogen = headless Hydrogen storefront). Plan accordingly.
 - Respect open exit-rule flags: plan the scoping work they require.
-- If shopify.target_plan is missing, plan_suggestion gives the plan the answers already require; plan on it and state it as an assumption.
+- Shopify plan: do not assume Shopify Plus. Recommend the lowest plan that fits the requirements and the market (Shopify B2B runs on every plan from Basic; Plus is for company-specific B2B catalogs, checkout step extensions, Checkout Branding API, expansion stores, combined listings). If shopify.target_plan is missing, plan_suggestion gives the minimum the answers require; state the recommendation as an assumption.
 
 Larger Engagement
 - If delivery.route is larger_engagement, the engagement hit a STOP and goes beyond the S/M/L offers: Merkle proposes an Enterprise Engagement that starts with a dedicated Discovery Phase. Cover the full scope the client described — do not cut it to fit an offer or its duration.
