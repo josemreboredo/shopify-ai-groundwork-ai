@@ -4,7 +4,7 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
-## [Unreleased]
+## [0.6.2] — 2026-09-17
 
 ### Fixed
 - Exit rule 11.11 (Grow retainer) no longer fires on a routed STOP (Larger Engagement or no bid): no S/M/L offer is quoted.
