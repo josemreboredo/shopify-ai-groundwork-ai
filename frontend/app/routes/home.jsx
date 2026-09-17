@@ -56,7 +56,7 @@ export default function Home({ loaderData, actionData }) {
       </Form>
       {actionData?.error ? <p className="error">{actionData.error}</p> : null}
 
-      <h2>Your engagements</h2>
+      <h2>Engagements</h2>
       {engagements.length === 0 ? <p className="muted">No engagements yet.</p> : (
         <table>
           <thead>

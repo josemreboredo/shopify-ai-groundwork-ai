@@ -67,6 +67,11 @@ describe('discovery service', () => {
     await rejects(svc.getInterview(consultant, 'cli-session'), 403);
     await rejects(svc.getInterview(consultant, 'missing'), 404);
     await rejects(svc.listEngagements(null), 401);
+
+    const shared = createDiscoveryService({ store, today: () => TODAY, visibility: 'all' });
+    assert.deepEqual((await shared.listEngagements(other)).map((e) => e.client).sort(), ['cli-session', 'demo-client'], 'visibility all: every signed-in user sees every engagement');
+    assert.equal((await shared.getInterview(other, 'demo-client')).engagement.client, 'demo-client');
+    await rejects(shared.listEngagements(null), 401);
   });
 
   test('a group answer (money range) has one input per field, is recorded as one object, all or nothing, and updates the preview', async () => {

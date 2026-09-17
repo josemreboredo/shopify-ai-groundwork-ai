@@ -31,6 +31,7 @@ Locally, `DEV_LOGIN` signs you in as owner without GitHub, and interviews are st
 | `SESSION_SECRET` | Vercel | Long random string that signs the session cookie |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | Vercel | GitHub OAuth app for sign-in |
 | `OWNER_GITHUB_LOGINS` | Vercel | Comma-separated GitHub logins with the owner role (see every engagement) |
+| `ENGAGEMENT_VISIBILITY` | optional | Default: everyone signed in sees and works on all engagements (pilot). `own`: consultants see only their own, owners all |
 | `SIGN_IN_MODE` | optional | Default: every GitHub account can sign in as consultant (interim pilot). `allowlist`: only `CONSULTANT_GITHUB_LOGINS` |
 | `CONSULTANT_GITHUB_LOGINS` | Vercel | With `SIGN_IN_MODE=allowlist`: comma-separated GitHub logins with the Lead Consultant role (own engagements) |
 

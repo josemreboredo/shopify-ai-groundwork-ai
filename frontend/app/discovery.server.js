@@ -29,8 +29,14 @@ function query() {
   return (text, params) => sql.query(text, params);
 }
 
+/** Pilot (owner decision 2026-09-17): every signed-in user sees every engagement; ENGAGEMENT_VISIBILITY=own restricts. */
+export const engagementVisibility = () => (process.env.ENGAGEMENT_VISIBILITY === 'own' ? 'own' : 'all');
+
 export function discovery() {
-  service ??= createDiscoveryService({ store: storeKind() === 'postgres' ? createPostgresStore({ query: query() }) : createFileStore() });
+  service ??= createDiscoveryService({
+    store: storeKind() === 'postgres' ? createPostgresStore({ query: query() }) : createFileStore(),
+    visibility: engagementVisibility(),
+  });
   return service;
 }
 

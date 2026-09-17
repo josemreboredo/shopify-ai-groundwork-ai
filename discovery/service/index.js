@@ -83,15 +83,20 @@ export function citation({ document, location, quote }) {
 }
 
 /**
- * @param {{ store: InterviewStore, today?: () => string }} options
+ * @param {{ store: InterviewStore, today?: () => string, visibility?: 'own'|'all' }} options
+ *   visibility: 'own' (consultants see their own engagements, owners all) or
+ *   'all' (every signed-in user sees and works on every engagement).
  */
-export function createDiscoveryService({ store, today = isoToday }) {
+export function createDiscoveryService({ store, today = isoToday, visibility = 'own' }) {
+  /** @param {User} user @param {object} session */
+  const allowed = (user, session) => Boolean(user) && (visibility === 'all' || canAccess(user, session));
+
   /** @param {User} user @param {string} client */
   async function load(user, client) {
     if (!user) throw new ServiceError(401, 'Sign in first');
     const session = await store.get(client);
     if (!session) throw new ServiceError(404, `No interview for ${client}`);
-    if (!canAccess(user, session)) throw new ServiceError(403, `No access to ${client}`);
+    if (!allowed(user, session)) throw new ServiceError(403, `No access to ${client}`);
     return session;
   }
 
@@ -137,7 +142,7 @@ export function createDiscoveryService({ store, today = isoToday }) {
     /** @param {User} user */
     async listEngagements(user) {
       if (!user) throw new ServiceError(401, 'Sign in first');
-      const sessions = (await store.list()).filter((s) => canAccess(user, s));
+      const sessions = (await store.list()).filter((s) => allowed(user, s));
       return sessions.map(summary).sort((a, b) => b.updated_at.localeCompare(a.updated_at) || a.client.localeCompare(b.client));
     },
 
