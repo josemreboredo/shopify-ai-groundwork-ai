@@ -230,6 +230,45 @@ main.manual code { background: var(--panel); padding: 1px 5px; font-size: 0.9em;
 main.manual h2 { scroll-margin-top: 12px; }
 .toc { columns: 2; column-gap: 32px; padding-left: 20px; }
 
+/* “What this is”: a content page in merkle.com's band rhythm */
+main.story { padding-bottom: 0; }
+main.story > section { margin: 0 0 64px; }
+main.story > section.band { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
+main.story > section:last-of-type { margin-bottom: 72px; }
+.lede { font-size: 1.15rem; line-height: 1.5; max-width: 62ch; }
+.page-head .lede { color: rgba(255, 255, 255, 0.82); margin: 18px 0 0; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; list-style: none; padding: 0; margin: 40px 0 0; }
+.stats li { display: flex; flex-direction: column; gap: 6px; border-top: 3px solid var(--red); padding-top: 12px; }
+.stats strong { font-size: 2.4rem; line-height: 1; letter-spacing: -0.02em; }
+.stats span { font-size: 0.85rem; color: rgba(255, 255, 255, 0.66); }
+.band { width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); background: var(--panel); padding: 64px max(var(--gutter), calc(50vw - var(--page) / 2 + var(--gutter))); }
+.band.dark { background: #000; color: #fff; }
+.band.dark .lede, .band.dark p { color: rgba(255, 255, 255, 0.78); }
+.band.dark h2, .band.dark h3, .band.dark .eyebrow { color: #fff; }
+.band-inner { max-width: var(--page); margin: 0 auto; }
+.band-inner > h2 { margin-top: 0; font-size: clamp(1.5rem, 2.6vw, 2.1rem); letter-spacing: -0.01em; text-transform: none; }
+.band-inner > .lede { margin-top: 16px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; align-items: start; margin-top: 40px; }
+.grid-3 h3, .grid-2 h3 { margin-top: 0; }
+.grid-3 p, .grid-2 p { font-size: 0.95rem; }
+.band.dark .grid-3 > div { border-top: 3px solid var(--red); padding-top: 16px; }
+.steps { list-style: none; counter-reset: step; padding: 0; margin: 0; display: grid; gap: 4px; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 24px; row-gap: 0; padding: 24px 0; border-top: 1px solid var(--line); }
+.steps li::before { content: counter(step, decimal-leading-zero); font-size: 1.6rem; font-weight: 700; color: var(--red); line-height: 1; }
+.steps h3 { margin: 0 0 6px; grid-column: 2; }
+.steps p { margin: 0; max-width: 88ch; grid-column: 2; }
+.rails { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 40px; margin: 32px 0 0; }
+.rails dt { font-weight: 700; margin-bottom: 4px; }
+.rails dd { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.byline { margin-top: 32px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6) !important; }
+@media (max-width: 900px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-2, .grid-3, .rails { grid-template-columns: 1fr; }
+  .band { padding: 44px 16px; }
+  .steps li { grid-template-columns: 52px minmax(0, 1fr); gap: 14px; }
+}
+
 /* Footer (merkle.com) */
 .site-footer { position: relative; background: #000; color: #fff; margin-top: 64px; padding: 64px 40px 28px; overflow: hidden; }
 .footer-inner { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }

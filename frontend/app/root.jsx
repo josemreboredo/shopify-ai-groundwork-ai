@@ -31,6 +31,7 @@ export function Layout({ children }) {
           <Link to="/" className="brand" aria-label="Merkle Discovery — home"><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
           <nav className="topnav">
             {root?.user ? <NavLink to="/" end>Engagements</NavLink> : null}
+            <NavLink to="/about">What this is</NavLink>
             <NavLink to="/manual">Manual</NavLink>
             {root?.user ? <NavLink to="/claude">Claude Project</NavLink> : null}
           </nav>
