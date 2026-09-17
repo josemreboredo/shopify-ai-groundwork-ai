@@ -156,8 +156,10 @@ export function assembleWork({ workDir }) {
 ## Your task
 
 Write \`${WORK_FILES.approach}\` in this directory: a single JSON object matching \`${WORK_FILES.approachSchema}\`
-(capability_map, app_shortlist, assumptions, phases). Use "" for empty text, -1 / "unknown" for unknown app costs,
-"none" for tasks without a capability.
+(capability_map, architecture_decisions, integration_architecture, data_model, non_functional, risk_register,
+app_shortlist, assumptions, phases). Use "" for empty text, -1 / "unknown" for unknown app costs, "none" for tasks
+without a capability. Research every Shopify fact in the official documentation first (Shopify Dev MCP,
+help.shopify.com, shopify.dev, apps.shopify.com): \`discover:finish\` rejects unsourced content and lists what to fix.
 
 ## Engagement
 
