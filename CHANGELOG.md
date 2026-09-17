@@ -4,7 +4,9 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
-## [Unreleased]
+## [0.6.1] — 2026-09-17
+
+Open items from 0.6.0: Retail & POS pricing, ask_if thresholds, mainland China licensing, tax and shipping set-up (ADR 0012).
 
 ### Added
 - `+Retail` modifier for the Retail & POS scope gate: +1 week, +€8–12k, up to 5 stores (owner decision; `offering.json` 1.3.0).
