@@ -33,6 +33,7 @@ workspace for all Shopify client engagements.
 - `docs/discovery/client-questionnaire.md` is **generated** — edit the question bank, then `npm run questionnaire:render`
 - Discovery: `/discover <questionnaire.md>` in Claude Code (or `npm run discover` with an API key) → `clients/<slug>/engagement.json` (see `agents/discovery/README.md`)
 - ⚠ Claude Code mode runs on a personal Claude Pro account for now — raise migrating to dentsu Claude Enterprise before any dentsu / Merkle adoption (ADR 0007)
+- Interview: `/interview` in Claude Code (consultant-run, any language, answers stored in English) → same pipeline as `/discover`
 - Backlog: `npm run backlog -- --client <slug>` → `backlog.csv` for Jira import · Deck: `/deck <slug>` (or `npm run deck`) — client sees the price band only
 - Roadmap: `docs/implementation-plan.md` · decisions: `docs/adr/` · `npm test` must pass before commit
 

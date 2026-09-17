@@ -1,6 +1,6 @@
 # Implementation Plan — shopify-ai-builder
 
-> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 released (v0.3.0) · Phases 3–4 released (v0.4.0) · Phase 5 in progress · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
+> **Status:** Approved (D1–D7 accepted 2026-09-16) · Phase 0 released (v0.1.0) · Phase 1 released (v0.2.0) · Phase 2 released (v0.3.0) · Phases 3–4 released (v0.4.0) · Phase 5 released (v0.5.0), pilot pending · **Date:** 2026-09-16 · **Owner:** Jose Reboredo
 > **Input:** whole-project review (2026-09-16) — discovery chain, pipeline code/security, build layer.
 > **Methodology:** Gaia tiers T1–T4 (`gaia/methodology/feature-tiers.md`). Estimates are indicative
 > (one lead + AI agents) and are re-baselined at the end of Phase 1.
@@ -195,11 +195,12 @@ Runtime LLM + client personal data → threat model and test strategy required b
 ## Phase 5 — Consultant interview chatbot (T4)
 
 Starts with validation (Gaia Track A `01-validation`) with 2–3 Merkle Lead Consultants.
-- [ ] Adaptive interview driven by `question-bank.json` (`skip_if`, follow-ups on gate-relevant answers)
-- [ ] Live preview: active gates, provisional offer, exits, open TBCs
-- [ ] Answer provenance (client vs consultant), consultant notes/context, resumable sessions
-- [ ] Output identical `engagement.json` to the questionnaire path (parity test)
-- [ ] Surface decision (D6): Claude Code skill pilot → hosted app if adopted (then: SSO, per-client access control, EU data residency, retention)
+- [x] Adaptive interview driven by `question-bank.json` (consent first, modes, `skip_if`, gate-feeding questions first) — `agents/interview/`, `/interview` skill
+- [x] Live preview: gates (active / inactive / unknown), provisional offer, exits, app signals, coverage
+- [x] Answer provenance (client vs consultant), consultant notes, TBC / skip, resumable sessions; any language, stored in English
+- [x] Output identical decisions to the questionnaire path (parity test on all golden fixtures)
+- [x] Surface decision (D6): consultant-run Claude Code skill (ADR 0008); hosted client pre-fill revisited after the pilot
+- [ ] Validation pilot with 2–3 Merkle lead consultants (`docs/validation/interview-chatbot-validation.md`)
 
 **Exit criteria:** one consultant completes an ACME-equivalent interview; output passes the same golden tests as Phase 2.
 

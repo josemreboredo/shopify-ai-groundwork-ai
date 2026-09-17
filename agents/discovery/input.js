@@ -94,6 +94,26 @@ function redactStakeholderNames(markdown) {
 }
 
 /**
+ * Personal data that must never be recorded as an answer.
+ *
+ * @param {string} text
+ * @returns {string[]} reasons (empty when clean)
+ */
+export function findPersonalData(text) {
+  const reasons = [];
+  if ((text.match(EMAIL) ?? []).length) reasons.push('contains an e-mail address');
+  if ((text.match(PHONE) ?? []).length) reasons.push('contains a phone number');
+  for (const match of text.match(CARD_CANDIDATE) ?? []) {
+    const digits = match.replace(/\D/g, '');
+    if (digits.length >= 13 && passesLuhn(digits) && !/^(\d)\1+$/.test(digits)) {
+      reasons.push('contains a payment card number');
+      break;
+    }
+  }
+  return reasons;
+}
+
+/**
  * Remove personal data from a questionnaire before it is sent to an LLM.
  *
  * @param {string} markdown

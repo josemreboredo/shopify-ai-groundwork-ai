@@ -27,16 +27,16 @@ export class EngagementInvalidError extends Error {
  * Wrap extracted answers in the engine-owned envelope.
  *
  * @param {object} answers
- * @param {{ today: string, clientSlug?: string }} options
+ * @param {{ today: string, clientSlug?: string, source?: 'questionnaire'|'chatbot'|'brief' }} options
  */
-export function assemble(answers, { today, clientSlug }) {
+export function assemble(answers, { today, clientSlug, source = 'questionnaire' }) {
   const { meta = {}, ...rest } = structuredClone(answers);
   return {
     schema_version: '1.0.0',
     meta: {
       ...meta,
       client: { ...meta.client, ...(clientSlug ? { slug: clientSlug } : {}) },
-      source: 'questionnaire',
+      source,
       created_at: meta.created_at ?? today,
       updated_at: today,
     },
