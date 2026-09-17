@@ -22,6 +22,7 @@ import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js'
 import { displayValue } from './summary.js';
 import { approachBrief, closingStatus, deckBrief, decideFromSession, finaliseEngagement, needsApproach } from './closing.js';
 import { annexWithChapters, selectChapters } from './reference.js';
+import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 
 /**
  * @typedef {object} InterviewStore
@@ -487,7 +488,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.closing = {
         ...session.closing,
         document: { markdown: `${text}
-`, ...(annexText ? { annex: `${annexText}\n` } : {}), saved_at: today(), by: user.login, via },
+`, ...(annexText ? { annex: `${annexText}\n` } : {}), saved_at: today(), by: user.login, via, answers: answerSnapshot(session) },
         history: [...(previous ? [{ saved_at: previous.saved_at, by: previous.by, via: previous.via, markdown: previous.markdown, ...(previous.annex ? { annex: previous.annex } : {}) }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
       };
       session.updated_at = today();
@@ -510,10 +511,18 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       return { markdown: annexWithChapters(annex, doc), chapters: selectChapters(doc).map((c) => ({ slug: c.slug, title: c.title, verified: c.verified })) };
     },
 
-    /** The saved closing document and approach status. @param {User} user @param {string} client */
+    /** The saved closing document, its approach status and whether it still matches the answers. @param {User} user @param {string} client */
     async getClosingDocument(user, client) {
       const session = await load(user, client);
+      const describe = (pointer) => {
+        const p = session.provenance[pointer];
+        return { question_id: p?.question_id ?? null, question: p?.question_id ? questionById(p.question_id)?.text ?? null : null };
+      };
+      const freshness = session.closing?.document
+        ? answerChanges(session.closing.document.answers, session, describe)
+        : { known: false, up_to_date: true, changes: [] };
       return {
+        freshness: { ...freshness, redraft_prompt: redraftPrompt(client, freshness.changes) },
         engagement: summary(session),
         approach: session.closing?.approach ? { saved_at: session.closing.approach.saved_at, by: session.closing.approach.by, via: session.closing.approach.via } : null,
         document: session.closing?.document ?? null,

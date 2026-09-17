@@ -138,3 +138,37 @@ describe('Shopify reference chapters', () => {
     assert.deepEqual(chapterBrief(doc).map((c) => c.slug), chapters.map((c) => c.slug));
   });
 });
+
+describe('a document knows when the answers moved under it', () => {
+  test('snapshot, diff and redraft prompt', async () => {
+    const { createDiscoveryService } = await import('../../service/index.js');
+    const { createMemoryStore } = await import('../../service/stores/memory-store.js');
+    const store = createMemoryStore();
+    const svc = createDiscoveryService({ store, today: () => '2026-09-17', visibility: 'all' });
+    const lc = { login: 'lead', role: 'consultant' };
+    await svc.startInterview(lc, { client: 'demo', mode: 'quick' });
+    await svc.recordAnswers(lc, 'demo', [{ question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': true } }]);
+    await svc.recordAnswers(lc, 'demo', [{ question_id: 'Q1.1.1', values: { '/meta/client/name': 'Demo AG' } }]);
+
+    const before = await svc.getClosingDocument(lc, 'demo');
+    assert.equal(before.freshness.known, false, 'no document yet, nothing to compare');
+
+    await svc.saveClosingDocument(lc, 'demo', { markdown: `# Doc\n\n${'Text. '.repeat(120)}` });
+    const saved = await svc.getClosingDocument(lc, 'demo');
+    assert.equal(saved.freshness.up_to_date, true);
+    assert.match(saved.freshness.redraft_prompt, /^Draft the Discovery Closing Document/);
+
+    await svc.recordAnswers(lc, 'demo', [{ question_id: 'Q1.1.1', values: { '/meta/client/name': 'Demo Holding AG' } }]);
+    await svc.markQuestion(lc, 'demo', { question_id: 'Q1.1.3', as: 'tbc', note: 'industry to confirm' });
+    const stale = await svc.getClosingDocument(lc, 'demo');
+    assert.equal(stale.freshness.up_to_date, false);
+    assert.deepEqual(stale.freshness.changes.map((c) => [c.question_id, c.kind, c.before, c.after]), [
+      ['Q1.1.1', 'changed', 'Demo AG', 'Demo Holding AG'],
+      ['Q1.1.3', 'state', 'answered', 'to confirm'],
+    ]);
+    assert.match(stale.freshness.redraft_prompt, /Redraft .* Q1\.1\.1: now Demo Holding AG/);
+
+    await svc.saveClosingDocument(lc, 'demo', { markdown: `# Doc v2\n\n${'Text. '.repeat(120)}` });
+    assert.equal((await svc.getClosingDocument(lc, 'demo')).freshness.up_to_date, true, 'redrafting clears it');
+  });
+});

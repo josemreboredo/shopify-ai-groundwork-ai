@@ -233,7 +233,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
 
   tool('get_closing_document', {
     title: 'Saved Discovery Closing Document',
-    description: 'The latest saved Discovery Closing Document (deck narrative and annex, Markdown) with when and by whom it was saved, and whether an approach is saved.',
+    description: 'The latest saved Discovery Closing Document (deck narrative and annex, Markdown) with when and by whom it was saved, whether an approach is saved, and whether the document still matches the answers (freshness.changes lists the questions answered or changed since it was written — redraft when it is not up to date).',
     inputSchema: z.object({ client: slug }),
     annotations: read,
   }, (user, { client }) => service.getClosingDocument(user, client));

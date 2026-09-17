@@ -29,7 +29,7 @@ export async function loader({ request, params }) {
 const VIA = { claude: 'Claude', web: 'web app', cli: 'CLI' };
 
 export default function Closing({ loaderData }) {
-  const { engagement, approach, document, history, readiness, preview, origin } = loaderData;
+  const { engagement, approach, document, history, readiness, preview, origin, freshness } = loaderData;
   const client = engagement.client;
   return (
     <main>
@@ -42,7 +42,27 @@ export default function Closing({ loaderData }) {
 
       {document ? (
         <section className="card">
-          <p className="question">Saved {document.saved_at} by {document.by} ({VIA[document.via] ?? document.via})</p>
+          <p className="question">
+            Saved {document.saved_at} by {document.by} ({VIA[document.via] ?? document.via}){' '}
+            {freshness.known ? <span className={`badge ${freshness.up_to_date ? 'go' : 'flag'}`}>{freshness.up_to_date ? 'up to date' : `${freshness.changes.length} answer${freshness.changes.length > 1 ? 's' : ''} changed since`}</span> : null}
+          </p>
+          {freshness.changes.length ? (
+            <>
+              <p className="muted">These answers moved after the document was written. Redraft it so the decisions, risks and plan match.</p>
+              <table>
+                <thead><tr><th>Question</th><th>Was</th><th>Now</th></tr></thead>
+                <tbody>{freshness.changes.map((c) => (
+                  <tr key={c.pointer || c.question_id}>
+                    <td>{c.question_id ?? c.pointer}{c.question ? <div className="muted">{c.question}</div> : null}</td>
+                    <td className="muted">{c.before || '—'}</td>
+                    <td>{c.after || '—'}</td>
+                  </tr>
+                ))}</tbody>
+              </table>
+              <p><strong>Ask Claude:</strong></p>
+              <textarea readOnly rows={4} value={freshness.redraft_prompt} />
+            </>
+          ) : null}
           <div className="actions">
             <a className="button" href={`/engagements/${client}/closing-document.pptx`} download>PowerPoint (client version)</a>
             <a className="button secondary" href={`/engagements/${client}/closing-document.pptx?internal=1`} download>PowerPoint (with consultant notes)</a>

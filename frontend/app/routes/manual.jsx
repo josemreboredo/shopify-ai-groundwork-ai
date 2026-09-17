@@ -20,6 +20,7 @@ const STEPS = [
   ['summary', '6. Check the summary'],
   ['closing', '7. Generate the Discovery Closing Document'],
   ['share', '8. Review and share the document'],
+  ['changes', '9. When answers change afterwards'],
   ['help', 'Troubleshooting'],
   ['next', 'After the closing document'],
 ];
@@ -146,6 +147,17 @@ export default function Manual({ loaderData }) {
       </ol>
       <p className="muted">Answers changed after the document was written? Ask Claude to draft it again — the previous version is kept.</p>
 
+      <h2 id="changes">9. When answers change afterwards</h2>
+      <p>Discovery rarely stops when the document is written: the client confirms a figure, a TBC gets answered, a decision moves. The tool tracks it for you.</p>
+      <ol>
+        <li>The <strong>Closing document</strong> tab marks the saved document <strong>up to date</strong> or <strong>N answers changed since</strong>.</li>
+        <li>When it is out of date, the tab lists exactly which questions moved, with the old and the new answer.</li>
+        <li>Copy the prepared line under <strong>Ask Claude</strong> — it names the changes — and paste it into your Claude Project or Cowork chat.</li>
+        <li>Claude redrafts the whole document and annex and tells you what the changes moved. The previous version is kept.</li>
+        <li>Download the PowerPoint again; the tab goes back to <strong>up to date</strong>.</li>
+      </ol>
+      <p className="muted">Small corrections that change nothing in the argument (a spelling, a contact role) still show as changes — redraft when the change could affect a decision, a risk, the plan or the scope, and ignore it otherwise.</p>
+
       <h2 id="help">Troubleshooting</h2>
       <table>
         <thead><tr><th>What you see</th><th>What to do</th></tr></thead>
@@ -157,6 +169,7 @@ export default function Manual({ loaderData }) {
           <tr><td>“Discovery hit a STOP: record how Merkle proceeds”</td><td>Answer Q10.5.5 (Larger Engagement or no bid) with your lead, then ask Claude again.</td></tr>
           <tr><td>“Approach not saved” with a list of gaps</td><td>Normal: the engine found missing sources, question ids, integrations or risks. Ask Claude to research the gaps and save again — not to remove content.</td></tr>
           <tr><td>The draft keeps failing or the research is thin</td><td>Ask the tool owner to run the Solution Architect step in Claude Code (<code>/architect</code>), which adds deeper Shopify documentation research.</td></tr>
+          <tr><td>The document says “answers changed since”</td><td>Normal after any edit. Check the listed changes; redraft with the prepared line if they could affect a decision, a risk or the plan.</td></tr>
           <tr><td>Anything else</td><td>Ask the tool owner; include the client slug and what you clicked.</td></tr>
         </tbody>
       </table>
