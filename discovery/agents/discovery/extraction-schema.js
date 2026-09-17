@@ -96,6 +96,7 @@ const GAIA_TIERS = ['T1', 'T2', 'T3', 'T4'];
 export function buildApproachSchema() {
   const obj = (properties) => ({ type: 'object', additionalProperties: false, required: Object.keys(properties), properties });
   const str = (description) => (description ? { type: 'string', description } : { type: 'string' });
+  const sources = (description) => ({ type: 'array', items: { type: 'string' }, description });
 
   return obj({
     capability_map: {
@@ -106,7 +107,71 @@ export function buildApproachSchema() {
         tool: str('Shopify feature, app or approach; "" if none'),
         gaia_tier: { enum: GAIA_TIERS },
         notes: str('"" if none'),
+        question_ids: { type: 'array', items: str(), description: 'Client answers this requirement comes from (at least one)' },
+        sources: sources('Official Shopify documentation or App Store listings for the resolution (at least one)'),
+      }),
+    },
+    architecture_decisions: {
+      type: 'array',
+      description: 'At least three: the architecture choices that shape the project (e.g. Markets vs expansion stores, theme vs headless, native B2B vs app, order routing, integration pattern, checkout extensibility, Functions)',
+      items: obj({
+        topic: str(),
+        question: str('The decision to make, in one sentence'),
+        options: { type: 'array', description: 'At least two options considered', items: obj({ option: str(), pros: str(), cons: str() }) },
+        decision: str('The recommended option'),
+        rationale: str('Why, referring to the client answers and the sources'),
+        plan_impact: { enum: ['none', 'basic', 'grow', 'advanced', 'plus'] },
+        status: { enum: ['recommended', 'to_validate_in_discovery'] },
+        sources: sources('Official Shopify documentation the decision relies on (at least one)'),
+        question_ids: { type: 'array', items: str(), description: 'Client answers the decision is founded on (at least one)' },
+      }),
+    },
+    integration_architecture: {
+      type: 'array',
+      description: 'One entry per system in the engagement integrations',
+      items: obj({
+        system: str('Exactly as named in the engagement integrations'),
+        system_of_record_for: { type: 'array', items: str() },
+        pattern: { enum: ['native_app', 'ipaas', 'custom_app', 'event_driven_middleware', 'file_batch', 'manual'] },
+        direction: { enum: ['into_shopify', 'out_of_shopify', 'both_ways'] },
+        frequency: { enum: ['realtime', 'near_realtime', 'scheduled_batch', 'manual'] },
+        shopify_apis: { type: 'array', items: str(), description: 'e.g. Admin GraphQL API, webhooks, bulk operations, Customer Account API' },
+        error_handling: str('Retries, reconciliation, alerting'),
+        sources: sources('Shopify API documentation for the pattern (at least one)'),
         question_ids: { type: 'array', items: str() },
+      }),
+    },
+    data_model: {
+      type: 'array',
+      items: obj({
+        object: { enum: ['product', 'variant', 'collection', 'customer', 'company', 'company_location', 'order', 'market', 'metaobject', 'other'] },
+        kind: { enum: ['native_field', 'metafield', 'metaobject', 'app_data'] },
+        name: str(),
+        purpose: str(),
+        source_system: str('"" when maintained in Shopify'),
+        sources: sources('Shopify documentation (at least one)'),
+      }),
+    },
+    non_functional: {
+      type: 'array',
+      description: 'At least three areas relevant to the client (performance, security_pci, privacy, accessibility, seo_migration, availability, observability, localisation)',
+      items: obj({
+        area: { enum: ['performance', 'security_pci', 'privacy', 'accessibility', 'seo_migration', 'availability', 'observability', 'localisation', 'other'] },
+        requirement: str(),
+        approach: str(),
+        sources: sources('Official documentation or standards (at least one)'),
+      }),
+    },
+    risk_register: {
+      type: 'array',
+      description: 'At least three delivery risks founded on evidence',
+      items: obj({
+        risk: str(),
+        likelihood: { enum: ['low', 'medium', 'high'] },
+        impact: { enum: ['low', 'medium', 'high'] },
+        mitigation: str(),
+        owner: { enum: ['merkle', 'client', 'shared'] },
+        evidence: { type: 'array', items: str(), description: 'Question ids (e.g. Q8.2.3) or exit rules (e.g. 11.14) the risk is founded on (at least one)' },
       }),
     },
     app_shortlist: {

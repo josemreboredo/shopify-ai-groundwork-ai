@@ -1,7 +1,7 @@
 /**
  * @file render.js
  * @description Markdown renderings of an engagement document (ADR 0002).
- * GO → delivery-plan.md, capability-map.md, app-shortlist.md, risks.md.
+ * GO → architecture.md, delivery-plan.md, capability-map.md, app-shortlist.md, risks.md.
  * STOP → stop-report.md. Larger Engagement (a STOP the consultant routed to a
  * Merkle Enterprise Engagement) → larger-engagement-brief.md and the four
  * approach artefacts.
@@ -62,11 +62,51 @@ function header(doc, title) {
 function renderCapabilityMap(doc) {
   const rows = [...(doc.approach.capability_map ?? [])]
     .sort((a, b) => RESOLUTION_ORDER.indexOf(a.resolution) - RESOLUTION_ORDER.indexOf(b.resolution))
-    .map((r) => [r.requirement, RESOLUTION_LABEL[r.resolution], r.tool, r.gaia_tier, r.notes, (r.question_ids ?? []).join(', ')]);
+    .map((r) => [r.requirement, RESOLUTION_LABEL[r.resolution], r.tool, r.gaia_tier, r.notes, (r.question_ids ?? []).join(', '), links(r.sources)]);
   return `${header(doc, 'Capability Map')}
 Resolution order: Native → App → Theme → Custom.
 
-${table(['Requirement', 'Resolution', 'Tool / feature', 'Gaia tier', 'Notes', 'Questions'], rows)}
+${table(['Requirement', 'Resolution', 'Tool / feature', 'Gaia tier', 'Notes', 'Questions', 'Sources'], rows)}
+`;
+}
+
+/** Sources as Markdown links. @param {string[]|undefined} list */
+const links = (list) => (list ?? []).map((url) => `[${url.replace(/^https:\/\/(www\.)?/, '')}](${url})`).join(' · ');
+const label = (value) => String(value ?? '').replace(/_/g, ' ');
+
+/** Sourced solution architecture (ADR 0017). @param {object} doc */
+function renderArchitecture(doc) {
+  const a = doc.approach.architecture ?? {};
+  const decisions = (a.decisions ?? []).map((d) => `### ${d.topic}
+
+**Question:** ${d.question ?? ''}
+
+${table(['Option', 'Pros', 'Cons'], (d.options ?? []).map((o) => [o.option === d.decision ? `**${o.option}** (chosen)` : o.option, o.pros, o.cons]))}
+
+**Decision:** ${d.decision} · plan impact: ${label(d.plan_impact)} · ${label(d.status)}
+
+**Rationale:** ${d.rationale ?? ''}${d.question_ids?.length ? ` [${d.question_ids.join(', ')}]` : ''}
+
+**Sources:** ${links(d.sources) || '_none_'}`).join('\n\n');
+  return `${header(doc, 'Solution Architecture')}
+Every Shopify statement cites an official source; client facts cite the discovery questions.
+
+## Architecture decisions
+
+${decisions || '_None drafted — run /architect._'}
+
+## Integration architecture
+
+${table(['System', 'System of record for', 'Pattern', 'Direction', 'Frequency', 'Shopify APIs', 'Error handling', 'Questions', 'Sources'],
+    (a.integrations ?? []).map((i) => [i.system, (i.system_of_record_for ?? []).join(', '), label(i.pattern), label(i.direction), label(i.frequency), (i.shopify_apis ?? []).join(', '), i.error_handling, (i.question_ids ?? []).join(', '), links(i.sources)]))}
+
+## Data model
+
+${table(['Object', 'Kind', 'Name', 'Purpose', 'Source system', 'Sources'], (a.data_model ?? []).map((m) => [m.object, label(m.kind), m.name, m.purpose, m.source_system, links(m.sources)]))}
+
+## Non-functional requirements
+
+${table(['Area', 'Requirement', 'Approach', 'Sources'], (a.non_functional ?? []).map((n) => [label(n.area), n.requirement, n.approach, links(n.sources)]))}
 `;
 }
 
@@ -137,6 +177,10 @@ function renderRisks(doc) {
   const items = doc.exits.items;
   const risks = doc.approach.risks ?? {};
   return `${header(doc, 'Risks & Open Items')}
+## Risk register
+
+${table(['Risk', 'Likelihood', 'Impact', 'Mitigation', 'Owner', 'Evidence'], (risks.register ?? []).map((r) => [r.risk, r.likelihood, r.impact, r.mitigation, r.owner, (r.evidence ?? []).join(', ')]))}
+
 ## Hard blockers (STOP)
 
 ${table(EXIT_HEADERS, exitRows(items.filter((i) => i.result === 'STOP')))}
@@ -315,7 +359,7 @@ ${doc.offer.code} — ${doc.offer.name} · track ${doc.offer.delivery_track} · 
 
 ${(approach.capability_map ?? []).length} requirements mapped (native ${byResolution.native}, app ${byResolution.app}, theme ${byResolution.theme}, custom ${byResolution.custom}) ·
 ${(approach.app_shortlist ?? []).filter((a) => a.recommended).length} apps recommended · ${(approach.phases ?? []).length} phase(s), ${sprints} sprint(s).
-Details: \`capability-map.md\`, \`app-shortlist.md\`, \`delivery-plan.md\`, \`risks.md\`. No Jira tickets: the backlog is
+Details: \`architecture.md\`, \`capability-map.md\`, \`app-shortlist.md\`, \`delivery-plan.md\`, \`risks.md\`. No Jira tickets: the backlog is
 defined in the dedicated Discovery Phase.
 
 ## Open items
@@ -337,6 +381,7 @@ export function renderArtefacts(doc) {
   if (!doc.delivery.go && !(route?.brief && needsApproach(doc))) return { 'stop-report.md': renderStopReport(doc) };
   return {
     ...(route?.brief ? { [route.brief]: renderBrief(doc) } : {}),
+    'architecture.md': renderArchitecture(doc),
     'delivery-plan.md': renderDeliveryPlan(doc),
     'capability-map.md': renderCapabilityMap(doc),
     'app-shortlist.md': renderAppShortlist(doc),

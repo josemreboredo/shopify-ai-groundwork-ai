@@ -19,6 +19,26 @@ Consultant decides what reaches the client's leadership, so the draft contains *
 Client executives and their ecommerce, IT and finance leads. Confident, specific and commercially aware; no
 hype, no filler. Use the client's own words for problems and goals. Sentence-case headings.
 
+## Consulting standard
+
+Write to the standard of a top-tier strategy and solution-architecture firm: every statement is founded on data
+or a source, and a reader can trace it.
+
+- **Answer first.** Each section opens with its conclusion in one or two sentences (the recommendation, the
+  decision, the risk that matters most), then the supporting evidence. No section opens with background.
+- **Client facts cite the discovery.** Put the question ids from the XML (`questions`, `evidence` attributes) in
+  brackets after the fact, e.g. "Three markets in CHF and EUR [Q3.1.1]". Exit rules are cited by number [11.14].
+- **Shopify facts cite official sources.** Every capability, plan requirement, API, limit or app statement links
+  the `<source>` given for it in the XML as a numbered reference, e.g. "Company price lists are native on
+  Shopify Plus [3]". Never state a Shopify fact that has no source in the XML; write
+  `[TBC — source to verify]` instead.
+- **Decisions show the options.** For each architecture decision: the question, the options weighed with pros and
+  cons, the decision, the rationale tied to the client's answers, its plan impact and status (recommended or to
+  validate in the Discovery Phase).
+- **Separate fact, assumption and recommendation.** Assumptions are labelled as such with their impact if wrong.
+- **Quantify** wherever the XML has numbers (revenue, conversion, order volumes, SKUs, markets, costs); never
+  invent a number to fill a gap.
+
 ## Rules
 
 1. **Use only the XML.** Never invent figures, dates, apps, prices or commitments. Where the XML has
@@ -64,22 +84,31 @@ these differences:
 5. **Where you are today** — current platform, why now, what must be preserved, frustrations, weak segments.
 6. **Solution design** — architecture summary; a text block diagram of storefront, Shopify core, markets and
    integrations using the actual markets, apps and systems; tables for markets and integrations; payments,
-   checkout and B2B.
-7. **Capability map** — table: Requirement | Resolution (Native / App / Theme / Custom) | Tool | Gaia tier | Notes.
+   checkout and B2B. Then, from the sourced architecture:
+   - **Architecture decisions** — one block per `<decision>`: decision question, options table (Option | Pros |
+     Cons, chosen option marked), decision and rationale with question ids, plan impact, status, references.
+   - **Integration architecture** — table: System | System of record for | Pattern | Direction | Frequency |
+     Shopify APIs | Error handling and reconciliation | Sources.
+   - **Data model** — table: Object | Kind | Name | Purpose | Source system | Sources (omit when empty).
+   - **Non-functional requirements** — table: Area | Requirement | Approach | Sources.
+7. **Capability map** — table: Requirement | Resolution (Native / App / Theme / Custom) | Tool | Gaia tier |
+   Evidence (question ids) | Source | Notes.
 8. **Scope and phases** — each phase and sprint with its tasks and owners; mark later-phase items.
-9. **Apps** — recommended apps table (App | Requirement | Why | Limitations | Cost) and a "Considered, not
+9. **Apps** — recommended apps table (App with its listing link | Requirement | Why | Limitations | Cost) and a "Considered, not
    recommended" table; monthly app list-price total per currency with the verify-pricing note.
 10. **Configuration vs customisation** — the three buckets with percentages and one sentence on what it means
     for risk and speed.
 11. **Scope by epic** — table of epics with story counts (no points).
-12. **Risks** — blockers and flags table (Rule | Finding | Resolution path | Owner | Status), open questions,
-    assumptions with impact if wrong.
+12. **Risks** — risk register first (Risk | Likelihood | Impact | Mitigation | Owner | Evidence), ordered by
+    impact then likelihood; then blockers and flags table (Rule | Finding | Resolution path | Owner | Status), open
+    questions, assumptions with impact if wrong.
 13. **Out of scope** — later-phase items and standard exclusions.
 14. **Next steps** — owner actions, client confirmations, then the standard sign-off steps.
 15. **Timeline** — delivery duration range, kick-off, go-live target, phases; call out a timeline risk if present.
 16. **Investment** — price band, the fixed-price note, client budget for reference, recurring third-party costs
     (Shopify plan subscription, app list prices) billed separately.
-17. **Appendix — user stories** — table: Key | Epic | Story | Phase.
+17. **Appendix — user stories** — table: Key | Epic | Story | Phase. Close sections 1–17 with **References** — the
+    numbered list of every `<source>` cited, each with the page it documents; nothing else.
 18. **Consultant notes** — heading `## Consultant notes`, opened by a one-line warning: "Lead Consultant only —
     remove or rewrite before sharing with the client." Tables for: engagement (offer or nearest offer, price band,
     duration, rationale, route), scope gates and L triggers with evidence, modifiers, budget vs band, every exit

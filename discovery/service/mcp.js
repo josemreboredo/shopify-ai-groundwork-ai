@@ -219,7 +219,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
 
   tool('save_approach', {
     title: 'Save the implementation approach',
-    description: 'Step 2: save the approach JSON (capability_map, app_shortlist, assumptions, phases). It is validated against the schema and the engagement; errors come back to fix. On success returns deck_xml and the instructions to write the Discovery Closing Document (step 3).',
+    description: 'Step 2: save the approach JSON (capability_map, architecture_decisions, integration_architecture, data_model, non_functional, risk_register, app_shortlist, assumptions, phases). It is validated against the schema and the consulting standard (ADR 0017): every Shopify fact cites an official source (help.shopify.com, shopify.dev, apps.shopify.com), decisions and capabilities cite question ids, integrations cover every system, risks cite evidence; errors come back to fix — research the missing sources, never drop content to pass. On success returns deck_xml and the instructions to write the Discovery Closing Document (step 3).',
     inputSchema: z.object({ client: slug, approach: z.record(z.string(), z.unknown()).describe('The approach object matching approach_schema') }),
     annotations: write,
   }, (user, { client, approach }) => service.saveApproach(user, client, approach, { via: 'claude' }));

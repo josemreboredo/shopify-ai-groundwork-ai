@@ -90,7 +90,7 @@ describe('Claude Code mode', () => {
       assert.equal(engagement.delivery.go, fixture.delivery.go);
       assert.deepEqual(engagement.provenance, fixture.provenance);
       const expectedFiles = fixture.delivery.go
-        ? ['app-shortlist.md', 'capability-map.md', 'delivery-plan.md', 'engagement.json', 'risks.md']
+        ? ['app-shortlist.md', 'architecture.md', 'capability-map.md', 'delivery-plan.md', 'engagement.json', 'risks.md']
         : ['engagement.json', 'stop-report.md'];
       assert.deepEqual(fs.readdirSync(path.join(outDir, fixture.meta.client.slug)).sort(), expectedFiles);
     });

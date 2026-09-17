@@ -6,7 +6,8 @@ Runs a Shopify discovery with the Lead Consultant and produces everything needed
 |---|---|---|
 | Interview (consultant-run) or questionnaire | `/interview`, `/discover <file>` in Claude Code | `engagement.json` |
 | Offer, scope gates, exit rules, Shopify plan, app signals | code (`agents/discovery/`) | inside `engagement.json` |
-| Implementation approach | LLM, validated by code | `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` (or a Larger Engagement brief / STOP report) |
+| Implementation approach | LLM, validated by code | `architecture.md`, `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` (or a Larger Engagement brief / STOP report) |
+| Solution architecture (sourced, ADR 0017) | `/architect <slug>` | approach saved to the engagement, `architecture.md` |
 | Discovery Closing Deck | `npm run deck`, `/deck <slug>` | `discovery-deck.xml`, `discovery-deck.md` |
 | Jira backlog (GO only) | `npm run backlog -- --client <slug>` | `backlog.csv`, `backlog.json` |
 | Store configuration workbook | `npm run workbook -- --client <slug>` | `configuration-workbook.md` |

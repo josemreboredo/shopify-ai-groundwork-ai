@@ -21,7 +21,7 @@ import { createRequire } from 'node:module';
 
 import { prepareQuestionnaire, answerValidator, decide, finalize, needsApproach, stopRoute } from './engine.js';
 import { EXTRACTION_SYSTEM, processExtraction } from './extract.js';
-import { APPROACH_SYSTEM, approachInput, fromApproachPayload } from './approach.js';
+import { APPROACH_SYSTEM, approachInput, approachQualityErrors, fromApproachPayload } from './approach.js';
 import { buildExtractionSchema, buildApproachSchema } from './extraction-schema.js';
 import { writeOutputs } from './cli.js';
 import { explainError } from './llm.js';
@@ -197,6 +197,8 @@ export function finishWork({ workDir, outDir = CLIENTS_DIR, dryRun = false }) {
     }
     const shape = shapeErrors(buildApproachSchema(), payload);
     if (shape.length) return { ok: false, errors: shape };
+    const quality = approachQualityErrors(payload, doc);
+    if (quality.length) return { ok: false, errors: quality };
     approach = fromApproachPayload(payload);
   }
 

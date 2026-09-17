@@ -139,7 +139,7 @@ export function finalize(doc, approach) {
   const out = structuredClone(doc);
   if (needsApproach(out)) {
     if (!approach) throw new Error(out.delivery.go ? 'A GO engagement needs a drafted approach.' : `A STOP routed to ${stopRoute(out).label} needs a drafted approach.`);
-    out.approach = { ...approach, risks: { open_items: doc.approach.risks.open_items, assumptions: approach.risks?.assumptions ?? [] } };
+    out.approach = { ...approach, risks: { open_items: doc.approach.risks.open_items, assumptions: approach.risks?.assumptions ?? [], ...(approach.risks?.register?.length ? { register: approach.risks.register } : {}) } };
   }
   const { valid, errors } = validateEngagement(out);
   if (!valid) throw new EngagementInvalidError(errors);

@@ -322,6 +322,9 @@
         "question_ids": [
           "Q3.1.1",
           "Q3.1.2"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/markets/getting-started/market-types"
         ]
       },
       {
@@ -333,6 +336,9 @@
           "Q4.1.1",
           "Q4.1.2",
           "Q4.1.3"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/payments/shopify-payments"
         ]
       },
       {
@@ -343,6 +349,9 @@
         "question_ids": [
           "Q9.1.5",
           "Q9.2.2"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/online-store/themes"
         ]
       },
       {
@@ -352,6 +361,9 @@
         "gaia_tier": "T2",
         "question_ids": [
           "Q2.3.3"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/custom-data/metafields"
         ]
       },
       {
@@ -363,6 +375,9 @@
           "Q7.3.1",
           "Q7.3.2",
           "Q8.1.1"
+        ],
+        "sources": [
+          "https://apps.shopify.com/klaviyo-email-marketing"
         ]
       }
     ],
@@ -379,7 +394,8 @@
         },
         "integration_complexity": "config_only",
         "gaia_tier": "T2",
-        "recommended": true
+        "recommended": true,
+        "url": "https://apps.shopify.com/klaviyo-email-marketing"
       },
       {
         "name": "Judge.me",
@@ -393,7 +409,8 @@
         },
         "integration_complexity": "theme_edit",
         "gaia_tier": "T2",
-        "recommended": true
+        "recommended": true,
+        "url": "https://apps.shopify.com/judgeme"
       }
     ],
     "risks": {
@@ -402,6 +419,38 @@
         {
           "statement": "Product data is delivered as a clean spreadsheet by the end of sprint 1.",
           "impact_if_wrong": "Catalogue import slips and the Black Friday date is at risk."
+        }
+      ],
+      "register": [
+        {
+          "risk": "Shopify Payments eligibility delays launch",
+          "likelihood": "low",
+          "impact": "medium",
+          "mitigation": "Verify eligibility at kick-off",
+          "owner": "client",
+          "evidence": [
+            "Q4.1.1"
+          ]
+        },
+        {
+          "risk": "Product attributes incomplete at launch",
+          "likelihood": "medium",
+          "impact": "medium",
+          "mitigation": "Attribute checklist and import validation",
+          "owner": "client",
+          "evidence": [
+            "Q2.3.3"
+          ]
+        },
+        {
+          "risk": "Email flows lose consent status during set-up",
+          "likelihood": "low",
+          "impact": "medium",
+          "mitigation": "Test consent sync with the Klaviyo app",
+          "owner": "shared",
+          "evidence": [
+            "Q7.3.1"
+          ]
         }
       ]
     },
@@ -451,7 +500,138 @@
           }
         ]
       }
-    ]
+    ],
+    "architecture": {
+      "decisions": [
+        {
+          "topic": "Theme",
+          "question": "Standard theme or custom theme?",
+          "options": [
+            {
+              "option": "Horizon theme with brand settings",
+              "pros": "Fast, supported, low maintenance",
+              "cons": "Less unique layout"
+            },
+            {
+              "option": "Custom theme",
+              "pros": "Unique design",
+              "cons": "Higher cost and maintenance"
+            }
+          ],
+          "decision": "Horizon theme with brand settings",
+          "rationale": "Brand storefront on a standard theme was requested.",
+          "plan_impact": "none",
+          "status": "recommended",
+          "sources": [
+            "https://help.shopify.com/en/manual/online-store/themes"
+          ],
+          "question_ids": [
+            "Q9.2.2"
+          ]
+        },
+        {
+          "topic": "Payments",
+          "question": "Shopify Payments or a third-party provider?",
+          "options": [
+            {
+              "option": "Shopify Payments with Klarna and SEPA",
+              "pros": "Native checkout, no extra gateway fee",
+              "cons": "Eligibility check"
+            },
+            {
+              "option": "Third-party provider",
+              "pros": "Existing contracts",
+              "cons": "Transaction fees and set-up"
+            }
+          ],
+          "decision": "Shopify Payments with Klarna and SEPA direct debit",
+          "rationale": "Requested methods are available through Shopify Payments in Germany.",
+          "plan_impact": "none",
+          "status": "recommended",
+          "sources": [
+            "https://help.shopify.com/en/manual/payments/shopify-payments"
+          ],
+          "question_ids": [
+            "Q4.1.1",
+            "Q4.1.2"
+          ]
+        },
+        {
+          "topic": "Email marketing",
+          "question": "Shopify Email or Klaviyo?",
+          "options": [
+            {
+              "option": "Klaviyo app",
+              "pros": "Client uses it; advanced flows",
+              "cons": "Subscription cost"
+            },
+            {
+              "option": "Shopify Email",
+              "pros": "Included",
+              "cons": "Simpler flows"
+            }
+          ],
+          "decision": "Klaviyo app",
+          "rationale": "Welcome and abandoned-cart flows run in Klaviyo today.",
+          "plan_impact": "none",
+          "status": "recommended",
+          "sources": [
+            "https://apps.shopify.com/klaviyo-email-marketing"
+          ],
+          "question_ids": [
+            "Q7.3.1",
+            "Q8.1.1"
+          ]
+        }
+      ],
+      "integrations": [
+        {
+          "system": "Klaviyo",
+          "system_of_record_for": [
+            "email consent"
+          ],
+          "pattern": "native_app",
+          "direction": "out_of_shopify",
+          "frequency": "realtime",
+          "shopify_apis": [
+            "customer events"
+          ],
+          "error_handling": "App sync status",
+          "sources": [
+            "https://apps.shopify.com/klaviyo-email-marketing"
+          ],
+          "question_ids": [
+            "Q8.1.1"
+          ]
+        }
+      ],
+      "non_functional": [
+        {
+          "area": "performance",
+          "requirement": "Good mobile Core Web Vitals",
+          "approach": "Horizon defaults and image optimisation",
+          "sources": [
+            "https://help.shopify.com/en/manual/online-store/web-performance"
+          ]
+        },
+        {
+          "area": "privacy",
+          "requirement": "GDPR cookie consent",
+          "approach": "Shopify's cookie banner",
+          "sources": [
+            "https://help.shopify.com/en/manual/privacy-and-security/privacy/customer-privacy-settings"
+          ]
+        },
+        {
+          "area": "accessibility",
+          "requirement": "WCAG 2.2 AA storefront",
+          "approach": "Theme accessibility checks before launch",
+          "sources": [
+            "https://www.w3.org/TR/WCAG22/"
+          ]
+        }
+      ]
+    }
   },
   "provenance": {
     "/markets/list": {

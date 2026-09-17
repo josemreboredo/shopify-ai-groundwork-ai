@@ -210,6 +210,69 @@ function solutionDesign(x, doc) {
   const source = doc.migration?.source_platform;
   x.list('data', doc.migration?.data, source && source !== 'none' ? 'Q8.2.2 not answered' : 'No migration');
   x.close();
+  architecture(x, doc);
+  x.close();
+}
+
+/** <sources> with one <source> per link (ADR 0017). */
+function sources(x, list) {
+  if (!list?.length) return;
+  x.open('sources');
+  for (const s of list) x.field('source', s);
+  x.close();
+}
+
+const ids = (list) => (list?.length ? list.join(', ') : undefined);
+const NO_ARCHITECTURE = 'No sourced solution architecture — run /architect in Claude Code (ADR 0017)';
+
+/** Sourced architecture: decisions, integration architecture, data model, non-functional requirements. */
+function architecture(x, doc) {
+  const a = doc.approach?.architecture ?? {};
+  x.open('architecture-decisions');
+  if (!a.decisions?.length) x.missing('decision', NO_ARCHITECTURE);
+  for (const d of a.decisions ?? []) {
+    x.open('decision', { topic: d.topic, status: d.status, 'plan-impact': d.plan_impact, questions: ids(d.question_ids) });
+    x.field('question', d.question, 'Not recorded');
+    for (const o of d.options ?? []) {
+      x.open('option', { name: o.option, chosen: o.option === d.decision ? 'true' : undefined });
+      if (o.pros) x.field('pros', o.pros);
+      if (o.cons) x.field('cons', o.cons);
+      x.close();
+    }
+    x.field('decision', d.decision);
+    x.field('rationale', d.rationale, 'Not recorded');
+    sources(x, d.sources);
+    x.close();
+  }
+  x.close();
+  x.open('integration-architecture');
+  if ((doc.integrations ?? []).length && !a.integrations?.length) x.missing('integration', NO_ARCHITECTURE);
+  for (const i of a.integrations ?? []) {
+    x.open('integration', { system: i.system, pattern: i.pattern, direction: i.direction, frequency: i.frequency, questions: ids(i.question_ids) });
+    x.list('system-of-record-for', i.system_of_record_for, 'Not recorded');
+    x.list('shopify-apis', i.shopify_apis, 'Not recorded');
+    x.field('error-handling', i.error_handling, 'Not recorded');
+    sources(x, i.sources);
+    x.close();
+  }
+  x.close();
+  x.open('data-model');
+  for (const m of a.data_model ?? []) {
+    x.open('custom-data', { object: m.object, kind: m.kind, name: m.name, 'source-system': m.source_system });
+    x.field('purpose', m.purpose, 'Not recorded');
+    sources(x, m.sources);
+    x.close();
+  }
+  x.close();
+  x.open('non-functional');
+  if (!a.non_functional?.length) x.missing('requirement', NO_ARCHITECTURE);
+  for (const n of a.non_functional ?? []) {
+    x.open('requirement', { area: n.area });
+    x.field('need', n.requirement);
+    x.field('approach', n.approach);
+    sources(x, n.sources);
+    x.close();
+  }
   x.close();
 }
 
@@ -219,10 +282,11 @@ function capabilityMap(x, doc) {
     .sort((a, b) => RESOLUTION_ORDER.indexOf(a.resolution) - RESOLUTION_ORDER.indexOf(b.resolution));
   if (rows.length === 0) x.missing('capabilities', 'No approach drafted');
   for (const r of rows) {
-    x.open('capability', { resolution: r.resolution, 'gaia-tier': r.gaia_tier });
+    x.open('capability', { resolution: r.resolution, 'gaia-tier': r.gaia_tier, questions: ids(r.question_ids) });
     x.field('requirement', r.requirement);
     if (r.tool) x.field('tool', r.tool);
     if (r.notes) x.field('notes', r.notes);
+    sources(x, r.sources);
     x.close();
   }
   x.close();
@@ -248,7 +312,7 @@ function apps(x, doc) {
   x.open('section', { id: 'apps', n: 9 });
   x.open('recommended');
   for (const a of list.filter((app) => app.recommended)) {
-    x.open('app', { name: a.name, integration: a.integration_complexity });
+    x.open('app', { name: a.name, integration: a.integration_complexity, url: a.url });
     x.field('requirement', a.requirement, 'Not recorded');
     x.field('why', a.rationale, 'Not recorded');
     if (a.limitations) x.field('limitations', a.limitations);
@@ -305,6 +369,15 @@ function risks(x, doc) {
     }
     x.close();
   }
+  x.open('risk-register');
+  if (doc.approach && (doc.delivery?.go || isLarger(doc)) && !doc.approach.risks?.register?.length) x.missing('risk', NO_ARCHITECTURE);
+  for (const r of doc.approach?.risks?.register ?? []) {
+    x.open('risk', { likelihood: r.likelihood, impact: r.impact, owner: r.owner, evidence: ids(r.evidence) });
+    x.field('description', r.risk);
+    x.field('mitigation', r.mitigation);
+    x.close();
+  }
+  x.close();
   x.open('open-questions');
   for (const o of doc.approach?.risks?.open_items ?? []) x.field('question', o.why, undefined, { question: o.question_id });
   x.close();

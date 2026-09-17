@@ -272,6 +272,9 @@ describe('Discovery Closing Document from the shared engagement', () => {
     assert.doesNotMatch(JSON.stringify(prepared.engagement), /price_band|price_add/, 'the approach step never sees internal pricing');
 
     await assert.rejects(svc.saveApproach(lc, 'acme-watches', { capability_map: 'nope' }), (err) => err instanceof ServiceError && err.errors.length > 0);
+    const unsourced = toApproachPayload(fixture.approach);
+    unsourced.architecture_decisions = unsourced.architecture_decisions.map((d) => ({ ...d, sources: [] }));
+    await assert.rejects(svc.saveApproach(lc, 'acme-watches', unsourced), (err) => err instanceof ServiceError && err.errors.some((e) => /official Shopify source/.test(e)), 'unsourced architecture decisions are rejected');
 
     const deck = await svc.saveApproach(lc, 'acme-watches', toApproachPayload(fixture.approach));
     assert.equal(deck.step, 'document');

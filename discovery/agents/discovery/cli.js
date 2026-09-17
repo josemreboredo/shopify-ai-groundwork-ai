@@ -66,7 +66,7 @@ export function writeOutputs(outDir, engagement) {
 
   // Drop artefacts from a previous run whose GO/STOP status or route differs.
   const briefs = offering.routes.map((r) => r.brief).filter(Boolean);
-  for (const stale of ['delivery-plan.md', 'capability-map.md', 'app-shortlist.md', 'risks.md', 'stop-report.md', ...briefs]) {
+  for (const stale of ['architecture.md', 'delivery-plan.md', 'capability-map.md', 'app-shortlist.md', 'risks.md', 'stop-report.md', ...briefs]) {
     fs.rmSync(path.join(dir, stale), { force: true });
   }
 

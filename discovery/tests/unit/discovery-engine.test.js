@@ -18,7 +18,7 @@ import { buildExtractionSchema, buildApproachSchema, countOptionalParameters, MA
 import { assembleAnswers, flattenAnswers, extractAnswers, ExtractionInvalidError } from '../../agents/discovery/extract.js';
 import Anthropic from '@anthropic-ai/sdk';
 import { createLlm, parseStructured, LlmError, DEFAULT_MODEL, explainError, clientOptions } from '../../agents/discovery/llm.js';
-import { approachInput, toApproachPayload, fromApproachPayload } from '../../agents/discovery/approach.js';
+import { approachInput, toApproachPayload, fromApproachPayload, approachQualityErrors, draftApproach, ApproachQualityError } from '../../agents/discovery/approach.js';
 import { renderArtefacts } from '../../agents/discovery/render.js';
 import { writeOutputs, parseArgs } from '../../agents/discovery/cli.js';
 
@@ -152,7 +152,7 @@ describe('structured output schemas', () => {
       assert.deepEqual(answers, fixtureAnswers(fixture), file);
       if (fixture.delivery.go) {
         const { open_items, ...risks } = fixture.approach.risks;
-        const expected = { capability_map: fixture.approach.capability_map, app_shortlist: fixture.approach.app_shortlist, phases: fixture.approach.phases, risks };
+        const expected = { capability_map: fixture.approach.capability_map, ...(fixture.approach.architecture ? { architecture: fixture.approach.architecture } : {}), app_shortlist: fixture.approach.app_shortlist, phases: fixture.approach.phases, risks };
         assert.deepEqual(fromApproachPayload(toApproachPayload(fixture.approach)), expected, file);
       }
     }
@@ -222,6 +222,45 @@ describe('runDiscovery with recorded responses', () => {
     const sent = llm.calls[1].user;
     assert.doesNotMatch(sent, /price_band|modifiers|price_add|65000|100000/);
     assert.equal(approachInput(engagement).offer.price_band, undefined);
+  });
+});
+
+describe('approach consulting standard (ADR 0017)', () => {
+  const fixture = load('acme-watches.json');
+  const good = () => toApproachPayload(fixture.approach);
+
+  test('the golden approaches meet the standard', () => {
+    for (const file of ['acme-watches.json', 'foundation-minimal.json']) {
+      const f = load(file);
+      assert.deepEqual(approachQualityErrors(toApproachPayload(f.approach), f), [], file);
+    }
+  });
+
+  test('unsourced, untraced or thin content is listed as gaps', () => {
+    const p = good();
+    p.capability_map[0].sources = ['https://example.com/blog'];
+    p.capability_map[1].question_ids = [];
+    p.architecture_decisions = p.architecture_decisions.slice(0, 2);
+    p.architecture_decisions[0].options = p.architecture_decisions[0].options.slice(0, 1);
+    p.integration_architecture = p.integration_architecture.filter((x) => x.system !== 'Client PIM');
+    p.non_functional[0].sources = ['not a link'];
+    p.risk_register[0].evidence = ['gut feeling'];
+    p.app_shortlist.find((a) => a.recommended).url = '';
+    const errors = approachQualityErrors(p, fixture).join('\n');
+    for (const gap of [/capability_map\[1\].*official Shopify source/, /capability_map\[2\].*question id/, /at least three decisions/, /at least two options/, /add "Client PIM"/, /"not a link" is not an https link/, /risk_register\[1\].*evidence/, /link the App Store listing/]) {
+      assert.match(errors, gap);
+    }
+  });
+
+  test('API mode repairs once with the gaps, then fails', async () => {
+    const thin = { ...good(), architecture_decisions: [] };
+    const calls = [];
+    const llm = { callStructured: async (call) => { calls.push(call); return { data: calls.length === 1 ? thin : good(), model: 'fake' }; } };
+    const approach = await draftApproach(llm, fixture);
+    assert.equal(calls.length, 2);
+    assert.match(calls[1].user, /at least three decisions/);
+    assert.equal(approach.architecture.decisions.length, 3);
+    await assert.rejects(draftApproach({ callStructured: async () => ({ data: thin, model: 'fake' }) }, fixture), ApproachQualityError);
   });
 });
 
@@ -297,9 +336,9 @@ describe('llm adapter', () => {
 });
 
 describe('renderers and output', () => {
-  test('GO renders the four artefacts and STOP renders only the stop report', () => {
+  test('GO renders the five artefacts and STOP renders only the stop report', () => {
     assert.deepEqual(Object.keys(renderArtefacts(load('acme-watches.json'))).sort(),
-      ['app-shortlist.md', 'capability-map.md', 'delivery-plan.md', 'risks.md']);
+      ['app-shortlist.md', 'architecture.md', 'capability-map.md', 'delivery-plan.md', 'risks.md']);
     const stop = renderArtefacts(load('stop-custom-checkout.json'));
     assert.deepEqual(Object.keys(stop), ['stop-report.md']);
     assert.match(stop['stop-report.md'], /11\.6/);

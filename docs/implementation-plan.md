@@ -249,6 +249,8 @@ dentsu IT (`discovery/docs/architecture/lc-frontend-hosting-requirements.md`).
 **2.0.0 — Claude Projects connector (Vercel, demo data)**
 - [x] MCP server ("Merkle Discovery" connector, `mcp-handler`) with its own OAuth authorization server (CIMD, PKCE, rotating hashed tokens) behind the interim GitHub login; ten discovery tools; answers from documents "to confirm" with citations and confirmation in the web app; document register; Claude Project page (ADR 0015)
 - [x] Table answers without JSON in the web app
+- [x] Discovery Closing Document from the Claude Project (ADR 0016); sourced solution architecture and `/architect` skill with the Shopify Dev MCP (ADR 0017)
+- [ ] First `/architect` run on a demo engagement; Lead Consultant review of sources
 - [ ] Owner pilot: add the connector in Claude, private Project with a demo RFP, confirm answers in the web app
 - [ ] Roles (Lead Consultant, Reviewer, Owner); audit log; import of demo engagements from `clients/`
 

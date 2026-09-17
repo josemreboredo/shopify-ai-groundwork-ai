@@ -11,12 +11,25 @@ import { buildApproachSchema } from './extraction-schema.js';
 import { appSignals, appCandidates } from './app-signals.js';
 import { planSuggestion } from './plan.js';
 
-export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect at Merkle drafting the implementation approach for a discovery engagement. A lead consultant reviews everything you write before the client sees it.
+export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect and commerce consultant at Merkle drafting the implementation approach for a discovery engagement, to the standard of a top-tier strategy consultancy. A lead consultant reviews everything you write before the client sees it.
+
+Consulting standards
+- Everything is founded on data and sources. Client facts come from the engagement answers (cite question_ids, exit rules). Shopify facts — features, plans, limits, APIs, apps — come from official sources you have checked: help.shopify.com, shopify.dev, shopify.com, changelog.shopify.com, apps.shopify.com. Never state a Shopify capability, limit or plan requirement from memory without a source.
+- Answer first: each decision states the recommendation, then the reasoning. Weigh at least two real options with pros and cons before deciding. Be specific and quantified where the answers allow (markets, SKUs, orders, integrations, volumes).
+- Separate facts, assumptions and recommendations. When evidence is missing, mark the decision to_validate_in_discovery and add an assumption with its impact if wrong — never fill gaps with invented facts.
+
+Solution architecture
+- architecture_decisions: at least three decisions that shape the project — e.g. one store with Shopify Markets vs expansion stores, Horizon theme vs headless Hydrogen, native Shopify B2B vs B2B app, order routing and inventory, integration pattern (native apps, iPaaS, custom app, events), checkout extensibility and Shopify Functions, migration approach. Each with options, decision, rationale, plan_impact, status, sources and question_ids.
+- integration_architecture: one entry per system in the engagement integrations (same name): system of record per data object, pattern, direction, frequency, Shopify APIs used (Admin GraphQL API, webhooks, bulk operations, Customer Account API, Storefront API), error handling and reconciliation, sources.
+- data_model: custom data the requirements need (metafields, metaobjects, native fields, app data) with purpose, source system and sources.
+- non_functional: at least three areas that matter for this client (performance and Core Web Vitals, security and PCI scope, privacy and consent, accessibility, SEO migration, availability, observability, localisation) with requirement, approach and sources.
+- risk_register: at least three delivery risks with likelihood, impact, mitigation, owner and evidence (question ids or exit rules).
 
 Capability map
 - One row per client requirement found in the engagement. Resolve each at the cheapest safe level, in order: native Shopify feature → Shopify App Store app → theme customisation (Liquid / Horizon blocks) → custom (metafields, metaobjects, Shopify Functions, custom app). Do not skip a level without saying why in notes.
 - gaia_tier: T1 trivial configuration · T2 standard work on existing patterns · T3 new capability, integration or data model · T4 foundational (payments provider, PCI, re-platforming).
-- question_ids: the questionnaire questions the requirement comes from (ids from the provenance map when available).
+- question_ids: the questionnaire questions the requirement comes from (ids from the provenance map when available) — at least one per row.
+- sources: at least one official Shopify documentation page or App Store listing that confirms the resolution.
 
 App shortlist
 - Recommend only apps a requirement needs; prefer native features. Include apps you considered and rejected, with rejection_reason.
@@ -41,6 +54,79 @@ Larger Engagement
 - Put markets, languages or integrations beyond a sensible first launch into later phases with deferred: true, and say why in assumptions.
 
 Never include prices for Merkle's services, internal modifiers or commercial terms.`;
+
+/** Official Shopify sources required for Shopify facts (ADR 0017). */
+export const OFFICIAL_SHOPIFY_SOURCE = /^https:\/\/(help\.shopify\.com|shopify\.dev|www\.shopify\.com|shopify\.com|changelog\.shopify\.com|apps\.shopify\.com|shopify\.engineering)\//;
+const HTTPS = /^https:\/\/[^\s]+$/;
+const EVIDENCE = /^(Q\d+\.\d+\.\d+|11\.\d+)$/;
+
+/**
+ * Consulting-standard checks on a drafted approach (ADR 0017): every Shopify
+ * statement cites an official source, decisions and requirements trace to the
+ * client's answers, integrations cover the system landscape, risks rest on
+ * evidence. Returns the gaps to fix; the schema check comes first.
+ *
+ * @param {object} payload  Approach in the drafting shape
+ * @param {object} doc  Decided engagement
+ * @returns {string[]}
+ */
+export function approachQualityErrors(payload, doc) {
+  const errors = [];
+  const official = (list) => (list ?? []).some((s) => OFFICIAL_SHOPIFY_SOURCE.test(s));
+  const badLinks = (list, where) => (list ?? []).filter((s) => !HTTPS.test(s)).forEach((s) => errors.push(`${where}: "${s}" is not an https link`));
+
+  (payload.capability_map ?? []).forEach((row, i) => {
+    const where = `capability_map[${i + 1}] "${row.requirement}"`;
+    badLinks(row.sources, where);
+    if (!official(row.sources)) errors.push(`${where}: cite at least one official Shopify source (help.shopify.com, shopify.dev, apps.shopify.com…)`);
+    if (!(row.question_ids ?? []).length) errors.push(`${where}: trace it to at least one question id`);
+  });
+
+  const decisions = payload.architecture_decisions ?? [];
+  if (decisions.length < 3) errors.push(`architecture_decisions: at least three decisions are needed (got ${decisions.length})`);
+  decisions.forEach((d, i) => {
+    const where = `architecture_decisions[${i + 1}] "${d.topic}"`;
+    badLinks(d.sources, where);
+    if ((d.options ?? []).length < 2) errors.push(`${where}: weigh at least two options`);
+    if (!official(d.sources)) errors.push(`${where}: cite at least one official Shopify source`);
+    if (!(d.question_ids ?? []).length) errors.push(`${where}: found it on at least one client answer (question id)`);
+    if (!d.decision?.trim() || !d.rationale?.trim()) errors.push(`${where}: state the decision and its rationale`);
+  });
+
+  const integrations = payload.integration_architecture ?? [];
+  const covered = new Set(integrations.map((x) => String(x.system).trim().toLowerCase()));
+  for (const system of (doc.integrations ?? []).map((x) => x.system)) {
+    if (!covered.has(String(system).trim().toLowerCase())) errors.push(`integration_architecture: add "${system}" (every system in the engagement integrations)`);
+  }
+  integrations.forEach((x, i) => {
+    badLinks(x.sources, `integration_architecture[${i + 1}] "${x.system}"`);
+    if (!official(x.sources)) errors.push(`integration_architecture[${i + 1}] "${x.system}": cite the Shopify API documentation for the pattern`);
+  });
+
+  (payload.data_model ?? []).forEach((x, i) => {
+    badLinks(x.sources, `data_model[${i + 1}] "${x.name}"`);
+    if (!official(x.sources)) errors.push(`data_model[${i + 1}] "${x.name}": cite Shopify documentation`);
+  });
+
+  const nfr = payload.non_functional ?? [];
+  if (nfr.length < 3) errors.push(`non_functional: cover at least three areas (got ${nfr.length})`);
+  nfr.forEach((x, i) => {
+    badLinks(x.sources, `non_functional[${i + 1}] ${x.area}`);
+    if (!(x.sources ?? []).length) errors.push(`non_functional[${i + 1}] ${x.area}: cite at least one source`);
+  });
+
+  const register = payload.risk_register ?? [];
+  if (register.length < 3) errors.push(`risk_register: at least three risks are needed (got ${register.length})`);
+  register.forEach((r, i) => {
+    if (!(r.evidence ?? []).some((e) => EVIDENCE.test(e))) errors.push(`risk_register[${i + 1}] "${r.risk}": found it on evidence — question ids (Q8.2.3) or exit rules (11.14)`);
+    if (!r.mitigation?.trim()) errors.push(`risk_register[${i + 1}] "${r.risk}": add a mitigation`);
+  });
+
+  (payload.app_shortlist ?? []).filter((a) => a.recommended).forEach((a) => {
+    if (!HTTPS.test(a.url ?? '')) errors.push(`app_shortlist "${a.name}": link the App Store listing or the vendor page (https)`);
+  });
+  return errors;
+}
 
 /**
  * Engagement view sent to the model: answers, offer code/track and exits —
@@ -77,8 +163,18 @@ export function fromApproachPayload(payload) {
     capability_map: (payload.capability_map ?? []).map((row) => {
       const out = compact(row);
       if (!out.question_ids?.length) delete out.question_ids;
+      if (!out.sources?.length) delete out.sources;
       return out;
     }),
+    ...(() => {
+      const architecture = Object.fromEntries(Object.entries({
+        decisions: (payload.architecture_decisions ?? []).map((d) => ({ ...compact(d), options: (d.options ?? []).map(compact) })),
+        integrations: (payload.integration_architecture ?? []).map(compact),
+        data_model: (payload.data_model ?? []).map(compact),
+        non_functional: (payload.non_functional ?? []).map(compact),
+      }).filter(([, list]) => list.length));
+      return Object.keys(architecture).length ? { architecture } : {};
+    })(),
     app_shortlist: (payload.app_shortlist ?? []).map(({ cost_amount, cost_currency, cost_period, cost_note, ...app }) => {
       const out = compact(app);
       if (out.recommended) delete out.rejection_reason;
@@ -101,7 +197,7 @@ export function fromApproachPayload(payload) {
         })),
       })),
     })),
-    risks: { assumptions: (payload.assumptions ?? []).map(compact) },
+    risks: { assumptions: (payload.assumptions ?? []).map(compact), ...((payload.risk_register ?? []).length ? { register: payload.risk_register.map(compact) } : {}) },
   };
 }
 
@@ -116,8 +212,19 @@ export function toApproachPayload(approach) {
   return {
     capability_map: (approach.capability_map ?? []).map((r) => ({
       requirement: r.requirement, resolution: r.resolution, tool: r.tool ?? '', gaia_tier: r.gaia_tier ?? 'T2',
-      notes: r.notes ?? '', question_ids: r.question_ids ?? [],
+      notes: r.notes ?? '', question_ids: r.question_ids ?? [], sources: r.sources ?? [],
     })),
+    architecture_decisions: (approach.architecture?.decisions ?? []).map((d) => ({
+      topic: d.topic, question: d.question ?? '', options: (d.options ?? []).map((o) => ({ option: o.option, pros: o.pros ?? '', cons: o.cons ?? '' })),
+      decision: d.decision, rationale: d.rationale ?? '', plan_impact: d.plan_impact ?? 'none', status: d.status ?? 'recommended', sources: d.sources ?? [], question_ids: d.question_ids ?? [],
+    })),
+    integration_architecture: (approach.architecture?.integrations ?? []).map((x) => ({
+      system: x.system, system_of_record_for: x.system_of_record_for ?? [], pattern: x.pattern, direction: x.direction ?? 'both_ways', frequency: x.frequency ?? 'near_realtime',
+      shopify_apis: x.shopify_apis ?? [], error_handling: x.error_handling ?? '', sources: x.sources ?? [], question_ids: x.question_ids ?? [],
+    })),
+    data_model: (approach.architecture?.data_model ?? []).map((x) => ({ object: x.object, kind: x.kind, name: x.name, purpose: x.purpose ?? '', source_system: x.source_system ?? '', sources: x.sources ?? [] })),
+    non_functional: (approach.architecture?.non_functional ?? []).map((x) => ({ area: x.area, requirement: x.requirement, approach: x.approach, sources: x.sources ?? [] })),
+    risk_register: (approach.risks?.register ?? []).map((r) => ({ risk: r.risk, likelihood: r.likelihood ?? 'medium', impact: r.impact ?? 'medium', mitigation: r.mitigation, owner: r.owner ?? 'shared', evidence: r.evidence ?? [] })),
     app_shortlist: (approach.app_shortlist ?? []).map((a) => ({
       name: a.name, url: a.url ?? '', requirement: a.requirement ?? '', rationale: a.rationale ?? '', limitations: a.limitations ?? '',
       cost_amount: a.cost?.amount ?? -1, cost_currency: a.cost?.currency ?? '', cost_period: a.cost?.period ?? 'unknown', cost_note: a.cost?.note ?? '',
@@ -145,10 +252,26 @@ export function toApproachPayload(approach) {
  * @returns {Promise<object>}  capability_map, app_shortlist, risks.assumptions, phases
  */
 export async function draftApproach(llm, doc) {
-  const { data } = await llm.callStructured({
-    system: APPROACH_SYSTEM,
-    user: `Engagement (JSON):\n\n${JSON.stringify(approachInput(doc), null, 2)}`,
-    schema: buildApproachSchema(),
-  });
+  const user = `Engagement (JSON):\n\n${JSON.stringify(approachInput(doc), null, 2)}`;
+  let { data } = await llm.callStructured({ system: APPROACH_SYSTEM, user, schema: buildApproachSchema() });
+  let errors = approachQualityErrors(data, doc);
+  if (errors.length) {
+    ({ data } = await llm.callStructured({
+      system: APPROACH_SYSTEM,
+      user: `${user}\n\nYour previous approach had these problems — return the complete approach with them fixed:\n- ${errors.join('\n- ')}\n\nPrevious approach (JSON):\n${JSON.stringify(data)}`,
+      schema: buildApproachSchema(),
+    }));
+    errors = approachQualityErrors(data, doc);
+    if (errors.length) throw new ApproachQualityError(errors);
+  }
   return fromApproachPayload(data);
+}
+
+/** The drafted approach does not meet the consulting standard after one repair (ADR 0017). */
+export class ApproachQualityError extends Error {
+  /** @param {string[]} errors */
+  constructor(errors) {
+    super(`The drafted approach does not meet the consulting standard after one repair attempt:\n  • ${errors.slice(0, 15).join('\n  • ')}`);
+    this.errors = errors;
+  }
 }

@@ -51,9 +51,9 @@ schema and the full schema is enforced locally before anything is written.
 
 | Status | Files in `clients/<slug>/` |
 |---|---|
-| GO | `engagement.json`, `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` |
+| GO | `engagement.json`, `architecture.md`, `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` |
 | STOP, route not decided or `no_bid` | `engagement.json`, `stop-report.md` |
-| Larger Engagement (STOP → `larger_engagement`) | `engagement.json`, `larger-engagement-brief.md`, `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` — client deck yes, Jira backlog no |
+| Larger Engagement (STOP → `larger_engagement`) | `engagement.json`, `larger-engagement-brief.md`, `architecture.md`, `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` — client deck yes, Jira backlog no |
 
 The route is the consultant's decision after a STOP (`delivery.route`, question Q10.5.5 — ADR 0009); the STOP stays
 open. Re-running replaces the Markdown files. Internal pricing and modifiers never appear in them.

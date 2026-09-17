@@ -82,7 +82,7 @@ describe('route after a STOP', () => {
 
     const clientDir = path.join(outDir, 'global-demo');
     const files = done.written.map((f) => path.basename(f)).sort();
-    assert.deepEqual(files, ['app-shortlist.md', 'capability-map.md', 'delivery-plan.md', 'engagement.json', 'larger-engagement-brief.md', 'risks.md']);
+    assert.deepEqual(files, ['app-shortlist.md', 'architecture.md', 'capability-map.md', 'delivery-plan.md', 'engagement.json', 'larger-engagement-brief.md', 'risks.md']);
     const brief = fs.readFileSync(path.join(clientDir, 'larger-engagement-brief.md'), 'utf8');
     for (const text of ['Status: **Larger Engagement**', 'Merkle Enterprise Engagement with a dedicated Discovery Phase', '8 markets at launch', 'Integration landscape', 'Offer a Larger Engagement', 'US, DE', 'minimum plus: company-specific B2B catalogs', 'No Jira tickets']) {
       assert.ok(brief.includes(text), `brief should include "${text}"`);

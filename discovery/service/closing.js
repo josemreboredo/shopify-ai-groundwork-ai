@@ -13,7 +13,7 @@ import Ajv2020 from 'ajv/dist/2020.js';
 
 import { flattenAnswers, processExtraction } from '../agents/discovery/extract.js';
 import { answerValidator, decide, finalize, needsApproach, stopRoute } from '../agents/discovery/engine.js';
-import { APPROACH_SYSTEM, approachInput, fromApproachPayload } from '../agents/discovery/approach.js';
+import { APPROACH_SYSTEM, approachInput, approachQualityErrors, fromApproachPayload } from '../agents/discovery/approach.js';
 import { buildApproachSchema } from '../agents/discovery/extraction-schema.js';
 import { buildDeckXml } from '../agents/discovery-deck/build.js';
 import { DECK_PROMPT } from '../agents/discovery-deck/prompt.js';
@@ -67,7 +67,7 @@ export function closingStatus(doc) {
  * @param {object} doc
  */
 export const approachBrief = (doc) => ({
-  instructions: `${APPROACH_SYSTEM}\n\nReturn one JSON object matching approach_schema (capability_map, app_shortlist, assumptions, phases). Use "" for empty text, -1 / "unknown" for unknown app costs, "none" for tasks without a capability.`,
+  instructions: `${APPROACH_SYSTEM}\n\nReturn one JSON object matching approach_schema (capability_map, architecture_decisions, integration_architecture, data_model, non_functional, risk_register, app_shortlist, assumptions, phases). Research every Shopify fact in the official documentation before you cite it (Shopify Dev MCP, help.shopify.com, shopify.dev, apps.shopify.com); save_approach rejects unsourced content and lists what to fix. Use "" for empty text, -1 / "unknown" for unknown app costs, "none" for tasks without a capability.`,
   engagement: approachInput(doc),
   approach_schema: buildApproachSchema(),
 });
@@ -83,6 +83,8 @@ export function finaliseEngagement(doc, approachPayload) {
     if (!approachPayload) return { ok: false, errors: ['The implementation approach is not drafted yet'] };
     const shape = approachErrors(approachPayload);
     if (shape.length) return { ok: false, errors: shape };
+    const quality = approachQualityErrors(approachPayload, doc);
+    if (quality.length) return { ok: false, errors: quality };
   }
   try {
     return { ok: true, engagement: finalize(doc, needsApproach(doc) ? fromApproachPayload(approachPayload) : null) };

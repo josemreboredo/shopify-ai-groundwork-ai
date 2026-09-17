@@ -700,6 +700,9 @@
           "Q3.1.1",
           "Q3.1.4",
           "Q2.4.3"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/markets/getting-started/market-types"
         ]
       },
       {
@@ -711,6 +714,10 @@
           "Q3.1.1",
           "Q3.2.1",
           "Q3.2.3"
+        ],
+        "sources": [
+          "https://apps.shopify.com/translate-and-adapt",
+          "https://help.shopify.com/en/manual/markets/languages/translate-adapt-app"
         ]
       },
       {
@@ -726,6 +733,9 @@
           "Q6.2.6",
           "Q6.2.7",
           "Q6.2.8"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/b2b/getting-started/plan-features"
         ]
       },
       {
@@ -737,6 +747,10 @@
           "Q8.1.1",
           "Q8.1.2",
           "Q2.5.1"
+        ],
+        "sources": [
+          "https://shopify.dev/docs/api/admin-graphql",
+          "https://shopify.dev/docs/apps/build/webhooks"
         ]
       },
       {
@@ -746,6 +760,9 @@
         "gaia_tier": "T2",
         "question_ids": [
           "Q2.3.3"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/custom-data/metafields"
         ]
       },
       {
@@ -760,6 +777,10 @@
           "Q8.2.3",
           "Q8.2.4",
           "Q8.2.5"
+        ],
+        "sources": [
+          "https://apps.shopify.com/excel-export-import",
+          "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect"
         ]
       },
       {
@@ -771,6 +792,9 @@
           "Q4.2.1",
           "Q4.2.2",
           "Q4.2.3"
+        ],
+        "sources": [
+          "https://shopify.dev/docs/api/checkout-ui-extensions"
         ]
       },
       {
@@ -782,6 +806,9 @@
           "Q5.2.2",
           "Q5.2.3",
           "Q5.2.4"
+        ],
+        "sources": [
+          "https://apps.shopify.com/loop-returns"
         ]
       },
       {
@@ -793,6 +820,9 @@
           "Q7.3.1",
           "Q7.3.2",
           "Q6.3.6"
+        ],
+        "sources": [
+          "https://apps.shopify.com/klaviyo-email-marketing"
         ]
       },
       {
@@ -806,6 +836,9 @@
           "Q9.2.2",
           "Q9.2.4",
           "Q9.3.1"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/online-store/themes/theme-structure/horizon"
         ]
       },
       {
@@ -817,6 +850,9 @@
         "question_ids": [
           "Q6.4.1",
           "Q6.4.5"
+        ],
+        "sources": [
+          "https://help.shopify.com/en/manual/privacy-and-security/privacy/processing-customer-data-requests"
         ]
       }
     ],
@@ -834,7 +870,8 @@
         },
         "integration_complexity": "config_only",
         "gaia_tier": "T2",
-        "recommended": true
+        "recommended": true,
+        "url": "https://apps.shopify.com/translate-and-adapt"
       },
       {
         "name": "Loop Returns",
@@ -849,7 +886,8 @@
         },
         "integration_complexity": "config_only",
         "gaia_tier": "T2",
-        "recommended": true
+        "recommended": true,
+        "url": "https://apps.shopify.com/loop-returns"
       },
       {
         "name": "Matrixify",
@@ -864,7 +902,8 @@
         },
         "integration_complexity": "config_only",
         "gaia_tier": "T3",
-        "recommended": true
+        "recommended": true,
+        "url": "https://apps.shopify.com/excel-export-import"
       },
       {
         "name": "Judge.me",
@@ -878,7 +917,8 @@
         },
         "integration_complexity": "theme_edit",
         "gaia_tier": "T2",
-        "recommended": true
+        "recommended": true,
+        "url": "https://apps.shopify.com/judgeme"
       },
       {
         "name": "Smile.io",
@@ -893,7 +933,8 @@
         "integration_complexity": "theme_edit",
         "gaia_tier": "T2",
         "recommended": false,
-        "rejection_reason": "Loyalty is phase 2 (Q6.3.2); re-evaluate after launch to stay inside the budget envelope and app ceiling."
+        "rejection_reason": "Loyalty is phase 2 (Q6.3.2); re-evaluate after launch to stay inside the budget envelope and app ceiling.",
+        "url": "https://apps.shopify.com/smile-io"
       }
     ],
     "risks": {
@@ -926,6 +967,41 @@
         {
           "statement": "The Shopify Plus contract is signed before kick-off on 2026-10-05.",
           "impact_if_wrong": "B2B and checkout extensions cannot be built; sprint 1 slips."
+        }
+      ],
+      "register": [
+        {
+          "risk": "SEO traffic loss after migration",
+          "likelihood": "medium",
+          "impact": "high",
+          "mitigation": "Redirect map, crawl comparison before and after launch",
+          "owner": "shared",
+          "evidence": [
+            "Q8.2.5",
+            "11.14"
+          ]
+        },
+        {
+          "risk": "ERP price sync delays show wrong B2B prices",
+          "likelihood": "medium",
+          "impact": "medium",
+          "mitigation": "Near-real-time price webhooks and reconciliation report",
+          "owner": "shared",
+          "evidence": [
+            "Q8.1.1",
+            "Q6.2.3"
+          ]
+        },
+        {
+          "risk": "Data-subject requests not propagated to ERP",
+          "likelihood": "low",
+          "impact": "high",
+          "mitigation": "Legal sign-off and automated propagation",
+          "owner": "client",
+          "evidence": [
+            "11.10",
+            "Q6.4.5"
+          ]
         }
       ]
     },
@@ -1053,7 +1129,215 @@
           }
         ]
       }
-    ]
+    ],
+    "architecture": {
+      "decisions": [
+        {
+          "topic": "Store structure",
+          "question": "One store with Shopify Markets or an expansion store per country?",
+          "options": [
+            {
+              "option": "One store with Shopify Markets",
+              "pros": "One catalog, one admin, per-market prices and languages",
+              "cons": "Market-specific content handled with market customisations"
+            },
+            {
+              "option": "Expansion stores per country",
+              "pros": "Full separation per country",
+              "cons": "Needs Shopify Plus, duplicate operations and apps"
+            }
+          ],
+          "decision": "One store with Shopify Markets for CH, DE and AT",
+          "rationale": "Three markets with CHF and EUR and manual price lists fit Markets; no requirement for separate operations.",
+          "plan_impact": "none",
+          "status": "recommended",
+          "sources": [
+            "https://help.shopify.com/en/manual/markets/getting-started/market-types"
+          ],
+          "question_ids": [
+            "Q3.1.1",
+            "Q3.1.4"
+          ]
+        },
+        {
+          "topic": "B2B wholesale",
+          "question": "Native Shopify B2B or a wholesale app?",
+          "options": [
+            {
+              "option": "Native Shopify B2B",
+              "pros": "Company accounts, catalogs and price lists in the same store",
+              "cons": "Company-specific catalogs need Plus"
+            },
+            {
+              "option": "Wholesale app",
+              "pros": "Works on lower plans",
+              "cons": "Separate pricing logic and checkout limits"
+            }
+          ],
+          "decision": "Native Shopify B2B on Shopify Plus",
+          "rationale": "Fixed-tier price lists and account approval are native; the target plan is Plus.",
+          "plan_impact": "plus",
+          "status": "recommended",
+          "sources": [
+            "https://help.shopify.com/en/manual/b2b/getting-started/plan-features"
+          ],
+          "question_ids": [
+            "Q6.2.2",
+            "Q6.2.3",
+            "Q1.2.3"
+          ]
+        },
+        {
+          "topic": "Integration pattern",
+          "question": "How do ERP and PIM exchange data with Shopify?",
+          "options": [
+            {
+              "option": "Client iPaaS with Admin GraphQL API and webhooks",
+              "pros": "Uses the client platform; retries and monitoring",
+              "cons": "Mapping effort in the iPaaS"
+            },
+            {
+              "option": "Custom app",
+              "pros": "Full control",
+              "cons": "Hosting and maintenance"
+            }
+          ],
+          "decision": "Client iPaaS flows on the Admin GraphQL API and webhooks",
+          "rationale": "The client already runs an iPaaS for ERP and PIM.",
+          "plan_impact": "none",
+          "status": "recommended",
+          "sources": [
+            "https://shopify.dev/docs/api/admin-graphql",
+            "https://shopify.dev/docs/apps/build/webhooks"
+          ],
+          "question_ids": [
+            "Q8.1.1",
+            "Q8.1.2"
+          ]
+        }
+      ],
+      "integrations": [
+        {
+          "system": "Client ERP",
+          "system_of_record_for": [
+            "prices",
+            "inventory",
+            "orders"
+          ],
+          "pattern": "ipaas",
+          "direction": "both_ways",
+          "frequency": "near_realtime",
+          "shopify_apis": [
+            "Admin GraphQL API",
+            "webhooks"
+          ],
+          "error_handling": "Retries with dead-letter queue and daily reconciliation",
+          "sources": [
+            "https://shopify.dev/docs/api/admin-graphql"
+          ],
+          "question_ids": [
+            "Q8.1.1"
+          ]
+        },
+        {
+          "system": "Client PIM",
+          "system_of_record_for": [
+            "products",
+            "content"
+          ],
+          "pattern": "ipaas",
+          "direction": "into_shopify",
+          "frequency": "scheduled_batch",
+          "shopify_apis": [
+            "Admin GraphQL API",
+            "bulk operations"
+          ],
+          "error_handling": "Validation report per import",
+          "sources": [
+            "https://shopify.dev/docs/api/usage/bulk-operations/imports"
+          ],
+          "question_ids": [
+            "Q8.1.1"
+          ]
+        },
+        {
+          "system": "Klaviyo",
+          "system_of_record_for": [
+            "email consent"
+          ],
+          "pattern": "native_app",
+          "direction": "out_of_shopify",
+          "frequency": "realtime",
+          "shopify_apis": [
+            "customer events"
+          ],
+          "error_handling": "App sync status",
+          "sources": [
+            "https://apps.shopify.com/klaviyo-email-marketing"
+          ],
+          "question_ids": [
+            "Q7.3.1"
+          ]
+        },
+        {
+          "system": "Loop Returns",
+          "system_of_record_for": [
+            "returns"
+          ],
+          "pattern": "native_app",
+          "direction": "both_ways",
+          "frequency": "realtime",
+          "shopify_apis": [
+            "Admin GraphQL API"
+          ],
+          "error_handling": "App sync status",
+          "sources": [
+            "https://apps.shopify.com/loop-returns"
+          ],
+          "question_ids": [
+            "Q5.2.4"
+          ]
+        }
+      ],
+      "data_model": [
+        {
+          "object": "product",
+          "kind": "metafield",
+          "name": "watch.movement_type",
+          "purpose": "Movement type for filters and product pages",
+          "source_system": "Client PIM",
+          "sources": [
+            "https://help.shopify.com/en/manual/custom-data/metafields"
+          ]
+        }
+      ],
+      "non_functional": [
+        {
+          "area": "performance",
+          "requirement": "Mobile Core Web Vitals in the good range",
+          "approach": "Horizon theme, image optimisation, app script audit",
+          "sources": [
+            "https://help.shopify.com/en/manual/online-store/web-performance"
+          ]
+        },
+        {
+          "area": "privacy",
+          "requirement": "Data export and deletion requests reach all systems",
+          "approach": "Customer privacy requests plus iPaaS propagation to ERP",
+          "sources": [
+            "https://help.shopify.com/en/manual/privacy-and-security/privacy/processing-customer-data-requests"
+          ]
+        },
+        {
+          "area": "seo_migration",
+          "requirement": "Keep organic traffic after the WooCommerce migration",
+          "approach": "4,200 URL redirects and SEO parity checks",
+          "sources": [
+            "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect"
+          ]
+        }
+      ]
+    }
   },
   "provenance": {
     "/brand/positioning": {

@@ -1447,7 +1447,86 @@
               "tool": {"type": "string"},
               "gaia_tier": {"$ref": "#/$defs/gaia_tier"},
               "notes": {"type": "string"},
-              "question_ids": {"type": "array", "items": {"$ref": "#/$defs/question_id"}}
+              "question_ids": {"type": "array", "items": {"$ref": "#/$defs/question_id"}},
+              "sources": {"$ref": "#/$defs/sources"}
+            }
+          }
+        },
+        "architecture": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Solution architecture drafted by the solution architect (ADR 0017): every decision, integration and data-model element cites official sources; decisions trace to client answers.",
+          "properties": {
+            "decisions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["topic", "decision", "sources"],
+                "properties": {
+                  "topic": {"type": "string"},
+                  "question": {"type": "string"},
+                  "options": {
+                    "type": "array",
+                    "items": {"type": "object", "additionalProperties": false, "required": ["option"], "properties": {"option": {"type": "string"}, "pros": {"type": "string"}, "cons": {"type": "string"}}}
+                  },
+                  "decision": {"type": "string"},
+                  "rationale": {"type": "string"},
+                  "plan_impact": {"enum": ["none", "basic", "grow", "advanced", "plus"]},
+                  "status": {"enum": ["recommended", "to_validate_in_discovery"]},
+                  "sources": {"$ref": "#/$defs/sources"},
+                  "question_ids": {"type": "array", "items": {"$ref": "#/$defs/question_id"}}
+                }
+              }
+            },
+            "integrations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["system", "pattern"],
+                "properties": {
+                  "system": {"type": "string"},
+                  "system_of_record_for": {"type": "array", "items": {"type": "string"}},
+                  "pattern": {"enum": ["native_app", "ipaas", "custom_app", "event_driven_middleware", "file_batch", "manual"]},
+                  "direction": {"enum": ["into_shopify", "out_of_shopify", "both_ways"]},
+                  "frequency": {"enum": ["realtime", "near_realtime", "scheduled_batch", "manual"]},
+                  "shopify_apis": {"type": "array", "items": {"type": "string"}},
+                  "error_handling": {"type": "string"},
+                  "sources": {"$ref": "#/$defs/sources"},
+                  "question_ids": {"type": "array", "items": {"$ref": "#/$defs/question_id"}}
+                }
+              }
+            },
+            "data_model": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["object", "kind", "name"],
+                "properties": {
+                  "object": {"enum": ["product", "variant", "collection", "customer", "company", "company_location", "order", "market", "metaobject", "other"]},
+                  "kind": {"enum": ["native_field", "metafield", "metaobject", "app_data"]},
+                  "name": {"type": "string"},
+                  "purpose": {"type": "string"},
+                  "source_system": {"type": "string"},
+                  "sources": {"$ref": "#/$defs/sources"}
+                }
+              }
+            },
+            "non_functional": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["area", "requirement", "approach"],
+                "properties": {
+                  "area": {"enum": ["performance", "security_pci", "privacy", "accessibility", "seo_migration", "availability", "observability", "localisation", "other"]},
+                  "requirement": {"type": "string"},
+                  "approach": {"type": "string"},
+                  "sources": {"$ref": "#/$defs/sources"}
+                }
+              }
             }
           }
         },
@@ -1504,6 +1583,23 @@
                 "additionalProperties": false,
                 "required": ["statement"],
                 "properties": {"statement": {"type": "string"}, "impact_if_wrong": {"type": "string"}}
+              }
+            },
+            "register": {
+              "type": "array",
+              "description": "Delivery risks with likelihood, impact, mitigation and owner, each founded on evidence (question ids or exit rules).",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["risk", "mitigation", "evidence"],
+                "properties": {
+                  "risk": {"type": "string"},
+                  "likelihood": {"enum": ["low", "medium", "high"]},
+                  "impact": {"enum": ["low", "medium", "high"]},
+                  "mitigation": {"type": "string"},
+                  "owner": {"enum": ["merkle", "client", "shared"]},
+                  "evidence": {"type": "array", "items": {"type": "string", "pattern": "^(Q\\d+\\.\\d+\\.\\d+|11\\.\\d+)$"}}
+                }
               }
             }
           }
@@ -1586,6 +1682,7 @@
     "pointer": {"type": "string", "pattern": "^(/[^/]+)+$"},
     "question_id": {"type": "string", "pattern": "^Q\\d+\\.\\d+\\.\\d+$"},
     "gaia_tier": {"enum": ["T1", "T2", "T3", "T4"]},
+    "sources": {"type": "array", "description": "HTTPS links to the sources a statement relies on (official Shopify documentation first).", "items": {"type": "string", "pattern": "^https://"}},
     "shopify_plan": {"enum": ["none", "starter", "basic", "grow", "advanced", "plus", "enterprise", "retail", "not_sure"]},
     "strings": {"type": "array", "items": {"type": "string"}},
     "money": {

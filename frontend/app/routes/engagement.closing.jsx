@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
+import { originOf } from '../origin.server.js';
 import { EngagementNav } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 
@@ -19,7 +20,7 @@ export async function loader({ request, params }) {
       if (!(err instanceof ServiceError)) throw err;
       readiness = { ok: false, error: err.message, errors: err.errors };
     }
-    return { ...saved, readiness, preview: saved.document ? saved.document.markdown.split('\n').filter((l) => l.startsWith('## ')).map((l) => l.slice(3)) : [] };
+    return { ...saved, readiness, origin: originOf(request), preview: saved.document ? saved.document.markdown.split('\n').filter((l) => l.startsWith('## ')).map((l) => l.slice(3)) : [] };
   } catch (err) {
     throw serviceFailure(err);
   }
@@ -28,7 +29,7 @@ export async function loader({ request, params }) {
 const VIA = { claude: 'Claude', web: 'web app', cli: 'CLI' };
 
 export default function Closing({ loaderData }) {
-  const { engagement, approach, document, history, readiness, preview } = loaderData;
+  const { engagement, approach, document, history, readiness, preview, origin } = loaderData;
   const client = engagement.client;
   return (
     <main>
@@ -37,7 +38,7 @@ export default function Closing({ loaderData }) {
       <EngagementNav client={client} />
 
       <h2>Discovery Closing Document</h2>
-      <p className="muted">The Shopify consulting deliverable for this engagement: executive summary, business context, solution design, capability map, roadmap, apps, configuration vs customisation, risks, next steps, timeline, investment and consultant notes. Claude drafts it in your Claude Project from the answers here; the engine checks it.</p>
+      <p className="muted">The Shopify consulting deliverable for this engagement: executive summary, business context, solution design with sourced architecture decisions, capability map, roadmap, apps, configuration vs customisation, risk register, next steps, timeline, investment and consultant notes. Claude drafts it as Solution Architect from the answers here and Shopify's official documentation; the engine checks it.</p>
 
       {document ? (
         <section className="card">
@@ -61,6 +62,14 @@ export default function Closing({ loaderData }) {
           <p className="muted">Fix it in <Link to={`/engagements/${client}/review`}>Review answers</Link>.</p>
         </div>
       )}
+      <h3>Recommended: Solution Architect in Claude Code</h3>
+      <p>The closing document is the consulting deliverable: architecture decisions with options, integration architecture, data model, non-functional requirements and a risk register — every Shopify statement cited from official Shopify sources, every client fact from your answers. The engine rejects unsourced content.</p>
+      <ol>
+        <li>In Claude Code in the repository, add the connector once: <code>claude mcp add --transport http merkle-discovery {origin}/mcp</code> and the Shopify Dev MCP: <code>claude mcp add shopify-dev-mcp -- npx -y @shopify/dev-mcp@latest</code>.</li>
+        <li>Run <code>/architect {client}</code> (strongest model, high effort). It researches Shopify's documentation, saves the approach and the document here.</li>
+        <li>Reload this page and download the Markdown.</li>
+      </ol>
+      <h3>Alternative: your Claude Project</h3>
       <ol>
         <li>Open your Claude Project for this engagement with the <strong>Merkle Discovery</strong> connector enabled (set-up: <Link to="/claude">Claude Project</Link>).</li>
         <li>Ask Claude: <code>Draft the Discovery Closing Document for {client}.</code></li>

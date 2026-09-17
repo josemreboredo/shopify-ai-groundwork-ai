@@ -58,7 +58,7 @@ shopify-ai-builder/
 │   └── engagement.schema.json  the handover shape shared by both tools
 ├── docs/                       shared: decisions (adr/), commercial model (strategy.md, internal),
 │                               roadmap (implementation-plan.md), security gates
-├── .claude/skills/             Claude Code skills: /interview, /discover, /deck
+├── .claude/skills/             Claude Code skills: /interview, /discover, /architect, /deck
 ├── clients/                    client engagements and outputs — gitignored, never committed
 ├── CLAUDE.md                   project instructions for Claude Code
 └── CHANGELOG.md
@@ -80,6 +80,7 @@ npm test                                        # must pass before every commit
 |---|---|
 | Run a discovery interview | `/interview` in Claude Code (or `npm run interview -- start --client <slug>`) |
 | Process a completed questionnaire | `/discover <questionnaire.md>` in Claude Code |
+| Solution architecture and closing document (hosted engagement, Shopify Dev MCP) | `/architect <slug>` (ADR 0017) |
 | Discovery Closing Deck | `/deck <slug>` (data: `npm run deck -- --client <slug>`) |
 | Jira backlog (GO engagements) | `npm run backlog -- --client <slug>` |
 | Tax and shipping configuration workbook | `npm run workbook -- --client <slug>` |
