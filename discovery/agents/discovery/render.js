@@ -62,11 +62,11 @@ function header(doc, title) {
 function renderCapabilityMap(doc) {
   const rows = [...(doc.approach.capability_map ?? [])]
     .sort((a, b) => RESOLUTION_ORDER.indexOf(a.resolution) - RESOLUTION_ORDER.indexOf(b.resolution))
-    .map((r) => [r.requirement, RESOLUTION_LABEL[r.resolution], r.tool, r.gaia_tier, r.notes, (r.question_ids ?? []).join(', '), links(r.sources)]);
+    .map((r) => [r.requirement, RESOLUTION_LABEL[r.resolution], r.tool, r.why_this_level, r.limits, r.gaia_tier, (r.question_ids ?? []).join(', '), links(r.sources)]);
   return `${header(doc, 'Capability Map')}
 Resolution order: Native → App → Theme → Custom.
 
-${table(['Requirement', 'Resolution', 'Tool / feature', 'Gaia tier', 'Notes', 'Questions', 'Sources'], rows)}
+${table(['Requirement', 'Resolution', 'Tool / feature', 'Why this level', 'Limits', 'Gaia tier', 'Questions', 'Sources'], rows)}
 `;
 }
 

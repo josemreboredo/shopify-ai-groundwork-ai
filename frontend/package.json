@@ -16,6 +16,7 @@
     "ajv": "^8.20.0",
     "isbot": "^5.2.2",
     "mcp-handler": "^2.1.1",
+    "pptxgenjs": "^4.0.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-router": "^7.18.4",

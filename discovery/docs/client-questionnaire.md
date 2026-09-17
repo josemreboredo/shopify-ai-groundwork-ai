@@ -1676,7 +1676,7 @@
 
 ## § 7 — Marketing & promotions
 
-> SEO, analytics, email, reviews, affiliates, discounts and campaigns.
+> SEO, analytics, email, reviews, affiliates, discounts, campaigns and AI-driven commerce.
 
 ### 7.1 SEO
 
@@ -1720,13 +1720,13 @@
 
 > Answer:
 
-**Q7.2.4** — Is a tag manager already configured? *(optional)*
+**Q7.2.4** — Is a tag manager already configured? *(recommended)*
 *Tag managers run as a custom pixel in Shopify's sandbox; scripts in checkout are no longer possible.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.2.5** — Which custom events must be tracked beyond standard ecommerce events? *(optional)*
+**Q7.2.5** — Which custom events must be tracked beyond standard ecommerce events? *(recommended)*
 
 > Answer:
 
@@ -1738,7 +1738,7 @@
 - Type:
 - Platform:
 
-**Q7.3.2** — Which automated flows are needed (welcome, abandoned cart, post-purchase, win-back)? *(optional)*
+**Q7.3.2** — Which automated flows are needed (welcome, abandoned cart, post-purchase, win-back)? *(recommended)*
 
 > Answer:
 
@@ -1898,6 +1898,103 @@
 
 - [ ] Yes
 - [ ] No
+
+### 7.7 AI & agentic commerce
+
+**Q7.7.1** — Have you reviewed your AI shopping-channel settings in Shopify (Sales channels → Agentic)? *(recommended)*
+*Shopify enrols eligible stores in AI shopping channels by default, so these settings are usually already live.*
+
+- [ ] Yes
+- [ ] No
+
+**Q7.7.2** — Should Shopify enrol you automatically in current and future AI shopping channels, or do you want to approve each channel? *(recommended)*
+*The default lets Shopify manage enrolment, including channels that do not exist yet.*
+
+*(tick one)*
+- [ ] Shopify managed
+- [ ] Per channel
+- [ ] Off
+- [ ] Not sure yet
+
+**Q7.7.3** — Should shoppers be able to complete the purchase inside the AI assistant, or come to your store to check out? *(recommended)*
+*Direct checkout converts better but changes attribution, upsells and analytics; ChatGPT always sends shoppers to your checkout.*
+
+*(tick one)*
+- [ ] All channels
+- [ ] Selected channels
+- [ ] Off
+- [ ] Not sure yet
+
+**Q7.7.4** — Do you sell to buyers in the United States? *(recommended)*
+*Some AI channels are limited to merchants selling to US buyers.*
+
+- [ ] Yes
+- [ ] No
+
+**Q7.7.5** — Has someone with authority accepted Shopify's supplemental terms for AI shopping channels? *(recommended)*
+*Selling through AI channels requires accepting separate terms; legal or procurement usually has not seen them.*
+
+*(tick one)*
+- [ ] Accepted
+- [ ] Not accepted
+- [ ] Not sure yet
+
+**Q7.7.6** — Are you comfortable that AI channels receive customer name, e-mail, phone and address for orders placed inside the assistant? *(recommended)*
+*This is a data-protection decision: under GDPR it usually needs a documented review.*
+
+*(tick one)*
+- [ ] Approved
+- [ ] Refused
+- [ ] Needs legal review
+
+**Q7.7.7** — How complete is your product data — titles, images, prices, descriptions and variants? *(recommended)*
+*Products that do not meet Shopify Catalog requirements are invisible to every AI channel.*
+
+*(tick one)*
+- [ ] Complete
+- [ ] Only for some products
+- [ ] Not sure yet
+
+**Q7.7.8** — Is important product information kept in metafields, metaobjects or inside product titles? *(optional)*
+*That data needs catalog mapping before AI channels can read it correctly.*
+
+- [ ] Yes
+- [ ] No
+
+**Q7.7.9** — Should AI crawlers be allowed, restricted or blocked on your storefront? *(optional)*
+*Theme-level robots rules affect open-web AI crawling only; they do not stop Shopify Catalog sending product data to AI channels.*
+
+*(tick one)*
+- [ ] Allow all
+- [ ] Selective
+- [ ] Block
+- [ ] Not sure yet
+
+**Q7.7.10** — Do you want to control the answers AI assistants give about your shop (shipping, returns, sizing)? *(optional)*
+*Shopify's free Knowledge Base app publishes FAQs for AI assistants and logs what shoppers ask.*
+
+- [ ] Yes
+- [ ] No
+
+**Q7.7.11** — Do you plan to expose your own AI agent or shopping assistant on top of the store? *(optional)*
+*Shopify publishes agent interfaces (UCP, storefront MCP); parts are still early access, so treat this as research, not fixed scope.*
+
+*(tick one)*
+- [ ] Now
+- [ ] Later
+- [ ] No
+- [ ] Not sure yet
+
+**Q7.7.12** — Which Shopify AI features do you want your team to use? *(optional)*
+*Sidekick and Shopify Magic are included; semantic search needs a specific plan and a catalogue under 200,000 products.*
+
+*(tick all that apply)*
+- [ ] Sidekick
+- [ ] Shopify magic
+- [ ] Semantic search
+- [ ] Knowledge base
+- [ ] None
+- [ ] Not sure yet
 
 ---
 

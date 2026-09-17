@@ -17,6 +17,7 @@
     "deck": "node discovery/agents/discovery-deck/build.js",
     "deck:check": "node discovery/agents/discovery-deck/build.js check",
     "deck:prompt": "node discovery/scripts/render-deck-prompt.js",
+    "reference:chapters": "node discovery/scripts/render-reference-chapters.js",
     "interview": "node discovery/agents/interview/cli.js",
     "apps": "node discovery/scripts/apps.js",
     "workbook": "node discovery/agents/workbook/build.js",

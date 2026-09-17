@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 107 of 284 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 119 of 296 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -1217,9 +1217,9 @@ If native is not enough: App Store — [Elevar Conversion Tracking](https://apps
 
 **Q7.2.3** — Which advertising pixels are needed (Meta, TikTok, Pinterest, Google Ads)? *(recommended · client)*
 
-**Q7.2.4** — Is a tag manager already configured? *(optional · client)*
+**Q7.2.4** — Is a tag manager already configured? *(recommended · client)*
 
-**Q7.2.5** — Which custom events must be tracked beyond standard ecommerce events? *(optional · client)*
+**Q7.2.5** — Which custom events must be tracked beyond standard ecommerce events? *(recommended · client)*
 
 ### 7.3 Email & CRM
 
@@ -1232,7 +1232,7 @@ If native is not enough: App Store — [Elevar Conversion Tracking](https://apps
 If native is not enough: [Email marketing](https://apps.shopify.com/categories/marketing-and-conversion-marketing-email-marketing) — [Klaviyo: Email Marketing & SMS](https://apps.shopify.com/klaviyo-email-marketing), [Omnisend Email Marketing & SMS](https://apps.shopify.com/omnisend)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
-**Q7.3.2** — Which automated flows are needed (welcome, abandoned cart, post-purchase, win-back)? *(optional · client)*
+**Q7.3.2** — Which automated flows are needed (welcome, abandoned cart, post-purchase, win-back)? *(recommended · client)*
 
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended · client)*
 Feeds: app signal SMS marketing outside Shopify Messaging countries
@@ -1318,6 +1318,94 @@ If native is not enough: App Store — [Rise Gift Cards & Store Credit](https://
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Rollouts (scheduled theme and checkout changes) | Grow |  | https://help.shopify.com/en/manual/markets/rollouts |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+### 7.7 AI & agentic commerce
+
+**Q7.7.1** — Have you reviewed your AI shopping-channel settings in Shopify (Sales channels → Agentic)? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Agentic storefronts (active by default for eligible stores) | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.2** — Should Shopify enrol you automatically in current and future AI shopping channels, or do you want to approve each channel? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Agentic channel management (Shopify-managed or per channel) | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.3** — Should shoppers be able to complete the purchase inside the AI assistant, or come to your store to check out? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Direct checkout in agentic channels | Basic | Per channel; ChatGPT is referral only | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.4** — Do you sell to buyers in the United States? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Agentic channel eligibility | Basic | Starter plan or higher; some channels need US buyers | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.5** — Has someone with authority accepted Shopify's supplemental terms for AI shopping channels? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Agentic Storefronts supplemental terms | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.6** — Are you comfortable that AI channels receive customer name, e-mail, phone and address for orders placed inside the assistant? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Customer data shared with agentic channels on direct checkout | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/data-privacy |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.7** — How complete is your product data — titles, images, prices, descriptions and variants? *(recommended · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shopify Catalog product requirements | Basic |  | https://help.shopify.com/en/manual/shopify-catalog/requirements |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.8** — Is important product information kept in metafields, metaobjects or inside product titles? *(optional · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Catalog mapping for custom data | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.9** — Should AI crawlers be allowed, restricted or blocked on your storefront? *(optional · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| robots.txt through the theme (robots.txt.liquid) | Basic |  | https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.10** — Do you want to control the answers AI assistants give about your shop (shipping, returns, sizing)? *(optional · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shopify Knowledge Base app | Basic |  | https://help.shopify.com/en/manual/promoting-marketing/knowledge-base |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.11** — Do you plan to expose your own AI agent or shopping assistant on top of the store? *(optional · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Universal Commerce Protocol and agent interfaces | Basic | Universal Cart API is early access | https://shopify.dev/docs/agents |
+| Storefront MCP server | Basic |  | https://shopify.dev/docs/apps/build/storefront-mcp/servers/storefront |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q7.7.12** — Which Shopify AI features do you want your team to use? *(optional · client)*
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Sidekick and Shopify Magic | Basic | Included; features and limits vary by plan | https://help.shopify.com/en/manual/ai-powered-tools |
+| Semantic search in Search & Discovery | Grow | Shopify or Advanced plan; under 200,000 products | https://changelog.shopify.com/posts/semantic-search-is-now-available-on-more-plans |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ---

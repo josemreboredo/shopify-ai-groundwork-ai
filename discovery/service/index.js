@@ -21,6 +21,7 @@ import { questionBank } from '../schema/index.js';
 import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js';
 import { displayValue } from './summary.js';
 import { approachBrief, closingStatus, deckBrief, decideFromSession, finaliseEngagement, needsApproach } from './closing.js';
+import { annexWithChapters, selectChapters } from './reference.js';
 
 /**
  * @typedef {object} InterviewStore
@@ -468,27 +469,45 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     },
 
     /**
-     * Save the Discovery Closing Document (Markdown); the previous version is kept.
+     * Save the Discovery Closing Document: the deck narrative (`markdown`, what the
+     * Lead Consultant presents) and optionally the annex (`annex`, the detailed
+     * analysis, reference chapters and bibliography). The previous version is kept.
      *
-     * @param {User} user @param {string} client @param {{ markdown: string }} input
+     * @param {User} user @param {string} client @param {{ markdown: string, annex?: string }} input
      * @param {{ via?: Channel }} [options]
      */
-    async saveClosingDocument(user, client, { markdown }, { via = 'claude' } = {}) {
+    async saveClosingDocument(user, client, { markdown, annex }, { via = 'claude' } = {}) {
       const session = await load(user, client);
       const text = String(markdown ?? '').trim();
+      const annexText = String(annex ?? '').trim();
       if (text.length < 500) throw new ServiceError(400, 'The document is too short — write the complete Discovery Closing Document');
-      const personal = findPersonalData(text);
+      const personal = findPersonalData(`${text}\n${annexText}`);
       if (personal.length) throw new ServiceError(400, 'Document not saved', [`the document ${personal.join(' and ')} — remove personal data`]);
       const previous = session.closing?.document;
       session.closing = {
         ...session.closing,
         document: { markdown: `${text}
-`, saved_at: today(), by: user.login, via },
-        history: [...(previous ? [{ saved_at: previous.saved_at, by: previous.by, via: previous.via, markdown: previous.markdown }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
+`, ...(annexText ? { annex: `${annexText}\n` } : {}), saved_at: today(), by: user.login, via },
+        history: [...(previous ? [{ saved_at: previous.saved_at, by: previous.by, via: previous.via, markdown: previous.markdown, ...(previous.annex ? { annex: previous.annex } : {}) }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
       };
       session.updated_at = today();
       await store.save(session);
-      return { ok: true, saved_at: today(), versions: 1 + session.closing.history.length };
+      return { ok: true, saved_at: today(), annex: Boolean(annexText), versions: 1 + session.closing.history.length };
+    },
+
+    /**
+     * The annex document with Merkle's verified Shopify reference chapters for
+     * this engagement appended (the chapters are not stored per engagement).
+     *
+     * @param {User} user @param {string} client
+     */
+    async getClosingAnnex(user, client) {
+      const session = await load(user, client);
+      const annex = session.closing?.document?.annex;
+      if (!annex) return null;
+      const decided = decideFromSession(session, today());
+      const doc = decided.ok ? decided.doc : {};
+      return { markdown: annexWithChapters(annex, doc), chapters: selectChapters(doc).map((c) => ({ slug: c.slug, title: c.title, verified: c.verified })) };
     },
 
     /** The saved closing document and approach status. @param {User} user @param {string} client */

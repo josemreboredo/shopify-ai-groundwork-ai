@@ -718,7 +718,8 @@
         "sources": [
           "https://apps.shopify.com/translate-and-adapt",
           "https://help.shopify.com/en/manual/markets/languages/translate-adapt-app"
-        ]
+        ],
+        "why_this_level": "Native Shopify does not cover this requirement; Translate & Adapt is the cheapest proven option."
       },
       {
         "requirement": "B2B wholesale: company accounts, fixed-tier price lists, account approval",
@@ -751,7 +752,8 @@
         "sources": [
           "https://shopify.dev/docs/api/admin-graphql",
           "https://shopify.dev/docs/apps/build/webhooks"
-        ]
+        ],
+        "why_this_level": "No native feature or app covers this requirement for these markets and systems."
       },
       {
         "requirement": "Watch attributes (movement type, case material, water resistance) on products and filters",
@@ -781,7 +783,8 @@
         "sources": [
           "https://apps.shopify.com/excel-export-import",
           "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect"
-        ]
+        ],
+        "why_this_level": "Native Shopify does not cover this requirement; Matrixify is the cheapest proven option."
       },
       {
         "requirement": "B2B PO number field and trust block in checkout",
@@ -795,7 +798,8 @@
         ],
         "sources": [
           "https://shopify.dev/docs/api/checkout-ui-extensions"
-        ]
+        ],
+        "why_this_level": "No native feature or app covers this requirement for these markets and systems."
       },
       {
         "requirement": "Self-service returns and exchanges",
@@ -809,7 +813,8 @@
         ],
         "sources": [
           "https://apps.shopify.com/loop-returns"
-        ]
+        ],
+        "why_this_level": "Native Shopify does not cover this requirement; Loop Returns is the cheapest proven option."
       },
       {
         "requirement": "Email flows and segmentation driven from the ESP",
@@ -823,7 +828,8 @@
         ],
         "sources": [
           "https://apps.shopify.com/klaviyo-email-marketing"
-        ]
+        ],
+        "why_this_level": "Native Shopify does not cover this requirement; Klaviyo is the cheapest proven option."
       },
       {
         "requirement": "Mobile-first storefront with simpler navigation and brand tokens",
@@ -839,7 +845,8 @@
         ],
         "sources": [
           "https://help.shopify.com/en/manual/online-store/themes/theme-structure/horizon"
-        ]
+        ],
+        "why_this_level": "Native settings cannot produce this layout; it is theme configuration, not custom code."
       },
       {
         "requirement": "Handling of customer data export and deletion requests",

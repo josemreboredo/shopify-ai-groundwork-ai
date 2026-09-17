@@ -226,14 +226,14 @@ export function registerDiscoveryTools(server, { service, userOf }) {
 
   tool('save_closing_document', {
     title: 'Save the Discovery Closing Document',
-    description: 'Step 3: save the complete Discovery Closing Document (Markdown, Lead Consultant draft including the consultant notes section). The Lead Consultant downloads it from the engagement in the web app; the previous version is kept.',
-    inputSchema: z.object({ client: slug, markdown: z.string().min(500) }),
+    description: 'Step 3: save the Discovery Closing Document. "markdown" is the deck narrative the Lead Consultant presents (sections 1–16 plus the consultant notes section); the web app turns it into a PowerPoint, so keep each heading to one message with short bullets and tables of at most eight rows. "annex" is the annex document: the detailed pros-and-cons analysis per decision, the Shopify reference chapters, the user stories and the bibliography. The previous version is kept.',
+    inputSchema: z.object({ client: slug, markdown: z.string().min(500), annex: z.string().optional().describe('Annex document in Markdown: detailed analysis, reference chapters, appendices and bibliography') }),
     annotations: write,
-  }, (user, { client, markdown }) => service.saveClosingDocument(user, client, { markdown }, { via: 'claude' }));
+  }, (user, { client, markdown, annex }) => service.saveClosingDocument(user, client, { markdown, annex }, { via: 'claude' }));
 
   tool('get_closing_document', {
     title: 'Saved Discovery Closing Document',
-    description: 'The latest saved Discovery Closing Document (Markdown) with when and by whom it was saved, and whether an approach is saved.',
+    description: 'The latest saved Discovery Closing Document (deck narrative and annex, Markdown) with when and by whom it was saved, and whether an approach is saved.',
     inputSchema: z.object({ client: slug }),
     annotations: read,
   }, (user, { client }) => service.getClosingDocument(user, client));

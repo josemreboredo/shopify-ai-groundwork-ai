@@ -45,6 +45,25 @@ Lead Consultants generate the document in their Claude Project by default (stron
 connector tools and quality gate); `/architect` in Claude Code is the advanced path for complex integrations or tax
 questions, or when a draft keeps failing the checks. The web app's Manual page (`/manual`) documents the flow.
 
+## Amendment (2026-09-17, consultant feedback)
+
+The first ACME run showed four gaps. The document is now:
+
+1. **A deck and an annex.** The deck narrative is written slide-sized and exported as a PowerPoint by the web app
+   (`/engagements/<client>/closing-document.pptx`, client version and internal version); the annex carries the depth.
+2. **Deeper justification.** Every decision is analysed in the annex with its criteria, every option's pros and cons,
+   why the rejected options were rejected and what would change the decision; every plan requirement, limit or
+   eligibility rule carries a verbatim quote, and the annex ends in a bibliography with checked dates.
+3. **Reference chapters instead of repeated research.** `discovery/docs/reference/*.md` holds Merkle's verified
+   chapters (plans, Markets, Managed Markets, payments and multi-currency, Liquid vs Hydrogen, B2B, migration, AI and
+   agentic commerce). Code selects them per engagement and appends them to the annex; they are verified once, with a
+   date, instead of researched per client.
+4. **A serious capability map.** Each row records the client's own wording, why that resolution level and not a
+   cheaper one (enforced for app, theme and custom rows), the documented limits and the licence implication.
+
+The questionnaire gained subsection 7.7 (AI and agentic commerce) because Shopify enrols eligible stores in AI
+shopping channels by default, and tracking and lifecycle-flow questions moved from optional to recommended.
+
 ## Consequences
 
 - Drafting the approach costs more (research and a larger output) and takes longer; the owner accepts this for the

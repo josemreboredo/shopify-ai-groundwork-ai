@@ -284,7 +284,10 @@ function capabilityMap(x, doc) {
   for (const r of rows) {
     x.open('capability', { resolution: r.resolution, 'gaia-tier': r.gaia_tier, questions: ids(r.question_ids) });
     x.field('requirement', r.requirement);
+    if (r.client_requirement) x.field('client-words', r.client_requirement);
     if (r.tool) x.field('tool', r.tool);
+    if (r.why_this_level) x.field('why-this-level', r.why_this_level);
+    if (r.limits) x.field('limits', r.limits);
     if (r.notes) x.field('notes', r.notes);
     sources(x, r.sources);
     x.close();

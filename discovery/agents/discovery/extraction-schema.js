@@ -103,8 +103,11 @@ export function buildApproachSchema() {
       type: 'array',
       items: obj({
         requirement: str(),
+        client_requirement: str('The requirement in the client\'s own words, quoted from the answer; "" if the answer has no usable wording'),
         resolution: { enum: ['native', 'app', 'theme', 'custom'] },
         tool: str('Shopify feature, app or approach; "" if none'),
+        why_this_level: str('Why this level and not a cheaper one (native → app → theme → custom); required for app, theme and custom'),
+        limits: str('Documented limits, plan requirements or licence implications; "" if none'),
         gaia_tier: { enum: GAIA_TIERS },
         notes: str('"" if none'),
         question_ids: { type: 'array', items: str(), description: 'Client answers this requirement comes from (at least one)' },

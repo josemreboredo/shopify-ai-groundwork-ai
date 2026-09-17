@@ -25,11 +25,13 @@ price — they come from the engine. Never put Merkle pricing, modifiers or effo
      ```bash
      claude mcp add --transport http merkle-discovery https://shopify-ai-builder-two.vercel.app/mcp
      ```
-   - **Shopify documentation:** the Shopify Dev MCP (or the Shopify AI Toolkit plugin). If missing:
-     ```bash
-     claude mcp add shopify-dev-mcp -- npx -y @shopify/dev-mcp@latest
-     ```
-     Without it, use WebFetch / WebSearch on official Shopify domains only — never cite from memory.
+   - **Shopify documentation:** the Shopify AI Toolkit plugin (`claude plugin install shopify-ai-toolkit@claude-plugins-official`)
+     gives skills that search shopify.dev and validate GraphQL, Liquid and extension code. Alternative: the Dev MCP
+     (`claude mcp add shopify-dev-mcp -- npx -y @shopify/dev-mcp@latest`). Both cover **shopify.dev only**, so plans,
+     limits and merchant features on help.shopify.com always need WebFetch / WebSearch. Never cite from memory.
+   - **Before using the toolkit on a client engagement:** its skill scripts send usage data (including the user's prompt
+     and code) to shopify.dev unless telemetry is off. Check `~/.config/shopify-ai-toolkit/opt-out` exists, or set
+     `OPT_OUT_INSTRUMENTATION=true`.
    - **Local engagement** (`/discover` or `/interview` work directory `clients/.work/<slug>`): no connector needed;
      see *Local mode* below.
 
@@ -47,12 +49,19 @@ Note the question ids behind each fact (`question_ids_by_answer`).
 ## 2. Research — sources before statements
 
 For each requirement and each decision, confirm the Shopify facts in official sources and keep the exact URL:
-- **Shopify Dev MCP:** start with its API learning tool for the relevant API (Admin GraphQL, Storefront, Customer
-  Account, Functions, checkout UI extensions), then search and fetch the docs; introspect the GraphQL schema when an
-  integration depends on a specific object or mutation.
-- **help.shopify.com** for features, plans and limits (Markets, B2B, POS, payments, taxes, shipping, customer
-  privacy); **shopify.dev** for APIs, webhooks, bulk operations, Functions, extensions, Hydrogen; **apps.shopify.com**
-  for every app (listing URL, pricing, reviews); **changelog.shopify.com** for recent changes.
+- **APIs and developer facts:** the toolkit's Shopify skills (`shopify-dev` for a general docs search, `shopify-admin`,
+  `shopify-storefront-graphql`, `shopify-functions`, `shopify-liquid`, `shopify-custom-data`…) or the Dev MCP — search
+  the docs and introspect the GraphQL schema when an integration depends on a specific object or mutation. Keep the
+  shopify.dev URL the result cites, not the search output.
+- **help.shopify.com** for features, plans and limits (Markets, B2B, POS, payments, taxes, shipping, returns, customer
+  privacy) — the toolkit does not cover it, so fetch the page. Plan requirements almost always live here: developer docs
+  say "a plan that supports B2B", the help centre names the plan.
+- **apps.shopify.com** for every app (listing URL, pricing, languages, reviews); **changelog.shopify.com** for recent
+  changes. `discovery/schema/question-bank.json` already holds a verified documentation link per question (ADR 0011) —
+  start there, then confirm on the page.
+- **Delegate breadth:** research several areas in parallel with subagents (markets and tax, B2B and checkout,
+  integrations and migration, apps and non-functional), each returning claim → confirmed/contradicted/unconfirmed, exact
+  URL, short quote and the plan requirement. Contradictions are the valuable part: they change the architecture.
 - Plan-dependent features: find the page that states the plan requirement. S/M offers do not assume Shopify Plus.
 - Third-party facts (vendor docs, WCAG, GDPR) may be cited for non-functional requirements, but every Shopify fact
   needs a Shopify source.

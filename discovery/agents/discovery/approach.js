@@ -28,6 +28,9 @@ Solution architecture
 Capability map
 - One row per client requirement found in the engagement. Resolve each at the cheapest safe level, in order: native Shopify feature → Shopify App Store app → theme customisation (Liquid / Horizon blocks) → custom (metafields, metaobjects, Shopify Functions, custom app). Do not skip a level without saying why in notes.
 - gaia_tier: T1 trivial configuration · T2 standard work on existing patterns · T3 new capability, integration or data model · T4 foundational (payments provider, PCI, re-platforming).
+- client_requirement: the requirement in the client's own words, quoted from the answer, so the client recognises it.
+- why_this_level: why this level and not a cheaper one — required for app, theme and custom rows (e.g. "native returns cannot print prepaid labels outside the US").
+- limits: the documented limits, plan requirement or licence implication a reader must know before agreeing to it.
 - question_ids: the questionnaire questions the requirement comes from (ids from the provenance map when available) — at least one per row.
 - sources: at least one official Shopify documentation page or App Store listing that confirms the resolution.
 
@@ -80,6 +83,7 @@ export function approachQualityErrors(payload, doc) {
     badLinks(row.sources, where);
     if (!official(row.sources)) errors.push(`${where}: cite at least one official Shopify source (help.shopify.com, shopify.dev, apps.shopify.com…)`);
     if (!(row.question_ids ?? []).length) errors.push(`${where}: trace it to at least one question id`);
+    if (row.resolution !== 'native' && !row.why_this_level?.trim()) errors.push(`${where}: say why ${row.resolution} and not a cheaper level (native → app → theme → custom)`);
   });
 
   const decisions = payload.architecture_decisions ?? [];
@@ -211,7 +215,8 @@ export function fromApproachPayload(payload) {
 export function toApproachPayload(approach) {
   return {
     capability_map: (approach.capability_map ?? []).map((r) => ({
-      requirement: r.requirement, resolution: r.resolution, tool: r.tool ?? '', gaia_tier: r.gaia_tier ?? 'T2',
+      requirement: r.requirement, client_requirement: r.client_requirement ?? '', resolution: r.resolution, tool: r.tool ?? '',
+      why_this_level: r.why_this_level ?? '', limits: r.limits ?? '', gaia_tier: r.gaia_tier ?? 'T2',
       notes: r.notes ?? '', question_ids: r.question_ids ?? [], sources: r.sources ?? [],
     })),
     architecture_decisions: (approach.architecture?.decisions ?? []).map((d) => ({

@@ -44,10 +44,13 @@ export default function Closing({ loaderData }) {
         <section className="card">
           <p className="question">Saved {document.saved_at} by {document.by} ({VIA[document.via] ?? document.via})</p>
           <div className="actions">
-            <a className="button" href={`/engagements/${client}/closing-document.md`} download>Download Markdown</a>
+            <a className="button" href={`/engagements/${client}/closing-document.pptx`} download>PowerPoint (client version)</a>
+            <a className="button secondary" href={`/engagements/${client}/closing-document.pptx?internal=1`} download>PowerPoint (with consultant notes)</a>
+            <a className="button secondary" href={`/engagements/${client}/closing-document.md`} download>Markdown</a>
+            {document.annex ? <a className="button secondary" href={`/engagements/${client}/closing-annex.md`} download>Annex document</a> : null}
             {history.length ? <span className="muted">{history.length} previous version{history.length > 1 ? 's' : ''} kept</span> : null}
           </div>
-          <p className="muted">Lead Consultant draft: remove the “Before presenting” block and the Consultant notes section before sharing with the client.</p>
+          <p className="muted">The client version of the deck stops before the Consultant notes; check the slides before presenting, and remove any “Before presenting” block.</p>
           {preview.length ? (<><h3>Contents</h3><ol>{preview.map((h) => <li key={h}>{h}</li>)}</ol></>) : null}
         </section>
       ) : <p className="error">No Discovery Closing Document saved yet.</p>}

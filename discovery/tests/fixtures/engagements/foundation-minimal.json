@@ -352,7 +352,8 @@
         ],
         "sources": [
           "https://help.shopify.com/en/manual/online-store/themes"
-        ]
+        ],
+        "why_this_level": "Native settings cannot produce this layout; it is theme configuration, not custom code."
       },
       {
         "requirement": "Material and care attributes on product pages",
@@ -378,7 +379,8 @@
         ],
         "sources": [
           "https://apps.shopify.com/klaviyo-email-marketing"
-        ]
+        ],
+        "why_this_level": "Native Shopify does not cover this requirement; Klaviyo is the cheapest proven option."
       }
     ],
     "app_shortlist": [
