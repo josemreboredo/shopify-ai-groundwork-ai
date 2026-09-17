@@ -14,6 +14,7 @@ import { run } from '../../agents/interview/cli.js';
 import { finishWork, WORK_FILES } from '../../agents/discovery/claude-code.js';
 import { toApproachPayload } from '../../agents/discovery/approach.js';
 import { evaluateExits } from '../../agents/discovery/exits.js';
+import { classifyOffer } from '../../agents/discovery/classify.js';
 import { appSignals } from '../../agents/discovery/app-signals.js';
 import { needsApproach } from '../../agents/discovery/engine.js';
 import { buildBacklog } from '../../agents/backlog/cli.js';
@@ -41,7 +42,7 @@ function stopInterview(route) {
   run('start', { client, mode: 'quick' }, env);
   answer('Q10.5.2', '/meta/consent/llm_processing', true, 'consultant');
   answer('Q1.1.1', '/meta/client/name', 'Global Demo');
-  const codes = ['CH', 'DE', 'GB', 'US', 'HK', 'CN', 'AU', 'SG'];
+  const codes = ['CH', 'DE', 'GB', 'US', 'HK', 'JP', 'AU', 'SG'];
   const stop = answer('Q3.1.1', '/markets/list', codes.map((code) => ({ code, currency: 'EUR', languages: ['en'] })));
   assert.equal(stop.go, false);
   assert.equal(stop.route, 'not decided');
@@ -144,6 +145,48 @@ describe('route after a STOP', () => {
   });
 });
 
+describe('mainland China', () => {
+  const withMarkets = (codes) => {
+    const doc = load('acme-watches.json');
+    doc.markets.list = codes.map((code) => ({ code, currency: code === 'CN' ? 'CNY' : 'EUR', languages: code === 'CN' ? ['zh-CN'] : ['en'] }));
+    return doc;
+  };
+
+  test('is excluded from the offering and routed to a separate China discovery (11.20)', () => {
+    const doc = withMarkets(['CH', 'DE', 'CN']);
+    const exits = evaluateExits({ ...doc, offer: classifyOffer(doc) });
+    assert.equal(exits.items.find((i) => i.rule_id === '11.20').result, 'FLAG');
+    assert.equal(exits.triggered, false);
+    const offer = classifyOffer(doc);
+    assert.match(offer.scope_gates.markets.evidence, /2 market\(s\) at launch: CH, DE$/);
+    assert.equal(offer.scope_gates.multi_currency.active, false, 'CNY does not count toward multi-currency');
+  });
+
+  test('as the only launch market is a STOP (11.21)', () => {
+    const doc = withMarkets(['CN']);
+    const exits = evaluateExits({ ...doc, offer: classifyOffer(doc) });
+    assert.deepEqual(exits.items.filter((i) => ['11.20', '11.21'].includes(i.rule_id)).map((i) => `${i.rule_id}:${i.result}`), ['11.21:STOP']);
+    assert.equal(exits.triggered, true);
+  });
+
+  test('China answers reach the deck consultant notes and out-of-scope list', () => {
+    const doc = withMarkets(['CH', 'DE', 'CN']);
+    doc.china = { selling_model: 'cross_border_offshore', channels: ['tmall_global'], legal_advice: 'client_prc_counsel' };
+    doc.offer = classifyOffer(doc);
+    doc.exits = evaluateExits(doc);
+    const { xml } = buildDeckXml(doc);
+    assert.match(xml, /<mainland-china discovery=/);
+    assert.match(xml, /topic="selling model">cross_border_offshore</);
+    assert.match(clientPart(xml), /Mainland China — a separate China discovery/);
+    assert.equal(validateEngagement(doc).valid, true, JSON.stringify(validateEngagement(doc).errors));
+  });
+
+  test('Hong Kong is not mainland China', () => {
+    const doc = withMarkets(['CH', 'HK']);
+    assert.ok(!evaluateExits({ ...doc, offer: classifyOffer(doc) }).items.some((i) => i.rule_id === '11.20'));
+  });
+});
+
 describe('rules and signals', () => {
   test('11.17 flags sensitive personal data', () => {
     const doc = load('acme-watches.json');
@@ -165,6 +208,6 @@ describe('rules and signals', () => {
     doc.integrations = [...(doc.integrations ?? []), { system: 'Returns hub', category: 'returns', status: 'to_build' }];
     const s = appSignals(doc);
     assert.deepEqual(s.returns_platform, ['Client uses or prefers Loop Returns for returns', "Returns hub is in the client's system landscape (to_build)"]);
-    assert.deepEqual(s.post_purchase_platform, ['Client uses or prefers parcelLab for post-purchase']);
+    assert.deepEqual(s.post_purchase_platform, ['Client uses or prefers parcelLab']);
   });
 });

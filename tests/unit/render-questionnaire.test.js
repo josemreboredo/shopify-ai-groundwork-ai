@@ -5,11 +5,23 @@ import { test } from 'node:test';
 import assert   from 'node:assert/strict';
 import fs       from 'node:fs';
 
-import { renderQuestionnaire, OUTPUT } from '../../scripts/discovery/render-questionnaire.js';
+import { renderQuestionnaire, renderConsultantGuide, OUTPUT, GUIDE_OUTPUT } from '../../scripts/discovery/render-questionnaire.js';
 import { questionBank } from '../../schema/index.js';
 
 test('docs/discovery/client-questionnaire.md is up to date (npm run questionnaire:render)', () => {
   assert.equal(fs.readFileSync(OUTPUT, 'utf8'), renderQuestionnaire());
+});
+
+test('docs/discovery/consultant-guide.md is up to date (npm run questionnaire:render)', () => {
+  assert.equal(fs.readFileSync(GUIDE_OUTPUT, 'utf8'), renderConsultantGuide());
+});
+
+test('Shopify plan requirements stay in the consultant guide, never in the client questionnaire', () => {
+  const client = renderQuestionnaire();
+  assert.doesNotMatch(client, /Shopify Plus|\bPlus\b|Advanced plan|Grow plan|Basic plan|plan_note|help\.shopify\.com/);
+  const guide = renderConsultantGuide();
+  assert.match(guide, /Shopify Plus/);
+  for (const q of questionBank.questions.filter((x) => x.shopify)) assert.ok(guide.includes(`**${q.id}**`), q.id);
 });
 
 test('every question appears exactly once in the rendered questionnaire', () => {

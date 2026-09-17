@@ -13,7 +13,8 @@
     "backlog": "node agents/backlog/cli.js",
     "deck": "node agents/discovery-deck/build.js",
     "deck:check": "node agents/discovery-deck/build.js check",
-    "interview": "node agents/interview/cli.js"
+    "interview": "node agents/interview/cli.js",
+    "apps": "node scripts/apps/cli.js"
   },
   "engines": {
     "node": ">=22.9.0"

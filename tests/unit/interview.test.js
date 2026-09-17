@@ -44,16 +44,45 @@ describe('question selection', () => {
     const quick = nextQuestions(consented('quick'), { limit: 500 }).questions;
     assert.ok(quick.length > 0 && quick.every((q) => q.priority === 'required' || q.feeds?.length));
     const ids = quick.map((q) => q.id);
-    for (const id of ['Q2.3.3', 'Q3.1.4', 'Q8.2.3', 'Q5.2.7', 'Q5.5.1', 'Q5.5.4']) assert.ok(ids.includes(id), `quick mode should ask ${id}`);
-    assert.ok(!ids.includes('Q5.2.1'), 'plain recommended questions stay out of quick mode');
+    for (const id of ['Q2.3.3', 'Q3.1.4', 'Q8.2.3']) assert.ok(ids.includes(id), `quick mode should ask rule-feeding ${id}`);
+    for (const id of ['Q5.2.1', 'Q5.2.7', 'Q5.5.1', 'Q5.5.4']) assert.ok(!ids.includes(id), `quick mode should not ask ${id} yet`);
     const full = nextQuestions(consented('full'), { limit: 500 }).questions;
     assert.ok(full.some((q) => q.priority === 'optional'));
+  });
+
+  test('app-only questions join a quick interview when an earlier answer makes them relevant', () => {
+    const s = consented('quick');
+    const ask = () => nextQuestions(s, { limit: 500 }).questions.map((q) => q.id);
+    assert.ok(!ask().includes('Q5.2.7'));
+    assert.equal(recordAnswer(s, { pointer: '/post_purchase/orders_per_month', value: 2500, question_id: 'Q5.4.1', today: TODAY }).ok, true);
+    for (const id of ['Q5.2.6', 'Q5.2.7', 'Q5.4.2', 'Q5.5.1']) assert.ok(ask().includes(id), `${id} after 2,500 orders per month`);
+    assert.ok(!ask().includes('Q2.2.5'));
+    recordAnswer(s, { pointer: '/catalogue/product_types', value: ['variant', 'pre_order'], question_id: 'Q2.2.1', today: TODAY });
+    assert.ok(ask().includes('Q2.2.5'), 'pre-order payment after pre_order product type');
+    assert.ok(!ask().includes('Q3.2.1'));
+    recordAnswer(s, { pointer: '/markets/list', value: [{ code: 'CH', languages: ['de', 'fr', 'it'] }], question_id: 'Q3.1.1', today: TODAY });
+    assert.ok(ask().includes('Q3.2.1'), 'translation after 3 languages');
+  });
+
+  test('mainland China questions are asked, in any mode, only when CN is a launch market', () => {
+    for (const mode of ['quick', 'full']) {
+      const s = consented(mode);
+      const china = () => nextQuestions(s, { limit: 500 }).questions.filter((q) => q.id.startsWith('Q3.5.')).map((q) => q.id);
+      assert.deepEqual(china(), [], `${mode}: no China questions without CN`);
+      recordAnswer(s, { pointer: '/markets/list', value: [{ code: 'CH' }, { code: 'HK' }], question_id: 'Q3.1.1', today: TODAY });
+      assert.deepEqual(china(), [], `${mode}: Hong Kong is not mainland China`);
+      recordAnswer(s, { pointer: '/markets/list', value: [{ code: 'CH' }, { code: 'CN' }], question_id: 'Q3.1.1', today: TODAY });
+      assert.ok(china().includes('Q3.5.1') && china().includes('Q3.5.21'), `${mode}: China questions with CN`);
+      assert.ok(toExtraction(s).open_items.some((i) => i.question_id === 'Q3.5.1'), 'unanswered China questions become open items');
+    }
+    const noChina = consented('full');
+    assert.ok(!toExtraction(noChina).open_items.some((i) => i.question_id?.startsWith('Q3.5.')), 'no China open items without CN');
   });
 
   test('the route question is asked only while a STOP is open, and first', () => {
     const s = consented('quick');
     assert.ok(!nextQuestions(s, { limit: 500 }).questions.some((q) => q.id === 'Q10.5.5'));
-    recordAnswer(s, { pointer: '/checkout/customisation', value: 'custom_ui', question_id: 'Q4.2.1', today: TODAY });
+    recordAnswer(s, { pointer: '/checkout/customisation', value: ['fully_custom_checkout_ui'], question_id: 'Q4.2.1', today: TODAY });
     assert.equal(nextQuestions(s).questions[0].id, 'Q10.5.5');
     assert.equal(recordAnswer(s, { pointer: '/delivery/route', value: 'larger_engagement', question_id: 'Q10.5.5', source: 'consultant', today: TODAY }).ok, true);
     assert.ok(!nextQuestions(s, { limit: 500 }).questions.some((q) => q.id === 'Q10.5.5'));
@@ -138,7 +167,7 @@ describe('preview', () => {
     recordAnswer(s, { pointer: '/b2b/enabled', value: true, question_id: 'Q6.2.1', today: TODAY });
     assert.equal(preview(s, TODAY).plan_suggestion, undefined, 'Shopify B2B runs on every plan from Basic');
     recordAnswer(s, { pointer: '/b2b/price_lists', value: true, question_id: 'Q6.2.3', today: TODAY });
-    recordAnswer(s, { pointer: '/checkout/customisation', value: 'extensibility', question_id: 'Q4.2.1', today: TODAY });
+    recordAnswer(s, { pointer: '/checkout/customisation', value: ['checkout_step_blocks_or_fields'], question_id: 'Q4.2.1', today: TODAY });
     const suggestion = preview(s, TODAY).plan_suggestion;
     assert.equal(suggestion.value, 'plus');
     assert.deepEqual(suggestion.reasons, ['company-specific B2B catalogs (Shopify Plus)', 'checkout UI extensions on the information, shipping or payment steps / Checkout Branding API (Shopify Plus)']);
@@ -148,7 +177,7 @@ describe('preview', () => {
 
   test('a custom checkout UI shows STOP immediately', () => {
     const s = consented();
-    recordAnswer(s, { pointer: '/checkout/customisation', value: 'custom_ui', question_id: 'Q4.2.1', today: TODAY });
+    recordAnswer(s, { pointer: '/checkout/customisation', value: ['fully_custom_checkout_ui'], question_id: 'Q4.2.1', today: TODAY });
     const p = preview(s, TODAY);
     assert.equal(p.go, false);
     assert.ok(p.exit_rules.some((e) => e.rule === '11.6' && e.result === 'STOP'));

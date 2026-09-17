@@ -6,6 +6,30 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 
 ## [Unreleased]
 
+Shopify-knowledge questionnaire (ADR 0011) — owner decisions on `docs/discovery/questionnaire-shopify-proposal.md`.
+
+### Added
+- § 3.5 Mainland China (21 questions from the China discovery checklist: selling model, channels, entities, ICP, Shopify's role, customs, product classification and NMPA, payments, PIPL, blocked services, marketing, service, legal advice), asked in every mode only when CN is a launch market (`only_if`); answers in `engagement.china`, the Larger Engagement brief and deck section 18
+- `ask_if` relevance conditions: questions that feed only app signals join a quick interview only when an earlier answer makes them relevant (e.g. orders per month ≥ 1,000, pre-order products, 3+ languages); the consultant guide shows each condition
+- Question bank 1.1.0 (256 questions): Retail & POS subsection, channels, legal entities, installed apps and deprecated-feature audit, staff users, combined listings, personalisation, bundles, subscriptions, pre-orders, filters, merchant of record, per-market customisation, translation scope, tax display and tax service, express checkouts, payment method rules, chargeback guarantee, routing rules, free-shipping thresholds, delivery methods, sign-in methods, B2B catalogs and unsupported needs, consent approach, SMS and WhatsApp, promotion targeting, headless reasons, hosting, content and features, A/B testing, Shopify Payments eligibility
+- `shopify` knowledge blocks (native feature, minimum plan, Shopify docs URL, App Store category, apps, extension points, verification date) and the generated `docs/discovery/consultant-guide.md`
+- `schema/apps.json` App Store registry (88 apps with listing check level); apps are proposed until a lead consultant approves them after the engagement (`npm run apps -- approve`)
+- Shopify plan benchmark (`agents/discovery/plan.js`): 19 plan rules with Shopify docs; 11.1 compares each required feature's minimum plan with the target plan
+- Exit rules 11.18 (deprecated Shopify features, FLAG), 11.19 (B2B needs Shopify B2B does not support, FLAG), 11.20 (mainland China excluded, separate China discovery, FLAG), 11.21 (mainland China only, STOP)
+- Retail & POS scope gate (no modifier until priced); integrated POS counts as an integration
+- 15 new app signals (back-in-stock, pre-orders, product options, bundles, subscriptions, B2B quotes, loyalty, reviews, translation, consent, fraud guarantee, SMS, delivery scheduling, server-side tracking, wishlist) and App Store candidates per signalled area in the approach input and deck section 18
+
+### Changed
+- S and M no longer assume Shopify Plus; 11.2 (quotes) and 11.5 (options, now also > 2,048 variants) are FLAGs
+- App signals follow Shopify's native baseline: B2B returns and customer cancellation requests are native; return labels and automatic delivery dates are signals only outside the US
+- The client questionnaire carries no Shopify plan information (tested); § 11 uses a client wording for 11.1
+- Mainland China is excluded from markets, languages, offer, plan and build stories
+- Field types follow Shopify's feature names (e.g. `checkout.customisation`, `shipping.rates`, `payments.local_methods` are multi-select; `markets.geo_redirect`, `shipping.returns.portal` are enums; `shipping.routing_rules` replaces `complex_routing`) — re-run discovery for 1.0.0 engagements
+- Removed or merged: Q4.2.5, Q5.1.8, Q5.5.5, Q6.1.2 (legacy accounts deprecated), Q7.3.3, Q7.6.8, Q10.2.4
+- Offering 1.2.0
+
+## [0.5.1] — unreleased (PR #7)
+
 Fixes from the ReboLabs demo interview (ADR 0009).
 
 ### Added

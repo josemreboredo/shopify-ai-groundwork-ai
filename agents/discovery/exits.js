@@ -8,7 +8,7 @@
  */
 
 import { offering } from '../../schema/index.js';
-import { countedIntegrations, marketsOf, distinctLanguages } from './classify.js';
+import { countedIntegrations, marketsOf, distinctLanguages, hasChinaMainland } from './classify.js';
 import { unmetPlanRequirements, describeRequirements } from './plan.js';
 
 const RULES = new Map(offering.exit_rules.map((r) => [r.id, r]));
@@ -51,11 +51,15 @@ const EVALUATORS = {
   },
 
   '11.5': (doc) => {
-    const n = doc.catalogue?.variant_options_max;
-    return n > 3 ? `${n} variant options per product` : null;
+    const reasons = [];
+    const options = doc.catalogue?.variant_options_max;
+    const variants = doc.catalogue?.variants_per_product_max;
+    if (options > 3) reasons.push(`${options} variant options per product`);
+    if (variants > 2048) reasons.push(`${variants} variants on one product`);
+    return reasons.length ? reasons.join('; ') : null;
   },
 
-  '11.6': (doc) => (doc.checkout?.customisation === 'custom_ui' ? 'Fully custom checkout UI requested' : null),
+  '11.6': (doc) => ((doc.checkout?.customisation ?? []).includes('fully_custom_checkout_ui') ? 'Fully custom checkout UI requested' : null),
 
   '11.7': (doc) => {
     const counted = countedIntegrations(doc);
@@ -87,8 +91,10 @@ const EVALUATORS = {
 
   '11.13': (doc) => {
     const s = doc.shipping ?? {};
-    return (s.fulfilment_locations ?? 0) > 2 && s.complex_routing === true
-      ? `${s.fulfilment_locations} fulfilment locations with complex routing`
+    const beyondNative = (s.routing_rules ?? []).filter((r) => r === 'custom_rule_function' || r === 'erp_or_oms_decides');
+    const complex = beyondNative.length > 0 || s.complex_routing === true;
+    return (s.fulfilment_locations ?? 0) > 2 && complex
+      ? `${s.fulfilment_locations} fulfilment locations with routing beyond Shopify's native rules${beyondNative.length ? ` (${beyondNative.join(', ').replace(/_/g, ' ')})` : ''}`
       : null;
   },
 
@@ -98,6 +104,7 @@ const EVALUATORS = {
     const reasons = [];
     if (m.seo_equity === 'significant') reasons.push('significant SEO equity');
     if (m.historical_orders_required === true) reasons.push('historical orders required in Shopify');
+    if (m.subscriptions === true) reasons.push('active subscriptions to migrate');
     return reasons.length ? `Migration from ${m.source_platform} with ${reasons.join(' and ')}` : null;
   },
 
@@ -118,6 +125,22 @@ const EVALUATORS = {
   },
 
   '11.17': (doc) => (doc.compliance?.sensitive_data === true ? 'Sensitive personal data collected (health, age, biometric or financial)' : null),
+
+  '11.20': (doc) => (hasChinaMainland(doc) && marketsOf(doc).length > 0
+    ? 'Mainland China (CN) is a launch market — excluded from this offering; separate China discovery'
+    : null),
+
+  '11.21': (doc) => (hasChinaMainland(doc) && marketsOf(doc).length === 0 ? 'Mainland China is the only launch market' : null),
+
+  '11.18': (doc) => {
+    const used = (doc.shopify?.deprecated_features ?? []).filter((f) => f !== 'none');
+    return doc.shopify?.existing_store === true && used.length ? `Existing store uses ${used.join(', ').replace(/_/g, ' ')}` : null;
+  },
+
+  '11.19': (doc) => {
+    const needs = (doc.b2b?.unsupported_needs ?? []).filter((n) => n !== 'none');
+    return doc.b2b?.enabled === true && needs.length ? `B2B needs Shopify B2B does not support: ${needs.join(', ').replace(/_/g, ' ')}` : null;
+  },
 };
 
 /**

@@ -38,7 +38,7 @@ with `DISCOVERY_MODEL`. If the key is not scoped to a workspace, also set `ANTHR
 | 2. Redaction — e-mails, international phone numbers, stakeholder names; refuses card numbers and customer e-mail lists | `input.js` | no |
 | 3. Extraction — answers, provenance, open items, exit-rule candidates | `extract.js` | yes (structured output) |
 | 4. Offer — scope gates, L triggers, S/M/L, modifiers, price band | `classify.js` | no |
-| 5. Exit rules 11.1–11.17, merged with LLM candidates | `exits.js` | no |
+| 5. Exit rules 11.1–11.21, Shopify plan benchmark, merged with LLM candidates | `exits.js`, `plan.js` | no |
 | 6. Approach — capability map, app shortlist, assumptions, phases (GO, or Larger Engagement) | `approach.js` | yes (structured output) |
 | 7. Validation against `schema/engagement.schema.json` | `engine.js` | no |
 | 8. Output — `engagement.json` + Markdown renderings, or `stop-report.md` | `render.js`, `cli.js` | no |

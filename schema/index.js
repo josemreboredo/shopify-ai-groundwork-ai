@@ -3,7 +3,8 @@
  * @description Loaders and helpers for the engagement contract (ADR 0002):
  *   - engagement.schema.json — shape of one client engagement
  *   - question-bank.json     — every discovery question and where its answer lands
- *   - offering.json          — offers, scope gates, L triggers, modifiers, exit rules
+ *   - offering.json          — offers, scope gates, L triggers, modifiers, exit rules, app signals, routes
+ *   - apps.json              — App Store registry (question-bank shopify.apps, approach shortlist)
  *
  * @module schema
  */
@@ -19,6 +20,7 @@ const load = (name) => JSON.parse(readFileSync(new URL(`./${name}`, import.meta.
 export const engagementSchema = load('engagement.schema.json');
 export const questionBank     = load('question-bank.json');
 export const offering         = load('offering.json');
+export const apps             = load('apps.json');
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 

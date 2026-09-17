@@ -22,11 +22,22 @@ export function countedIntegrations(doc) {
   return (doc.integrations ?? []).filter((i) => COUNTED.has(i.category) || i.connector === 'custom');
 }
 
-/** @param {object} doc */
-export const marketsOf = (doc) => doc.markets?.list ?? [];
+/**
+ * Mainland China is not part of the offering (owner decision 2026-09-17): selling
+ * behind the Great Firewall needs an ICP licence, onshore hosting and a
+ * China-specific architecture, scoped in a separate China discovery (exit rules
+ * 11.20 / 11.21). Hong Kong, Macau and Taiwan are separate markets.
+ */
+export const CHINA_MAINLAND = 'CN';
+
+/** Launch markets in the offering's scope (mainland China excluded). @param {object} doc */
+export const marketsOf = (doc) => (doc.markets?.list ?? []).filter((m) => m.code !== CHINA_MAINLAND);
+
+/** True when mainland China is a launch market. @param {object} doc */
+export const hasChinaMainland = (doc) => (doc.markets?.list ?? []).some((m) => m.code === CHINA_MAINLAND);
 
 /**
- * Distinct languages across all markets.
+ * Distinct languages across the markets in scope.
  *
  * @param {object} doc
  * @returns {string[]}
@@ -92,9 +103,23 @@ const GATE_EVALUATORS = {
     const reasons = [];
     if ((c.variant_options_max ?? 0) >= 2) reasons.push(`${c.variant_options_max} variant options`);
     if ((c.custom_attributes ?? []).length > 0) reasons.push('custom attributes');
-    if ((c.product_types ?? []).some((t) => t === 'bundle' || t === 'product_set')) reasons.push('bundles / product sets');
+    if ((c.product_types ?? []).some((t) => ['bundle', 'fixed_bundle', 'multipack', 'mix_and_match_bundle', 'product_set'].includes(t))) reasons.push('bundles / product sets');
     const active = skus >= 500 && reasons.length > 0;
     return { active, evidence: `${skus} SKUs${reasons.length ? `; ${reasons.join(', ')}` : ''}` };
+  },
+
+  retail_pos: (doc) => {
+    const r = doc.retail ?? {};
+    const stores = r.store_count ?? 0;
+    const services = (r.omnichannel ?? []).filter((s) => s !== 'none');
+    const pos = r.pos === 'shopify_pos' || r.pos === 'other_pos_integrated';
+    const active = stores > 0 && (pos || services.length > 0);
+    return {
+      active,
+      evidence: stores > 0
+        ? `${stores} store(s); POS: ${r.pos ? r.pos.replace(/_/g, ' ') : 'not recorded'}${services.length ? `; omnichannel: ${services.join(', ').replace(/_/g, ' ')}` : ''}`
+        : 'No retail stores',
+    };
   },
 
   migration: (doc) => {

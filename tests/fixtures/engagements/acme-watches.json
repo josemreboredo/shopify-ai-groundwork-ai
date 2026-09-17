@@ -203,7 +203,9 @@
     "rationale": "All six scope gates are active (two or more) and no L trigger applies, so the engagement classifies as M — Ecommerce Scale on the Liquid track."
   },
   "markets": {
-    "primary_markets": ["CH"],
+    "primary_markets": [
+      "CH"
+    ],
     "list": [
       {
         "code": "CH",
@@ -240,7 +242,7 @@
       "IT"
     ],
     "strategy": "shopify_markets",
-    "geo_redirect": true,
+    "geo_redirect": "automatic_redirect",
     "translation_method": "translate_and_adapt",
     "rtl_required": false,
     "seo_per_language": true,
@@ -276,7 +278,9 @@
     "inventory": {
       "source": "erp",
       "low_stock_alerts": true,
-      "out_of_stock_behaviour": "notify_me"
+      "out_of_stock_behaviour": [
+        "back_in_stock_alert"
+      ]
     }
   },
   "payments": {
@@ -285,17 +289,22 @@
       "PayPal"
     ],
     "local_methods": [
-      "TWINT"
+      "twint"
     ],
-    "bnpl": [],
+    "bnpl": [
+      "none"
+    ],
     "multi_currency_settlement": true,
     "pci_scope": "shopify_hosted"
   },
   "checkout": {
-    "customisation": "extensibility",
+    "customisation": [
+      "branding_in_editor",
+      "checkout_step_blocks_or_fields"
+    ],
     "extensions": [
-      "PO number field for B2B orders",
-      "Warranty and authenticity trust block"
+      "custom_fields",
+      "trust_badges"
     ],
     "custom_fields": [
       "PO number (B2B)",
@@ -305,23 +314,28 @@
     "gift_cards": false,
     "store_credit": false,
     "fraud_manual_review": true,
-    "order_restrictions": []
+    "order_restrictions": [
+      "none"
+    ]
   },
   "shipping": {
     "model": "in_house",
     "fulfilment_locations": 1,
-    "complex_routing": false,
     "carriers": [
       "DHL Express",
       "Swiss Post"
     ],
-    "rates": "mixed",
+    "rates": [
+      "flat",
+      "free_above_threshold",
+      "carrier_calculated"
+    ],
     "special_rules": [],
     "international": true,
     "excluded_countries": [],
     "returns": {
       "policy": "30-day returns for unworn watches in original packaging; free returns within CH, customer-paid from DE and AT.",
-      "portal": true,
+      "portal": "native_self_serve_returns",
       "exchanges": true,
       "solution": "Loop Returns",
       "window_days": 30,
@@ -339,13 +353,17 @@
     "notifications": {
       "custom": true,
       "sender": "mixed"
-    }
+    },
+    "routing_rules": [
+      "stay_within_market",
+      "closest_location"
+    ]
   },
   "post_purchase": {
     "orders_per_month": 400,
     "cancellations": {
       "self_service": false,
-      "window": "before_fulfilment",
+      "window": "until_fulfilled",
       "partial": true,
       "order_editing": false
     },
@@ -375,9 +393,9 @@
     "account_requirement": "optional",
     "account_type": "new_customer_accounts",
     "account_features": [
-      "Order history",
-      "Addresses",
-      "Returns"
+      "order_history",
+      "addresses",
+      "return_requests"
     ],
     "segments": [
       "Retail",
@@ -473,7 +491,7 @@
       "code_based",
       "stackable"
     ],
-    "stacking": "one_code_plus_one_automatic",
+    "stacking": "native_combinations",
     "coupons": {
       "usage": [
         "multi_use",
@@ -583,10 +601,10 @@
     "theme_preference": "Horizon",
     "aesthetic": "Minimal, editorial product photography",
     "interactive_patterns": [
-      "Mega-menu",
-      "Swatches",
-      "Predictive search",
-      "Quick-add"
+      "mega_menu",
+      "variant_swatches",
+      "predictive_search",
+      "quick_add"
     ],
     "motion": false,
     "accessibility": {

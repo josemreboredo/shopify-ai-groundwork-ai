@@ -3,8 +3,10 @@
  * @description Chooses the next interview questions: consent first, then the
  * route decision while a STOP is open, then the question bank order filtered by
  * mode, skip logic and what is already known. Questions that feed a scope gate,
- * L trigger, exit rule or app signal are asked in every mode, and come first
- * within their section.
+ * L trigger or exit rule are asked in every mode; questions that feed only app
+ * signals are asked outside their mode only when an earlier answer makes them
+ * relevant (`ask_if`). Questions with `only_if` (e.g. mainland China) are asked,
+ * in any mode, only when their condition holds. Feeding questions come first within their section.
  *
  * @module interview/next
  */
@@ -46,9 +48,32 @@ export function hasOpenStop(session) {
 }
 
 /**
+ * Whether one `ask_if` condition holds for the answers so far.
+ *
+ * @param {object} cond  { pointer, equals | not_equals | in | includes_any | min | count_min | matches }
+ * @param {object} answers
+ */
+export function conditionMet(cond, answers) {
+  const values = valuesAt(answers, cond.pointer).flat();
+  if (!values.length) return false;
+  if ('equals' in cond) return values.includes(cond.equals);
+  if ('not_equals' in cond) return values.some((v) => v !== cond.not_equals);
+  if ('in' in cond) return values.some((v) => cond.in.includes(v));
+  if ('includes_any' in cond) return values.some((v) => cond.includes_any.includes(v));
+  if ('min' in cond) return values.some((v) => typeof v === 'number' && v >= cond.min);
+  if ('count_min' in cond) return new Set(values).size >= cond.count_min;
+  if ('matches' in cond) return values.some((v) => typeof v === 'string' && new RegExp(cond.matches, 'i').test(v));
+  return false;
+}
+
+/** True when a question has no `ask_if`, or any of its conditions holds. @param {object} q @param {object} answers */
+export const isRelevant = (q, answers) => !q.ask_if || q.ask_if.some((c) => conditionMet(c, answers));
+
+/**
  * Whether a question belongs to the session's interview: its priority is in the
- * mode, or it feeds the offer, an exit rule or an app signal. STOP-only
- * questions belong only while a STOP is open.
+ * mode, it feeds the offer or an exit rule, or it feeds only app signals and an
+ * earlier answer makes it relevant. STOP-only questions belong only while a STOP
+ * is open.
  *
  * @param {object} q
  * @param {import('./session.js').Session} session
@@ -56,7 +81,11 @@ export function hasOpenStop(session) {
  */
 export function inInterview(q, session, stopOpen) {
   if (q.ask_when === 'stop') return stopOpen;
-  return PRIORITIES_BY_MODE[session.mode].includes(q.priority) || Boolean(q.feeds?.length);
+  if (q.only_if && !q.only_if.some((c) => conditionMet(c, session.answers))) return false;
+  if (PRIORITIES_BY_MODE[session.mode].includes(q.priority)) return true;
+  if (!q.feeds?.length) return false;
+  if (q.feeds.some((f) => !f.startsWith('app:'))) return true;
+  return Boolean(q.ask_if) && isRelevant(q, session.answers);
 }
 
 /**
@@ -71,7 +100,7 @@ export function isSkippedByRule(question, answers) {
   const target = BY_ID.get(rule.question);
   const value = valuesAt(answers, target.maps_to[0])[0];
   if (value === undefined) return false;
-  if ('equals' in rule) return value === rule.equals;
+  if ('equals' in rule) return Array.isArray(value) ? value.length === 1 && value[0] === rule.equals : value === rule.equals;
   if ('excludes' in rule) return Array.isArray(value) && !value.includes(rule.excludes);
   return false;
 }
@@ -104,6 +133,7 @@ export function describeQuestion(q) {
     ...(fields ? { item_fields: fields } : {}),
     ...(q.feeds?.length ? { feeds: q.feeds } : {}),
     ...(q.ask_when ? { ask_when: q.ask_when } : {}),
+    ...(q.shopify ? { shopify: q.shopify } : {}),
   };
 }
 

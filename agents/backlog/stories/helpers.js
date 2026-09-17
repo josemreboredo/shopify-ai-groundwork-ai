@@ -6,8 +6,8 @@
  * @module backlog/stories/helpers
  */
 
-/** Markets at launch. @param {object} doc */
-export const markets = (doc) => doc.markets?.list ?? [];
+/** Markets at launch in the build scope — mainland China is scoped in a separate China discovery. @param {object} doc */
+export const markets = (doc) => (doc.markets?.list ?? []).filter((m) => m.code !== 'CN');
 
 /** Distinct languages across markets. @param {object} doc */
 export const languages = (doc) => [...new Set(markets(doc).flatMap((m) => m.languages ?? []))];

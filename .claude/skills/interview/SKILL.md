@@ -16,7 +16,8 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
    until then.
 2. Get the client slug (kebab-case, e.g. `acme-watches`), the language of the conversation and the mode:
    `quick` (required questions), `standard` (required + recommended, default) or `full` (everything). Every mode
-   also asks the questions that change the offer, an exit rule or an app signal.
+   also asks the questions that change the offer or an exit rule, and app-related questions as soon as an earlier
+   answer makes them relevant (e.g. high order volume brings the returns and tracking questions).
 
 ## Loop
 
@@ -28,6 +29,11 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
 2. The first question is always consent (Q10.5.2). Nothing else can be recorded until it is answered `true`.
 3. Ask the questions the CLI returns — up to three at a time, grouped naturally — **in the conversation language**.
    Translate the question text; keep option meanings exact. Show the `help` text when it matters for the answer.
+   A question's `shopify` block is **for the consultant only** (owner decision 2026-09-17): the native Shopify
+   feature, its minimum plan, the docs link and App Store candidates. Use it to steer toward what Shopify does
+   natively and flag plan or app implications to the consultant (e.g. "consultant note: combined listings need
+   Shopify Plus"); never present plan requirements as a question to the client unless the consultant asks.
+   Full reference: `docs/discovery/consultant-guide.md`.
 4. For each answer, map it to the returned `fields` and record it in **English**:
    ```bash
    npm run interview -- answer --client <slug> --question <id> --pointer <field> --value '<json>' \
@@ -50,9 +56,14 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
 7. `plan_suggestion` in the output is the minimum Shopify plan the answers need (from Shopify's plan documentation),
    with its reasons, while the plan is open. Tell the consultant once and offer to record it
    (`--source inferred --note "Minimum plan for …"`); never record it silently. Do not assume Shopify Plus.
-8. Decisions and context that are not answers (e.g. "we will propose a Larger Engagement") go in `note`: notes are
+8. **Mainland China** (market code `CN`) is not part of the offering: rule 11.20 excludes it and routes it to a
+   separate China discovery (`docs/discovery/china-mainland.md`: onshore selling needs a PRC entity, ICP and onshore
+   hosting, and Shopify has no infrastructure in mainland China). The CLI then adds the § 3.5 Mainland China questions;
+   without CN they are never asked.
+   Tell the consultant when a client lists it; Hong Kong, Macau and Taiwan are separate markets.
+9. Decisions and context that are not answers (e.g. "we will propose a Larger Engagement") go in `note`: notes are
    kept in `engagement.json` and shown in the STOP report, risks and brief.
-9. Call `npm run interview -- next --client <slug>` when you need more questions, and
+10. Call `npm run interview -- next --client <slug>` when you need more questions, and
    `npm run interview -- preview --client <slug>` when the consultant asks where things stand (coverage, app
    signals).
 

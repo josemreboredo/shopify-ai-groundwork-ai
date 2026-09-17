@@ -35,7 +35,7 @@ Output
 How to extract
 - Record only what the questionnaire says. When a question is blank, "TBC", "unknown" or "n/a", do not add an answer; add an open_items entry for required or recommended questions. Never guess.
 - Every question is marked "**Q<id>**". The question mapping shows which fields each question fills.
-- Ticked checkboxes are "- [x] option"; option labels use spaces where values use underscores ("custom ui" → "custom_ui").
+- Ticked checkboxes are "- [x] option"; option labels use spaces where values use underscores ("fully custom checkout ui" → "fully_custom_checkout_ui").
 - meta.client.slug is the client name in lowercase kebab-case ("ACME Watches SA" → "acme-watches").
 - Money amounts are plain numbers (€60–80k → min 60000, max 80000, currency "EUR").
 - "[redacted-…]" markers replace personal data. Leave those fields out.

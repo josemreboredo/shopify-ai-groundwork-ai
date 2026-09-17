@@ -15,7 +15,9 @@ import {
   offeringReferences,
   questionsFeeding,
   validateEngagement,
+  apps,
 } from '../../schema/index.js';
+import { PLAN_RULES } from '../../agents/discovery/plan.js';
 
 const questions = questionBank.questions;
 const byId      = new Map(questions.map((q) => [q.id, q]));
@@ -168,5 +170,88 @@ describe('engagement schema', () => {
     assert.equal(validateEngagement(withItem({ rule_id: '11.10', result: 'FLAG', source: 'rule', resolution: { status: 'open' } })).valid, false);
     assert.equal(validateEngagement(withItem({ rule_id: '11.10', result: 'FLAG', source: 'rule', resolution: { status: 'open', owner: 'Lead Consultant' } })).valid, true);
     assert.equal(validateEngagement(withItem({ rule_id: '11.11', result: 'WARN', source: 'rule' })).valid, true);
+  });
+});
+
+describe('Shopify knowledge (question bank 1.1.0)', () => {
+  const PLANS = new Set(schemaNodeAt('/shopify/target_plan').enum);
+  const DOC_HOSTS = /^https:\/\/(help\.shopify\.com|shopify\.dev|www\.shopify\.com|changelog\.shopify\.com|apps\.shopify\.com)\//;
+  const handles = new Set(apps.apps.map((a) => a.handle));
+
+  test('every shopify block has valid features, plans, Shopify docs, registry apps and a verification date', () => {
+    for (const q of questions.filter((x) => x.shopify)) {
+      const s = q.shopify;
+      for (const n of s.native) {
+        assert.ok(n.feature?.trim(), `${q.id}: native feature name`);
+        assert.ok(PLANS.has(n.plan), `${q.id}: plan ${n.plan}`);
+        assert.match(n.docs, DOC_HOSTS, `${q.id}: docs must be an official Shopify URL`);
+      }
+      if (s.app_category?.url) assert.match(s.app_category.url, /^https:\/\/apps\.shopify\.com\/categories\//, `${q.id}: category URL`);
+      for (const h of s.apps ?? []) assert.ok(handles.has(h), `${q.id}: app ${h} is not in schema/apps.json`);
+      assert.match(s.verified?.on ?? '', /^\d{4}-\d{2}-\d{2}$/, `${q.id}: verified.on`);
+      assert.doesNotMatch(JSON.stringify(s), /[€$£]\s?\d|\d+\s?(EUR|USD|CHF|GBP)\b|\/mo\b|per month/i, `${q.id}: no prices in shopify blocks`);
+    }
+  });
+
+  test('questions that decide the Shopify plan or an app signal carry Shopify knowledge', () => {
+    const missing = questions.filter((q) => q.feeds?.some((f) => f === 'exit:11.1' || f.startsWith('app:')) && !q.shopify && q.id !== 'Q1.2.3').map((q) => q.id);
+    assert.deepEqual(missing, []);
+  });
+
+  test('questions feeding only app signals carry ask_if conditions on answers a quick interview collects', () => {
+    const quick = (q) => q.priority === 'required' || q.feeds?.some((f) => !f.startsWith('app:')) || Boolean(q.ask_if);
+    const kinds = ['equals', 'not_equals', 'in', 'includes_any', 'min', 'count_min', 'matches'];
+    for (const q of questions.filter((x) => x.feeds?.length && x.feeds.every((f) => f.startsWith('app:')) && x.priority !== 'required')) {
+      assert.ok(q.ask_if?.length > 0, `${q.id}: needs ask_if`);
+      for (const c of q.ask_if) {
+        assert.ok(schemaNodeAt(c.pointer), `${q.id}: ${c.pointer} not in schema`);
+        assert.equal(kinds.filter((k) => k in c).length, 1, `${q.id}: one condition kind per entry`);
+        const source = questions.find((x) => x.id !== q.id && x.maps_to.some((p) => covers(p, c.pointer)));
+        assert.ok(source && quick(source), `${q.id}: ${c.pointer} must be captured by a question a quick interview asks`);
+        if ('matches' in c) assert.doesNotThrow(() => new RegExp(c.matches, 'i'));
+      }
+    }
+  });
+
+  test('only_if conditions use known kinds on answers a quick interview collects; mainland China questions depend on CN', () => {
+    for (const q of questions.filter((x) => x.only_if)) {
+      for (const c of q.only_if) {
+        assert.ok(schemaNodeAt(c.pointer), `${q.id}: ${c.pointer}`);
+        const source = questions.find((x) => x.id !== q.id && x.maps_to.some((p) => covers(p, c.pointer)));
+        assert.equal(source?.priority, 'required', `${q.id}: ${c.pointer} must come from a required question`);
+      }
+    }
+    const china = questions.filter((q) => q.subsection === '3.5');
+    assert.ok(china.length >= 15);
+    for (const q of china) assert.deepEqual(q.only_if, [{ pointer: '/markets/list/*/code', includes_any: ['CN'] }], q.id);
+  });
+
+  test('every Shopify plan rule reads answers that exit rule 11.1 lists and a question feeding 11.1 asks', () => {
+    const rule = offering.exit_rules.find((r) => r.id === '11.1');
+    const feeders = questionsFeeding('exit:11.1').flatMap((id) => byId.get(id).maps_to);
+    for (const r of PLAN_RULES) {
+      assert.ok(r.docs.startsWith('https://'), r.feature);
+      for (const input of r.inputs) {
+        assert.ok(rule.inputs.includes(input), `${r.feature}: ${input} missing from 11.1 inputs`);
+        assert.ok(feeders.some((p) => covers(p, input)), `${r.feature}: no question feeding 11.1 captures ${input}`);
+      }
+    }
+  });
+
+  test('app registry: unique handles matching their App Store URL, approval needs an approver and date, no prices', () => {
+    assert.equal(handles.size, apps.apps.length, 'duplicate handle');
+    for (const a of apps.apps) {
+      assert.equal(a.url, `https://apps.shopify.com/${a.handle}`, a.handle);
+      assert.ok(['proposed', 'approved'].includes(a.status), `${a.handle}: status`);
+      if (a.status === 'approved') assert.ok(a.approved_by && /^\d{4}-\d{2}-\d{2}$/.test(a.approved_on ?? ''), `${a.handle}: approval`);
+      assert.doesNotMatch(JSON.stringify(a), /[€$£]\s?\d|\d+\s?(EUR|USD|CHF|GBP)\b|\/mo\b|per month/i, `${a.handle}: no prices`);
+    }
+  });
+
+  test('exit rules 11.2 and 11.5 are FLAGs (Shopify benchmark); mainland China and POS are modelled', () => {
+    const result = (id) => offering.exit_rules.find((r) => r.id === id)?.result;
+    assert.deepEqual(['11.2', '11.5', '11.18', '11.19', '11.20', '11.21'].map(result), ['FLAG', 'FLAG', 'FLAG', 'FLAG', 'FLAG', 'STOP']);
+    assert.ok(offering.scope_gates.some((g) => g.id === 'retail_pos'));
+    assert.ok(!offering.offers.S.base_scope.includes('Plus'), 'offers do not assume Shopify Plus');
   });
 });

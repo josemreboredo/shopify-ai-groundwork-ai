@@ -9,8 +9,9 @@ const namespace = (doc) => `client_${(doc.meta?.client?.slug ?? 'store').split('
 const oosBehaviour = {
   hide: 'hide sold-out products from collections and search',
   show_sold_out: 'show sold-out products with a disabled, clearly labelled button',
-  backorder: 'continue selling when out of stock with a clear back-order message and dispatch estimate',
-  notify_me: 'show sold-out products with a back-in-stock sign-up instead of the add to cart button',
+  continue_selling_backorder: 'continue selling when out of stock with a clear back-order message and dispatch estimate',
+  back_in_stock_alert: 'show sold-out products with a back-in-stock sign-up instead of the add to cart button',
+  pre_order: 'offer sold-out products for pre-order with the expected dispatch date',
 };
 
 /** @type {import('../model.js').StoryDefinition[]} */
@@ -24,7 +25,7 @@ export default [
     acceptance_criteria: (doc) => [
       `Given the product model document, when it is reviewed, then every product uses at most 3 options (engagement maximum ${doc.catalogue?.variant_options_max ?? 'to confirm'}) with consistent option names and values across the catalogue`,
       'Given the Shopify Standard Product Taxonomy, when products are categorised, then each product has a category so that category metafields, tax and marketplace mappings are available',
-      `Given a variant runs out of stock, when a shopper views it, then the store will ${oosBehaviour[doc.catalogue?.inventory?.out_of_stock_behaviour] ?? 'follow the agreed out-of-stock rule'}`,
+      `Given a variant runs out of stock, when a shopper views it, then the store will ${listOr((doc.catalogue?.inventory?.out_of_stock_behaviour ?? []).map((b) => oosBehaviour[b]).filter(Boolean), 'follow the agreed out-of-stock rule')}`,
       ...(doc.catalogue?.inventory?.low_stock_alerts ? ['Given a variant falls below its threshold, when inventory changes, then a Shopify Flow workflow notifies the responsible team'] : []),
     ],
     gaia_tier: 'T2',
@@ -186,7 +187,7 @@ export default [
     depends_on: ['LWC-THM-005'],
     spec_refs: ['/catalogue/inventory/out_of_stock_behaviour', '/marketing/esp/platform'],
     security_flags: ['pii'],
-    applies: (doc) => doc.catalogue?.inventory?.out_of_stock_behaviour === 'notify_me',
+    applies: (doc) => (doc.catalogue?.inventory?.out_of_stock_behaviour ?? []).includes('back_in_stock_alert'),
     agent_prompt: (doc) => `Shopify does not send back-in-stock notifications natively. ${doc.marketing?.esp?.platform ? `First check whether ${doc.marketing.esp.platform} offers back-in-stock flows (it avoids another app); otherwise shortlist` : 'Shortlist'} one back-in-stock app with cost and multilingual support for approval. Add the app block to the product template (variant-aware), build the notification template in every storefront language and keep the stock-alert request separate from marketing consent. Test with a variant set to zero then restocked.`,
   },
   {

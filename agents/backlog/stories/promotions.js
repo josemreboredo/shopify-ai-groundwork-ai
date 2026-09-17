@@ -7,8 +7,9 @@ import { list, listOr, markets, isB2b, themeName } from './helpers.js';
 const types = (doc) => doc.promotions?.discount_types ?? [];
 const stackingText = {
   none: 'discounts never combine',
-  one_code_plus_one_automatic: 'one code can combine with one automatic discount using Shopify discount combinations',
-  advanced: 'advanced stacking beyond native combinations (delivered by a discount function)',
+  native_combinations: 'product, order and shipping discounts combine natively (up to 5 codes plus 1 shipping code, up to 25 automatic discounts)',
+  multiple_discounts_same_item: 'several product discounts combine on the same item (Shopify Plus)',
+  custom_logic_function: 'custom stacking logic beyond native combinations (delivered by a discount function)',
 };
 const loyaltyInScope = (doc) => ['launch', 'phase_2'].includes(doc.loyalty?.phase) && (doc.loyalty?.components?.length ?? 0) > 0;
 
@@ -51,7 +52,7 @@ export default [
     depends_on: ['LWC-PRM-001', 'LWC-FND-002'],
     spec_refs: ['/promotions/stacking', '/promotions/discount_types'],
     security_flags: ['secrets'],
-    applies: (doc) => doc.promotions?.stacking === 'advanced',
+    applies: (doc) => doc.promotions?.stacking === 'custom_logic_function',
     agent_prompt: (doc) => `Write down every stacking rule for ${list(types(doc))} and mark which native combinations already cover. For the remainder, scaffold a Discount Function (Shopify Functions discount API, latest stable version) in the store's custom app with Shopify CLI, read configuration from the discount's metafield, add input-query fixtures and unit tests, and expose a simple admin UI extension or metafield editor for marketers. Deploy to the development store only after consultant review of the rule table.`,
   },
   {

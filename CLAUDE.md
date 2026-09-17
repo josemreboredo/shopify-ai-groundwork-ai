@@ -30,7 +30,10 @@ workspace for all Shopify client engagements.
 - `schema/engagement.schema.json` — one client engagement (`clients/<slug>/engagement.json`, gitignored)
 - `schema/question-bank.json` — every discovery question and the fields it fills
 - `schema/offering.json` — S/M/L offers, scope gates, exit rules (internal pricing — never client-facing)
-- `docs/discovery/client-questionnaire.md` is **generated** — edit the question bank, then `npm run questionnaire:render`
+- `schema/apps.json` — App Store registry; apps stay `proposed` until a lead consultant approves them after the engagement (`npm run apps -- approve`)
+- `docs/discovery/client-questionnaire.md` (client, no plan information) and `docs/discovery/consultant-guide.md` (Shopify knowledge per question) are **generated** — edit the question bank, then `npm run questionnaire:render`
+- Shopify facts (features, plans, apps) come from Shopify documentation with a verification date (ADR 0011); S/M do not assume Shopify Plus
+- Mainland China is not part of the offering: rule 11.20 routes it to a separate China discovery (`docs/discovery/china-mainland.md` — Shopify has no infrastructure in mainland China)
 - Discovery: `/discover <questionnaire.md>` in Claude Code (or `npm run discover` with an API key) → `clients/<slug>/engagement.json` (see `agents/discovery/README.md`)
 - ⚠ Claude Code mode runs on a personal Claude Pro account for now — raise migrating to dentsu Claude Enterprise before any dentsu / Merkle adoption (ADR 0007)
 - Interview: `/interview` in Claude Code (consultant-run, any language, answers stored in English) → same pipeline as `/discover`

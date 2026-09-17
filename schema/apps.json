@@ -1,0 +1,1355 @@
+{
+  "$comment": "App Store registry (question bank 1.1.0). Apps referenced by question-bank shopify.apps and suggested for the approach shortlist. Listings checked on apps.shopify.com on checked_on (check: listing_loaded or search_result). status stays proposed until the lead consultant approves the app after the engagement work (owner decision 2026-09-17): npm run apps -- approve --handle <handle> --by \"<role>\". No prices are stored here.",
+  "checked_on": "2026-09-17",
+  "apps": [
+    {
+      "handle": "loop-returns",
+      "name": "Loop Returns & Exchanges",
+      "url": "https://apps.shopify.com/loop-returns",
+      "requirements": [
+        "Returns and exchanges beyond native (Q5.2.x)"
+      ],
+      "category": {
+        "name": "Returns and exchanges",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "returns-center-by-aftership",
+      "name": "AfterShip Returns & Exchanges",
+      "url": "https://apps.shopify.com/returns-center-by-aftership",
+      "requirements": [
+        "Returns and exchanges beyond native (Q5.2.x)"
+      ],
+      "category": {
+        "name": "Returns and exchanges",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "narvar-returns",
+      "name": "Narvar Return and Exchange",
+      "url": "https://apps.shopify.com/narvar-returns",
+      "requirements": [
+        "Returns and exchanges beyond native (Q5.2.x)"
+      ],
+      "category": {
+        "name": "Returns and exchanges",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "redo",
+      "name": "Redo",
+      "url": "https://apps.shopify.com/redo",
+      "requirements": [
+        "Returns and exchanges beyond native (Q5.2.x)"
+      ],
+      "category": {
+        "name": "Returns and exchanges",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "aftership",
+      "name": "AfterShip Order Tracking",
+      "url": "https://apps.shopify.com/aftership",
+      "requirements": [
+        "Branded tracking and proactive delivery updates (Q5.5.1–2)"
+      ],
+      "category": {
+        "name": "Order tracking",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-orders-order-tracking/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "parcellab-engage",
+      "name": "parcelLab Order Tracking",
+      "url": "https://apps.shopify.com/parcellab-engage",
+      "requirements": [
+        "Branded tracking and proactive delivery updates (Q5.5.1–2)"
+      ],
+      "category": {
+        "name": "Order tracking",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-orders-order-tracking/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "revize",
+      "name": "Revize: Order Editing & Upsell",
+      "url": "https://apps.shopify.com/revize",
+      "developer": "Untechnickle",
+      "requirements": [
+        "Customer order editing and instant cancellation (Q5.4.2, Q5.4.5)"
+      ],
+      "category": {
+        "name": "Order editing",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "order-editing",
+      "name": "OrderEditing.com",
+      "url": "https://apps.shopify.com/order-editing",
+      "developer": "Order Editing",
+      "requirements": [
+        "Customer order editing and instant cancellation (Q5.4.2, Q5.4.5)"
+      ],
+      "category": {
+        "name": "Order editing",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "orderify",
+      "name": "Orderify ‑ Order Edit Cancel",
+      "url": "https://apps.shopify.com/orderify",
+      "requirements": [
+        "Customer order editing and instant cancellation (Q5.4.2, Q5.4.5)"
+      ],
+      "category": {
+        "name": "Order editing",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "edit-order",
+      "name": "Cleverific AI Upsell & Editing",
+      "url": "https://apps.shopify.com/edit-order",
+      "requirements": [
+        "Customer order editing and instant cancellation (Q5.4.2, Q5.4.5)"
+      ],
+      "category": {
+        "name": "Order editing",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all"
+      },
+      "check": "search_result",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "back-in-stock",
+      "name": "Amp Back in Stock & Preorder +",
+      "url": "https://apps.shopify.com/back-in-stock",
+      "developer": "HEL SG",
+      "requirements": [
+        "Back-in-stock alerts (Q2.5.3)"
+      ],
+      "category": {
+        "name": "Stock alerts",
+        "url": "https://apps.shopify.com/categories/store-design-store-alerts-back-in-stock-alert"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "preorder-back-in-stock",
+      "name": "Notify Me! Back in Stock Alert",
+      "url": "https://apps.shopify.com/preorder-back-in-stock",
+      "requirements": [
+        "Back-in-stock alerts (Q2.5.3)"
+      ],
+      "category": {
+        "name": "Stock alerts",
+        "url": "https://apps.shopify.com/categories/store-design-store-alerts-back-in-stock-alert"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "customer-back-in-stock-alert-user-notification-app",
+      "name": "Appikon ‑ Back In Stock",
+      "url": "https://apps.shopify.com/customer-back-in-stock-alert-user-notification-app",
+      "requirements": [
+        "Back-in-stock alerts (Q2.5.3)"
+      ],
+      "category": {
+        "name": "Stock alerts",
+        "url": "https://apps.shopify.com/categories/store-design-store-alerts-back-in-stock-alert"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "back-in-stock-restock-alerts",
+      "name": "Preorder, Back In Stock ‑ STOQ",
+      "url": "https://apps.shopify.com/back-in-stock-restock-alerts",
+      "developer": "Artos Software",
+      "requirements": [
+        "Pre-orders (Q2.2.5)"
+      ],
+      "category": {
+        "name": "Pre-orders",
+        "url": "https://apps.shopify.com/categories/selling-products-purchase-options-pre-orders"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "timesact-discount-pre-order",
+      "name": "Preorder Now Presale Timesact",
+      "url": "https://apps.shopify.com/timesact-discount-pre-order",
+      "developer": "Kairock Partners",
+      "requirements": [
+        "Pre-orders (Q2.2.5)"
+      ],
+      "category": {
+        "name": "Pre-orders",
+        "url": "https://apps.shopify.com/categories/selling-products-purchase-options-pre-orders"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "shopify-subscriptions",
+      "name": "Shopify Subscriptions",
+      "url": "https://apps.shopify.com/shopify-subscriptions",
+      "requirements": [
+        "Subscriptions beyond native (Q2.2.4)"
+      ],
+      "category": {
+        "name": "Subscriptions",
+        "url": "https://apps.shopify.com/categories/selling-products-payments-subscriptions"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "subscription-payments",
+      "name": "Recharge Subscriptions App",
+      "url": "https://apps.shopify.com/subscription-payments",
+      "requirements": [
+        "Subscriptions beyond native (Q2.2.4)"
+      ],
+      "category": {
+        "name": "Subscriptions",
+        "url": "https://apps.shopify.com/categories/selling-products-payments-subscriptions"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "skio",
+      "name": "Skio, a Recharge Company",
+      "url": "https://apps.shopify.com/skio",
+      "requirements": [
+        "Subscriptions beyond native (Q2.2.4)"
+      ],
+      "category": {
+        "name": "Subscriptions",
+        "url": "https://apps.shopify.com/categories/selling-products-payments-subscriptions"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "loop-subscriptions",
+      "name": "Loop Subscriptions App",
+      "url": "https://apps.shopify.com/loop-subscriptions",
+      "requirements": [
+        "Subscriptions beyond native (Q2.2.4)"
+      ],
+      "category": {
+        "name": "Subscriptions",
+        "url": "https://apps.shopify.com/categories/selling-products-payments-subscriptions"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "subscriptions-by-appstle",
+      "name": "Appstle℠ Subscriptions App",
+      "url": "https://apps.shopify.com/subscriptions-by-appstle",
+      "requirements": [
+        "Subscriptions beyond native (Q2.2.4)"
+      ],
+      "category": {
+        "name": "Subscriptions",
+        "url": "https://apps.shopify.com/categories/selling-products-payments-subscriptions"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "shopify-bundles",
+      "name": "Shopify Bundles",
+      "url": "https://apps.shopify.com/shopify-bundles",
+      "developer": "fixed, multipack",
+      "requirements": [
+        "Mix-and-match bundles (Q2.2.3)"
+      ],
+      "category": {
+        "name": "Product bundles",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-upsell-and-bundles-product-bundles/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "fast-bundle-product-bundles",
+      "name": "FBP | Fast Bundle & Upsell App",
+      "url": "https://apps.shopify.com/fast-bundle-product-bundles",
+      "requirements": [
+        "Mix-and-match bundles (Q2.2.3)"
+      ],
+      "category": {
+        "name": "Product bundles",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-upsell-and-bundles-product-bundles/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "bundler-product-bundles",
+      "name": "Bundler » Product Bundles App",
+      "url": "https://apps.shopify.com/bundler-product-bundles",
+      "requirements": [
+        "Mix-and-match bundles (Q2.2.3)"
+      ],
+      "category": {
+        "name": "Product bundles",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-upsell-and-bundles-product-bundles/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "bundle-builder",
+      "name": "Easy Bundles: Bundle Builder",
+      "url": "https://apps.shopify.com/bundle-builder",
+      "requirements": [
+        "Mix-and-match bundles (Q2.2.3)"
+      ],
+      "category": {
+        "name": "Product bundles",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-upsell-and-bundles-product-bundles/all"
+      },
+      "check": "search_result",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "combined-listings",
+      "name": "Combined Listings (Plus)",
+      "url": "https://apps.shopify.com/combined-listings",
+      "requirements": [
+        "Options beyond 3 / personalisation (Q2.1.2, Q2.1.5)"
+      ],
+      "category": {
+        "name": "Custom products",
+        "url": "https://apps.shopify.com/categories/selling-products-custom-products"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "custom-options",
+      "name": "Infinite Options",
+      "url": "https://apps.shopify.com/custom-options",
+      "developer": "ShopPad",
+      "requirements": [
+        "Options beyond 3 / personalisation (Q2.1.2, Q2.1.5)"
+      ],
+      "category": {
+        "name": "Custom products",
+        "url": "https://apps.shopify.com/categories/selling-products-custom-products"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "product-options-pro",
+      "name": "Globo Product Options, Variant",
+      "url": "https://apps.shopify.com/product-options-pro",
+      "requirements": [
+        "Options beyond 3 / personalisation (Q2.1.2, Q2.1.5)"
+      ],
+      "category": {
+        "name": "Custom products",
+        "url": "https://apps.shopify.com/categories/selling-products-custom-products"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "easify-product-options",
+      "name": "Easify Custom Product Options",
+      "url": "https://apps.shopify.com/easify-product-options",
+      "requirements": [
+        "Options beyond 3 / personalisation (Q2.1.2, Q2.1.5)"
+      ],
+      "category": {
+        "name": "Custom products",
+        "url": "https://apps.shopify.com/categories/selling-products-custom-products"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "smile-io",
+      "name": "Smile: Loyalty Program Rewards",
+      "url": "https://apps.shopify.com/smile-io",
+      "requirements": [
+        "Loyalty (Q6.3.1)"
+      ],
+      "category": {
+        "name": "Loyalty and rewards",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-customer-loyalty-loyalty-and-rewards/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "loyaltylion",
+      "name": "LoyaltyLion Loyalty Program",
+      "url": "https://apps.shopify.com/loyaltylion",
+      "requirements": [
+        "Loyalty (Q6.3.1)"
+      ],
+      "category": {
+        "name": "Loyalty and rewards",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-customer-loyalty-loyalty-and-rewards/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "swell",
+      "name": "Yotpo: Loyalty Rewards Program",
+      "url": "https://apps.shopify.com/swell",
+      "requirements": [
+        "Loyalty (Q6.3.1)"
+      ],
+      "category": {
+        "name": "Loyalty and rewards",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-customer-loyalty-loyalty-and-rewards/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "rivo-loyalty",
+      "name": "Rivo: Loyalty Program, Rewards",
+      "url": "https://apps.shopify.com/rivo-loyalty",
+      "requirements": [
+        "Loyalty (Q6.3.1)"
+      ],
+      "category": {
+        "name": "Loyalty and rewards",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-customer-loyalty-loyalty-and-rewards/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "judgeme",
+      "name": "Judge.me Product Reviews App",
+      "url": "https://apps.shopify.com/judgeme",
+      "requirements": [
+        "Product reviews (Q7.4.1)"
+      ],
+      "category": {
+        "name": "Product reviews",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-social-trust-product-reviews/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "yotpo-social-reviews",
+      "name": "Yotpo: Product Reviews App",
+      "url": "https://apps.shopify.com/yotpo-social-reviews",
+      "requirements": [
+        "Product reviews (Q7.4.1)"
+      ],
+      "category": {
+        "name": "Product reviews",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-social-trust-product-reviews/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "okendo-reviews",
+      "name": "Okendo: Reviews & Loyalty",
+      "url": "https://apps.shopify.com/okendo-reviews",
+      "requirements": [
+        "Product reviews (Q7.4.1)"
+      ],
+      "category": {
+        "name": "Product reviews",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-social-trust-product-reviews/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "product-reviews-addon",
+      "name": "Stamped Reviews & Loyalty",
+      "url": "https://apps.shopify.com/product-reviews-addon",
+      "requirements": [
+        "Product reviews (Q7.4.1)"
+      ],
+      "category": {
+        "name": "Product reviews",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-social-trust-product-reviews/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "shopify-messaging",
+      "name": "Shopify Messaging",
+      "url": "https://apps.shopify.com/shopify-messaging",
+      "requirements": [
+        "Email/SMS marketing (Q7.3.1, Q7.3.4)"
+      ],
+      "category": {
+        "name": "Email marketing · SMS marketing",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-marketing-email-marketing"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "klaviyo-email-marketing",
+      "name": "Klaviyo: Email Marketing & SMS",
+      "url": "https://apps.shopify.com/klaviyo-email-marketing",
+      "requirements": [
+        "Email/SMS marketing (Q7.3.1, Q7.3.4)"
+      ],
+      "category": {
+        "name": "Email marketing · SMS marketing",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-marketing-email-marketing"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "omnisend",
+      "name": "Omnisend Email Marketing & SMS",
+      "url": "https://apps.shopify.com/omnisend",
+      "requirements": [
+        "Email/SMS marketing (Q7.3.1, Q7.3.4)"
+      ],
+      "category": {
+        "name": "Email marketing · SMS marketing",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-marketing-email-marketing"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "attentive",
+      "name": "Attentive",
+      "url": "https://apps.shopify.com/attentive",
+      "requirements": [
+        "Email/SMS marketing (Q7.3.1, Q7.3.4)"
+      ],
+      "category": {
+        "name": "Email marketing · SMS marketing",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-marketing-email-marketing"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "postscript-sms-marketing",
+      "name": "Postscript SMS Marketing",
+      "url": "https://apps.shopify.com/postscript-sms-marketing",
+      "requirements": [
+        "Email/SMS marketing (Q7.3.1, Q7.3.4)"
+      ],
+      "category": {
+        "name": "Email marketing · SMS marketing",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-marketing-email-marketing"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "translate-and-adapt",
+      "name": "Translate & Adapt",
+      "url": "https://apps.shopify.com/translate-and-adapt",
+      "requirements": [
+        "Translation beyond 2 auto languages (Q3.2.1, Q3.2.4)"
+      ],
+      "category": {
+        "name": "Internationalization",
+        "url": "https://apps.shopify.com/categories/store-design-internationalization"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "weglot",
+      "name": "Weglot: AI Translation & SEO",
+      "url": "https://apps.shopify.com/weglot",
+      "requirements": [
+        "Translation beyond 2 auto languages (Q3.2.1, Q3.2.4)"
+      ],
+      "category": {
+        "name": "Internationalization",
+        "url": "https://apps.shopify.com/categories/store-design-internationalization"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "langify",
+      "name": "langify",
+      "url": "https://apps.shopify.com/langify",
+      "requirements": [
+        "Translation beyond 2 auto languages (Q3.2.1, Q3.2.4)"
+      ],
+      "category": {
+        "name": "Internationalization",
+        "url": "https://apps.shopify.com/categories/store-design-internationalization"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "transcy-multiple-languages",
+      "name": "Transcy",
+      "url": "https://apps.shopify.com/transcy-multiple-languages",
+      "developer": "FireGroup",
+      "requirements": [
+        "Translation beyond 2 auto languages (Q3.2.1, Q3.2.4)"
+      ],
+      "category": {
+        "name": "Internationalization",
+        "url": "https://apps.shopify.com/categories/store-design-internationalization"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "search-and-discovery",
+      "name": "Shopify Search & Discovery",
+      "url": "https://apps.shopify.com/search-and-discovery",
+      "requirements": [
+        "Search and filters beyond native (Q2.3.5)"
+      ],
+      "category": {
+        "name": "Search and filters (Internationalization/merchandising listings"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "algolia-search",
+      "name": "Algolia AI Search & Discovery",
+      "url": "https://apps.shopify.com/algolia-search",
+      "requirements": [
+        "Search and filters beyond native (Q2.3.5)"
+      ],
+      "category": {
+        "name": "Search and filters (Internationalization/merchandising listings"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "product-filter-search",
+      "name": "Boost AI Search & Filter",
+      "url": "https://apps.shopify.com/product-filter-search",
+      "requirements": [
+        "Search and filters beyond native (Q2.3.5)"
+      ],
+      "category": {
+        "name": "Search and filters (Internationalization/merchandising listings"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "searchanise",
+      "name": "Searchanise Search & Filter",
+      "url": "https://apps.shopify.com/searchanise",
+      "requirements": [
+        "Search and filters beyond native (Q2.3.5)"
+      ],
+      "category": {
+        "name": "Search and filters (Internationalization/merchandising listings"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "klevu-smart-search",
+      "name": "Klevu ‑ AI Search & Discovery",
+      "url": "https://apps.shopify.com/klevu-smart-search",
+      "requirements": [
+        "Search and filters beyond native (Q2.3.5)"
+      ],
+      "category": {
+        "name": "Search and filters (Internationalization/merchandising listings"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "gdpr-cookie-consent",
+      "name": "Pandectes GDPR Compliance",
+      "url": "https://apps.shopify.com/gdpr-cookie-consent",
+      "requirements": [
+        "Cookie consent / CMP (Q6.4.2)"
+      ],
+      "category": {
+        "name": "Cookie consent",
+        "url": "https://apps.shopify.com/categories/store-design-internationalization-cookie-consent/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "gdpr-backpack",
+      "name": "Consentmo GDPR Compliance",
+      "url": "https://apps.shopify.com/gdpr-backpack",
+      "requirements": [
+        "Cookie consent / CMP (Q6.4.2)"
+      ],
+      "category": {
+        "name": "Cookie consent",
+        "url": "https://apps.shopify.com/categories/store-design-internationalization-cookie-consent/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "cookiebot-cmp-gdpr-compliance",
+      "name": "Cookiebot CMP",
+      "url": "https://apps.shopify.com/cookiebot-cmp-gdpr-compliance",
+      "developer": "Usercentrics",
+      "requirements": [
+        "Cookie consent / CMP (Q6.4.2)"
+      ],
+      "category": {
+        "name": "Cookie consent",
+        "url": "https://apps.shopify.com/categories/store-design-internationalization-cookie-consent/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "sparklayer",
+      "name": "SparkLayer B2B & Wholesale",
+      "url": "https://apps.shopify.com/sparklayer",
+      "requirements": [
+        "B2B beyond native, quotes (Q6.2.6, Q6.2.8)"
+      ],
+      "category": {
+        "name": "Wholesale · Pricing quotes",
+        "url": "https://apps.shopify.com/categories/finding-products-sourcing-options-wholesale/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "b2b-solution-custom-pricing",
+      "name": "BSS B2B Wholesale Pricing",
+      "url": "https://apps.shopify.com/b2b-solution-custom-pricing",
+      "requirements": [
+        "B2B beyond native, quotes (Q6.2.6, Q6.2.8)"
+      ],
+      "category": {
+        "name": "Wholesale · Pricing quotes",
+        "url": "https://apps.shopify.com/categories/finding-products-sourcing-options-wholesale/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "wholesale-pricing-discount",
+      "name": "Wholesale Pricing Discount B2B",
+      "url": "https://apps.shopify.com/wholesale-pricing-discount",
+      "requirements": [
+        "B2B beyond native, quotes (Q6.2.6, Q6.2.8)"
+      ],
+      "category": {
+        "name": "Wholesale · Pricing quotes",
+        "url": "https://apps.shopify.com/categories/finding-products-sourcing-options-wholesale/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "request-for-quote-by-omega",
+      "name": "QS Request a Quote, Hide Price",
+      "url": "https://apps.shopify.com/request-for-quote-by-omega",
+      "developer": "Quote Snap",
+      "requirements": [
+        "B2B beyond native, quotes (Q6.2.6, Q6.2.8)"
+      ],
+      "category": {
+        "name": "Wholesale · Pricing quotes",
+        "url": "https://apps.shopify.com/categories/finding-products-sourcing-options-wholesale/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "mp-request-a-quote-rfq",
+      "name": "SP Request a Quote",
+      "url": "https://apps.shopify.com/mp-request-a-quote-rfq",
+      "developer": "RFQ",
+      "requirements": [
+        "B2B beyond native, quotes (Q6.2.6, Q6.2.8)"
+      ],
+      "category": {
+        "name": "Wholesale · Pricing quotes",
+        "url": "https://apps.shopify.com/categories/finding-products-sourcing-options-wholesale/all"
+      },
+      "check": "search_result",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "checkout-blocks",
+      "name": "Shopify Checkout Blocks",
+      "url": "https://apps.shopify.com/checkout-blocks",
+      "developer": "Shopify",
+      "requirements": [
+        "Checkout blocks, validation, order limits (Q4.2.2, Q4.3.2)"
+      ],
+      "category": {
+        "name": "Checkout",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-checkout"
+      },
+      "check": "search_result",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "reconvert-upsell-cross-sell",
+      "name": "Upsell.com ‑ ReConvert Upsell",
+      "url": "https://apps.shopify.com/reconvert-upsell-cross-sell",
+      "requirements": [
+        "Upsell (Q4.2.4)"
+      ],
+      "category": {
+        "name": "Upsell and bundles",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-upsell-and-bundles"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "aftersell",
+      "name": "Aftersell Post Purchase Upsell",
+      "url": "https://apps.shopify.com/aftersell",
+      "developer": "Rokt",
+      "requirements": [
+        "Upsell (Q4.2.4)"
+      ],
+      "category": {
+        "name": "Upsell and bundles",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-upsell-and-bundles"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "fraud-control",
+      "name": "Shopify Fraud Control",
+      "url": "https://apps.shopify.com/fraud-control",
+      "requirements": [
+        "Fraud guarantee (Q4.3.3)"
+      ],
+      "category": {
+        "name": "Fraud",
+        "url": "https://apps.shopify.com/categories/store-management-security-fraud/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "signifyd",
+      "name": "Signifyd",
+      "url": "https://apps.shopify.com/signifyd",
+      "requirements": [
+        "Fraud guarantee (Q4.3.3)"
+      ],
+      "category": {
+        "name": "Fraud",
+        "url": "https://apps.shopify.com/categories/store-management-security-fraud/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "riskified",
+      "name": "Riskified",
+      "url": "https://apps.shopify.com/riskified",
+      "requirements": [
+        "Fraud guarantee (Q4.3.3)"
+      ],
+      "category": {
+        "name": "Fraud",
+        "url": "https://apps.shopify.com/categories/store-management-security-fraud/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "nofraud-chargeback-prevention-and-protection",
+      "name": "Wyllo (formerly NoFraud listing)",
+      "url": "https://apps.shopify.com/nofraud-chargeback-prevention-and-protection",
+      "requirements": [
+        "Fraud guarantee (Q4.3.3)"
+      ],
+      "category": {
+        "name": "Fraud",
+        "url": "https://apps.shopify.com/categories/store-management-security-fraud/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "duty-and-tax-calculator-iglobal-stores",
+      "name": "Zonos Duty and Tax",
+      "url": "https://apps.shopify.com/duty-and-tax-calculator-iglobal-stores",
+      "requirements": [
+        "Duties outside native / MoR alternative (Q3.1.6)"
+      ],
+      "category": {
+        "name": "Cross-border / taxes"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "esw-international",
+      "name": "ESW International",
+      "url": "https://apps.shopify.com/esw-international",
+      "requirements": [
+        "Duties outside native / MoR alternative (Q3.1.6)"
+      ],
+      "category": {
+        "name": "Cross-border / taxes"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "taxjar",
+      "name": "Tax: TaxJar Sales Tax Automation",
+      "url": "https://apps.shopify.com/taxjar",
+      "developer": "US",
+      "requirements": [
+        "Duties outside native / MoR alternative (Q3.1.6)"
+      ],
+      "category": {
+        "name": "Cross-border / taxes"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "click-and-collect",
+      "name": "Zapiet ‑ Pickup + Delivery",
+      "url": "https://apps.shopify.com/click-and-collect",
+      "requirements": [
+        "Delivery slots, pickup scheduling, delivery dates (Q5.1.11, Q5.5.3)"
+      ],
+      "category": {
+        "name": "Delivery and pickup",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-shipping-solutions-delivery-and-pickup/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "estimated-delivery-days",
+      "name": "Estimated Delivery Date ‑ ETA",
+      "url": "https://apps.shopify.com/estimated-delivery-days",
+      "developer": "SetuBridge",
+      "requirements": [
+        "Delivery slots, pickup scheduling, delivery dates (Q5.1.11, Q5.5.3)"
+      ],
+      "category": {
+        "name": "Delivery and pickup",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-shipping-solutions-delivery-and-pickup/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "essential-estimated-delivery",
+      "name": "Essent Estimated Delivery Date",
+      "url": "https://apps.shopify.com/essential-estimated-delivery",
+      "requirements": [
+        "Delivery slots, pickup scheduling, delivery dates (Q5.1.11, Q5.5.3)"
+      ],
+      "category": {
+        "name": "Delivery and pickup",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-shipping-solutions-delivery-and-pickup/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "swym-relay",
+      "name": "Swym Wishlist Plus",
+      "url": "https://apps.shopify.com/swym-relay",
+      "requirements": [
+        "Wishlist (Q6.1.3)"
+      ],
+      "category": {
+        "name": "Wishlists",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-customer-loyalty-wishlists/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "wishlist-king",
+      "name": "Swish (formerly Wishlist King)",
+      "url": "https://apps.shopify.com/wishlist-king",
+      "requirements": [
+        "Wishlist (Q6.1.3)"
+      ],
+      "category": {
+        "name": "Wishlists",
+        "url": "https://apps.shopify.com/categories/marketing-and-conversion-customer-loyalty-wishlists/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "gift-card-loyalty-program",
+      "name": "Rise Gift Cards & Store Credit",
+      "url": "https://apps.shopify.com/gift-card-loyalty-program",
+      "requirements": [
+        "Gift card and store credit programmes (Q7.6.x)"
+      ],
+      "category": {
+        "name": "Loyalty / gift cards"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "gift-card-hero",
+      "name": "Gift Card Hero",
+      "url": "https://apps.shopify.com/gift-card-hero",
+      "developer": "Syncube",
+      "requirements": [
+        "Gift card and store credit programmes (Q7.6.x)"
+      ],
+      "category": {
+        "name": "Loyalty / gift cards"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "google",
+      "name": "Google & YouTube",
+      "url": "https://apps.shopify.com/google",
+      "requirements": [
+        "Server-side tracking (Q7.2.2)"
+      ],
+      "category": {
+        "name": "Analytics"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "facebook",
+      "name": "Facebook & Instagram",
+      "url": "https://apps.shopify.com/facebook",
+      "developer": "Conversions API",
+      "requirements": [
+        "Server-side tracking (Q7.2.2)"
+      ],
+      "category": {
+        "name": "Analytics"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "gtm-datalayer-by-elevar",
+      "name": "Elevar Conversion Tracking",
+      "url": "https://apps.shopify.com/gtm-datalayer-by-elevar",
+      "requirements": [
+        "Server-side tracking (Q7.2.2)"
+      ],
+      "category": {
+        "name": "Analytics"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "littledata",
+      "name": "Littledata ‑ The Data Layer",
+      "url": "https://apps.shopify.com/littledata",
+      "requirements": [
+        "Server-side tracking (Q7.2.2)"
+      ],
+      "category": {
+        "name": "Analytics"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "shoplift",
+      "name": "Shoplift ‑ CRO & A/B Testing",
+      "url": "https://apps.shopify.com/shoplift",
+      "requirements": [
+        "A/B testing beyond Rollouts (Q9.2.10)"
+      ],
+      "category": {
+        "name": "CRO / A/B testing"
+      },
+      "check": "search_result",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "store-migration",
+      "name": "Shopify Store Migration",
+      "url": "https://apps.shopify.com/store-migration",
+      "requirements": [
+        "Migration (Q8.2.x)"
+      ],
+      "category": {
+        "name": "Store data importer",
+        "url": "https://apps.shopify.com/categories/sales-channels-selling-online-store-data-importer/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": true,
+      "status": "proposed"
+    },
+    {
+      "handle": "excel-export-import",
+      "name": "Matrixify",
+      "url": "https://apps.shopify.com/excel-export-import",
+      "developer": "ITissible",
+      "requirements": [
+        "Migration (Q8.2.x)"
+      ],
+      "category": {
+        "name": "Store data importer",
+        "url": "https://apps.shopify.com/categories/sales-channels-selling-online-store-data-importer/all"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "extend-protection",
+      "name": "Extend Shopper Operations",
+      "url": "https://apps.shopify.com/extend-protection",
+      "requirements": [
+        "Warranty claims (Q5.5.4) and shipping protection"
+      ],
+      "category": {
+        "name": "Returns and warranty",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "clyde-warranty-platform",
+      "name": "Clyde | Warranty Platform",
+      "url": "https://apps.shopify.com/clyde-warranty-platform",
+      "developer": "Cover Genius",
+      "requirements": [
+        "Warranty claims (Q5.5.4) and shipping protection"
+      ],
+      "category": {
+        "name": "Returns and warranty",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "route",
+      "name": "Route ‑ Protection & Tracking",
+      "url": "https://apps.shopify.com/route",
+      "requirements": [
+        "Warranty claims (Q5.5.4) and shipping protection"
+      ],
+      "category": {
+        "name": "Returns and warranty",
+        "url": "https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "age-verification",
+      "name": "Age Verifier by OTG",
+      "url": "https://apps.shopify.com/age-verification",
+      "requirements": [
+        "Age verification (Q10.4.1)"
+      ],
+      "category": {
+        "name": "Age verification"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "age-verification-popup",
+      "name": "SB Age Verification Popup 18+",
+      "url": "https://apps.shopify.com/age-verification-popup",
+      "requirements": [
+        "Age verification (Q10.4.1)"
+      ],
+      "category": {
+        "name": "Age verification"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "agex-age-verification-popup",
+      "name": "AgeX ‑ Age Verification Popup",
+      "url": "https://apps.shopify.com/agex-age-verification-popup",
+      "requirements": [
+        "Age verification (Q10.4.1)"
+      ],
+      "category": {
+        "name": "Age verification"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "walkthechat-wechat-connector",
+      "name": "WalktheChat WeChat Connector",
+      "url": "https://apps.shopify.com/walkthechat-wechat-connector",
+      "requirements": [
+        "Mainland China channels (cross-border)"
+      ],
+      "category": {
+        "name": "Sales channels for mainland China"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "walkthechat-marketplace",
+      "name": "WalktheChat Marketplace",
+      "url": "https://apps.shopify.com/walkthechat-marketplace",
+      "requirements": [
+        "Mainland China channels (cross-border)"
+      ],
+      "category": {
+        "name": "Sales channels for mainland China"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    }
+  ]
+}

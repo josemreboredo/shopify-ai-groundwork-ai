@@ -134,6 +134,7 @@ creep post-signature.
 | **Integration** | One or more live connections to ERP, PIM, CRM, or 3PL |
 | **SKU complexity** | 500+ SKUs with complex variants, metafields, or product bundling |
 | **Migration** | Migration from any non-Shopify ecommerce platform (e.g. Shopware, Magento, WooCommerce, SFCC, BigCommerce) |
+| **Retail & POS** | Physical stores selling with Shopify POS or an integrated POS, or omnichannel services (pickup in store, ship from store, in-store returns) — no modifier until priced (ADR 0011) |
 
 **Classification rule:**
 - **0 gates → S** (Ecommerce Foundation)
@@ -173,7 +174,7 @@ store-spec.yaml → `shopify theme push` pipeline (~85% of implementation)
 
 | Offer | Code | Triggered by | Base scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Foundation** | S | 0–1 scope gates | New Shopify Plus store · Horizon theme · core catalogue · payments · standard checkout | €40–65k | 4–5 weeks |
+| **Ecommerce Foundation** | S | 0–1 scope gates | New Shopify store on the plan the requirements need (Shopify plan benchmark, ADR 0011) · Horizon theme · core catalogue · payments · standard checkout | €40–65k | 4–5 weeks |
 | **Ecommerce Scale** | M | ≥ 2 scope gates | Everything in S · plus qualifying gates (markets / B2B / integrations / migration) | €65–100k | 6–9 weeks |
 
 Both S and M are deliverable by Consultant + AI + two part-time collaborators.
@@ -252,11 +253,11 @@ The canonical list is `offering.json → exit_rules` (ADR 0003). Summary:
 
 | Rule | Condition | Result |
 |---|---|---|
-| 11.1 | Shopify Plus feature required but target plan is not Plus | STOP |
-| 11.2 | B2B with RFQ / negotiated pricing | STOP → Architecture review |
+| 11.1 | A required Shopify feature needs a higher plan than the target plan (Shopify plan benchmark; B2B runs on every plan from Basic) | STOP |
+| 11.2 | B2B with RFQ / negotiated pricing | FLAG → B2B architecture review (draft-order review or quote app) |
 | 11.3 | More than 5 markets at launch | STOP → Larger Engagement |
 | 11.4 | More than 6 distinct languages | STOP → Larger Engagement |
-| 11.5 | More than 3 variant options per product | STOP → Architecture review |
+| 11.5 | More than 3 variant options, or more than 2,048 variants, per product | FLAG → Product model review (combined listings, options app) |
 | 11.6 | Custom checkout UI (not Checkout Extensibility) | STOP → Composable platform |
 | 11.7 | More than 3 integrations at launch | STOP → Larger Engagement |
 | 11.8 | Regulated industry | STOP → Legal review |
@@ -268,6 +269,11 @@ The canonical list is `offering.json → exit_rules` (ADR 0003). Summary:
 | 11.14 | Migration with significant SEO equity or historical data | FLAG → Migration scoping track |
 | 11.15 | Go-live sooner than the offer's minimum duration | FLAG → Re-scope to MVP first |
 | 11.16 | No single decision-maker or unclear budget authority | FLAG → Resolve before statement of work |
+| 11.17 | Sensitive personal data (health, age, biometric, financial) | FLAG → DPIA and legal sign-off |
+| 11.18 | Existing store uses deprecated Shopify features (Scripts, checkout.liquid, legacy accounts, Stocky) | FLAG → Deprecation migration workstream |
+| 11.19 | B2B needs Shopify B2B does not support | FLAG → B2B architecture review |
+| 11.20 | Mainland China is a launch market (Great Firewall: ICP licence, onshore hosting) | FLAG → Excluded from the offering; separate China discovery |
+| 11.21 | Mainland China is the only launch market | STOP → China discovery |
 
 ---
 
