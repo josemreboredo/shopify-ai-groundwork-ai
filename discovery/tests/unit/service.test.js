@@ -149,3 +149,25 @@ describe('discovery service', () => {
     }
   });
 });
+
+test('the web app declares every package the discovery code it bundles imports (Vercel installs frontend/ only)', () => {
+  const root = path.join(import.meta.dirname, '..', '..');
+  const frontend = JSON.parse(fs.readFileSync(path.join(root, '..', 'frontend', 'package.json'), 'utf8'));
+  const declared = new Set(Object.keys({ ...frontend.dependencies, ...frontend.devDependencies }));
+  const seen = new Set();
+  const missing = new Set();
+  const visit = (file) => {
+    if (seen.has(file)) return;
+    seen.add(file);
+    for (const [, spec] of fs.readFileSync(file, 'utf8').matchAll(/^\s*(?:import|export)\s[^'"]*?['"]([^'"]+)['"]/gm)) {
+      if (spec.startsWith('.')) {
+        if (spec.endsWith('.js')) visit(path.resolve(path.dirname(file), spec));
+      } else if (!spec.startsWith('node:')) {
+        const name = spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0];
+        if (!declared.has(name)) missing.add(name);
+      }
+    }
+  };
+  for (const entry of ['service/index.js', 'service/stores/file-store.js', 'service/stores/postgres-store.js']) visit(path.join(root, entry));
+  assert.deepEqual([...missing], []);
+});
