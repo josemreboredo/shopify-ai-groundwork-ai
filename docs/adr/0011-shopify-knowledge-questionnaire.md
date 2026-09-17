@@ -1,6 +1,6 @@
 # ADR 0011 — A Shopify-knowledge questionnaire
 
-- **Status:** Accepted (2026-09-17, owner decisions on `docs/discovery/questionnaire-shopify-proposal.md`)
+- **Status:** Accepted (2026-09-17, owner decisions on `discovery/docs/questionnaire-shopify-proposal.md`)
 - **Date:** 2026-09-17
 - **Amends:** ADR 0001 (offer model: Plus no longer assumed; Retail & POS gate), ADR 0003 (exit rules 11.2, 11.5 to FLAG;
   new 11.18–11.21)
@@ -20,7 +20,7 @@ Scripts and Stocky are retired.
 1. **Question bank 1.1.0:** the proposal's additions, changes and merges are applied (256 questions). Each question that
    decides the Shopify plan or an app signal carries a `shopify` block: native features with minimum plan and an
    official Shopify docs URL, App Store category, app handles, extension points, verification date and Edition.
-2. **Shopify plan benchmark (O1):** S and M no longer assume Shopify Plus. `agents/discovery/plan.js` holds the plan rules
+2. **Shopify plan benchmark (O1):** S and M no longer assume Shopify Plus. `discovery/agents/discovery/plan.js` holds the plan rules
    (each with a Shopify docs link); exit rule 11.1 fires when a required feature needs a higher plan than the target plan,
    and the consultant recommends the plan that best fits the market on top of the minimum.
 3. **Benchmark for 11.2 and 11.5 (O2, O4):** both are FLAGs — quotes via draft-order review or quote apps; more than 3
@@ -30,15 +30,15 @@ Scripts and Stocky are retired.
    Owner decision (0.6.1): modifier `+Retail` (+1 week, +€8–12k) covers up to 5 stores. Retail roll-outs are never
    priced per store — above 5 stores 11.22 (WARN) asks for programme-and-increment pricing or a rate-carded run team.
 5. **Plan requirements are consultant-only (O7):** the client questionnaire carries no plan information (tested); the
-   generated `docs/discovery/consultant-guide.md` and the interview show the `shopify` blocks to the consultant. The
+   generated `discovery/docs/consultant-guide.md` and the interview show the `shopify` blocks to the consultant. The
    client questionnaire also uses neutral wording — no rule numbers, offer names, STOP/FLAG or § 11 (amends ADR 0003:
    the § 11 exit-rule table lives in the consultant guide), and STOP-only consultant questions are left out.
-6. **App registry (O8):** `schema/apps.json` lists apps with their apps.shopify.com URL and check level; apps are
+6. **App registry (O8):** `discovery/schema/apps.json` lists apps with their apps.shopify.com URL and check level; apps are
    `proposed` until the lead consultant approves them after the engagement work (`npm run apps -- approve`). App signals
    (19 areas) are corrected to the native baseline and the approach receives registry candidates per signalled area.
 7. **Mainland China is not part of the offering:** when CN is a launch market, 11.20 (FLAG) excludes it from markets,
    languages, offer, plan and build scope and routes it to a separate China discovery; 11.21 (STOP) when CN is the only
-   market. `docs/discovery/china-mainland.md` documents the China discovery from Shopify documentation, PRC regulator
+   market. `discovery/docs/china-mainland.md` documents the China discovery from Shopify documentation, PRC regulator
    publications and public business cases. Key finding: Shopify has no infrastructure in mainland China and no public case
    of Shopify behind the Great Firewall was found — onshore selling means a separate onshore platform (PRC entity, ICP,
    onshore hosting) or marketplace channels, with Shopify as the global platform. When CN is a launch market the
@@ -61,7 +61,7 @@ Scripts and Stocky are retired.
 - Consultant questions are asked in a consultant wrap-up block after the client questions; a STOP is flagged to the
   consultant when it fires and the route question opens the wrap-up. Unlock conditions only use client answers.
 - Answer options: standard `none` (nothing needed) and `not_sure` (client doesn't know; becomes an open item); readable
-  labels from `schema/option-labels.json`, codes unchanged in engagement.json.
+  labels from `discovery/schema/option-labels.json`, codes unchanged in engagement.json.
 
 ## Consequences
 

@@ -14,7 +14,7 @@ The decision itself was only in the work folder's consultant notes.
 ## Decision
 
 1. **Route:** after a STOP the lead consultant records `delivery.route` (question Q10.5.5, asked in every
-   interview mode while a STOP is open): `larger_engagement` or `no_bid`. Routes live in `schema/offering.json`.
+   interview mode while a STOP is open): `larger_engagement` or `no_bid`. Routes live in `discovery/schema/offering.json`.
    The former destinations "Scale programme" (11.3, 11.4) and "Bespoke quote" (11.7) are renamed Larger Engagement.
 2. **The STOP stays open.** `delivery.go` remains false; the route says how Merkle proceeds outside the S/M/L
    offers, not that the blocker is resolved.

@@ -25,16 +25,29 @@ workspace for all Shopify client engagements.
 - **Lovelock:** No — this is a client-delivery biota, not a synthetic regime-test
 - **Cadence:** Standard sprint cadence per `gaia/methodology/agile-process.md`
 
+## Repository layout (ADR 0013)
+
+| Folder | What it is |
+|---|---|
+| `discovery/` | **Discovery AI tool** — interview, discovery engine, deck, Jira backlog, configuration workbook, question bank, offering, app registry, discovery docs and tests |
+| `build/` | **Build AI tool** (next) — build agents that configure stores and themes from the discovery handover; `build/lwc-library/` tokens and market presets |
+| `contracts/` | The handover between both tools: `engagement.schema.json` |
+| `docs/` | Shared: ADRs, strategy (commercial model), implementation plan, security gates |
+| `clients/` | Client data (gitignored), used by both tools |
+
+Handover from discovery to build: `clients/<slug>/engagement.json`, `backlog.csv` / `backlog.json` and the completed
+`configuration-workbook.md`. The build tool never reads offer pricing from `discovery/schema/offering.json`.
+
 ## Engagement contract (ADR 0002)
 
-- `schema/engagement.schema.json` — one client engagement (`clients/<slug>/engagement.json`, gitignored)
-- `schema/question-bank.json` — every discovery question and the fields it fills
-- `schema/offering.json` — S/M/L offers, scope gates, exit rules (internal pricing — never client-facing)
-- `schema/apps.json` — App Store registry; apps stay `proposed` until a lead consultant approves them after the engagement (`npm run apps -- approve`)
-- `docs/discovery/client-questionnaire.md` (client, no plan information) and `docs/discovery/consultant-guide.md` (Shopify knowledge per question) are **generated** — edit the question bank, then `npm run questionnaire:render`
+- `contracts/engagement.schema.json` — one client engagement (`clients/<slug>/engagement.json`, gitignored)
+- `discovery/schema/question-bank.json` — every discovery question and the fields it fills
+- `discovery/schema/offering.json` — S/M/L offers, scope gates, exit rules (internal pricing — never client-facing)
+- `discovery/schema/apps.json` — App Store registry; apps stay `proposed` until a lead consultant approves them after the engagement (`npm run apps -- approve`)
+- `discovery/docs/client-questionnaire.md` (client, no plan information) and `discovery/docs/consultant-guide.md` (Shopify knowledge per question) are **generated** — edit the question bank, then `npm run questionnaire:render`
 - Shopify facts (features, plans, apps) come from Shopify documentation with a verification date (ADR 0011); S/M do not assume Shopify Plus
-- Mainland China is not part of the offering: rule 11.20 routes it to a separate China discovery (`docs/discovery/china-mainland.md` — Shopify has no infrastructure in mainland China)
-- Discovery: `/discover <questionnaire.md>` in Claude Code (or `npm run discover` with an API key) → `clients/<slug>/engagement.json` (see `agents/discovery/README.md`)
+- Mainland China is not part of the offering: rule 11.20 routes it to a separate China discovery (`discovery/docs/china-mainland.md` — Shopify has no infrastructure in mainland China)
+- Discovery: `/discover <questionnaire.md>` in Claude Code (or `npm run discover` with an API key) → `clients/<slug>/engagement.json` (see `discovery/agents/discovery/README.md`)
 - ⚠ Claude Code mode runs on a personal Claude Pro account for now — raise migrating to dentsu Claude Enterprise before any dentsu / Merkle adoption (ADR 0007)
 - Interview: `/interview` in Claude Code (consultant-run, any language, answers stored in English) → same pipeline as `/discover`
 - After a STOP the consultant records the route (Q10.5.5): Larger Engagement (Merkle Enterprise Engagement with a dedicated Discovery Phase) drafts the approach, a brief and the client deck — no Jira tickets; or no bid (ADR 0009)
@@ -44,17 +57,17 @@ workspace for all Shopify client engagements.
 
 ## Shopify-specific conventions
 
-All domain conventions live in `docs/conventions/`. Read the relevant file before
-starting any sprint:
+Shared conventions live in `docs/conventions/`; build conventions in `build/docs/conventions/`. Read the relevant file
+before starting any sprint:
 
 | File | Covers | Status |
 |---|---|---|
-| `docs/conventions/shopify-delivery.md` | Requirement → capability mapping, tier guide, CLI rules | ✅ exists |
+| `build/docs/conventions/shopify-delivery.md` | Requirement → capability mapping, tier guide, CLI rules | ✅ exists |
 | `docs/conventions/security-gates.md` | Store tokens, PII, scope control, production guard | ✅ exists |
-| `docs/conventions/shopify-theme.md` | Liquid, Dawn/OS2, theme architecture, CLI | planned |
-| `docs/conventions/shopify-app.md` | Node/Remix apps, App Bridge, webhooks, Shopify CLI | planned |
-| `docs/conventions/shopify-hydrogen.md` | Hydrogen, Remix, Oxygen deployment | planned |
-| `docs/conventions/shopify-api.md` | Admin API, Storefront API, versioning, rate limits | planned |
+| `build/docs/conventions/shopify-theme.md` | Liquid, Dawn/OS2, theme architecture, CLI | planned |
+| `build/docs/conventions/shopify-app.md` | Node/Remix apps, App Bridge, webhooks, Shopify CLI | planned |
+| `build/docs/conventions/shopify-hydrogen.md` | Hydrogen, Remix, Oxygen deployment | planned |
+| `build/docs/conventions/shopify-api.md` | Admin API, Storefront API, versioning, rate limits | planned |
 
 ## Installed tooling
 

@@ -21,7 +21,7 @@ Merkle Enterprise Engagement with a dedicated Discovery Phase (ADR 0009).
    ```bash
    npm run deck -- --client <slug>
    ```
-3. Read `docs/discovery/deck-prompt.md` and `clients/<slug>/discovery-deck.xml`. Follow the prompt exactly and
+3. Read `discovery/docs/deck-prompt.md` and `clients/<slug>/discovery-deck.xml`. Follow the prompt exactly and
    write the document to `clients/<slug>/discovery-deck.md`. Use only the XML — do not open
    `engagement.json` or `backlog.json` while writing it. Include section 18 completely.
 4. Do not run `deck:check` on the draft — it is expected to fail while section 18 is there. When the Lead

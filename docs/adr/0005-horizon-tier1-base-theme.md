@@ -16,10 +16,10 @@ build (Bucherer). No theme applied the `--lwc-*` tokens.
    colour schemes, font pickers, radius) via a token → settings converter (Phase 6b); `--lwc-*`
    CSS custom properties are used only for custom sections.
 3. Custom sections harvested from the Skeleton reference are rebuilt as brand-neutral Horizon
-   blocks in `lwc-library/components/`.
+   blocks in `build/lwc-library/components/`.
 4. Dawn and Skeleton are not used as a base for new engagements.
 
 ## Consequences
 
 - `docs/conventions/shopify-theme.md` (Phase 6c) documents Horizon block architecture, Theme Check in CI and self-hosted fonts.
-- Horizon version upgrades need a regression pass over `lwc-library/components/`.
+- Horizon version upgrades need a regression pass over `build/lwc-library/components/`.

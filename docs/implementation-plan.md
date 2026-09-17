@@ -73,12 +73,12 @@ P0 ─► P1 ─► P2 ─┬─► P3
 - [x] `scripts/generate-stories.js:25-28` — imports resolve to `scripts/scripts/…`
 - [x] `scripts/generate-stories/parseSpec.js:418-424` — `marketList` always `[]`
 - [x] `scripts/questionnaire/questionnaire.js:483-485` — missing `--output` resolves to `argv[0]` (Node binary)
-- [x] `agents/frame-agent/frame_agent.py:429-430` — spec written on STOP
-- [x] `agents/frame-agent/frame_agent.py:399-407` — `--interactive` never builds a spec (fix or remove flag)
+- [x] `discovery/agents/frame-agent/frame_agent.py:429-430` — spec written on STOP
+- [x] `discovery/agents/frame-agent/frame_agent.py:399-407` — `--interactive` never builds a spec (fix or remove flag)
 
 **Harness**
-- [x] `npm test` using `node:test`; fixtures in `tests/fixtures/`
-- [x] Commit the current untracked work (`agents/discovery-deck/`, `lwc-library/`, `scripts/`, `docs/discovery/`) as a clean baseline once the above is done
+- [x] `npm test` using `node:test`; fixtures in `discovery/tests/fixtures/`
+- [x] Commit the current untracked work (`discovery/agents/discovery-deck/`, `build/lwc-library/`, `scripts/`, `discovery/docs/`) as a clean baseline once the above is done
 
 **Exit criteria:** `git status` shows no secrets or client data; `npm test` green; `generate-stories` runs on both fixtures.
 
@@ -100,7 +100,7 @@ Roles: Strategy (offering), Architect (schema), BA (question bank), Sec (data ha
 | 006 | Jira is system of record after first push; generator upserts by stable story key |
 | 007 | LLM data handling: consent flag, redaction of personal data, model choice, retention |
 
-### 1.2 Engagement schema v1 (`schema/engagement.schema.json`)
+### 1.2 Engagement schema v1 (`contracts/engagement.schema.json`)
 Top-level blocks, one naming convention (snake_case) shared by prompt, code and renderers:
 
 - `meta` — schema_version, client {name, slug, industry, hq_country}, consultant, dates, consent
@@ -118,16 +118,16 @@ Top-level blocks, one naming convention (snake_case) shared by prompt, code and 
 - `jira` — project_key, components
 - `provenance` — per answer: source (client/consultant/inferred), status (confirmed/tbc)
 
-### 1.3 Question bank (`schema/question-bank.json`)
+### 1.3 Question bank (`discovery/schema/question-bank.json`)
 One question list that drives the Markdown questionnaire, the Frame Agent prompt mapping and (Phase 5) the chatbot.
 Each question: `id`, `section`, `text`, `answer_type`, `maps_to` (JSON pointer), `skip_if`, `feeds` (gate / exit rule).
 - [x] Add missing questions: market count, target Shopify plan, B2B RFQ, luxury/headless/Figma triggers, source platform + migration volumes, integration detail, GDPR deletion, Grow retainer, KPIs baseline/target, stakeholders/RACI, Jira project
-- [x] Regenerate `docs/discovery/client-questionnaire.md` from the bank (fixes duplicate 2.2, §11 mismatch)
-- [x] Renumber `docs/discovery/example-acme-questionnaire.md`; resolve its contradictions (plan vs B2B, retainer)
+- [x] Regenerate `discovery/docs/client-questionnaire.md` from the bank (fixes duplicate 2.2, §11 mismatch)
+- [x] Renumber `discovery/docs/example-acme-questionnaire.md`; resolve its contradictions (plan vs B2B, retainer)
 
 ### 1.4 Documentation
 - [x] Update `docs/strategy.md`: multi-consultant Merkle tool, chatbot as target interview surface, pipeline diagram
-- [ ] Align `lwc-library/README.md` tier table with ADR 001
+- [ ] Align `build/lwc-library/README.md` tier table with ADR 001
 
 **Status (2026-09-16):** schema, question bank (184 questions; 210 after the post-purchase additions in Phase 4), offering, generated questionnaire,
 ACME example and three golden fixtures delivered; contract + fixture tests green.
@@ -144,33 +144,33 @@ every gate and exit rule traces to ≥1 question and ≥1 schema field (automate
 Runtime LLM + client personal data → threat model and test strategy required before build.
 
 **Design principle:** the LLM extracts, code decides.
-- [x] `agents/discovery/extract.js` — questionnaire → `engagement.json` via structured output against the schema; validate, check `stop_reason` *(no automatic retry on schema errors — the run fails and reports the errors)*
-- [x] `agents/discovery/classify.js` — pure functions: scope gates → offer, L triggers, modifiers, price band (ADR 001)
-- [x] `agents/discovery/exits.js` — canonical §11 rules; LLM-detected exits are **merged** (with evidence), never overwritten; null-safe
-- [x] `agents/discovery/approach.js` — capability map (Native → App → Theme → Custom), app shortlist (costs flagged "verify"), assumptions, phases
+- [x] `discovery/agents/discovery/extract.js` — questionnaire → `engagement.json` via structured output against the schema; validate, check `stop_reason` *(no automatic retry on schema errors — the run fails and reports the errors)*
+- [x] `discovery/agents/discovery/classify.js` — pure functions: scope gates → offer, L triggers, modifiers, price band (ADR 001)
+- [x] `discovery/agents/discovery/exits.js` — canonical §11 rules; LLM-detected exits are **merged** (with evidence), never overwritten; null-safe
+- [x] `discovery/agents/discovery/approach.js` — capability map (Native → App → Theme → Custom), app shortlist (costs flagged "verify"), assumptions, phases
 - [ ] Validate app and capability recommendations against live Shopify docs (Shopify AI Toolkit) — deferred
 - [x] Consent gate: refuse to call the LLM without `meta.consent`; redact stakeholder names/emails before the call
 - [x] Renderers: `delivery-plan.md`, `capability-map.md`, `app-shortlist.md`, `risks.md` from `engagement.json`; on STOP write `stop-report.md` only
 - [x] CLI: `npm run discover -- --questionnaire <path> [--client <slug>] [--dry-run]` (API mode)
 - [x] Claude Code mode: `/discover` skill + `discover:prepare|assemble|finish` — no API billing (ADR 0007 amendment)
-- [x] Retire `agents/frame-agent/frame_agent.py` (brief / interactive modes return with the Phase 5 chatbot)
+- [x] Retire `discovery/agents/frame-agent/frame_agent.py` (brief / interactive modes return with the Phase 5 chatbot)
 - [ ] Record explicit "none" answers for free-text fields (e.g. no affiliate platform) distinctly from unknown
 - [ ] Render filled questionnaires (e.g. the ACME example) from `engagement.json` with the committed renderer
 
 **Tests:** unit tests for classify/exits on all golden fixtures ✓; recorded-response tests for the full pipeline ✓; live run on the ACME example ✓ (Claude Code mode, 2026-09-16: M / GO, FLAGs 11.10 and 11.14, extraction valid on first attempt).
 
-**Exit criteria:** ACME → M / GO with all four artefacts ✓ (recorded responses); STOP fixture → no GO artefacts ✓; zero schema errors ✓; threat model filed ✓ (`docs/architecture/discovery-engine-threat-model.md`). Live run on ACME ✓ (Claude Code mode).
+**Exit criteria:** ACME → M / GO with all four artefacts ✓ (recorded responses); STOP fixture → no GO artefacts ✓; zero schema errors ✓; threat model filed ✓ (`discovery/docs/architecture/discovery-engine-threat-model.md`). Live run on ACME ✓ (Claude Code mode).
 
 ---
 
 ## Phase 3 — Discovery Closing Deck (T2)
 
-- [x] Rebuild the deck on `engagement.json` (+ `backlog.json`): `agents/discovery-deck/build.js`; Markdown parsing removed
+- [x] Rebuild the deck on `engagement.json` (+ `backlog.json`): `discovery/agents/discovery-deck/build.js`; Markdown parsing removed
 - [x] Internal effort comes from backlog story points in `deck-internal-notes.md` (`estimateCalc.js` removed)
 - [x] Investment section = offer price band (D1); modifiers, price adds, points and commercial warnings only in `deck-internal-notes.md`; XML write refused on leaks; `npm run deck:check` scans the final deck
 - [x] Known issues fixed: STOP from `delivery.go`, percentages sum to 100, no local paths in output, control-character regex built without raw bytes
 - [x] `deck-template.md` + `deck-prompt.md` rewritten; `npm run deck -- --client <slug>`; `/deck` skill writes `discovery-deck.md` in Claude Code
-- [x] Tests: GO sections, STOP sections, band only, leak guards, internal notes, percentages (`tests/unit/deck.test.js`)
+- [x] Tests: GO sections, STOP sections, band only, leak guards, internal notes, percentages (`discovery/tests/unit/deck.test.js`)
 
 **Exit criteria:** ACME deck generated and reviewed by one lead consultant; no internal pricing in client output.
 
@@ -195,12 +195,12 @@ Runtime LLM + client personal data → threat model and test strategy required b
 ## Phase 5 — Consultant interview chatbot (T4)
 
 Starts with validation (Gaia Track A `01-validation`) with 2–3 Merkle Lead Consultants.
-- [x] Adaptive interview driven by `question-bank.json` (consent first, modes, `skip_if`, gate-feeding questions first) — `agents/interview/`, `/interview` skill
+- [x] Adaptive interview driven by `question-bank.json` (consent first, modes, `skip_if`, gate-feeding questions first) — `discovery/agents/interview/`, `/interview` skill
 - [x] Live preview: gates (active / inactive / unknown), provisional offer, exits, app signals, coverage
 - [x] Answer provenance (client vs consultant), consultant notes, TBC / skip, resumable sessions; any language, stored in English
 - [x] Output identical decisions to the questionnaire path (parity test on all golden fixtures)
 - [x] Surface decision (D6): consultant-run Claude Code skill (ADR 0008); hosted client pre-fill revisited after the pilot
-- [ ] Validation pilot with 2–3 Merkle lead consultants (`docs/validation/interview-chatbot-validation.md`)
+- [ ] Validation pilot with 2–3 Merkle lead consultants (`discovery/docs/validation/interview-chatbot-validation.md`)
 
 **Exit criteria:** one consultant completes an ACME-equivalent interview; output passes the same golden tests as Phase 2.
 
@@ -208,13 +208,13 @@ Starts with validation (Gaia Track A `01-validation`) with 2–3 Merkle Lead Con
 
 ## Phase 6 — Build layer (T3 per agent)
 
-**6a Commerce Agent** (replaces `scripts/01–06*.sh`)
+**6a Commerce Agent** (replaces the removed demo-store shell scripts, `build/`)
 - [ ] Node module reading `engagement.json`: locations, markets, locales, price lists, catalogs, shipping, taxes
 - [ ] Lookup-then-create (idempotent), fail on `userErrors`, current Admin API version, dev-store guard + `CONFIRM PRODUCTION` prompt, dry-run plan diff, verify step (store vs spec)
 
 **6b Theme Agent**
 - [ ] Horizon base (ADR 005); converter LWC tokens → `settings_data.json` (colour schemes, font handles, radius)
-- [ ] Harvest `buch-*` sections into brand-neutral `lwc-library/components/`
+- [ ] Harvest `buch-*` sections into brand-neutral `build/lwc-library/components/`
 - [ ] Theme Check in CI; self-hosted fonts (GDPR)
 
 **6c Conventions:** `docs/conventions/shopify-theme.md`, `shopify-api.md` (app/hydrogen when needed)
