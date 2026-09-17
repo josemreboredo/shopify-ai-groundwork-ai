@@ -16,7 +16,7 @@ export default function Login({ loaderData }) {
   return (
     <main className="signin">
       <section className="signin-hero">
-        <p className="eyebrow">AI-assisted discovery</p>
+        <p className="eyebrow">AI-assisted</p>
         <h1>Discovery</h1>
         <p>The Lead Consultant workspace for Shopify discovery: AI reads the client’s documents and drafts the solution, the engine decides the scope, and you run the conversation.</p>
         <ul>
