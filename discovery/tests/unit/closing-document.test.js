@@ -221,6 +221,31 @@ describe('a document knows when the answers moved under it', () => {
     await svc.saveClosingDocument(lc, 'demo', { markdown: `# Doc v2\n\n${'Text. '.repeat(120)}` });
     assert.equal((await svc.getClosingDocument(lc, 'demo')).freshness.up_to_date, true, 'redrafting clears it');
   });
+
+  test('the annex can arrive in a second call, without bumping the version', async () => {
+    const { createDiscoveryService } = await import('../../service/index.js');
+    const { createMemoryStore } = await import('../../service/stores/memory-store.js');
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => '2026-09-17', visibility: 'all' });
+    const lc = { login: 'lead', role: 'consultant' };
+    await svc.startInterview(lc, { client: 'split-save', mode: 'quick' });
+    await svc.recordAnswers(lc, 'split-save', [{ question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': true } }]);
+
+    const first = await svc.saveClosingDocument(lc, 'split-save', { markdown: `# Deck\n\n${'Narrative. '.repeat(80)}` });
+    assert.equal(first.version, '1.0');
+
+    const attached = await svc.saveClosingDocument(lc, 'split-save', { annex: `# Annex\n\n${'Analysis. '.repeat(80)}` });
+    assert.equal(attached.version, '1.0', 'the annex joins the version just saved');
+    assert.equal(attached.attached_to_existing_version, true);
+
+    const saved = await svc.getClosingDocument(lc, 'split-save');
+    assert.ok(saved.document.annex, 'the annex is stored');
+    assert.equal(saved.history.length, 0, 'attaching an annex is not a new version');
+
+    await assert.rejects(
+      svc.saveClosingDocument(lc, 'split-save', { annex: 'too short' }),
+      (err) => /annex is too short/i.test(err.message),
+    );
+  });
 });
 
 describe('every layout renders in all three outputs', () => {

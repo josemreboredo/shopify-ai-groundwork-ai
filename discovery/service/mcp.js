@@ -226,10 +226,10 @@ export function registerDiscoveryTools(server, { service, userOf }) {
 
   tool('save_closing_document', {
     title: 'Save the Discovery Closing Document',
-    description: 'Step 3: save the Discovery Closing Document. "deck" is the deck as filled slide templates — follow deck_schema from the previous step, one message per slide, the headline of every slide is the takeaway. The web app renders it as a PowerPoint. "annex" is the annex document in Markdown: the analysis per decision, the capability analysis, appendices and the bibliography; Merkle\'s verified Shopify reference chapters are appended automatically. Each save gets its own version number and the previous version is kept.',
+    description: 'Step 3: save the Discovery Closing Document. "deck" is the deck as filled slide templates — follow deck_schema from the previous step, one message per slide, the headline of every slide is the takeaway. The web app renders it as a PowerPoint. "annex" is the annex document in Markdown: the analysis per decision, the capability analysis, appendices and the bibliography; Merkle\'s verified Shopify reference chapters are appended automatically. Each save gets its own version number and the previous version is kept. If the two together would be a very long tool call, save the deck first and then call this again with only "annex" — it is attached to the version you just saved, without creating a new one.',
     inputSchema: z.object({
       client: slug,
-      deck: z.record(z.string(), z.unknown()).describe('The filled deck: { slides: [...] } matching deck_schema'),
+      deck: z.record(z.string(), z.unknown()).optional().describe('The filled deck: { slides: [...] } matching deck_schema'),
       annex: z.string().optional().describe('Annex document in Markdown'),
     }),
     annotations: write,

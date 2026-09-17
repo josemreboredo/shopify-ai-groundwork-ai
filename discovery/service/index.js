@@ -489,18 +489,30 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const session = await load(user, client);
       const annexText = String(annex ?? '').trim();
       let text = String(markdown ?? '').trim();
+      const previousDocument = session.closing?.document;
+      // The annex may arrive in a second call, so a long document never has to fit
+      // in one tool call: it is attached to the version already saved.
+      if (!deck && !text && annexText && previousDocument) {
+        if (annexText.length < 500) throw new ServiceError(400, 'The annex is too short — write the analysis, or leave it out');
+        const personalAnnex = findPersonalData(annexText);
+        if (personalAnnex.length) throw new ServiceError(400, 'Annex not saved', [`the annex ${personalAnnex.join(' and ')} — remove personal data`]);
+        session.closing = { ...session.closing, document: { ...previousDocument, annex: `${annexText}\n` } };
+        session.updated_at = today();
+        await store.save(session);
+        return { ok: true, saved_at: previousDocument.saved_at, version: previousDocument.version ?? '1.0', annex: true, attached_to_existing_version: true, versions: 1 + (session.closing.history ?? []).length };
+      }
       if (deck) {
         const decided = decideFromSession(session, today());
         const problems = deckErrors(deck, decided.ok ? decided.doc : {});
         if (problems.length) throw new ServiceError(400, 'Deck not saved', problems);
         text = deckToMarkdown(deck);
       } else if (text.length < 500) {
-        throw new ServiceError(400, 'Nothing to save — fill the deck templates (deck) or send the document as markdown');
+        throw new ServiceError(400, 'Nothing to save — fill the deck templates (deck), or send only the annex to attach it to the version already saved');
       }
       if (annexText && annexText.length < 500) throw new ServiceError(400, 'The annex is too short — write the analysis, or leave it out');
       const personal = findPersonalData(`${text}\n${annexText}`);
       if (personal.length) throw new ServiceError(400, 'Document not saved', [`the document ${personal.join(' and ')} — remove personal data`]);
-      const previous = session.closing?.document;
+      const previous = previousDocument;
       const version = nextVersion(previous?.version);
       session.closing = {
         ...session.closing,
