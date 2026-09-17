@@ -13,7 +13,10 @@ export default function Claude({ loaderData }) {
   const { url, instructions, projectName } = loaderData;
   return (
     <main>
-      <h1>Work on an engagement from Claude</h1>
+      <header className="page-head">
+        <p className="eyebrow">Claude Project</p>
+        <h1>Work on an engagement from Claude</h1>
+      </header>
       <p>Your private Claude Project and this web app share the same engagement: upload RFPs and other documents to the Project, and Claude records what it finds here — as answers <strong>to confirm</strong> that you review on the engagement page.</p>
       <p className="error">Pilot: demo or anonymised documents and engagements only.</p>
 

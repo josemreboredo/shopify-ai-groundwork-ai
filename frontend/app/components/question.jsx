@@ -4,7 +4,7 @@
  * current answer, plus the engine preview panel and engagement navigation.
  */
 import { useState } from 'react';
-import { Form, NavLink } from 'react-router';
+import { Form, Link, NavLink } from 'react-router';
 
 export const words = (id) => id.replace(/_/g, ' ');
 const leaf = (pointer) => words(pointer.split('/').at(-1));
@@ -28,6 +28,25 @@ export function EngagementNav({ client }) {
       <NavLink to={`/engagements/${client}/summary`}>Summary</NavLink>
       <NavLink to={`/engagements/${client}/closing-document`}>Closing document</NavLink>
     </nav>
+  );
+}
+
+/**
+ * The black statement band every engagement page opens with, as on merkle.com:
+ * where you came from, what this is, the client, the state of play, the tabs.
+ *
+ * @param {{ client: string, eyebrow?: string, title?: string, meta?: import('react').ReactNode,
+ *           back?: { to: string, label: string } }} props
+ */
+export function EngagementHeader({ client, eyebrow = 'Discovery engagement', title, meta, back }) {
+  return (
+    <header className="page-head">
+      <Link className="crumb" to={back?.to ?? '/'}>← {back?.label ?? 'Engagements'}</Link>
+      <p className="eyebrow">{eyebrow}</p>
+      <h1>{title ?? client}</h1>
+      {meta ? <p className="page-meta">{meta}</p> : null}
+      <EngagementNav client={client} />
+    </header>
   );
 }
 

@@ -4,7 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
-import { EngagementNav, PreviewPanel, QuestionCard, Vocabularies } from '../components/question.jsx';
+import { EngagementHeader, PreviewPanel, QuestionCard, Vocabularies } from '../components/question.jsx';
 
 export const meta = ({ params }) => [{ title: `${params.client} · Merkle Discovery` }];
 
@@ -81,13 +81,10 @@ export default function Engagement({ loaderData, actionData }) {
   return (
     <main>
       <Vocabularies vocabularies={vocabularies} />
-      <p><Link to="/">← Engagements</Link></p>
-      <h1>{engagement.client}</h1>
-      <EngagementNav client={engagement.client} />
-      <p className="muted">
-        {engagement.mode} interview · {engagement.language} · owner {engagement.owner ?? '—'} · updated {engagement.updated_at} · {next.remaining} questions open
-        {typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}
-      </p>
+      <EngagementHeader
+        client={engagement.client}
+        meta={`${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${next.remaining} questions open${typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}`}
+      />
       <div className="layout">
         <div>
           {next.consent_required ? <p className="error">Record the client's consent for AI processing before any other answer.</p> : null}

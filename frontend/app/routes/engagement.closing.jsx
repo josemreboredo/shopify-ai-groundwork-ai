@@ -4,7 +4,7 @@ import { Link, useRevalidator } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';
-import { EngagementNav } from '../components/question.jsx';
+import { EngagementHeader } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 
 export const meta = ({ params }) => [{ title: `Discovery Closing Document · ${params.client} · Merkle Discovery` }];
@@ -50,11 +50,11 @@ export default function Closing({ loaderData }) {
 
   return (
     <main>
-      <p><Link to="/">← Engagements</Link></p>
-      <h1>{client}</h1>
-      <EngagementNav client={client} />
-
-      <h2>Discovery Closing Document</h2>
+      <EngagementHeader
+        client={client}
+        eyebrow="Discovery Closing Document"
+        meta={document ? `Version ${version} · saved ${document.saved_at} by ${document.by}` : null}
+      />
 
       {/* 1 — what to do now */}
       <section className={`card start ${readiness.ok ? status : 'blocked'}`}>

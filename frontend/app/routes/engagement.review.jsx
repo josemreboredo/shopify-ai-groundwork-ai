@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementNav } from '../components/question.jsx';
+import { EngagementHeader } from '../components/question.jsx';
 
 export const meta = ({ params }) => [{ title: `Review answers · ${params.client} · Merkle Discovery` }];
 
@@ -29,12 +29,12 @@ export default function Review({ loaderData }) {
   const count = (state) => all.filter((q) => q.state === state).length;
   return (
     <main>
-      <p><Link to="/">← Engagements</Link></p>
-      <h1>{engagement.client}</h1>
-      <EngagementNav client={engagement.client} />
-      <p className="muted">
-        {count('answered')} answered · {count('commented')} by comment · {count('tbc')} TBC · {count('skipped')} not applicable · {count('open')} open — click <strong>Edit</strong> to change, clear or reopen a question.
-      </p>
+      <EngagementHeader
+        client={engagement.client}
+        eyebrow="Review answers"
+        meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} TBC · ${count('skipped')} not applicable · ${count('open')} open`}
+      />
+      <p className="muted">Click <strong>Edit</strong> on a question to change, clear or reopen it.</p>
       {sections.map((section) => (
         <section key={section.title}>
           <h2>{section.title}</h2>

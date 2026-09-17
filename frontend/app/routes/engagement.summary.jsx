@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementNav, resultClass, words } from '../components/question.jsx';
+import { EngagementHeader, resultClass, words } from '../components/question.jsx';
 
 export const meta = ({ params }) => [{ title: `Summary · ${params.client} · Merkle Discovery` }];
 
@@ -22,11 +22,9 @@ export default function Summary({ loaderData }) {
   const signals = Object.entries(p.app_signals ?? {}).filter(([, reasons]) => reasons.length);
   return (
     <main>
-      <p><Link to="/">← Engagements</Link></p>
-      <h1>Discovery summary — {engagement.client}</h1>
-      <EngagementNav client={engagement.client} />
+      <EngagementHeader client={engagement.client} eyebrow="Discovery summary" meta={`Computed by the engine on ${generatedAt}`} />
       <p className="muted">
-        Internal working summary for the Lead Consultant (not a client document), computed by the engine on {generatedAt}.{' '}
+        Internal working summary for the Lead Consultant — not a client document.{' '}
         <a href={`/engagements/${engagement.client}/summary.md`} download>Download as Markdown</a>
       </p>
 

@@ -4,7 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
-import { EngagementNav, QuestionCard, Vocabularies } from '../components/question.jsx';
+import { EngagementHeader, QuestionCard, Vocabularies } from '../components/question.jsx';
 
 export const meta = ({ params }) => [{ title: `${params.questionId} · ${params.client} · Merkle Discovery` }];
 
@@ -39,10 +39,12 @@ export default function EditQuestion({ loaderData, actionData }) {
   return (
     <main>
       <Vocabularies vocabularies={vocabularies} />
-      <p><Link to={`/engagements/${engagement.client}/review#${question.id}`}>← Review answers</Link></p>
-      <h1>{engagement.client}</h1>
-      <EngagementNav client={engagement.client} />
-      <p className="muted">{STATE_TEXT[state]}</p>
+      <EngagementHeader
+        client={engagement.client}
+        eyebrow={`Question ${question.id}`}
+        meta={STATE_TEXT[state]}
+        back={{ to: `/engagements/${engagement.client}/review#${question.id}`, label: 'Review answers' }}
+      />
       <QuestionCard question={question} actionData={actionData} busy={busy} values={values} note={note}>
         {['tbc', 'skipped', 'commented'].includes(state) ? <button type="submit" name="intent" value="reopen" className="secondary" disabled={busy}>Reopen question</button> : null}
         {state === 'answered' && question.id !== 'Q10.5.2' ? <button type="submit" name="intent" value="clear" className="secondary" disabled={busy}>Clear answer</button> : null}

@@ -29,8 +29,11 @@ export default function Manual({ loaderData }) {
   const { connector } = loaderData;
   return (
     <main className="manual">
-      <h1>Lead Consultant manual</h1>
-      <p>How to run a Shopify discovery with this tool and your Claude Project, from the client’s RFP to the Discovery Closing Document.</p>
+      <header className="page-head">
+        <p className="eyebrow">How we work</p>
+        <h1>Lead Consultant manual</h1>
+        <p>How to run a Shopify discovery with this tool and your Claude Project, from the client’s RFP to the Discovery Closing Document.</p>
+      </header>
 
       <div className="card">
         <p className="question">The flow in one line</p>

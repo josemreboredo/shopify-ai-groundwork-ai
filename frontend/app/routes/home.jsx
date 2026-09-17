@@ -31,10 +31,11 @@ export default function Home({ loaderData, actionData }) {
   const { engagements } = loaderData;
   return (
     <main>
-      <div className="page-head">
+      <header className="page-head">
+        <p className="eyebrow">Merkle Discovery</p>
         <h1>Engagements</h1>
         <p>Every engagement in the pilot, shared across consultants.</p>
-      </div>
+      </header>
       <h2>Start an interview</h2>
       <Form method="post" className="inline-form">
         <div className="field">
