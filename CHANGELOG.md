@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
+## [1.0.0] — 2026-09-17
+
+**Discovery AI tool — first major release.** Same code as 0.7.0, released as the 1.0.0 baseline. Version 2.0.0 adds the
+Lead Consultant frontend and its connection to Claude Projects.
+
+- Consultant-run interview (`/interview`) and questionnaire processing (`/discover`) with a Shopify-knowledge question bank
+- Offer (S / M / L), scope gates, exit rules, Shopify plan benchmark and App Store signals decided by code
+- Larger Engagement and no-bid routes after a STOP; mainland China routed to a separate China discovery
+- Implementation approach, Discovery Closing Deck (Lead Consultant draft), Jira backlog, store configuration workbook
+- Repository split into the discovery tool, the build tool and the shared engagement contract
+
 ## [0.7.0] — 2026-09-17
 
 ### Changed

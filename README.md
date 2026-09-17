@@ -97,5 +97,5 @@ npm test                                        # must pass before every commit
 
 ## Status
 
-Discovery tool released (see [`CHANGELOG.md`](CHANGELOG.md)); Lead Consultant frontend and build agents are next
+**1.0.0** — Discovery AI tool released (see [`CHANGELOG.md`](CHANGELOG.md)). **2.0.0** — Lead Consultant frontend connected to Claude Projects, in progress; build agents follow
 ([`docs/implementation-plan.md`](docs/implementation-plan.md)).
