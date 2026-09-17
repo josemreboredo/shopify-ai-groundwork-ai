@@ -37,7 +37,8 @@ Secrets go only into Vercel environment variables — never into the repository 
 
 1. Vercel **Pro** (the Hobby plan is for non-commercial use only).
 2. New project from this GitHub repository, **Root Directory `frontend`**; keep source files outside the root directory
-   included in the build (the app imports `../discovery` and `../contracts`). Framework preset: React Router.
+   included in the build (the app imports `../discovery` and `../contracts`). The framework (React Router) is set in
+   `vercel.json`, which overrides the dashboard preset — a wrong preset serves Vercel's `404 NOT_FOUND`.
 3. Functions run in London, next to the database: `vercel.json` sets `regions: ["lhr1"]`.
 4. Storage: add **Neon** from the Vercel Marketplace in **London** (the closest region to the EU offered there; pilot data is demo only); it provides `DATABASE_URL`.
    The table `discovery_interviews` is created on first use.
