@@ -79,27 +79,33 @@ export function recordAnswer(session, { pointer, value, question_id, source = 'c
   if (question_id) {
     delete session.tbc[question_id];
     delete session.skipped[question_id];
+    if (session.commented) delete session.commented[question_id];
   }
   session.updated_at = today;
   return { ok: true };
 }
 
 /**
- * Mark a question as TBC (client will confirm later) or skipped (not applicable).
+ * Mark a question as TBC (client will confirm later), skipped (not applicable)
+ * or commented (answered or clarified by a comment without a value — kept as
+ * an open item for the offer).
  *
  * @param {import('./session.js').Session} session
- * @param {{ question_id: string, as: 'tbc'|'skipped', note?: string, today: string }} input
+ * @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string, today: string }} input
  * @returns {{ ok: true } | { ok: false, errors: string[] }}
  */
 export function markQuestion(session, { question_id, as, note = '', today }) {
   if (!questionById(question_id)) return { ok: false, errors: [`${question_id}: unknown question`] };
-  if (as !== 'tbc' && as !== 'skipped') return { ok: false, errors: ['mark as tbc or skipped'] };
-  if (question_id === CONSENT_QUESTION) return { ok: false, errors: ['Consent cannot be skipped or left TBC'] };
-  const personal = findPersonalData(note);
+  if (!['tbc', 'skipped', 'commented'].includes(as)) return { ok: false, errors: ['mark as tbc, skipped or commented'] };
+  if (question_id === CONSENT_QUESTION) return { ok: false, errors: ['Consent cannot be skipped, left TBC or answered by a comment'] };
+  if (as === 'commented' && !note?.trim()) return { ok: false, errors: ['Write the comment'] };
+  const personal = findPersonalData(note ?? '');
   if (personal.length) return { ok: false, errors: [`note ${personal.join(' and ')} — do not record personal data`] };
+  session.commented ??= {};
   delete session.tbc[question_id];
   delete session.skipped[question_id];
-  session[as][question_id] = note;
+  delete session.commented[question_id];
+  session[as][question_id] = as === 'commented' ? note.trim() : note;
   session.updated_at = today;
   return { ok: true };
 }

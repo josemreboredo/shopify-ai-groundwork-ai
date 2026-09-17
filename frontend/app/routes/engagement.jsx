@@ -34,7 +34,8 @@ export async function action({ request, params }) {
     if (intent === 'answer') {
       const values = {};
       for (const key of new Set(form.keys())) if (key.startsWith('/')) values[key] = form.getAll(key).map(String);
-      await service.answerQuestion(user, params.client, { question_id: questionId, values, note, status: form.get('tbc_status') ? 'tbc' : 'confirmed' });
+      const result = await service.answerQuestion(user, params.client, { question_id: questionId, values, note, status: form.get('tbc_status') ? 'tbc' : 'confirmed' });
+      if (result.commented) return { ok: true, intent, question_id: questionId, commented: true };
     } else if (intent === 'tbc' || intent === 'skipped') {
       await service.markQuestion(user, params.client, { question_id: questionId, as: intent, note });
     } else if (intent === 'confirm') {
@@ -228,8 +229,8 @@ function QuestionCard({ question, actionData, busy }) {
         <input type="hidden" name="question_id" value={question.id} />
         {question.inputs.map((spec) => <FieldInput key={spec.pointer} spec={spec} showLabel={question.inputs.length > 1} />)}
         <div className="field">
-          <label>Note (original wording, caveats — no personal data)</label>
-          <input type="text" name="note" />
+          <label>Comment (original wording, caveats, clarifications — no personal data)</label>
+          <textarea name="note" rows={2} placeholder="A comment alone is a valid answer when no value fits, e.g. “We only ship inside the EU”" />
         </div>
         {errors.length ? <ul className="errors">{errors.map((e) => <li key={e}>{e}</li>)}</ul> : null}
         <div className="actions">
@@ -341,7 +342,7 @@ function PreviewPanel({ preview }) {
 }
 
 export default function Engagement({ loaderData, actionData }) {
-  const { engagement, next, preview, notes, tbc, answers, documents, vocabularies } = loaderData;
+  const { engagement, next, preview, notes, tbc, commented, answers, documents, vocabularies } = loaderData;
   const busy = useNavigation().state !== 'idle';
   return (
     <main>
@@ -371,6 +372,15 @@ export default function Engagement({ loaderData, actionData }) {
             <button type="submit" name="intent" value="note" className="secondary" disabled={busy}>Add note</button>
           </Form>
           {actionData?.intent === 'note' && actionData.error ? <ul className="errors">{(actionData.errors?.length ? actionData.errors : [actionData.error]).map((e) => <li key={e}>{e}</li>)}</ul> : null}
+
+          {actionData?.ok && actionData.commented ? <p className="muted">Saved as a comment: the question counts as clarified and the comment stays an open point for the offer.</p> : null}
+
+          {Object.keys(commented).length ? (
+            <>
+              <h2>Clarified by comment ({Object.keys(commented).length})</h2>
+              <ul>{Object.entries(commented).map(([id, text]) => <li key={id}><strong>{id}</strong>: {text}</li>)}</ul>
+            </>
+          ) : null}
 
           {Object.keys(tbc).length ? (
             <>

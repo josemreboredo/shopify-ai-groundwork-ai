@@ -25,8 +25,12 @@ export function toExtraction(session) {
       const q = questionById(id);
       return { pointer: q.maps_to[0], question_id: id, why: note ? `TBC: ${note}` : `TBC in the interview: ${q.text}` };
     }),
+    ...Object.entries(session.commented ?? {}).filter(([id]) => questionById(id)).map(([id, note]) => {
+      const q = questionById(id);
+      return { pointer: q.maps_to[0], question_id: id, why: `Clarified by comment (no value recorded): ${note}` };
+    }),
     ...unansweredInMode(session)
-      .filter((q) => !(q.id in session.tbc))
+      .filter((q) => !(q.id in session.tbc) && !(q.id in (session.commented ?? {})))
       .filter((q) => q.priority !== 'optional')
       .map((q) => ({ pointer: q.maps_to[0], question_id: q.id, why: `Not answered in the interview: ${q.text}` })),
   ];

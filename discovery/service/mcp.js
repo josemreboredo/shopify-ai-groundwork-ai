@@ -123,6 +123,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
       questions: v.next.questions.map(compactQuestion),
       preview: compactPreview(v.preview),
       tbc: v.tbc,
+      commented: v.commented,
       documents: v.documents,
       notes: v.notes,
     };
@@ -160,11 +161,11 @@ export function registerDiscoveryTools(server, { service, userOf }) {
   });
 
   tool('mark_questions', {
-    title: 'Mark questions TBC or not applicable',
-    description: 'Mark questions as TBC (the client confirms later) or skipped (not applicable), with a note.',
+    title: 'Mark questions TBC, not applicable or clarified by a comment',
+    description: 'Mark questions as TBC (the client confirms later), skipped (not applicable) or commented (the source answers in words that no allowed value captures, e.g. "we only ship inside the EU" — the comment is required and stays an open item).',
     inputSchema: z.object({
       client: slug,
-      items: z.array(z.object({ question_id: questionId, as: z.enum(['tbc', 'skipped']), note: z.string().max(500).optional() })).min(1).max(50),
+      items: z.array(z.object({ question_id: questionId, as: z.enum(['tbc', 'skipped', 'commented']), note: z.string().max(1000).optional() })).min(1).max(50),
     }),
     annotations: write,
   }, async (user, { client, items }) => {

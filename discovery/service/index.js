@@ -169,6 +169,7 @@ export function createDiscoveryService({ store, today = isoToday }) {
         notes: session.notes,
         tbc: session.tbc,
         skipped: session.skipped,
+        commented: session.commented ?? {},
         documents: session.documents ?? [],
       };
     },
@@ -188,7 +189,16 @@ export function createDiscoveryService({ store, today = isoToday }) {
       const parsed = specs.map((spec) => ({ spec, result: spec.kind === 'table' ? parseTable(spec, values) : parseField(spec, values[spec.pointer] ?? []) }));
       const errors = parsed.filter((p) => p.result && 'error' in p.result).map((p) => p.result.error);
       const answers = parsed.filter((p) => p.result && 'value' in p.result);
-      if (!errors.length && !answers.length) errors.push('No answer given — mark the question TBC or skip it instead');
+      if (!errors.length && !answers.length) {
+        // A comment alone is a valid answer: the question counts as clarified and the comment stays an open item.
+        if (note?.trim()) {
+          const r = markQuestion(session, { question_id, as: 'commented', note, today: today() });
+          if (!r.ok) throw new ServiceError(400, 'Comment not recorded', r.errors);
+          await store.save(session);
+          return { ok: true, commented: true, preview: preview(session, today()) };
+        }
+        errors.push('Give an answer, or write a comment that answers or clarifies the question');
+      }
       if (errors.length) throw new ServiceError(400, 'Answer not recorded', errors);
 
       // Group fields are recorded as one object at their question field; other fields at their own pointer.
@@ -294,7 +304,7 @@ export function createDiscoveryService({ store, today = isoToday }) {
       return { ok: true };
     },
 
-    /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped', note?: string }} input */
+    /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */
     async markQuestion(user, client, { question_id, as, note }) {
       const session = await load(user, client);
       const r = markQuestion(session, { question_id, as, note, today: today() });

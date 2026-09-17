@@ -645,7 +645,7 @@
 
 **Q3.4.8** — In which countries should duties and import taxes be collected at checkout (DDP)? In the others the customer pays on delivery (DAP). *(recommended)*
 *Skip if Q3.4.1 = no.*
-*Country codes, e.g. US, GB, CH. One choice per country: DDP and DAP can't both be offered in the same country.*
+*Countries, e.g. United States, United Kingdom, Switzerland. One choice per country: DDP and DAP can't both be offered in the same country. If you don't ship across borders, say so in a comment.*
 
 > Answer:
 

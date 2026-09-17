@@ -91,8 +91,10 @@ export function run(command, flags, { workRoot = DEFAULT_WORK_ROOT, date = today
     }
 
     case 'tbc':
-    case 'skip': {
-      const result = markQuestion(session, { question_id: str('question'), as: command === 'tbc' ? 'tbc' : 'skipped', note: str('note'), today: date });
+    case 'skip':
+    case 'comment': {
+      const as = { tbc: 'tbc', skip: 'skipped', comment: 'commented' }[command];
+      const result = markQuestion(session, { question_id: str('question'), as, note: str('note') ?? str('text'), today: date });
       if (result.ok) save();
       return result.ok ? { ok: true, next: nextQuestions(session) } : result;
     }
@@ -129,7 +131,7 @@ export function run(command, flags, { workRoot = DEFAULT_WORK_ROOT, date = today
     }
 
     default:
-      throw new Error('Unknown command — use start, next, answer, tbc, skip, note, preview or finish');
+      throw new Error('Unknown command — use start, next, answer, tbc, skip, comment, note, preview or finish');
   }
 }
 

@@ -48,7 +48,9 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
 5. The client does not know yet → record `not_sure` when the question offers it (it becomes an open item), otherwise
    `npm run interview -- tbc --client <slug> --question <id> --note "..."`. Nothing needed → record `none`. Show the
    `option_labels` to the conversation, record the codes.
-   Not applicable → `skip`. Consultant context that is not an answer → `note --text "..."`.
+   Not applicable → `skip`. The client answers in words that no value captures (e.g. "we only ship inside the EU") →
+   `comment --question <id> --note "..."` (the question counts as clarified; the comment stays an open item).
+   Consultant context that is not tied to a question → `note --text "..."`.
 6. After each answer the CLI returns the offer, GO/STOP and fired exit rules. Mention them only when they change,
    as a short **consultant note** (the client may be present), and say "provisional" while `offer.provisional` is
    true. A STOP rule: flag it to the consultant immediately and continue the client questions. Each question has a

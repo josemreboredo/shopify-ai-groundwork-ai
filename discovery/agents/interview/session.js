@@ -25,6 +25,7 @@ const LANGUAGE = /^[a-z]{2}$/;
  * @property {Record<string, {source: string, status: string, question_id?: string, note?: string}>} provenance
  * @property {Record<string, string>} tbc  question id → note
  * @property {Record<string, string>} skipped  question id → note
+ * @property {Record<string, string>} [commented]  question id → comment that answers or clarifies it without a value
  * @property {{ text: string, at: string }[]} notes
  * @property {string} started_at
  * @property {string} updated_at
@@ -46,6 +47,7 @@ export function createSession({ client, language = 'en', mode = 'standard', toda
     provenance: {},
     tbc: {},
     skipped: {},
+    commented: {},
     notes: [],
     started_at: today,
     updated_at: today,

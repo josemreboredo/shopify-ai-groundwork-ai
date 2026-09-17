@@ -14,6 +14,8 @@ import { createFileStore } from '../../service/stores/file-store.js';
 import { createPostgresStore, TABLE_SQL } from '../../service/stores/postgres-store.js';
 import { fieldSpecs, parseField, parseTable, cellName } from '../../service/fields.js';
 import { run } from '../../agents/interview/cli.js';
+import { toExtraction } from '../../agents/interview/finish.js';
+import { preview } from '../../agents/interview/preview.js';
 
 const TODAY = '2026-09-17';
 const owner = { login: 'lead', role: 'owner' };
@@ -119,6 +121,27 @@ describe('discovery service', () => {
     );
     const hq = fieldSpecs({ fields: ['/meta/client/hq_country'], answer_type: 'country' })[0];
     assert.deepEqual([hq.kind, hq.vocabulary], ['text', 'country']);
+  });
+
+  test('a comment alone answers a question: it leaves the queue, counts as clarified and stays an open item for the offer', async () => {
+    const store = createMemoryStore();
+    const svc = await started(store);
+    const r = await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q3.4.8', values: {}, note: 'We only ship inside the EU' });
+    assert.equal(r.commented, true);
+    const view = await svc.getInterview(consultant, 'demo-client', { limit: 100 });
+    assert.deepEqual(view.commented, { 'Q3.4.8': 'We only ship inside the EU' });
+    assert.ok(!view.next.questions.some((q) => q.id === 'Q3.4.8'));
+    await rejects(svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q0.1.1', values: {} }), 400);
+
+    const session = await store.get('demo-client');
+    const { open_items } = toExtraction(session);
+    assert.ok(open_items.some((i) => i.question_id === 'Q3.4.8' && /Clarified by comment \(no value recorded\): We only ship inside the EU/.test(i.why)));
+
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q1.1.2', values: {}, note: 'Holding in Zug, operations in Zurich' });
+    assert.equal(preview(await store.get('demo-client'), TODAY).coverage.required_commented, 1);
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q1.1.2', values: { '/meta/client/hq_country': ['Switzerland'] } });
+    const after = await store.get('demo-client');
+    assert.ok(!('Q1.1.2' in after.commented), 'recording a value replaces the comment-only state');
   });
 
   test('TBC, skip and notes go through the engine checks (no personal data, consent cannot be skipped)', async () => {

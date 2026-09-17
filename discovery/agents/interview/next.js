@@ -158,7 +158,7 @@ export function nextQuestions(session, { limit = 3 } = {}) {
   const open = questionBank.questions
     .map((q, index) => ({ q, index }))
     .filter(({ q }) => inInterview(q, session, stopOpen))
-    .filter(({ q }) => !(q.id in session.tbc) && !(q.id in session.skipped))
+    .filter(({ q }) => !(q.id in session.tbc) && !(q.id in session.skipped) && !(q.id in (session.commented ?? {})))
     .filter(({ q }) => !isKnown(q, session.answers))
     .filter(({ q }) => !isSkippedByRule(q, session.answers))
     .sort((a, b) =>

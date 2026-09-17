@@ -42,8 +42,10 @@ export function preview(session, today) {
 
   const required = questionBank.questions.filter((q) => q.priority === 'required');
   const requiredIds = new Set(required.map((q) => q.id));
-  const openRequired = unansweredInMode(session).filter((q) => q.priority === 'required' && !(q.id in session.tbc));
+  const commented = session.commented ?? {};
+  const openRequired = unansweredInMode(session).filter((q) => q.priority === 'required' && !(q.id in session.tbc) && !(q.id in commented));
   const tbcRequired = Object.keys(session.tbc).filter((id) => requiredIds.has(id)).length;
+  const commentedRequired = Object.keys(commented).filter((id) => requiredIds.has(id) && !required.find((q) => q.id === id).maps_to.some((p) => isAnswered(session.answers, p))).length;
 
   return {
     offer: {
@@ -62,6 +64,7 @@ export function preview(session, today) {
     coverage: {
       required_answered: required.filter((q) => q.maps_to.some((p) => isAnswered(session.answers, p))).length,
       required_tbc: tbcRequired,
+      required_commented: commentedRequired,
       required_open: openRequired.length,
       required_total: required.length,
     },
