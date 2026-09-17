@@ -72,3 +72,11 @@ details summary { cursor: pointer; color: var(--accent); font-size: 0.85rem; }
   .layout, .inline-form { grid-template-columns: 1fr; }
   main { padding: 16px; }
 }
+
+/* Lead Consultant manual */
+main.manual { max-width: 860px; line-height: 1.55; }
+main.manual li { margin: 4px 0; }
+main.manual code { background: var(--panel); padding: 1px 5px; border-radius: 4px; font-size: 0.9em; overflow-wrap: anywhere; }
+main.manual h2 { scroll-margin-top: 12px; }
+.toc { columns: 2; column-gap: 32px; padding-left: 20px; }
+@media (max-width: 640px) { .toc { columns: 1; } .topbar { flex-wrap: wrap; } }

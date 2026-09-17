@@ -3,7 +3,7 @@
 React Router 7 app for Lead Consultants: engagement list, live interview with validation, offer, scope gates, exit
 rules, Shopify plan and app signals — and the **Merkle Discovery connector** for Claude Projects (`/mcp`, ADR 0015):
 Claude reads RFPs in a private Project and records answers “to confirm” that you review on the engagement page. Set-up
-steps are on the app's **Claude Project** page. It uses the discovery service (`../discovery/service/`) — the 1.0.0 engine
+steps are on the app's **Claude Project** page; the end-to-end flow for Lead Consultants is the **Manual** page (`/manual`, no sign-in needed). It uses the discovery service (`../discovery/service/`) — the 1.0.0 engine
 unchanged, so code decides. Architecture: [`../discovery/docs/architecture/lc-frontend-2.0.md`](../discovery/docs/architecture/lc-frontend-2.0.md)
 (ADR 0014).
 

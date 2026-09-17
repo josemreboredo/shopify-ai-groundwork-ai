@@ -39,6 +39,12 @@ risk register, and nothing checked where a Shopify statement came from.
    ids after client facts, numbered references for Shopify facts and a References list; discovery writes
    `architecture.md` alongside the other artefacts.
 
+## Amendment (2026-09-17, owner decision)
+
+Lead Consultants generate the document in their Claude Project by default (strongest model, web search on, same
+connector tools and quality gate); `/architect` in Claude Code is the advanced path for complex integrations or tax
+questions, or when a draft keeps failing the checks. The web app's Manual page (`/manual`) documents the flow.
+
 ## Consequences
 
 - Drafting the approach costs more (research and a larger output) and takes longer; the owner accepts this for the

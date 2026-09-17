@@ -62,20 +62,22 @@ export default function Closing({ loaderData }) {
           <p className="muted">Fix it in <Link to={`/engagements/${client}/review`}>Review answers</Link>.</p>
         </div>
       )}
-      <h3>Recommended: Solution Architect in Claude Code</h3>
-      <p>The closing document is the consulting deliverable: architecture decisions with options, integration architecture, data model, non-functional requirements and a risk register — every Shopify statement cited from official Shopify sources, every client fact from your answers. The engine rejects unsourced content.</p>
+      <h3>In your Claude Project (standard)</h3>
       <ol>
-        <li>In Claude Code in the repository, add the connector once: <code>claude mcp add --transport http merkle-discovery {origin}/mcp</code> and the Shopify Dev MCP: <code>claude mcp add shopify-dev-mcp -- npx -y @shopify/dev-mcp@latest</code>.</li>
-        <li>Run <code>/architect {client}</code> (strongest model, high effort). It researches Shopify's documentation, saves the approach and the document here.</li>
-        <li>Reload this page and download the Markdown.</li>
-      </ol>
-      <h3>Alternative: your Claude Project</h3>
-      <ol>
-        <li>Open your Claude Project for this engagement with the <strong>Merkle Discovery</strong> connector enabled (set-up: <Link to="/claude">Claude Project</Link>).</li>
+        <li>Open your Claude Project for this engagement (set-up: <Link to="/claude">Claude Project</Link>). Choose the strongest model, turn on <strong>web search</strong> and enable the <strong>Merkle Discovery</strong> connector in the chat.</li>
         <li>Ask Claude: <code>Draft the Discovery Closing Document for {client}.</code></li>
-        <li>Claude starts it (<code>prepare_closing_document</code>), drafts and saves the implementation approach (<code>save_approach</code>), writes the document and saves it (<code>save_closing_document</code>). If the engine rejects something, Claude fixes it and saves again.</li>
-        <li>Reload this page and download the Markdown.</li>
+        <li>Claude researches Shopify's official documentation, saves the approach and writes the document. If the engine rejects unsourced or incomplete content, Claude adds the evidence and saves again — this can take a few rounds.</li>
+        <li>Reload this page, download the Markdown and review it: sources, decisions marked “to validate”, assumptions and the Consultant notes section.</li>
       </ol>
+      <p className="muted">Every Shopify statement must cite an official Shopify source and every client fact the question it comes from; the engine rejects the approach otherwise. Step-by-step guide: <Link to="/manual">Lead Consultant manual</Link>.</p>
+      <details>
+        <summary>Advanced: Solution Architect in Claude Code</summary>
+        <p>For complex integrations or tax questions, or when a draft keeps failing the checks. Claude Code adds the Shopify Dev MCP for deeper documentation research.</p>
+        <ol>
+          <li>Add the connector once: <code>claude mcp add --transport http merkle-discovery {origin}/mcp</code> and the Shopify Dev MCP: <code>claude mcp add shopify-dev-mcp -- npx -y @shopify/dev-mcp@latest</code>.</li>
+          <li>In the repository, run <code>/architect {client}</code>. It saves the approach and the document here.</li>
+        </ol>
+      </details>
       <p className="muted">After changing answers, ask Claude to draft it again: each save keeps the previous version.</p>
     </main>
   );

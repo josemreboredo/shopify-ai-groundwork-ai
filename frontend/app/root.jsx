@@ -23,6 +23,7 @@ export function Layout({ children }) {
         <header className="topbar">
           <Link to="/" className="brand">Merkle Discovery</Link>
           <span className="notice">Demo or anonymised engagements only</span>
+          <Link to="/manual">Manual</Link>
           {root?.user ? <Link to="/claude">Claude Project</Link> : null}
           {root?.user ? (
             <Form method="post" action="/logout" className="user">
