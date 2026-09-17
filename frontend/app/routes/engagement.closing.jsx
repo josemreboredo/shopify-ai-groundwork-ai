@@ -1,4 +1,5 @@
-import { Link } from 'react-router';
+import { useEffect } from 'react';
+import { Link, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
@@ -31,6 +32,19 @@ const VIA = { claude: 'Claude', web: 'web app', cli: 'CLI' };
 export default function Closing({ loaderData }) {
   const { engagement, approach, document, history, readiness, preview, origin, freshness, version } = loaderData;
   const client = engagement.client;
+  const startPrompt = document
+    ? freshness.redraft_prompt
+    : `Draft the Discovery Closing Document for ${client}.\n\nWork as a Shopify Solution Architect: call prepare_closing_document, read the whole engagement, research every Shopify fact in the official documentation before you state it, draft and save the approach, then fill the deck templates and write the annex and save both with save_closing_document. Tell me the version you saved, the decisions taken and what is still to validate.`;
+  // While Claude is working, the page picks up the new version by itself.
+  const revalidator = useRevalidator();
+  const waiting = !document || !freshness.up_to_date;
+  useEffect(() => {
+    if (!waiting) return undefined;
+    const id = setInterval(() => {
+      if (revalidator.state === 'idle' && globalThis.document?.visibilityState === 'visible') revalidator.revalidate();
+    }, 20000);
+    return () => clearInterval(id);
+  }, [revalidator, waiting]);
   return (
     <main>
       <p><Link to="/">← Engagements</Link></p>
@@ -87,14 +101,29 @@ export default function Closing({ loaderData }) {
           <p className="muted">Fix it in <Link to={`/engagements/${client}/review`}>Review answers</Link>.</p>
         </div>
       )}
-      <h3>In your Claude Project (standard)</h3>
+      <div className="card start">
+        <p className="question">Start the generation</p>
+        <p className="muted">The tool cannot start Claude by itself — Claude has to be asked from a chat. These two buttons do it for you: the instruction is already written.</p>
+        <div className="actions">
+          <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(startPrompt)}`} target="_blank" rel="noreferrer">Open Claude and generate</a>
+          <button type="button" className="secondary" onClick={() => navigator.clipboard?.writeText(startPrompt)}>Copy the instruction</button>
+        </div>
+        <p className="muted">
+          In the chat, make sure the <strong>Merkle Discovery</strong> connector is on and pick the strongest model. To use the RFPs you uploaded, start it inside your Claude Project instead — or pick
+          <strong> Draft the Discovery Closing Document</strong> from the connector's prompts, which carries the same instruction.
+        </p>
+        <details>
+          <summary>The instruction it sends</summary>
+          <textarea readOnly rows={5} value={startPrompt} />
+        </details>
+      </div>
+
+      <h3>What happens next</h3>
       <ol>
-        <li>Open your Claude Project for this engagement (set-up: <Link to="/claude">Claude Project</Link>). Choose the strongest model, turn on <strong>web search</strong> and enable the <strong>Merkle Discovery</strong> connector in the chat.</li>
-        <li>Ask Claude: <code>Draft the Discovery Closing Document for {client}.</code></li>
-        <li>Claude researches Shopify's official documentation, saves the approach and writes the document. If the engine rejects unsourced or incomplete content, Claude adds the evidence and saves again — this can take a few rounds.</li>
-        <li>Reload this page, download the Markdown and review it: sources, decisions marked “to validate”, assumptions and the Consultant notes section.</li>
+        <li>Claude reads the engagement, researches every Shopify fact, then saves the approach and the deck. It can take up to 45 minutes; <strong>Cowork</strong> suits it better than a normal chat.</li>
+        <li>This page refreshes itself while you wait — the version appears here as soon as Claude saves it.</li>
+        <li>Download the deck and the annex, or open the preview. Uploading them back into your Claude Project is optional: Claude can always read the saved document through the connector.</li>
       </ol>
-      <p className="muted">Every Shopify statement must cite an official Shopify source and every client fact the question it comes from; the engine rejects the approach otherwise. Step-by-step guide: <Link to="/manual">Lead Consultant manual</Link>.</p>
       <details>
         <summary>Advanced: Solution Architect in Claude Code</summary>
         <p>For complex integrations or tax questions, or when a draft keeps failing the checks. Claude Code adds the Shopify Dev MCP for deeper documentation research.</p>

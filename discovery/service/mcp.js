@@ -255,4 +255,42 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     inputSchema: z.object({ client: slug, status: z.enum(['tbc', 'confirmed']).optional() }),
     annotations: read,
   }, async (user, { client, status }) => (await service.listAnswers(user, client)).filter((a) => !status || a.status === status));
+
+  registerPrompts(server);
+}
+
+/**
+ * Prompt templates the Lead Consultant picks in Claude instead of typing an
+ * instruction: the connector cannot start work by itself (MCP is client-driven),
+ * so the next best thing is that starting it takes one click.
+ *
+ * @param {{ registerPrompt?: Function }} server
+ */
+export function registerPrompts(server) {
+  if (typeof server.registerPrompt !== 'function') return;
+  const message = (text) => ({ messages: [{ role: 'user', content: { type: 'text', text } }] });
+
+  server.registerPrompt('draft_closing_document', {
+    title: 'Draft the Discovery Closing Document',
+    description: 'Research, decide and write the closing deck and annex for an engagement, then save both.',
+    argsSchema: { client: z.string().describe('Client slug, e.g. acme-watches') },
+  }, ({ client }) => message(`Draft the Discovery Closing Document for ${client}.
+
+Work as a Shopify Solution Architect: call prepare_closing_document, read the whole engagement, research every Shopify fact in the official documentation before you state it, draft and save the approach, then fill the deck templates and write the annex and save both with save_closing_document. Tell me the version you saved, the decisions taken and what is still to validate.`));
+
+  server.registerPrompt('redraft_closing_document', {
+    title: 'Redraft after answers changed',
+    description: 'Check what changed since the last version and rewrite the document accordingly.',
+    argsSchema: { client: z.string().describe('Client slug, e.g. acme-watches') },
+  }, ({ client }) => message(`Redraft the Discovery Closing Document for ${client}.
+
+Call get_closing_document first and read freshness.changes — those are the answers that moved since the last version. Redraft the deck and the annex, and tell me which decisions, risks or scope items the changes moved, and which stayed the same and why.`));
+
+  server.registerPrompt('prefill_from_documents', {
+    title: 'Pre-fill the engagement from the documents',
+    description: 'Read the RFP and other documents in this project and record what they answer, with citations.',
+    argsSchema: { client: z.string().describe('Client slug, e.g. acme-watches') },
+  }, ({ client }) => message(`Read the documents in this project and pre-fill the engagement ${client}.
+
+Register each document, map what it says to the questionnaire with find_questions, and record answers with record_answers including the evidence (document, section, short quote). Mark anything unclear as TBC with a note instead of guessing. Then summarise what you recorded and what is still open.`));
 }
