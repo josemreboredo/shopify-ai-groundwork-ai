@@ -38,8 +38,8 @@ Secrets go only into Vercel environment variables — never into the repository 
 1. Vercel **Pro** (the Hobby plan is for non-commercial use only).
 2. New project from this GitHub repository, **Root Directory `frontend`**; keep source files outside the root directory
    included in the build (the app imports `../discovery` and `../contracts`). Framework preset: React Router.
-3. Functions run in Frankfurt: `vercel.json` sets `regions: ["fra1"]`.
-4. Storage: add **Neon** from the Vercel Marketplace, choose an **EU region** (e.g. Frankfurt); it provides `DATABASE_URL`.
+3. Functions run in London, next to the database: `vercel.json` sets `regions: ["lhr1"]`.
+4. Storage: add **Neon** from the Vercel Marketplace in **London** (the closest region to the EU offered there; pilot data is demo only); it provides `DATABASE_URL`.
    The table `discovery_interviews` is created on first use.
 5. GitHub OAuth app (GitHub → Settings → Developer settings → OAuth Apps): homepage `https://<your-project>.vercel.app`,
    callback `https://<your-project>.vercel.app/auth/github/callback`. Sign in on that production URL (preview URLs

@@ -91,8 +91,8 @@ The service is built and hosted on **personal accounts** first and migrated to d
 | Part | Interim choice | Why | Checked (2026-09-17) |
 |---|---|---|---|
 | Platform | **Vercel Pro** (personal account) | Standard Node runtime: the 1.0.0 engine and ajv run unchanged; React Router preset; remote MCP with OAuth (`mcp-handler`) | Hobby plan is "restricted to non-commercial personal use only" — a paid employee writing the code counts as commercial, so Pro is required ([fair use](https://vercel.com/docs/limits/fair-use-guidelines)) |
-| Region | Functions in **Frankfurt (`fra1`)** via `vercel.json` `regions` | Keep processing in the EU | New projects default to Washington, D.C. (`iad1`) — the region must be set ([regions](https://vercel.com/docs/functions/configuring-functions/region)) |
-| Storage | **Postgres in an EU region** (Neon via the Vercel Marketplace), behind a storage adapter | Portable to a dentsu Postgres | Region picked at set-up ([Neon for Vercel](https://vercel.com/marketplace/neon)) |
+| Region | Functions in **London (`lhr1`)** via `vercel.json` `regions`, next to the database | Neon on the Vercel Marketplace offered London, not an EU region (2026-09-17); acceptable for demo data — the UK is outside the EU (EU adequacy decision for the UK to re-confirm before real data) | New projects default to Washington, D.C. (`iad1`) — the region must be set ([regions](https://vercel.com/docs/functions/configuring-functions/region)) |
+| Storage | **Postgres in London** (Neon via the Vercel Marketplace), behind a storage adapter | Portable to a dentsu Postgres | Region picked at set-up ([Neon for Vercel](https://vercel.com/marketplace/neon)); no EU region offered there |
 | Sign-in | **GitHub login with an allowlist** (web app and the connector's OAuth) | No extra vendor; replaced by dentsu SSO at migration | — |
 | Claude | Connector added to the owner's personal Claude account for the pilot | Private Projects only; see section 3 | — |
 
@@ -144,7 +144,7 @@ Repository: a new `frontend/` (web app) and `discovery/service/` (API and MCP se
 | # | Decision | Outcome |
 |---|---|---|
 | D1 | Data location | **C — staged:** build on interim personal hosting with demo data; move to dentsu systems for real client data |
-| D2 | Hosting platform | **Interim: Vercel Pro (personal account), functions in `fra1`, Postgres in the EU.** Target: dentsu IT — requirements in [`lc-frontend-hosting-requirements.md`](lc-frontend-hosting-requirements.md) |
+| D2 | Hosting platform | **Interim: Vercel Pro (personal account), functions and Postgres in London (`lhr1`), demo data only.** Target: dentsu IT — requirements in [`lc-frontend-hosting-requirements.md`](lc-frontend-hosting-requirements.md) |
 | D3 | Web app stack | **React with React Router 7** (the framework Shopify Hydrogen builds on; pinned to 7 because Vercel's React Router preset supports 7) and a Node service reusing `discovery/agents` |
 | D4 | Identity | **Interim: GitHub login with an allowlist.** Target: dentsu SSO (pending dentsu IT) |
 | D5 | Pilot | **Owner first, with demo clients** (ACME, ReboLabs) until the hosted service is approved |

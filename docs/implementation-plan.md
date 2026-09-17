@@ -231,7 +231,7 @@ Starts with validation (Gaia Track A `01-validation`) with 2–3 Merkle Lead Con
 ## Phase 7 — Lead Consultant frontend, version 2.0.0 (T4)
 
 Design: `discovery/docs/architecture/lc-frontend-2.0.md` · ADR 0014 (hybrid, staged, React Router) · interim hosting:
-Vercel Pro (personal, `fra1`), Postgres in the EU, GitHub login allowlist, demo data only · target hosting and SSO:
+Vercel Pro (personal, London `lhr1`), Postgres (Neon) in London, GitHub login allowlist, demo data only · target hosting and SSO:
 dentsu IT (`discovery/docs/architecture/lc-frontend-hosting-requirements.md`).
 
 **2.0.0-alpha — discovery service and interview screens (local and Vercel preview, demo data)**

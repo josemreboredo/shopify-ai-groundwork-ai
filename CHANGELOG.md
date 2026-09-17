@@ -9,9 +9,9 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 ### Added
 - Architecture for the Lead Consultant frontend (`discovery/docs/architecture/lc-frontend-2.0.md`) and ADR 0014: one discovery service used by a web app and by a connector in each consultant's private Claude Project; staged data location (local beta, EU-hosted 2.0.0); React with React Router; owner pilot with demo clients.
 - Hosting and sign-in requirements for dentsu IT (`discovery/docs/architecture/lc-frontend-hosting-requirements.md`); implementation plan Phase 7.
-- Interim hosting decision: Vercel Pro on a personal account (functions in `fra1`), Postgres in an EU region, GitHub login with an allowlist, demo data only; migration to dentsu systems in 2.x.
+- Interim hosting decision: Vercel Pro on a personal account (functions and Neon Postgres in London, `lhr1` — no EU region offered for Neon on the Vercel Marketplace), GitHub login with an allowlist, demo data only; migration to dentsu systems in 2.x.
 - 2.0.0-alpha: discovery service (`discovery/service/`) — shared operations for the web app and the future Claude connector on top of the unchanged interview engine; file, Postgres and memory stores; access by owner and role; GitHub allowlist.
-- 2.0.0-alpha: Lead Consultant web app (`frontend/`, React Router 7, `npm run web`) — GitHub sign-in, engagement list, interview screens generated from the schema, live offer, scope gates, exit rules, Shopify plan and app signals; Vercel config for Frankfurt.
+- 2.0.0-alpha: Lead Consultant web app (`frontend/`, React Router 7, `npm run web`) — GitHub sign-in, engagement list, interview screens generated from the schema, live offer, scope gates, exit rules, Shopify plan and app signals; Vercel config for London.
 
 ### Changed
 - The schema loader imports its JSON files as modules so bundled server code carries them.

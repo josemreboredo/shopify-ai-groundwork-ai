@@ -17,7 +17,8 @@ Owner; there is no documented API to create Projects.
 1. **Hybrid:** one discovery service (REST API and MCP server) reusing `discovery/agents` — code still decides — used by
    a Lead Consultant web app and by a "Merkle Discovery" connector in each consultant's private Claude Project.
 2. **Staged hosting:** build and pilot on **interim personal accounts** — Vercel Pro (the Hobby plan forbids commercial
-   use), functions in Frankfurt (`fra1`), Postgres in an EU region, GitHub login with an allowlist — with demo data only.
+   use), functions and Postgres (Neon) in London (`lhr1`) — the Vercel Marketplace offered no EU region for Neon —, GitHub
+   login with an allowlist — with demo data only.
    Then migrate to dentsu systems (hosting, SSO, Claude Enterprise) for real client data; requirements in
    `discovery/docs/architecture/lc-frontend-hosting-requirements.md`. Cloudflare Workers was not chosen: no `eval` /
    `new Function`, so the engine would need rework.
