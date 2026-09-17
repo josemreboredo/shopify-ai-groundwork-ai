@@ -47,11 +47,13 @@ shopify-ai-builder/
 │   ├── scripts/                questionnaire and consultant guide generator, app approvals
 │   ├── docs/                   client questionnaire and consultant guide (generated), deck template and prompt,
 │   │                           mainland China briefing, architecture, validation
+│   ├── service/                shared operations for the web app and the Claude connector (2.0.0)
 │   ├── tests/                  unit tests and engagement fixtures
 │   └── paths.js                repository locations used by the tool
 ├── build/                      Build AI tool
 │   ├── lwc-library/            design tokens and market presets (e.g. Switzerland)
 │   └── docs/conventions/       build conventions
+├── frontend/                   Lead Consultant web app (2.0.0, in progress)
 ├── contracts/
 │   └── engagement.schema.json  the handover shape shared by both tools
 ├── docs/                       shared: decisions (adr/), commercial model (strategy.md, internal),
@@ -83,6 +85,7 @@ npm test                                        # must pass before every commit
 | Tax and shipping configuration workbook | `npm run workbook -- --client <slug>` |
 | Regenerate the questionnaire and consultant guide | `npm run questionnaire:render` (after editing the question bank) |
 | Approve an App Store app after an engagement | `npm run apps -- approve --handle <handle> --by <role>` |
+| Lead Consultant web app (2.0.0, in progress; demo data only) | `DEV_LOGIN=<github-login> npm run web` — see [`frontend/README.md`](frontend/README.md) |
 
 ## Data and security
 

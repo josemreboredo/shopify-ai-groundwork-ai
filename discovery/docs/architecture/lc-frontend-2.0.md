@@ -145,6 +145,6 @@ Repository: a new `frontend/` (web app) and `discovery/service/` (API and MCP se
 |---|---|---|
 | D1 | Data location | **C — staged:** build on interim personal hosting with demo data; move to dentsu systems for real client data |
 | D2 | Hosting platform | **Interim: Vercel Pro (personal account), functions in `fra1`, Postgres in the EU.** Target: dentsu IT — requirements in [`lc-frontend-hosting-requirements.md`](lc-frontend-hosting-requirements.md) |
-| D3 | Web app stack | **React with React Router** (the framework Shopify Hydrogen builds on) and a Node service reusing `discovery/agents` |
+| D3 | Web app stack | **React with React Router 7** (the framework Shopify Hydrogen builds on; pinned to 7 because Vercel's React Router preset supports 7) and a Node service reusing `discovery/agents` |
 | D4 | Identity | **Interim: GitHub login with an allowlist.** Target: dentsu SSO (pending dentsu IT) |
 | D5 | Pilot | **Owner first, with demo clients** (ACME, ReboLabs) until the hosted service is approved |

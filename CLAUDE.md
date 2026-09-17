@@ -34,7 +34,7 @@ workspace for all Shopify client engagements.
 | `contracts/` | The handover between both tools: `engagement.schema.json` |
 | `docs/` | Shared: ADRs, strategy (commercial model), implementation plan, security gates |
 | `clients/` | Client data (gitignored), used by both tools |
-| `frontend/`, `discovery/service/` | **2.0.0 (planned)** — Lead Consultant web app and discovery service with a Claude Projects connector (ADR 0014) |
+| `frontend/`, `discovery/service/` | **2.0.0 (in progress)** — Lead Consultant web app (`npm run web`, `frontend/README.md`) and discovery service; Claude Projects connector next (ADR 0014). Interim hosting: demo data only |
 
 Handover from discovery to build: `clients/<slug>/engagement.json`, `backlog.csv` / `backlog.json` and the completed
 `configuration-workbook.md`. The build tool never reads offer pricing from `discovery/schema/offering.json`.

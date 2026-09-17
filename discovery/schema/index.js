@@ -9,19 +9,17 @@
  * @module schema
  */
 
-import { readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
+import Ajv2020 from 'ajv/dist/2020.js';
 
-const require = createRequire(import.meta.url);
-const Ajv2020 = require('ajv/dist/2020');
+// JSON modules (not file reads) so the schema travels with bundled server code (2.0.0 web app on Vercel).
+import engagementSchema from '../../contracts/engagement.schema.json' with { type: 'json' };
+import questionBank from './question-bank.json' with { type: 'json' };
+import offering from './offering.json' with { type: 'json' };
+import apps from './apps.json' with { type: 'json' };
+import optionLabels from './option-labels.json' with { type: 'json' };
 
-const load = (name) => JSON.parse(readFileSync(new URL(`./${name}`, import.meta.url), 'utf8'));
-
-export const engagementSchema = JSON.parse(readFileSync(new URL('../../contracts/engagement.schema.json', import.meta.url), 'utf8'));
-export const questionBank     = load('question-bank.json');
-export const offering         = load('offering.json');
-export const apps             = load('apps.json');
-const OPTION_LABELS            = load('option-labels.json').labels;
+export { engagementSchema, questionBank, offering, apps };
+const OPTION_LABELS = optionLabels.labels;
 
 /** Acronyms and brand spellings for generated option labels. */
 const WORDS = {

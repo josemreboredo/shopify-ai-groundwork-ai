@@ -235,10 +235,11 @@ Vercel Pro (personal, `fra1`), Postgres in the EU, GitHub login allowlist, demo 
 dentsu IT (`discovery/docs/architecture/lc-frontend-hosting-requirements.md`).
 
 **2.0.0-alpha — discovery service and interview screens (local and Vercel preview, demo data)**
-- [ ] Owner set-up: Vercel Pro account, Neon Postgres (EU region) from the Vercel Marketplace, GitHub OAuth app, allowlist
-- [ ] `discovery/service/`: REST API over `discovery/agents` (engagements, interview next / answer / tbc / skip / preview / finish) with storage adapter (files locally, Postgres on Vercel) and auth adapter (GitHub allowlist), contract tests against the CLI behaviour; `vercel.json` regions `fra1`
-- [ ] `frontend/`: React + React Router app — engagement list, interview screens (questions, validation errors, live offer, scope gates, exit rules, Shopify plan)
-- [ ] Consent gate and no-personal-data checks in the service; internal pricing only in consultant views
+- [ ] Owner set-up: Vercel Pro account, Neon Postgres (EU region) from the Vercel Marketplace, GitHub OAuth app, allowlist; first deploy (`frontend/README.md`)
+- [x] `discovery/service/`: shared operations over `discovery/agents` (engagements, interview next / answer / TBC / skip / notes / preview) with stores (files locally — shared with the CLI —, Postgres on Vercel, memory for tests), access by owner and role, GitHub allowlist; tests
+- [x] `frontend/`: React Router 7 app (the Vercel preset supports React Router 7) — GitHub sign-in, engagement list, interview screens with inputs from the schema, validation errors, live offer, scope gates, exit rules, Shopify plan, app signals, notes, TBC; `vercel.json` regions `fra1`
+- [x] Consent gate and no-personal-data checks from the engine; internal offer data only in the signed-in consultant views
+- [ ] Finish from the web app (moves to beta with the outputs); table answers use a JSON editor in alpha
 
 **2.0.0-beta — outputs and pilot (Vercel, demo data)**
 - [ ] Approach step (Claude API), discovery finish, deck draft and client check, backlog, workbook, Larger Engagement brief
