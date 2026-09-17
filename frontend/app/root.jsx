@@ -25,7 +25,7 @@ export function Layout({ children }) {
       </head>
       <body>
         <header className="topbar">
-          <Link to="/" className="brand" aria-label="Merkle Discovery — home"><span className="mark" aria-hidden="true" />Merkle</Link>
+          <Link to="/" className="brand" aria-label="Merkle Discovery — home"><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
           <nav className="topnav">
             {root?.user ? <Link to="/">Engagements</Link> : null}
             <Link to="/manual">Manual</Link>

@@ -43,14 +43,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); outline: 
 input[type='checkbox'], input[type='radio'] { width: auto; }
 textarea { min-height: 70px; }
 .topbar { display: flex; align-items: center; gap: 36px; padding: 18px 32px; background: #000; color: #fff; }
-.brand {
-  position: relative; display: inline-block; color: #fff; text-decoration: none;
-  font-size: 1.45rem; font-weight: 800; line-height: 1; letter-spacing: 0.06em; text-transform: uppercase;
-}
-.brand .mark {
-  position: absolute; top: -5px; left: -11px; width: 11px; height: 11px; background: var(--red);
-  clip-path: polygon(100% 0, 100% 100%, 0 0);
-}
+.brand { display: inline-flex; align-items: center; line-height: 0; }
+.brand img { height: 20px; width: auto; display: block; }
 .topnav { display: flex; gap: 28px; align-items: center; }
 .topbar a, .topnav a {
   color: #fff; text-decoration: none; font-size: 0.82rem; font-weight: 700;
