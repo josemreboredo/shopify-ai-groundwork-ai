@@ -137,6 +137,145 @@ export const LAYOUTS = {
     },
     required: ['headline', 'items'],
   },
+  integration: {
+    purpose: 'One connected system: who owns which data, how it moves, and what happens when it fails.',
+    fields: {
+      system: str('System name', 80),
+      role: str('What this system is the source of truth for', 200),
+      direction: str('into Shopify | out of Shopify | both ways', 24),
+      frequency: str('real time | near real time | scheduled | manual', 24),
+      pattern: str('How it connects: native app, iPaaS, custom app, file transfer', 120),
+      apis: list(str('Shopify API or event used', 80), 'The Shopify side of the integration', 5),
+      failure: str('What happens when it fails: retries, reconciliation, who is alerted', 300),
+      evidence: str('Question ids', 80),
+      sources: list(str('Official Shopify URL'), 'Sources', 3),
+    },
+    required: ['system', 'role', 'direction', 'pattern', 'failure'],
+  },
+  data_model: {
+    purpose: 'The custom data the solution needs: what lives in Shopify, in which form, written by whom.',
+    fields: {
+      headline: str('Slide message', 200),
+      entries: list({
+        type: 'object',
+        properties: {
+          object: str('Product, variant, customer, company, order, market…', 40),
+          kind: str('native field | metafield | metaobject | app data', 24),
+          name: str('Field or record name', 80),
+          purpose: str('What it is for', 160),
+          source: str('Which system writes it', 60),
+        },
+        required: ['object', 'kind', 'name', 'purpose', 'source'],
+        additionalProperties: false,
+      }, 'At most seven rows', 7),
+      not_modelled: list(str('What cannot be modelled in Shopify, and what we do instead', 160), 'The limits', 3),
+      footnote: str('Sources or evidence', 160),
+    },
+    required: ['headline', 'entries'],
+  },
+  migration: {
+    purpose: 'What moves from the old platform, what does not, and how the cut-over runs.',
+    fields: {
+      headline: str('Slide message', 200),
+      moves: list({ type: 'object', properties: { data: str('Data', 60), volume: str('Volume', 40), how: str('How it moves', 120) }, required: ['data', 'how'], additionalProperties: false }, 'What migrates', 6),
+      does_not_move: list(str('What does not migrate, and the consequence', 160), 'Be explicit — this is what surprises clients', 4),
+      cutover: list(str('Step in the cut-over, including rehearsals and the rollback', 160), 'How go-live runs', 5),
+      evidence: str('Question ids or exit rules', 80),
+      sources: list(str('Official Shopify URL'), 'Sources', 3),
+    },
+    required: ['headline', 'moves', 'does_not_move', 'cutover'],
+  },
+  nfr: {
+    purpose: 'Non-functional requirements: performance, accessibility, privacy and security, each with a target and how it is verified.',
+    fields: {
+      headline: str('Slide message', 200),
+      items: list({
+        type: 'object',
+        properties: {
+          area: str('performance | accessibility | privacy | security | SEO | availability', 24),
+          target: str('The measurable target', 160),
+          approach: str('How we meet it', 200),
+          verified: str('How and when it is verified', 120),
+        },
+        required: ['area', 'target', 'approach', 'verified'],
+        additionalProperties: false,
+      }, 'Three to five areas', 5),
+      footnote: str('Sources or evidence', 160),
+    },
+    required: ['headline', 'items'],
+  },
+  open_decisions: {
+    purpose: 'Decisions the client still has to make, with an owner and a date, and what happens if they slip.',
+    fields: {
+      headline: str('Slide message', 200),
+      decisions: list({
+        type: 'object',
+        properties: {
+          decision: str('What must be decided', 160),
+          owner: str('Who decides', 60),
+          needed_by: str('By when', 60),
+          if_late: str('What happens if it slips', 160),
+        },
+        required: ['decision', 'owner', 'needed_by', 'if_late'],
+        additionalProperties: false,
+      }, 'At most six', 6),
+      footnote: str('Evidence', 160),
+    },
+    required: ['headline', 'decisions'],
+  },
+  out_of_scope: {
+    purpose: 'What this engagement does not include, so the proposal is unambiguous.',
+    fields: {
+      headline: str('Slide message', 200),
+      later_phases: list(str('Deferred to a later phase', 160), 'Planned, but not now', 5),
+      exclusions: list(str('Not included at all', 160), 'Standard and engagement-specific exclusions', 6),
+      footnote: str('Evidence', 160),
+    },
+    required: ['headline', 'exclusions'],
+  },
+  operating_model: {
+    purpose: 'Who runs what after go-live: the client team, Merkle, and third parties.',
+    fields: {
+      headline: str('Slide message', 200),
+      responsibilities: list({ type: 'object', properties: { area: str('Area', 80), client: str('Client', 100), merkle: str('Merkle', 100) }, required: ['area', 'client', 'merkle'], additionalProperties: false }, 'At most six areas', 6),
+      enablement: list(str('Training, SOPs or handover item', 160), 'How the team is made ready', 4),
+      support: str('The support model after launch', 160),
+      footnote: str('Evidence', 160),
+    },
+    required: ['headline', 'responsibilities'],
+  },
+  run_cost: {
+    purpose: 'What the solution costs to run, separate from the project price.',
+    fields: {
+      headline: str('Slide message', 200),
+      items: list({ type: 'object', properties: { item: str('Subscription or licence', 80), cost: str('Cost as published', 60), period: str('per month | per year', 20), note: str('Who pays, or what it depends on', 120) }, required: ['item', 'cost', 'period'], additionalProperties: false }, 'At most six', 6),
+      total: str('Monthly total of what is known, with the currency', 80),
+      footnote: str('List prices and the date they were checked', 160),
+    },
+    required: ['headline', 'items'],
+  },
+  ai_commerce: {
+    purpose: 'How the store appears in AI shopping channels, and what the client must decide about it.',
+    fields: {
+      headline: str('Slide message', 200),
+      today: str('What is true today, including what Shopify enables by default', 250),
+      decisions: list(str('What the client must decide', 160), 'Enrolment, checkout in the assistant, data sharing, crawlers', 4),
+      readiness: list(str('What has to be true for it to work, e.g. product data', 160), 'Preparation', 3),
+      footnote: str('Sources', 160),
+    },
+    required: ['headline', 'today', 'decisions'],
+  },
+  conclusion: {
+    purpose: 'The closing slide: what we recommend, what it delivers, what it does not, and what we need from the client.',
+    fields: {
+      headline: str('The recommendation in one sentence', 200),
+      delivers: list(str('What the client gets', 160), 'The three or four outcomes that matter', 4),
+      limits: list(str('What it does not solve, stated plainly', 160), 'Honest limits', 3),
+      ask: list(str('What we need from the client to proceed', 160), 'The ask', 3),
+      evidence: str('Question ids or exit rules', 80),
+    },
+    required: ['headline', 'delivers', 'ask'],
+  },
   architecture: {
     purpose: 'The solution architecture as layers: storefront, Shopify core, integrations, external systems.',
     fields: {
@@ -235,12 +374,16 @@ export const layoutGuide = () => Object.entries(LAYOUTS)
   .join('\n');
 
 /**
- * Validate a deck Claude returned. Returns the problems, empty when it is usable.
+ * Validate a deck Claude returned: the fields of each slide, and the shape of the
+ * whole deck. `doc` (the decided engagement) decides which slides this engagement
+ * must carry — integrations per system, migration when replatforming, AI channels
+ * when the client sells through them.
  *
  * @param {{ slides?: Array<object> }} deck
+ * @param {object} [doc]  Decided engagement
  * @returns {string[]}
  */
-export function deckErrors(deck) {
+export function deckErrors(deck, doc = {}) {
   const slides = deck?.slides;
   if (!Array.isArray(slides) || !slides.length) return ['deck.slides is empty — the deck needs slides'];
   const errors = [];
@@ -258,7 +401,22 @@ export function deckErrors(deck) {
       if (empty) errors.push(`${where}: ${field} is required`);
     }
     for (const key of Object.keys(slide)) {
-      if (key !== 'layout' && !(key in spec.fields)) errors.push(`${where}: ${key} is not a field of the ${slide.layout} layout`);
+      if (key === 'layout') continue;
+      const def = spec.fields[key];
+      if (!def) {
+        errors.push(`${where}: ${key} is not a field of the ${slide.layout} layout`);
+        continue;
+      }
+      const value = slide[key];
+      if (def.type === 'array' && value !== undefined && !Array.isArray(value)) {
+        errors.push(`${where}: ${key} must be a list, not ${typeof value}`);
+      }
+      if (def.type === 'string' && value !== undefined && typeof value !== 'string') {
+        errors.push(`${where}: ${key} must be text, not ${Array.isArray(value) ? 'a list' : typeof value}`);
+      }
+      if (def.type === 'object' && value !== undefined && (typeof value !== 'object' || Array.isArray(value))) {
+        errors.push(`${where}: ${key} must be an object`);
+      }
     }
     if (slide.layout === 'table' && Array.isArray(slide.rows)) {
       const width = slide.columns?.length ?? 0;
@@ -271,13 +429,48 @@ export function deckErrors(deck) {
     }
   });
   if (slides[0]?.layout !== 'title') errors.push('the first slide must be the title slide');
+
   const count = (layout) => slides.filter((s) => s.layout === layout).length;
-  if (count('decision') < 3) errors.push(`the deck needs a slide per architecture decision (found ${count('decision')}, at least three)`);
-  if (count('requirement') < 5) errors.push(`the deck needs requirement slides — what the client asked for, what Shopify does as standard, what we decide and what it does not cover (found ${count('requirement')}, at least five)`);
-  if (!count('gaps')) errors.push('the deck needs the gaps slide: what Shopify cannot cover, only partly covers, or what needs a client decision');
-  if (!count('architecture')) errors.push('the deck needs the solution architecture slide');
+  const need = (layout, why) => { if (!count(layout)) errors.push(`the deck needs a ${layout} slide: ${why}`); };
+
+  // Always: the consulting argument.
   if (count('problem_solution') < 2) errors.push(`the deck needs problem slides — the client's problem, what it costs today and how Shopify solves it (found ${count('problem_solution')}, at least two)`);
-  if (!count('risks')) errors.push('the deck needs the risk register');
+  if (count('requirement') < 5) errors.push(`the deck needs requirement slides — what the client asked for, what Shopify does as standard, the decision, why not a cheaper level, what it covers and what it does not (found ${count('requirement')}, at least five)`);
+  if (count('decision') < 3) errors.push(`the deck needs a slide per architecture decision (found ${count('decision')}, at least three)`);
+  need('gaps', 'what Shopify cannot cover, only partly covers, or what needs a client decision');
+  need('architecture', 'the solution in layers');
+  need('nfr', 'performance, accessibility, privacy and security with targets and how they are verified');
+  need('open_decisions', 'the decisions the client still owes, with an owner and a date');
+  need('risks', 'the risk register');
+  need('out_of_scope', 'what the engagement does not include');
+  need('conclusion', 'what we recommend, what it delivers, what it does not, and the ask');
+
+  // What this engagement makes necessary.
+  const systems = (doc?.integrations ?? []).map((i) => String(i.system ?? '').trim()).filter(Boolean);
+  if (systems.length) {
+    const covered = new Set(slides.filter((s) => s.layout === 'integration').map((s) => String(s.system ?? '').trim().toLowerCase()));
+    for (const system of systems) {
+      if (!covered.has(system.toLowerCase())) errors.push(`the deck needs an integration slide for "${system}" — who owns the data, how it moves and what happens when it fails`);
+    }
+  }
+  const source = doc?.migration?.source_platform;
+  if (source && source !== 'none') need('migration', `what moves from ${source}, what does not, and how the cut-over runs`);
+  if ((doc?.catalogue?.custom_attributes ?? []).length || (doc?.approach?.architecture?.data_model ?? []).length) {
+    need('data_model', 'the custom data the solution needs and who writes it');
+  }
+  if ((doc?.approach?.app_shortlist ?? []).some((a) => a.recommended)) {
+    need('run_cost', 'what the solution costs to run: Shopify plan, apps and third-party licences');
+    const apps = (doc.approach.app_shortlist ?? []).filter((a) => a.recommended).map((a) => String(a.name).toLowerCase());
+    const argued = new Set(slides.filter((s) => s.layout === 'app_case').map((s) => String(s.app ?? '').toLowerCase()));
+    for (const app of apps) {
+      if (![...argued].some((a) => a.includes(app.split(' ')[0]) || app.includes(a.split(' ')[0]))) {
+        errors.push(`the deck needs an app case for "${app}" — which requirement forces it, what native cannot do, what it covers and what it does not`);
+      }
+    }
+  }
+  if (doc?.delivery?.support_model) need('operating_model', 'who runs what after go-live, and the support model');
+  if (doc?.ai?.sell_through_agents === true) need('ai_commerce', 'how the store appears in AI shopping channels and what the client must decide');
+
   for (const s of slides.filter((x) => x.layout === 'requirement')) {
     if (!/^(native|configuration|app|theme|custom)$/i.test(String(s.level ?? ''))) errors.push(`requirement "${s.requirement}": level must be native, configuration, app, theme or custom`);
   }

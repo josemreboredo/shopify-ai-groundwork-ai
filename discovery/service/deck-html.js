@@ -10,15 +10,16 @@
 const esc = (value) => String(value ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const li = (items = []) => `<ul>${items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`;
-const cells = (values = [], tag = 'td') => values.map((v) => `<${tag}>${esc(v)}</${tag}>`).join('');
+const arr = (value) => (Array.isArray(value) ? value : value === undefined || value === null || value === '' ? [] : [value]);
+const li = (items = []) => `<ul>${arr(items).map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`;
+const cells = (values = [], tag = 'td') => arr(values).map((v) => `<${tag}>${esc(v)}</${tag}>`).join('');
 const head = (message, kicker) => `<div class="head"><span class="rule"></span><h2>${esc(message)}</h2>${kicker ? `<p class="kicker">${esc(kicker)}</p>` : ''}</div>`;
 const foot = (note) => (note ? `<p class="foot">${esc(note)}</p>` : '');
 
 const SLIDE_HTML = {
   title: (s) => `<div class="dark title"><span class="rule"></span><h1>${esc(s.project)}</h1><p class="client">${esc(s.client)}</p><p class="sub">${esc(s.subtitle)}</p><p class="meta">${esc([s.consultant, s.date].filter(Boolean).join(' · '))}</p></div>`,
 
-  agenda: (s) => `${head(s.headline)}<ol class="agenda">${(s.items ?? []).map((i) => `<li>${esc(i)}</li>`).join('')}</ol>`,
+  agenda: (s) => `${head(s.headline)}<ol class="agenda">${arr(s.items).map((i) => `<li>${esc(i)}</li>`).join('')}</ol>`,
 
   section: (s) => `<div class="dark section"><p class="num">${esc(s.number)}</p><h1>${esc(s.title)}</h1>${s.kicker ? `<p class="sub">${esc(s.kicker)}</p>` : ''}</div>`,
 
@@ -31,21 +32,21 @@ const SLIDE_HTML = {
     <div class="box panel"><h3>${esc(s.right?.title)}</h3>${li(s.right?.bullets)}</div>
   </div>${foot(s.footnote)}`,
 
-  kpis: (s) => `${head(s.headline)}<div class="cards">${(s.cards ?? []).map((c) => `
+  kpis: (s) => `${head(s.headline)}<div class="cards">${arr(s.cards).map((c) => `
     <div class="card"><span class="rule"></span><p class="metric">${esc(c.metric)}</p><p class="value">${esc(c.baseline)} → ${esc(c.target)}</p><p class="horizon">${esc(c.horizon ?? '')}</p></div>`).join('')}</div>${foot(s.footnote)}`,
 
   decision: (s) => `${head(s.decision, `${s.topic} — ${s.question}`)}
     <table><thead><tr>${cells(['Option', 'Pros', 'Cons'], 'th')}</tr></thead><tbody>
-      ${(s.options ?? []).map((o) => `<tr class="${o.chosen ? 'chosen' : ''}">${cells([`${o.chosen ? '✓ ' : ''}${o.option}`, o.pros, o.cons])}</tr>`).join('')}
+      ${arr(s.options).map((o) => `<tr class="${o.chosen ? 'chosen' : ''}">${cells([`${o.chosen ? '✓ ' : ''}${o.option}`, o.pros, o.cons])}</tr>`).join('')}
     </tbody></table>
     <div class="callout"><p>${esc(s.rationale)}</p><p class="tags">${esc([s.status && `Status: ${s.status}`, s.plan_impact && `Plan impact: ${s.plan_impact}`, s.evidence && `Evidence: ${s.evidence}`].filter(Boolean).join('   ·   '))}</p></div>
-    ${foot((s.sources ?? []).join('  ·  '))}`,
+    ${foot(arr(s.sources).join('  ·  '))}`,
 
   problem_solution: (s) => `${head(s.shopify_answer, `${s.problem}${s.evidence ? `   ·   ${s.evidence}` : ''}`)}
     <div class="cost"><h3>What it costs today</h3><p>${esc(s.cost_today)}</p></div>
     <div class="box panel changes"><h3>What changes</h3>${li(s.what_changes)}</div>
     ${s.measure ? `<p class="measure">Measured by: ${esc(s.measure)}</p>` : ''}
-    ${foot((s.sources ?? []).join('  ·  '))}`,
+    ${foot(arr(s.sources).join('  ·  '))}`,
 
   requirement: (s) => `${head(s.decision, `${s.requirement}${s.evidence ? `   ·   ${s.evidence}` : ''}`)}
     <p class="level ${esc(String(s.level).toLowerCase())}">${esc(String(s.level).toUpperCase())}</p>
@@ -54,7 +55,7 @@ const SLIDE_HTML = {
       <div class="box panel"><h3>Why this and not less</h3><p>${esc(s.why)}</p></div>
       <div class="box"><h3>What this covers</h3>${li(s.covers)}</div>
       <div class="box warn"><h3>What it does not cover</h3>${li(s.not_covered)}</div>
-    </div>${foot((s.sources ?? []).join('  ·  '))}`,
+    </div>${foot(arr(s.sources).join('  ·  '))}`,
 
   app_case: (s) => `${head(`${s.app} — ${s.requirement}`, s.cost ? `List price: ${s.cost}` : '')}
     <div class="callout"><h3>Why an app at all</h3><p>${esc(s.native_gap)}</p></div>
@@ -62,28 +63,77 @@ const SLIDE_HTML = {
       <div class="box"><h3>What it covers</h3>${li(s.covers)}</div>
       <div class="box warn"><h3>What it does not cover</h3>${li(s.not_covered)}</div>
     </div>
-    ${(s.alternatives ?? []).length ? `<h3 class="also">Also considered</h3>${li((s.alternatives ?? []).map((a) => `${a.option} — ${a.why_not}`))}` : ''}
-    ${foot((s.sources ?? []).join('  ·  '))}`,
+    ${arr(s.alternatives).length ? `<h3 class="also">Also considered</h3>${li(arr(s.alternatives).map((a) => `${a.option} — ${a.why_not}`))}` : ''}
+    ${foot(arr(s.sources).join('  ·  '))}`,
 
   gaps: (s) => `${head(s.headline)}<table><thead><tr>${cells(['Requirement', 'Status', 'What it means', 'What we propose'], 'th')}</tr></thead><tbody>
-    ${(s.items ?? []).map((i) => `<tr>${cells([i.requirement, i.status, i.consequence, i.option])}</tr>`).join('')}</tbody></table>${foot(s.footnote)}`,
+    ${arr(s.items).map((i) => `<tr>${cells([i.requirement, i.status, i.consequence, i.option])}</tr>`).join('')}</tbody></table>${foot(s.footnote)}`,
 
-  architecture: (s) => `${head(s.headline)}<div class="layers">${(s.layers ?? []).map((l, i) => `
+  integration: (s) => `${head(`${s.system} — ${s.role}`, [s.pattern, s.direction, s.frequency].filter(Boolean).join('   ·   '))}
+    <div class="cols">
+      <div class="box panel"><h3>Shopify side</h3>${li(s.apis)}</div>
+      <div class="box warn"><h3>When it fails</h3><p>${esc(s.failure)}</p></div>
+    </div>${s.evidence ? `<p class="tags">Evidence: ${esc(s.evidence)}</p>` : ''}${foot(arr(s.sources).join('  ·  '))}`,
+
+  data_model: (s) => `${head(s.headline)}<table><thead><tr>${cells(['Object', 'Kind', 'Name', 'Purpose', 'Written by'], 'th')}</tr></thead><tbody>
+    ${arr(s.entries).map((e) => `<tr>${cells([e.object, e.kind, e.name, e.purpose, e.source])}</tr>`).join('')}</tbody></table>
+    ${arr(s.not_modelled).length ? `<div class="box warn spaced"><h3>What Shopify cannot model</h3>${li(s.not_modelled)}</div>` : ''}${foot(s.footnote)}`,
+
+  migration: (s) => `${head(s.headline)}<table><thead><tr>${cells(['Data', 'Volume', 'How it moves'], 'th')}</tr></thead><tbody>
+    ${arr(s.moves).map((m) => `<tr>${cells([m.data, m.volume ?? '', m.how])}</tr>`).join('')}</tbody></table>
+    <div class="cols spaced">
+      <div class="box warn"><h3>What does not move</h3>${li(s.does_not_move)}</div>
+      <div class="box panel"><h3>Cut-over</h3><ol>${arr(s.cutover).map((c) => `<li>${esc(c)}</li>`).join('')}</ol></div>
+    </div>${foot(arr(s.sources).join('  ·  '))}`,
+
+  nfr: (s) => `${head(s.headline)}<table><thead><tr>${cells(['Area', 'Target', 'How we meet it', 'How it is verified'], 'th')}</tr></thead><tbody>
+    ${arr(s.items).map((i) => `<tr>${cells([i.area, i.target, i.approach, i.verified])}</tr>`).join('')}</tbody></table>${foot(s.footnote)}`,
+
+  open_decisions: (s) => `${head(s.headline)}<table><thead><tr>${cells(['Decision', 'Owner', 'Needed by', 'If it slips'], 'th')}</tr></thead><tbody>
+    ${arr(s.decisions).map((d) => `<tr>${cells([d.decision, d.owner, d.needed_by, d.if_late])}</tr>`).join('')}</tbody></table>${foot(s.footnote)}`,
+
+  out_of_scope: (s) => `${head(s.headline)}<div class="cols">
+    <div class="box panel"><h3>Later phases</h3>${li(s.later_phases)}</div>
+    <div class="box warn"><h3>Not included</h3>${li(s.exclusions)}</div></div>${foot(s.footnote)}`,
+
+  operating_model: (s) => `${head(s.headline, s.support ? `Support model: ${s.support}` : '')}
+    <table><thead><tr>${cells(['Area', 'Client', 'Merkle'], 'th')}</tr></thead><tbody>
+    ${arr(s.responsibilities).map((r) => `<tr>${cells([r.area, r.client, r.merkle])}</tr>`).join('')}</tbody></table>
+    ${arr(s.enablement).length ? `<h3 class="also">Handover and enablement</h3>${li(s.enablement)}` : ''}${foot(s.footnote)}`,
+
+  run_cost: (s) => `${head(s.headline)}<table><thead><tr>${cells(['Item', 'Cost', 'Period', 'Note'], 'th')}</tr></thead><tbody>
+    ${arr(s.items).map((i) => `<tr>${cells([i.item, i.cost, i.period, i.note ?? ''])}</tr>`).join('')}</tbody></table>
+    ${s.total ? `<p class="total">Known monthly total: ${esc(s.total)}</p>` : ''}${foot(s.footnote)}`,
+
+  ai_commerce: (s) => `${head(s.headline)}<div class="cost"><h3>Where you stand today</h3><p>${esc(s.today)}</p></div>
+    <div class="cols">
+      <div class="box warn"><h3>What you must decide</h3>${li(s.decisions)}</div>
+      <div class="box"><h3 class="navy-text">What has to be ready</h3>${li(s.readiness)}</div>
+    </div>${foot(s.footnote)}`,
+
+  conclusion: (s) => `<div class="dark conclusion"><span class="rule"></span><h1>${esc(s.headline)}</h1>
+    <div class="three">
+      <div><h3>What it delivers</h3>${li(s.delivers)}</div>
+      <div><h3 class="warn-text">What it does not solve</h3>${li(s.limits)}</div>
+      <div><h3>What we need from you</h3>${li(s.ask)}</div>
+    </div>${s.evidence ? `<p class="meta">${esc(s.evidence)}</p>` : ''}</div>`,
+
+  architecture: (s) => `${head(s.headline)}<div class="layers">${arr(s.layers).map((l, i) => `
     <div class="layer"><div class="layer-name ${i === 0 ? 'first' : ''}">${esc(l.name)}</div>
-      <div class="layer-items">${(l.items ?? []).map((item) => `<span class="chip">${esc(item)}</span>`).join('')}</div></div>`).join('')}</div>${foot(s.footnote)}`,
+      <div class="layer-items">${arr(l.items).map((item) => `<span class="chip">${esc(item)}</span>`).join('')}</div></div>`).join('')}</div>${foot(s.footnote)}`,
 
-  table: (s) => `${head(s.headline)}<table><thead><tr>${cells(s.columns ?? [], 'th')}</tr></thead><tbody>
-    ${(s.rows ?? []).map((r) => `<tr>${cells(r)}</tr>`).join('')}</tbody></table>${foot(s.footnote)}`,
+  table: (s) => `${head(s.headline)}<table><thead><tr>${cells(arr(s.columns), 'th')}</tr></thead><tbody>
+    ${arr(s.rows).map((r) => `<tr>${cells(r)}</tr>`).join('')}</tbody></table>${foot(s.footnote)}`,
 
   risks: (s) => `${head(s.headline)}<table><thead><tr>${cells(['Risk', 'Likelihood', 'Impact', 'Mitigation', 'Owner'], 'th')}</tr></thead><tbody>
-    ${(s.risks ?? []).map((r) => `<tr>${cells([r.risk, r.likelihood, r.impact, r.mitigation, r.owner])}</tr>`).join('')}</tbody></table>${foot(s.footnote)}`,
+    ${arr(s.risks).map((r) => `<tr>${cells([r.risk, r.likelihood, r.impact, r.mitigation, r.owner])}</tr>`).join('')}</tbody></table>${foot(s.footnote)}`,
 
-  roadmap: (s) => `${head(s.headline)}<div class="phases">${(s.phases ?? []).map((p, i) => `
+  roadmap: (s) => `${head(s.headline)}<div class="phases">${arr(s.phases).map((p, i) => `
     <div class="phase"><div class="phase-head ${i === 0 ? 'first' : ''}"><strong>${esc(p.name)}</strong>${p.timing ? `<span>${esc(p.timing)}</span>` : ''}</div>${li(p.items)}</div>`).join('')}</div>${foot(s.footnote)}`,
 
-  split: (s) => `${head(s.headline)}<div class="bar">${(s.segments ?? []).map((g, i) => `
+  split: (s) => `${head(s.headline)}<div class="bar">${arr(s.segments).map((g, i) => `
     <span class="seg s${i}" style="width:${Math.max(Number(g.percent) || 0, 2)}%">${Math.round(Number(g.percent) || 0)}%</span>`).join('')}</div>
-    <ul class="legend">${(s.segments ?? []).map((g, i) => `<li><span class="dot s${i}"></span>${esc(g.label)} — ${esc(g.value)}</li>`).join('')}</ul>${foot(s.footnote)}`,
+    <ul class="legend">${arr(s.segments).map((g, i) => `<li><span class="dot s${i}"></span>${esc(g.label)} — ${esc(g.value)}</li>`).join('')}</ul>${foot(s.footnote)}`,
 
   next_steps: (s) => `${head(s.headline)}<div class="cols">
     <div class="box"><h3 class="navy-head">Merkle</h3>${li(s.merkle)}</div>
@@ -154,6 +204,13 @@ tr.chosen td { font-weight:600; box-shadow:inset 3px 0 0 var(--red); }
 .dates { background:var(--panel); padding:12px 16px; font-weight:700; margin-top:16px; }
 .dark-box { background:#000; color:#fff; border:0; } .dark-box .offer { color:#C9C9D6; font-size:15px; margin:0 0 10px; } .dark-box .band { font-size:32px; font-weight:700; margin:0; }
 .also { margin-top:16px; }
+.spaced { margin-top:14px; }
+.total { background:#000; color:#fff; padding:12px 16px; font-weight:700; margin:14px 0 0; }
+.tags { font-size:13px; font-weight:700; color:var(--navy); margin:12px 0 0; }
+.navy-text { color:var(--navy); } .warn-text { color:#FF8A8A; }
+.conclusion h1 { font-size:34px; max-width:88%; margin-bottom:26px; }
+.three { display:grid; grid-template-columns:1fr 1fr 1fr; gap:26px; }
+.three h3 { color:#C9C9D6; } .three li { font-size:15px; color:#fff; }
 .cost { background:#000; color:#fff; padding:14px 18px; margin-bottom:14px; } .cost h3 { color:#C9C9D6; margin-bottom:6px; } .cost p { margin:0; font-size:16px; }
 .changes { margin-bottom:14px; }
 .measure { border:2px solid var(--red); color:var(--red); font-weight:700; padding:10px 16px; margin:0; font-size:15px; }
@@ -168,7 +225,7 @@ tr.chosen td { font-weight:600; box-shadow:inset 3px 0 0 var(--red); }
  * @returns {string}
  */
 export function deckToHtml(deck, { client = '', version = '' } = {}) {
-  const slides = (deck?.slides ?? []).map((s, i) => {
+  const slides = (Array.isArray(deck?.slides) ? deck.slides : []).map((s, i) => {
     const render = SLIDE_HTML[s.layout];
     if (!render) return '';
     const dark = s.layout === 'title' || s.layout === 'section' || s.layout === 'statement';

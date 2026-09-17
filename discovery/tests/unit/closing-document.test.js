@@ -9,6 +9,7 @@ import fs from 'node:fs';
 
 import { annexDeckFromMarkdown, deckToMarkdown, plainText } from '../../service/pptx.js';
 import { buildDeckSchema, deckErrors, LAYOUTS } from '../../service/deck-template.js';
+import { deckToHtml } from '../../service/deck-html.js';
 import { renderDeckPptx } from '../../service/deck-render.js';
 import { REFERENCE_CHAPTERS, selectChapters, topicsFor, annexWithChapters, chapterBrief } from '../../service/reference.js';
 import { readChapters, renderChaptersModule, OUTPUT } from '../../scripts/render-reference-chapters.js';
@@ -50,7 +51,16 @@ const DECK = {
     { layout: 'risks', headline: 'Tax and migration carry the launch risk', risks: [
       { risk: 'Import VAT configured wrongly', likelihood: 'medium', impact: 'high', mitigation: 'Tax adviser decides in sprint 0', owner: 'shared', evidence: 'Q3.4.1' },
     ] },
+    { layout: 'nfr', headline: 'Four non-functional targets, each verified before go-live', items: [
+      { area: 'performance', target: 'Mobile LCP under 2.5 s', approach: 'Horizon with a script budget', verified: 'Shopify web performance report before launch' },
+    ] },
+    { layout: 'open_decisions', headline: 'Three decisions you still owe us', decisions: [
+      { decision: 'DE/AT tax model', owner: 'Client tax adviser', needed_by: 'End of sprint 0', if_late: 'Checkout configuration and launch slip' },
+    ] },
+    { layout: 'out_of_scope', headline: 'What this engagement does not include', later_phases: ['Loyalty programme'], exclusions: ['Product photography', 'Ongoing SEO services'] },
     { layout: 'next_steps', headline: 'Four decisions unblock the build', client: ['Confirm the tax model'], merkle: ['Legal sign-off on data requests'], dates: 'Kick-off 2026-10-05' },
+    { layout: 'conclusion', headline: 'One Shopify Plus store solves conversion, markets and wholesale; cross-border tax needs your decision',
+      delivers: ['Three markets with local prices', 'Wholesale for 500 retailers'], limits: ['EU VAT from Switzerland is not solved by the platform'], ask: ['Confirm the tax model in sprint 0'] },
   ],
 };
 
@@ -210,5 +220,56 @@ describe('a document knows when the answers moved under it', () => {
 
     await svc.saveClosingDocument(lc, 'demo', { markdown: `# Doc v2\n\n${'Text. '.repeat(120)}` });
     assert.equal((await svc.getClosingDocument(lc, 'demo')).freshness.up_to_date, true, 'redrafting clears it');
+  });
+});
+
+describe('every layout renders in all three outputs', () => {
+  /** A minimal valid slide for a layout, built from its own field spec. */
+  const sample = (name, spec) => {
+    const value = (field, def) => {
+      if (def.type === 'array') {
+        if (field === 'rows') return [['Column one value', 'Column two value']];
+        if (field === 'columns') return ['Column one', 'Column two'];
+        const item = def.items;
+        if (item?.type === 'object') {
+          return [Object.fromEntries(Object.entries(item.properties).map(([k, d]) => [k, d.type === 'boolean' ? true : d.type === 'number' ? 50 : `${k} value`]))];
+        }
+        return [`${field} one`, `${field} two`];
+      }
+      if (def.type === 'object') {
+        return Object.fromEntries(Object.entries(def.properties).map(([k, d]) => [k, d.type === 'array' ? [`${k} one`] : `${k} value`]));
+      }
+      if (def.type === 'number') return 50;
+      if (field === 'level') return 'app';
+      if (field === 'date') return '2026-09-17';
+      return `${field} value`;
+    };
+    return { layout: name, ...Object.fromEntries(Object.entries(spec.fields).map(([f, d]) => [f, value(f, d)])) };
+  };
+
+  const everySlide = Object.entries(LAYOUTS).map(([name, spec]) => sample(name, spec));
+
+  test('each layout fills its own fields without validation errors', () => {
+    for (const slide of everySlide) {
+      const errors = deckErrors({ slides: [{ layout: 'title', client: 'c', project: 'p', subtitle: 's', date: '2026-09-17' }, slide] })
+        .filter((e) => /^slide 2 /.test(e));
+      assert.deepEqual(errors, [], `${slide.layout}: ${errors.join('; ')}`);
+    }
+  });
+
+  test('each layout produces PowerPoint, HTML and Markdown', async () => {
+    const deck = { slides: everySlide };
+    const file = await renderDeckPptx(deck, { client: 'demo', version: '1.0' });
+    assert.ok(file.length > 30000, 'pptx renders every layout');
+
+    const html = deckToHtml(deck, { client: 'demo', version: '1.0' });
+    const sections = html.match(/<section class="slide/g) ?? [];
+    assert.equal(sections.length, everySlide.length, 'one preview frame per layout');
+
+    const md = deckToMarkdown(deck);
+    for (const slide of everySlide) {
+      const marker = slide.headline ?? slide.decision ?? slide.system ?? slide.app ?? slide.project ?? slide.title ?? slide.shopify_answer ?? slide.topic;
+      if (marker) assert.ok(md.includes(String(marker).slice(0, 20)), `${slide.layout} is missing from the Markdown`);
+    }
   });
 });

@@ -490,7 +490,8 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const annexText = String(annex ?? '').trim();
       let text = String(markdown ?? '').trim();
       if (deck) {
-        const problems = deckErrors(deck);
+        const decided = decideFromSession(session, today());
+        const problems = deckErrors(deck, decided.ok ? decided.doc : {});
         if (problems.length) throw new ServiceError(400, 'Deck not saved', problems);
         text = deckToMarkdown(deck);
       } else if (text.length < 500) {
