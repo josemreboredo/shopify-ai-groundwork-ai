@@ -3,7 +3,11 @@ import { Form, Link, Links, Meta, Outlet, Scripts, ScrollRestoration, isRouteErr
 import { getUser } from './auth.server.js';
 import stylesheet from './app.css?url';
 
-export const links = () => [{ rel: 'stylesheet', href: stylesheet }];
+export const links = () => [
+  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+  { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
+  { rel: 'stylesheet', href: stylesheet },
+];
 
 export async function loader({ request }) {
   return { user: await getUser(request) };
@@ -21,7 +25,7 @@ export function Layout({ children }) {
       </head>
       <body>
         <header className="topbar">
-          <Link to="/" className="brand">Merkle Discovery</Link>
+          <Link to="/" className="brand">Merkle <span className="product">Discovery</span></Link>
           <span className="notice">Demo or anonymised engagements only</span>
           <Link to="/manual">Manual</Link>
           {root?.user ? <Link to="/claude">Claude Project</Link> : null}
