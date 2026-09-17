@@ -21,7 +21,7 @@ import { questionById, unansweredInMode } from './next.js';
  */
 export function toExtraction(session) {
   const openItems = [
-    ...Object.entries(session.tbc).map(([id, note]) => {
+    ...Object.entries(session.tbc).filter(([id]) => questionById(id)).map(([id, note]) => {
       const q = questionById(id);
       return { pointer: q.maps_to[0], question_id: id, why: note ? `TBC: ${note}` : `TBC in the interview: ${q.text}` };
     }),

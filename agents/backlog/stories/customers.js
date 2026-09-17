@@ -4,27 +4,29 @@
 
 import { isB2b, list, listOr, count, markets, isMigration, themeName } from './helpers.js';
 
+/** Payment terms in words, without "none". @param {object} doc */
+const terms = (doc) => (doc.b2b?.payment_terms ?? []).filter((t) => t !== 'none').map((t) => t.replace(/_/g, ' '));
+
 /** @type {import('../model.js').StoryDefinition[]} */
 export default [
   {
     key: 'LWC-CUS-001',
     epic: 'customers',
-    title: (doc) => `Configure ${doc.customers?.account_type === 'classic' ? 'legacy' : 'new'} customer accounts and account features`,
+    title: 'Configure customer accounts and account features',
     user_story: 'As a returning customer, I want to sign in easily and see my orders and details, so that reordering and tracking are simple.',
     acceptance_criteria: (doc) => [
-      `Given the customer accounts setting, when a shopper signs in, then ${doc.customers?.account_type === 'classic' ? 'legacy customer accounts are used and the decision is recorded with its limitations' : 'new customer accounts use a one-time email code and no password'}`,
-      ...(doc.customers?.account_features ?? []).map((f) => `Given a signed-in customer, when they open their account, then "${f}" is available and translated`),
-      ...(isB2b(doc) && doc.customers?.account_type === 'classic' ? ['Given native B2B is in scope, when the account type is reviewed, then it is changed to new customer accounts because B2B requires them'] : []),
+      `Given the customer accounts setting, when a shopper signs in, then customer accounts use ${listOr((doc.customers?.sign_in_methods ?? []).map((m) => m.replace(/_/g, ' ')), 'a one-time email code')} and no password`,
+      ...(doc.customers?.account_features ?? []).filter((f) => f !== 'none').map((f) => `Given a signed-in customer, when they open their account, then "${f.replace(/_/g, ' ')}" is available and translated`),
       'Given the account pages, when they render, then branding matches the checkout and accounts editor settings on mobile and desktop',
     ],
     gaia_tier: 'T2',
     points: 2,
     owner: 'agent',
     depends_on: ['LWC-PAY-002'],
-    spec_refs: ['/customers/account_type', '/customers/account_requirement', '/customers/account_features'],
+    spec_refs: ['/customers/sign_in_methods', '/customers/account_requirement', '/customers/account_features'],
     security_flags: ['auth', 'pii'],
     applies: () => true,
-    agent_prompt: (doc) => `Account type chosen: ${doc.customers?.account_type ?? 'undecided'}. Recommend new customer accounts (required for B2B, store credit and self-serve returns; legacy accounts are being phased out). Configure: sign-in links in the theme header, account features ${listOr(doc.customers?.account_features, 'order history and addresses')}, and any customer account UI extensions only if an agreed feature needs one. ${isMigration(doc) ? 'Migrated customers do not need passwords with new customer accounts — coordinate the welcome communication with the migration story. ' : ''}Do not store tokens in cookies without HttpOnly and Secure.`,
+    agent_prompt: (doc) => `Use Shopify customer accounts (legacy customer accounts are deprecated since 2026-02-26; B2B, store credit and self-serve returns require customer accounts). Configure: sign-in methods ${listOr((doc.customers?.sign_in_methods ?? []).map((m) => m.replace(/_/g, ' ')), 'one-time email code')}, sign-in links in the theme header, account features ${listOr((doc.customers?.account_features ?? []).filter((f) => f !== 'none').map((f) => f.replace(/_/g, ' ')), 'order history and addresses')}, and any customer account UI extensions only if an agreed feature needs one. ${isMigration(doc) ? 'Migrated customers do not need passwords with new customer accounts — coordinate the welcome communication with the migration story. ' : ''}Do not store tokens in cookies without HttpOnly and Secure.`,
   },
   {
     key: 'LWC-CUS-002',
@@ -45,7 +47,7 @@ export default [
     gates: ['b2b'],
     security_flags: ['pii', 'auth'],
     applies: (doc) => isB2b(doc),
-    agent_prompt: (doc) => `Approach: ${doc.b2b?.approach ?? 'shopify_b2b'} (Shopify B2B; company-specific catalogs need Shopify Plus). Define the company data model (company, locations, contacts, roles such as Location admin and Ordering only, external IDs from ${doc.integrations?.find((i) => i.category === 'erp')?.system ?? 'the source system'}). Import about ${count(doc.b2b?.expected_accounts, 'the agreed number of')} companies with Admin API companyCreate/companyLocationCreate in batches or the B2B company CSV import, never logging contact personal data. ${doc.b2b?.approval_workflow ? 'Configure the company account request form and staff approval process (Shopify Flow notification to the wholesale team). ' : ''}Present the data model and a 10-row sample for approval before the full import.`,
+    agent_prompt: (doc) => `Approach: ${doc.b2b?.approach ?? 'shopify_b2b'} (Shopify B2B runs on every plan from Basic; company-specific or more than 3 catalogs, deposits and partial payments need Shopify Plus). Define the company data model (company, locations, contacts, roles such as Location admin and Ordering only, external IDs from ${doc.integrations?.find((i) => i.category === 'erp')?.system ?? 'the source system'}). Import about ${count(doc.b2b?.expected_accounts, 'the agreed number of')} companies with Admin API companyCreate/companyLocationCreate in batches or the B2B company CSV import, never logging contact personal data. ${doc.b2b?.approval_workflow ? 'Configure the company account request form and staff approval process (Shopify Flow notification to the wholesale team). ' : ''}Present the data model and a 10-row sample for approval before the full import.`,
   },
   {
     key: 'LWC-CUS-003',
@@ -70,11 +72,11 @@ export default [
   {
     key: 'LWC-CUS-004',
     epic: 'customers',
-    title: (doc) => `Configure B2B payment terms and checkout${doc.b2b?.payment_terms?.length ? `: ${list(doc.b2b.payment_terms)}` : ''}`,
+    title: (doc) => `Configure B2B payment terms and checkout${terms(doc).length ? `: ${list(terms(doc))}` : ''}`,
     user_story: 'As a wholesale buyer, I want to pay on the terms agreed with my company, so that ordering fits our purchasing process.',
     acceptance_criteria: (doc) => [
-      doc.b2b?.payment_terms?.length
-        ? `Given the terms ${list(doc.b2b.payment_terms)}, when they are assigned to company locations, then orders show the due date and outstanding balance in the admin and customer account`
+      terms(doc).length
+        ? `Given the terms ${list(terms(doc))}, when they are assigned to company locations, then orders show the due date and outstanding balance in the admin and customer account`
         : 'Given payment terms are still open with finance, when the story starts, then the agreed terms are confirmed in writing before any configuration',
       'Given a company location checkout setting, when a buyer places an order, then it is submitted as an order or as a draft for review exactly as configured for that location',
       'Given a B2B checkout, when the buyer completes it, then the purchase order number field and the company shipping address rules behave as configured',
@@ -87,7 +89,7 @@ export default [
     gates: ['b2b'],
     security_flags: ['payments'],
     applies: (doc) => isB2b(doc),
-    agent_prompt: (doc) => `Payment terms: ${listOr(doc.b2b?.payment_terms, 'not yet agreed — confirm with finance first')}. Configure per company location: payment terms (net days, due on fulfilment or fixed date), deposit if required, whether orders are submitted for merchant review as drafts${doc.b2b?.approval_workflow ? ' (approval workflow is in scope)' : ''}, shipping address editing and the purchase order number requirement. Set up payment reminders and a Shopify Flow alert for overdue orders. Test ordering on terms, paying an invoice later and a draft-order approval.`,
+    agent_prompt: (doc) => `Payment terms: ${listOr(terms(doc), 'not yet agreed — confirm with finance first')}. Configure per company location: payment terms (net days, due on fulfilment or fixed date), deposit if required, whether orders are submitted for merchant review as drafts${doc.b2b?.approval_workflow ? ' (approval workflow is in scope)' : ''}, shipping address editing and the purchase order number requirement. Set up payment reminders and a Shopify Flow alert for overdue orders. Test ordering on terms, paying an invoice later and a draft-order approval.`,
   },
   {
     key: 'LWC-CUS-005',

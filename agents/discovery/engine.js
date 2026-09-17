@@ -10,7 +10,8 @@
 
 import { validateEngagement, offering } from '../../schema/index.js';
 import { hasConsent, redactQuestionnaire, InputRejectedError } from './input.js';
-import { extractAnswers } from './extract.js';
+import { extractAnswers, flattenAnswers } from './extract.js';
+import { isNotSure } from './values.js';
 import { classifyOffer } from './classify.js';
 import { evaluateExits } from './exits.js';
 import { draftApproach } from './approach.js';
@@ -55,6 +56,9 @@ export class EngagementInvalidError extends Error {
  */
 export function assemble(answers, { today, clientSlug, source = 'questionnaire' }) {
   const { meta = {}, ...rest } = structuredClone(answers);
+  // B2B follows the business model unless answered explicitly (question bank 1.1.0: DTC → no B2B; B2B or hybrid → B2B).
+  const model = meta.client?.business_model;
+  if (model && rest.b2b?.enabled === undefined) rest.b2b = { ...rest.b2b, enabled: model !== 'dtc' };
   return {
     schema_version: '1.0.0',
     meta: {
@@ -112,7 +116,11 @@ export function decide(extraction, options) {
   if (Object.keys(extraction.provenance).length) doc.provenance = extraction.provenance;
   if (extraction.notes?.length) doc.notes = extraction.notes;
   const plan = planSuggestion(doc);
-  const openItems = extraction.openItems.map((item) => (plan && item.pointer === plan.pointer
+  const notSure = flattenAnswers(extraction.answers)
+    .filter((a) => isNotSure(JSON.parse(a.value_json)) && !extraction.openItems.some((o) => o.pointer === a.pointer))
+    .map((a) => ({ pointer: a.pointer, question_id: extraction.provenance?.[a.pointer]?.question_id ?? '', why: 'Client not sure yet — confirm before scoping' }))
+    .map(({ question_id, ...item }) => (question_id ? { ...item, question_id } : item));
+  const openItems = [...extraction.openItems, ...notSure].map((item) => (plan && item.pointer === plan.pointer
     ? { ...item, why: `${item.why} — minimum plan for these answers: ${plan.value} (${plan.reasons.join('; ')})` }
     : item));
   doc.approach = { risks: { open_items: openItems } };

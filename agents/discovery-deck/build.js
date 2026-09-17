@@ -28,7 +28,7 @@ import { offering, validateEngagement, questionsFeeding } from '../../schema/ind
 import { XmlWriter, esc } from './xml.js';
 import { stopRoute } from '../discovery/engine.js';
 import { planRequirements, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
-import { appSignals } from '../discovery/app-signals.js';
+import { appSignals, appCandidates } from '../discovery/app-signals.js';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
@@ -158,7 +158,7 @@ function methodology(x, doc) {
 function asIs(x, doc) {
   const source = doc.migration?.source_platform;
   x.open('section', { id: 'as-is', n: 5 });
-  x.field('current-platform', source === 'none' ? 'New store (greenfield)' : source, 'Q8.2.1 not answered');
+  x.field('current-platform', source === 'none' ? 'New store (greenfield)' : source, 'Q0.5.4 not answered');
   x.field('engagement-trigger', doc.business?.engagement_trigger, 'Q0.5.1 not answered');
   x.list('must-preserve', doc.business?.must_preserve, 'Q0.5.2 not answered');
   x.list('current-frustrations', doc.business?.current_frustrations, 'Q0.5.3 not answered');
@@ -174,16 +174,16 @@ function solutionDesign(x, doc) {
   else x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
   x.field('delivery-track', TRACK_LABEL[doc.offer.delivery_track]);
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
-  x.field('architecture', `${doc.offer.delivery_track === 'hydrogen' ? 'Headless' : 'Online Store 2.0'} · ${markets.length > 1 ? `multi-market (${markets.length} markets)` : 'single market'}${b2b.enabled ? ' · B2B and DTC on one store' : ''}`);
+  x.field('architecture', `${doc.offer.delivery_track === 'hydrogen' ? 'Headless' : 'Online Store 2.0'} · ${markets.length > 1 ? `multi-market (${markets.filter((m) => m.code !== 'CN').length} markets${markets.some((m) => m.code === 'CN') ? ' + mainland China in a separate discovery' : ''})` : 'single market'}${b2b.enabled ? ' · B2B and DTC on one store' : ''}`);
   x.field('theme', doc.offer.delivery_track === 'liquid' ? `Horizon${doc.design?.theme_preference && doc.design.theme_preference !== 'Horizon' ? ` (client preference noted: ${doc.design.theme_preference})` : ''}` : 'Hydrogen');
   x.open('markets', { strategy: doc.markets?.strategy, primary: doc.markets?.primary_markets?.join(', ') });
-  for (const mk of markets) x.empty('market', { code: mk.code, currency: mk.currency, languages: (mk.languages ?? []).join(', '), domain: mk.domain, pricing: mk.price_strategy });
+  for (const mk of markets) x.empty('market', { code: mk.code, currency: mk.currency, languages: (mk.languages ?? []).join(', '), domain: mk.domain, pricing: mk.price_strategy, scope: mk.code === 'CN' ? 'separate China discovery' : undefined });
   x.close();
   x.open('payments-and-checkout');
   x.list('providers', doc.payments?.providers, 'Q4.1.1 not answered');
-  x.list('local-methods', doc.payments?.local_methods, 'None recorded');
-  x.field('checkout-customisation', doc.checkout?.customisation, 'Q4.2.1 not answered');
-  x.list('checkout-extensions', doc.checkout?.extensions, 'None recorded');
+  x.list('local-methods', (doc.payments?.local_methods ?? []).filter((m) => m !== 'none').map((m) => m.replace(/_/g, ' ')), 'None recorded');
+  x.list('checkout-customisation', (doc.checkout?.customisation ?? []).map((c) => c.replace(/_/g, ' ')), 'Q4.2.1 not answered');
+  x.list('checkout-extensions', (doc.checkout?.extensions ?? []).map((e) => e.replace(/_/g, ' ')), 'None recorded');
   x.close();
   x.open('b2b', { enabled: String(b2b.enabled === true) });
   if (b2b.enabled) {
@@ -192,7 +192,7 @@ function solutionDesign(x, doc) {
       b2b.price_lists && 'Company price lists',
       b2b.volume_discounts && 'Volume pricing',
       b2b.approval_workflow && 'Account approval',
-      ...(b2b.payment_terms ?? []).map((t) => `Payment terms: ${t}`),
+      ...(b2b.payment_terms ?? []).filter((t) => t !== 'none').map((t) => `Payment terms: ${t.replace(/_/g, ' ')}`),
     ].filter(Boolean));
     x.field('approach', b2b.approach, 'Q6.2.8 not answered');
   }
@@ -314,6 +314,7 @@ function outOfScope(x, doc) {
   const deferred = (doc.approach?.phases ?? []).flatMap((p) => p.sprints.flatMap((s) => s.tasks)).filter((t) => t.deferred).map((t) => t.title);
   x.open('section', { id: 'out-of-scope', n: 13 });
   if (deferred.length) x.list('later-phases', deferred);
+  if ((doc.markets?.list ?? []).some((m) => m.code === 'CN')) x.list('separate-discovery', ['Mainland China — a separate China discovery (selling behind the Great Firewall or through cross-border channels)']);
   x.list('standard-exclusions', STANDARD_EXCLUSIONS);
   x.close();
 }
@@ -472,8 +473,10 @@ function consultantNotes(x, doc, backlog) {
   x.close();
 
   x.open('app-signals');
+  const candidates = appCandidates(doc);
   for (const [area, reasons] of Object.entries(appSignals(doc))) {
     for (const reason of reasons) x.field('signal', reason, undefined, { area });
+    for (const app of candidates[area] ?? []) x.field('candidate', app.name, undefined, { area, url: app.url, status: app.status });
   }
   x.close();
 
@@ -491,6 +494,14 @@ function consultantNotes(x, doc, backlog) {
     x.field('answer', p.note || pointer, undefined, { pointer, question: p.question_id, source: p.source });
   }
   x.close();
+
+  if ((doc.markets?.list ?? []).some((m) => m.code === 'CN')) {
+    x.open('mainland-china', { discovery: 'separate China discovery — docs/discovery/china-mainland.md' });
+    for (const [key, value] of Object.entries(doc.china ?? {})) {
+      x.field('answer', Array.isArray(value) ? value.join(', ') : String(value), undefined, { topic: key.replace(/_/g, ' ') });
+    }
+    x.close();
+  }
 
   x.open('notes');
   for (const n of doc.notes ?? []) x.field('note', n.text, undefined, { at: n.at, author: n.author_role });

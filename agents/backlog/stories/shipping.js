@@ -5,12 +5,15 @@
 import { markets, list, listOr, isB2b, integrationsOf, exitFired } from './helpers.js';
 import { appSignals } from '../../discovery/app-signals.js';
 
-const rateText = {
-  calculated: 'carrier-calculated rates',
+const RATE_TEXT = {
   flat: 'flat rates',
-  free_threshold: 'flat rates with free shipping above a threshold',
-  mixed: 'a mix of flat, free-threshold and carrier-calculated rates',
+  weight_or_price_based: 'weight or price based rates',
+  free_above_threshold: 'free shipping above a threshold',
+  carrier_calculated: 'carrier-calculated rates',
+  app_calculated: 'rates from a shipping app',
 };
+/** "flat rates and free shipping above a threshold". @param {object} doc */
+const rateText = (doc) => ((doc.shipping?.rates ?? []).length ? list(doc.shipping.rates.map((r) => RATE_TEXT[r] ?? r)) : undefined);
 
 /** @type {import('../model.js').StoryDefinition[]} */
 export default [
@@ -18,10 +21,10 @@ export default [
     key: 'LWC-SHP-001',
     epic: 'shipping',
     title: 'Configure delivery profiles, zones, shipping rates and carriers',
-    description: (doc) => `Rates: ${rateText[doc.shipping?.rates] ?? 'to confirm'}. Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')}.`,
+    description: (doc) => `Rates: ${rateText(doc) ?? 'to confirm'}. Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')}.`,
     user_story: 'As a shopper, I want clear delivery options and costs for my country, so that I know what I pay and when it arrives.',
     acceptance_criteria: (doc) => [
-      ...markets(doc).map((m) => `Given a ${m.code} address, when a shopper reaches the shipping step, then the agreed ${rateText[doc.shipping?.rates] ?? 'rates'} and delivery times are shown in ${m.currency ?? 'the market currency'}`),
+      ...markets(doc).map((m) => `Given a ${m.code} address, when a shopper reaches the shipping step, then the agreed ${rateText(doc) ?? 'rates'} and delivery times are shown in ${m.currency ?? 'the market currency'}`),
       ...(doc.shipping?.special_rules ?? []).map((r) => `Given the special rule "${r}", when an affected product is in the cart, then the separate delivery profile applies the correct rates or restrictions`),
       ...(doc.shipping?.excluded_countries?.length ? [`Given an address in ${list(doc.shipping.excluded_countries)}, when a shopper checks out, then shipping is not offered`] : []),
       'Given a cart at a rate boundary (weight or free-shipping threshold), when the shopper reaches the shipping step, then the rate on each side of the boundary is correct',
@@ -33,7 +36,7 @@ export default [
     depends_on: ['LWC-FND-001'],
     spec_refs: ['/shipping/rates', '/shipping/carriers', '/shipping/special_rules', '/shipping/international', '/shipping/excluded_countries', '/markets/list'],
     applies: () => true,
-    agent_prompt: (doc) => `Set up shipping in Settings > Shipping and delivery: a general profile with zones per market (${listOr(markets(doc).map((m) => m.code), 'primary market')})${doc.shipping?.international ? ' plus international zones' : ''}, ${rateText[doc.shipping?.rates] ?? 'agreed rates'} and delivery-time labels. ${doc.shipping?.rates === 'calculated' || doc.shipping?.rates === 'mixed' ? 'Carrier-calculated rates need Shopify Shipping carriers or third-party carrier-calculated shipping (plan-dependent) — confirm eligibility and keep carrier API credentials out of the repository. ' : ''}${doc.shipping?.special_rules?.length ? `Create separate delivery profiles for: ${list(doc.shipping.special_rules)}. ` : ''}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')} — connect via Shopify Shipping or the carrier's app for labels and tracking. Define free-shipping thresholds per market currency. Present the rate table for approval before applying it.`,
+    agent_prompt: (doc) => `Set up shipping in Settings > Shipping and delivery: a general profile with zones per market (${listOr(markets(doc).map((m) => m.code), 'primary market')})${doc.shipping?.international ? ' plus international zones' : ''}, ${rateText(doc) ?? 'agreed rates'} and delivery-time labels. ${(doc.shipping?.rates ?? []).includes('carrier_calculated') ? 'Third-party carrier-calculated rates need the Advanced or Plus plan (an add-on on Grow) — confirm eligibility and keep carrier API credentials out of the repository. ' : ''}${(doc.shipping?.free_shipping_thresholds ?? []).length ? `Free-shipping thresholds: ${doc.shipping.free_shipping_thresholds.map((t) => `${t.market} ${t.currency ?? ''} ${t.threshold}`.replace(/\s+/g, ' ')).join('; ')}. ` : ''}${doc.shipping?.special_rules?.length ? `Create separate delivery profiles for: ${list(doc.shipping.special_rules)}. ` : ''}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')} — connect via Shopify Shipping or the carrier's app for labels and tracking. Define free-shipping thresholds per market currency. Present the rate table for approval before applying it.`,
   },
   {
     key: 'LWC-SHP-002',
@@ -50,9 +53,9 @@ export default [
     points: 5,
     owner: 'agent',
     depends_on: ['LWC-SHP-001'],
-    spec_refs: ['/shipping/fulfilment_locations', '/shipping/complex_routing', '/catalogue/inventory/source'],
-    applies: (doc) => (doc.shipping?.fulfilment_locations ?? 0) > 1 || doc.shipping?.complex_routing === true,
-    agent_prompt: (doc) => `Create ${doc.shipping?.fulfilment_locations ?? 'the agreed'} locations and assign inventory. Configure order routing rules in Settings > Shipping and delivery > Order routing. ${doc.shipping?.complex_routing ? 'Routing is complex: document the rules and, only if built-in rules cannot express them, propose an Order Routing Location Rule function (Plus, T3) for approval. ' : ''}Inventory source: ${doc.catalogue?.inventory?.source ?? 'Shopify'}. Test split and single-location orders per market.`,
+    spec_refs: ['/shipping/fulfilment_locations', '/shipping/routing_rules', '/catalogue/inventory/source'],
+    applies: (doc) => (doc.shipping?.fulfilment_locations ?? 0) > 1,
+    agent_prompt: (doc) => `Create ${doc.shipping?.fulfilment_locations ?? 'the agreed'} locations and assign inventory. Configure order routing rules in Settings > Shipping and delivery > Order routing. Routing rules: ${listOr((doc.shipping?.routing_rules ?? []).map((r) => r.replace(/_/g, ' ')), 'to confirm')}. ${(doc.shipping?.routing_rules ?? []).some((r) => r === 'custom_rule_function' || r === 'erp_or_oms_decides') ? 'Some routing goes beyond the native rules: document it and propose an Order Routing Location Rule function or the ERP / OMS integration for approval (T3). ' : ''}Inventory source: ${doc.catalogue?.inventory?.source ?? 'Shopify'}. Test split and single-location orders per market.`,
   },
   {
     key: 'LWC-SHP-003',
@@ -101,7 +104,7 @@ export default [
     description: (doc) => `Policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}`,
     acceptance_criteria: (doc) => [
       `Given the returns policy, when a return rule is configured, then the return window, eligible items and return shipping fees match "${doc.shipping?.returns?.policy ?? 'the agreed policy'}"`,
-      ...(doc.shipping?.returns?.portal ? ['Given a customer with an eligible order, when they request a return in the self-service portal, then they receive a label or instructions and staff see the return request'] : ['Given a return request by email, when staff create the return in the admin, then refund, restock and label steps follow the SOP']),
+      ...(doc.shipping?.returns?.portal === 'native_self_serve_returns' || doc.shipping?.returns?.portal === 'returns_app_needed' ? ['Given a customer with an eligible order, when they request a return in the self-service portal, then they receive a label or instructions and staff see the return request'] : ['Given a return request by email, when staff create the return in the admin, then refund, restock and label steps follow the SOP']),
       ...(doc.shipping?.returns?.exchanges ? ['Given an exchange, when it is approved, then the replacement variant is reserved and the price difference is charged or refunded'] : []),
       'Given a refund, when it is issued, then inventory restocks to the right location and the refund reaches the original payment method or store credit',
       ...(doc.shipping?.returns?.window_days !== undefined ? [`Given an order older than ${doc.shipping.returns.window_days} days, when the customer requests a return, then the request is declined with the policy explanation`] : []),
@@ -117,7 +120,7 @@ export default [
     applies: () => true,
     agent_prompt: (doc) => `Returns policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}. Returns-platform signals: ${listOr(appSignals(doc).returns_platform, 'none — native Shopify returns are enough')}. ${doc.shipping?.returns?.solution
       ? `Install and configure ${doc.shipping.returns.solution}: return reasons, windows, fees per market, ${doc.shipping?.returns?.exchanges ? 'exchange-first flow, ' : ''}label generation and restock location. Link its portal from customer accounts and the footer.`
-      : `Use Shopify's native return rules and ${doc.shipping?.returns?.portal ? 'self-serve returns in new customer accounts' : 'staff-created returns'}${doc.shipping?.returns?.exchanges ? ' with exchanges' : ''}.`} Update the refund policy page and notifications. Test a return, an exchange (if in scope) and a refund in test mode.`,
+      : `Use Shopify's native return rules and ${doc.shipping?.returns?.portal === 'native_self_serve_returns' ? 'self-serve returns in customer accounts' : 'staff-created returns'}${doc.shipping?.returns?.exchanges ? ' with exchanges' : ''}.`} Update the refund policy page and notifications. Test a return, an exchange (if in scope) and a refund in test mode.`,
   },
   {
     key: 'LWC-SHP-006',
@@ -147,7 +150,7 @@ export default [
       const c = doc.post_purchase?.cancellations ?? {};
       return [
         c.self_service
-          ? `Given an order that is ${c.window === 'within_hours' ? 'within the agreed hours' : 'not yet fulfilled'}, when the customer cancels it from their account, then payment is refunded or voided, stock is restocked and the fulfilment location stops the order`
+          ? `Given an order that is ${['15_minutes', '1_hour', '24_hours'].includes(c.window) ? `within ${c.window.replace(/_/g, ' ')} of ordering` : 'not yet fulfilled'}, when the customer requests cancellation in their account${c.auto_approve ? '' : ' and staff approve it'}, then payment is refunded or voided, stock is restocked and the fulfilment location stops the order`
           : 'Given a cancellation request by email or phone, when staff cancel the order in the admin, then payment is refunded or voided, stock is restocked and the customer is notified',
         'Given an order already fulfilled, when a cancellation is requested, then it is refused and the customer is pointed to the returns process',
         ...(c.partial ? ['Given a multi-item order, when one item is cancelled, then only that item is refunded and removed from fulfilment'] : []),

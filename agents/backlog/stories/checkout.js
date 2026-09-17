@@ -5,7 +5,7 @@
 import { markets, list, listOr, isB2b, hasProductType } from './helpers.js';
 
 const methods = (doc) => [...new Set([...(doc.payments?.providers ?? []), ...(doc.payments?.local_methods ?? []), ...(doc.payments?.bnpl ?? [])])];
-const extensionsOf = (doc) => [...(doc.checkout?.extensions ?? []), ...(doc.checkout?.custom_fields ?? [])];
+const extensionsOf = (doc) => [...(doc.checkout?.extensions ?? []).map((e) => e.replace(/_/g, ' ')), ...(doc.checkout?.custom_fields ?? [])];
 const giftCardsInScope = (doc) => hasProductType(doc, 'gift_card') || doc.checkout?.gift_cards === true || doc.promotions?.gift_cards?.as_product === true || doc.promotions?.gift_cards?.as_reward === true;
 
 /** @type {import('../model.js').StoryDefinition[]} */
@@ -46,7 +46,7 @@ export default [
     depends_on: ['LWC-THM-001', 'LWC-PAY-001'],
     spec_refs: ['/checkout/customisation', '/customers/account_requirement', '/compliance/marketing_opt_in'],
     applies: () => true,
-    agent_prompt: (doc) => `Apply brand settings in the checkout and accounts editor (logo, colours, fonts, corner radius, header and footer) matching the theme's settings; ${doc.checkout?.customisation === 'extensibility' ? 'use the Checkout Branding API for styles the editor does not expose (Plus). ' : ''}Configure checkout settings: customer contact method, account requirement (${doc.customers?.account_requirement ?? 'optional'}), required name/company/address line 2/phone fields, address autocomplete, marketing consent checkbox (unchecked by default), order processing and abandoned checkout emails (off if the ESP sends them). Do not use checkout.liquid or scripts — they are no longer supported.`,
+    agent_prompt: (doc) => `Apply brand settings in the checkout and accounts editor (logo, colours, fonts, corner radius, header and footer) matching the theme's settings; ${(doc.checkout?.customisation ?? []).includes('checkout_branding_api_styling') ? 'use the Checkout Branding API for styles the editor does not expose (Plus). ' : ''}Configure checkout settings: customer contact method, account requirement (${doc.customers?.account_requirement ?? 'optional'}), required name/company/address line 2/phone fields, address autocomplete, marketing consent checkbox (unchecked by default), order processing and abandoned checkout emails (off if the ESP sends them). Do not use checkout.liquid or scripts — they are no longer supported.`,
   },
   {
     key: 'LWC-PAY-003',
@@ -65,7 +65,7 @@ export default [
     depends_on: ['LWC-FND-002', 'LWC-PAY-002'],
     spec_refs: ['/checkout/customisation', '/checkout/extensions', '/checkout/custom_fields'],
     security_flags: ['secrets'],
-    applies: (doc) => doc.checkout?.customisation === 'extensibility' && extensionsOf(doc).length > 0,
+    applies: (doc) => (doc.checkout?.customisation ?? []).some((c) => ['checkout_step_blocks_or_fields', 'thank_you_order_status_blocks'].includes(c)) && extensionsOf(doc).length > 0,
     agent_prompt: (doc) => `Requirements: ${listOr(extensionsOf(doc), 'none listed')}. For each, check native options first: ${isB2b(doc) ? 'B2B checkout already has a purchase order number field and company locations store a tax registration ID — do not rebuild these. ' : ''}Scaffold a custom app with Shopify CLI (shopify app init) and add checkout UI extensions with shopify app generate extension, using Polaris checkout components and the latest stable API version. Store values with the applyMetafieldsChange / attribute APIs on the order. Information, shipping and payment step targets require Shopify Plus; Thank you and Order status targets work on all plans. Keep app credentials in the CLI environment only. Validate with shopify app build before deploying to the development store.`,
   },
   {
@@ -132,7 +132,7 @@ export default [
     title: 'Enforce order restrictions with a cart and checkout validation function',
     user_story: 'As the business, I want checkout to block orders that break our rules, so that we do not have to cancel them afterwards.',
     acceptance_criteria: (doc) => [
-      ...(doc.checkout?.order_restrictions ?? []).map((r) => `Given the rule "${r}", when a cart breaks it, then checkout shows a clear translated error and the order cannot be completed`),
+      ...(doc.checkout?.order_restrictions ?? []).filter((r) => r !== 'none').map((r) => r.replace(/_/g, ' ')).map((r) => `Given the rule "${r}", when a cart breaks it, then checkout shows a clear translated error and the order cannot be completed`),
       'Given a valid cart, when the function runs, then checkout completes with no added latency visible to the shopper',
       'Given the function, when unit tests run, then every rule has passing and failing input fixtures',
     ],
@@ -142,7 +142,7 @@ export default [
     depends_on: ['LWC-FND-002', 'LWC-PAY-002'],
     spec_refs: ['/checkout/order_restrictions'],
     security_flags: ['secrets'],
-    applies: (doc) => (doc.checkout?.order_restrictions ?? []).length > 0,
-    agent_prompt: (doc) => `Rules: ${list(doc.checkout?.order_restrictions ?? [])}. First check whether native settings cover a rule (market exclusions, shipping zones, product availability per market, B2B quantity rules). For the rest, scaffold a Cart and Checkout Validation Function with Shopify CLI in the store's custom app, read thresholds from a metafield on the validation so merchants can change them, return localised error messages, add unit tests with input fixtures and deploy with shopify app deploy to the development store.`,
+    applies: (doc) => (doc.checkout?.order_restrictions ?? []).some((r) => r !== 'none'),
+    agent_prompt: (doc) => `Rules: ${list((doc.checkout?.order_restrictions ?? []).filter((r) => r !== 'none').map((r) => r.replace(/_/g, ' ')))}. First check whether native settings cover a rule (market exclusions, shipping zones, product availability per market, B2B quantity rules). For the rest, scaffold a Cart and Checkout Validation Function with Shopify CLI in the store's custom app, read thresholds from a metafield on the validation so merchants can change them, return localised error messages, add unit tests with input fixtures and deploy with shopify app deploy to the development store.`,
   },
 ];

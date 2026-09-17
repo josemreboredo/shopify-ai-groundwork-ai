@@ -22,7 +22,7 @@ export default [
     acceptance_criteria: (doc) => [
       ...markets(doc).map((m) => `Given a visitor from ${m.code}, when they open the storefront, then prices show in ${m.currency ?? 'the market currency'}${m.domain ? ` on ${m.domain}` : ''}`),
       `Given the primary market${(doc.markets?.primary_markets ?? []).length > 1 ? 's' : ''} ${listOr(doc.markets?.primary_markets, '')}, when Markets are reviewed in the admin, then the store's primary market is ${doc.markets?.primary_markets?.[0] ?? 'set'} and the others are active`.trim(),
-      ...(doc.markets?.geo_redirect ? ['Given a visitor lands on the wrong market, when geo-redirect runs, then they are offered their local market without losing the current page'] : []),
+      ...(doc.markets?.geo_redirect === 'automatic_redirect' ? ['Given a visitor lands on the wrong market, when automatic redirection runs, then they reach their local market without losing the current page (EU visitors on EU country domains are not redirected)'] : doc.markets?.geo_redirect && doc.markets.geo_redirect !== 'none' ? [`Given a visitor lands on the wrong market, when the page loads, then a ${doc.markets.geo_redirect.replace(/_/g, ' ')} offers their local market`] : []),
     ],
     gaia_tier: 'T2',
     points: 5,
@@ -31,7 +31,7 @@ export default [
     spec_refs: ['/markets/list', '/markets/primary_markets', '/markets/geo_redirect'],
     gates: ['markets', 'multi_currency'],
     applies: (doc) => gate(doc, 'markets'),
-    agent_prompt: (doc) => `Configure Shopify Markets for: ${markets(doc).map((m) => `${m.code} currency ${m.currency}, languages ${(m.languages ?? []).join('/')}, price strategy ${m.price_strategy ?? 'TBC'}${m.domain ? `, domain ${m.domain}` : ''}`).join('; ')}. Set ${doc.markets?.primary_markets?.[0] ?? 'the primary market (to confirm)'} as the store's primary market${(doc.markets?.primary_markets ?? []).length > 1 ? ` (lead markets: ${doc.markets.primary_markets.join(', ')})` : ''}. Use Shopify Markets (not expansion stores) unless engagement.markets.strategy says otherwise. Enable geo-redirect: ${doc.markets?.geo_redirect ? 'yes' : 'no'}. Present the plan for consultant approval before applying it.`,
+    agent_prompt: (doc) => `Configure Shopify Markets for: ${markets(doc).map((m) => `${m.code} currency ${m.currency}, languages ${(m.languages ?? []).join('/')}, price strategy ${m.price_strategy ?? 'TBC'}${m.domain ? `, domain ${m.domain}` : ''}`).join('; ')}. Set ${doc.markets?.primary_markets?.[0] ?? 'the primary market (to confirm)'} as the store's primary market${(doc.markets?.primary_markets ?? []).length > 1 ? ` (lead markets: ${doc.markets.primary_markets.join(', ')})` : ''}. Use Shopify Markets (not expansion stores) unless engagement.markets.strategy says otherwise. Local market routing: ${doc.markets?.geo_redirect ? doc.markets.geo_redirect.replace(/_/g, ' ') : 'to confirm'} (the Geolocation app is retired; automatic redirection is in Online Store > Preferences). Present the plan for consultant approval before applying it.`,
   },
   {
     key: 'LWC-MKT-002',

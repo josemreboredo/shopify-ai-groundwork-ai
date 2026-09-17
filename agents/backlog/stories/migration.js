@@ -66,16 +66,14 @@ export default [
     acceptance_criteria: (doc) => [
       `Given the customer import, when it completes, then ${count(doc.migration?.volumes?.customers, 'the expected number of')} customers reconcile by email with addresses, tags and email marketing consent state and consent date preserved`,
       'Given a customer without recorded marketing consent in the source, when they are imported, then they are not subscribed to marketing',
-      doc.customers?.account_type === 'classic'
-        ? 'Given legacy customer accounts, when a migrated customer is invited to activate their account, then the invitation is sent only in the agreed launch communication and in their language'
-        : 'Given new customer accounts, when a migrated customer signs in with their email code, then they see their profile without needing a password or account invite',
+      'Given customer accounts, when a migrated customer signs in with their email code, then they see their profile without needing a password or account invite (passwords cannot be migrated)',
       'Given the export files, when the import is signed off, then the files are deleted from all working locations and the deletion is logged',
     ],
     gaia_tier: 'T3',
     points: 5,
     owner: 'agent',
     depends_on: ['LWC-MIG-001', 'LWC-CUS-001'],
-    spec_refs: ['/migration/data', '/migration/volumes/customers', '/customers/account_type', '/compliance/marketing_opt_in'],
+    spec_refs: ['/migration/data', '/migration/volumes/customers', '/customers/sign_in_methods', '/compliance/marketing_opt_in'],
     gates: ['migration'],
     security_flags: ['pii'],
     applies: (doc) => migrates(doc, 'customers'),

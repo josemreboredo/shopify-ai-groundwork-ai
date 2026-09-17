@@ -3,7 +3,8 @@
  * @description Loaders and helpers for the engagement contract (ADR 0002):
  *   - engagement.schema.json — shape of one client engagement
  *   - question-bank.json     — every discovery question and where its answer lands
- *   - offering.json          — offers, scope gates, L triggers, modifiers, exit rules
+ *   - offering.json          — offers, scope gates, L triggers, modifiers, exit rules, app signals, routes
+ *   - apps.json              — App Store registry (question-bank shopify.apps, approach shortlist)
  *
  * @module schema
  */
@@ -19,6 +20,30 @@ const load = (name) => JSON.parse(readFileSync(new URL(`./${name}`, import.meta.
 export const engagementSchema = load('engagement.schema.json');
 export const questionBank     = load('question-bank.json');
 export const offering         = load('offering.json');
+export const apps             = load('apps.json');
+const OPTION_LABELS            = load('option-labels.json').labels;
+
+/** Acronyms and brand spellings for generated option labels. */
+const WORDS = {
+  b2b: 'B2B', b2c: 'B2C', dtc: 'DTC', pos: 'POS', erp: 'ERP', pim: 'PIM', crm: 'CRM', oms: 'OMS', wms: 'WMS', cdp: 'CDP', esp: 'ESP',
+  api: 'API', url: 'URL', seo: 'SEO', sms: 'SMS', vip: 'VIP', sku: 'SKU', ai: 'AI', ui: 'UI', ux: 'UX', us: 'US', uk: 'UK', eu: 'EU',
+  cn: 'CN', hk: 'HK', prc: 'PRC', icp: 'ICP', nmpa: 'NMPA', pipl: 'PIPL', cbec: 'CBEC', ddp: 'DDP', pci: 'PCI', sso: 'SSO', ach: 'ACH',
+  kol: 'KOL', koc: 'KOC', cms: 'CMS', js: 'JavaScript', '3d': '3D', '3pl': '3PL', i18n: 'i18n', shopify: 'Shopify', paypal: 'PayPal',
+  hydrogen: 'Hydrogen', flow: 'Flow', rfq: 'RFQ', gdpr: 'GDPR', ccpa: 'CCPA', qr: 'QR', faq: 'FAQ', csv: 'CSV',
+};
+
+/**
+ * Readable label for an answer option code, e.g. "3pl_system" → "3PL system".
+ *
+ * @param {string|boolean|number} code
+ * @returns {string}
+ */
+export function optionLabel(code) {
+  if (typeof code !== 'string') return String(code);
+  if (OPTION_LABELS[code]) return OPTION_LABELS[code];
+  const text = code.split('_').map((w) => WORDS[w] ?? w).join(' ');
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 

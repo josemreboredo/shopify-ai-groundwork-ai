@@ -8,7 +8,7 @@
  */
 
 import { buildApproachSchema } from './extraction-schema.js';
-import { appSignals } from './app-signals.js';
+import { appSignals, appCandidates } from './app-signals.js';
 import { planSuggestion } from './plan.js';
 
 export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect at Merkle drafting the implementation approach for a discovery engagement. A lead consultant reviews everything you write before the client sees it.
@@ -20,7 +20,7 @@ Capability map
 
 App shortlist
 - Recommend only apps a requirement needs; prefer native features. Include apps you considered and rejected, with rejection_reason.
-- app_signals lists, per area, the answers that go beyond native Shopify (returns platform, post-purchase tracking platform, order editing, warranty claims). An empty list means native Shopify is enough: return rules and self-serve returns, staff refunds and exchanges, the order status page and email/SMS shipping notifications. For a non-empty list, recommend one app per area that covers all listed reasons (prefer an app the client already uses or prefers, see post_purchase.platform_preference and shipping.returns.solution) and quote the reasons in rationale.
+- app_signals lists, per area, the answers that go beyond native Shopify (returns, post-purchase tracking, order editing, warranty, back-in-stock, pre-orders, product options, bundles, subscriptions, B2B quotes, loyalty, reviews, translation, consent, fraud guarantee, SMS, delivery scheduling, server-side tracking, wishlist). An empty list means native Shopify is enough (return and cancellation rules, self-serve returns including B2B orders, cancellation requests, staff order editing, order status page, Shopify Bundles, Shopify Subscriptions, store credit, Shopify Messaging, Translate & Adapt for 2 languages, Shopify's cookie banner). For a non-empty list, recommend one app per area that covers all listed reasons, preferring an app the client already uses or prefers, then app_candidates (apps.shopify.com listings from Merkle's registry; status "proposed" means the lead consultant has not approved it yet — say so in limitations). Quote the reasons in rationale. Do not recommend apps outside app_candidates unless no candidate fits, and say why.
 - Costs: typical public list price as a number with currency and period, and note "verify current pricing on the Shopify App Store". If unknown, omit cost.
 
 Assumptions
@@ -31,6 +31,9 @@ Phases
 - The delivery track is given (liquid = Shopify Horizon theme; hydrogen = headless Hydrogen storefront). Plan accordingly.
 - Respect open exit-rule flags: plan the scoping work they require.
 - Shopify plan: do not assume Shopify Plus. Recommend the lowest plan that fits the requirements and the market (Shopify B2B runs on every plan from Basic; Plus is for company-specific B2B catalogs, checkout step extensions, Checkout Branding API, expansion stores, combined listings). If shopify.target_plan is missing, plan_suggestion gives the minimum the answers require; state the recommendation as an assumption.
+
+Mainland China
+- Mainland China (market code CN) is not part of the offering: selling behind the Great Firewall needs an ICP licence, onshore hosting and a China-specific architecture. Do not plan its build; add one task "Separate China discovery" and state the exclusion in assumptions.
 
 Larger Engagement
 - If delivery.route is larger_engagement, the engagement hit a STOP and goes beyond the S/M/L offers: Merkle proposes an Enterprise Engagement that starts with a dedicated Discovery Phase. Cover the full scope the client described — do not cut it to fit an offer or its duration.
@@ -51,6 +54,7 @@ export function approachInput(doc) {
     ...answers,
     offer: { code: offer.code, name: offer.name, delivery_track: offer.delivery_track, scope_gates: offer.scope_gates, l_triggers: offer.l_triggers },
     app_signals: appSignals(doc),
+    app_candidates: appCandidates(doc),
     ...(planSuggestion(doc) ? { plan_suggestion: planSuggestion(doc) } : {}),
     question_ids_by_answer: Object.fromEntries(
       Object.entries(provenance ?? {}).map(([pointer, p]) => [pointer, p.question_id]).filter(([, id]) => id),

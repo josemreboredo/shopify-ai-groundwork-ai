@@ -116,7 +116,7 @@ export default [
     user_story: 'As a shopper, I want to review and edit my cart without leaving the page, so that I can check out quickly.',
     acceptance_criteria: (doc) => [
       'Given a product is added, when the cart drawer opens, then quantity changes and removals update totals via the Cart AJAX API without a page reload and announce the change to screen readers',
-      ...(doc.shipping?.rates === 'free_threshold' || doc.shipping?.rates === 'mixed' ? ['Given a free-shipping threshold, when the cart subtotal changes, then a progress message shows the remaining amount in the market currency'] : []),
+      ...((doc.shipping?.rates ?? []).includes('free_above_threshold') || (doc.shipping?.free_shipping_thresholds ?? []).length ? ['Given a free-shipping threshold, when the cart subtotal changes, then a progress message shows the remaining amount in the market currency'] : []),
       `Given the cart, when a shopper proceeds, then accelerated checkout buttons and the discount code field behave as configured${isB2b(doc) ? ' and B2B buyers see their catalog prices and quantity rules' : ''}`,
     ],
     gaia_tier: 'T2',

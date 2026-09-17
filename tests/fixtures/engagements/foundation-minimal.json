@@ -10,7 +10,9 @@
       "business_model": "dtc",
       "website": "https://www.nordlicht-apparel.example"
     },
-    "consultant": { "name": "Lead Consultant (example)" },
+    "consultant": {
+      "name": "Lead Consultant (example)"
+    },
     "source": "questionnaire",
     "created_at": "2026-09-14",
     "updated_at": "2026-09-14",
@@ -20,156 +22,276 @@
       "recorded_at": "2026-09-14"
     }
   },
-
   "business": {
     "primary_problem": "The brand sells only through retail partners and has no direct online channel.",
     "highest_impact_fix": "A simple, fast DTC store for Germany before the winter season.",
     "bottleneck": "acquisition",
-    "growth_goals": ["EUR 600k DTC revenue in the first 12 months", "10,000 newsletter subscribers"],
+    "growth_goals": [
+      "EUR 600k DTC revenue in the first 12 months",
+      "10,000 newsletter subscribers"
+    ],
     "kpis": [
-      { "metric": "Online conversion rate", "baseline": "n/a (new channel)", "target": "2.0%", "horizon_months": 12 },
-      { "metric": "DTC revenue", "baseline": "EUR 0", "target": "EUR 600k", "horizon_months": 12 }
+      {
+        "metric": "Online conversion rate",
+        "baseline": "n/a (new channel)",
+        "target": "2.0%",
+        "horizon_months": 12
+      },
+      {
+        "metric": "DTC revenue",
+        "baseline": "EUR 0",
+        "target": "EUR 600k",
+        "horizon_months": 12
+      }
     ],
     "engagement_trigger": "Retail partners are reducing orders; the brand wants its own customer relationship.",
-    "budget": { "min": 45000, "max": 60000, "currency": "EUR", "priority": "balanced" },
-    "app_cost_ceiling_monthly": { "amount": 200, "currency": "EUR" }
+    "budget": {
+      "min": 45000,
+      "max": 60000,
+      "currency": "EUR",
+      "priority": "balanced"
+    },
+    "app_cost_ceiling_monthly": {
+      "amount": 200,
+      "currency": "EUR"
+    }
   },
-
   "stakeholders": [
-    { "role": "Founder and CEO", "raci": "A", "decision_maker": true },
-    { "role": "Marketing Lead", "raci": "R", "decision_maker": false },
-    { "role": "Operations Manager", "raci": "C", "decision_maker": false }
+    {
+      "role": "Founder and CEO",
+      "raci": "A",
+      "decision_maker": true
+    },
+    {
+      "role": "Marketing Lead",
+      "raci": "R",
+      "decision_maker": false
+    },
+    {
+      "role": "Operations Manager",
+      "raci": "C",
+      "decision_maker": false
+    }
   ],
-
   "brand": {
     "positioning": "mid_market",
     "identity_ready": true,
     "has_guidelines": true
   },
-
   "shopify": {
     "existing_store": false,
     "target_plan": "plus"
   },
-
   "offer": {
     "code": "S",
     "name": "Ecommerce Foundation",
     "delivery_track": "liquid",
     "scope_gates": {
-      "markets":        { "active": false, "evidence": "Q3.1.1: one market at launch (DE)." },
-      "multi_currency": { "active": false, "evidence": "Q3.1.1: EUR only." },
-      "b2b":            { "active": false, "evidence": "Q6.2.1: no B2B." },
-      "integration":    { "active": false, "evidence": "Q8.1.1: Klaviyo only, via its native app — not a counted integration." },
-      "sku_complexity": { "active": false, "evidence": "Q2.1.1: ~150 SKUs." },
-      "migration":      { "active": false, "evidence": "Q8.2.1: greenfield, no source platform." }
+      "markets": {
+        "active": false,
+        "evidence": "Q3.1.1: one market at launch (DE)."
+      },
+      "multi_currency": {
+        "active": false,
+        "evidence": "Q3.1.1: EUR only."
+      },
+      "b2b": {
+        "active": false,
+        "evidence": "Q1.1.4: direct to consumer, no B2B."
+      },
+      "integration": {
+        "active": false,
+        "evidence": "Q8.1.1: Klaviyo only, via its native app — not a counted integration."
+      },
+      "sku_complexity": {
+        "active": false,
+        "evidence": "Q2.1.1: ~150 SKUs."
+      },
+      "migration": {
+        "active": false,
+        "evidence": "Q0.5.4: greenfield, no source platform."
+      }
     },
     "l_triggers": {
-      "luxury":              { "active": false, "evidence": "Q1.3.1: mid-market positioning." },
-      "headless":            { "active": false, "evidence": "Q9.2.1: no headless requirement." },
-      "figma_design_system": { "active": false, "evidence": "Q9.1.1: no Figma file." }
+      "luxury": {
+        "active": false,
+        "evidence": "Q1.3.1: mid-market positioning."
+      },
+      "headless": {
+        "active": false,
+        "evidence": "Q9.2.1: no headless requirement."
+      },
+      "figma_design_system": {
+        "active": false,
+        "evidence": "Q9.1.1: no Figma file."
+      }
     },
     "modifiers": [],
-    "price_band": { "min": 40000, "max": 65000, "currency": "EUR", "open_ended": false },
-    "duration_weeks": { "min": 4, "max": 5 },
+    "price_band": {
+      "min": 40000,
+      "max": 65000,
+      "currency": "EUR",
+      "open_ended": false
+    },
+    "duration_weeks": {
+      "min": 4,
+      "max": 5
+    },
     "rationale": "No scope gate and no L trigger is active, so the engagement classifies as S — Ecommerce Foundation with no modifiers."
   },
-
   "markets": {
-    "primary_markets": ["DE"],
+    "primary_markets": [
+      "DE"
+    ],
     "list": [
-      { "code": "DE", "currency": "EUR", "languages": ["de"], "domain": "www.nordlicht-apparel.example", "price_strategy": "base_currency" }
+      {
+        "code": "DE",
+        "currency": "EUR",
+        "languages": [
+          "de"
+        ],
+        "domain": "www.nordlicht-apparel.example",
+        "price_strategy": "base_currency"
+      }
     ],
     "expansion_12m": [],
     "strategy": "shopify_markets",
     "translation_method": "in_house",
-    "vat_countries": ["DE"]
+    "vat_countries": [
+      "DE"
+    ]
   },
-
   "catalogue": {
     "sku_count": 150,
     "variant_options_max": 2,
     "variants_per_product_max": 8,
-    "product_types": ["variant", "gift_card"],
-    "custom_attributes": ["material_composition", "care_instructions"],
+    "product_types": [
+      "variant",
+      "gift_card"
+    ],
+    "custom_attributes": [
+      "material_composition",
+      "care_instructions"
+    ],
     "data_source": "spreadsheet",
-    "pricing": { "multiple_price_tiers": false, "volume_pricing": false, "market_specific": false },
-    "inventory": { "source": "shopify", "out_of_stock_behaviour": "show_sold_out" }
+    "pricing": {
+      "multiple_price_tiers": false,
+      "volume_pricing": false,
+      "market_specific": false
+    },
+    "inventory": {
+      "source": "shopify",
+      "out_of_stock_behaviour": [
+        "show_sold_out"
+      ]
+    }
   },
-
   "payments": {
-    "providers": ["Shopify Payments", "Klarna"],
-    "local_methods": ["SEPA direct debit"],
-    "bnpl": ["Klarna"],
+    "providers": [
+      "Shopify Payments",
+      "Klarna"
+    ],
+    "local_methods": [
+      "sepa_or_invoice_via_gateway"
+    ],
+    "bnpl": [
+      "klarna_via_shopify_payments"
+    ],
     "pci_scope": "shopify_hosted"
   },
-
   "checkout": {
-    "customisation": "none",
+    "customisation": [
+      "none"
+    ],
     "gift_cards": true
   },
-
   "shipping": {
     "model": "3pl",
     "provider_3pl": "Regional 3PL partner (name withheld in example)",
     "fulfilment_locations": 1,
-    "complex_routing": false,
-    "carriers": ["DHL"],
-    "rates": "free_threshold",
+    "carriers": [
+      "DHL"
+    ],
+    "rates": [
+      "free_above_threshold"
+    ],
     "international": false,
-    "returns": { "policy": "30-day free returns within Germany.", "portal": false, "exchanges": false }
+    "returns": {
+      "policy": "30-day free returns within Germany.",
+      "portal": "staff_created_only",
+      "exchanges": false
+    },
+    "routing_rules": [
+      "closest_location"
+    ]
   },
-
   "customers": {
     "account_requirement": "optional",
     "account_type": "new_customer_accounts"
   },
-
   "b2b": {
     "enabled": false
   },
-
   "compliance": {
-    "privacy_regimes": ["gdpr"],
+    "privacy_regimes": [
+      "gdpr"
+    ],
     "cookie_consent_tool": "Shopify Customer Privacy banner",
     "marketing_opt_in": true,
     "sensitive_data": false,
-    "regulated_industry": { "active": false },
+    "regulated_industry": {
+      "active": false
+    },
     "gdpr_deletion_workflow": false,
     "legal_pages_status": "needs_drafting"
   },
-
   "marketing": {
-    "analytics": { "platforms": ["GA4"], "pixels": ["Meta"] },
-    "esp": { "platform": "Klaviyo", "flows": ["Welcome", "Abandoned cart"] }
+    "analytics": {
+      "platforms": [
+        "GA4"
+      ],
+      "pixels": [
+        "Meta"
+      ]
+    },
+    "esp": {
+      "platform": "Klaviyo",
+      "flows": [
+        "Welcome",
+        "Abandoned cart"
+      ]
+    }
   },
-
   "integrations": [
     {
       "system": "Klaviyo",
       "category": "esp",
       "direction": "outbound",
-      "objects": ["customers", "orders"],
+      "objects": [
+        "customers",
+        "orders"
+      ],
       "frequency": "realtime",
       "connector": "native_app",
       "owner": "client",
       "status": "to_build"
     }
   ],
-
   "migration": {
     "source_platform": "none"
   },
-
   "design": {
-    "figma": { "exists": false },
+    "figma": {
+      "exists": false
+    },
     "custom_design": false,
     "headless_required": false,
     "theme_preference": "Horizon",
     "motion": false,
-    "accessibility": { "target": "wcag21_aa" }
+    "accessibility": {
+      "target": "wcag21_aa"
+    }
   },
-
   "delivery": {
     "go": true,
     "kickoff_date": "2026-09-28",
@@ -178,33 +300,83 @@
     "phased_launch": false,
     "decision_maker_confirmed": true,
     "budget_authority_clear": true,
-    "grow_retainer": { "signed": false },
+    "grow_retainer": {
+      "signed": false
+    },
     "support_model": "hypercare_only"
   },
-
   "jira": {
     "project_key": "NORD"
   },
-
   "exits": {
     "triggered": false,
     "items": []
   },
-
   "approach": {
     "capability_map": [
-      { "requirement": "Single German market in EUR", "resolution": "native", "tool": "Shopify Markets", "gaia_tier": "T1", "question_ids": ["Q3.1.1", "Q3.1.2"] },
-      { "requirement": "Payments with Shopify Payments, Klarna and SEPA direct debit", "resolution": "native", "tool": "Shopify Payments", "gaia_tier": "T1", "question_ids": ["Q4.1.1", "Q4.1.2", "Q4.1.3"] },
-      { "requirement": "Brand storefront on a standard theme", "resolution": "theme", "tool": "Horizon", "gaia_tier": "T2", "question_ids": ["Q9.1.5", "Q9.2.2"] },
-      { "requirement": "Material and care attributes on product pages", "resolution": "native", "tool": "Metafield definitions", "gaia_tier": "T2", "question_ids": ["Q2.3.3"] },
-      { "requirement": "Welcome and abandoned-cart email flows", "resolution": "app", "tool": "Klaviyo", "gaia_tier": "T2", "question_ids": ["Q7.3.1", "Q7.3.2", "Q8.1.1"] }
+      {
+        "requirement": "Single German market in EUR",
+        "resolution": "native",
+        "tool": "Shopify Markets",
+        "gaia_tier": "T1",
+        "question_ids": [
+          "Q3.1.1",
+          "Q3.1.2"
+        ]
+      },
+      {
+        "requirement": "Payments with Shopify Payments, Klarna and SEPA direct debit",
+        "resolution": "native",
+        "tool": "Shopify Payments",
+        "gaia_tier": "T1",
+        "question_ids": [
+          "Q4.1.1",
+          "Q4.1.2",
+          "Q4.1.3"
+        ]
+      },
+      {
+        "requirement": "Brand storefront on a standard theme",
+        "resolution": "theme",
+        "tool": "Horizon",
+        "gaia_tier": "T2",
+        "question_ids": [
+          "Q9.1.5",
+          "Q9.2.2"
+        ]
+      },
+      {
+        "requirement": "Material and care attributes on product pages",
+        "resolution": "native",
+        "tool": "Metafield definitions",
+        "gaia_tier": "T2",
+        "question_ids": [
+          "Q2.3.3"
+        ]
+      },
+      {
+        "requirement": "Welcome and abandoned-cart email flows",
+        "resolution": "app",
+        "tool": "Klaviyo",
+        "gaia_tier": "T2",
+        "question_ids": [
+          "Q7.3.1",
+          "Q7.3.2",
+          "Q8.1.1"
+        ]
+      }
     ],
     "app_shortlist": [
       {
         "name": "Klaviyo",
         "requirement": "Email flows and newsletter",
         "rationale": "Client already chose Klaviyo; native Shopify connector.",
-        "cost": { "amount": 45, "currency": "USD", "period": "month", "note": "Indicative plan for up to ~1,500 profiles — verify on App Store" },
+        "cost": {
+          "amount": 45,
+          "currency": "USD",
+          "period": "month",
+          "note": "Indicative plan for up to ~1,500 profiles — verify on App Store"
+        },
         "integration_complexity": "config_only",
         "gaia_tier": "T2",
         "recommended": true
@@ -213,7 +385,12 @@
         "name": "Judge.me",
         "requirement": "Product reviews",
         "rationale": "Low-cost reviews with Klaviyo review-request integration.",
-        "cost": { "amount": 15, "currency": "USD", "period": "month", "note": "Indicative paid plan — verify on App Store" },
+        "cost": {
+          "amount": 15,
+          "currency": "USD",
+          "period": "month",
+          "note": "Indicative paid plan — verify on App Store"
+        },
         "integration_complexity": "theme_edit",
         "gaia_tier": "T2",
         "recommended": true
@@ -235,28 +412,73 @@
           {
             "name": "Sprint 1 — Store set-up",
             "tasks": [
-              { "title": "Set up Plus store, payments and German market", "capability": "native", "gaia_tier": "T1", "owner": "agent" },
-              { "title": "Install Horizon with brand tokens", "capability": "theme", "gaia_tier": "T2", "owner": "developer" },
-              { "title": "Import catalogue with metafields", "capability": "native", "gaia_tier": "T2", "owner": "agent" }
+              {
+                "title": "Set up Plus store, payments and German market",
+                "capability": "native",
+                "gaia_tier": "T1",
+                "owner": "agent"
+              },
+              {
+                "title": "Install Horizon with brand tokens",
+                "capability": "theme",
+                "gaia_tier": "T2",
+                "owner": "developer"
+              },
+              {
+                "title": "Import catalogue with metafields",
+                "capability": "native",
+                "gaia_tier": "T2",
+                "owner": "agent"
+              }
             ]
           },
           {
             "name": "Sprint 2 — Launch",
             "tasks": [
-              { "title": "Connect Klaviyo and build flows", "capability": "app", "gaia_tier": "T2", "owner": "client" },
-              { "title": "UAT and go-live", "capability": "native", "gaia_tier": "T2", "owner": "consultant" }
+              {
+                "title": "Connect Klaviyo and build flows",
+                "capability": "app",
+                "gaia_tier": "T2",
+                "owner": "client"
+              },
+              {
+                "title": "UAT and go-live",
+                "capability": "native",
+                "gaia_tier": "T2",
+                "owner": "consultant"
+              }
             ]
           }
         ]
       }
     ]
   },
-
   "provenance": {
-    "/markets/list":                { "source": "client",     "status": "confirmed", "question_id": "Q3.1.1" },
-    "/catalogue/sku_count":         { "source": "client",     "status": "confirmed", "question_id": "Q2.1.1" },
-    "/brand/positioning":           { "source": "consultant", "status": "confirmed", "question_id": "Q1.3.1" },
-    "/integrations/0/connector":    { "source": "client",     "status": "confirmed", "question_id": "Q8.1.1" },
-    "/delivery/grow_retainer/signed": { "source": "consultant", "status": "confirmed", "question_id": "Q10.3.4", "note": "Not signed; no commercial impact on an S engagement." }
+    "/markets/list": {
+      "source": "client",
+      "status": "confirmed",
+      "question_id": "Q3.1.1"
+    },
+    "/catalogue/sku_count": {
+      "source": "client",
+      "status": "confirmed",
+      "question_id": "Q2.1.1"
+    },
+    "/brand/positioning": {
+      "source": "consultant",
+      "status": "confirmed",
+      "question_id": "Q1.3.1"
+    },
+    "/integrations/0/connector": {
+      "source": "client",
+      "status": "confirmed",
+      "question_id": "Q8.1.1"
+    },
+    "/delivery/grow_retainer/signed": {
+      "source": "consultant",
+      "status": "confirmed",
+      "question_id": "Q10.3.4",
+      "note": "Not signed; no commercial impact on an S engagement."
+    }
   }
 }

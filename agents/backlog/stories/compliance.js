@@ -29,19 +29,19 @@ export default [
     user_story: 'As a visitor, I want to choose which cookies and tracking I allow, so that my privacy choices are respected.',
     acceptance_criteria: (doc) => [
       ...regimes(doc).map((r) => `Given a visitor in a region covered by ${regimeNames[r] ?? r}, when they first open the storefront, then the consent banner offers accept, reject and preferences with equal prominence as legal requires and nothing non-essential loads before a choice`),
-      `Given the consent tool ${doc.compliance?.cookie_consent_tool ?? 'Shopify privacy banner'}, when a visitor changes their choice, then the Shopify Customer Privacy API reflects it and web pixels and app embeds follow it immediately`,
+      `Given the consent tool ${doc.compliance?.consent_approach === 'third_party_cmp' ? doc.compliance?.cookie_consent_tool ?? 'the consent management platform' : 'Shopify cookie banner'}, when a visitor changes their choice, then the Shopify Customer Privacy API reflects it and web pixels and app embeds follow it immediately`,
       'Given the cookie policy, when the consent tool scans the store, then every cookie is categorised and listed in every storefront language',
     ],
     gaia_tier: 'T2',
     points: 3,
     owner: 'agent',
     depends_on: ['LWC-THM-001'],
-    spec_refs: ['/compliance/privacy_regimes', '/compliance/cookie_consent_tool', '/markets/list'],
+    spec_refs: ['/compliance/privacy_regimes', '/compliance/consent_approach', '/compliance/cookie_consent_tool', '/markets/list'],
     security_flags: ['pii'],
     applies: () => true,
     agent_prompt: (doc) => {
       const tool = doc.compliance?.cookie_consent_tool;
-      const native = !tool || /shopify/i.test(tool);
+      const native = doc.compliance?.consent_approach ? doc.compliance.consent_approach !== 'third_party_cmp' : !tool || /shopify/i.test(tool);
       return `Regimes to cover: ${regimeText(doc)} (includes regimes inferred from the markets ${listOr(markets(doc).map((m) => m.code), 'at launch')} — confirm the list with legal; Switzerland is covered by nFADP and must not be skipped). ${native
         ? 'Use Shopify\'s built-in cookie banner (Settings > Customer privacy): enable it for the regions in scope, set banner text and translations and link the privacy policy.'
         : `Install ${tool} from the Shopify App Store as an app embed, configure regions and categories, and confirm it writes consent to the Shopify Customer Privacy API (setTrackingConsent) so Shopify web pixels respect it — do not use a script that bypasses the API.`} ${regimes(doc).includes('ccpa') ? 'Add the "Your privacy choices" / do-not-sell-or-share link for US visitors. ' : ''}Translate banner texts into ${listOr(languages(doc), 'every storefront language')}. Test in a clean browser per region: nothing non-essential loads before consent.`;

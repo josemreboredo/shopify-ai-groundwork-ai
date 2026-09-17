@@ -107,8 +107,9 @@ describe('exit rule edge cases', () => {
   test('11.1 fires for Plus features on a non-Plus plan, not for B2B alone or a custom checkout UI', () => {
     assert.deepEqual(ids({ ...base, shopify: { target_plan: 'basic' }, b2b: { enabled: true } }), []);
     assert.deepEqual(ids({ ...base, shopify: { target_plan: 'advanced' }, b2b: { enabled: true, price_lists: true } }), ['11.1']);
-    assert.deepEqual(ids({ ...base, shopify: { target_plan: 'grow' }, checkout: { customisation: 'extensibility' } }), ['11.1']);
-    assert.deepEqual(ids({ ...base, shopify: { target_plan: 'grow' }, checkout: { customisation: 'custom_ui' } }), ['11.6']);
+    assert.deepEqual(ids({ ...base, shopify: { target_plan: 'grow' }, checkout: { customisation: ['checkout_step_blocks_or_fields'] } }), ['11.1']);
+    assert.deepEqual(ids({ ...base, shopify: { target_plan: 'grow' }, checkout: { customisation: ['branding_in_editor', 'thank_you_order_status_blocks'] } }), []);
+    assert.deepEqual(ids({ ...base, shopify: { target_plan: 'grow' }, checkout: { customisation: ['fully_custom_checkout_ui'] } }), ['11.6']);
   });
 
   test('11.4 counts distinct languages, not per-market sums', () => {
@@ -134,7 +135,7 @@ describe('exit rule edge cases', () => {
   });
 
   test('LLM candidates are added once, for known rules only, and never replace rule results', () => {
-    const doc = { ...base, checkout: { customisation: 'custom_ui' } };
+    const doc = { ...base, checkout: { customisation: ['fully_custom_checkout_ui'] } };
     const exits = evaluateExits(withOffer(doc), [
       { rule_id: '11.8', evidence: 'Industry answer mentions prescription medicines' },
       { rule_id: '11.6', evidence: 'duplicate of a rule result' },
@@ -146,7 +147,7 @@ describe('exit rule edge cases', () => {
   });
 
   test('STOP and FLAG items name an owner', () => {
-    const doc = { ...base, compliance: { gdpr_deletion_workflow: true }, checkout: { customisation: 'custom_ui' } };
+    const doc = { ...base, compliance: { gdpr_deletion_workflow: true }, checkout: { customisation: ['fully_custom_checkout_ui'] } };
     for (const item of evaluateExits(withOffer(doc)).items) {
       if (item.result !== 'WARN') assert.ok(item.resolution.owner);
     }

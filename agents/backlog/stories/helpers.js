@@ -6,8 +6,8 @@
  * @module backlog/stories/helpers
  */
 
-/** Markets at launch. @param {object} doc */
-export const markets = (doc) => doc.markets?.list ?? [];
+/** Markets at launch in the build scope — mainland China is scoped in a separate China discovery. @param {object} doc */
+export const markets = (doc) => (doc.markets?.list ?? []).filter((m) => m.code !== 'CN');
 
 /** Distinct languages across markets. @param {object} doc */
 export const languages = (doc) => [...new Set(markets(doc).flatMap((m) => m.languages ?? []))];
@@ -23,7 +23,7 @@ export const exitFired = (doc, ruleId) => (doc.exits?.items ?? []).some((i) => i
 
 /** "a, b and c". @param {string[]} items */
 export function list(items) {
-  const clean = items.filter(Boolean);
+  const clean = items.filter((i) => Boolean(i) && !['none', 'not_sure', 'not sure'].includes(i));
   if (clean.length <= 1) return clean[0] ?? '';
   return `${clean.slice(0, -1).join(', ')} and ${clean.at(-1)}`;
 }
@@ -57,7 +57,7 @@ export const money = (money, fallback = 'the agreed amount') =>
   money && typeof money.amount === 'number' ? `${money.amount.toLocaleString('en')} ${money.currency ?? ''}`.trim() : fallback;
 
 /** list() with a fallback when empty. @param {string[]|undefined} items @param {string} fallback */
-export const listOr = (items, fallback) => (items?.filter(Boolean).length ? list(items) : fallback);
+export const listOr = (items, fallback) => (items && list(items) ? list(items) : fallback);
 
 /** "4,200". @param {number|undefined} n @param {string} fallback */
 export const count = (n, fallback) => (typeof n === 'number' ? n.toLocaleString('en') : fallback);

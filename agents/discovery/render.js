@@ -11,7 +11,7 @@
  */
 
 import { stopRoute, needsApproach } from './engine.js';
-import { countedIntegrations, distinctLanguages } from './classify.js';
+import { countedIntegrations, distinctLanguages, marketsOf, hasChinaMainland } from './classify.js';
 import { planSuggestion } from './plan.js';
 
 const RESOLUTION_LABEL = { native: 'Native', app: 'App', theme: 'Theme', custom: 'Custom' };
@@ -199,9 +199,26 @@ const orNa = (v, fallback = 'not answered') => (v === undefined || v === null ||
 /** @param {string|undefined} v */
 const human = (v) => (v ? String(v).replace(/_/g, ' ') : v);
 
+/** China discovery inputs (§ 3.5) as a table. @param {object} doc */
+export function chinaTable(doc) {
+  const c = doc.china ?? {};
+  const v = (x) => (x === undefined ? 'not answered' : Array.isArray(x) ? x.map(human).join(', ') || 'not answered' : typeof x === 'boolean' ? yesNo(x) : human(String(x)));
+  return table(['Topic', 'Answer'], [
+    ['Selling model', v(c.selling_model)], ['Channels', v(c.channels)], ['PRC entity', v(c.prc_entity)],
+    ['Overseas entity / trademarks in China', `${v(c.overseas_entity)} / ${v(c.trademarks_registered_in_china)}`],
+    ['ICP', v(c.icp_status)], ['Shopify role', v(c.shopify_role)], ['Customs modes', v(c.customs_modes)],
+    ['Positive list', v(c.positive_list)], ['Product classes', v(c.product_classes)], ['NMPA', v(c.nmpa_status)],
+    ['Claims review', v(c.claims_review_needed)], ['Payments', v(c.payments)], ['Customers per year', v(c.customers_per_year)],
+    ['PIPL representative', v(c.pipl_representative)], ['Customer data location', v(c.customer_data_location)],
+    ['Blocked services review', v(c.blocked_services_review)], ['Marketing channels', v(c.marketing_channels)],
+    ['Customer service', v(c.customer_service)], ['Local partner', v(c.local_partner)], ['China launch target', v(c.target_launch_date)],
+    ['PRC legal, tax and customs advice', v(c.legal_advice)],
+  ]) + '\n\nReference: `docs/discovery/china-mainland.md`.';
+}
+
 /** Scope profile rows: what makes this engagement bigger than an offer. @param {object} doc */
 function scopeRows(doc) {
-  const markets = doc.markets?.list ?? [];
+  const markets = marketsOf(doc);
   const b2b = doc.b2b ?? {};
   const cat = doc.catalogue ?? {};
   const plan = planSuggestion(doc);
@@ -213,6 +230,7 @@ function scopeRows(doc) {
     : '';
   return [
     ['Markets at launch', `${markets.length}: ${markets.map((m) => `${m.code} (${m.currency ?? '?'}${m.price_strategy ? `, ${human(m.price_strategy)}` : ''})`).join(', ') || 'not answered'}`],
+    ...(hasChinaMainland(doc) ? [['Mainland China', 'Launch market excluded from this engagement — separate China discovery (Great Firewall: ICP licence, onshore hosting; 11.20)']] : []),
     ['Primary markets', orNa(doc.markets?.primary_markets)],
     ['Languages', `${distinctLanguages(doc).length}: ${distinctLanguages(doc).join(', ') || 'not answered'}`],
     ['B2B', b2b.enabled === undefined ? 'not answered' : b2b.enabled ? `yes — ${b2bDetail || 'details not answered'}` : 'no'],
@@ -271,7 +289,11 @@ ${table(['Topic', 'Answer'], [
 
 ${table(['Area', 'Discovery answer'], scopeRows(doc))}
 
-## Integration landscape
+${hasChinaMainland(doc) ? `## Mainland China (separate China discovery, outside this engagement)
+
+${chinaTable(doc)}
+
+` : ''}## Integration landscape
 
 ${table(['System', 'Category', 'Direction', 'Data', 'Connector', 'Status'], (doc.integrations ?? []).map((i) => [i.system, i.category, i.direction ?? '', (i.objects ?? []).join(', '), [i.connector, i.middleware].filter(Boolean).join(' via '), human(i.status) ?? '']))}
 

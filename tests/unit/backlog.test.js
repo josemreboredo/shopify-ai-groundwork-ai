@@ -32,21 +32,23 @@ export function maximalEngagement() {
     subscription_app: 'Shopify Subscriptions',
   });
   doc.markets.strategy = 'hybrid';
+  doc.markets.geo_redirect = 'automatic_redirect';
   doc.markets.us_sales_tax = true;
   doc.markets.rtl_required = true;
-  Object.assign(doc.checkout, { gift_cards: true, store_credit: true, post_purchase_upsell: true, order_restrictions: ['Maximum 2 units per limited-edition watch'] });
+  Object.assign(doc.checkout, { gift_cards: true, store_credit: true, post_purchase_upsell: true, order_restrictions: ['quantity_limits'] });
   doc.post_purchase = {
     orders_per_month: 3000,
-    cancellations: { self_service: true, window: 'before_fulfilment', partial: true, order_editing: true },
+    cancellations: { self_service: true, window: 'until_fulfilled', partial: true, order_editing: true },
     refunds: { methods: ['original_payment', 'store_credit'], trigger: 'on_carrier_scan', shipping_refunded: 'on_fault_only', restocking_fee: true, partial: true, approval_required: true, finance_sync: true },
     tracking: { branded_tracking_page: true, proactive_channels: ['email', 'whatsapp'], delivery_estimates: true },
     warranty_claims: true,
     platform_preference: 'parcelLab',
   };
-  doc.shipping = { ...doc.shipping, model: 'hybrid', provider_3pl: 'ShipBob', fulfilment_locations: 3, complex_routing: true, special_rules: ['Hazardous goods'], returns: { ...doc.shipping.returns, window_days: 30, return_rate_pct: 12, label: 'qr_drop_off', shipping_paid_by: 'merchant', exchange_types: ['any_product', 'store_credit_first'], international_returns: true, inspection_required: true, reason_tracking: true, b2b_returns_online: true } };
-  doc.b2b = { ...doc.b2b, volume_discounts: true, payment_terms: ['Net 30'] };
+  doc.catalogue.inventory = { ...doc.catalogue.inventory, out_of_stock_behaviour: ['back_in_stock_alert', 'pre_order'], low_stock_alerts: true };
+  doc.shipping = { ...doc.shipping, model: 'hybrid', provider_3pl: 'ShipBob', fulfilment_locations: 3, routing_rules: ['closest_location', 'custom_rule_function'], rates: ['flat', 'free_above_threshold', 'carrier_calculated'], special_rules: ['Hazardous goods'], returns: { ...doc.shipping.returns, window_days: 30, return_rate_pct: 12, label: 'qr_drop_off', shipping_paid_by: 'merchant', exchange_types: ['any_product', 'store_credit_first'], international_returns: true, inspection_required: true, reason_tracking: true, b2b_returns_online: true } };
+  doc.b2b = { ...doc.b2b, volume_discounts: true, payment_terms: ['net_terms'] };
   doc.loyalty = { components: ['points_purchase', 'vip_tiers', 'referral', 'vip_early_access', 'store_credit'], phase: 'launch', app: 'Smile.io', esp_sync: true };
-  doc.promotions = { ...doc.promotions, discount_types: ['percentage', 'fixed_amount', 'bogo', 'free_shipping', 'volume_tiered', 'automatic', 'code_based', 'scheduled_sale', 'stackable', 'pos_only'], stacking: 'advanced', gift_cards: { as_product: true, as_reward: true, format: 'both', expiry: false }, campaigns: { esp_triggered: true, landing_pages: true, countdown_timer: true, market_specific: true } };
+  doc.promotions = { ...doc.promotions, discount_types: ['percentage', 'fixed_amount', 'bogo', 'free_shipping', 'volume_tiered', 'automatic', 'code_based', 'scheduled_sale', 'stackable', 'pos_only'], stacking: 'custom_logic_function', gift_cards: { as_product: true, as_reward: true, format: 'both', expiry: false }, campaigns: { esp_triggered: true, landing_pages: true, countdown_timer: true, market_specific: true } };
   doc.marketing.analytics = { ...doc.marketing.analytics, server_side: true, custom_events: ['size_guide_open'] };
   doc.marketing.affiliate = { platform: 'UpPromote', shopify_collabs: true, tracking: 'both' };
   doc.marketing.reviews = { app: 'Judge.me', ugc: true };
