@@ -43,10 +43,46 @@ export function Layout({ children }) {
         </header>
         <p className="pilot">Pilot — demo or anonymised engagements only</p>
         {children}
+        <SiteFooter />
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
+  );
+}
+
+const SOCIAL = [
+  ['Instagram', 'https://www.instagram.com/merkle', <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none" /></>],
+  ['YouTube', 'https://www.youtube.com/@MerkleOfficial', <><rect x="2" y="5" width="20" height="14" rx="4" /><path d="M10 9.2v5.6l5-2.8z" fill="currentColor" stroke="none" /></>],
+  ['LinkedIn', 'https://www.linkedin.com/company/merkle/posts/?feedView=all', <><rect x="3" y="3" width="18" height="18" rx="3" /><path d="M7.5 10v7M7.5 7.2v.1M12 17v-4a2 2 0 0 1 4 0v4" /></>],
+];
+
+/** Merkle's own footer: legal links, social and the dentsu line, on every page. */
+function SiteFooter() {
+  return (
+    <footer className="site-footer">
+      <div className="footer-top">
+        <div className="footer-brand">
+          <img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" />
+          <img src="/brand/dentsu-company.svg" alt="a dentsu company" width="104" height="10" />
+        </div>
+        <nav className="footer-social" aria-label="Merkle on social media">
+          {SOCIAL.map(([name, href, paths]) => (
+            <a key={name} href={href} target="_blank" rel="noreferrer" aria-label={name} title={name}>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">{paths}</svg>
+            </a>
+          ))}
+        </nav>
+      </div>
+      <div className="footer-bottom">
+        <nav className="footer-links" aria-label="Legal">
+          <a href="https://www.merkle.com/en/legal-terms.html" target="_blank" rel="noreferrer">Legal Terms</a>
+          <a href="https://www.merkle.com/en/privacy-policy.html" target="_blank" rel="noreferrer">Privacy Policy</a>
+          <a href="https://www.merkle.com/en/privacy-policy/data-product-privacy-notice/control-your-personal-information.html" target="_blank" rel="noreferrer">Your Privacy Choices</a>
+        </nav>
+        <p>© {new Date().getFullYear()} Merkle · Merkle Discovery is an internal pilot tool — demo or anonymised engagements only.</p>
+      </div>
+    </footer>
   );
 }
 

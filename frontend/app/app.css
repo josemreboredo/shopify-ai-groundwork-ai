@@ -207,3 +207,23 @@ main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320p
 .card .errors { margin: 10px 0; }
 .card .question + .muted { margin-top: 0; }
 main > details { margin: 18px 0; }
+
+/* Site footer, as on merkle.com: black, wordmark, legal links and social */
+.site-footer { background: #000; color: #fff; margin-top: 56px; padding: 40px 32px 28px; }
+.footer-top { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding-bottom: 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.18); }
+.footer-brand { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.footer-brand img { display: block; height: 20px; width: auto; }
+.footer-brand img + img { height: 12px; opacity: 0.85; }
+.footer-social { display: flex; gap: 14px; }
+.footer-social a { color: #fff; opacity: 0.75; display: inline-flex; padding: 6px; border-radius: 999px; }
+.footer-social a:hover { opacity: 1; color: var(--red); }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 18px; }
+.footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.footer-links a { color: #fff; text-decoration: none; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; position: relative; padding-bottom: 4px; }
+.footer-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
+.footer-links a:hover::after, .footer-links a:focus-visible::after { transform: scaleX(1); }
+.footer-bottom p { margin: 0; color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; max-width: 70ch; }
+@media (max-width: 760px) {
+  .site-footer { padding: 32px 16px 24px; }
+  .footer-bottom, .footer-top { flex-direction: column; align-items: flex-start; }
+}
