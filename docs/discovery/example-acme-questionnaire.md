@@ -538,6 +538,12 @@
 - [ ] Yes
 - [ ] No
 
+**Q3.1.8** — Are some products not allowed to be sold in certain markets (regulation, registration, licensing or distribution agreements)? *(recommended)*
+*List them in a note. In Shopify, products are excluded from the catalog of that market.*
+
+- [ ] Yes
+- [ ] No
+
 ### 3.2 Language
 
 **Q3.2.1** — How will translation be handled? *(recommended)*
@@ -579,7 +585,7 @@
 ### 3.4 Tax & duties
 
 **Q3.4.1** — Should duties and import taxes be collected at checkout (DDP)? *(recommended)*
-*Shopify can charge duties and import taxes at checkout. This needs HS codes and country of origin on every product.*
+*Duties and import taxes can be charged at checkout (DDP) or paid by the customer on delivery (DAP), chosen per country. Needs HS codes (and country of origin) on products; not combinable with tax overrides, manual tax rates or customer tax exemptions; DDP labels only with some carriers.*
 
 - [x] Yes
 - [ ] No
@@ -624,6 +630,59 @@
 
 - [ ] Yes
 - [ ] No
+
+**Q3.4.8** — In which countries should duties and import taxes be collected at checkout (DDP)? In the others the customer pays on delivery (DAP). *(recommended)*
+*Skip if Q3.4.1 = no.*
+*Country codes, e.g. US, GB, CH. One choice per country: DDP and DAP can't both be offered in the same country.*
+
+> Answer:
+
+**Q3.4.9** — When you ship low-value parcels into these territories from outside them, are you registered to collect the import VAT or GST at checkout? *(recommended)*
+*Ask if Q3.1.1 has 2+ markets.*
+*Low-value parcels into the EU (IOSS), the UK, Switzerland, Norway (VOEC), Australia and New Zealand. Tick the schemes you are registered for.*
+
+*(tick all that apply)*
+- [ ] EU Import One-Stop Shop (IOSS)
+- [ ] UK low-value VAT
+- [ ] Switzerland low-value VAT
+- [ ] Norway VOEC
+- [ ] Australia GST on low-value imports
+- [ ] New Zealand GST on low-value imports
+- [ ] None
+- [ ] Not sure yet
+
+**Q3.4.10** — Do some products have reduced or zero tax rates, or tax exemptions, in any market (e.g. medicines, books, food, children's clothing)? *(recommended)*
+*Finance confirms the rates; Merkle does not give tax advice.*
+
+- [ ] Yes
+- [ ] No
+
+**Q3.4.11** — Who issues invoices to customers? *(recommended)*
+*Ask if Q1.1.4 is Business to business (B2B) or Hybrid (DTC and B2B), or the launch markets include GB / DE / FR / IT / PL / BE / ES / EU / AT / NL / PT / IE / SE / DK / FI.*
+*Shopify can generate VAT invoices for EU and UK orders (shown on the order status page, not emailed, not for orders with duties). The free Order Printer app prints invoices from templates. Invoices can also come from the ERP or an invoicing app.*
+
+*(tick one)*
+- [ ] Shopify VAT invoices (EU and UK)
+- [ ] Shopify Order Printer
+- [ ] Invoicing app
+- [ ] ERP
+- [ ] Billing or tax service
+- [ ] Not sure yet
+
+**Q3.4.12** — Which electronic invoicing (e-invoicing) obligations apply to your sales? *(recommended)*
+*Ask if Q1.1.4 is Business to business (B2B) or Hybrid (DTC and B2B), or the launch markets include DE / FR / IT / PL / BE / ES / EU.*
+*For example Peppol, XRechnung or ZUGFeRD (Germany), Factur-X (France), SdI (Italy), KSeF (Poland) or VeriFactu (Spain). Shopify has no built-in e-invoicing: it comes from the ERP or an invoicing app.*
+
+*(tick all that apply)*
+- [ ] Peppol
+- [ ] Germany: XRechnung or ZUGFeRD
+- [ ] France: Factur-X
+- [ ] Italy: SdI
+- [ ] Poland: KSeF
+- [ ] Spain: VeriFactu
+- [ ] Other
+- [ ] None
+- [ ] Not sure yet
 
 ### 3.5 Mainland China
 
@@ -956,7 +1015,7 @@
 | | | | |
 
 **Q5.1.11** — Which delivery methods do you offer? *(required)*
-*Local delivery and pickup in store are native; pickup points and delivery time slots need an app; ship from store needs Shopify POS.*
+*Local delivery and pickup in store are native. Pickup points are native only for stores in France, Italy, Spain and the UK (with some carriers); elsewhere they need a delivery app or a custom solution. Delivery time slots need an app; ship from store needs Shopify POS.*
 
 *(tick all that apply)*
 - [ ] standard shipping
@@ -974,6 +1033,29 @@
 - [ ] 3pl system
 - [ ] carrier software
 - [ ] shipping app
+
+**Q5.1.13** — Do all products have accurate weights (and package sizes), and where does that data come from? *(recommended)*
+*Ask if Q5.1.6 includes Weight or price based, Live carrier rates or Rates from an app.*
+*Weight-based and carrier-calculated rates, shipping labels and some duties calculations need product weights.*
+
+*(tick one)*
+- [ ] From the PIM or ERP
+- [ ] Maintained in Shopify
+- [ ] Only for some products
+- [ ] Not available yet
+- [ ] Not sure yet
+
+**Q5.1.14** — Do any products count as dangerous goods for shipping? *(recommended)*
+*E.g. aerosols (sprays, some sunscreens), flammable liquids (perfumes, alcohol-based products), lithium batteries, dry ice. They usually need their own delivery profile and carrier arrangements.*
+
+*(tick all that apply)*
+- [ ] Aerosols
+- [ ] Flammable liquids
+- [ ] Lithium batteries
+- [ ] Dry ice
+- [ ] Other hazardous materials
+- [ ] None
+- [ ] Not sure yet
 
 ### 5.2 Returns & exchanges
 
@@ -995,7 +1077,7 @@
 - [ ] No
 
 **Q5.2.4** — Which returns, tracking or post-purchase apps do you use or prefer? *(optional)*
-*Ask if Q1.2.1 is yes, or Q0.2.6 is 1,000 or more.*
+*Ask if Q1.2.1 is yes, or Q0.2.6 is 500 or more.*
 
 > Answer:
 
@@ -1004,13 +1086,13 @@
 > Answer: 30
 
 **Q5.2.6** — What share of orders is returned today (%)? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more.*
+*Ask if Q0.2.6 is 500 or more.*
 *High return rates or volumes usually justify a returns platform instead of Shopify's native self-serve returns.*
 
 > Answer: 8
 
 **Q5.2.7** — How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more.*
+*Ask if Q0.2.6 is 500 or more.*
 *Shopify creates return labels only for US fulfilment locations; other countries, or QR drop-off, need a returns app.*
 
 *(tick one)*
@@ -1028,7 +1110,7 @@
 
 **Q5.2.9** — Which exchanges do you offer: same product in another variant, any other product, or store credit first? *(optional)*
 *Skip if Q5.2.3 = no.*
-*Ask if Q0.2.6 is 1,000 or more.*
+*Ask if Q0.2.6 is 500 or more.*
 *Customers can't choose an exchange in Shopify's return form; staff add exchange items when approving. Customer-chosen exchanges need an app.*
 
 *(tick all that apply)*
@@ -1082,7 +1164,7 @@
 ### 5.4 Cancellations & refunds
 
 **Q5.4.2** — Should customers be able to cancel orders themselves? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more.*
+*Ask if Q0.2.6 is 500 or more.*
 *Customers can request cancellation of unshipped orders in their account; you approve. Instant cancellation without approval needs an app.*
 
 - [ ] Yes
@@ -1104,7 +1186,7 @@
 - [ ] No
 
 **Q5.4.5** — Should customers be able to edit an order after placing it (address, items)? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more.*
+*Ask if Q0.2.6 is 500 or more.*
 *Staff can edit orders natively; customers editing their own orders needs an app.*
 
 - [ ] Yes
@@ -1118,7 +1200,7 @@
 - [ ] gift card
 
 **Q5.4.7** — When is a refund issued: on request, when the carrier scans the return, on receipt, or after inspection? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more.*
+*Ask if Q0.2.6 is 500 or more.*
 *Refunds on carrier scan need a returns platform connected to carrier tracking.*
 
 *(tick one)*
@@ -1165,14 +1247,14 @@
 ### 5.5 Post-purchase experience
 
 **Q5.5.1** — Do you want a branded order-tracking page on your own site? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
+*Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
 *Shopify includes an order status page and shipping emails. A branded tracking page, proactive carrier alerts or delivery estimates usually need a post-purchase app.*
 
 - [ ] Yes
 - [x] No
 
 **Q5.5.2** — On which channels should customers get proactive delivery updates (delays, out for delivery)? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
+*Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
 
 *(tick all that apply)*
 - [x] email
@@ -1181,7 +1263,7 @@
 - [ ] push
 
 **Q5.5.3** — Should product pages or checkout show estimated delivery dates? *(optional)*
-*Ask if Q0.2.6 is 1,000 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
+*Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
 *Shopify can show delivery dates at checkout: manual dates everywhere, automatic dates only for US fulfilment locations.*
 
 - [x] Yes
@@ -1244,8 +1326,7 @@
 - [x] optional
 - [ ] required
 
-**Q6.1.3** — What should the account area include (order history, addresses, returns, wishlist, subscriptions)? *(optional)*
-*Ask if Q2.1.1 is 100 or more.*
+**Q6.1.3** — What should the account area include (order history, addresses, returns, wishlist, subscriptions)? *(required)*
 
 *(tick all that apply)*
 - [x] order history
@@ -1359,10 +1440,23 @@
 - [ ] gift cards
 - [ ] none
 
+**Q6.2.13** — Which shipping rules differ for B2B buyers? *(recommended)*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
+*By default B2B and consumer buyers see the same shipping methods. Different options need Checkout Blocks, an app or a delivery customization function; orders can also be submitted as drafts so shipping is quoted before payment.*
+
+*(tick all that apply)*
+- [ ] Separate rates or methods
+- [ ] Free shipping above an order value
+- [ ] Freight or pallet delivery
+- [ ] Buyer's own carrier account
+- [ ] Shipping quoted after the order
+- [ ] None
+- [ ] Not sure yet
+
 ### 6.3 Loyalty & segmentation
 
 **Q6.3.1** — Which loyalty components are planned? *(recommended)*
-*Ask if Q0.1.1 mentions loyal, retention, repeat, lifetime, churn or member, or Q0.4.1 mentions loyal, retention, repeat, lifetime, churn or member.*
+*Ask if Q1.1.4 is Direct to consumer (DTC) or Hybrid (DTC and B2B).*
 *Shopify has no native points programme; store credit can be a reward currency. Loyalty needs an app.*
 
 *(tick all that apply)*
@@ -1496,7 +1590,7 @@
 > Answer: GA4
 
 **Q7.2.2** — Is server-side tracking needed? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition.*
+*Ask if Q0.2.6 is 500 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition.*
 *Shopify's customer events track storefront and checkout with consent; the Facebook & Instagram and Google & YouTube apps send server-side events. Anything beyond needs a tracking app. Server-side events can share customer data with ad platforms (PII gate).*
 
 - [ ] Yes
@@ -1528,7 +1622,7 @@
 > Answer: Welcome; Abandoned cart; Browse abandonment; Post-purchase; Win-back
 
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended)*
-*Ask if Q0.2.6 is 1,000 or more, or Q0.4.1 mentions sms, retention or repeat.*
+*Ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat.*
 
 - enabled:
 - countries:
@@ -1809,8 +1903,7 @@
 
 > Answer: Minimal, editorial product photography
 
-**Q9.2.4** — Which interactive patterns are required (mega-menu, quick-add, swatches, predictive search, lookbook, video hero)? *(recommended)*
-*Ask if Q2.1.1 is 100 or more.*
+**Q9.2.4** — Which interactive patterns are required (mega-menu, quick-add, swatches, predictive search, lookbook, video hero)? *(required)*
 
 *(tick all that apply)*
 - [x] mega menu

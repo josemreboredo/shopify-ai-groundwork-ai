@@ -9,7 +9,7 @@ import path from 'node:path';
 
 import { offering } from '../../schema/index.js';
 import { classifyOffer, IMPLEMENTED_GATES, IMPLEMENTED_TRIGGERS } from '../../agents/discovery/classify.js';
-import { evaluateExits, IMPLEMENTED_RULES } from '../../agents/discovery/exits.js';
+import { evaluateExits, IMPLEMENTED_RULES, RETAIL_STORES_INCLUDED } from '../../agents/discovery/exits.js';
 
 const FIXTURES = path.join(import.meta.dirname, '..', 'fixtures', 'engagements');
 const fixtures = fs.readdirSync(FIXTURES).filter((f) => f.endsWith('.json'))
@@ -64,6 +64,9 @@ describe('classification edge cases', () => {
 
     const singleMarket = { ...base(), markets: { list: [{ code: 'CH', currency: 'CHF', price_strategy: 'base_currency' }] } };
     assert.deepEqual([classifyOffer(singleMarket).code, classifyOffer(singleMarket).modifiers], ['S', []]);
+
+    const retail = { ...base(), retail: { store_count: 3, pos: 'shopify_pos' } };
+    assert.deepEqual([classifyOffer(retail).code, classifyOffer(retail).modifiers], ['S', ['+Retail']]);
   });
 
   test('luxury positioning forces L regardless of gates', () => {
@@ -132,6 +135,15 @@ describe('exit rule edge cases', () => {
     const warn = items.find((i) => i.rule_id === '11.11');
     assert.equal(warn.result, 'WARN');
     assert.equal(warn.resolution, undefined);
+  });
+
+  test('11.22 warns above 5 retail stores: programme pricing, never a per-store price', () => {
+    const at = (store_count) => evaluateExits(withOffer({ ...base, retail: { store_count, pos: 'shopify_pos' } })).items.find((i) => i.rule_id === '11.22');
+    assert.equal(at(RETAIL_STORES_INCLUDED), undefined);
+    const warn = at(RETAIL_STORES_INCLUDED + 7);
+    assert.equal(warn.result, 'WARN');
+    assert.match(warn.evidence, /12 retail stores/);
+    assert.match(offering.exit_rules.find((r) => r.id === '11.22').internal_note, /[Nn]ever quote a per-store price/);
   });
 
   test('LLM candidates are added once, for known rules only, and never replace rule results', () => {

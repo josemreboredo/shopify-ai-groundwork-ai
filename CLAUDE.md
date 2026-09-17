@@ -38,6 +38,7 @@ workspace for all Shopify client engagements.
 - ⚠ Claude Code mode runs on a personal Claude Pro account for now — raise migrating to dentsu Claude Enterprise before any dentsu / Merkle adoption (ADR 0007)
 - Interview: `/interview` in Claude Code (consultant-run, any language, answers stored in English) → same pipeline as `/discover`
 - After a STOP the consultant records the route (Q10.5.5): Larger Engagement (Merkle Enterprise Engagement with a dedicated Discovery Phase) drafts the approach, a brief and the client deck — no Jira tickets; or no bid (ADR 0009)
+- Tax and shipping set-up: `npm run workbook -- --client <slug>` → `configuration-workbook.md`, completed by the client after the scope is agreed (ADR 0012)
 - Backlog: `npm run backlog -- --client <slug>` → `backlog.csv` for Jira import · Deck: `/deck <slug>` (or `npm run deck`) — full-information draft for the Lead Consultant, who filters before sharing (ADR 0010)
 - Roadmap: `docs/implementation-plan.md` · decisions: `docs/adr/` · `npm test` must pass before commit
 

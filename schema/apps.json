@@ -1350,6 +1350,48 @@
       "check": "listing_loaded",
       "by_shopify": false,
       "status": "proposed"
+    },
+    {
+      "handle": "sufio",
+      "name": "Sufio: Professional Invoices",
+      "url": "https://apps.shopify.com/sufio",
+      "requirements": [
+        "Invoices and e-invoicing (Peppol, ZUGFeRD, Factur-X) beyond Shopify VAT invoices (Q3.4.11, Q3.4.12)"
+      ],
+      "category": {
+        "name": "Invoices and receipts"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "order-printer-pro",
+      "name": "Order Printer Pro: Invoice App",
+      "url": "https://apps.shopify.com/order-printer-pro",
+      "requirements": [
+        "Invoice templates and an e-invoicing (Peppol) add-on (Q3.4.11, Q3.4.12)"
+      ],
+      "category": {
+        "name": "Invoices and receipts"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "pop-european-invoicing",
+      "name": "POP: compliant EU invoicing",
+      "url": "https://apps.shopify.com/pop-european-invoicing",
+      "requirements": [
+        "EU e-invoicing: SdI (Italy), Peppol, KSeF (Poland) (Q3.4.12)"
+      ],
+      "category": {
+        "name": "Invoices and receipts"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
     }
   ]
 }

@@ -4,6 +4,22 @@ All notable changes to this project are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow [SemVer](https://semver.org/).
 Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to end (see `docs/implementation-plan.md`).
 
+## [Unreleased]
+
+### Added
+- `+Retail` modifier for the Retail & POS scope gate: +1 week, +€8–12k, up to 5 stores (owner decision; `offering.json` 1.3.0).
+- Exit rule 11.22 (WARN): more than 5 retail stores — quote the programme and roll-out increments, or a rate-carded run team; never a per-store price (internal note, consultant notes only).
+- Tax and shipping questions (question bank 1.2.0, ADR 0012): products restricted by market (Q3.1.8), DDP countries (Q3.4.8), low-value import schemes (Q3.4.9), reduced rates and exemptions (Q3.4.10), invoice issuer (Q3.4.11), e-invoicing obligations (Q3.4.12), product weights source (Q5.1.13), dangerous goods (Q5.1.14), B2B shipping rules (Q6.2.13).
+- App signal `invoicing_app` (Sufio, Order Printer Pro, POP added to the app registry as proposed).
+- Store configuration workbook: `npm run workbook -- --client <slug>` writes a client-facing, pre-filled tax and shipping set-up workbook; backlog tax, shipping and duties stories point to it.
+
+### Changed
+- `ask_if` thresholds (owner decisions): post-purchase, returns, SMS and server-side tracking questions are asked from 500 orders per month (was 1,000).
+- Account area (Q6.1.3) and interactive patterns (Q9.2.4) are required in every interview mode (no 100-SKU threshold).
+- Loyalty (Q6.3.1) is asked for DTC and hybrid business models instead of a keyword match on goals.
+- Pickup points are native for stores in France, Italy, Spain and the UK (no app signal there); duties help text: DDP or DAP per country, not combinable with tax overrides, manual rates or exemptions.
+- Mainland China briefing: ICP filing vs licence resolved on MIIT's 2022 notice (self-operated own-site sales need an ICP filing, no licence); adds the 2025 drug and medical-device filing change, online drug and cosmetics sales rules, and questions for PRC counsel (§ 6.10).
+
 ## [0.6.0] — 2026-09-17
 
 Shopify-knowledge questionnaire (ADR 0011) — owner decisions on `docs/discovery/questionnaire-shopify-proposal.md`.

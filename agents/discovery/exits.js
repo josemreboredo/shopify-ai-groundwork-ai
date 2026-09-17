@@ -1,7 +1,7 @@
 /**
  * @file exits.js
  * @description Deterministic exit-rule evaluation (ADR 0003) for rules
- * 11.1–11.16 in schema/offering.json, plus merging of LLM-detected candidates.
+ * 11.1–11.22 in schema/offering.json, plus merging of LLM-detected candidates.
  * LLM candidates are added, never allowed to remove or overwrite rule results.
  *
  * @module discovery/exits
@@ -15,6 +15,9 @@ import { picked } from './values.js';
 const RULES = new Map(offering.exit_rules.map((r) => [r.id, r]));
 const DEFAULT_OWNER = 'Lead Consultant';
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Retail stores covered by the +Retail modifier; above this, 11.22 (programme pricing, never per store). */
+export const RETAIL_STORES_INCLUDED = 5;
 
 /**
  * Whole weeks between two ISO dates (YYYY-MM-DD), or null if either is missing.
@@ -142,6 +145,8 @@ const EVALUATORS = {
     const needs = picked(doc.b2b?.unsupported_needs);
     return doc.b2b?.enabled === true && needs.length ? `B2B needs Shopify B2B does not support: ${needs.join(', ').replace(/_/g, ' ')}` : null;
   },
+
+  '11.22': (doc) => ((doc.retail?.store_count ?? 0) > RETAIL_STORES_INCLUDED ? `${doc.retail.store_count} retail stores (+Retail covers up to ${RETAIL_STORES_INCLUDED})` : null),
 };
 
 /**

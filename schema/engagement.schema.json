@@ -234,7 +234,7 @@
         },
         "modifiers": {
           "type": "array",
-          "items": {"enum": ["+Markets", "+B2B", "+Integration", "+Migration", "+SKU"]},
+          "items": {"enum": ["+Markets", "+B2B", "+Integration", "+Migration", "+SKU", "+Retail"]},
           "uniqueItems": true
         },
         "price_band": {
@@ -308,7 +308,11 @@
         "cross_border_model": {"enum": ["self_managed_markets", "managed_markets", "third_party_mor_app", "not_sure"]},
         "per_market_customisation": {"type": "boolean"},
         "tax_display": {"enum": ["include_everywhere", "exclude_everywhere", "dynamic_by_market"]},
-        "tax_service": {"enum": ["shopify_tax", "tax_app", "manual_rates", "not_sure"]}
+        "tax_service": {"enum": ["shopify_tax", "tax_app", "manual_rates", "not_sure"]},
+        "ddp_markets": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/country"}, "description": "Countries where duties and import taxes are collected at checkout (DDP); others are DAP."},
+        "low_value_schemes": {"type": "array", "uniqueItems": true, "items": {"enum": ["eu_ioss", "uk_low_value_vat", "switzerland_low_value_vat", "norway_voec", "australia_low_value_gst", "new_zealand_low_value_gst", "none", "not_sure"]}},
+        "reduced_rate_products": {"type": "boolean"},
+        "product_restrictions_by_market": {"type": "boolean"}
       }
     },
     "china": {
@@ -541,7 +545,8 @@
           "properties": {"payment": {"enum": ["full_at_order", "deposit_then_balance", "charged_at_fulfilment"]}}
         },
         "storefront_filters": {"$ref": "#/$defs/strings"},
-        "customs_data_source": {"enum": ["in_pim", "in_erp", "to_be_created", "not_needed"]}
+        "customs_data_source": {"enum": ["in_pim", "in_erp", "to_be_created", "not_needed"]},
+        "shipping_data_source": {"enum": ["pim_or_erp", "maintained_in_shopify", "partial", "not_available", "not_sure"]}
       }
     },
     "payments": {
@@ -757,7 +762,8 @@
             ]
           }
         },
-        "label_source": {"enum": ["shopify_shipping", "3pl_system", "carrier_software", "shipping_app"]}
+        "label_source": {"enum": ["shopify_shipping", "3pl_system", "carrier_software", "shipping_app"]},
+        "dangerous_goods": {"type": "array", "uniqueItems": true, "items": {"enum": ["aerosols", "flammable_liquids", "lithium_batteries", "dry_ice", "other_hazmat", "none", "not_sure"]}}
       }
     },
     "post_purchase": {
@@ -939,7 +945,8 @@
             ]
           }
         },
-        "tax_exempt": {"type": "boolean"}
+        "tax_exempt": {"type": "boolean"},
+        "shipping_needs": {"type": "array", "uniqueItems": true, "items": {"enum": ["separate_rates_or_methods", "free_shipping_above_order_value", "freight_or_pallet_delivery", "customer_carrier_account", "shipping_quoted_after_order", "none", "not_sure"]}}
       }
     },
     "loyalty": {
@@ -996,7 +1003,11 @@
           "uniqueItems": true,
           "items": {"enum": ["checkout", "customer_account_sign_in", "forms_popups", "pos", "none", "not_sure"]}
         },
-        "shopify_payments_eligible": {"type": "boolean"}
+        "shopify_payments_eligible": {"type": "boolean"},
+        "invoicing": {"type": "object", "additionalProperties": false, "properties": {
+          "issuer": {"enum": ["shopify_vat_invoices", "order_printer", "invoicing_app", "erp", "billing_or_tax_service", "not_sure"]},
+          "e_invoicing": {"type": "array", "uniqueItems": true, "items": {"enum": ["peppol", "de_xrechnung_or_zugferd", "fr_factur_x", "it_sdi", "pl_ksef", "es_verifactu", "other", "none", "not_sure"]}}
+        }}
       }
     },
     "marketing": {

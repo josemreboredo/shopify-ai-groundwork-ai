@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { offering, apps } from '../../schema/index.js';
-import { appSignals, appCandidates, RETURNS_VOLUME_THRESHOLD } from '../../agents/discovery/app-signals.js';
+import { appSignals, appCandidates, RETURNS_VOLUME_THRESHOLD, NATIVE_PICKUP_POINT_COUNTRIES } from '../../agents/discovery/app-signals.js';
 import { approachInput } from '../../agents/discovery/approach.js';
 
 const base = { schema_version: '1.0.0', meta: { client: { name: 'X', slug: 'x', hq_country: 'DE' }, source: 'questionnaire' } };
@@ -70,6 +70,18 @@ test('catalogue, B2B, marketing, privacy and delivery signals', () => {
   }
   assert.equal(s.product_options_app.length, 2);
   assert.equal(s.translation_app.length, 2);
+});
+
+test('invoicing and pickup points: e-invoicing needs an app unless the ERP issues invoices; pickup points are native for stores in FR, IT, ES and the UK', () => {
+  const doc = (invoicing, extra = {}) => ({ ...base, markets: { list: [{ code: 'DE' }, { code: 'PT' }], duties_ddp: true }, compliance: { invoicing }, ...extra });
+  assert.equal(appSignals(doc({ issuer: 'shopify_vat_invoices', e_invoicing: ['de_xrechnung_or_zugferd'] })).invoicing_app.length, 3, 'e-invoicing, duties and Portugal');
+  assert.deepEqual(appSignals(doc({ issuer: 'erp', e_invoicing: ['peppol'] })).invoicing_app, []);
+  assert.deepEqual(appSignals(doc({ issuer: 'invoicing_app', e_invoicing: ['none'] })).invoicing_app, ['Client prefers an invoicing app']);
+  assert.ok(appCandidates(doc({ issuer: 'invoicing_app' })).invoicing_app.some((a) => a.url === 'https://apps.shopify.com/sufio'));
+
+  const pickup = (hq) => appSignals({ ...base, meta: { client: { name: 'X', slug: 'x', hq_country: hq } }, shipping: { delivery_methods: ['pickup_points'] } }).delivery_scheduling_app;
+  assert.deepEqual(pickup(NATIVE_PICKUP_POINT_COUNTRIES[0]), []);
+  assert.equal(pickup('CH').length, 1);
 });
 
 test('App Store candidates come from the registry for signalled areas only; approach input carries signals and candidates', () => {

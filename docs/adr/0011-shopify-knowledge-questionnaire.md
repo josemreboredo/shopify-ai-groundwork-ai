@@ -26,8 +26,9 @@ Scripts and Stocky are retired.
 3. **Benchmark for 11.2 and 11.5 (O2, O4):** both are FLAGs — quotes via draft-order review or quote apps; more than 3
    options via combined listings or product options apps. New FLAGs: 11.18 deprecated Shopify features in an existing
    store, 11.19 B2B needs Shopify B2B does not support.
-4. **Retail & POS is a scope gate (O5)** (`retail_pos`), without a modifier until the owner prices it; an integrated
-   non-Shopify POS counts as an integration.
+4. **Retail & POS is a scope gate (O5)** (`retail_pos`); an integrated non-Shopify POS counts as an integration.
+   Owner decision (0.6.1): modifier `+Retail` (+1 week, +€8–12k) covers up to 5 stores. Retail roll-outs are never
+   priced per store — above 5 stores 11.22 (WARN) asks for programme-and-increment pricing or a rate-carded run team.
 5. **Plan requirements are consultant-only (O7):** the client questionnaire carries no plan information (tested); the
    generated `docs/discovery/consultant-guide.md` and the interview show the `shopify` blocks to the consultant. The
    client questionnaire also uses neutral wording — no rule numbers, offer names, STOP/FLAG or § 11 (amends ADR 0003:
@@ -69,5 +70,8 @@ Scripts and Stocky are retired.
 - Shopify facts age: every `shopify` block records when it was verified; they are re-checked at each Shopify Edition
   (Architect owns §§ 3, 4, 9; BA owns §§ 2, 5, 6).
 - Every question that feeds the offer or an exit rule is asked in every interview mode. Questions that feed only app
-  signals carry `ask_if` conditions on earlier answers (e.g. orders per month ≥ 1,000, a pre-order product type, 3+
+  signals carry `ask_if` conditions on earlier answers (e.g. orders per month ≥ 500, a pre-order product type, 3+
   languages) and join a quick interview only when relevant — a quick interview starts at 76 questions instead of 105.
+- Owner decisions on thresholds (0.6.1): orders per month ≥ 500 (was 1,000); account area (Q6.1.3) and interactive
+  patterns (Q9.2.4) are required in every mode (no SKU threshold); loyalty (Q6.3.1) is asked for DTC and hybrid
+  business models instead of a text match on goals; premium, luxury and enterprise positioning stays a trigger.
