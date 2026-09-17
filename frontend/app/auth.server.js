@@ -8,7 +8,7 @@
  */
 import { createCookieSessionStorage, redirect } from 'react-router';
 
-import { userFor } from '../../discovery/service/index.js';
+import { isOpenSignIn, userFor } from '../../discovery/service/index.js';
 
 const production = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
 
@@ -27,6 +27,9 @@ export const sessionStorage = createCookieSessionStorage({
 });
 
 const allowlist = () => ({ owners: process.env.OWNER_GITHUB_LOGINS ?? '', consultants: process.env.CONSULTANT_GITHUB_LOGINS ?? '' });
+
+/** True when every GitHub account may sign in as consultant. */
+export const openSignIn = () => isOpenSignIn(allowlist());
 
 /** Local development sign-in without GitHub (never in production). */
 const devLogin = () => (!production && process.env.DEV_LOGIN ? process.env.DEV_LOGIN.toLowerCase() : null);

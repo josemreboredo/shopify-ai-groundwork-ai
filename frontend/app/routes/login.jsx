@@ -1,6 +1,6 @@
 import { Form, data, redirect } from 'react-router';
 
-import { getUser, safeNext, sessionStorage } from '../auth.server.js';
+import { getUser, openSignIn, safeNext, sessionStorage } from '../auth.server.js';
 
 export const meta = () => [{ title: 'Sign in · Merkle Discovery' }];
 
@@ -8,7 +8,7 @@ export async function loader({ request }) {
   const next = safeNext(new URL(request.url).searchParams.get('next'));
   if (await getUser(request)) throw redirect(next);
   const session = await sessionStorage.getSession(request.headers.get('Cookie'));
-  return data({ error: session.get('error') ?? null, next }, { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } });
+  return data({ error: session.get('error') ?? null, next, open: openSignIn() }, { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } });
 }
 
 export default function Login({ loaderData }) {
@@ -21,7 +21,8 @@ export default function Login({ loaderData }) {
         <input type="hidden" name="next" value={loaderData.next} />
         <button type="submit">Sign in with GitHub</button>
       </Form>
-      <p className="muted">Access is limited to allowlisted accounts.</p>
+      <p className="muted">{loaderData.open ? 'Any GitHub account can sign in as consultant and sees only its own engagements.' : 'Access is limited to allowlisted accounts.'}</p>
+      <p className="error">Pilot: demo or anonymised engagements and documents only.</p>
     </main>
   );
 }

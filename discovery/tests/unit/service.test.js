@@ -36,6 +36,10 @@ describe('discovery service', () => {
     assert.deepEqual(userFor('LC-One', allow), { login: 'lc-one', role: 'consultant' });
     assert.equal(userFor('stranger', allow), null);
     assert.equal(userFor('', allow), null);
+    const open = { owners: 'lead', consultants: '*' };
+    assert.deepEqual(userFor('any-github-user', open), { login: 'any-github-user', role: 'consultant' }, 'open sign-in: every account is a consultant');
+    assert.deepEqual(userFor('lead', open), { login: 'lead', role: 'owner' }, 'owners stay named');
+    assert.equal(userFor('not a login!', open), null);
   });
 
   test('a new interview belongs to the consultant who started it and asks consent first', async () => {

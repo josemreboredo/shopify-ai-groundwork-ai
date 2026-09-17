@@ -52,7 +52,9 @@ const QUOTE_MAX = 300;
 export const canAccess = (user, session) => user?.role === 'owner' || (Boolean(session.owner) && session.owner === user?.login);
 
 /**
- * Users allowed to sign in, from comma-separated GitHub logins.
+ * Users allowed to sign in, from comma-separated GitHub logins. Consultants
+ * `*` opens sign-in to every GitHub account as consultant (owner decision,
+ * 2026-09-17); owners are always listed by name.
  *
  * @param {string} login
  * @param {{ owners?: string, consultants?: string }} allowlist
@@ -61,11 +63,14 @@ export const canAccess = (user, session) => user?.role === 'owner' || (Boolean(s
 export function userFor(login, { owners = '', consultants = '' }) {
   const split = (s) => s.split(',').map((x) => x.trim().toLowerCase()).filter(Boolean);
   const name = String(login ?? '').toLowerCase();
-  if (!name) return null;
+  if (!name || !/^[a-z0-9-]+$/.test(name)) return null;
   if (split(owners).includes(name)) return { login: name, role: 'owner' };
-  if (split(consultants).includes(name)) return { login: name, role: 'consultant' };
+  if (isOpenSignIn({ consultants }) || split(consultants).includes(name)) return { login: name, role: 'consultant' };
   return null;
 }
+
+/** Sign-in open to every GitHub account (consultants "*"). @param {{ consultants?: string }} allowlist */
+export const isOpenSignIn = ({ consultants = '' }) => consultants.split(',').map((x) => x.trim()).includes('*');
 
 /**
  * Citation kept with an answer taken from a document.
@@ -147,7 +152,8 @@ export function createDiscoveryService({ store, today = isoToday }) {
       }
       session.owner = user.login;
       session.documents = [];
-      if (await store.get(session.client)) throw new ServiceError(409, `An interview for ${session.client} already exists`);
+      // Same message whether or not the owner can see it: slugs of other consultants' clients are not revealed.
+      if (await store.get(session.client)) throw new ServiceError(409, `The client slug ${session.client} is not available — choose another one`);
       await store.create(session);
       return { client: session.client };
     },
