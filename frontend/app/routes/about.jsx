@@ -193,7 +193,7 @@ export default function About() {
             documentation with the date it was verified. The same skeleton takes another platform, another
             practice or another offer by replacing the question bank and the rules.
           </p>
-          <p className="byline">Built by Jose Reboredo · Merkle commerce practice</p>
+          <p className="byline">Built by Jose Reboredo · Principal Commerce Consultant, CE</p>
         </div>
       </section>
 

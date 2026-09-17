@@ -16,13 +16,16 @@ export default function Login({ loaderData }) {
   return (
     <main className="signin">
       <section className="signin-hero">
+        <p className="eyebrow">AI-assisted discovery</p>
         <h1>Discovery</h1>
-        <p>The Lead Consultant workspace for Shopify discovery: run the questionnaire with the client, and close it with a sourced consulting document.</p>
+        <p>The Lead Consultant workspace for Shopify discovery: AI reads the client’s documents and drafts the solution, the engine decides the scope, and you run the conversation.</p>
         <ul>
-          <li>Questions that explain what they decide and why</li>
-          <li>Offer, scope gates and risks computed from the answers</li>
-          <li>A closing deck and annex, every Shopify fact sourced</li>
+          <li>AI pre-fills answers from the RFP, with the evidence for each one</li>
+          <li>Questions that teach Shopify while you ask them</li>
+          <li>Offer, scope gates and risks computed by code — never by the model</li>
+          <li>An AI-drafted deck and annex, every Shopify fact sourced</li>
         </ul>
+        <p className="signin-more"><a href="/about">What this is and how the AI is governed →</a></p>
       </section>
       <section className="signin-panel">
         <h2>Sign in</h2>

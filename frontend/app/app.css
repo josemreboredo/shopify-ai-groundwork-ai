@@ -211,6 +211,10 @@ main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320p
   background: linear-gradient(100deg, #000 40%, rgba(0, 0, 0, 0.78) 58%, rgba(0, 0, 0, 0.25) 82%, rgba(0, 0, 0, 0) 100%);
 }
 .signin-hero h1 { color: #fff; font-size: 3.4rem; line-height: 1.05; margin: 0 0 18px; }
+.signin-hero .eyebrow { color: #fff; }
+.signin-more { margin: 28px 0 0 !important; }
+.signin-more a { color: #fff; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; border-bottom: 2px solid var(--red); padding-bottom: 4px; }
+.signin-more a:hover { color: var(--red); }
 .signin-hero p { max-width: 46ch; color: rgba(255, 255, 255, 0.78); font-size: 1.05rem; margin: 0 0 28px; }
 .signin-hero ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
 .signin-hero li { padding-left: 20px; position: relative; color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; }
