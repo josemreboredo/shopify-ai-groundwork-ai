@@ -116,7 +116,7 @@ const isKnown = (question, answers) => question.maps_to.some((p) => isAnswered(a
  *
  * @param {object} q
  */
-function describeQuestion(q) {
+export function describeQuestion(q) {
   const node = q.maps_to.length === 1 ? schemaNodeAt(q.maps_to[0]) : null;
   const itemNode = node?.type === 'array' ? schemaNodeAt(`${q.maps_to[0]}/*`) : null;
   const fields = itemNode?.type === 'object'

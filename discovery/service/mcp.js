@@ -11,6 +11,7 @@
 import { z } from 'zod';
 
 import { ServiceError } from './index.js';
+import { renderSummaryMarkdown } from './summary.js';
 
 export const SERVER_INSTRUCTIONS = `Merkle Discovery: Shopify discovery engagements shared with the Lead Consultant web app.
 - Interim pilot: demo or anonymised engagements and documents only — no real client data.
@@ -208,6 +209,13 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     inputSchema: z.object({ client: slug }),
     annotations: read,
   }, async (user, { client }) => compactPreview((await service.getInterview(user, client, { limit: 1 })).preview));
+
+  tool('get_summary', {
+    title: 'Engagement summary',
+    description: 'Summary computed by the engine (no AI): offer, GO or STOP, scope gates, exit rules, minimum Shopify plan, app signals, open items, all answers by section in words, documents and notes. Returns Markdown for the Lead Consultant (internal, not a client document).',
+    inputSchema: z.object({ client: slug }),
+    annotations: read,
+  }, async (user, { client }) => ({ markdown: renderSummaryMarkdown(await service.getSummary(user, client)) }));
 
   tool('list_answers', {
     title: 'Recorded answers',

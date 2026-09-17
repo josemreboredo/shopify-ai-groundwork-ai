@@ -12,7 +12,7 @@ import path from 'node:path';
 
 import { flattenAnswers } from '../discovery/extract.js';
 import { assembleWork, WORK_FILES } from '../discovery/claude-code.js';
-import { questionById, unansweredInMode } from './next.js';
+import { openItems } from './open-items.js';
 
 /**
  * Build the extraction payload from a session.
@@ -20,27 +20,13 @@ import { questionById, unansweredInMode } from './next.js';
  * @param {import('./session.js').Session} session
  */
 export function toExtraction(session) {
-  const openItems = [
-    ...Object.entries(session.tbc).filter(([id]) => questionById(id)).map(([id, note]) => {
-      const q = questionById(id);
-      return { pointer: q.maps_to[0], question_id: id, why: note ? `TBC: ${note}` : `TBC in the interview: ${q.text}` };
-    }),
-    ...Object.entries(session.commented ?? {}).filter(([id]) => questionById(id)).map(([id, note]) => {
-      const q = questionById(id);
-      return { pointer: q.maps_to[0], question_id: id, why: `Clarified by comment (no value recorded): ${note}` };
-    }),
-    ...unansweredInMode(session)
-      .filter((q) => !(q.id in session.tbc) && !(q.id in (session.commented ?? {})))
-      .filter((q) => q.priority !== 'optional')
-      .map((q) => ({ pointer: q.maps_to[0], question_id: q.id, why: `Not answered in the interview: ${q.text}` })),
-  ];
   return {
     answers: flattenAnswers(session.answers),
     provenance: Object.entries(session.provenance).map(([pointer, p]) => ({
       pointer, source: p.source, status: p.status, question_id: p.question_id ?? '', note: p.note ?? '',
     })),
     exit_candidates: [],
-    open_items: openItems,
+    open_items: openItems(session),
   };
 }
 

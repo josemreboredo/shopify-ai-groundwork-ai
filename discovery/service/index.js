@@ -11,13 +11,15 @@
  * @module discovery/service
  */
 
-import { createSession, valuesAt } from '../agents/interview/session.js';
-import { nextQuestions, questionById } from '../agents/interview/next.js';
+import { createSession, isAnswered, valuesAt } from '../agents/interview/session.js';
+import { describeQuestion, nextQuestions, questionById, unansweredInMode } from '../agents/interview/next.js';
+import { openItems } from '../agents/interview/open-items.js';
 import { recordAnswer, markQuestion, addNote } from '../agents/interview/answer.js';
 import { preview } from '../agents/interview/preview.js';
 import { findPersonalData } from '../agents/discovery/input.js';
 import { questionBank } from '../schema/index.js';
 import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js';
+import { displayValue } from './summary.js';
 
 /**
  * @typedef {object} InterviewStore
@@ -136,6 +138,34 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       // Channel and author stay in the session only (the engagement contract keeps source, status and note).
       draft.provenance[pointer] = { ...draft.provenance[pointer], via, by: user.login, at: today() };
     }
+  }
+
+  /** State of a question in a session. @param {object} session @param {object} q */
+  function questionState(session, q) {
+    const commented = session.commented ?? {};
+    if (q.id in commented) return { state: 'commented', note: commented[q.id] };
+    if (q.maps_to.some((p) => isAnswered(session.answers, p))) {
+      const provenance = q.maps_to.map((p) => Object.entries(session.provenance).find(([k]) => k === p || k.startsWith(`${p}/`))?.[1]).find(Boolean);
+      return { state: 'answered', note: provenance?.note ?? '', to_confirm: provenance?.status === 'tbc', via: provenance?.via ?? null };
+    }
+    if (q.id in session.tbc) return { state: 'tbc', note: session.tbc[q.id] };
+    if (q.id in session.skipped) return { state: 'skipped', note: session.skipped[q.id] };
+    return { state: 'open', note: '' };
+  }
+
+  /** Questions of the interview grouped by section, with state and answer in words. @param {object} session @param {{ includeOpen: boolean }} options */
+  function reviewSections(session, { includeOpen }) {
+    const open = new Set(unansweredInMode(session).map((q) => q.id));
+    const sections = new Map();
+    for (const q of questionBank.questions) {
+      const s = questionState(session, q);
+      if (s.state === 'open' && (!includeOpen || !open.has(q.id))) continue;
+      const d = describeQuestion(q);
+      const value = q.maps_to.map((p) => displayValue(p, valuesAt(session.answers, p)[0])).filter(Boolean).join(' · ');
+      if (!sections.has(d.section)) sections.set(d.section, { title: d.section, questions: [] });
+      sections.get(d.section).questions.push({ id: q.id, subsection: d.subsection, text: q.text, priority: q.priority, audience: q.audience, value, ...s });
+    }
+    return [...sections.values()];
   }
 
   return {
@@ -307,6 +337,88 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.updated_at = today();
       await store.save(session);
       return { ok: true };
+    },
+
+    /**
+     * Every question of the interview by section — answered, TBC, not applicable,
+     * clarified by comment or still open — for reviewing and changing answers.
+     *
+     * @param {User} user @param {string} client
+     */
+    async reviewQuestions(user, client) {
+      const session = await load(user, client);
+      return { engagement: summary(session), sections: reviewSections(session, { includeOpen: true }) };
+    },
+
+    /**
+     * One question with its current values, to change an answer.
+     *
+     * @param {User} user @param {string} client @param {string} questionId
+     */
+    async getQuestion(user, client, questionId) {
+      const session = await load(user, client);
+      const q = questionById(questionId);
+      if (!q) throw new ServiceError(404, `${questionId}: unknown question`);
+      const described = describeQuestion(q);
+      const inputs = fieldSpecs(described);
+      return {
+        engagement: summary(session),
+        question: { ...described, inputs },
+        values: Object.fromEntries(inputs.map((i) => [i.pointer, valuesAt(session.answers, i.pointer)[0] ?? null])),
+        ...questionState(session, q),
+      };
+    },
+
+    /** Put a question back in the queue (removes TBC, not applicable or comment-only). @param {User} user @param {string} client @param {{ question_id: string }} input */
+    async reopenQuestion(user, client, { question_id }) {
+      const session = await load(user, client);
+      if (!questionById(question_id)) throw new ServiceError(404, `${question_id}: unknown question`);
+      delete session.tbc[question_id];
+      delete session.skipped[question_id];
+      if (session.commented) delete session.commented[question_id];
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true };
+    },
+
+    /** Remove the recorded answer of a question so it is open again. @param {User} user @param {string} client @param {{ question_id: string }} input */
+    async clearAnswer(user, client, { question_id }) {
+      const session = await load(user, client);
+      const q = questionById(question_id);
+      if (!q) throw new ServiceError(404, `${question_id}: unknown question`);
+      if (question_id === 'Q10.5.2') throw new ServiceError(400, 'Consent cannot be cleared — record No instead if the client withdrew it');
+      for (const pointer of q.maps_to) {
+        const keys = pointer.split('/').slice(1);
+        let parent = session.answers;
+        for (const k of keys.slice(0, -1)) parent = parent?.[k];
+        if (parent && typeof parent === 'object') delete parent[keys.at(-1)];
+        for (const k of Object.keys(session.provenance)) if (k === pointer || k.startsWith(`${pointer}/`)) delete session.provenance[k];
+      }
+      delete session.tbc[question_id];
+      delete session.skipped[question_id];
+      if (session.commented) delete session.commented[question_id];
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true };
+    },
+
+    /**
+     * Engagement summary from code (no AI): offer, decision, gates, exit rules,
+     * plan, app signals, open items, answers by section, documents and notes.
+     *
+     * @param {User} user @param {string} client
+     */
+    async getSummary(user, client) {
+      const session = await load(user, client);
+      return {
+        engagement: summary(session),
+        preview: preview(session, today()),
+        open_items: openItems(session).map((i) => ({ ...i, question: questionById(i.question_id)?.text ?? null })),
+        sections: reviewSections(session, { includeOpen: false }),
+        documents: session.documents ?? [],
+        notes: session.notes,
+        generated_at: today(),
+      };
     },
 
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */

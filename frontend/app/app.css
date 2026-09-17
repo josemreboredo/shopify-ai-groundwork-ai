@@ -52,6 +52,16 @@ th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
 .panel { background: var(--panel); border-radius: 10px; padding: 16px; position: sticky; top: 12px; }
 .panel ul { padding-left: 18px; margin: 4px 0; }
 .panel li { margin: 3px 0; font-size: 0.9rem; }
+/* Engagement navigation, link buttons, summary */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 8px 0 16px; }
+.tabs a { padding: 8px 14px; text-decoration: none; color: var(--muted); border-bottom: 2px solid transparent; }
+.tabs a.active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+a.button { display: inline-block; padding: 7px 14px; border-radius: 6px; border: 1px solid var(--accent); background: var(--accent); color: #fff; text-decoration: none; }
+a.button.secondary { background: #fff; color: var(--accent); }
+.pre { white-space: pre-line; }
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 900px) { .summary-grid { grid-template-columns: 1fr; } }
+
 /* Table answers: wide tables scroll horizontally */
 .table-input { overflow-x: auto; }
 .table-input table { min-width: 100%; margin-bottom: 8px; }

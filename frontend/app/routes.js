@@ -7,6 +7,10 @@ export default [
   route('auth/github/callback', 'routes/auth.github.callback.js'),
   route('logout', 'routes/logout.js'),
   route('engagements/:client', 'routes/engagement.jsx'),
+  route('engagements/:client/review', 'routes/engagement.review.jsx'),
+  route('engagements/:client/summary', 'routes/engagement.summary.jsx'),
+  route('engagements/:client/summary.md', 'routes/engagement.summary-md.js'),
+  route('engagements/:client/questions/:questionId', 'routes/engagement.question.jsx'),
   route('claude', 'routes/claude.jsx'),
   // Claude connector (ADR 0015): MCP endpoint and OAuth
   route('mcp', 'routes/mcp.js'),

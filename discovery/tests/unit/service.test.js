@@ -15,6 +15,7 @@ import { createPostgresStore, TABLE_SQL } from '../../service/stores/postgres-st
 import { fieldSpecs, normalizeValue, parseField, parseTable, cellName } from '../../service/fields.js';
 import { run } from '../../agents/interview/cli.js';
 import { toExtraction } from '../../agents/interview/finish.js';
+import { renderSummaryMarkdown } from '../../service/summary.js';
 import { preview } from '../../agents/interview/preview.js';
 
 const TODAY = '2026-09-17';
@@ -256,4 +257,53 @@ test('the web app declares every package the discovery code it bundles imports (
   };
   for (const entry of ['service/index.js', 'service/mcp.js', 'service/oauth.js', 'service/project-kit.js', 'service/stores/file-store.js', 'service/stores/postgres-store.js', 'service/stores/oauth-memory-store.js', 'service/stores/oauth-postgres-store.js']) visit(path.join(root, entry));
   assert.deepEqual([...missing], []);
+});
+
+describe('review, change and summary', () => {
+  test('review lists every question with state and answer in words; a question can be changed, cleared or reopened', async () => {
+    const store = createMemoryStore();
+    const svc = await started(store);
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q1.1.2', values: { '/meta/client/hq_country': ['Switzerland'] } });
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q3.4.8', values: {}, note: 'We only ship inside the EU' });
+    await svc.markQuestion(consultant, 'demo-client', { question_id: 'Q0.1.1', as: 'tbc', note: 'Next workshop' });
+
+    const { sections } = await svc.reviewQuestions(consultant, 'demo-client');
+    const all = sections.flatMap((s) => s.questions);
+    const byId = (id) => all.find((q) => q.id === id);
+    assert.deepEqual([byId('Q1.1.2').state, byId('Q3.4.8').state, byId('Q0.1.1').state], ['answered', 'commented', 'tbc']);
+    assert.equal(byId('Q10.5.2').value, 'Yes');
+    assert.ok(all.some((q) => q.state === 'open'), 'open questions of the mode are listed too');
+
+    const q = await svc.getQuestion(consultant, 'demo-client', 'Q1.1.2');
+    assert.equal(q.values['/meta/client/hq_country'], 'CH');
+    assert.equal(q.question.inputs[0].vocabulary, 'country');
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q1.1.2', values: { '/meta/client/hq_country': ['Germany'] } });
+    assert.equal((await svc.getQuestion(consultant, 'demo-client', 'Q1.1.2')).values['/meta/client/hq_country'], 'DE');
+
+    await svc.clearAnswer(consultant, 'demo-client', { question_id: 'Q1.1.2' });
+    const cleared = await store.get('demo-client');
+    assert.equal(cleared.answers.meta.client.hq_country, undefined);
+    assert.ok(!('/meta/client/hq_country' in cleared.provenance));
+    assert.ok((await svc.getInterview(consultant, 'demo-client', { limit: 100 })).next.questions.some((x) => x.id === 'Q1.1.2'), 'cleared question is open again');
+    await rejects(svc.clearAnswer(consultant, 'demo-client', { question_id: 'Q10.5.2' }), 400);
+
+    await svc.reopenQuestion(consultant, 'demo-client', { question_id: 'Q3.4.8' });
+    assert.equal((await svc.getQuestion(consultant, 'demo-client', 'Q3.4.8')).state, 'open');
+  });
+
+  test('summary from code: status, open items with questions, answers by section, Markdown without internal price bands', async () => {
+    const store = createMemoryStore();
+    const svc = await started(store);
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q0.1.1', values: { '/business/primary_problem': ['Checkout friction'] } });
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q3.4.8', values: {}, note: 'We only ship inside the EU' });
+    const s = await svc.getSummary(consultant, 'demo-client');
+    assert.ok(s.preview.offer.code);
+    assert.ok(s.open_items.some((i) => i.question_id === 'Q3.4.8' && i.question));
+    assert.ok(s.sections.flatMap((x) => x.questions).every((q) => q.state !== 'open'), 'summary lists recorded questions only');
+    const md = renderSummaryMarkdown(s);
+    assert.match(md, /^# Discovery summary — demo-client/);
+    assert.match(md, /Checkout friction/);
+    assert.match(md, /Clarified by comment/);
+    assert.doesNotMatch(md, /price_band|65000|100000|\+25%/);
+  });
 });
