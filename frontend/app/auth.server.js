@@ -28,30 +28,50 @@ export const sessionStorage = createCookieSessionStorage({
 
 const allowlist = () => ({ owners: process.env.OWNER_GITHUB_LOGINS ?? '', consultants: process.env.CONSULTANT_GITHUB_LOGINS ?? '' });
 
+/** Local development sign-in without GitHub (never in production). */
+const devLogin = () => (!production && process.env.DEV_LOGIN ? process.env.DEV_LOGIN.toLowerCase() : null);
+
+/**
+ * The allowlisted user for a login, re-checked on every request (also for connector tokens).
+ *
+ * @param {string} login
+ */
+export function userForLogin(login) {
+  if (devLogin() && login === devLogin()) return { login, role: 'owner' };
+  return userFor(login, allowlist());
+}
+
 /** @param {Request} request */
 export async function getUser(request) {
-  if (!production && process.env.DEV_LOGIN) return { login: process.env.DEV_LOGIN.toLowerCase(), role: 'owner' };
+  if (devLogin()) return { login: devLogin(), role: 'owner' };
   const session = await sessionStorage.getSession(request.headers.get('Cookie'));
   const login = session.get('login');
-  return login ? userFor(login, allowlist()) : null;
+  return login ? userForLogin(login) : null;
 }
+
+/** Only same-site paths are accepted as a place to return to after sign-in. @param {unknown} next */
+export const safeNext = (next) => (typeof next === 'string' && next.startsWith('/') && !next.startsWith('//') && !next.startsWith('/\\') ? next : '/');
 
 /** @param {Request} request */
 export async function requireUser(request) {
   const user = await getUser(request);
-  if (!user) throw redirect('/login');
+  if (!user) {
+    const url = new URL(request.url);
+    throw redirect(`/login?next=${encodeURIComponent(url.pathname + url.search)}`);
+  }
   return user;
 }
 
 /** @param {Request} request */
 export const callbackUrl = (request) => new URL('/auth/github/callback', request.url).toString();
 
-/** @param {Request} request */
-export async function startGitHubLogin(request) {
+/** @param {Request} request @param {string} [next] */
+export async function startGitHubLogin(request, next) {
   if (!process.env.GITHUB_CLIENT_ID) throw new Error('GITHUB_CLIENT_ID is not configured');
   const session = await sessionStorage.getSession(request.headers.get('Cookie'));
   const state = crypto.randomUUID();
   session.set('oauth_state', state);
+  session.set('next', safeNext(next));
   const url = new URL('https://github.com/login/oauth/authorize');
   url.searchParams.set('client_id', process.env.GITHUB_CLIENT_ID);
   url.searchParams.set('redirect_uri', callbackUrl(request));
@@ -89,8 +109,10 @@ export async function finishGitHubLogin(request) {
   const login = profile.ok ? (await profile.json()).login : null;
   if (!login || !userFor(login, allowlist())) return fail('This GitHub account is not on the allowlist');
 
+  const next = safeNext(session.get('next'));
+  session.unset('next');
   session.set('login', login);
-  return redirect('/', { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } });
+  return redirect(next, { headers: { 'Set-Cookie': await sessionStorage.commitSession(session) } });
 }
 
 /** @param {Request} request */

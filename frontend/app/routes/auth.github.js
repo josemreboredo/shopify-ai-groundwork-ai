@@ -1,3 +1,6 @@
 import { startGitHubLogin } from '../auth.server.js';
 
-export const action = ({ request }) => startGitHubLogin(request);
+export async function action({ request }) {
+  const form = await request.formData();
+  return startGitHubLogin(request, String(form.get('next') ?? '/'));
+}

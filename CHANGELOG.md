@@ -16,6 +16,9 @@ Pre-1.0: the discovery → deck → backlog → build pipeline is not yet end to
 ### Changed
 - The schema loader imports its JSON files as modules so bundled server code carries them.
 
+- 2.0.0: Claude connector (ADR 0015) — MCP endpoint `/mcp` with ten discovery tools, OAuth authorization server (CIMD from claude.ai, PKCE S256, hashed and rotating tokens), consent page after GitHub sign-in; shared memory with the web app: answers from documents recorded "to confirm" with citations, confirmation on the engagement page, document register, channel and author per answer; Claude Project page with connector set-up and Project instructions.
+- Table questions are answered row by row in the web app (no JSON).
+
 ### Deployed
 - 2.0.0-alpha on Vercel (interim, demo data only): GitHub sign-in, engagement list and interview verified end to end with Neon Postgres in London. Fixes found on the first deploy: `ajv` declared by the web app (Vercel installs `frontend/` only), framework pinned to React Router in `vercel.json`.
 

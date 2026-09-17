@@ -7,4 +7,12 @@ export default [
   route('auth/github/callback', 'routes/auth.github.callback.js'),
   route('logout', 'routes/logout.js'),
   route('engagements/:client', 'routes/engagement.jsx'),
+  route('claude', 'routes/claude.jsx'),
+  // Claude connector (ADR 0015): MCP endpoint and OAuth
+  route('mcp', 'routes/mcp.js'),
+  route('.well-known/oauth-authorization-server', 'routes/well-known.authorization-server.js'),
+  route('.well-known/oauth-protected-resource', 'routes/well-known.protected-resource.js', { id: 'protected-resource' }),
+  route('.well-known/oauth-protected-resource/mcp', 'routes/well-known.protected-resource.js', { id: 'protected-resource-mcp' }),
+  route('oauth/authorize', 'routes/oauth.authorize.jsx'),
+  route('oauth/token', 'routes/oauth.token.js'),
 ];

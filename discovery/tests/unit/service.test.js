@@ -12,7 +12,7 @@ import { createDiscoveryService, userFor, ServiceError } from '../../service/ind
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 import { createFileStore } from '../../service/stores/file-store.js';
 import { createPostgresStore, TABLE_SQL } from '../../service/stores/postgres-store.js';
-import { fieldSpecs, parseField } from '../../service/fields.js';
+import { fieldSpecs, parseField, parseTable, cellName } from '../../service/fields.js';
 import { run } from '../../agents/interview/cli.js';
 
 const TODAY = '2026-09-17';
@@ -80,6 +80,26 @@ describe('discovery service', () => {
     assert.ok(r.preview.coverage.required_answered >= 1);
   });
 
+  test('tables are answered row by row from form fields — no JSON — and empty rows are ignored', async () => {
+    const store = createMemoryStore();
+    const svc = await started(store);
+    const channels = fieldSpecs({ fields: ['/business/channel_mix'], answer_type: 'table' })[0];
+    const channel = channels.columns.find((c) => c.key === 'channel').options[0].value;
+    const values = {
+      [cellName('/business/channel_mix', 0, 'channel')]: [channel],
+      [cellName('/business/channel_mix', 0, 'share_pct')]: ['100'],
+      [cellName('/business/channel_mix', 1, 'channel')]: [''],
+      [cellName('/business/channel_mix', 1, 'share_pct')]: [''],
+    };
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q0.2.5', values });
+    assert.deepEqual((await store.get('demo-client')).answers.business.channel_mix, [{ channel, share_pct: 100 }]);
+
+    const missing = parseTable(channels, { [cellName('/business/channel_mix', 0, 'share_pct')]: ['50'] });
+    assert.match(missing.error, /Row 1: fill in channel/);
+    const markets = fieldSpecs({ fields: ['/markets/list'], answer_type: 'table' })[0];
+    assert.deepEqual(parseTable(markets, { [cellName('/markets/list', 0, 'code')]: ['CH'], [cellName('/markets/list', 0, 'languages')]: ['de, fr'] }), { value: [{ code: 'CH', languages: ['de', 'fr'] }] });
+  });
+
   test('TBC, skip and notes go through the engine checks (no personal data, consent cannot be skipped)', async () => {
     const store = createMemoryStore();
     const svc = await started(store);
@@ -102,8 +122,9 @@ describe('discovery service', () => {
     assert.ok('error' in parseField({ pointer: '/x', kind: 'json' }, ['{oops']));
     assert.equal(parseField({ pointer: '/x', kind: 'text' }, ['  ']), undefined);
     const table = fieldSpecs({ fields: ['/markets/list'], answer_type: 'table' })[0];
-    assert.equal(table.kind, 'json');
-    assert.ok(Object.keys(table.item_fields).includes('currency'));
+    assert.equal(table.kind, 'table');
+    assert.deepEqual(table.columns.map((c) => [c.key, c.kind, c.required]).slice(0, 3), [['code', 'text', true], ['currency', 'text', false], ['languages', 'list', false]]);
+    assert.equal(table.columns.find((c) => c.key === 'price_strategy').kind, 'enum');
   });
 
   test('the Postgres store keeps one JSONB row per engagement with parameterised queries', async () => {
@@ -169,6 +190,6 @@ test('the web app declares every package the discovery code it bundles imports (
       }
     }
   };
-  for (const entry of ['service/index.js', 'service/stores/file-store.js', 'service/stores/postgres-store.js']) visit(path.join(root, entry));
+  for (const entry of ['service/index.js', 'service/mcp.js', 'service/oauth.js', 'service/project-kit.js', 'service/stores/file-store.js', 'service/stores/postgres-store.js', 'service/stores/oauth-memory-store.js', 'service/stores/oauth-postgres-store.js']) visit(path.join(root, entry));
   assert.deepEqual([...missing], []);
 });

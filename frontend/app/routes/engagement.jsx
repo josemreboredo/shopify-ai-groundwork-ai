@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Form, Link, useNavigation } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
@@ -8,7 +9,11 @@ export const meta = ({ params }) => [{ title: `${params.client} · Merkle Discov
 export async function loader({ request, params }) {
   const user = await requireUser(request);
   try {
-    return await discovery().getInterview(user, params.client, { limit: 3 });
+    const [view, answers] = await Promise.all([
+      discovery().getInterview(user, params.client, { limit: 3 }),
+      discovery().listAnswers(user, params.client),
+    ]);
+    return { ...view, answers };
   } catch (err) {
     throw serviceFailure(err);
   }
@@ -28,6 +33,8 @@ export async function action({ request, params }) {
       await service.answerQuestion(user, params.client, { question_id: questionId, values, note, status: form.get('tbc_status') ? 'tbc' : 'confirmed' });
     } else if (intent === 'tbc' || intent === 'skipped') {
       await service.markQuestion(user, params.client, { question_id: questionId, as: intent, note });
+    } else if (intent === 'confirm') {
+      await service.confirmAnswer(user, params.client, { pointer: String(form.get('pointer') ?? '') });
     } else if (intent === 'note') {
       await service.addNote(user, params.client, { text: String(form.get('text') ?? '') });
     } else {
@@ -40,6 +47,74 @@ export async function action({ request, params }) {
 }
 
 const words = (id) => id.replace(/_/g, ' ');
+
+/** Same naming as the service's parseTable: "/markets/list[0][code]". */
+const cellName = (pointer, row, key) => `${pointer}[${row}][${key}]`;
+
+function Cell({ column, name }) {
+  switch (column.kind) {
+    case 'enum':
+      return (
+        <select name={name} defaultValue="">
+          <option value="">—</option>
+          {column.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      );
+    case 'multi_enum':
+      return (
+        <select name={name} multiple size={Math.min(4, column.options.length)}>
+          {column.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      );
+    case 'boolean':
+      return (
+        <select name={name} defaultValue="">
+          <option value="">—</option>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      );
+    case 'integer':
+    case 'number':
+      return <input type="number" name={name} step={column.kind === 'integer' ? 1 : 'any'} />;
+    case 'date':
+      return <input type="date" name={name} />;
+    case 'list':
+      return <input type="text" name={name} placeholder="comma-separated" />;
+    default:
+      return <input type="text" name={name} />;
+  }
+}
+
+/** One row per item, one column per field; rows are added and removed in the page. */
+function TableInput({ spec }) {
+  const [rows, setRows] = useState([0]);
+  const [nextRow, setNextRow] = useState(1);
+  return (
+    <div className="table-input">
+      <table>
+        <thead>
+          <tr>
+            {spec.columns.map((c) => <th key={c.key}>{words(c.key)}{c.required ? ' *' : ''}</th>)}
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row}>
+              {spec.columns.map((c) => <td key={c.key}><Cell column={c} name={cellName(spec.pointer, row, c.key)} /></td>)}
+              <td>
+                {rows.length > 1 ? <button type="button" className="link" onClick={() => setRows(rows.filter((r) => r !== row))}>Remove</button> : null}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <button type="button" className="secondary" onClick={() => { setRows([...rows, nextRow]); setNextRow(nextRow + 1); }}>Add row</button>
+      <span className="muted"> * required in each row · empty rows are ignored{spec.columns.some((c) => c.kind === 'multi_enum') ? ' · hold ⌘ or Ctrl to pick several' : ''}</span>
+    </div>
+  );
+}
 const leaf = (pointer) => words(pointer.split('/').at(-1));
 
 function FieldInput({ spec, showLabel }) {
@@ -83,25 +158,12 @@ function FieldInput({ spec, showLabel }) {
     case 'list':
       control = <textarea name={name} placeholder="One per line" />;
       break;
-    case 'json': {
-      const example = spec.item_fields
-        ? JSON.stringify([Object.fromEntries(Object.entries(spec.item_fields).map(([k, v]) => [k, Array.isArray(v) ? v[0] : v]))], null, 2)
-        : '{ }';
-      control = (
-        <>
-          <textarea name={name} placeholder={example} rows={6} />
-          {spec.item_fields ? (
-            <details>
-              <summary>Fields per row</summary>
-              <ul className="muted">
-                {Object.entries(spec.item_fields).map(([k, v]) => <li key={k}><code>{k}</code>: {Array.isArray(v) ? v.join(' · ') : v}</li>)}
-              </ul>
-            </details>
-          ) : null}
-        </>
-      );
+    case 'table':
+      control = <TableInput spec={spec} />;
       break;
-    }
+    case 'json':
+      control = <textarea name={name} rows={6} />;
+      break;
     default:
       control = <input type="text" name={name} />;
   }
@@ -166,6 +228,55 @@ function QuestionCard({ question, actionData, busy }) {
   );
 }
 
+const VIA_LABEL = { web: 'web app', claude: 'Claude', cli: 'CLI / Claude Code' };
+const show = (value) => (typeof value === 'string' ? value : JSON.stringify(value));
+
+function AnswerRow({ a, busy }) {
+  return (
+    <tr>
+      <td>{a.question_id ?? '—'}<div className="muted">{a.pointer}</div></td>
+      <td>{show(a.value)}{a.note ? <div className="muted">{a.note}</div> : null}</td>
+      <td><span className="badge">{VIA_LABEL[a.via] ?? a.via}</span>{a.by ? <div className="muted">{a.by} · {a.at}</div> : null}</td>
+      <td>
+        {a.status === 'tbc' ? (
+          <Form method="post">
+            <input type="hidden" name="pointer" value={a.pointer} />
+            <span className="badge flag">to confirm</span>{' '}
+            <button type="submit" name="intent" value="confirm" className="secondary" disabled={busy}>Confirm</button>
+          </Form>
+        ) : <span className="badge go">confirmed</span>}
+      </td>
+    </tr>
+  );
+}
+
+function AnswersReview({ answers, documents, busy }) {
+  const toConfirm = answers.filter((a) => a.status === 'tbc');
+  const confirmed = answers.filter((a) => a.status !== 'tbc');
+  const head = <thead><tr><th>Question</th><th>Answer</th><th>Recorded</th><th>Status</th></tr></thead>;
+  return (
+    <>
+      <h2>Answers to confirm ({toConfirm.length})</h2>
+      {toConfirm.length ? (
+        <>
+          <p className="muted">Recorded from documents (e.g. by Claude) or marked to confirm. Check the citation, then confirm — or record a corrected answer to the question.</p>
+          <table>{head}<tbody>{toConfirm.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table>
+        </>
+      ) : <p className="muted">Nothing to confirm.</p>}
+
+      <h2>Documents used ({documents.length})</h2>
+      {documents.length ? (
+        <ul>{documents.map((d) => <li key={d.name}><strong>{d.name}</strong> · {d.type}{d.date ? ` · ${d.date}` : ''}{d.summary ? ` — ${d.summary}` : ''} <span className="muted">({VIA_LABEL[d.via] ?? d.via}, {d.added_by})</span></li>)}</ul>
+      ) : <p className="muted">No documents registered. Documents stay in your Claude Project; Claude registers the ones it uses.</p>}
+
+      <details>
+        <summary>All confirmed answers ({confirmed.length})</summary>
+        <table>{head}<tbody>{confirmed.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table>
+      </details>
+    </>
+  );
+}
+
 const RESULT_CLASS = { STOP: 'stop', FLAG: 'flag', WARN: 'warn' };
 
 function PreviewPanel({ preview }) {
@@ -211,7 +322,7 @@ function PreviewPanel({ preview }) {
 }
 
 export default function Engagement({ loaderData, actionData }) {
-  const { engagement, next, preview, notes, tbc } = loaderData;
+  const { engagement, next, preview, notes, tbc, answers, documents } = loaderData;
   const busy = useNavigation().state !== 'idle';
   return (
     <main>
@@ -230,6 +341,8 @@ export default function Engagement({ loaderData, actionData }) {
               <p className="muted">Finishing the discovery (approach, deck, backlog) comes in 2.0.0-beta; use <code>npm run interview -- finish --client {engagement.client}</code> meanwhile.</p>
             </section>
           )}
+
+          <AnswersReview answers={answers} documents={documents} busy={busy} />
 
           <h2>Consultant notes</h2>
           {notes.length ? <ul>{notes.map((n, i) => <li key={i}>{n.at}: {n.text}</li>)}</ul> : <p className="muted">No notes.</p>}

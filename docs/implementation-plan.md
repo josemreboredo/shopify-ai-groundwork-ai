@@ -247,7 +247,9 @@ dentsu IT (`discovery/docs/architecture/lc-frontend-hosting-requirements.md`).
 - [ ] Owner pilot with ACME and ReboLabs
 
 **2.0.0 — Claude Projects connector (Vercel, demo data)**
-- [ ] MCP server ("Merkle Discovery" connector, `mcp-handler`) with OAuth via the interim GitHub login, same operations as the REST API; added to the owner's Claude account for the pilot
+- [x] MCP server ("Merkle Discovery" connector, `mcp-handler`) with its own OAuth authorization server (CIMD, PKCE, rotating hashed tokens) behind the interim GitHub login; ten discovery tools; answers from documents "to confirm" with citations and confirmation in the web app; document register; Claude Project page (ADR 0015)
+- [x] Table answers without JSON in the web app
+- [ ] Owner pilot: add the connector in Claude, private Project with a demo RFP, confirm answers in the web app
 - [ ] Roles (Lead Consultant, Reviewer, Owner); audit log; import of demo engagements from `clients/`
 
 **2.x — migration to dentsu systems**

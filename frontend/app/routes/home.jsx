@@ -60,7 +60,7 @@ export default function Home({ loaderData, actionData }) {
       {engagements.length === 0 ? <p className="muted">No engagements yet.</p> : (
         <table>
           <thead>
-            <tr><th>Client</th><th>Offer</th><th>Status</th><th>Required answered</th><th>Mode</th><th>Owner</th><th>Updated</th></tr>
+            <tr><th>Client</th><th>Offer</th><th>Status</th><th>Required answered</th><th>To confirm</th><th>Mode</th><th>Owner</th><th>Updated</th></tr>
           </thead>
           <tbody>
             {engagements.map((e) => (
@@ -69,6 +69,7 @@ export default function Home({ loaderData, actionData }) {
                 <td>{e.offer.code} · {e.offer.name}{e.offer.provisional ? <> <span className="badge provisional">provisional</span></> : null}</td>
                 <td><Status e={e} /></td>
                 <td>{e.coverage.required_answered} / {e.coverage.required_total}{e.coverage.required_tbc ? ` (${e.coverage.required_tbc} TBC)` : ''}</td>
+                <td>{e.to_review ? <span className="badge flag">{e.to_review}</span> : '—'}</td>
                 <td>{e.mode}</td>
                 <td>{e.owner ?? '—'}</td>
                 <td>{e.updated_at}</td>
