@@ -111,6 +111,14 @@ function perOrderRates(doc) {
  * @param {object} doc  Decided engagement, ideally with an approach
  * @returns {object}
  */
+const costCache = new WeakMap();
+
+/** Computed once per document: three callers ask for it on every save. */
+export function runCostFor(doc) {
+  if (!costCache.has(doc)) costCache.set(doc, runCost(doc));
+  return costCache.get(doc);
+}
+
 export function runCost(doc) {
   const b = basis(doc);
   const recurring = subscriptions(doc);

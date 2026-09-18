@@ -16,9 +16,9 @@ import { answerValidator, decide, finalize, needsApproach, stopRoute } from '../
 import { APPROACH_SYSTEM, approachInput, approachQualityErrors, fromApproachPayload } from '../agents/discovery/approach.js';
 import { buildApproachSchema } from '../agents/discovery/extraction-schema.js';
 import { buildDeckXml } from '../agents/discovery-deck/build.js';
-import { verifiedKnowledge, knowledgeBytes } from '../agents/discovery/knowledge.js';
-import { runCost } from '../agents/discovery/economics.js';
-import { challengeApproach, topChallenges } from '../agents/discovery/challenge.js';
+import { knowledgeFor } from '../agents/discovery/knowledge.js';
+import { runCostFor } from '../agents/discovery/economics.js';
+import { challengesFor, topChallenges } from '../agents/discovery/challenge.js';
 import { toApproachPayload } from '../agents/discovery/approach.js';
 import { DECK_PROMPT } from '../agents/discovery-deck/prompt.js';
 import { selectStories, summariseByEpic } from '../agents/backlog/select.js';
@@ -109,16 +109,18 @@ export function deckBrief(engagement) {
   const backlog = stories ? { stories, summary: summariseByEpic(stories) } : null;
   const { xml, warnings } = buildDeckXml(engagement, backlog);
   const chapters = chapterKnowledge(engagement);
-  const knowledge = verifiedKnowledge(engagement);
+  // The decisions are made by now and travel argued in deck_xml, so the option
+  // sets that informed them do not need to be sent a second time.
+  const knowledge = knowledgeFor(engagement, { options: false });
   return {
     instructions: `${DECK_PROMPT}\n\nThe deck data below (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`,
     deck_xml: xml,
     deck_schema: buildDeckSchema(),
     reference_chapters: chapters.chapters,
     verified_knowledge: knowledge,
-    run_cost: runCost(engagement),
+    run_cost: runCostFor(engagement),
     // What a second expert would say about the draft, computed rather than opined.
-    challenges: topChallenges(challengeApproach(toApproachPayload(engagement.approach ?? {}), engagement)),
+    challenges: topChallenges(challengesFor(engagement)),
     warnings: [
       ...warnings,
       ...(chapters.summaries_only ? [`Payload budget: ${chapters.summaries_only.join(', ')} sent as a summary only — read the chapter in the annex before writing about it`] : []),

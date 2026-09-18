@@ -29,8 +29,8 @@ import { CLIENTS_DIR } from '../../paths.js';
 import { XmlWriter, esc } from './xml.js';
 import { stopRoute } from '../discovery/engine.js';
 import { axesForDecision } from '../discovery/rubric.js';
-import { runCost } from '../discovery/economics.js';
-import { challengeApproach, topChallenges } from '../discovery/challenge.js';
+import { runCostFor } from '../discovery/economics.js';
+import { challengesFor, topChallenges } from '../discovery/challenge.js';
 import { toApproachPayload } from '../discovery/approach.js';
 import { planRequirements, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
 import { appSignals, appCandidates } from '../discovery/app-signals.js';
@@ -234,7 +234,7 @@ function solutionDesign(x, doc) {
  * risks — or the document is arguing against its own evidence.
  */
 function challenges(x, doc) {
-  const found = topChallenges(challengeApproach(toApproachPayload(doc.approach ?? {}), doc));
+  const found = topChallenges(challengesFor(doc));
   if (!found.length) return;
   x.open('challenges', { count: String(found.length) });
   for (const f of found) x.empty('challenge', { severity: f.severity, finding: f.finding, why: f.why_it_matters, evidence: f.evidence });
@@ -248,7 +248,7 @@ function challenges(x, doc) {
  * rather than rounding into a plausible figure.
  */
 function economics(x, doc) {
-  const cost = runCost(doc);
+  const cost = runCostFor(doc);
   x.open('run-cost');
   const b = cost.basis;
   x.empty('basis', {

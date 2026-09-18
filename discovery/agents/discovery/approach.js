@@ -9,9 +9,9 @@
 
 import { buildApproachSchema } from './extraction-schema.js';
 import { appSignals, appCandidates } from './app-signals.js';
-import { verifiedKnowledge } from './knowledge.js';
+import { knowledgeFor } from './knowledge.js';
 import { rubricBrief, rubricErrors, axesFor } from './rubric.js';
-import { runCost } from './economics.js';
+import { runCostFor } from './economics.js';
 import { planSuggestion } from './plan.js';
 
 export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect and commerce consultant at Merkle drafting the implementation approach for a discovery engagement, to the standard of a top-tier strategy consultancy. A lead consultant reviews everything you write before the client sees it.
@@ -210,13 +210,13 @@ export function approachInput(doc) {
     app_candidates: appCandidates(doc),
     // Everything Merkle has already checked against Shopify's documentation for the
     // questions this client answered — limits, options already weighed, plan gates.
-    verified_knowledge: verifiedKnowledge(doc),
+    verified_knowledge: knowledgeFor(doc),
     // The axes every option is measured on — eight always, the rest switched on
     // by this engagement's own answers (markets, B2B, retail, checkout…).
     decision_rubric: rubricBrief(doc),
     // The client's own arithmetic: order volume, average basket, the rates Shopify
     // publishes that this engagement triggers, and what is not known.
-    run_cost: runCost(doc),
+    run_cost: runCostFor(doc),
     ...(planSuggestion(doc) ? { plan_suggestion: planSuggestion(doc) } : {}),
     question_ids_by_answer: Object.fromEntries(
       Object.entries(provenance ?? {}).map(([pointer, p]) => [pointer, p.question_id]).filter(([, id]) => id),

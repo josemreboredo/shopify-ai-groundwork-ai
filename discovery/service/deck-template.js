@@ -12,7 +12,7 @@
  * @module discovery/service/deck-template
  */
 
-import { challengeApproach, topChallenges } from '../agents/discovery/challenge.js';
+import { challengesFor, topChallenges } from '../agents/discovery/challenge.js';
 import { toApproachPayload } from '../agents/discovery/approach.js';
 
 const str = (description, max) => ({ type: 'string', description, ...(max ? { maxLength: max } : {}) });
@@ -22,7 +22,7 @@ const list = (items, description, max) => ({ type: 'array', description, items, 
 const highChallenges = (doc) => {
   if (!doc?.approach) return [];
   try {
-    return topChallenges(challengeApproach(toApproachPayload(doc.approach), doc)).filter((f) => f.severity === 'high');
+    return topChallenges(challengesFor(doc)).filter((f) => f.severity === 'high');
   } catch {
     return [];
   }

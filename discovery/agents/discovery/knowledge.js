@@ -60,9 +60,11 @@ export function answeredQuestions(doc) {
  * weighed, and which features sit behind a plan.
  *
  * @param {object} doc  Decided engagement document
+ * @param {{ options?: boolean }} [scope]  Set options:false once the decisions are
+ *   made — the deck step already carries them, argued, in deck_xml.
  * @returns {{ limits: object[], options: object[], plan_gates: object[], note: string }}
  */
-export function verifiedKnowledge(doc) {
+export function verifiedKnowledge(doc, scope = {}) {
   const questions = answeredQuestions(doc);
   const limits = [];
   const options = [];
@@ -91,9 +93,25 @@ export function verifiedKnowledge(doc) {
   return {
     note: 'Checked against official Shopify documentation by Merkle, with the source next to each entry. Use it, cite it, and do not contradict it: where your own reading differs, say so explicitly and cite the page.',
     limits,
-    options,
+    ...(scope.options === false ? {} : { options }),
     plan_gates: gates,
   };
+}
+
+/**
+ * The same knowledge, computed once per document. Every caller in a save path
+ * asks for it — the approach input, the deck data, the challenge pass, the deck
+ * validator — and rebuilding it each time walks the whole question bank again.
+ */
+const cache = new WeakMap();
+export function knowledgeFor(doc, scope = {}) {
+  const key = scope.options === false ? 'no-options' : 'full';
+  const entry = cache.get(doc) ?? {};
+  if (!entry[key]) {
+    entry[key] = verifiedKnowledge(doc, scope);
+    cache.set(doc, entry);
+  }
+  return entry[key];
 }
 
 /** Rough size of the knowledge block, so callers can see what they are sending. */

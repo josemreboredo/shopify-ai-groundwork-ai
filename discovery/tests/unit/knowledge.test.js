@@ -12,6 +12,9 @@ import { verifiedKnowledge, answeredQuestions } from '../../agents/discovery/kno
 import { approachInput } from '../../agents/discovery/approach.js';
 import { deckBrief } from '../../service/closing.js';
 import { chapterKnowledge } from '../../service/reference.js';
+import { knowledgeFor } from '../../agents/discovery/knowledge.js';
+import { runCostFor } from '../../agents/discovery/economics.js';
+import { challengesFor } from '../../agents/discovery/challenge.js';
 import { questionBank } from '../../schema/index.js';
 
 const fixture = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, '..', 'fixtures', 'engagements', 'acme-watches.json'), 'utf8'));
@@ -69,5 +72,33 @@ describe('verified knowledge reaches the drafting step', () => {
     assert.match(cut.body_omitted, /annex/, 'and must say where to read it');
     const core = tight.chapters[0];
     assert.ok(core.markdown, 'the chapter the most decisions lean on keeps its body');
+  });
+});
+
+describe('what we send to the model', () => {
+  test('the option sets are not sent twice: the deck step already carries the decisions they informed', () => {
+    const forDrafting = verifiedKnowledge(fixture);
+    const forWriting = verifiedKnowledge(fixture, { options: false });
+    assert.ok(forDrafting.options.length > 0, 'the approach step needs them to decide');
+    assert.equal(forWriting.options, undefined, 'the deck step does not need them again');
+    assert.ok(forWriting.limits.length === forDrafting.limits.length, 'the limits still travel — they are what the deck must not omit');
+    assert.ok(deckBrief(fixture).verified_knowledge.options === undefined);
+  });
+
+  test('the payload per document stays within budget, so nobody doubles it by accident', () => {
+    const tokens = (o) => Object.values(o).reduce((n, v) => n + Buffer.byteLength(JSON.stringify(v)), 0) / 4 / 1000;
+    const drafting = tokens(approachInput(fixture));
+    const writing = tokens(deckBrief(fixture));
+    assert.ok(drafting < 30, `approach step is ${Math.round(drafting)}k tokens`);
+    assert.ok(writing < 75, `deck step is ${Math.round(writing)}k tokens`);
+    assert.ok(drafting + writing < 100, `a closing document costs ${Math.round(drafting + writing)}k tokens of input`);
+  });
+
+  test('the heavy work is computed once per document, not once per caller', () => {
+    const doc = structuredClone(fixture);
+    const first = knowledgeFor(doc);
+    assert.equal(knowledgeFor(doc), first, 'the same object, not an equal one');
+    assert.equal(runCostFor(doc), runCostFor(doc));
+    assert.equal(challengesFor(doc), challengesFor(doc), 'the deck path asks three times');
   });
 });

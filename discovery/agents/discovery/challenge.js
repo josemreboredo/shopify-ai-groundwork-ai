@@ -23,8 +23,9 @@
  * @module discovery/challenge
  */
 
-import { verifiedKnowledge } from './knowledge.js';
-import { runCost } from './economics.js';
+import { knowledgeFor } from './knowledge.js';
+import { toApproachPayload } from './approach.js';
+import { runCostFor } from './economics.js';
 
 /** Words that mean the draft engaged with a subject, not just mentioned it. */
 const mentions = (haystack, needle) => haystack.toLowerCase().includes(needle.toLowerCase());
@@ -53,7 +54,7 @@ export function challengeApproach(payload, doc) {
   const risks = payload.risk_register ?? [];
   const assumptions = payload.assumptions ?? [];
   const draft = JSON.stringify([decisions, capabilities, risks, assumptions, payload.non_functional, payload.app_shortlist]);
-  const knowledge = verifiedKnowledge(doc);
+  const knowledge = knowledgeFor(doc);
 
   // The questions the draft itself leans on. Everything below is scoped to these:
   // a review that complains about answers the document never used is noise, and
@@ -123,7 +124,7 @@ export function challengeApproach(payload, doc) {
   }
 
   // 4 — an argument that stayed vague when the arithmetic was available
-  const cost = runCost(doc);
+  const cost = runCostFor(doc);
   const figures = [...cost.per_order.map((f) => f.per_month), cost.basis.average_order_value].filter((n) => n !== undefined);
   if (figures.length) {
     const quoted = figures.some((n) => draft.includes(String(Math.round(n))));
@@ -153,6 +154,21 @@ export function challengeApproach(payload, doc) {
   }
 
   return out;
+}
+
+const challengeCache = new WeakMap();
+
+/**
+ * The challenge for a saved engagement, computed once. The deck path asks three
+ * times — for the deck data, for deck_xml and for the deck gate — and each run
+ * reads the whole question bank. It takes the document, not a payload, so the
+ * three callers cannot each build their own and miss the cache.
+ *
+ * @param {object} doc  Decided engagement with an approach
+ */
+export function challengesFor(doc) {
+  if (!challengeCache.has(doc)) challengeCache.set(doc, challengeApproach(toApproachPayload(doc.approach ?? {}), doc));
+  return challengeCache.get(doc);
 }
 
 /** The highest-severity findings first, capped so the writer acts instead of skimming. */
