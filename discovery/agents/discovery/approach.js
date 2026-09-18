@@ -10,6 +10,7 @@
 import { buildApproachSchema } from './extraction-schema.js';
 import { appSignals, appCandidates } from './app-signals.js';
 import { verifiedKnowledge } from './knowledge.js';
+import { rubricBrief, rubricErrors, axesFor } from './rubric.js';
 import { planSuggestion } from './plan.js';
 
 export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect and commerce consultant at Merkle drafting the implementation approach for a discovery engagement, to the standard of a top-tier strategy consultancy. A lead consultant reviews everything you write before the client sees it.
@@ -33,6 +34,13 @@ Market topology (whenever the engagement has more than one market)
 - impact: what the decision changes for the technical build, for the project (plan, timeline, cost of delivery), for the merchant's team day to day, and for the customer.
 - Separate what the client stated from what the engine derived. Where the recommendation rests on assumptions rather than stated facts — confidence to_validate — say so in the rationale, carry those assumptions into the assumptions list, and name the open inputs the Lead Consultant should chase first.
 - The delivery track branches on this decision. On liquid, the theme is store-wide: per-market divergence runs through market customisations and Rollouts, and a second store means a second theme to maintain. On hydrogen, routing, locale context and market resolution are application concerns: a second store means either a second storefront deployment or one application serving two Storefront API endpoints — say which, and what it does to caching, CI/CD, preview environments and the shared design system.
+
+The comparison rubric
+- decision_rubric lists the axes every option is measured on: eight that always apply, plus the ones this engagement switches on. Fill 'assessment' on every option with one line per axis.
+- This is what makes a comparison a comparison. Free-form pros and cons make whichever option you thought about longest look strongest, and the axis nobody mentioned is the one that kills the project in month four.
+- 'Not applicable' is a valid assessment and should be used when an axis genuinely does not bite. An empty axis is not an answer.
+- Be specific where the answers allow it: "adds about CHF 79 a month at 4,000 orders" beats "adds cost"; "the client's merchandiser can change it in the admin" beats "flexible".
+- pros and cons stay: they are the short argument. The assessment is the evidence underneath it, and the deck renders it as the comparison table.
 
 Solution architecture
 - architecture_decisions: at least three decisions that shape the project — e.g. one store with Shopify Markets vs expansion stores, Horizon theme vs headless Hydrogen, native Shopify B2B vs B2B app, order routing and inventory, integration pattern (native apps, iPaaS, custom app, events), checkout extensibility and Shopify Functions, migration approach. Each with options, decision, rationale, plan_impact, status, sources and question_ids.
@@ -117,6 +125,8 @@ export function approachQualityErrors(payload, doc) {
     if (!official(d.sources)) errors.push(`${where}: cite at least one official Shopify source`);
     if (!(d.question_ids ?? []).length) errors.push(`${where}: found it on at least one client answer (question id)`);
     if (!d.decision?.trim() || !d.rationale?.trim()) errors.push(`${where}: state the decision and its rationale`);
+    // Comparable or it is not a comparison: the same axes on every option.
+    errors.push(...rubricErrors(d, doc, where));
   });
 
   // Market topology: mandatory on any engagement with more than one market, and
@@ -198,6 +208,9 @@ export function approachInput(doc) {
     // Everything Merkle has already checked against Shopify's documentation for the
     // questions this client answered — limits, options already weighed, plan gates.
     verified_knowledge: verifiedKnowledge(doc),
+    // The axes every option is measured on — eight always, the rest switched on
+    // by this engagement's own answers (markets, B2B, retail, checkout…).
+    decision_rubric: rubricBrief(doc),
     ...(planSuggestion(doc) ? { plan_suggestion: planSuggestion(doc) } : {}),
     question_ids_by_answer: Object.fromEntries(
       Object.entries(provenance ?? {}).map(([pointer, p]) => [pointer, p.question_id]).filter(([, id]) => id),
@@ -273,7 +286,7 @@ export function toApproachPayload(approach) {
       notes: r.notes ?? '', question_ids: r.question_ids ?? [], sources: r.sources ?? [],
     })),
     architecture_decisions: (approach.architecture?.decisions ?? []).map((d) => ({
-      topic: d.topic, question: d.question ?? '', options: (d.options ?? []).map((o) => ({ option: o.option, pros: o.pros ?? '', cons: o.cons ?? '' })),
+      topic: d.topic, question: d.question ?? '', options: (d.options ?? []).map((o) => ({ option: o.option, pros: o.pros ?? '', cons: o.cons ?? '', ...(o.assessment ? { assessment: o.assessment } : {}) })),
       decision: d.decision, rationale: d.rationale ?? '', plan_impact: d.plan_impact ?? 'none', status: d.status ?? 'recommended', sources: d.sources ?? [], question_ids: d.question_ids ?? [],
       ...(d.why_not?.length ? { why_not: d.why_not.map((w) => ({ option: w.option, reason: w.reason })) } : {}),
       ...(d.impact ? { impact: { technical: d.impact.technical ?? '', project: d.impact.project ?? '', merchant: d.impact.merchant ?? '', customer: d.impact.customer ?? '' } } : {}),

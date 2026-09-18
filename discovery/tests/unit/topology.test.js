@@ -191,6 +191,9 @@ describe('market topology', () => {
 
     payload.architecture_decisions[0].why_not = [{ option: 'Expansion stores', reason: 'Nothing separates the markets' }];
     payload.architecture_decisions[0].impact = { technical: 'One store.', project: 'One build.', merchant: 'One admin.', customer: 'Local currency.' };
+    // Every option measured on the same axes — the rubric of discovery/agents/discovery/rubric.js.
+    const cell = (o) => ({ plan: 'x', run_cost: 'x', build_effort: 'x', time_to_launch: 'x', who_can_change_it: 'x', operational_load: 'x', reversibility: 'x', limits: 'x', multi_market: 'x', ...o });
+    for (const option of payload.architecture_decisions[0].options) option.assessment = cell({});
     const good = approachQualityErrors(payload, doc);
     assert.ok(!good.some((e) => /Market topology/.test(e)), good.filter((e) => /Market topology/.test(e)).join(' | '));
   });

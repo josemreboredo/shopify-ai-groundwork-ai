@@ -1307,17 +1307,62 @@
             {
               "option": "One store with Shopify Markets",
               "pros": "One catalogue, one admin and one theme, with currency, language, domain and pricing set per market",
-              "cons": "Every market shares one theme, one app estate and one admin; per-market theme customisation starts at the Advanced plan"
+              "cons": "Every market shares one theme, one app estate and one admin; per-market theme customisation starts at the Advanced plan",
+              "assessment": {
+                "plan": "No plan step: country and region markets, per-market currency, domains and price lists run from Basic upwards.",
+                "run_cost": "One Shopify subscription and one app estate for all three markets — no duplication in the monthly bill.",
+                "build_effort": "Configuration, not development: markets, domains, price lists and language publishing.",
+                "time_to_launch": "Fastest of the three — one store to build, test and sign off.",
+                "who_can_change_it": "The client adds a market, a price list or a language in the admin without a developer.",
+                "operational_load": "One admin and one catalogue for the DACH team; orders from all three markets in one place.",
+                "reversibility": "A market can be split into its own store later, at the cost of a migration and redirects.",
+                "limits": "All markets share one theme, one app estate and one admin; per-market theme customisation needs Advanced or higher.",
+                "multi_market": "CH in CHF, DE and AT in EUR, each on its own domain with manual price lists — exactly the case Markets is built for.",
+                "b2b": "B2B companies live on the same store and see the same catalogue structure, with their own catalogs and price lists.",
+                "checkout": "One checkout configuration across the three markets; local payment methods differ by market, not by store.",
+                "data_privacy": "One customer record and one data estate; the ERP and PIM integrate once instead of three times.",
+                "performance_seo": "Subfolder or country domains inherit one domain authority; one migration and one redirect map at launch."
+              }
             },
             {
               "option": "An expansion store per country",
               "pros": "Hard separation of data, staff, finance and local operations",
-              "cons": "Requires Shopify Plus, and nothing is shared: every catalogue, theme and app change is repeated in each store"
+              "cons": "Requires Shopify Plus, and nothing is shared: every catalogue, theme and app change is repeated in each store",
+              "assessment": {
+                "plan": "Shopify Plus only — expansion stores are a Plus contract feature.",
+                "run_cost": "Apps and theme licences are billed per store, so the app estate is paid three times.",
+                "build_effort": "Three builds, or one build repeated three times, plus the work to keep them aligned.",
+                "time_to_launch": "Slowest: three stores to configure, test and sign off before launch.",
+                "who_can_change_it": "The client can change each store, but every change has to be made three times.",
+                "operational_load": "Three admins, three catalogues, three inventory set-ups; orders are not in one place.",
+                "reversibility": "Merging stores later is a full migration of products, customers and order history.",
+                "limits": "Nothing is synced between stores: settings, products, collections and inventory are all separate.",
+                "multi_market": "Hard separation per country, which nothing in ACME’s answers asks for: one entity, one range, one team.",
+                "b2b": "B2B would sit in one of the stores, or become a fourth — another store to run.",
+                "checkout": "Three checkout configurations to keep identical, and three sets of payment settings.",
+                "data_privacy": "Customer data is split across three stores; the ERP integrates three times and reconciliation gets harder.",
+                "performance_seo": "Three domains each building their own authority from zero, and three redirect maps at launch."
+              }
             },
             {
               "option": "Hybrid — a core store plus a separate store for one market",
               "pros": "Isolates a market that genuinely diverges without duplicating the ones that do not",
-              "cons": "Two estates to run for as long as the exception lasts; also requires Shopify Plus"
+              "cons": "Two estates to run for as long as the exception lasts; also requires Shopify Plus",
+              "assessment": {
+                "plan": "Shopify Plus, for the same reason: the second store is an expansion store.",
+                "run_cost": "Two subscriptions and two app estates instead of one.",
+                "build_effort": "One build plus a second, smaller one — justified only when a market genuinely diverges.",
+                "time_to_launch": "Between the two: the core store can launch first and the exception follow.",
+                "who_can_change_it": "Same as one store for the core markets; the exception is maintained separately.",
+                "operational_load": "Two admins for a business that runs one team — the cost lands on the client every day.",
+                "reversibility": "Easier to fold back than three stores, but still a migration.",
+                "limits": "Carries the expansion-store isolation for the market that leaves the core store.",
+                "multi_market": "The right answer when one market has its own entity, range or team. None of ACME’s three does.",
+                "b2b": "Would make sense if wholesale were its own operation; ACME runs it with the same team.",
+                "checkout": "Two checkout configurations to keep aligned.",
+                "data_privacy": "The separated market’s customer and order data sits outside the main estate.",
+                "performance_seo": "The separated market builds its own domain authority."
+              }
             }
           ],
           "decision": "One store with Shopify Markets for CH, DE and AT",
@@ -1365,12 +1410,36 @@
             {
               "option": "Native Shopify B2B",
               "pros": "Company accounts, catalogs and price lists in the same store",
-              "cons": "Company-specific catalogs need Plus"
+              "cons": "Company-specific catalogs need Plus",
+              "assessment": {
+                "plan": "Company-specific catalogs need Plus; up to three shared catalogs run from Basic.",
+                "run_cost": "No app subscription — it is part of the platform.",
+                "build_effort": "Configuration of companies, locations, catalogs and payment terms; no custom build.",
+                "time_to_launch": "Launches with the store; nothing to integrate first.",
+                "who_can_change_it": "The sales team manages companies, price lists and terms in the admin.",
+                "operational_load": "One catalogue and one order flow for both audiences; no second system to reconcile.",
+                "reversibility": "Native data stays in Shopify, so moving later is an export rather than an extraction.",
+                "limits": "B2B checkout does not support accelerated payments, subscriptions or legacy customer accounts.",
+                "b2b": "Companies, company locations, catalogs, net terms and PO numbers — the documented native model.",
+                "checkout": "B2B buyers use the same checkout with B2B rules; the accelerated-payment limits apply to them."
+              }
             },
             {
               "option": "Wholesale app",
               "pros": "Works on lower plans",
-              "cons": "Separate pricing logic and checkout limits"
+              "cons": "Separate pricing logic and checkout limits",
+              "assessment": {
+                "plan": "Runs on any plan, so it can avoid the Plus step for company-specific pricing.",
+                "run_cost": "A permanent monthly subscription, usually banded by order volume or company count.",
+                "build_effort": "Install and configure, plus the work to make it agree with the theme and the ERP.",
+                "time_to_launch": "Comparable, unless the app needs its own data model to be populated first.",
+                "who_can_change_it": "The sales team works in the app’s own admin, not in Shopify’s.",
+                "operational_load": "A second place to maintain customers and prices, and a second support relationship.",
+                "reversibility": "Leaving the app means extracting its data model and rebuilding the native one.",
+                "limits": "The vendor’s roadmap decides what changes; app data often sits outside the Shopify objects.",
+                "b2b": "Can cover company-specific pricing without Plus, at the cost of a parallel data model.",
+                "checkout": "Some wholesale apps route through draft orders rather than the standard checkout."
+              }
             }
           ],
           "decision": "Native Shopify B2B on Shopify Plus",
@@ -1393,12 +1462,34 @@
             {
               "option": "Client iPaaS with Admin GraphQL API and webhooks",
               "pros": "Uses the client platform; retries and monitoring",
-              "cons": "Mapping effort in the iPaaS"
+              "cons": "Mapping effort in the iPaaS",
+              "assessment": {
+                "plan": "No plan requirement: the Admin API and webhooks are available on every plan.",
+                "run_cost": "The client already licenses the iPaaS, so no new recurring cost lands on this project.",
+                "build_effort": "Flows built in a tool the client’s team already knows, against documented APIs.",
+                "time_to_launch": "Parallel to the store build; no bespoke deployment to stand up first.",
+                "who_can_change_it": "The client’s integration team changes a flow without touching Shopify code.",
+                "operational_load": "Monitoring and retries live in the iPaaS the client already operates.",
+                "reversibility": "Flows can be rebuilt elsewhere; nothing is locked inside a custom app.",
+                "limits": "Admin API rate limits and bulk-operation constraints apply; large catalogue syncs need bulk operations.",
+                "data_privacy": "Order and customer data crosses into the iPaaS, so the processor list and retention have to cover it."
+              }
             },
             {
               "option": "Custom app",
               "pros": "Full control",
-              "cons": "Hosting and maintenance"
+              "cons": "Hosting and maintenance",
+              "assessment": {
+                "plan": "No plan requirement, unless it embeds Shopify Functions, which need Plus in a custom app.",
+                "run_cost": "No licence, but hosting and maintenance are a permanent line.",
+                "build_effort": "A full build: auth, webhooks, retries, observability and deployment.",
+                "time_to_launch": "Adds a workstream that has to be ready before the integrations can be tested.",
+                "who_can_change_it": "Every change needs a developer.",
+                "operational_load": "The client owns uptime, error handling and Shopify API version upgrades.",
+                "reversibility": "Owned outright, but replacing it is a rebuild rather than a reconfiguration.",
+                "limits": "API versioning forces an upgrade cadence; Shopify deprecates versions on a published schedule.",
+                "data_privacy": "Data stays in infrastructure the client controls, which simplifies the processor position."
+              }
             }
           ],
           "decision": "Client iPaaS flows on the Admin GraphQL API and webhooks",

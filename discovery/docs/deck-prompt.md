@@ -42,6 +42,11 @@ Consultant decides what reaches the client's leadership, so the draft contains *
         with Markets, expansion stores and a hybrid, and naming the Managed Markets position explicitly (recommended,
         rejected on economics with the fee on the client's own order volume, or not eligible with the failing
         condition); then a `table` with the four impact lenses as rows — technical, project, merchant, customer.
+        Every decision in `deck_xml` carries a `<comparison>`: the same axes measured on every
+        option — plan, cost to run, build effort, time to launch, who can change it later, day-to-day
+        effort, how hard to undo, limits, and the ones this engagement raised. Render it as a `table`
+        slide next to the decision it belongs to, options across the top and axes down the side. It is
+        already written; do not retype it as prose and do not drop an axis because it is inconvenient.
         `deck_xml` carries `<topology>` with the recommendation, the triggers, the rejected options, the assumptions,
         the open inputs and the Managed Markets verdict: argue that data, never re-derive it. Where confidence is
         `to_validate`, say on the slide which parts of the recommendation would move once the open questions are

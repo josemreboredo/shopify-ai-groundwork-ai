@@ -28,6 +28,7 @@ import { offering, validateEngagement, questionsFeeding } from '../../schema/ind
 import { CLIENTS_DIR } from '../../paths.js';
 import { XmlWriter, esc } from './xml.js';
 import { stopRoute } from '../discovery/engine.js';
+import { axesForDecision } from '../discovery/rubric.js';
 import { planRequirements, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
 import { appSignals, appCandidates } from '../discovery/app-signals.js';
 
@@ -244,6 +245,17 @@ function architecture(x, doc) {
       x.open('option', { name: o.option, chosen: o.option === d.decision ? 'true' : undefined });
       if (o.pros) x.field('pros', o.pros);
       if (o.cons) x.field('cons', o.cons);
+      x.close();
+    }
+    // Every option on the same axes: this is the comparison table the deck renders.
+    const axes = axesForDecision(d, doc);
+    if (axes.length && (d.options ?? []).some((o) => o.assessment)) {
+      x.open('comparison', { axes: String(axes.length), options: String((d.options ?? []).length) });
+      for (const axis of axes) {
+        x.open('axis', { id: axis.id, label: axis.label });
+        for (const o of d.options ?? []) x.field('for', o.assessment?.[axis.id] ?? '—', undefined, { option: o.option });
+        x.close();
+      }
       x.close();
     }
     x.field('decision', d.decision);

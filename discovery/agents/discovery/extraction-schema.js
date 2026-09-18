@@ -15,6 +15,7 @@
  */
 
 import { engagementSchema, offering } from '../../schema/index.js';
+import { AXES as RUBRIC_AXES } from './rubric.js';
 
 /** Structured-output limit on optional (non-required) properties across a schema. */
 export const MAX_OPTIONAL_PARAMETERS = 24;
@@ -124,7 +125,21 @@ export function buildApproachSchema() {
       items: obj({
         topic: str(),
         question: str('The decision to make, in one sentence'),
-        options: { type: 'array', description: 'At least two options considered', items: obj({ option: str(), pros: str(), cons: str() }) },
+        options: {
+          type: 'array',
+          description: 'At least two options considered, each assessed on the same axes so they can actually be compared',
+          items: obj({
+            option: str(),
+            pros: str(),
+            cons: str(),
+            assessment: {
+              type: 'object',
+              description: 'One line per axis of the comparison (see decision_rubric in the engagement input). "Not applicable" is a valid answer; leaving an axis out is not.',
+              additionalProperties: false,
+              properties: Object.fromEntries(RUBRIC_AXES.map((a) => [a.id, str(a.asks)])),
+            },
+          }, ['assessment']),
+        },
         decision: str('The recommended option'),
         rationale: str('Why, referring to the client answers and the sources'),
         plan_impact: { enum: ['none', 'basic', 'grow', 'advanced', 'plus'] },

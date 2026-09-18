@@ -512,12 +512,32 @@
             {
               "option": "Horizon theme with brand settings",
               "pros": "Fast, supported, low maintenance",
-              "cons": "Less unique layout"
+              "cons": "Less unique layout",
+              "assessment": {
+                "plan": "No plan requirement: Horizon and theme settings are available on every plan.",
+                "run_cost": "No licence and no subscription.",
+                "build_effort": "Configuration and brand settings rather than front-end development.",
+                "time_to_launch": "The fastest route to a live storefront.",
+                "who_can_change_it": "The client edits sections and content in the theme editor without a developer.",
+                "operational_load": "Merchandising is self-service; no deployment needed to change a page.",
+                "reversibility": "Theme settings and sections carry over; switching later is a design exercise, not a migration.",
+                "limits": "Front-end freedom is bounded by the theme and section model."
+              }
             },
             {
               "option": "Custom theme",
               "pros": "Unique design",
-              "cons": "Higher cost and maintenance"
+              "cons": "Higher cost and maintenance",
+              "assessment": {
+                "plan": "No plan requirement.",
+                "run_cost": "No subscription, but a maintenance commitment every Shopify release.",
+                "build_effort": "A full front-end build and its test cycle.",
+                "time_to_launch": "Pushes the launch out by the length of the design and build.",
+                "who_can_change_it": "Structural changes need a developer; only content stays self-service.",
+                "operational_load": "The client owns theme upgrades and regression testing.",
+                "reversibility": "Moving back to a supported theme means rebuilding the storefront.",
+                "limits": "A customised theme drifts from Shopify’s updates unless it is actively maintained."
+              }
             }
           ],
           "decision": "Horizon theme with brand settings",
@@ -538,12 +558,32 @@
             {
               "option": "Shopify Payments with Klarna and SEPA",
               "pros": "Native checkout, no extra gateway fee",
-              "cons": "Eligibility check"
+              "cons": "Eligibility check",
+              "assessment": {
+                "plan": "No plan requirement; multi-currency payouts would need Advanced.",
+                "run_cost": "Processing rates fall as the plan rises; no third-party gateway fee on top.",
+                "build_effort": "Activation and verification, not development.",
+                "time_to_launch": "Immediate once the business verification clears.",
+                "who_can_change_it": "Payment methods are toggled in the admin.",
+                "operational_load": "Payouts, disputes and reconciliation in one place.",
+                "reversibility": "Switching provider later is a settings change plus a new verification.",
+                "limits": "Availability is country-bound, and some local methods depend on the store’s country."
+              }
             },
             {
               "option": "Third-party provider",
               "pros": "Existing contracts",
-              "cons": "Transaction fees and set-up"
+              "cons": "Transaction fees and set-up",
+              "assessment": {
+                "plan": "No plan requirement, but third-party gateways carry Shopify’s per-transaction fee, which falls with the plan.",
+                "run_cost": "Gateway fees plus Shopify’s transaction fee — the most expensive of the two.",
+                "build_effort": "Provider set-up and testing; more if the provider needs custom handling.",
+                "time_to_launch": "Depends on the provider’s onboarding, which is outside the project’s control.",
+                "who_can_change_it": "Managed in the provider’s dashboard as well as in Shopify.",
+                "operational_load": "Two systems to reconcile, and disputes handled outside Shopify.",
+                "reversibility": "Contractual lock-in is the provider’s, not Shopify’s.",
+                "limits": "Accelerated checkouts and some Shopify features assume Shopify Payments."
+              }
             }
           ],
           "decision": "Shopify Payments with Klarna and SEPA direct debit",
@@ -565,12 +605,32 @@
             {
               "option": "Klaviyo app",
               "pros": "Client uses it; advanced flows",
-              "cons": "Subscription cost"
+              "cons": "Subscription cost",
+              "assessment": {
+                "plan": "No plan requirement.",
+                "run_cost": "A subscription banded by contact count, which grows with the list.",
+                "build_effort": "Install, connect and build the flows.",
+                "time_to_launch": "Can run in parallel with the store build.",
+                "who_can_change_it": "The marketing team owns flows and segments without a developer.",
+                "operational_load": "A second platform to operate, with its own deliverability to watch.",
+                "reversibility": "Lists and flows export, but segmentation logic has to be rebuilt elsewhere.",
+                "limits": "Consent state has to stay in step with Shopify, or unsubscribes drift apart."
+              }
             },
             {
               "option": "Shopify Email",
               "pros": "Included",
-              "cons": "Simpler flows"
+              "cons": "Simpler flows",
+              "assessment": {
+                "plan": "No plan requirement.",
+                "run_cost": "Free below the monthly send allowance, then billed per additional email.",
+                "build_effort": "Minimal: it is part of the admin.",
+                "time_to_launch": "Available from day one.",
+                "who_can_change_it": "The marketing team works in the Shopify admin.",
+                "operational_load": "One platform, one customer record, one consent state.",
+                "reversibility": "Nothing to leave.",
+                "limits": "Automation and segmentation are simpler than a dedicated ESP’s."
+              }
             }
           ],
           "decision": "Klaviyo app",

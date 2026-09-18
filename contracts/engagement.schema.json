@@ -3158,6 +3158,13 @@
                         },
                         "cons": {
                           "type": "string"
+                        },
+                        "assessment": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "One line per axis of the comparison rubric (discovery/agents/discovery/rubric.js): the same axes on every option, so they can be compared rather than argued."
                         }
                       }
                     }
