@@ -1,4 +1,5 @@
-import { Form, Link, useNavigation } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Form, Link, useNavigation, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
@@ -48,6 +49,58 @@ function AnswerRow({ a, busy }) {
   );
 }
 
+/**
+ * Pre-filling from the client's documents has to start in Claude: the documents
+ * live in the Claude Project, and the connector can only answer when Claude calls
+ * it — it cannot go and read them. This card says so, gives the exact instruction
+ * to paste, and watches for the answers to arrive.
+ */
+function PrefillCard({ client, documents, toConfirm }) {
+  const [copied, setCopied] = useState(false);
+  const instruction = `Read the documents in this project and pre-fill the Merkle Discovery engagement ${client}.
+
+Register each document with register_document, map what it says to the questionnaire with find_questions, and record answers with record_answers, each with its evidence (document, section, short quote). Where a document is unclear, mark the question TBC with a note instead of guessing. Then tell me what you recorded and what is still open.`;
+  const started = documents.length > 0;
+  return (
+    <section className={`card prefill${started ? ' done' : ''}`}>
+      <p className="question">{started ? 'Pre-fill again from new documents' : 'Pre-fill the answers from the client’s documents'}</p>
+      {started ? (
+        <p className="muted">
+          {documents.length} document{documents.length > 1 ? 's' : ''} read so far, {toConfirm} answer{toConfirm === 1 ? '' : 's'} waiting for your confirmation below.
+          If you add more documents to the Claude Project, run it again.
+        </p>
+      ) : (
+        <>
+          <p>
+            Claude reads the RFP and the other documents in your Claude Project, finds which questions they
+            already answer, and records them here with the page and quote they came from. It has to start in
+            Claude, because that is where the documents are — this tool cannot reach into your project.
+          </p>
+          <ol className="prefill-steps">
+            <li>Open your <strong>Claude Project</strong> for this client — the one with the RFP in it — and start a new chat <em>inside</em> it.</li>
+            <li>Paste the instruction below, or pick <strong>Pre-fill the engagement from the documents</strong> from the Merkle Discovery connector’s prompts.</li>
+            <li>Come back here. The answers arrive marked <strong>to confirm</strong>, each with its citation; check them and confirm.</li>
+          </ol>
+        </>
+      )}
+      <div className="actions">
+        <button type="button" onClick={() => { navigator.clipboard?.writeText(instruction); setCopied(true); }}>
+          {copied ? 'Copied — paste it in your Claude Project' : 'Copy the instruction'}
+        </button>
+        <Link className="button secondary" to="/claude">How to set up the Claude Project</Link>
+      </div>
+      <details>
+        <summary>The instruction</summary>
+        <textarea readOnly rows={6} value={instruction} />
+      </details>
+      <p className="muted small">
+        Opening a brand-new chat outside the project will not work: Claude only sees the documents inside the project.
+        This page picks up the answers by itself while Claude records them.
+      </p>
+    </section>
+  );
+}
+
 function AnswersReview({ answers, documents, busy }) {
   const toConfirm = answers.filter((a) => a.status === 'tbc');
   const confirmed = answers.filter((a) => a.status !== 'tbc');
@@ -78,6 +131,16 @@ function AnswersReview({ answers, documents, busy }) {
 export default function Engagement({ loaderData, actionData }) {
   const { engagement, next, preview, notes, tbc, commented, answers, documents, vocabularies, language } = loaderData;
   const busy = useNavigation().state !== 'idle';
+  const toConfirm = answers.filter((a) => a.status === 'tbc').length;
+  // While Claude is reading the documents, the answers appear without a reload.
+  const revalidator = useRevalidator();
+  useEffect(() => {
+    if (next.consent_required) return undefined;
+    const id = setInterval(() => {
+      if (revalidator.state === 'idle' && globalThis.document?.visibilityState === 'visible') revalidator.revalidate();
+    }, 20000);
+    return () => clearInterval(id);
+  }, [revalidator, next.consent_required]);
   return (
     <main>
       <Vocabularies vocabularies={vocabularies} />
@@ -89,6 +152,7 @@ export default function Engagement({ loaderData, actionData }) {
       <div className="layout">
         <div>
           {next.consent_required ? <p className="error">Record the client's consent for AI processing before any other answer.</p> : null}
+          {!next.consent_required ? <PrefillCard client={engagement.client} documents={documents} toConfirm={toConfirm} /> : null}
           {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} />) : (
             <section className="card">
               <p className="question">All questions for this {engagement.mode} interview are answered.</p>
