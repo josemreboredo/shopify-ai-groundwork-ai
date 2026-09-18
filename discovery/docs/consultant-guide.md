@@ -22,13 +22,13 @@ The offers do not assume Shopify Plus. The minimum plan is the highest plan any 
 | more than 3 active B2B catalogs | Shopify Plus | `/b2b/catalog_count` | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
 | B2B deposits, partial payments or payment requests per fulfilment | Shopify Plus | `/b2b/payment_terms` | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
 | contextual B2B storefront and checkout | Advanced | `/b2b/contextual_experience` | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
-| checkout UI extensions on the information, shipping or payment steps / Checkout Branding API | Shopify Plus | `/checkout/customisation` | https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility |
+| checkout UI extensions on the information, shipping or payment steps / Checkout Branding API | Shopify Plus | `/checkout/customisation` | https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations |
 | expansion stores | Shopify Plus | `/markets/topology/recommendation` | https://help.shopify.com/en/manual/organization-settings/expansion-stores |
 | selling from several legal entities | Shopify Plus | `/meta/client/legal_entities` | https://help.shopify.com/en/manual/payments/shopify-payments/onboarding/selling-with-multiple-entities |
 | combined listings | Shopify Plus | `/catalogue/combined_listings` | https://help.shopify.com/en/manual/products/combined-listings-app |
 | sign-in from another site (Multipass) | Shopify Plus | `/customers/sign_in_methods` | https://shopify.dev/docs/storefronts/headless/building-with-the-customer-account-api |
 | more than 10 locations | Shopify Plus | `/shipping/fulfilment_locations` | https://help.shopify.com/en/manual/fulfillment/setup/locations/setup |
-| more than 20 published languages | Shopify Plus | `/markets/list` | https://help.shopify.com/en/manual/international/languages |
+| more than 20 published languages | Shopify Plus | `/markets/list` | https://help.shopify.com/en/manual/international/localization-and-translation |
 | several product discounts on the same item | Shopify Plus | `/promotions/stacking` | https://help.shopify.com/en/manual/discounts/discount-combinations |
 | theme, checkout or account customisation per market | Advanced | `/markets/per_market_customisation` | https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets |
 | carrier-calculated shipping rates | Advanced | `/shipping/rates` | https://help.shopify.com/en/manual/fulfillment/setup/shipping-rates/third-party-carrier-calculated-shipping |
@@ -141,7 +141,7 @@ Drives: gate Migration
 
 **Limits.** The Store Migration app documents Amazon, Clover, Etsy, eBay, GoDaddy, Lightspeed, Square, Squarespace, Wix and WooCommerce as sources, and imports products and customers, not historical orders. Products with more than three options lose their options on import; prices by location are not supported. Import order is products, then customers, then orders. URL redirects are capped at 100,000, or 20,000,000 on Plus. Turn off new-order notifications before importing orders, or every imported order emails staff.
 
-Sources: https://apps.shopify.com/store-migration · https://help.shopify.com/en/manual/migrating-to-shopify · https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-woocommerce · https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect · https://help.shopify.com/en/partners/resources/migrating-clients
+Sources: https://apps.shopify.com/store-migration · https://help.shopify.com/en/manual/migrating-to-shopify · https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-woocommerce · https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect · https://help.shopify.com/en/partners/manage-clients-stores/migrating-clients
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -248,11 +248,11 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/onboarding
 
 **Limits.** The standard sales channels and the headless channel are available from Basic. Agentic storefronts (ChatGPT, Google AI Mode and Gemini, Copilot, Meta) are active by default for eligible stores, so 'AI shopping agents' is usually a decision about what to leave on, not a build.
 
-Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplace-connect · https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/manage-headless-channels
+Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect · https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/manage-headless-channels
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Sales channels (Online Store, POS, Shop, Marketplace Connect, Facebook & Instagram, Google & YouTube, TikTok) | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/marketplace-connect |
+| Sales channels (Online Store, POS, Shop, Marketplace Connect, Facebook & Instagram, Google & YouTube, TikTok) | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect |
 | Headless channel (Hydrogen / Storefront API) | Basic |  | https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/manage-headless-channels |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
@@ -616,11 +616,11 @@ Sources: https://help.shopify.com/en/manual/b2b/getting-started/plan-features
 
 **Limits.** Shopify Markets offers percentage adjustment per market, rounding rules, and fixed prices per product by country or region. A fixed price takes precedence over any other adjustment, and price list currency must match the market's.
 
-Sources: https://help.shopify.com/en/manual/markets/pricing · https://help.shopify.com/en/manual/markets/customizations/catalogs
+Sources: https://help.shopify.com/en/manual/international/pricing · https://help.shopify.com/en/manual/markets/customizations/catalogs
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Market-specific pricing | Basic |  | https://help.shopify.com/en/manual/markets/pricing |
+| Market-specific pricing | Basic |  | https://help.shopify.com/en/manual/international/pricing |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 2.5 Inventory
@@ -691,12 +691,12 @@ Who holds this fact: Country manager or commercial lead for the range and the te
 
 **Limits.** Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Mainland China is excluded from this engagement and routed to a separate China discovery.
 
-Sources: https://help.shopify.com/en/manual/markets/getting-started/market-types · https://help.shopify.com/en/manual/international/languages · https://help.shopify.com/en/manual/markets/customizations/local-currencies
+Sources: https://help.shopify.com/en/manual/markets/getting-started/market-types · https://help.shopify.com/en/manual/international/localization-and-translation · https://help.shopify.com/en/manual/markets/customizations/local-currencies
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Shopify Markets (no limit on country markets) | Basic |  | https://help.shopify.com/en/manual/markets/getting-started/market-types |
-| Published languages | Basic | 20 languages below Plus, 30 on Plus | https://help.shopify.com/en/manual/international/languages |
+| Published languages | Basic | 20 languages below Plus, 30 on Plus | https://help.shopify.com/en/manual/international/localization-and-translation |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q3.1.2** — Which are the primary markets (one or more country or market codes)? *(required · client)*
@@ -711,7 +711,7 @@ Sources: https://help.shopify.com/en/manual/markets
 
 **Limits.** Domain strategy is the hardest thing to change later: subfolders inherit the main domain's search ranking, while a ccTLD builds its own authority from scratch. Deleting a market later needs redirects or customers hit 404s.
 
-Sources: https://help.shopify.com/en/manual/domains/managing-domains/international-domains
+Sources: https://help.shopify.com/en/manual/international/managing-international-domains
 
 **Q3.1.4** — Stated preference only — does the client already have a view on running all countries from one store or giving some countries their own store? Record it as their view, not as the answer. *(optional · consultant)*
 Who holds this fact: Ecommerce director or CTO, where one has already formed a view.
@@ -761,7 +761,7 @@ Drives: rule 11.1 (STOP)
 
 **Limits.** Adaptation fields may appear in Translate & Adapt on lower plans but will not display. Changing the information, shipping or payment steps of checkout, or restyling checkout through the Checkout Branding API, is Plus only; extensions on the thank-you and order-status pages work from Basic. A separate legal entity per market is Plus only.
 
-Sources: https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets · https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility/checkout-apps
+Sources: https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets · https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -797,7 +797,7 @@ Quick interview: ask if Q3.1.1 has 3+ languages
 
 **Limits.** Translate & Adapt covers products, collections, blog posts, policies and pages, but does not auto-translate policies or URL handles. Checkout is pre-translated by Shopify. Published languages are capped at 20 below Plus and 30 on Plus. Six or more languages is a stop rule — translation and content operations move to a Discovery Phase.
 
-Sources: https://help.shopify.com/en/manual/international/translate-adapt-app · https://help.shopify.com/en/manual/markets/languages · https://apps.shopify.com/categories/store-design-internationalization
+Sources: https://help.shopify.com/en/manual/international/translate-adapt-app · https://help.shopify.com/en/manual/international/localization-and-translation · https://apps.shopify.com/categories/store-design-internationalization
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
@@ -816,7 +816,7 @@ If native is not enough: [Internationalization](https://apps.shopify.com/categor
 
 **Limits.** Published languages appear in sitemaps and hreflang is automatic for language-specific URLs. Translate & Adapt does not auto-translate URL handles. Markets that use shared domains are not indexed by search engines, so check the domain strategy before promising local SEO.
 
-Sources: https://help.shopify.com/en/manual/markets/languages · https://help.shopify.com/en/manual/international/automatic-redirection
+Sources: https://help.shopify.com/en/manual/international/localization-and-translation · https://help.shopify.com/en/manual/international/automatic-redirection
 
 **Q3.2.4** — What must be translated? *(recommended · client)*
 Drives: app signal Translation beyond Translate & Adapt
@@ -879,7 +879,7 @@ Sources: https://help.shopify.com/en/manual/taxes/shopify-tax · https://help.sh
 
 **Limits.** Shopify requires HS codes applied to products (with country of origin) before duties and import taxes can be calculated at checkout. Under Managed Markets, Global-e assigns HS codes automatically instead.
 
-Sources: https://help.shopify.com/en/manual/international/duties-and-import-taxes/charging-duties · https://help.shopify.com/en/manual/markets/markets-pro/compare
+Sources: https://help.shopify.com/en/manual/international/duties-and-import-taxes/charging-duties · https://help.shopify.com/en/manual/international/managed-markets/compare
 
 **Q3.4.5** — Should prices include tax (VAT) in some markets and exclude it in others? *(required · client)*
 
@@ -1329,12 +1329,12 @@ Drives: rule 11.1 (STOP) · rule 11.6 (STOP)
 
 **Limits.** checkout.liquid is retired - Checkout Extensibility (blocks, fields, Functions) is the only route, so a bespoke checkout front end is a STOP and a composable-platform conversation, not an estimate.
 
-Sources: https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility · https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility/checkout-apps
+Sources: https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations · https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Checkout and accounts editor; Thank you / Order status page extensions | Basic |  | https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility |
-| Checkout UI extensions on information, shipping and payment steps; Checkout Branding API | Shopify Plus |  | https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility |
+| Checkout and accounts editor; Thank you / Order status page extensions | Basic |  | https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations |
+| Checkout UI extensions on information, shipping and payment steps; Checkout Branding API | Shopify Plus |  | https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations |
 
 If native is not enough: [Checkout](https://apps.shopify.com/categories/marketing-and-conversion-checkout) — [Shopify Checkout Blocks](https://apps.shopify.com/checkout-blocks)
 Build with: Checkout UI extensions · Shopify Functions (public apps: all plans; custom apps: Plus)
@@ -1362,7 +1362,7 @@ Build with: Delivery Customization Function · Payment Customization Function ·
 
 **Limits.** Each field also needs a destination downstream; capturing it at checkout is only half the requirement if the ERP or invoicing system must receive it.
 
-Sources: https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility/checkout-apps
+Sources: https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps
 
 **Q4.2.4** — Are post-purchase upsells needed? *(optional · client)*
 
@@ -2825,7 +2825,7 @@ Drives: rule 11.14 (FLAG)
 
 **Limits.** Turn off new-order notifications first: every imported order emails each staff member set to receive them, including the account owner. orderCreate needs the write_orders scope and an app with an offline token.
 
-Sources: https://shopify.dev/docs/api/admin-graphql/latest/mutations/ordercreate · https://help.shopify.com/en/manual/migrating-to-shopify/csv-migration · https://help.shopify.com/en/partners/resources/migrating-clients
+Sources: https://shopify.dev/docs/api/admin-graphql/latest/mutations/ordercreate · https://help.shopify.com/en/manual/migrating-to-shopify/csv-migration · https://help.shopify.com/en/partners/manage-clients-stores/migrating-clients
 
 **Q8.2.5** — How much SEO equity (rankings, backlinks) must be preserved? *(required · consultant)*
 Drives: rule 11.14 (FLAG)

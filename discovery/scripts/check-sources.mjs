@@ -10,8 +10,10 @@
  * It classifies rather than pretends:
  *   ok       200, and the final URL is the one we cite
  *   moved    200, but it redirects somewhere else — the citation is stale
- *   blocked  403 or 429: help.shopify.com refuses scripted requests, so the page
- *            cannot be checked from a script. Not a failure, and not a pass.
+ *   blocked  403 or 429: help.shopify.com refuses scripted requests. Those pages
+ *            are checked a second way — against Shopify's own sitemap, which
+ *            robots.txt allows and which lists every published help article. A
+ *            cited page that is not in the sitemap has been renamed or removed.
  *   dead     404, 410 or a network error
  *
  * Usage:
@@ -70,6 +72,37 @@ async function check(source) {
   }
 }
 
+const SITEMAP = 'https://help.shopify.com/sitemap-en.xml';
+const bare = (url) => url.split('#')[0].split('?')[0].replace(/\/+$/, '');
+
+/**
+ * Every English help-centre article Shopify publishes. One request, no bot
+ * protection, and robots.txt allows it — which is how the 160-odd pages that
+ * refuse scripted requests get checked at all.
+ *
+ * @returns {Promise<Set<string>|null>} null when the sitemap itself cannot be read
+ */
+export async function helpCentreIndex() {
+  try {
+    const res = await fetch(SITEMAP, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(30000) });
+    if (!res.ok) return null;
+    const xml = await res.text();
+    const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => bare(m[1]));
+    return urls.length > 100 ? new Set(urls) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** The likeliest new home of a renamed page: same last segment, or same last two. */
+function suggest(url, index) {
+  const parts = bare(url).split('/');
+  const last = parts.at(-1);
+  const tail = parts.slice(-2).join('/');
+  const candidates = [...index].filter((u) => u.endsWith(`/${tail}`) || u.endsWith(`/${last}`));
+  return candidates.sort((a, b) => a.length - b.length).slice(0, 2);
+}
+
 export async function checkAll(sources = citedSources()) {
   const out = [];
   let i = 0;
@@ -82,14 +115,27 @@ export async function checkAll(sources = citedSources()) {
 async function main() {
   const sources = citedSources();
   console.log(`Checking ${sources.length} cited Shopify pages…\n`);
-  const results = await checkAll(sources);
+  const [results, index] = await Promise.all([checkAll(sources), helpCentreIndex()]);
   const by = (state) => results.filter((r) => r.state === state);
 
   for (const r of by('dead')) console.log(`✗ dead    ${r.url}\n          cited by ${r.where.join(', ')} — ${r.status} ${r.error ?? ''}`);
   for (const r of by('moved')) console.log(`→ moved   ${r.url}\n          now at ${r.final}\n          cited by ${r.where.join(', ')}`);
 
-  console.log(`\nok ${by('ok').length} · moved ${by('moved').length} · dead ${by('dead').length} · blocked ${by('blocked').length} (help.shopify.com refuses scripted requests — check those by hand)`);
-  if (process.argv.includes('--strict') && (by('dead').length || by('moved').length)) process.exit(1);
+  // The pages that refuse scripted requests, checked against Shopify's sitemap.
+  let unlisted = [];
+  if (index) {
+    unlisted = by('blocked').filter((r) => r.url.startsWith('https://help.shopify.com/') && !index.has(bare(r.url)));
+    for (const r of unlisted) {
+      const guesses = suggest(r.url, index);
+      console.log(`? unlisted ${r.url}\n          not in Shopify's help-centre sitemap — renamed or removed\n          cited by ${r.where.join(', ')}${guesses.length ? `\n          try: ${guesses.join('\n               ')}` : ''}`);
+    }
+  } else {
+    console.log('! the help-centre sitemap could not be read, so blocked pages were not checked');
+  }
+
+  console.log(`\nok ${by('ok').length} · moved ${by('moved').length} · dead ${by('dead').length}`
+    + (index ? ` · in the sitemap ${by('blocked').length - unlisted.length} · unlisted ${unlisted.length}` : ` · unchecked ${by('blocked').length}`));
+  if (process.argv.includes('--strict') && (by('dead').length || by('moved').length || unlisted.length)) process.exit(1);
 }
 
 if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) await main();

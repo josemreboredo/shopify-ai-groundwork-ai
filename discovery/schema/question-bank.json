@@ -583,7 +583,7 @@
           "https://help.shopify.com/en/manual/migrating-to-shopify",
           "https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-woocommerce",
           "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect",
-          "https://help.shopify.com/en/partners/resources/migrating-clients"
+          "https://help.shopify.com/en/partners/manage-clients-stores/migrating-clients"
         ]
       }
     },
@@ -818,7 +818,7 @@
           {
             "feature": "Sales channels (Online Store, POS, Shop, Marketplace Connect, Facebook & Instagram, Google & YouTube, TikTok)",
             "plan": "basic",
-            "docs": "https://help.shopify.com/en/manual/online-sales-channels/marketplace-connect"
+            "docs": "https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect"
           },
           {
             "feature": "Headless channel (Hydrogen / Storefront API)",
@@ -848,7 +848,7 @@
         ],
         "limits": "The standard sales channels and the headless channel are available from Basic. Agentic storefronts (ChatGPT, Google AI Mode and Gemini, Copilot, Meta) are active by default for eligible stores, so 'AI shopping agents' is usually a decision about what to leave on, not a build.",
         "sources": [
-          "https://help.shopify.com/en/manual/online-sales-channels/marketplace-connect",
+          "https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect",
           "https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/manage-headless-channels"
         ]
       }
@@ -1909,7 +1909,7 @@
           {
             "feature": "Market-specific pricing",
             "plan": "basic",
-            "docs": "https://help.shopify.com/en/manual/markets/pricing"
+            "docs": "https://help.shopify.com/en/manual/international/pricing"
           }
         ],
         "verified": {
@@ -1922,7 +1922,7 @@
         "why": "Currency conversion alone is automatic; genuinely different prices per market are a Shopify Markets catalogue job, using percentage adjustments, rounding rules or fixed prices per product per country. That changes how the price feed from the ERP has to be built.",
         "limits": "Shopify Markets offers percentage adjustment per market, rounding rules, and fixed prices per product by country or region. A fixed price takes precedence over any other adjustment, and price list currency must match the market's.",
         "sources": [
-          "https://help.shopify.com/en/manual/markets/pricing",
+          "https://help.shopify.com/en/manual/international/pricing",
           "https://help.shopify.com/en/manual/markets/customizations/catalogs"
         ]
       }
@@ -2109,7 +2109,7 @@
             "feature": "Published languages",
             "plan": "basic",
             "plan_note": "20 languages below Plus, 30 on Plus",
-            "docs": "https://help.shopify.com/en/manual/international/languages"
+            "docs": "https://help.shopify.com/en/manual/international/localization-and-translation"
           }
         ],
         "verified": {
@@ -2123,7 +2123,7 @@
         "limits": "Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Mainland China is excluded from this engagement and routed to a separate China discovery.",
         "sources": [
           "https://help.shopify.com/en/manual/markets/getting-started/market-types",
-          "https://help.shopify.com/en/manual/international/languages",
+          "https://help.shopify.com/en/manual/international/localization-and-translation",
           "https://help.shopify.com/en/manual/markets/customizations/local-currencies"
         ]
       },
@@ -2169,7 +2169,7 @@
         "why": "A market added later is cheap if the domain, catalogue and pricing structure anticipated it, and expensive if it forces a re-cut. It also shows whether the plan you choose today survives the next twelve months.",
         "limits": "Domain strategy is the hardest thing to change later: subfolders inherit the main domain's search ranking, while a ccTLD builds its own authority from scratch. Deleting a market later needs redirects or customers hit 404s.",
         "sources": [
-          "https://help.shopify.com/en/manual/domains/managing-domains/international-domains"
+          "https://help.shopify.com/en/manual/international/managing-international-domains"
         ]
       }
     },
@@ -2309,7 +2309,7 @@
         "limits": "Adaptation fields may appear in Translate & Adapt on lower plans but will not display. Changing the information, shipping or payment steps of checkout, or restyling checkout through the Checkout Branding API, is Plus only; extensions on the thank-you and order-status pages work from Basic. A separate legal entity per market is Plus only.",
         "sources": [
           "https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets",
-          "https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility/checkout-apps"
+          "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps"
         ]
       }
     },
@@ -2412,7 +2412,7 @@
         "limits": "Translate & Adapt covers products, collections, blog posts, policies and pages, but does not auto-translate policies or URL handles. Checkout is pre-translated by Shopify. Published languages are capped at 20 below Plus and 30 on Plus. Six or more languages is a stop rule — translation and content operations move to a Discovery Phase.",
         "sources": [
           "https://help.shopify.com/en/manual/international/translate-adapt-app",
-          "https://help.shopify.com/en/manual/markets/languages",
+          "https://help.shopify.com/en/manual/international/localization-and-translation",
           "https://apps.shopify.com/categories/store-design-internationalization"
         ]
       }
@@ -2445,7 +2445,7 @@
         "why": "Each published language gets its own URL and hreflang tags are added automatically, so the native baseline is decent. The real work is translated metadata, handles and content, which decides whether an app or a human translator is needed.",
         "limits": "Published languages appear in sitemaps and hreflang is automatic for language-specific URLs. Translate & Adapt does not auto-translate URL handles. Markets that use shared domains are not indexed by search engines, so check the domain strategy before promising local SEO.",
         "sources": [
-          "https://help.shopify.com/en/manual/markets/languages",
+          "https://help.shopify.com/en/manual/international/localization-and-translation",
           "https://help.shopify.com/en/manual/international/automatic-redirection"
         ]
       }
@@ -2610,7 +2610,7 @@
         "limits": "Shopify requires HS codes applied to products (with country of origin) before duties and import taxes can be calculated at checkout. Under Managed Markets, Global-e assigns HS codes automatically instead.",
         "sources": [
           "https://help.shopify.com/en/manual/international/duties-and-import-taxes/charging-duties",
-          "https://help.shopify.com/en/manual/markets/markets-pro/compare"
+          "https://help.shopify.com/en/manual/international/managed-markets/compare"
         ]
       }
     },
@@ -3935,12 +3935,12 @@
           {
             "feature": "Checkout and accounts editor; Thank you / Order status page extensions",
             "plan": "basic",
-            "docs": "https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility"
+            "docs": "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations"
           },
           {
             "feature": "Checkout UI extensions on information, shipping and payment steps; Checkout Branding API",
             "plan": "plus",
-            "docs": "https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility"
+            "docs": "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations"
           }
         ],
         "app_category": {
@@ -3964,8 +3964,8 @@
         "why": "This is the plan question in disguise. Thank-you and order-status extensions run on every plan; anything touching the information, shipping or payment steps, or restyling through the Checkout Branding API, is Plus. A fully custom checkout UI is not possible at all.",
         "limits": "checkout.liquid is retired - Checkout Extensibility (blocks, fields, Functions) is the only route, so a bespoke checkout front end is a STOP and a composable-platform conversation, not an estimate.",
         "sources": [
-          "https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility",
-          "https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility/checkout-apps"
+          "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations",
+          "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps"
         ]
       }
     },
@@ -4034,7 +4034,7 @@
         "why": "Extra fields - company, VAT number, PO number, delivery instructions - are checkout UI extensions, so where they sit decides the plan: on the information, shipping or payment steps they are Plus, on the thank-you page they are not.",
         "limits": "Each field also needs a destination downstream; capturing it at checkout is only half the requirement if the ERP or invoicing system must receive it.",
         "sources": [
-          "https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility/checkout-apps"
+          "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps"
         ]
       }
     },
@@ -8327,7 +8327,7 @@
         "sources": [
           "https://shopify.dev/docs/api/admin-graphql/latest/mutations/ordercreate",
           "https://help.shopify.com/en/manual/migrating-to-shopify/csv-migration",
-          "https://help.shopify.com/en/partners/resources/migrating-clients"
+          "https://help.shopify.com/en/partners/manage-clients-stores/migrating-clients"
         ]
       }
     },

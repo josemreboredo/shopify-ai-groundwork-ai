@@ -156,3 +156,31 @@ Suite: **224 passing, 0 failing.**
   section 3) and **Q9.2.6** ("Why headless?"). Q6.2.8 is the more urgent: the topology engine now
   decides B2B separation from Q6.2.14, so the two can disagree on the same engagement.
 - No ADR was written for this change. It deserves one.
+
+---
+
+## Source hygiene (added after the honesty audit, 2026-09-18)
+
+`npm run sources:check` verifies every Shopify page the tool can put in front of a
+client. Two methods, because one is not enough:
+
+- **Fetch** for shopify.dev and changelog.shopify.com — reports `ok`, `moved` (with the new
+  URL) or `dead`.
+- **Shopify's own help-centre sitemap** for help.shopify.com, which refuses scripted requests
+  but publishes `sitemap-en.xml` and allows it in `robots.txt`. A cited article that is not in
+  the sitemap has been renamed or removed; the script suggests the likeliest new home.
+
+First run found **35 rotten citations out of 213**: 2 landing on a generic index, 6 moved
+shopify.dev pages, and 25 help-centre articles missing from the sitemap. 21 are fixed; 14 are
+listed below for a human to check, because a wrong "fix" is worse than a known unknown.
+
+Still to verify by hand (the suggestion was not good enough to accept):
+`b2b/considerations` · `customers/.../new-customer-accounts/customer-experience` ·
+`migrating-to-shopify/considerations` · `migrating-to-shopify/csv-migration` ·
+`agentic-storefronts/{requirements, customer-experience, ai-channels-with-built-in-checkout}` ·
+`search-and-discovery/filters` · `themes/theme-structure/extend` ·
+`local-payment-methods/{alipay, wechat-pay}` · `multi-currency/conversion-fees` ·
+`products/product-recommendations` · `seo/shopify-catalog/default-listing`.
+
+What this still does **not** do: prove the page says what the document says it says. The link
+is there to make that a ten-second check for the reviewer, not to remove the reviewer.
