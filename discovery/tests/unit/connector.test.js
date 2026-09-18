@@ -209,7 +209,7 @@ describe('MCP connector tools', () => {
   test('lists the discovery tools and runs the document workflow as the signed-in consultant', async () => {
     const { rpc, call, service } = await connector();
     const tools = (await rpc('tools/list', {})).payload.result.tools.map((t) => t.name).sort();
-    assert.deepEqual(tools, ['add_note', 'find_questions', 'get_closing_document', 'get_interview', 'get_preview', 'get_summary', 'list_answers', 'list_engagements', 'mark_questions', 'prepare_closing_document', 'record_answers', 'register_document', 'save_approach', 'save_closing_document', 'start_interview']);
+    assert.deepEqual(tools, ['add_note', 'find_questions', 'get_closing_document', 'get_interview', 'get_preview', 'get_reference', 'get_summary', 'list_answers', 'list_engagements', 'mark_questions', 'prepare_closing_document', 'record_answers', 'register_document', 'save_approach', 'save_closing_document', 'start_interview']);
 
     assert.equal((await call('list_engagements', {})).data[0].client, 'rfp-demo');
     const view = (await call('get_interview', { client: 'rfp-demo', limit: 5 })).data;
@@ -264,6 +264,54 @@ describe('Discovery Closing Document from the shared engagement', () => {
     await store.save(session);
     return { svc, store };
   }
+
+  test('no tool result is too large for an MCP client to take in one piece', async () => {
+    const { svc, store } = await acme();
+    const handler = withMcpAuth(
+      createMcpHandler((server) => registerDiscoveryTools(server, { service: svc, userOf: () => lc }), { serverInfo: { name: 'merkle-discovery', version: 'test' } }),
+      async () => ({ token: 't', clientId: 'claude', scopes: ['discovery'], extra: { user: lc } }),
+      { required: true, resourceMetadataPath: '/.well-known/oauth-protected-resource/mcp' },
+    );
+    let id = 0;
+    const call = async (name, args) => {
+      const res = await handler(new Request(`${ORIGIN}/mcp`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream', authorization: 'Bearer t' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method: 'tools/call', params: { name, arguments: args } }),
+      }));
+      const text = await res.text();
+      const payload = JSON.parse(text.split('\n').find((l) => l.startsWith('data: ')).slice(6));
+      const body = payload.result.content[0].text;
+      return { tokens: Buffer.byteLength(body) / 4, data: payload.result.isError ? body : JSON.parse(body) };
+    };
+    // Claude Code's documented default for one MCP result; claude.ai sits in the same range.
+    const LIMIT = 20_000; // 25k is the client's limit; keep a fifth of it as headroom for larger engagements
+    const sizes = {};
+    const prepared = await call('prepare_closing_document', { client: 'acme-watches' });
+    sizes.prepare = prepared.tokens;
+    assert.match(prepared.data.reference, /get_reference/, 'the step says where the reference is');
+    assert.equal(prepared.data.engagement.verified_knowledge, undefined, 'and does not inline it');
+
+    const index = await call('get_reference', { client: 'acme-watches' });
+    sizes.index = index.tokens;
+    for (const { section } of index.data.sections) {
+      const piece = await call('get_reference', { client: 'acme-watches', section });
+      sizes[section] = piece.tokens;
+    }
+    const saved = await call('save_approach', { client: 'acme-watches', approach: toApproachPayload(fixture.approach) });
+    sizes.save_approach = saved.tokens;
+    assert.equal(saved.data.reference_chapters, undefined);
+    assert.ok(saved.data.deck_data.length >= 1, 'the deck data is paged');
+    for (const section of saved.data.deck_data) {
+      const page = await call('get_reference', { client: 'acme-watches', section });
+      sizes[section] = page.tokens;
+      assert.match(page.data.deck_xml, /<section id="/, `${section} carries whole sections`);
+    }
+
+    if (process.env.SHOW_SIZES) console.log(Object.entries(sizes).map(([k, t]) => `${k} ${Math.round(t / 100) / 10}k`).join(' · '));
+    const over = Object.entries(sizes).filter(([, t]) => t > LIMIT).map(([k, t]) => `${k} ${Math.round(t / 1000)}k`);
+    assert.deepEqual(over, [], `tool results over ${LIMIT / 1000}k tokens: ${over.join(', ')}`);
+  });
 
   test('prepare → approach → deck data → saved document, with validation errors returned to Claude', async () => {
     const { svc, store } = await acme();

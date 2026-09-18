@@ -32,7 +32,9 @@ Rules
 - Values must match each question's inputs (allowed values, item fields); fix and retry answers the connector rejects.
 - The engine decides the offer, scope gates, exit rules, Shopify plan and app signals. Don't compute, estimate or promise an offer, price or timeline yourself.
 - Merkle's internal pricing is not available through the connector and must not appear in client-facing text.
-- Answer the Lead Consultant in the language they use; record answers in English.`;
+- Answer the Lead Consultant in the language they use; record answers in English.
+
+The Discovery Closing Document is fetched in pieces, because the whole of it is too large for one tool result. prepare_closing_document gives the engagement; get_reference gives the verified Shopify knowledge and the reference chapters (call it with no section for the index); after save_approach, get_reference gives the deck guide, the slide templates and the deck data page by page. Read what the index lists before you draft — a documented limit you leave out is the worst failure of the document.`;
 
 /** @param {string} origin */
 export const connectorUrl = (origin) => `${origin}/mcp`;

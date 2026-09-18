@@ -11,6 +11,7 @@
 import { z } from 'zod';
 
 import { ServiceError } from './index.js';
+import { deckDataPages } from './closing.js';
 import { renderSummaryMarkdown } from './summary.js';
 
 export const SERVER_INSTRUCTIONS = `Merkle Discovery: Shopify discovery engagements shared with the Lead Consultant web app.
@@ -77,17 +78,52 @@ const compactPreview = (p) => ({
 export function registerDiscoveryTools(server, { service, userOf }) {
   /** Run a service call as the connected consultant; service errors become tool errors. */
   const tool = (name, config, run) => server.registerTool(name, config, async (args, ctx) => {
+    const started = Date.now();
+    const log = (outcome, bytes) => console.log(JSON.stringify({ mcp_tool: name, outcome, ms: Date.now() - started, ...(bytes !== undefined ? { kb: Math.round(bytes / 1024), tokens_est: Math.round(bytes / 4) } : {}) }));
     try {
       const user = await userOf(ctx);
-      if (!user) return { isError: true, content: [{ type: 'text', text: 'Not signed in, or this account is no longer on the allowlist.' }] };
-      return json(await run(user, args ?? {}));
+      if (!user) { log('unauthorised'); return { isError: true, content: [{ type: 'text', text: 'Not signed in, or this account is no longer on the allowlist.' }] }; }
+      const result = json(await run(user, args ?? {}));
+      log('ok', Buffer.byteLength(result.content?.[0]?.text ?? ''));
+      return result;
     } catch (err) {
       if (err instanceof ServiceError) {
+        log(`rejected ${err.status}`);
         return { isError: true, content: [{ type: 'text', text: [err.message, ...err.errors].join('\n') }] };
       }
+      log('crashed');
       throw err;
     }
   });
+
+  /**
+   * The drafting steps used to inline the whole verified reference — 69k tokens in
+   * one result on a large engagement, nearly three times what an MCP client takes
+   * in a single tool result. It now travels as an index, fetched with
+   * get_reference one piece at a time.
+   */
+  const lean = (brief) => {
+    if (!brief || typeof brief !== 'object') return brief;
+    const { reference_chapters, verified_knowledge, ...rest } = brief;
+    // The deck guide and the slide templates are identical for every engagement:
+    // fetched once with get_reference rather than resent with every document.
+    if (rest.step === 'document') {
+      const pages = deckDataPages(rest.deck_xml ?? '');
+      delete rest.instructions;
+      delete rest.deck_schema;
+      delete rest.deck_xml;
+      rest.deck_data = pages.map((_, i) => `deck:data:${i + 1}`);
+      rest.next = `Fetch with get_reference, in this order: deck:guide (how to write it), deck:schema (the slide templates), ${rest.deck_data.join(', ')} (this engagement's deck data), then the limits and chapters listed in the index. Write the deck and the annex and save both with save_closing_document.`;
+    }
+    const engagement = rest.engagement && typeof rest.engagement === 'object'
+      ? (({ verified_knowledge: _k, ...e }) => e)(rest.engagement)
+      : rest.engagement;
+    return {
+      ...rest,
+      ...(engagement !== undefined ? { engagement } : {}),
+      reference: 'Before you draft, call get_reference with this client and no section: it lists the verified Shopify knowledge for this engagement (documented limits, options already weighed, plan gates) and the reference chapters. Read the limits and the chapters for every area you decide on — a limit we have already written down and you leave out is the worst failure of this document.',
+    };
+  };
 
   const read = { readOnlyHint: true, openWorldHint: false };
   const write = { readOnlyHint: false, destructiveHint: false, openWorldHint: false };
@@ -215,14 +251,14 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     description: 'Step 1 of the Discovery Closing Document. The engine decides the engagement from the answers (offer, gates, exit rules, open items). If step is "approach": draft the implementation approach as one JSON object following instructions and approach_schema from the engagement data, then call save_approach. If step is "document": write the document from deck_xml following instructions, then call save_closing_document.',
     inputSchema: z.object({ client: slug }),
     annotations: read,
-  }, (user, { client }) => service.prepareClosingDocument(user, client));
+  }, async (user, { client }) => lean(await service.prepareClosingDocument(user, client)));
 
   tool('save_approach', {
     title: 'Save the implementation approach',
     description: 'Step 2: save the approach JSON (capability_map, architecture_decisions, integration_architecture, data_model, non_functional, risk_register, app_shortlist, assumptions, phases). It is validated against the schema and the consulting standard (ADR 0017): every Shopify fact cites an official source (help.shopify.com, shopify.dev, apps.shopify.com), decisions and capabilities cite question ids, integrations cover every system, risks cite evidence; errors come back to fix — research the missing sources, never drop content to pass. On success returns deck_xml and the instructions to write the Discovery Closing Document (step 3).',
     inputSchema: z.object({ client: slug, approach: z.record(z.string(), z.unknown()).describe('The approach object matching approach_schema') }),
     annotations: write,
-  }, (user, { client, approach }) => service.saveApproach(user, client, approach, { via: 'claude' }));
+  }, async (user, { client, approach }) => lean(await service.saveApproach(user, client, approach, { via: 'claude' })));
 
   tool('save_closing_document', {
     title: 'Save the Discovery Closing Document',
@@ -234,6 +270,16 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     }),
     annotations: write,
   }, (user, { client, deck, annex }) => service.saveClosingDocument(user, client, { deck, annex }, { via: 'claude' }));
+
+  tool('get_reference', {
+    title: 'Read the verified Shopify reference',
+    description: 'The Shopify knowledge Merkle has already verified for this engagement, one piece at a time so no single result is too large. Call it without a section for the index, then fetch what you need: "limits:N" (documented limits — what breaks a naive answer), "options:N" (options already weighed with pros and cons), "plan_gates", and "chapter:<slug>" (the reference chapters appended to the annex). Read the limits and the relevant chapters before drafting the approach and before writing the deck.',
+    inputSchema: z.object({
+      client: z.string().describe('Client slug'),
+      section: z.string().optional().describe('Omit for the index; otherwise e.g. "limits:1", "options:2", "plan_gates", "chapter:shopify-markets"'),
+    }),
+    annotations: read,
+  }, (user, { client, section }) => service.getReference(user, client, { section }));
 
   tool('get_closing_document', {
     title: 'Saved Discovery Closing Document',

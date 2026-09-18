@@ -17,6 +17,7 @@ import { APPROACH_SYSTEM, approachInput, approachQualityErrors, fromApproachPayl
 import { buildApproachSchema } from '../agents/discovery/extraction-schema.js';
 import { buildDeckXml } from '../agents/discovery-deck/build.js';
 import { knowledgeFor } from '../agents/discovery/knowledge.js';
+import { ServiceError } from './errors.js';
 import { runCostFor } from '../agents/discovery/economics.js';
 import { challengesFor, topChallenges } from '../agents/discovery/challenge.js';
 import { toApproachPayload } from '../agents/discovery/approach.js';
@@ -104,6 +105,9 @@ export function finaliseEngagement(doc, approachPayload) {
  *
  * @param {object} engagement  Finalised engagement
  */
+/** The writing guide: the deck prompt plus the layout catalogue. Same for every engagement. */
+export const deckGuide = () => `${DECK_PROMPT}\n\nThe deck data (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`;
+
 export function deckBrief(engagement) {
   const stories = engagement.delivery?.go ? selectStories(engagement) : null;
   const backlog = stories ? { stories, summary: summariseByEpic(stories) } : null;
@@ -113,7 +117,7 @@ export function deckBrief(engagement) {
   // sets that informed them do not need to be sent a second time.
   const knowledge = knowledgeFor(engagement, { options: false });
   return {
-    instructions: `${DECK_PROMPT}\n\nThe deck data below (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`,
+    instructions: deckGuide(),
     deck_xml: xml,
     deck_schema: buildDeckSchema(),
     reference_chapters: chapters.chapters,
@@ -126,6 +130,100 @@ export function deckBrief(engagement) {
       ...(chapters.summaries_only ? [`Payload budget: ${chapters.summaries_only.join(', ')} sent as a summary only — read the chapter in the annex before writing about it`] : []),
     ],
   };
+}
+
+/** One page of reference, sized to travel as a single tool result (~12k tokens). */
+const PAGE_BYTES = 48_000;
+
+function paginate(items) {
+  const pages = [];
+  let current = [];
+  let size = 0;
+  for (const item of items) {
+    const bytes = Buffer.byteLength(JSON.stringify(item));
+    if (current.length && size + bytes > PAGE_BYTES) { pages.push(current); current = []; size = 0; }
+    current.push(item);
+    size += bytes;
+  }
+  if (current.length) pages.push(current);
+  return pages;
+}
+
+/**
+ * deck_xml cut at section boundaries into pages of about 10k tokens, so the deck
+ * data never has to travel as one result however large the engagement grows.
+ *
+ * @param {string} xml
+ * @returns {string[]}
+ */
+export function deckDataPages(xml, budget = 40_000) {
+  const starts = [...xml.matchAll(/<section id="/g)].map((m) => m.index);
+  if (!starts.length) return [xml];
+  const header = xml.slice(0, starts[0]);
+  const sections = starts.map((start, i) => xml.slice(start, starts[i + 1] ?? xml.length));
+  const pages = [];
+  let current = header;
+  for (const section of sections) {
+    if (current.length > header.length && current.length + section.length > budget) {
+      pages.push(current);
+      current = '';
+    }
+    current += section;
+  }
+  pages.push(current);
+  return pages;
+}
+
+/**
+ * The reference for one engagement, as an index or as one piece of it.
+ *
+ * Sections: (none) → the index · "limits:N" · "options:N" · "plan_gates" ·
+ * "chapter:<slug>".
+ *
+ * @param {object} doc  Decided engagement
+ * @param {string} [section]
+ */
+export function referencePiece(doc, section) {
+  const knowledge = knowledgeFor(doc);
+  const limits = paginate(knowledge.limits);
+  const options = paginate(knowledge.options ?? []);
+  const chapters = chapterKnowledge(doc, { budget: Infinity }).chapters;
+
+  if (!section) {
+    return {
+      note: 'Read this before you draft. Everything here was checked against official Shopify documentation, scoped to the questions this client answered. Fetch each section with get_reference.',
+      sections: [
+        ...limits.map((page, i) => ({ section: `limits:${i + 1}`, what: `Documented limits — what breaks a naive answer (${page.length} entries)` })),
+        ...options.map((page, i) => ({ section: `options:${i + 1}`, what: `Options already weighed, with pros and cons (${page.length} entries) — for the approach step` })),
+        { section: 'plan_gates', what: `Features that need a plan above Basic (${knowledge.plan_gates.length} entries)` },
+        ...chapters.map((c) => ({ section: `chapter:${c.slug}`, what: `${c.title} — ${c.summary} (verified ${c.verified})` })),
+        { section: 'deck:guide', what: 'How to write the deck and the annex — read it before writing' },
+        { section: 'deck:schema', what: 'The slide templates the deck is filled with (deck_schema)' },
+      ],
+    };
+  }
+
+  const [kind, arg] = String(section).split(':');
+  const page = (list) => {
+    const n = Number(arg);
+    if (!Number.isInteger(n) || n < 1 || n > list.length) throw new ServiceError(404, `${section}: there are ${list.length} pages`);
+    return { section, page: n, of: list.length, entries: list[n - 1] };
+  };
+  if (kind === 'deck') {
+    // The same for every engagement: the writing guide and the slide templates.
+    if (arg === 'guide') return { section, instructions: deckGuide() };
+    if (arg === 'schema') return { section, deck_schema: buildDeckSchema() };
+    throw new ServiceError(404, `${section}: use deck:guide or deck:schema`);
+  }
+  if (kind === 'limits') return { note: knowledge.note, ...page(limits) };
+  if (kind === 'options') return { note: knowledge.note, ...page(options) };
+  if (kind === 'plan_gates') return { section, entries: knowledge.plan_gates };
+  if (kind === 'chapter') {
+    const chapter = chapters.find((c) => c.slug === arg);
+    if (!chapter) throw new ServiceError(404, `${section}: not a chapter for this engagement (${chapters.map((c) => c.slug).join(', ')})`);
+    return { section, title: chapter.title, verified: chapter.verified, markdown: chapter.markdown };
+  }
+  throw new ServiceError(400, `${section}: unknown section — call get_reference without a section for the index`);
 }
 
 export { needsApproach };

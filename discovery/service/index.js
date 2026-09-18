@@ -20,7 +20,7 @@ import { findPersonalData } from '../agents/discovery/input.js';
 import { questionBank, questionForPointer } from '../schema/index.js';
 import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js';
 import { displayValue } from './summary.js';
-import { approachBrief, closingStatus, deckBrief, decideFromSession, finaliseEngagement, needsApproach } from './closing.js';
+import { approachBrief, closingStatus, deckBrief, deckDataPages, decideFromSession, finaliseEngagement, needsApproach, referencePiece } from './closing.js';
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
@@ -40,21 +40,8 @@ import { deckToMarkdown } from './pptx.js';
 /** @typedef {'web'|'claude'|'cli'} Channel */
 /** @typedef {{ document: string, location?: string, quote?: string }} Evidence */
 
-export class ServiceError extends Error {
-  /**
-   * @param {number} status @param {string} message @param {string[]} [errors]
-   * @param {{ question_id?: string, what: string, why?: string }[]} [blockers]
-   *   What to do about it, in the order it should be done. The UI turns each one
-   *   into a link that opens the question, instead of asking the consultant to
-   *   decode an engine message and go hunting through the review table.
-   */
-  constructor(status, message, errors = [], blockers = []) {
-    super(message);
-    this.status = status;
-    this.errors = errors;
-    this.blockers = blockers;
-  }
-}
+export { ServiceError } from './errors.js';
+import { ServiceError } from './errors.js';
 
 const isoToday = () => new Date().toISOString().slice(0, 10);
 
@@ -525,6 +512,34 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const final = finaliseEngagement(doc, null);
       if (!final.ok) throw new ServiceError(400, 'Engagement not valid', final.errors);
       return { status, step: 'document', ...deckBrief(final.engagement) };
+    },
+
+    /**
+     * The verified reference for an engagement, in pieces small enough to travel as
+     * one tool result each. Called with no section it returns the index; with a
+     * section it returns that piece. The closing-document steps used to inline all
+     * of it — 69k tokens in a single result on a large engagement, nearly three
+     * times what an MCP client accepts in one — so the client truncated it and the
+     * model drafted against half the data.
+     *
+     * @param {User} user @param {string} client @param {{ section?: string }} [input]
+     */
+    async getReference(user, client, { section } = {}) {
+      const session = await load(user, client);
+      const decided = decideFromSession(session, today());
+      if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
+      if (String(section ?? '').startsWith('deck:data')) {
+        // The deck data is built from the approach as saved, so it needs one first.
+        const approach = session.closing?.approach?.payload;
+        if (!approach) throw new ServiceError(409, 'Save the approach first — the deck data is built from it', [], [{ what: 'Draft and save the approach with save_approach' }]);
+        const final = finaliseEngagement(decided.doc, approach);
+        if (!final.ok) throw new ServiceError(400, 'The saved approach no longer fits the answers — draft it again', final.errors);
+        const pages = deckDataPages(deckBrief(final.engagement).deck_xml);
+        const n = Number(String(section).split(':')[2] ?? 1);
+        if (!Number.isInteger(n) || n < 1 || n > pages.length) throw new ServiceError(404, `${section}: there are ${pages.length} pages of deck data`);
+        return { section, page: n, of: pages.length, deck_xml: pages[n - 1] };
+      }
+      return referencePiece(decided.doc, section);
     },
 
     /**
