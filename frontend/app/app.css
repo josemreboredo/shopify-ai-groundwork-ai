@@ -278,11 +278,38 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .rails { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 40px; margin: 32px 0 0; }
 .rails dt { font-weight: 700; margin-bottom: 4px; }
 .rails dd { margin: 0; color: var(--muted); font-size: 0.95rem; }
+/* The mechanism in three moves: the summary a C-level reader stops at */
+.flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 3px solid var(--red); }
+.flow article { position: relative; padding: 28px 32px 30px 0; }
+.flow article + article { padding-left: 32px; border-left: 1px solid var(--line); }
+.flow article + article::before {
+  content: ''; position: absolute; left: -9px; top: 40px; width: 16px; height: 16px; background: #fff;
+  border-right: 2px solid var(--red); border-top: 2px solid var(--red); transform: rotate(45deg);
+}
+.flow-n { margin: 0 0 10px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; color: var(--red); }
+.flow h3 { margin: 0 0 8px; font-size: 1.25rem; letter-spacing: -0.01em; }
+.flow p { margin: 0; font-size: 0.95rem; color: var(--muted); max-width: 34ch; }
+.rule-line { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+.guarantees { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 36px; }
+.guarantees article { border-top: 3px solid var(--red); padding-top: 18px; }
+.guarantees h2 { margin: 0 0 12px; font-size: 1.3rem; letter-spacing: -0.01em; text-transform: none; }
+.guarantees .lede { font-size: 1rem; margin: 0; }
+.guarantees details { margin-top: 16px; }
+.guarantees summary { color: #fff; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.guarantees summary:hover { color: var(--red); }
+.guarantees ul { padding-left: 18px; margin: 0; }
+.guarantees li { font-size: 0.92rem; color: rgba(255, 255, 255, 0.78); margin: 8px 0; }
+.example { font-size: 1.15rem; line-height: 1.5; max-width: 74ch; }
 .steps .trace { grid-column: 2; margin: 8px 0 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--red-ink); }
 .band.dark .grid-2 > div { border-top: 3px solid var(--red); padding-top: 16px; }
 .byline { margin-top: 32px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6) !important; }
 @media (max-width: 900px) {
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flow, .guarantees { grid-template-columns: 1fr; gap: 0; }
+  .flow article { padding: 22px 0; }
+  .flow article + article { padding-left: 0; border-left: none; border-top: 1px solid var(--line); }
+  .flow article + article::before { display: none; }
+  .guarantees article { margin-top: 28px; }
   .grid-2, .grid-3, .rails { grid-template-columns: 1fr; }
   .band { padding: 44px 16px; }
   .steps li { grid-template-columns: 52px minmax(0, 1fr); gap: 14px; }
