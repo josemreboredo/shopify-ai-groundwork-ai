@@ -45,7 +45,8 @@ describe('question selection', () => {
     const quick = nextQuestions(consented('quick'), { limit: 500 }).questions;
     assert.ok(quick.length > 0 && quick.every((q) => q.priority === 'required' || q.feeds?.length));
     const ids = quick.map((q) => q.id);
-    for (const id of ['Q2.3.3', 'Q3.1.4', 'Q8.2.3']) assert.ok(ids.includes(id), `quick mode should ask rule-feeding ${id}`);
+    for (const id of ['Q2.3.3', 'Q3.1.1', 'Q8.2.3']) assert.ok(ids.includes(id), `quick mode should ask rule-feeding ${id}`);
+    assert.ok(!ids.includes('Q3.1.4'), 'the stated topology preference is optional and never decides the recommendation');
     for (const id of ['Q5.2.1', 'Q5.2.7', 'Q5.5.1', 'Q5.5.4']) assert.ok(!ids.includes(id), `quick mode should not ask ${id} yet`);
     const full = nextQuestions(consented('full'), { limit: 500 }).questions;
     assert.ok(full.some((q) => q.priority === 'optional'));
@@ -212,6 +213,9 @@ describe('parity with the questionnaire path', () => {
       delete answers.meta.source;
       delete answers.meta.updated_at;
       delete answers.delivery.go;
+      // Market topology is derived by the engine, so it is never replayed as an answer.
+      delete answers.markets.topology;
+      delete answers.markets.cross_border_model;
 
       const workRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'interview-'));
       const slug = fixture.meta.client.slug;

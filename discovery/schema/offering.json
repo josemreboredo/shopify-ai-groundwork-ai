@@ -8,59 +8,110 @@
       "delivery_track": "liquid",
       "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
       "base_scope": "New Shopify store on the plan the requirements need (Shopify plan benchmark) · Horizon theme · core catalogue · payments · standard checkout",
-      "price_band": {"min": 40000, "max": 65000, "open_ended": false},
-      "duration_weeks": {"min": 4, "max": 5}
+      "price_band": {
+        "min": 40000,
+        "max": 65000,
+        "open_ended": false
+      },
+      "duration_weeks": {
+        "min": 4,
+        "max": 5
+      }
     },
     "M": {
       "name": "Ecommerce Scale",
       "delivery_track": "liquid",
       "triggered_by": "2 or more scope gates",
       "base_scope": "Everything in S plus the qualifying gates (markets / B2B / integrations / migration)",
-      "price_band": {"min": 65000, "max": 100000, "open_ended": false},
-      "duration_weeks": {"min": 6, "max": 9}
+      "price_band": {
+        "min": 65000,
+        "max": 100000,
+        "open_ended": false
+      },
+      "duration_weeks": {
+        "min": 6,
+        "max": 9
+      }
     },
     "L": {
       "name": "Ecommerce Growth",
       "delivery_track": "hydrogen",
       "triggered_by": "Any L trigger (luxury / enterprise brand, headless requirement, full Figma design system) — scope gates do not apply",
       "base_scope": "Headless Hydrogen storefront · full Figma design system · custom motion + interactions · Storefront API · Oxygen · advanced personalisation",
-      "price_band": {"min": 100000, "max": 150000, "open_ended": true},
-      "duration_weeks": {"min": 10, "max": 14}
+      "price_band": {
+        "min": 100000,
+        "max": 150000,
+        "open_ended": true
+      },
+      "duration_weeks": {
+        "min": 10,
+        "max": 14
+      }
     }
   },
   "classification": [
-    {"order": 1, "when": "any l_trigger active", "offer": "L"},
-    {"order": 2, "when": "active scope gates >= 2", "offer": "M"},
-    {"order": 3, "when": "active scope gates == 1", "offer": "S", "apply_modifier": true},
-    {"order": 4, "when": "active scope gates == 0", "offer": "S"}
+    {
+      "order": 1,
+      "when": "any l_trigger active",
+      "offer": "L"
+    },
+    {
+      "order": 2,
+      "when": "active scope gates >= 2",
+      "offer": "M"
+    },
+    {
+      "order": 3,
+      "when": "active scope gates == 1",
+      "offer": "S",
+      "apply_modifier": true
+    },
+    {
+      "order": 4,
+      "when": "active scope gates == 0",
+      "offer": "S"
+    }
   ],
   "scope_gates": [
     {
       "id": "markets",
       "label": "Markets",
       "condition": "2 or more Shopify Markets at launch (geo-routing, tax, payments per market)",
-      "inputs": ["/markets/list"],
+      "inputs": [
+        "/markets/list"
+      ],
       "modifier": "+Markets"
     },
     {
       "id": "multi_currency",
       "label": "Multi-currency",
       "condition": "More than one distinct checkout currency across markets whose price_strategy is not display_only",
-      "inputs": ["/markets/list/*/currency", "/markets/list/*/price_strategy"],
+      "inputs": [
+        "/markets/list/*/currency",
+        "/markets/list/*/price_strategy"
+      ],
       "modifier": "+Markets"
     },
     {
       "id": "b2b",
       "label": "B2B / Wholesale",
       "condition": "B2B or hybrid business model (B2B selling unless answered otherwise), with B2B customer accounts, wholesale pricing, or volume discounts",
-      "inputs": ["/meta/client/business_model", "/b2b/company_accounts", "/b2b/price_lists", "/b2b/volume_discounts"],
+      "inputs": [
+        "/meta/client/business_model",
+        "/b2b/company_accounts",
+        "/b2b/price_lists",
+        "/b2b/volume_discounts"
+      ],
       "modifier": "+B2B"
     },
     {
       "id": "integration",
       "label": "Integration",
       "condition": "One or more live connections to a counted integration category (see integration_definition)",
-      "inputs": ["/integrations/*/category", "/integrations/*/connector"],
+      "inputs": [
+        "/integrations/*/category",
+        "/integrations/*/connector"
+      ],
       "modifier": "+Integration"
     },
     {
@@ -79,14 +130,20 @@
       "id": "migration",
       "label": "Migration",
       "condition": "Migration from any non-Shopify ecommerce platform (source_platform not none or shopify), e.g. Shopware, Magento, WooCommerce, SFCC, BigCommerce, custom",
-      "inputs": ["/migration/source_platform"],
+      "inputs": [
+        "/migration/source_platform"
+      ],
       "modifier": "+Migration"
     },
     {
       "id": "retail_pos",
       "label": "Retail & POS",
       "condition": "One or more physical stores sell with Shopify POS or an integrated POS, or omnichannel services are needed (pickup in store, ship from store, in-store returns of online orders, endless aisle, stock transfers, retail catalogs)",
-      "inputs": ["/retail/store_count", "/retail/pos", "/retail/omnichannel"],
+      "inputs": [
+        "/retail/store_count",
+        "/retail/pos",
+        "/retail/omnichannel"
+      ],
       "modifier": "+Retail"
     }
   ],
@@ -95,19 +152,26 @@
       "id": "luxury",
       "label": "Luxury / enterprise brand",
       "condition": "Brand positioning is luxury or enterprise",
-      "inputs": ["/brand/positioning"]
+      "inputs": [
+        "/brand/positioning"
+      ]
     },
     {
       "id": "headless",
       "label": "Headless requirement",
       "condition": "Client requires a headless / custom storefront (Hydrogen, other framework, native app front end)",
-      "inputs": ["/design/headless_required"]
+      "inputs": [
+        "/design/headless_required"
+      ]
     },
     {
       "id": "figma_design_system",
       "label": "Full Figma design system",
       "condition": "A complete Figma design system covering all templates is the design source",
-      "inputs": ["/design/figma/design_system", "/design/figma/completeness"]
+      "inputs": [
+        "/design/figma/design_system",
+        "/design/figma/completeness"
+      ]
     }
   ],
   "modifiers": [
@@ -115,47 +179,91 @@
       "id": "+Markets",
       "gate": "markets",
       "description": "2–4 Shopify Markets or multi-currency set-up, Translate & Adapt, geo-routing",
-      "effort_weeks": {"min": 1, "max": 1},
-      "price_add": {"min": 8000, "max": 12000}
+      "effort_weeks": {
+        "min": 1,
+        "max": 1
+      },
+      "price_add": {
+        "min": 8000,
+        "max": 12000
+      }
     },
     {
       "id": "+B2B",
       "gate": "b2b",
       "description": "Wholesale pricing, B2B accounts, volume discounts",
-      "effort_weeks": {"min": 1.5, "max": 1.5},
-      "price_add": {"min": 10000, "max": 15000}
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 1.5
+      },
+      "price_add": {
+        "min": 10000,
+        "max": 15000
+      }
     },
     {
       "id": "+Integration",
       "gate": "integration",
       "description": "One ERP / PIM / CRM / 3PL live connection",
-      "effort_weeks": {"min": 1, "max": 2},
-      "price_add": {"min": 10000, "max": 18000}
+      "effort_weeks": {
+        "min": 1,
+        "max": 2
+      },
+      "price_add": {
+        "min": 10000,
+        "max": 18000
+      }
     },
     {
       "id": "+Migration",
       "gate": "migration",
       "description": "Platform migration, redirect mapping, data transfer",
-      "effort_weeks": {"min": 1, "max": 2},
-      "price_add": {"min": 8000, "max": 15000}
+      "effort_weeks": {
+        "min": 1,
+        "max": 2
+      },
+      "price_add": {
+        "min": 8000,
+        "max": 15000
+      }
     },
     {
       "id": "+SKU",
       "gate": "sku_complexity",
       "description": "500+ SKUs, complex variants or bundles",
-      "effort_weeks": {"min": 0.5, "max": 0.5},
-      "price_add": {"min": 5000, "max": 8000}
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 0.5
+      },
+      "price_add": {
+        "min": 5000,
+        "max": 8000
+      }
     },
     {
       "id": "+Retail",
       "gate": "retail_pos",
       "description": "Shopify POS or integrated POS set-up, store locations, pick-up in store, in-store returns — up to 5 stores (more stores: rule 11.22, never a per-store price)",
-      "effort_weeks": {"min": 1, "max": 1},
-      "price_add": {"min": 8000, "max": 12000}
+      "effort_weeks": {
+        "min": 1,
+        "max": 1
+      },
+      "price_add": {
+        "min": 8000,
+        "max": 12000
+      }
     }
   ],
   "integration_definition": {
-    "counted_categories": ["erp", "pim", "crm", "3pl_wms", "oms", "custom", "pos"],
+    "counted_categories": [
+      "erp",
+      "pim",
+      "crm",
+      "3pl_wms",
+      "oms",
+      "custom",
+      "pos"
+    ],
     "note": "An integration is a live system-to-system data connection. Shopify App Store apps with native connectors (ESP, reviews, search, loyalty, analytics) are apps, not integrations — unless the connector is custom-built (connector = custom), in which case they count."
   },
   "exit_results": {
@@ -180,7 +288,7 @@
         "/b2b/payment_terms",
         "/b2b/contextual_experience",
         "/checkout/customisation",
-        "/markets/strategy",
+        "/markets/topology/recommendation",
         "/markets/list",
         "/markets/per_market_customisation",
         "/payments/multi_currency_settlement",
@@ -198,7 +306,9 @@
       "status": "canonical",
       "condition": "B2B requires request-for-quote or prices negotiated per buyer (Shopify has no built-in RFQ)",
       "destination": "B2B architecture review: Shopify B2B draft-order review or a quote app (App Store category \"Pricing quotes\"), before build",
-      "inputs": ["/b2b/rfq_or_negotiated_pricing"]
+      "inputs": [
+        "/b2b/rfq_or_negotiated_pricing"
+      ]
     },
     {
       "id": "11.3",
@@ -206,7 +316,9 @@
       "status": "canonical",
       "condition": "More than 5 Shopify Markets at launch",
       "destination": "Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase",
-      "inputs": ["/markets/list"]
+      "inputs": [
+        "/markets/list"
+      ]
     },
     {
       "id": "11.4",
@@ -214,7 +326,9 @@
       "status": "canonical",
       "condition": "More than 6 distinct languages across all markets",
       "destination": "Larger Engagement: translation and content operations in the Discovery Phase",
-      "inputs": ["/markets/list/*/languages"]
+      "inputs": [
+        "/markets/list/*/languages"
+      ]
     },
     {
       "id": "11.5",
@@ -222,7 +336,10 @@
       "status": "canonical",
       "condition": "More than 3 variant options per product (Shopify limit), or more than 2,048 variants on one product",
       "destination": "Product model review: combined listings, a product options app for non-stock options, or splitting products",
-      "inputs": ["/catalogue/variant_options_max", "/catalogue/variants_per_product_max"]
+      "inputs": [
+        "/catalogue/variant_options_max",
+        "/catalogue/variants_per_product_max"
+      ]
     },
     {
       "id": "11.6",
@@ -230,7 +347,9 @@
       "status": "canonical",
       "condition": "Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility)",
       "destination": "Composable platform",
-      "inputs": ["/checkout/customisation"]
+      "inputs": [
+        "/checkout/customisation"
+      ]
     },
     {
       "id": "11.7",
@@ -238,7 +357,10 @@
       "status": "canonical",
       "condition": "More than 3 integrations at launch (counted per integration_definition)",
       "destination": "Larger Engagement: integration architecture in the Discovery Phase",
-      "inputs": ["/integrations/*/category", "/integrations/*/connector"]
+      "inputs": [
+        "/integrations/*/category",
+        "/integrations/*/connector"
+      ]
     },
     {
       "id": "11.8",
@@ -246,7 +368,9 @@
       "status": "canonical",
       "condition": "Regulated industry (pharma, alcohol, firearms, age-restricted, financial products, medical devices)",
       "destination": "Legal / compliance review",
-      "inputs": ["/compliance/regulated_industry"]
+      "inputs": [
+        "/compliance/regulated_industry"
+      ]
     },
     {
       "id": "11.9",
@@ -254,7 +378,9 @@
       "status": "canonical",
       "condition": "PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data)",
       "destination": "Security review (threat model mandatory)",
-      "inputs": ["/payments/pci_scope"]
+      "inputs": [
+        "/payments/pci_scope"
+      ]
     },
     {
       "id": "11.10",
@@ -262,7 +388,9 @@
       "status": "canonical",
       "condition": "GDPR / CCPA data export or deletion workflow required",
       "destination": "Legal sign-off on data-subject request handling",
-      "inputs": ["/compliance/gdpr_deletion_workflow"]
+      "inputs": [
+        "/compliance/gdpr_deletion_workflow"
+      ]
     },
     {
       "id": "11.11",
@@ -271,7 +399,10 @@
       "condition": "Grow retainer not signed on an M or L engagement",
       "destination": "Grow retainer to be signed before delivery starts; otherwise commercial adjustment",
       "internal_note": "Quote at list price +25% (never shown to the client)",
-      "inputs": ["/delivery/grow_retainer/signed", "/offer/code"]
+      "inputs": [
+        "/delivery/grow_retainer/signed",
+        "/offer/code"
+      ]
     },
     {
       "id": "11.12",
@@ -279,7 +410,10 @@
       "status": "canonical",
       "condition": "ERP or PIM with no existing Shopify connector and no iPaaS",
       "destination": "Separate integration scoping track (T3/T4)",
-      "inputs": ["/integrations/*/category", "/integrations/*/connector"]
+      "inputs": [
+        "/integrations/*/category",
+        "/integrations/*/connector"
+      ]
     },
     {
       "id": "11.13",
@@ -287,7 +421,10 @@
       "status": "canonical",
       "condition": "fulfilment_locations > 2 AND routing beyond Shopify's native order routing rules (a custom routing Function or the ERP / OMS decides)",
       "destination": "Multi-location inventory scoping (T3)",
-      "inputs": ["/shipping/fulfilment_locations", "/shipping/routing_rules"]
+      "inputs": [
+        "/shipping/fulfilment_locations",
+        "/shipping/routing_rules"
+      ]
     },
     {
       "id": "11.14",
@@ -308,7 +445,12 @@
       "status": "canonical",
       "condition": "Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks",
       "destination": "Re-scope to an MVP-first delivery before any sprint begins",
-      "inputs": ["/delivery/target_launch_date", "/delivery/kickoff_date", "/meta/created_at", "/offer/code"]
+      "inputs": [
+        "/delivery/target_launch_date",
+        "/delivery/kickoff_date",
+        "/meta/created_at",
+        "/offer/code"
+      ]
     },
     {
       "id": "11.16",
@@ -316,7 +458,10 @@
       "status": "canonical",
       "condition": "No single decision-maker, or budget approval authority is unclear",
       "destination": "Named client decision-maker and budget owner confirmed before the statement of work is signed",
-      "inputs": ["/delivery/decision_maker_confirmed", "/delivery/budget_authority_clear"]
+      "inputs": [
+        "/delivery/decision_maker_confirmed",
+        "/delivery/budget_authority_clear"
+      ]
     },
     {
       "id": "11.17",
@@ -324,7 +469,9 @@
       "status": "canonical",
       "condition": "Sensitive personal data is collected (health, age, biometric or financial data; special-category data under GDPR art. 9)",
       "destination": "Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build",
-      "inputs": ["/compliance/sensitive_data"]
+      "inputs": [
+        "/compliance/sensitive_data"
+      ]
     },
     {
       "id": "11.18",
@@ -332,7 +479,9 @@
       "status": "canonical",
       "condition": "Existing Shopify store uses retired or deprecated features (Shopify Scripts, checkout.liquid / additional scripts, online store script tags, legacy customer accounts, Stocky, Geolocation app)",
       "destination": "Deprecation migration scoped as its own workstream (e.g. Scripts to Functions, legacy to customer accounts)",
-      "inputs": ["/shopify/deprecated_features"]
+      "inputs": [
+        "/shopify/deprecated_features"
+      ]
     },
     {
       "id": "11.19",
@@ -340,7 +489,9 @@
       "status": "canonical",
       "condition": "B2B requirement that Shopify B2B does not support (subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards)",
       "destination": "B2B architecture review: app or process change before build",
-      "inputs": ["/b2b/unsupported_needs"]
+      "inputs": [
+        "/b2b/unsupported_needs"
+      ]
     },
     {
       "id": "11.20",
@@ -348,7 +499,9 @@
       "status": "canonical",
       "condition": "Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope",
       "destination": "Separate China discovery (questions § 3.5, discovery/docs/china-mainland.md); mainland China excluded from this engagement's scope",
-      "inputs": ["/markets/list"]
+      "inputs": [
+        "/markets/list"
+      ]
     },
     {
       "id": "11.21",
@@ -356,7 +509,9 @@
       "status": "canonical",
       "condition": "Mainland China is the only launch market — not part of the Merkle offering",
       "destination": "China discovery (discovery/docs/china-mainland.md)",
-      "inputs": ["/markets/list"]
+      "inputs": [
+        "/markets/list"
+      ]
     },
     {
       "id": "11.22",
@@ -365,7 +520,22 @@
       "condition": "More than 5 retail stores in scope",
       "destination": "Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team",
       "internal_note": "Never quote a per-store price: a store with its own line item gets compared to 40 hours. Quote programme and increment, or a rate-carded run team (never shown to the client)",
-      "inputs": ["/retail/store_count"]
+      "inputs": [
+        "/retail/store_count"
+      ]
+    },
+    {
+      "id": "11.23",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision — the engine still recommends a topology.",
+      "destination": "Market topology and legal-entity mapping workshop before the solution architecture is baselined.",
+      "inputs": [
+        "/markets/list",
+        "/meta/client/legal_entities",
+        "/markets/vat_countries",
+        "/markets/topology/confidence"
+      ]
     }
   ],
   "routes": [
@@ -376,7 +546,11 @@
       "brief": "larger-engagement-brief.md",
       "description": "The requirements go beyond the S/M/L offers. Merkle proposes an Enterprise Engagement that starts with a dedicated Discovery Phase; the approach drafted here is its starting point. The client deck is generated; Jira tickets are not, because the backlog is defined in the Discovery Phase."
     },
-    {"id": "no_bid", "label": "No bid", "description": "Merkle does not propose. Only the STOP report is produced."}
+    {
+      "id": "no_bid",
+      "label": "No bid",
+      "description": "Merkle does not propose. Only the STOP report is produced."
+    }
   ],
   "app_signals": [
     {
@@ -412,66 +586,138 @@
         "/post_purchase/cancellations/auto_approve"
       ]
     },
-    {"id": "warranty_claims", "label": "Warranty claims solution", "inputs": ["/post_purchase/warranty_claims"]},
+    {
+      "id": "warranty_claims",
+      "label": "Warranty claims solution",
+      "inputs": [
+        "/post_purchase/warranty_claims"
+      ]
+    },
     {
       "id": "back_in_stock_app",
       "label": "Back-in-stock alerts",
-      "inputs": ["/catalogue/inventory/out_of_stock_behaviour"]
+      "inputs": [
+        "/catalogue/inventory/out_of_stock_behaviour"
+      ]
     },
     {
       "id": "pre_order_app",
       "label": "Pre-orders",
-      "inputs": ["/catalogue/product_types", "/catalogue/inventory/out_of_stock_behaviour", "/catalogue/pre_orders/payment"]
+      "inputs": [
+        "/catalogue/product_types",
+        "/catalogue/inventory/out_of_stock_behaviour",
+        "/catalogue/pre_orders/payment"
+      ]
     },
     {
       "id": "product_options_app",
       "label": "Product options and personalisation",
-      "inputs": ["/catalogue/personalisation", "/catalogue/variant_options_max"]
+      "inputs": [
+        "/catalogue/personalisation",
+        "/catalogue/variant_options_max"
+      ]
     },
     {
       "id": "bundle_app",
       "label": "Bundles beyond Shopify Bundles",
-      "inputs": ["/catalogue/product_types", "/catalogue/bundles/requirements"]
+      "inputs": [
+        "/catalogue/product_types",
+        "/catalogue/bundles/requirements"
+      ]
     },
     {
       "id": "subscriptions_app",
       "label": "Subscriptions beyond Shopify Subscriptions",
-      "inputs": ["/catalogue/subscriptions/features", "/catalogue/subscriptions/approach"]
+      "inputs": [
+        "/catalogue/subscriptions/features",
+        "/catalogue/subscriptions/approach"
+      ]
     },
-    {"id": "b2b_quote_app", "label": "B2B quotes", "inputs": ["/b2b/rfq_or_negotiated_pricing"]},
-    {"id": "loyalty_app", "label": "Loyalty programme", "inputs": ["/loyalty/components"]},
-    {"id": "reviews_app", "label": "Product reviews", "inputs": ["/marketing/reviews/app", "/marketing/reviews/ugc"]},
+    {
+      "id": "b2b_quote_app",
+      "label": "B2B quotes",
+      "inputs": [
+        "/b2b/rfq_or_negotiated_pricing"
+      ]
+    },
+    {
+      "id": "loyalty_app",
+      "label": "Loyalty programme",
+      "inputs": [
+        "/loyalty/components"
+      ]
+    },
+    {
+      "id": "reviews_app",
+      "label": "Product reviews",
+      "inputs": [
+        "/marketing/reviews/app",
+        "/marketing/reviews/ugc"
+      ]
+    },
     {
       "id": "translation_app",
       "label": "Translation beyond Translate & Adapt",
-      "inputs": ["/markets/list", "/markets/translation_method", "/markets/translation_scope"]
+      "inputs": [
+        "/markets/list",
+        "/markets/translation_method",
+        "/markets/translation_scope"
+      ]
     },
-    {"id": "consent_app", "label": "Consent management platform", "inputs": ["/compliance/consent_approach"]},
-    {"id": "fraud_guarantee_app", "label": "Chargeback guarantee", "inputs": ["/checkout/chargeback_guarantee"]},
+    {
+      "id": "consent_app",
+      "label": "Consent management platform",
+      "inputs": [
+        "/compliance/consent_approach"
+      ]
+    },
+    {
+      "id": "fraud_guarantee_app",
+      "label": "Chargeback guarantee",
+      "inputs": [
+        "/checkout/chargeback_guarantee"
+      ]
+    },
     {
       "id": "sms_app",
       "label": "SMS marketing outside Shopify Messaging countries",
-      "inputs": ["/marketing/sms/enabled", "/marketing/sms/countries"]
+      "inputs": [
+        "/marketing/sms/enabled",
+        "/marketing/sms/countries"
+      ]
     },
     {
       "id": "delivery_scheduling_app",
       "label": "Delivery slots and pickup points",
-      "inputs": ["/shipping/delivery_methods", "/meta/client/hq_country"]
+      "inputs": [
+        "/shipping/delivery_methods",
+        "/meta/client/hq_country"
+      ]
     },
     {
       "id": "tracking_app",
       "label": "Server-side tracking beyond Shopify",
-      "inputs": ["/marketing/analytics/server_side"]
+      "inputs": [
+        "/marketing/analytics/server_side"
+      ]
     },
     {
       "id": "wishlist_app",
       "label": "Wishlist",
-      "inputs": ["/customers/account_features", "/design/interactive_patterns"]
+      "inputs": [
+        "/customers/account_features",
+        "/design/interactive_patterns"
+      ]
     },
     {
       "id": "invoicing_app",
       "label": "Invoicing and e-invoicing",
-      "inputs": ["/compliance/invoicing/issuer", "/compliance/invoicing/e_invoicing", "/markets/duties_ddp", "/markets/list/*/code"]
+      "inputs": [
+        "/compliance/invoicing/issuer",
+        "/compliance/invoicing/e_invoicing",
+        "/markets/duties_ddp",
+        "/markets/list/*/code"
+      ]
     }
   ],
   "resolved_questions": [

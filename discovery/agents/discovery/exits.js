@@ -148,6 +148,24 @@ const EVALUATORS = {
   },
 
   '11.22': (doc) => ((doc.retail?.store_count ?? 0) > RETAIL_STORES_INCLUDED ? `${doc.retail.store_count} retail stores (+Retail covers up to ${RETAIL_STORES_INCLUDED})` : null),
+
+  // Fires on missing facts, never on a missing decision: the topology evaluator
+  // still returns a recommendation, at confidence to_validate, with its assumptions.
+  '11.23': (doc) => {
+    const markets = doc.markets?.list ?? [];
+    if (markets.length <= 1) return null;
+    const topology = doc.markets?.topology;
+    if (!topology || topology.confidence !== 'to_validate') return null;
+    const entities = doc.meta?.client?.legal_entities ?? [];
+    const unmapped = markets.filter((m) => !m.selling_entity).length;
+    const reasons = [];
+    if (entities.length > 1 && unmapped) reasons.push(`${entities.length} legal entities recorded and ${unmapped} of ${markets.length} markets have no selling entity`);
+    if (markets.some((m) => !m.assortment || m.assortment === 'not_sure')) reasons.push('the range per market is unknown');
+    if (!(doc.markets?.vat_countries ?? []).length) reasons.push('the tax-registration footprint is unknown');
+    if (!reasons.length) return null;
+    return `Topology recommended as ${topology.recommendation} at confidence to_validate — ${reasons.join('; ')}`;
+  },
+
 };
 
 /**

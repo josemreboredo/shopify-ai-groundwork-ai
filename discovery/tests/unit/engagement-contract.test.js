@@ -24,7 +24,7 @@ const byId      = new Map(questions.map((q) => [q.id, q]));
 const subsectionIds = new Set(questionBank.sections.flatMap((s) => s.subsections.map((ss) => ss.id)));
 
 /** Inputs set by the engine rather than answered in the questionnaire. */
-const isComputed = (input) => input.startsWith('/offer/') || input === '/meta/created_at';
+const isComputed = (input) => input.startsWith('/offer/') || input.startsWith('/markets/topology') || input === '/meta/created_at';
 
 /** True when an answer pointer and a rule input overlap (same field, ancestor or descendant). */
 const covers = (answer, input) =>
@@ -234,6 +234,7 @@ describe('Shopify knowledge (question bank 1.1.0)', () => {
       assert.ok(r.docs.startsWith('https://'), r.feature);
       for (const input of r.inputs) {
         assert.ok(rule.inputs.includes(input), `${r.feature}: ${input} missing from 11.1 inputs`);
+        if (isComputed(input)) continue; // derived by the engine (topology), not answered
         assert.ok(feeders.some((p) => covers(p, input)), `${r.feature}: no question feeding 11.1 captures ${input}`);
       }
     }

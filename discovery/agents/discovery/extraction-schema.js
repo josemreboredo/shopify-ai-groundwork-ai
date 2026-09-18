@@ -20,7 +20,7 @@ import { engagementSchema, offering } from '../../schema/index.js';
 export const MAX_OPTIONAL_PARAMETERS = 24;
 
 /** Top-level fields the engine computes — never extracted. */
-export const COMPUTED_POINTERS = ['/schema_version', '/offer', '/exits', '/approach', '/provenance', '/notes', '/meta/source', '/delivery/go'];
+export const COMPUTED_POINTERS = ['/schema_version', '/offer', '/exits', '/approach', '/provenance', '/notes', '/meta/source', '/delivery/go', '/markets/topology', '/markets/cross_border_model'];
 
 // ─── Extraction ───────────────────────────────────────────────────────────────
 

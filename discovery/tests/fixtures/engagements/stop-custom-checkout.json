@@ -151,7 +151,148 @@
     "vat_countries": [
       "GB",
       "IE"
-    ]
+    ],
+    "topology": {
+      "recommendation": "single_store_markets",
+      "confidence": "to_validate",
+      "triggers": [],
+      "rejected": [
+        {
+          "option": "expansion_stores",
+          "reason": "Rejected: nothing in the answers separates the markets by entity, range or team, so a second store would duplicate every catalogue, theme and app change for no benefit (and requires Shopify Plus — https://help.shopify.com/en/manual/organization-settings/expansion-stores)"
+        },
+        {
+          "option": "hybrid",
+          "reason": "Rejected: no market diverges enough to leave the core store"
+        },
+        {
+          "option": "single_store_managed_markets",
+          "reason": "Eligible, but rejected: the client keeps its own tax registrations, so the fees buy nothing it is not already doing"
+        }
+      ],
+      "assumptions": [
+        {
+          "about": "Which company invoices the customer in each market",
+          "assumed": "All 2 markets sell through the GB entity",
+          "impact_if_wrong": "A second selling entity moves the recommendation towards expansion stores and requires Shopify Plus",
+          "question_id": "Q3.1.1"
+        },
+        {
+          "about": "How the range differs by market",
+          "assumed": "The same range everywhere, or a subset of it",
+          "impact_if_wrong": "A deliberately different range in several markets moves the recommendation to hybrid or expansion stores",
+          "question_id": "Q3.1.1"
+        },
+        {
+          "about": "Who runs each market day to day",
+          "assumed": "One central team runs every market",
+          "impact_if_wrong": "Local teams with their own release cycle and data are the strongest non-technical argument for separate stores",
+          "question_id": "Q3.1.1"
+        },
+        {
+          "about": "Whether the business will hold its own tax registrations",
+          "assumed": "The business keeps its own registrations and Shopify Markets handles duties and taxes",
+          "impact_if_wrong": "A preference for a partner as legal seller makes a merchant of record the cross-border answer",
+          "question_id": "Q3.4.13"
+        },
+        {
+          "about": "Where the stock that serves each market sits",
+          "assumed": "Fulfilment from GB only",
+          "impact_if_wrong": "Stock inside a destination region changes the duties position, the tax schemes available and Managed Markets eligibility",
+          "question_id": "Q5.1.3"
+        },
+        {
+          "about": "App requirements that cannot coexist on one store",
+          "assumed": "No market needs an app the others cannot live with (apps are installed store-wide)",
+          "impact_if_wrong": "One incompatible app requirement is enough to force a separate store for that market"
+        }
+      ],
+      "open_inputs": [
+        {
+          "question_id": "Q3.1.1",
+          "pointer": "/markets/list/*/selling_entity",
+          "swing": "high",
+          "why_it_matters": "Which company invoices in each market decides between one store and separate stores, and whether Shopify Plus is required"
+        },
+        {
+          "question_id": "Q3.1.1",
+          "pointer": "/markets/list/*/assortment",
+          "swing": "high",
+          "why_it_matters": "A deliberately different range per market is the difference between a market catalog and a second store"
+        },
+        {
+          "question_id": "Q3.1.1",
+          "pointer": "/markets/list/*/run_by",
+          "swing": "medium",
+          "why_it_matters": "Local teams that publish independently need separated admins and release cycles"
+        },
+        {
+          "question_id": "Q3.4.13",
+          "pointer": "/markets/tax_registration_appetite",
+          "swing": "medium",
+          "why_it_matters": "Decides whether the client stays the seller of record or hands that to a partner"
+        },
+        {
+          "question_id": "Q5.1.3",
+          "pointer": "/shipping/fulfilment_countries",
+          "swing": "low",
+          "why_it_matters": "Where stock sits changes duties, tax schemes and Managed Markets eligibility"
+        }
+      ],
+      "managed_markets": {
+        "status": "rejected_on_economics",
+        "conditions": [
+          {
+            "condition": "The business is based in the continental United States, or is an eligible store in Canada or the United Kingdom",
+            "met": true,
+            "evidence": "Headquarters in GB",
+            "source": "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations"
+          },
+          {
+            "condition": "The store is on the Basic plan or higher",
+            "met": true,
+            "evidence": "Target plan plus",
+            "source": "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations"
+          },
+          {
+            "condition": "The store uses Shopify Payments",
+            "met": true,
+            "evidence": "Providers: Shopify Payments",
+            "source": "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations"
+          },
+          {
+            "condition": "At least one fulfilment location in the home country",
+            "met": true,
+            "evidence": "No fulfilment countries recorded — assumed to be the home country",
+            "source": "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations"
+          },
+          {
+            "condition": "No B2B orders — \"B2B orders aren't supported by Managed Markets\"",
+            "met": true,
+            "evidence": "No B2B in scope",
+            "source": "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations"
+          },
+          {
+            "condition": "No subscriptions — \"Managed Markets doesn't support subscriptions\"",
+            "met": true,
+            "evidence": "No subscription products",
+            "source": "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations"
+          },
+          {
+            "condition": "No multiple business entities — \"Managed Markets doesn't support multiple business entities\"",
+            "met": true,
+            "evidence": "One selling entity",
+            "source": "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations"
+          }
+        ],
+        "cost_signal": {
+          "fee_pct": 4.75,
+          "basis": "3.25% Managed Markets fee + 1.5% currency conversion, on top of Shopify Payments processing (https://help.shopify.com/en/manual/international/managed-markets/overview)"
+        }
+      },
+      "stated_preference": "shopify_markets"
+    },
+    "cross_border_model": "self_managed_markets"
   },
   "catalogue": {
     "sku_count": 120,
@@ -239,10 +380,22 @@
       {
         "rule_id": "11.6",
         "result": "STOP",
-        "detail": "The client wants a single-page checkout with the product configurator embedded, which Checkout Extensibility cannot render.",
+        "detail": "Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility)",
         "destination": "Composable platform",
         "source": "rule",
-        "evidence": "Q4.2.1: checkout customisation = fully custom checkout UI.",
+        "evidence": "Fully custom checkout UI requested",
+        "resolution": {
+          "status": "open",
+          "owner": "Lead Consultant"
+        }
+      },
+      {
+        "rule_id": "11.23",
+        "result": "FLAG",
+        "detail": "More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision — the engine still recommends a topology.",
+        "destination": "Market topology and legal-entity mapping workshop before the solution architecture is baselined.",
+        "source": "rule",
+        "evidence": "Topology recommended as single_store_markets at confidence to_validate — the range per market is unknown",
         "resolution": {
           "status": "open",
           "owner": "Lead Consultant"

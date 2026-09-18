@@ -566,6 +566,27 @@
                   "subdomain",
                   "country_domain"
                 ]
+              },
+              "selling_entity": {
+                "type": "string",
+                "description": "The legal entity that sells and invoices the customer in this market (a name from /meta/client/legal_entities). Business fact, not an architecture choice."
+              },
+              "assortment": {
+                "enum": [
+                  "same",
+                  "subset",
+                  "different",
+                  "not_sure"
+                ],
+                "description": "How this market's range relates to the primary market: identical, a subset of it, or a deliberately different range."
+              },
+              "run_by": {
+                "enum": [
+                  "central",
+                  "local_team",
+                  "not_sure"
+                ],
+                "description": "Who runs the market day to day: one central team, or a local team that sets its own prices, campaigns and content."
               }
             }
           }
@@ -691,6 +712,258 @@
         },
         "product_restrictions_by_market": {
           "type": "boolean"
+        },
+        "tax_registration_appetite": {
+          "enum": [
+            "own_registrations",
+            "prefer_partner",
+            "mixed",
+            "not_sure"
+          ],
+          "description": "Whether the business intends to hold and file its own tax registrations in destination countries, or would rather a partner be the legal seller. Business appetite, not an architecture choice."
+        },
+        "topology": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "DERIVED by the topology evaluator (never answered): how many stores the markets run on. See discovery/agents/discovery/topology.js.",
+          "required": [
+            "recommendation",
+            "confidence"
+          ],
+          "properties": {
+            "recommendation": {
+              "enum": [
+                "single_store_markets",
+                "expansion_stores",
+                "hybrid",
+                "single_store_managed_markets"
+              ]
+            },
+            "confidence": {
+              "enum": [
+                "high",
+                "medium",
+                "to_validate"
+              ]
+            },
+            "triggers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "criterion",
+                  "evidence"
+                ],
+                "properties": {
+                  "criterion": {
+                    "type": "string"
+                  },
+                  "weight": {
+                    "type": "integer"
+                  },
+                  "evidence": {
+                    "type": "string"
+                  },
+                  "markets": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/country"
+                    }
+                  },
+                  "question_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "rejected": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "option",
+                  "reason"
+                ],
+                "properties": {
+                  "option": {
+                    "enum": [
+                      "single_store_markets",
+                      "expansion_stores",
+                      "hybrid",
+                      "single_store_managed_markets"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "assumptions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "about",
+                  "assumed",
+                  "impact_if_wrong"
+                ],
+                "properties": {
+                  "about": {
+                    "type": "string"
+                  },
+                  "assumed": {
+                    "type": "string"
+                  },
+                  "impact_if_wrong": {
+                    "type": "string"
+                  },
+                  "question_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "open_inputs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "question_id",
+                  "why_it_matters"
+                ],
+                "properties": {
+                  "question_id": {
+                    "type": "string"
+                  },
+                  "pointer": {
+                    "type": "string"
+                  },
+                  "why_it_matters": {
+                    "type": "string"
+                  },
+                  "swing": {
+                    "enum": [
+                      "high",
+                      "medium",
+                      "low"
+                    ]
+                  }
+                }
+              }
+            },
+            "separate_store_markets": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/country"
+              },
+              "description": "Markets that leave the core store under a hybrid recommendation."
+            },
+            "managed_markets": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "status"
+              ],
+              "properties": {
+                "status": {
+                  "enum": [
+                    "eligible",
+                    "not_eligible",
+                    "recommended",
+                    "rejected_on_economics"
+                  ]
+                },
+                "conditions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "condition",
+                      "met",
+                      "source"
+                    ],
+                    "properties": {
+                      "condition": {
+                        "type": "string"
+                      },
+                      "met": {
+                        "type": "boolean"
+                      },
+                      "evidence": {
+                        "type": "string"
+                      },
+                      "source": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "cost_signal": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "orders_per_month": {
+                      "type": "integer"
+                    },
+                    "average_order_value": {
+                      "type": "number"
+                    },
+                    "currency": {
+                      "$ref": "#/$defs/currency"
+                    },
+                    "fee_pct": {
+                      "type": "number"
+                    },
+                    "per_order": {
+                      "type": "number"
+                    },
+                    "per_month": {
+                      "type": "number"
+                    },
+                    "basis": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "stated_preference": {
+              "enum": [
+                "shopify_markets",
+                "expansion_stores",
+                "hybrid"
+              ]
+            },
+            "disagreement": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "stated",
+                "computed",
+                "why_computed"
+              ],
+              "properties": {
+                "stated": {
+                  "type": "string"
+                },
+                "computed": {
+                  "type": "string"
+                },
+                "why_computed": {
+                  "type": "string"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -1489,6 +1762,14 @@
               "not_sure"
             ]
           }
+        },
+        "fulfilment_countries": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/country"
+          },
+          "description": "Country of each location that fulfils online orders (one entry per country, not per location)."
         }
       }
     },
@@ -1823,6 +2104,10 @@
               "not_sure"
             ]
           }
+        },
+        "own_operation": {
+          "type": "boolean",
+          "description": "The wholesale business is run by its own team, with its own targets or P&L."
         }
       }
     },

@@ -122,10 +122,10 @@ test('golden fixtures produce the expected outcomes', () => {
     'acme-watches.json': {
       code: 'M', go: true,
       gates: ['markets', 'multi_currency', 'b2b', 'integration', 'sku_complexity', 'migration'],
-      exits: ['11.10', '11.14'],
+      exits: ['11.10', '11.14', '11.23'],
     },
     'foundation-minimal.json': { code: 'S', go: true, gates: [], exits: [] },
-    'stop-custom-checkout.json': { code: 'M', go: false, gates: ['markets', 'multi_currency'], exits: ['11.6'] },
+    'stop-custom-checkout.json': { code: 'M', go: false, gates: ['markets', 'multi_currency'], exits: ['11.6', '11.23'] },
   };
 
   for (const [file, want] of Object.entries(expected)) {

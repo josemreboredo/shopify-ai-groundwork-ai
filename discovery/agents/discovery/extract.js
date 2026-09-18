@@ -110,7 +110,9 @@ export function assembleAnswers(pairs) {
 /**
  * Flatten answers into { pointer, value_json } pairs (inverse of assembleAnswers):
  * objects are walked, arrays and scalars become values. Used to replay recorded
- * engagements in tests.
+ * engagements in tests. Fields the engine computes (the offer, the exits, the
+ * market topology) are skipped: they are outputs of a recorded engagement, never
+ * answers to replay.
  *
  * @param {object} answers
  * @returns {{ pointer: string, value_json: string }[]}
@@ -118,6 +120,7 @@ export function assembleAnswers(pairs) {
 export function flattenAnswers(answers) {
   const pairs = [];
   const walk = (pointer, value) => {
+    if (isComputed(pointer)) return;
     const node = schemaNodeAt(toSchemaPointer(pointer));
     const isLeafObject = node && (node.required?.includes('amount') || node.required?.includes('currency'));
     if (value && typeof value === 'object' && !Array.isArray(value) && !isLeafObject) {

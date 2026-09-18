@@ -489,14 +489,14 @@
 
 ### 3.1 Markets at launch
 
-**Q3.1.1** — Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain, and how prices are set (the store's base currency, auto-converted, a manual price list, or display only). *(required)*
-*List each country or group of countries that shares prices and currency. Mainland China is handled in a separate China discovery.*
+**Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required)*
+*One row per country. Leave a cell blank if you do not know it — we will come back to it.*
 
-| code | currency | languages | domain | price strategy |
-|---|---|---|---|---|
-| CH | CHF | de, fr, it | ch.acme-watches.example | manual |
-| DE | EUR | de | de.acme-watches.example | manual |
-| AT | EUR | de | at.acme-watches.example | manual |
+| code | currency | languages | domain | price strategy | selling entity | assortment | run by |
+|---|---|---|---|---|---|---|---|
+| CH | CHF | de, fr, it | ch.acme-watches.example | manual | ACME Watches AG | same | central |
+| DE | EUR | de | de.acme-watches.example | manual | ACME Watches AG | same | central |
+| AT | EUR | de | at.acme-watches.example | manual | ACME Watches AG | same | central |
 
 **Q3.1.2** — Which are the primary markets (one or more country or market codes)? *(required)*
 *The markets that lead revenue and launch priority, e.g. US and EU for a global brand.*
@@ -507,8 +507,8 @@
 
 > Answer: FR; IT
 
-**Q3.1.4** — Operating model: one store with Shopify Markets, expansion stores, or hybrid? *(required · consultant)*
-*Expansion stores suit teams that run each region separately.*
+**Q3.1.4** — Stated preference only — does the client already have a view on running all countries from one store or giving some countries their own store? Record it as their view, not as the answer. *(optional · consultant)*
+*Recorded as a stated preference. It never decides the recommendation; where it differs, the closing document argues the gap.*
 
 *(tick one)*
 - [x] shopify markets
@@ -523,15 +523,6 @@
 - [ ] country selector only
 - [ ] suggest banner
 - [ ] none
-
-**Q3.1.6** — Who is merchant of record for international orders? *(required · consultant)*
-*Self-managed Markets (the client registers and remits tax, Shopify Tax) or Shopify Managed Markets (Shopify is merchant of record).*
-
-*(tick one)*
-- [ ] self managed markets
-- [ ] managed markets
-- [ ] third party mor app
-- [ ] undecided
 
 **Q3.1.7** — Should any market have its own theme content, section order, checkout or customer-account settings? *(required)*
 
@@ -682,6 +673,15 @@
 - [ ] Spain: VeriFactu
 - [ ] Other
 - [ ] None
+- [ ] Not sure yet
+
+**Q3.4.13** — If selling in a country meant registering for tax there and filing returns, would you take that on yourself, or would you rather a partner were the legal seller for those orders? *(recommended)*
+*Answer for the countries you sell to but are not registered in today.*
+
+*(tick one)*
+- [x] own registrations
+- [ ] prefer partner
+- [ ] mixed
 - [ ] Not sure yet
 
 ### 3.5 Mainland China
@@ -968,10 +968,10 @@
 
 > Answer: n/a (skipped)
 
-**Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders)? *(required)*
+**Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders), and in which countries are they? *(required)*
 *Physical stores that sell in person are counted separately in § 5.6.*
 
-> Answer: 1
+> Answer: 1 — CH
 
 **Q5.1.4** — How should Shopify pick the fulfilling location? *(required)*
 *Shopify's order routing rules: minimise split shipments, stay within the market, closest location, ranked locations, location metafields. Anything else needs a custom routing function or the ERP / OMS.*
@@ -1452,6 +1452,12 @@
 - [ ] Shipping quoted after the order
 - [ ] None
 - [ ] Not sure yet
+
+**Q6.2.14** — Is the wholesale side of the business run by its own team, with its own targets or its own profit and loss? *(recommended)*
+*We are asking about how the business is organised, not about the website.*
+
+- [ ] Yes
+- [x] No
 
 ### 6.3 Loyalty & segmentation
 

@@ -763,7 +763,8 @@
         "/meta/client/legal_entities"
       ],
       "feeds": [
-        "exit:11.1"
+        "exit:11.1",
+        "exit:11.23"
       ],
       "shopify": {
         "native": [
@@ -2080,8 +2081,8 @@
       "priority": "required",
       "audience": "client",
       "answer_type": "table",
-      "text": "Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain, and how prices are set (the store's base currency, auto-converted, a manual price list, or display only).",
-      "help": "List each country or group of countries that shares prices and currency. Mainland China is handled in a separate China discovery.",
+      "text": "Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day.",
+      "help": "One row per country. Leave a cell blank if you do not know it — we will come back to it.",
       "maps_to": [
         "/markets/list"
       ],
@@ -2093,7 +2094,8 @@
         "exit:11.1",
         "app:translation_app",
         "exit:11.20",
-        "exit:11.21"
+        "exit:11.21",
+        "exit:11.23"
       ],
       "shopify": {
         "native": [
@@ -2116,13 +2118,22 @@
         }
       },
       "teach": {
-        "why": "The market list sets everything downstream: currencies, domains, languages, tax registrations and the plan. It is also the trigger for the stop rules — more than five markets, or more than six languages, moves the work to a Discovery Phase.",
+        "why": "Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range and owner columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.",
         "limits": "Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Mainland China is excluded from this engagement and routed to a separate China discovery.",
         "sources": [
           "https://help.shopify.com/en/manual/markets/getting-started/market-types",
           "https://help.shopify.com/en/manual/international/languages",
           "https://help.shopify.com/en/manual/markets/customizations/local-currencies"
         ]
+      },
+      "why_it_matters": "These rows decide how many Shopify stores your business needs. Countries that share one selling company, one range and one team can run on a single store; countries that differ on those points usually need their own store, which multiplies the build, the running cost and the work of every future change.",
+      "what_good_looks_like": "One row per launch country, with the invoicing company named even when it is the same everywhere, and the range marked same, subset or different. A vague answer sounds like \"Europe\" or \"the usual countries\". The follow-up that sharpens it: \"which company name appears on the invoice a customer in that country receives?\"",
+      "who_can_answer": "Country manager or commercial lead for the range and the team; the controller for the invoicing company.",
+      "unknown_path": {
+        "fallback": "Markets with no selling entity are assumed to sell through the headquarters entity (Q1.1.2); a blank assortment is assumed to be the same range as the primary market; a blank owner is assumed to be the central team.",
+        "assumption": "One selling entity, one range, one team across all markets — the single-store case.",
+        "confidence": "to_validate",
+        "resolve_by": "Name the invoicing company per country with the controller, and the range owner per country with the commercial lead."
       }
     },
     {
@@ -2164,16 +2175,13 @@
     {
       "id": "Q3.1.4",
       "subsection": "3.1",
-      "priority": "required",
+      "priority": "optional",
       "audience": "consultant",
       "answer_type": "enum",
-      "text": "Operating model: one store with Shopify Markets, expansion stores, or hybrid?",
-      "help": "Expansion stores suit teams that run each region separately.",
+      "text": "Stated preference only — does the client already have a view on running all countries from one store or giving some countries their own store? Record it as their view, not as the answer.",
+      "help": "Recorded as a stated preference. It never decides the recommendation; where it differs, the closing document argues the gap.",
       "maps_to": [
         "/markets/strategy"
-      ],
-      "feeds": [
-        "exit:11.1"
       ],
       "shopify": {
         "native": [
@@ -2191,7 +2199,7 @@
         }
       },
       "teach": {
-        "why": "One store with Shopify Markets is the default. Expansion stores are a Plus organisation feature and nothing syncs between them, so this answer sets both the plan and the client's operating cost for years.",
+        "why": "This is the one question in the bank that asks for an opinion rather than a fact, and it is kept only so the closing document can address the client's own view. The topology itself is derived from the business facts in Q3.1.1, Q1.1.6, Q3.4.2, Q3.4.13, Q5.1.3 and Q6.2.14.",
         "options": [
           {
             "option": "One store with Shopify Markets",
@@ -2204,12 +2212,22 @@
             "cons": "Plus only; products, collections, inventory and settings are not synced; apps billed per store, theme licences not shared; every change is done more than once"
           }
         ],
-        "limits": "Expansion stores require Shopify Plus: one main store plus up to nine expansion stores on the contract. Store settings, products, collections and inventory are not synced between them; apps are billed per store and theme licences are not shared. Assigning a separate legal entity to a market is also Plus only.",
+        "limits": "Never let this answer stand in for the analysis. Expansion stores need Shopify Plus and duplicate every catalogue, theme and app change; one store with Markets keeps them together but shares one theme, one app estate and one admin.",
         "sources": [
           "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
           "https://help.shopify.com/en/manual/markets/customizations/business-entities"
         ]
-      }
+      },
+      "why_it_matters": "If you already have a view, we will say where the evidence agrees with it and where it does not, rather than quietly designing around it.",
+      "what_good_looks_like": "A view the client actually holds, with the reason they hold it. Leave it blank when they have none — a blank is better than a guess.",
+      "who_can_answer": "Ecommerce director or CTO, where one has already formed a view.",
+      "unknown_path": {
+        "fallback": "No stated preference is recorded and the computed recommendation stands alone.",
+        "assumption": "None — absence of a preference costs nothing.",
+        "confidence": "high",
+        "resolve_by": "Nothing to resolve; this is an opinion, not a fact."
+      },
+      "derived_from": []
     },
     {
       "id": "Q3.1.5",
@@ -2255,59 +2273,6 @@
         "sources": [
           "https://help.shopify.com/en/manual/international/automatic-redirection",
           "https://help.shopify.com/en/manual/international/geolocation"
-        ]
-      }
-    },
-    {
-      "id": "Q3.1.6",
-      "subsection": "3.1",
-      "priority": "required",
-      "audience": "consultant",
-      "answer_type": "enum",
-      "text": "Who is merchant of record for international orders?",
-      "help": "Self-managed Markets (the client registers and remits tax, Shopify Tax) or Shopify Managed Markets (Shopify is merchant of record).",
-      "maps_to": [
-        "/markets/cross_border_model"
-      ],
-      "shopify": {
-        "native": [
-          {
-            "feature": "Managed Markets (Shopify as merchant of record)",
-            "plan": "basic",
-            "plan_note": "US and certain CA/UK stores; Shopify Payments; no B2B; subscriptions domestic only",
-            "docs": "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations"
-          },
-          {
-            "feature": "Shopify Tax",
-            "plan": "basic",
-            "docs": "https://help.shopify.com/en/manual/taxes/shopify-tax"
-          }
-        ],
-        "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
-        }
-      },
-      "teach": {
-        "why": "This is where consultants most often over-promise. Managed Markets makes Global-e the merchant of record and removes foreign tax registration, but only United States, Canadian and United Kingdom businesses on Shopify Payments qualify. Everyone else self-manages.",
-        "options": [
-          {
-            "option": "Managed Markets (Global-e is merchant of record)",
-            "pros": "No foreign tax registration or remittance; duties calculated, collected and remitted with HS codes assigned automatically; more local payment methods; discounted DHL, FedEx and UPS labels; quick to switch on",
-            "cons": "US, Canada and UK businesses only, Shopify Payments required; 3.5% (3.25% Plus) plus 1.5% FX on top of processing; no B2B or subscriptions; no checkout redirects; duties and VAT are non-refundable once the order is fulfilled"
-          },
-          {
-            "option": "Self-managed on Shopify Markets",
-            "pros": "Open to any merchant on any plan; full checkout and order control; B2B and subscriptions work normally; 0.85% with Shopify Payments (1.5% with other providers) on orders with duties calculated",
-            "cons": "The client registers, files and remits tax in every country that requires it — Shopify does not; duties shown are estimates; the client supplies HS codes; DDP labels through Shopify's own carrier accounts are limited to Canada Post (US destinations) and DHL Express"
-          }
-        ],
-        "limits": "Managed Markets eligibility: business in the continental US, or certain Canadian and UK stores; Shopify Payments required; store currency must be the home country's default currency; a non-PO-box location and a fulfilment location in the home country. Not supported: B2B orders, subscriptions (domestic only), zero-value orders, checkout redirects, manual bundles, and order editing after a label is printed. Cost stacks: 3.5% (3.25% on Plus) plus a 1.5% FX fee, on top of payment processing. Self-managed is the alternative for every other client — Shopify calculates and collects, but never files or remits; the client registers where required.",
-        "sources": [
-          "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations",
-          "https://help.shopify.com/en/manual/international/managed-markets/overview",
-          "https://help.shopify.com/en/manual/taxes/registration"
         ]
       }
     },
@@ -3031,6 +2996,49 @@
         "limits": "Shopify's native VAT invoices for EU and UK orders are documents, not e-invoices, and do not satisfy any of these schemes. Confirm each obligation with the client's finance team or tax adviser — Merkle does not give tax advice.",
         "sources": [
           "https://help.shopify.com/en/manual/taxes/shopify-tax/vat-invoices"
+        ]
+      }
+    },
+    {
+      "id": "Q3.4.13",
+      "subsection": "3.4",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "enum",
+      "text": "If selling in a country meant registering for tax there and filing returns, would you take that on yourself, or would you rather a partner were the legal seller for those orders?",
+      "help": "Answer for the countries you sell to but are not registered in today.",
+      "why_it_matters": "This decides who carries the tax and customs liability on cross-border orders. Keeping it yourself means registering, filing and remitting in each country; handing it to a partner removes that work and that risk, and costs a percentage of every international order.",
+      "what_good_looks_like": "A position the finance function actually holds, ideally with the countries they will and will not register in. A vague answer sounds like \"whatever is easiest\". The follow-up that sharpens it: \"who files your VAT returns today, and how many countries is that?\"",
+      "who_can_answer": "Controller, head of finance or the external tax adviser.",
+      "unknown_path": {
+        "fallback": "Assumed own_registrations: the business keeps its registrations and Shopify Markets handles duties and taxes itself.",
+        "assumption": "The client is willing to register where it sells.",
+        "confidence": "to_validate",
+        "resolve_by": "One conversation with the controller about where they file today and where they refuse to."
+      },
+      "maps_to": [
+        "/markets/tax_registration_appetite"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Shopify Tax and Basic Tax registrations per region",
+            "plan": "basic",
+            "docs": "https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com",
+          "edition": "Spring '26"
+        }
+      },
+      "teach": {
+        "why": "Together with the market list and the current registrations (Q3.4.2), this decides the cross-border model: self-managed duties on Shopify Markets, or a merchant of record. It replaces the retired Q3.1.6, which asked the client to name a model they had never heard of.",
+        "limits": "Managed Markets is the only merchant-of-record route inside Shopify, and it is open only to businesses in the continental United States and certain stores in Canada and the United Kingdom, on Shopify Payments, and it does not support B2B. For everyone else the honest options are self-managed registrations or a third-party merchant-of-record app.",
+        "sources": [
+          "https://help.shopify.com/en/manual/markets/managed-markets/requirements",
+          "https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes"
         ]
       }
     },
@@ -4247,11 +4255,12 @@
       "subsection": "5.1",
       "priority": "required",
       "audience": "client",
-      "answer_type": "integer",
-      "text": "How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders)?",
+      "answer_type": "group",
+      "text": "How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders), and in which countries are they?",
       "help": "Physical stores that sell in person are counted separately in § 5.6.",
       "maps_to": [
-        "/shipping/fulfilment_locations"
+        "/shipping/fulfilment_locations",
+        "/shipping/fulfilment_countries"
       ],
       "feeds": [
         "exit:11.1",
@@ -4278,6 +4287,15 @@
         "sources": [
           "https://help.shopify.com/en/manual/fulfillment/setup/locations/setup"
         ]
+      },
+      "why_it_matters": "Where stock sits decides what a customer pays at the border, which tax schemes are open to you, and whether a country can be served from the same store as the others or needs its own operation.",
+      "what_good_looks_like": "A count and the country of each location, including 3PL sites. \"Three warehouses\" without countries is not usable — ask which countries they are in.",
+      "who_can_answer": "Head of logistics or operations.",
+      "unknown_path": {
+        "fallback": "Locations are assumed to sit in the headquarters country (Q1.1.2), which keeps cross-border duties and the tax position as they are today.",
+        "assumption": "All fulfilment happens from the home country.",
+        "confidence": "medium",
+        "resolve_by": "A list of warehouse and 3PL sites from operations."
       }
     },
     {
@@ -6403,6 +6421,59 @@
         "sources": [
           "https://help.shopify.com/en/manual/b2b/checkout-and-orders/shipping-methods",
           "https://shopify.dev/docs/apps/build/functions"
+        ]
+      }
+    },
+    {
+      "id": "Q6.2.14",
+      "subsection": "6.2",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "boolean",
+      "text": "Is the wholesale side of the business run by its own team, with its own targets or its own profit and loss?",
+      "help": "We are asking about how the business is organised, not about the website.",
+      "why_it_matters": "A wholesale business with its own team, targets and customers usually wants to move at its own pace — its own campaigns, its own releases, its own data. That is the difference between wholesale living alongside the consumer store and wholesale having a store of its own.",
+      "what_good_looks_like": "A clear yes or no about the organisation. The follow-up that sharpens it: \"who decides wholesale prices and campaigns, and do they report to the same person as ecommerce?\"",
+      "who_can_answer": "Sales director, wholesale lead or the head of ecommerce.",
+      "unknown_path": {
+        "fallback": "Assumed false: wholesale is run by the same team as the consumer business, which keeps it on the same store.",
+        "assumption": "One team runs both sides.",
+        "confidence": "medium",
+        "resolve_by": "One question to the commercial lead about who owns the wholesale number."
+      },
+      "maps_to": [
+        "/b2b/own_operation"
+      ],
+      "ask_if": [
+        {
+          "pointer": "/meta/client/business_model",
+          "equals": "b2b"
+        },
+        {
+          "pointer": "/meta/client/business_model",
+          "equals": "hybrid"
+        }
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "B2B on one store: companies, locations and catalogs",
+            "plan": "basic",
+            "docs": "https://help.shopify.com/en/manual/b2b"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com",
+          "edition": "Spring '26"
+        }
+      },
+      "teach": {
+        "why": "Native B2B runs on the same store as the consumer business, which is the cheaper answer whenever one team runs both. A separate wholesale team with its own P&L is the documented reason Shopify gives for an expansion store, so this answer is one of the criteria that moves the topology to a hybrid.",
+        "limits": "An expansion store needs Shopify Plus, and nothing is shared between stores — products, inventory, apps and themes are all maintained twice. Weigh it against keeping B2B on one store with its own catalogs.",
+        "sources": [
+          "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
+          "https://help.shopify.com/en/manual/b2b/getting-started/plan-features"
         ]
       }
     },

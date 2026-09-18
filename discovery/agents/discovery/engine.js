@@ -13,6 +13,7 @@ import { hasConsent, redactQuestionnaire, InputRejectedError } from './input.js'
 import { extractAnswers, flattenAnswers } from './extract.js';
 import { isNotSure } from './values.js';
 import { classifyOffer } from './classify.js';
+import { evaluateTopology } from './topology.js';
 import { evaluateExits } from './exits.js';
 import { draftApproach } from './approach.js';
 import { planSuggestion } from './plan.js';
@@ -107,9 +108,22 @@ export function answerValidator(options) {
  * @param {{ today: string, clientSlug?: string }} options
  * @returns {object}  Engagement without approach content (risks.open_items only)
  */
+/** Who is merchant of record, derived from the topology and the client's tax appetite. */
+function crossBorderModel(doc, topology) {
+  if (topology.recommendation === 'single_store_managed_markets') return 'managed_markets';
+  if (doc.markets?.tax_registration_appetite === 'prefer_partner') return 'third_party_mor_app';
+  return 'self_managed_markets';
+}
+
 export function decide(extraction, options) {
   /** @type {any} */
   const doc = assemble(extraction.answers, options);
+  const topology = evaluateTopology(doc);
+  if (topology) {
+    // Derived, never answered: the questionnaire asks about the business, the
+    // engine decides the architecture (docs/market-topology-audit.md).
+    doc.markets = { ...doc.markets, topology, cross_border_model: crossBorderModel(doc, topology) };
+  }
   doc.offer = classifyOffer(doc);
   doc.exits = evaluateExits(doc, extraction.exitCandidates);
   doc.delivery = { ...(doc.delivery ?? {}), go: !doc.exits.triggered };

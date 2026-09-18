@@ -254,6 +254,9 @@ describe('Discovery Closing Document from the shared engagement', () => {
     delete answers.meta.source;
     delete answers.meta.updated_at;
     delete answers.delivery.go;
+    // Derived by the engine, never answered in the interview (market topology).
+    delete answers.markets.topology;
+    delete answers.markets.cross_border_model;
     for (const pair of [{ pointer: '/meta/consent/llm_processing', value_json: 'true' }, ...flattenAnswers(answers).filter((p) => p.pointer !== '/meta/consent/llm_processing')]) {
       const r = recordAnswer(session, { pointer: pair.pointer, value: JSON.parse(pair.value_json), source: 'client', today: TODAY });
       assert.equal(r.ok, true, `${pair.pointer}: ${JSON.stringify(r.errors)}`);

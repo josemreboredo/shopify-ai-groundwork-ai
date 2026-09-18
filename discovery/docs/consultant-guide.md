@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 120 of 297 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 121 of 298 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -23,7 +23,7 @@ The offers do not assume Shopify Plus. The minimum plan is the highest plan any 
 | B2B deposits, partial payments or payment requests per fulfilment | Shopify Plus | `/b2b/payment_terms` | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
 | contextual B2B storefront and checkout | Advanced | `/b2b/contextual_experience` | https://help.shopify.com/en/manual/b2b/getting-started/plan-features |
 | checkout UI extensions on the information, shipping or payment steps / Checkout Branding API | Shopify Plus | `/checkout/customisation` | https://help.shopify.com/en/manual/checkout-settings/checkout-extensibility |
-| expansion stores | Shopify Plus | `/markets/strategy` | https://help.shopify.com/en/manual/organization-settings/expansion-stores |
+| expansion stores | Shopify Plus | `/markets/topology/recommendation` | https://help.shopify.com/en/manual/organization-settings/expansion-stores |
 | selling from several legal entities | Shopify Plus | `/meta/client/legal_entities` | https://help.shopify.com/en/manual/payments/shopify-payments/onboarding/selling-with-multiple-entities |
 | combined listings | Shopify Plus | `/catalogue/combined_listings` | https://help.shopify.com/en/manual/products/combined-listings-app |
 | sign-in from another site (Multipass) | Shopify Plus | `/customers/sign_in_methods` | https://shopify.dev/docs/storefronts/headless/building-with-the-customer-account-api |
@@ -219,7 +219,7 @@ Sources: https://help.shopify.com/en/manual/b2b/getting-started/plan-features
 **Why it matters.** The current site is the fastest evidence you get: catalogue size, option complexity, content volume, current platform and the integrations visible from outside. It also grounds the redirect and SEO workstream if this is a replatform.
 
 **Q1.1.6** — Do you sell through more than one legal entity (e.g. one per country or region)? List them. *(required · client)*
-Drives: rule 11.1 (STOP)
+Drives: rule 11.1 (STOP) · rule 11.23 (FLAG)
 
 **Why it matters.** Decides the store topology. Several selling entities in one store means one admin with per-market entities; one store per entity means several stores to build and run. It changes tax, payouts, invoicing and the plan, and it feeds the plan-gate STOP.
 
@@ -679,10 +679,10 @@ Sources: https://help.shopify.com/en/manual/products/inventory/purchase-orders
 
 ### 3.1 Markets at launch
 
-**Q3.1.1** — Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain, and how prices are set (the store's base currency, auto-converted, a manual price list, or display only). *(required · client)*
-Drives: gate Markets · gate Multi-currency · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP)
+**Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required · client)*
+Drives: gate Markets · gate Multi-currency · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP) · rule 11.23 (FLAG)
 
-**Why it matters.** The market list sets everything downstream: currencies, domains, languages, tax registrations and the plan. It is also the trigger for the stop rules — more than five markets, or more than six languages, moves the work to a Discovery Phase.
+**Why it matters.** Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range and owner columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.
 
 **Limits.** Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Mainland China is excluded from this engagement and routed to a separate China discovery.
 
@@ -708,17 +708,16 @@ Sources: https://help.shopify.com/en/manual/markets
 
 Sources: https://help.shopify.com/en/manual/domains/managing-domains/international-domains
 
-**Q3.1.4** — Operating model: one store with Shopify Markets, expansion stores, or hybrid? *(required · consultant)*
-Drives: rule 11.1 (STOP)
+**Q3.1.4** — Stated preference only — does the client already have a view on running all countries from one store or giving some countries their own store? Record it as their view, not as the answer. *(optional · consultant)*
 
-**Why it matters.** One store with Shopify Markets is the default. Expansion stores are a Plus organisation feature and nothing syncs between them, so this answer sets both the plan and the client's operating cost for years.
+**Why it matters.** This is the one question in the bank that asks for an opinion rather than a fact, and it is kept only so the closing document can address the client's own view. The topology itself is derived from the business facts in Q3.1.1, Q1.1.6, Q3.4.2, Q3.4.13, Q5.1.3 and Q6.2.14.
 
 | Option | Pros | Cons |
 |---|---|---|
 | One store with Shopify Markets | One admin, one catalogue, one theme; per-market currency, domain, language, catalogue and tax overrides; available from Basic; no duplicated app bills | Shared catalogue structure and app stack; per-market theme content needs Advanced or higher; one legal entity unless the client is on Plus |
 | Expansion stores (Plus) | Each region runs its own catalogue, apps, team and settings — suits separately run regional businesses or different legal entities | Plus only; products, collections, inventory and settings are not synced; apps billed per store, theme licences not shared; every change is done more than once |
 
-**Limits.** Expansion stores require Shopify Plus: one main store plus up to nine expansion stores on the contract. Store settings, products, collections and inventory are not synced between them; apps are billed per store and theme licences are not shared. Assigning a separate legal entity to a market is also Plus only.
+**Limits.** Never let this answer stand in for the analysis. Expansion stores need Shopify Plus and duplicate every catalogue, theme and app change; one store with Markets keeps them together but shares one theme, one app estate and one admin.
 
 Sources: https://help.shopify.com/en/manual/organization-settings/expansion-stores · https://help.shopify.com/en/manual/markets/customizations/business-entities
 
@@ -743,25 +742,6 @@ Sources: https://help.shopify.com/en/manual/international/automatic-redirection 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Automatic redirection | Basic | The Geolocation app is retired | https://help.shopify.com/en/manual/international/automatic-redirection |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
-
-**Q3.1.6** — Who is merchant of record for international orders? *(required · consultant)*
-
-**Why it matters.** This is where consultants most often over-promise. Managed Markets makes Global-e the merchant of record and removes foreign tax registration, but only United States, Canadian and United Kingdom businesses on Shopify Payments qualify. Everyone else self-manages.
-
-| Option | Pros | Cons |
-|---|---|---|
-| Managed Markets (Global-e is merchant of record) | No foreign tax registration or remittance; duties calculated, collected and remitted with HS codes assigned automatically; more local payment methods; discounted DHL, FedEx and UPS labels; quick to switch on | US, Canada and UK businesses only, Shopify Payments required; 3.5% (3.25% Plus) plus 1.5% FX on top of processing; no B2B or subscriptions; no checkout redirects; duties and VAT are non-refundable once the order is fulfilled |
-| Self-managed on Shopify Markets | Open to any merchant on any plan; full checkout and order control; B2B and subscriptions work normally; 0.85% with Shopify Payments (1.5% with other providers) on orders with duties calculated | The client registers, files and remits tax in every country that requires it — Shopify does not; duties shown are estimates; the client supplies HS codes; DDP labels through Shopify's own carrier accounts are limited to Canada Post (US destinations) and DHL Express |
-
-**Limits.** Managed Markets eligibility: business in the continental US, or certain Canadian and UK stores; Shopify Payments required; store currency must be the home country's default currency; a non-PO-box location and a fulfilment location in the home country. Not supported: B2B orders, subscriptions (domestic only), zero-value orders, checkout redirects, manual bundles, and order editing after a label is printed. Cost stacks: 3.5% (3.25% on Plus) plus a 1.5% FX fee, on top of payment processing. Self-managed is the alternative for every other client — Shopify calculates and collects, but never files or remits; the client registers where required.
-
-Sources: https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations · https://help.shopify.com/en/manual/international/managed-markets/overview · https://help.shopify.com/en/manual/taxes/registration
-
-| Shopify feature | Minimum plan | Note | Docs |
-|---|---|---|---|
-| Managed Markets (Shopify as merchant of record) | Basic | US and certain CA/UK stores; Shopify Payments; no B2B; subscriptions domestic only | https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations |
-| Shopify Tax | Basic |  | https://help.shopify.com/en/manual/taxes/shopify-tax |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q3.1.7** — Should any market have its own theme content, section order, checkout or customer-account settings? *(required · client)*
@@ -1013,6 +993,19 @@ Sources: https://help.shopify.com/en/manual/taxes/shopify-tax/vat-invoices
 | VAT invoices for EU and UK orders (not e-invoicing) | Basic |  | https://help.shopify.com/en/manual/taxes/shopify-tax/vat-invoices |
 
 If native is not enough: App Store — [Sufio: Professional Invoices](https://apps.shopify.com/sufio), [Order Printer Pro: Invoice App](https://apps.shopify.com/order-printer-pro), [POP: compliant EU invoicing](https://apps.shopify.com/pop-european-invoicing)
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q3.4.13** — If selling in a country meant registering for tax there and filing returns, would you take that on yourself, or would you rather a partner were the legal seller for those orders? *(recommended · client)*
+
+**Why it matters.** Together with the market list and the current registrations (Q3.4.2), this decides the cross-border model: self-managed duties on Shopify Markets, or a merchant of record. It replaces the retired Q3.1.6, which asked the client to name a model they had never heard of.
+
+**Limits.** Managed Markets is the only merchant-of-record route inside Shopify, and it is open only to businesses in the continental United States and certain stores in Canada and the United Kingdom, on Shopify Payments, and it does not support B2B. For everyone else the honest options are self-managed registrations or a third-party merchant-of-record app.
+
+Sources: https://help.shopify.com/en/manual/markets/managed-markets/requirements · https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shopify Tax and Basic Tax registrations per region | Basic |  | https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 3.5 Mainland China
@@ -1435,7 +1428,7 @@ If native is not enough: [Fraud](https://apps.shopify.com/categories/store-manag
 
 **Why it matters.** The named provider decides whether a ready-made Shopify connector exists or the integration has to be built and tested. It also fixes what flows back — stock levels, tracking numbers, returns — and the error handling you have to scope.
 
-**Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders)? *(required · client)*
+**Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders), and in which countries are they? *(required · client)*
 Drives: rule 11.1 (STOP) · rule 11.13 (FLAG)
 
 **Why it matters.** Location count sets both plan and routing scope. Shopify allows 10 locations below Plus and 200 on Plus. More than two fulfilling locations with routing beyond the native rules triggers a multi-location inventory scoping exercise.
@@ -2140,6 +2133,20 @@ Sources: https://help.shopify.com/en/manual/b2b/checkout-and-orders/shipping-met
 |---|---|---|---|
 | B2B shipping methods (same as consumers by default; customise per buyer) | Basic | Custom apps with Shopify Functions need Plus; public apps with functions work on any plan | https://help.shopify.com/en/manual/b2b/checkout-and-orders/shipping-methods |
 | Submit B2B orders as drafts for review | Basic |  | https://help.shopify.com/en/manual/b2b/checkout-and-orders/checkout-settings |
+*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q6.2.14** — Is the wholesale side of the business run by its own team, with its own targets or its own profit and loss? *(recommended · client)*
+Quick interview: ask if Q1.1.4 is Business to business (B2B), or Q1.1.4 is Hybrid (DTC and B2B)
+
+**Why it matters.** Native B2B runs on the same store as the consumer business, which is the cheaper answer whenever one team runs both. A separate wholesale team with its own P&L is the documented reason Shopify gives for an expansion store, so this answer is one of the criteria that moves the topology to a hybrid.
+
+**Limits.** An expansion store needs Shopify Plus, and nothing is shared between stores — products, inventory, apps and themes are all maintained twice. Weigh it against keeping B2B on one store with its own catalogs.
+
+Sources: https://help.shopify.com/en/manual/organization-settings/expansion-stores · https://help.shopify.com/en/manual/b2b/getting-started/plan-features
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| B2B on one store: companies, locations and catalogs | Basic |  | https://help.shopify.com/en/manual/b2b |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 6.3 Loyalty & segmentation
@@ -3189,7 +3196,7 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 
 | Rule | Result | Condition | If triggered | Asked in |
 |---|---|---|---|---|
-| 11.1 | STOP | A required Shopify feature needs a higher plan than the target plan, per Shopify's plan documentation (Plus: company-specific or more than 3 B2B catalogs, B2B deposits and partial payments, checkout step extensions / Checkout Branding API, expansion stores, several legal entities, combined listings, Multipass sign-in, more than 10 locations, more than 20 languages, several product discounts on one item; Advanced: B2B contextual experience, per-market customisation, carrier-calculated rates, multi-currency payouts, more than 5 staff users; Grow: A/B testing with Rollouts). Shopify B2B itself runs on every plan from Basic. A fully custom checkout UI is handled by 11.6, not here | Confirm the plan the requirements need, or remove the feature from scope | Q1.1.6, Q1.2.3, Q1.2.6, Q2.1.4, Q3.1.1, Q3.1.4, Q3.1.7, Q4.1.4, Q4.2.1, Q5.1.3, Q5.1.6, Q6.1.4, Q6.2.3, Q6.2.5, Q6.2.10, Q6.2.11, Q7.5.2, Q9.2.10 |
+| 11.1 | STOP | A required Shopify feature needs a higher plan than the target plan, per Shopify's plan documentation (Plus: company-specific or more than 3 B2B catalogs, B2B deposits and partial payments, checkout step extensions / Checkout Branding API, expansion stores, several legal entities, combined listings, Multipass sign-in, more than 10 locations, more than 20 languages, several product discounts on one item; Advanced: B2B contextual experience, per-market customisation, carrier-calculated rates, multi-currency payouts, more than 5 staff users; Grow: A/B testing with Rollouts). Shopify B2B itself runs on every plan from Basic. A fully custom checkout UI is handled by 11.6, not here | Confirm the plan the requirements need, or remove the feature from scope | Q1.1.6, Q1.2.3, Q1.2.6, Q2.1.4, Q3.1.1, Q3.1.7, Q4.1.4, Q4.2.1, Q5.1.3, Q5.1.6, Q6.1.4, Q6.2.3, Q6.2.5, Q6.2.10, Q6.2.11, Q7.5.2, Q9.2.10 |
 | 11.2 | FLAG | B2B requires request-for-quote or prices negotiated per buyer (Shopify has no built-in RFQ) | B2B architecture review: Shopify B2B draft-order review or a quote app (App Store category "Pricing quotes"), before build | Q6.2.6 |
 | 11.3 | STOP | More than 5 Shopify Markets at launch | Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase | Q3.1.1 |
 | 11.4 | STOP | More than 6 distinct languages across all markets | Larger Engagement: translation and content operations in the Discovery Phase | Q3.1.1 |
@@ -3211,3 +3218,4 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.20 | FLAG | Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope | Separate China discovery (questions § 3.5, discovery/docs/china-mainland.md); mainland China excluded from this engagement's scope | Q3.1.1 |
 | 11.21 | STOP | Mainland China is the only launch market — not part of the Merkle offering | China discovery (discovery/docs/china-mainland.md) | Q3.1.1 |
 | 11.22 | WARN | More than 5 retail stores in scope | Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team | Q5.6.1 |
+| 11.23 | FLAG | More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision — the engine still recommends a topology. | Market topology and legal-entity mapping workshop before the solution architecture is baselined. | Q1.1.6, Q3.1.1 |

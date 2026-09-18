@@ -38,6 +38,11 @@ function fixtureAnswers(fixture) {
   delete answers.meta.source;
   delete answers.meta.updated_at;
   if (answers.delivery) delete answers.delivery.go;
+  // Derived by the engine (market topology and the cross-border model it implies).
+  if (answers.markets) {
+    delete answers.markets.topology;
+    delete answers.markets.cross_border_model;
+  }
   return answers;
 }
 
