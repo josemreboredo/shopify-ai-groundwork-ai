@@ -284,7 +284,11 @@ Work as a Shopify Solution Architect: call prepare_closing_document, read the wh
     argsSchema: { client: z.string().describe('Client slug, e.g. acme-watches') },
   }, ({ client }) => message(`Redraft the Discovery Closing Document for ${client}.
 
-Call get_closing_document first and read freshness.changes — those are the answers that moved since the last version. Redraft the deck and the annex, and tell me which decisions, risks or scope items the changes moved, and which stayed the same and why.`));
+Call get_closing_document first and read freshness.changes — those are the answers that moved since the last version.
+
+Then redraft in full: prepare_closing_document, draft the approach again from what it returns, save_approach, and only then write the deck and the annex and save both with save_closing_document. Changed answers can move the engine's own decisions — the market topology among them — so a deck rewritten on top of the previous approach would argue from a position the evidence no longer supports.
+
+Tell me which decisions, risks or scope items the changes moved, and which stayed the same and why.`));
 
   server.registerPrompt('prefill_from_documents', {
     title: 'Pre-fill the engagement from the documents',
