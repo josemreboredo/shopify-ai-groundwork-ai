@@ -5,11 +5,12 @@ export const meta = () => [
   { name: 'description', content: 'Every recommendation traces back to the client’s own words and to Shopify’s own documentation — or the tool refuses to produce it.' },
 ];
 
-/** The mechanism, in three moves. This is the whole page; everything else is proof. */
+/** The mechanism, in four moves. This is the whole page; everything else is proof. */
 const FLOW = [
-  ['01', 'What the client said', 'Their answers, in their words. Recorded with the question they came from.'],
-  ['02', 'What Shopify documents', 'The platform’s own pages — looked up, never recalled from memory.'],
-  ['03', 'What we recommend', 'The decision, the level it is solved at, what it does not cover, and the link that proves it.'],
+  ['01', 'The consultant knows what to ask, and why', 'Every question explains what it decides for the solution, so the conversation goes where it has to go — not where the client happens to lead it.'],
+  ['02', 'The model makes sure nothing is missing', 'It follows what the client means, and the questionnaire adapts as answers land: each answer opens the questions it makes relevant and closes the ones it does not.'],
+  ['03', 'Business need becomes a platform question', 'The requirement is translated into what Shopify would have to do, and checked against Shopify’s own documentation — looked up, never recalled.'],
+  ['04', 'The recommendation is the cross-check', 'Client need against documentation, with the alternatives weighed, and every line linked back to both: the answer it serves and the page that proves it.'],
 ];
 
 const GUARANTEES = [
@@ -19,6 +20,7 @@ const GUARANTEES = [
     detail: [
       'Only help.shopify.com, shopify.dev, shopify.com, changelog.shopify.com and apps.shopify.com count as sources. Agency blogs never do.',
       'A decision with no client answer behind it is rejected too: “found it on at least one client answer”. A recommendation that traces to nothing is not a recommendation.',
+      'Alternatives are not optional: a decision that weighs fewer than two real options is rejected, and the most consequential ones — how many stores the markets run on — must weigh three and say why each was not taken.',
       'Where Shopify publishes nothing — there is no official comparison of one store against separate stores per country — the document says so, instead of dressing an opinion as a platform limit.',
     ],
   },
@@ -55,8 +57,9 @@ export default function HowItWorks() {
         <p className="eyebrow">How it works</p>
         <h1>Every recommendation, traceable</h1>
         <p className="lede">
-          The model does not answer Shopify questions from memory. It maps what the client said onto
-          Shopify’s own documentation — and if a claim has no source, the tool refuses to produce it.
+          The model never answers from data it does not have. It works from what the client actually
+          said and from Shopify’s own documentation — and where a claim has neither behind it, the
+          tool refuses to produce it.
         </p>
       </header>
 
