@@ -234,14 +234,14 @@ button.destructive:hover { background: #000; border-color: #000; }
 .offering .small { font-size: 0.8rem; }
 
 /* 1 — the offers as a progression: each builds on the one before */
-.offer-ladder { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 3px solid #000; }
+.offer-ladder { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
 .offer { position: relative; padding: 26px 28px 30px 0; }
 .offer + .offer { padding-left: 28px; border-left: 1px solid var(--line); }
-.offer-next { position: absolute; right: -9px; top: 44px; width: 16px; height: 16px; background: #fff; border-right: 2px solid var(--red); border-top: 2px solid var(--red); transform: rotate(45deg); z-index: 1; }
-.offer-top { display: flex; align-items: flex-start; gap: 16px; }
-.offer-code { margin: 0; font-size: 3.4rem; font-weight: 700; line-height: 0.9; color: var(--red); letter-spacing: -0.03em; }
-.offer-code.small { font-size: 1.6rem; }
-.offer-top h3 { margin: 2px 0 8px; font-size: 1.2rem; }
+.offer-next { position: absolute; right: -9px; top: 30px; width: 16px; height: 16px; background: #fff; border-right: 2px solid var(--red); border-top: 2px solid var(--red); transform: rotate(45deg); z-index: 1; }
+.offer-code { margin: 0; padding-bottom: 14px; border-bottom: 3px solid var(--red); font-size: 3.4rem; font-weight: 700; line-height: 0.9; color: var(--ink); letter-spacing: -0.03em; }
+.offer h3 { margin: 16px 0 6px; font-size: 1.2rem; }
+.offer-when { margin: 0 0 12px; color: var(--muted); font-size: 0.9rem; }
+.offer-code.small { font-size: 1.6rem; padding-bottom: 0; border-bottom: none; color: var(--red); }
 .offer-weeks { margin: 20px 0 16px; padding: 14px 0; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); color: var(--muted); }
 .offer-weeks strong { font-size: 1.9rem; color: var(--ink); letter-spacing: -0.02em; margin-right: 4px; }
 .offer-weeks span { color: var(--ink); font-weight: 700; }
@@ -259,20 +259,22 @@ button.destructive:hover { background: #000; border-color: #000; }
 
 /* 3 — the gates as cards */
 .gate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 24px; }
-.gate { border: 1px solid var(--line); border-top: 3px solid var(--red); padding: 18px 20px 20px; background: #fff; }
-.gate header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.gate { border: 1px solid var(--line); padding: 18px 20px 20px; background: #fff; }
+.gate header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 3px solid var(--red); }
 .gate h3 { margin: 0; font-size: 1.05rem; }
 .gate-when { margin: 0 0 8px; font-weight: 600; font-size: 0.92rem; }
 .gate .muted { margin: 0; font-size: 0.86rem; }
 .l-triggers { margin-top: 28px; padding: 22px 24px; background: #000; color: #fff; }
 .l-triggers .eyebrow { color: #fff; }
 .l-triggers ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.l-triggers li { display: grid; gap: 4px; border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 12px; }
+.l-triggers li { display: grid; gap: 10px; }
+.l-triggers li strong { padding-bottom: 10px; border-bottom: 3px solid var(--red); }
 .l-triggers li span { color: rgba(255, 255, 255, 0.7); font-size: 0.88rem; }
 
 /* 4 — the resolution ladder and the plan gates */
 .ladder { list-style: none; counter-reset: rung; padding: 0; margin: 28px 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
-.ladder li { counter-increment: rung; position: relative; padding: 16px 18px 18px; border-top: 3px solid var(--red); background: #fff; display: grid; gap: 6px; }
+.ladder li { counter-increment: rung; position: relative; padding: 16px 18px 18px; background: #fff; display: grid; gap: 8px; }
+.ladder li strong { padding-bottom: 10px; border-bottom: 3px solid var(--red); }
 .ladder li + li { border-left: 1px solid var(--line); }
 .ladder li::before { content: counter(rung); font-size: 0.78rem; font-weight: 700; color: var(--red); letter-spacing: 0.1em; }
 .ladder li span { color: var(--muted); font-size: 0.86rem; }
@@ -281,9 +283,8 @@ table.compare th[scope="row"] { vertical-align: top; width: 64px; }
 table.compare td { font-size: 0.9rem; }
 .plan-title { margin-top: 40px; }
 .plan-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 16px; }
-.plan-cols > div { background: #fff; padding: 18px 20px; border-top: 3px solid var(--ink); }
-.plan-cols > div:last-child { border-top-color: var(--red); }
-.plan-name { margin: 0 0 10px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.plan-cols > div { background: #fff; padding: 18px 20px; }
+.plan-name { margin: 0 0 12px; padding-bottom: 10px; border-bottom: 3px solid var(--red); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .plan-cols ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 .plan-cols li { font-size: 0.88rem; line-height: 1.35; }
 .plan-cols a { text-decoration-color: var(--line); }
@@ -291,9 +292,7 @@ table.compare td { font-size: 0.9rem; }
 /* 5 — beyond the offers */
 .routes { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; margin: 24px 0 36px; }
 .route { padding: 22px 24px; border: 1px solid var(--line); }
-.route-larger_engagement { border-top: 3px solid var(--red); }
-.route-no_bid { border-top: 3px solid var(--ink); }
-.route h3 { margin: 0 0 6px; }
+.route h3 { margin: 0 0 12px; padding-bottom: 10px; border-bottom: 3px solid var(--red); }
 .route-proposal { margin: 0 0 10px; font-weight: 700; }
 .rules-title { display: flex; align-items: center; gap: 10px; }
 .rules { list-style: none; padding: 0; margin: 12px 0 0; }

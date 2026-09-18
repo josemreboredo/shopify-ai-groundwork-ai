@@ -58,13 +58,10 @@ export default function Offering({ loaderData }) {
         <div className="offer-ladder">
           {view.offers.map((o, i) => (
             <article key={o.code} className="offer">
-              <div className="offer-top">
-                <p className="offer-code">{o.code}</p>
-                <div>
-                  <h3>{o.name}</h3>
-                  <span className="chip">{TRACK[o.delivery_track] ?? o.delivery_track}</span>
-                </div>
-              </div>
+              <p className="offer-code">{o.code}</p>
+              <h3>{o.name}</h3>
+              <p className="offer-when">{o.triggered_by}</p>
+              <span className="chip">{TRACK[o.delivery_track] ?? o.delivery_track}</span>
               <p className="offer-weeks"><strong>{weeks(o.duration_weeks)}</strong> weeks{view.pricing && o.price_band ? <span> · {band(o.price_band, currency)}</span> : null}</p>
               <ul className="ticks">{o.base_scope.map((line) => <li key={line}>{line}</li>)}</ul>
               {i < view.offers.length - 1 ? <span className="offer-next" aria-hidden="true" /> : null}
