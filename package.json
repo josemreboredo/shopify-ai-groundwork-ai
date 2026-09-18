@@ -23,7 +23,8 @@
     "apps": "node discovery/scripts/apps.js",
     "workbook": "node discovery/agents/workbook/build.js",
     "web": "npm run dev --workspace frontend",
-    "web:build": "npm run build --workspace frontend"
+    "web:build": "npm run build --workspace frontend",
+    "sources:check": "node discovery/scripts/check-sources.mjs"
   },
   "engines": {
     "node": ">=22.9.0"

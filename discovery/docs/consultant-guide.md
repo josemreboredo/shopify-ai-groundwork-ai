@@ -301,11 +301,11 @@ Drives: rule 11.18 (FLAG)
 
 **Limits.** Shopify Scripts stopped running on 2026-06-30; checkout.liquid and additional scripts are retired; online store script tags stop on 2027-03-01; legacy customer accounts were deprecated on 2026-02-26; Stocky was retired on 2026-08-31, replaced by inventory purchase orders and transfers; the Geolocation app is retired.
 
-Sources: https://shopify.dev/docs/apps/build/functions/migrating-from-shopify-scripts · https://shopify.dev/changelog/legacy-customer-accounts-are-deprecated · https://help.shopify.com/en/manual/products/inventory/transitioning-from-stocky
+Sources: https://shopify.dev/changelog/shopify-scripts-will-be-deprecated-on-june-30-2026 · https://shopify.dev/changelog/online-store-script-tags-deprecation · https://shopify.dev/changelog/legacy-customer-accounts-are-deprecated · https://help.shopify.com/en/manual/products/inventory/transitioning-from-stocky
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Shopify Functions (replaces Shopify Scripts) | Basic | Scripts stopped running 2026-06-30 | https://shopify.dev/docs/apps/build/functions/migrating-from-shopify-scripts |
+| Shopify Functions (replaces Shopify Scripts) | Basic | Scripts stopped running 2026-06-30 | https://shopify.dev/changelog/shopify-scripts-will-be-deprecated-on-june-30-2026 |
 | Customer accounts (legacy accounts deprecated 2026-02-26) | Basic |  | https://shopify.dev/changelog/legacy-customer-accounts-are-deprecated |
 | Inventory purchase orders and transfers (Stocky retired 2026-08-31) | Basic |  | https://help.shopify.com/en/manual/products/inventory/transitioning-from-stocky |
 Build with: Shopify Functions · Theme app extensions (replace script tags)
@@ -1016,11 +1016,11 @@ Who holds this fact: Controller, head of finance or the external tax adviser.
 
 **Limits.** Managed Markets is the only merchant-of-record route inside Shopify, and it is open only to businesses in the continental United States and certain stores in Canada and the United Kingdom, on Shopify Payments, and it does not support B2B. For everyone else the honest options are self-managed registrations or a third-party merchant-of-record app.
 
-Sources: https://help.shopify.com/en/manual/markets/managed-markets/requirements · https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes
+Sources: https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations · https://help.shopify.com/en/manual/taxes/registration/setup
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Shopify Tax and Basic Tax registrations per region | Basic |  | https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes |
+| Shopify Tax and Basic Tax registrations per region | Basic |  | https://help.shopify.com/en/manual/taxes/registration/setup |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 ### 3.5 Mainland China
@@ -1346,11 +1346,11 @@ Build with: Checkout UI extensions · Shopify Functions (public apps: all plans;
 
 **Limits.** Checkout UI extensions run from Basic, but extensions on the information, shipping and payment steps are Plus. Functions inside a custom app are Plus; inside a public App Store app they are not.
 
-Sources: https://shopify.dev/docs/api/checkout-ui-extensions · https://shopify.dev/docs/apps/build/functions
+Sources: https://shopify.dev/docs/api/checkout-ui-extensions/latest · https://shopify.dev/docs/apps/build/functions
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Checkout UI extensions | Basic | Step extensions: Plus | https://shopify.dev/docs/api/checkout-ui-extensions |
+| Checkout UI extensions | Basic | Step extensions: Plus | https://shopify.dev/docs/api/checkout-ui-extensions/latest |
 
 If native is not enough: [Checkout](https://apps.shopify.com/categories/marketing-and-conversion-checkout) — [Shopify Checkout Blocks](https://apps.shopify.com/checkout-blocks)
 Build with: Delivery Customization Function · Payment Customization Function · Cart and Checkout Validation Function · Pickup Point Delivery Option Generator
@@ -2771,7 +2771,7 @@ Sources: https://shopify.dev/docs/api/usage/limits · https://apps.shopify.com/c
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Admin API, bulk operations and webhooks | Basic |  | https://shopify.dev/docs/api/functions |
+| Admin API, bulk operations and webhooks | Basic |  | https://shopify.dev/docs/api/functions/latest |
 
 If native is not enough: [ERP](https://apps.shopify.com/categories/orders-and-shipping-inventory-erp/all)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
@@ -2792,7 +2792,7 @@ If native is not enough: [ERP](https://apps.shopify.com/categories/orders-and-sh
 
 **Limits.** Bulk imports: the JSONL file cannot exceed 100 MB, and the operation must finish within 24 hours or it is stopped and marked failed. Admin API rate limits are per plan, so heavy sync can itself force Advanced or Plus.
 
-Sources: https://shopify.dev/docs/api/usage/bulk-operations/imports · https://shopify.dev/docs/api/usage/limits
+Sources: https://shopify.dev/docs/apps/build/apis/graphql-admin/bulk-operations/imports · https://shopify.dev/docs/api/usage/limits
 
 ### 8.2 Data migration
 
@@ -2868,7 +2868,7 @@ Drives: L trigger Full Figma design system
 
 **Why it matters.** Tokens and components map onto theme settings and theme blocks, which are defined at theme level and reused across sections. A file of flat screens does not, and each screen then becomes bespoke Liquid - the difference between configuring a theme and writing one.
 
-Sources: https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks
+Sources: https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid
 
 **Q9.1.4** — Is the design mapped to Shopify sections and blocks? *(optional · consultant)*
 
@@ -2949,7 +2949,7 @@ Sources: https://help.shopify.com/en/manual/online-store/web-performance/web-per
 
 **Limits.** Current-generation themes with theme blocks cover far more than Online Store 2.0 did, so check the requirement against Horizon's block architecture before accepting a headless answer. A headless build also needs a standing front-end team after launch.
 
-Sources: https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks · https://shopify.dev/docs/storefronts/headless/getting-started/build-options
+Sources: https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid · https://shopify.dev/docs/storefronts/headless/getting-started/build-options
 
 **Q9.2.7** — Headless hosting? *(recommended · consultant)*
 

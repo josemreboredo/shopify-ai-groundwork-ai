@@ -38,7 +38,7 @@ export const SOURCES = {
   managed_markets_requirements: 'https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations',
   managed_markets_overview: 'https://help.shopify.com/en/manual/international/managed-markets/overview',
   managed_markets_uk: 'https://help.shopify.com/en/manual/international/managed-markets/managed-markets-uk',
-  taxes: 'https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes',
+  taxes: 'https://help.shopify.com/en/manual/taxes/registration/setup',
   china: 'https://help.shopify.com/en/manual/international/managed-markets/prohibited-items',
 };
 

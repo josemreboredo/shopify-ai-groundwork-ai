@@ -8,8 +8,8 @@ export const meta = () => [
 /** The mechanism, in four moves. This is the whole page; everything else is proof. */
 const FLOW = [
   ['01', 'The consultant knows what to ask, and why', 'Every question explains what it decides for the solution, so the conversation goes where it has to go — not where the client happens to lead it.'],
-  ['02', 'The model makes sure nothing is missing', 'It follows what the client means, and the questionnaire adapts as answers land: each answer opens the questions it makes relevant and closes the ones it does not.'],
-  ['03', 'Business need becomes a platform question', 'The requirement is translated into what Shopify would have to do, and checked against Shopify’s own documentation — looked up, never recalled.'],
+  ['02', 'Nothing the solution depends on is left unasked', 'The questionnaire adapts as answers land — an answer can open the questions it makes relevant and close the ones it rules out — and the engine keeps a live list of what is still missing.'],
+  ['03', 'Business need becomes a platform question', 'The requirement is translated into what Shopify would have to do, and answered from documentation that was read and dated against the source — not from what a model remembers.'],
   ['04', 'The recommendation is the cross-check', 'Client need against documentation, with the alternatives weighed, and every line linked back to both: the answer it serves and the page that proves it.'],
 ];
 
@@ -22,6 +22,7 @@ const GUARANTEES = [
       'A decision with no client answer behind it is rejected too: “found it on at least one client answer”. A recommendation that traces to nothing is not a recommendation.',
       'Alternatives are not optional: a decision that weighs fewer than two real options is rejected, and the most consequential ones — how many stores the markets run on — must weigh three and say why each was not taken.',
       'Where Shopify publishes nothing — there is no official comparison of one store against separate stores per country — the document says so, instead of dressing an opinion as a platform limit.',
+      'What the check does not do: it proves the source is official and present, and a separate check proves the page still exists where we cite it. Neither proves the page says what the document says it says. That is the reviewer’s job, and the link is there to make it a ten-second job.',
     ],
   },
   {
@@ -45,7 +46,7 @@ const GUARANTEES = [
 ];
 
 const LIMITS = [
-  ['Documentation moves', 'Shopify ships twice a year. Every fact carries the date it was verified, so a reviewer can see the age of what they are reading.'],
+  ['Documentation moves', 'Shopify ships twice a year, and help pages get renamed. The platform facts in the questionnaire and the reference chapters carry the date they were verified, and a script re-checks every cited page still exists where we cite it.'],
   ['A source can be misread', 'Several Shopify features are US-only. The link is there so the reading can be checked, not to prove nobody has to.'],
   ['The client can be wrong', 'A sourced recommendation built on an unconfirmed answer is still built on sand — which is why answers are confirmed first.'],
 ];
@@ -58,8 +59,8 @@ export default function HowItWorks() {
         <h1>Every recommendation, traceable</h1>
         <p className="lede">
           The model never answers from data it does not have. It works from what the client actually
-          said and from Shopify’s own documentation — and where a claim has neither behind it, the
-          tool refuses to produce it.
+          said and from Shopify’s own documentation, read against the source and dated — and where a
+          claim has neither behind it, the tool refuses to produce it.
         </p>
       </header>
 

@@ -978,7 +978,7 @@
             "feature": "Shopify Functions (replaces Shopify Scripts)",
             "plan": "basic",
             "plan_note": "Scripts stopped running 2026-06-30",
-            "docs": "https://shopify.dev/docs/apps/build/functions/migrating-from-shopify-scripts"
+            "docs": "https://shopify.dev/changelog/shopify-scripts-will-be-deprecated-on-june-30-2026"
           },
           {
             "feature": "Customer accounts (legacy accounts deprecated 2026-02-26)",
@@ -1017,7 +1017,8 @@
         ],
         "limits": "Shopify Scripts stopped running on 2026-06-30; checkout.liquid and additional scripts are retired; online store script tags stop on 2027-03-01; legacy customer accounts were deprecated on 2026-02-26; Stocky was retired on 2026-08-31, replaced by inventory purchase orders and transfers; the Geolocation app is retired.",
         "sources": [
-          "https://shopify.dev/docs/apps/build/functions/migrating-from-shopify-scripts",
+          "https://shopify.dev/changelog/shopify-scripts-will-be-deprecated-on-june-30-2026",
+          "https://shopify.dev/changelog/online-store-script-tags-deprecation",
           "https://shopify.dev/changelog/legacy-customer-accounts-are-deprecated",
           "https://help.shopify.com/en/manual/products/inventory/transitioning-from-stocky"
         ]
@@ -3024,7 +3025,7 @@
           {
             "feature": "Shopify Tax and Basic Tax registrations per region",
             "plan": "basic",
-            "docs": "https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes"
+            "docs": "https://help.shopify.com/en/manual/taxes/registration/setup"
           }
         ],
         "verified": {
@@ -3037,8 +3038,8 @@
         "why": "Together with the market list and the current registrations (Q3.4.2), this decides the cross-border model: self-managed duties on Shopify Markets, or a merchant of record. It replaces the retired Q3.1.6, which asked the client to name a model they had never heard of.",
         "limits": "Managed Markets is the only merchant-of-record route inside Shopify, and it is open only to businesses in the continental United States and certain stores in Canada and the United Kingdom, on Shopify Payments, and it does not support B2B. For everyone else the honest options are self-managed registrations or a third-party merchant-of-record app.",
         "sources": [
-          "https://help.shopify.com/en/manual/markets/managed-markets/requirements",
-          "https://help.shopify.com/en/manual/taxes-and-duties/setting-up-taxes"
+          "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations",
+          "https://help.shopify.com/en/manual/taxes/registration/setup"
         ]
       }
     },
@@ -3988,7 +3989,7 @@
             "feature": "Checkout UI extensions",
             "plan": "basic",
             "plan_note": "Step extensions: Plus",
-            "docs": "https://shopify.dev/docs/api/checkout-ui-extensions"
+            "docs": "https://shopify.dev/docs/api/checkout-ui-extensions/latest"
           }
         ],
         "app_category": {
@@ -4014,7 +4015,7 @@
         "why": "Names the actual extension points so the work is estimable: UI extensions for what the buyer sees, and Functions for delivery options, payment rules, cart and checkout validation and pickup points. Each Function is an app to build, review and maintain.",
         "limits": "Checkout UI extensions run from Basic, but extensions on the information, shipping and payment steps are Plus. Functions inside a custom app are Plus; inside a public App Store app they are not.",
         "sources": [
-          "https://shopify.dev/docs/api/checkout-ui-extensions",
+          "https://shopify.dev/docs/api/checkout-ui-extensions/latest",
           "https://shopify.dev/docs/apps/build/functions"
         ]
       }
@@ -8160,7 +8161,7 @@
           {
             "feature": "Admin API, bulk operations and webhooks",
             "plan": "basic",
-            "docs": "https://shopify.dev/docs/api/functions"
+            "docs": "https://shopify.dev/docs/api/functions/latest"
           }
         ],
         "app_category": {
@@ -8229,7 +8230,7 @@
         "why": "Sizes the sync design and the API budget. High-volume, non-urgent updates belong in bulk operations; freshness measured in minutes means webhooks plus reconciliation. The answer also tests whether the target plan's Admin API rate limit is enough.",
         "limits": "Bulk imports: the JSONL file cannot exceed 100 MB, and the operation must finish within 24 hours or it is stopped and marked failed. Admin API rate limits are per plan, so heavy sync can itself force Advanced or Plus.",
         "sources": [
-          "https://shopify.dev/docs/api/usage/bulk-operations/imports",
+          "https://shopify.dev/docs/apps/build/apis/graphql-admin/bulk-operations/imports",
           "https://shopify.dev/docs/api/usage/limits"
         ]
       }
@@ -8443,7 +8444,7 @@
       "teach": {
         "why": "Tokens and components map onto theme settings and theme blocks, which are defined at theme level and reused across sections. A file of flat screens does not, and each screen then becomes bespoke Liquid - the difference between configuring a theme and writing one.",
         "sources": [
-          "https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks"
+          "https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid"
         ]
       }
     },
@@ -8669,7 +8670,7 @@
         "why": "Tests the reason against the architecture. A front end serving more than the store, a design that theme architecture cannot express, or an existing CMS as source of truth are real reasons. Speed and 'modern stack' usually are not.",
         "limits": "Current-generation themes with theme blocks cover far more than Online Store 2.0 did, so check the requirement against Horizon's block architecture before accepting a headless answer. A headless build also needs a standing front-end team after launch.",
         "sources": [
-          "https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks",
+          "https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid",
           "https://shopify.dev/docs/storefronts/headless/getting-started/build-options"
         ]
       }
