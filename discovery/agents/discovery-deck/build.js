@@ -30,6 +30,8 @@ import { XmlWriter, esc } from './xml.js';
 import { stopRoute } from '../discovery/engine.js';
 import { axesForDecision } from '../discovery/rubric.js';
 import { runCost } from '../discovery/economics.js';
+import { challengeApproach, topChallenges } from '../discovery/challenge.js';
+import { toApproachPayload } from '../discovery/approach.js';
 import { planRequirements, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
 import { appSignals, appCandidates } from '../discovery/app-signals.js';
 
@@ -221,6 +223,21 @@ function solutionDesign(x, doc) {
   x.close();
   architecture(x, doc);
   economics(x, doc);
+  challenges(x, doc);
+  x.close();
+}
+
+/**
+ * The adversarial pass: the alternative a decision dropped, the documented limit
+ * an answer we leaned on still carries, the assumption no risk covers. Each one
+ * has to be answered in the deck — in the decision itself, in the gaps, or in the
+ * risks — or the document is arguing against its own evidence.
+ */
+function challenges(x, doc) {
+  const found = topChallenges(challengeApproach(toApproachPayload(doc.approach ?? {}), doc));
+  if (!found.length) return;
+  x.open('challenges', { count: String(found.length) });
+  for (const f of found) x.empty('challenge', { severity: f.severity, finding: f.finding, why: f.why_it_matters, evidence: f.evidence });
   x.close();
 }
 

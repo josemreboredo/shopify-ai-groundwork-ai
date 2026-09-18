@@ -18,6 +18,8 @@ import { buildApproachSchema } from '../agents/discovery/extraction-schema.js';
 import { buildDeckXml } from '../agents/discovery-deck/build.js';
 import { verifiedKnowledge, knowledgeBytes } from '../agents/discovery/knowledge.js';
 import { runCost } from '../agents/discovery/economics.js';
+import { challengeApproach, topChallenges } from '../agents/discovery/challenge.js';
+import { toApproachPayload } from '../agents/discovery/approach.js';
 import { DECK_PROMPT } from '../agents/discovery-deck/prompt.js';
 import { selectStories, summariseByEpic } from '../agents/backlog/select.js';
 import { openItems } from '../agents/interview/open-items.js';
@@ -115,6 +117,8 @@ export function deckBrief(engagement) {
     reference_chapters: chapters.chapters,
     verified_knowledge: knowledge,
     run_cost: runCost(engagement),
+    // What a second expert would say about the draft, computed rather than opined.
+    challenges: topChallenges(challengeApproach(toApproachPayload(engagement.approach ?? {}), engagement)),
     warnings: [
       ...warnings,
       ...(chapters.summaries_only ? [`Payload budget: ${chapters.summaries_only.join(', ')} sent as a summary only — read the chapter in the annex before writing about it`] : []),

@@ -12,8 +12,21 @@
  * @module discovery/service/deck-template
  */
 
+import { challengeApproach, topChallenges } from '../agents/discovery/challenge.js';
+import { toApproachPayload } from '../agents/discovery/approach.js';
+
 const str = (description, max) => ({ type: 'string', description, ...(max ? { maxLength: max } : {}) });
 const list = (items, description, max) => ({ type: 'array', description, items, ...(max ? { maxItems: max } : {}) });
+
+/** High-severity findings from the adversarial pass, for the deck gate below. */
+const highChallenges = (doc) => {
+  if (!doc?.approach) return [];
+  try {
+    return topChallenges(challengeApproach(toApproachPayload(doc.approach), doc)).filter((f) => f.severity === 'high');
+  } catch {
+    return [];
+  }
+};
 
 /** The decision topic that carries market topology, and the audiences its impact slide covers. */
 const TOPOLOGY_TOPIC = /market\s*topology|store\s*topology/i;
@@ -469,6 +482,16 @@ export function deckErrors(deck, doc = {}) {
       if (doc?.markets?.topology?.confidence === 'to_validate' && !/assum|to validate|not yet confirmed/i.test(JSON.stringify(topology))) {
         errors.push('the topology recommendation rests on assumptions, so its slide says so — the client must see which parts would move once the open questions are answered');
       }
+    }
+  }
+
+  // The adversarial pass: a high finding has to be answered somewhere in the deck
+  // — in the decision, in the gaps, in the risks — not met for the first time by
+  // the client. Answered means the evidence it rests on is on a slide.
+  for (const finding of highChallenges(doc)) {
+    const id = /(Q\d+\.\d+\.\d+|11\.\d+)/.exec(finding.evidence ?? '')?.[1];
+    if (id && !JSON.stringify(slides).includes(id)) {
+      errors.push(`the deck does not answer a challenge the engine raised on ${id}: ${finding.finding} — argue it in the decision, or carry it into the gaps or the risks`);
     }
   }
 

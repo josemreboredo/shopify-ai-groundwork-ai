@@ -57,6 +57,12 @@ Consultant decides what reaches the client's leadership, so the draft contains *
         second store means either a second storefront deployment or one application serving two Storefront API
         endpoints — say which, and what it does to caching, CI/CD, preview environments and the shared design system.
      7. `gaps` (what Shopify cannot cover), `open_decisions` (what the client owes, with owner and date), `risks`,
+        and **answer the challenges**: `deck_xml` carries `<challenges>`, the adversarial pass over the
+        approach — an alternative a decision dropped, a documented limit still unaddressed on an answer
+        the approach leaned on, an assumption no risk covers, an open flag nobody refers to. Each one
+        names the question or rule it rests on. Answer every high finding on a slide — in the decision
+        it belongs to, in the gaps, or in the risks — because the client will find it otherwise, and a
+        multi-market deck that leaves one unanswered is rejected before it is saved.
         `out_of_scope`.
      8. `roadmap`, `investment`, `run_cost` — and `run_cost` is not an estimate you write: `deck_xml`
         carries `<run-cost>` with the client's own order volume and average basket, the app

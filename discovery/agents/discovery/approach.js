@@ -67,6 +67,7 @@ App shortlist
 
 Assumptions
 - State assumptions you made where answers were missing or ambiguous, and the impact if wrong.
+- Every assumption with a real impact needs a risk in the register that names it. An assumption with consequences and no owner is a risk nobody is watching, and the engine will raise it as a challenge after you save.
 
 Phases
 - Phase 1 delivers the launch scope in sprints; later phases hold deferred items (mark tasks deferred: true). Owner is consultant, agent, designer, developer or client.
