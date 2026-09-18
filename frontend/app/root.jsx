@@ -32,6 +32,7 @@ export function Layout({ children }) {
           <nav className="topnav">
             {root?.user ? <NavLink to="/" end>Engagements</NavLink> : null}
             <NavLink to="/about">What this is</NavLink>
+            <NavLink to="/how-it-works">How it works</NavLink>
             <NavLink to="/manual">Manual</NavLink>
             {root?.user ? <NavLink to="/claude">Claude Project</NavLink> : null}
           </nav>

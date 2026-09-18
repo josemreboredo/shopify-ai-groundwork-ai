@@ -278,6 +278,8 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .rails { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 40px; margin: 32px 0 0; }
 .rails dt { font-weight: 700; margin-bottom: 4px; }
 .rails dd { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.steps .trace { grid-column: 2; margin: 8px 0 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--red-ink); }
+.band.dark .grid-2 > div { border-top: 3px solid var(--red); padding-top: 16px; }
 .byline { margin-top: 32px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6) !important; }
 @media (max-width: 900px) {
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
