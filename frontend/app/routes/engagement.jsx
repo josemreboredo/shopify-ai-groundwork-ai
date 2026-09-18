@@ -61,9 +61,18 @@ function PrefillCard({ client, documents, toConfirm }) {
 
 Register each document with register_document, map what it says to the questionnaire with find_questions, and record answers with record_answers, each with its evidence (document, section, short quote). Where a document is unclear, mark the question TBC with a note instead of guessing. Then tell me what you recorded and what is still open.`;
   const started = documents.length > 0;
+  // Closed by default: not every engagement starts from an RFP, and those that do
+  // only need this once. The summary line still says where things stand.
   return (
-    <section className={`card prefill${started ? ' done' : ''}`}>
-      <p className="question">{started ? 'Pre-fill again from new documents' : 'Pre-fill the answers from the client’s documents'}</p>
+    <details className={`card prefill${started ? ' done' : ''}`}>
+      <summary>
+        <span className="prefill-title">{started ? 'Pre-fill again from new documents' : 'Pre-fill the answers from the client’s documents'}</span>
+        <span className="muted prefill-status">
+          {started
+            ? `${documents.length} document${documents.length > 1 ? 's' : ''} read · ${toConfirm} to confirm`
+            : 'Optional — if you have an RFP or brief'}
+        </span>
+      </summary>
       {started ? (
         <p className="muted">
           {documents.length} document{documents.length > 1 ? 's' : ''} read so far, {toConfirm} answer{toConfirm === 1 ? '' : 's'} waiting for your confirmation below.
@@ -97,7 +106,7 @@ Register each document with register_document, map what it says to the questionn
         Opening a brand-new chat outside the project will not work: Claude only sees the documents inside the project.
         This page picks up the answers by itself while Claude records them.
       </p>
-    </section>
+    </details>
   );
 }
 
