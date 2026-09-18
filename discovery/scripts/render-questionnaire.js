@@ -96,6 +96,7 @@ function renderQuestion(q, t) {
   }
   if (q.only_if) lines.push(`*Only if ${q.only_if.map(describeCondition).join(' or ')}.*`);
   if (q.ask_if) lines.push(`*Ask if ${q.ask_if.map(describeCondition).join(', or ')}.*`);
+  if (q.why_it_matters) lines.push(`*Why we ask: ${q.why_it_matters}*`);
   const help = tr?.help ?? q.help;
   if (help) lines.push(`*${help}*`);
   lines.push('', ...answerBlock(q, labels));
@@ -216,6 +217,12 @@ function renderGuideQuestion(q) {
   if (q.feeds?.length) lines.push(`Drives: ${q.feeds.map((f) => REF_LABEL.get(f) ?? f).join(' · ')}`);
   if (q.only_if) lines.push(`Asked only if ${q.only_if.map(describeCondition).join(' or ')}`);
   if (q.ask_if) lines.push(`Quick interview: ask if ${q.ask_if.map(describeCondition).join(', or ')}`);
+  if (q.who_can_answer) lines.push(`Who holds this fact: ${q.who_can_answer}`);
+  if (q.what_good_looks_like) lines.push('', `**What a usable answer looks like.** ${q.what_good_looks_like}`);
+  if (q.unknown_path) {
+    const u = q.unknown_path;
+    lines.push('', `**If they do not know.** ${u.fallback} Assumption recorded: ${u.assumption} Confidence: ${u.confidence}. To resolve: ${u.resolve_by}`);
+  }
   const t = q.teach;
   if (t) {
     lines.push('', `**Why it matters.** ${t.why}`);

@@ -503,6 +503,7 @@
 ### 3.1 Markets at launch
 
 **Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required)*
+*Why we ask: These rows decide how many Shopify stores your business needs. Countries that share one selling company, one range and one team can run on a single store; countries that differ on those points usually need their own store, which multiplies the build, the running cost and the work of every future change.*
 *One row per country. Leave a cell blank if you do not know it — we will come back to it.*
 
 | Code | Currency | Languages | Domain | Price strategy | Domain type | Selling entity | Assortment | Run by |
@@ -519,6 +520,7 @@
 > Answer:
 
 **Q3.1.4** — Stated preference only — does the client already have a view on running all countries from one store or giving some countries their own store? Record it as their view, not as the answer. *(optional · consultant)*
+*Why we ask: If you already have a view, we will say where the evidence agrees with it and where it does not, rather than quietly designing around it.*
 *Recorded as a stated preference. It never decides the recommendation; where it differs, the closing document argues the gap.*
 
 *(tick one)*
@@ -688,6 +690,7 @@
 - [ ] Not sure yet
 
 **Q3.4.13** — If selling in a country meant registering for tax there and filing returns, would you take that on yourself, or would you rather a partner were the legal seller for those orders? *(recommended)*
+*Why we ask: This decides who carries the tax and customs liability on cross-border orders. Keeping it yourself means registering, filing and remitting in each country; handing it to a partner removes that work and that risk, and costs a percentage of every international order.*
 *Answer for the countries you sell to but are not registered in today.*
 
 *(tick one)*
@@ -1070,6 +1073,7 @@
 > Answer:
 
 **Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders), and in which countries are they? *(required)*
+*Why we ask: Where stock sits decides what a customer pays at the border, which tax schemes are open to you, and whether a country can be served from the same store as the others or needs its own operation.*
 *Physical stores that sell in person are counted separately in § 5.6.*
 
 - Fulfilment locations:
@@ -1571,6 +1575,7 @@
 
 **Q6.2.14** — Is the wholesale side of the business run by its own team, with its own targets or its own profit and loss? *(recommended)*
 *Ask if Q1.1.4 is Business to business (B2B), or Q1.1.4 is Hybrid (DTC and B2B).*
+*Why we ask: A wholesale business with its own team, targets and customers usually wants to move at its own pace — its own campaigns, its own releases, its own data. That is the difference between wholesale living alongside the consumer store and wholesale having a store of its own.*
 *We are asking about how the business is organised, not about the website.*
 
 - [ ] Yes

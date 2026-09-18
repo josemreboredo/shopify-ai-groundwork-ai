@@ -1,6 +1,6 @@
 ---
 title: Managed Markets
-verified: 2026-09-17
+verified: 2026-09-18
 topics: cross_border
 summary: What Shopify Managed Markets does as merchant of record, who is eligible, what it costs, what it excludes, and how it compares with self-managed duties.
 ---
@@ -55,18 +55,24 @@ These stack, on top of normal payment processing. The all-in take rate on a cros
 
 ## What it does not support
 
-Documented exclusions [2]:
+Documented exclusions [2], re-verified 2026-09-18:
 
 - **B2B.** "B2B orders aren't supported by Managed Markets."
-- **Subscriptions.** "Managed Markets doesn't support subscriptions. Subscriptions work only for domestic orders."
-- **Zero-value orders.** "Free orders that have a value of zero aren't supported by Managed Markets."
-- **Checkout redirects.** "Managed Markets doesn't support redirects at checkout" — ruling out several checkout customisation patterns.
-- **The Global-e app.** "Managed Markets and the Global-e app can't be used at the same time."
-- **Manual bundles** are incompatible, although Shopify Bundles is compatible.
-- **Order editing.** "Managed Markets orders can't be edited after a shipping label is printed"; fulfilled orders cannot be modified.
-- Product-level exemptions from the EU right of withdrawal are not available.
+- **Subscriptions.** "Managed Markets doesn't support subscriptions."
+- **Multiple business entities.** "Managed Markets doesn't support multiple business entities" — which is why it can never be the answer for a client whose markets sell through different legal entities. That client is choosing between one store with Markets and expansion stores, not between merchants of record.
+- **Free orders.** "Free orders that have a value of zero aren't supported."
+- **Shopify Collabs**, and the standalone Global-e app, cannot run alongside it.
+- **Manual bundles** created as a single line item are incompatible; Shopify Bundles are supported.
+- **Order editing.** "Managed Markets orders can't be edited after a shipping label is printed."
+- **Canada.** All fulfilment locations must sit in the same province, and the store must use Shopify Tax or Basic Tax — "Managed Markets can't be used if your store uses manual tax settings" [2].
 
-Not confirmed: we could not verify a complete list of destination countries Managed Markets ships to, nor an explicit exclusion list of destinations. Shopify documents only that products are reviewed against prohibited-item rules for the destinations sold to [4]. Confirm destination coverage with Shopify for any client whose cross-border revenue concentrates in one market.
+## The checkout disclaimer
+
+Managed Markets is visible to the customer. "A disclaimer is displayed at checkout on your Managed Markets orders which states that your customer is purchasing from Global-e, and provides a link to Global-e's terms and conditions and privacy policy" [1]. It appears only to customers in Managed Markets regions, and it cannot be hidden or modified. On a premium or luxury brand this is a brand decision as much as a tax one, and it belongs in the recommendation rather than in a footnote.
+
+## Managed Markets is not a topology
+
+It answers *who sells*, not *how many stores*. A merchant can run one store with Shopify Markets and put cross-border orders through Managed Markets; it does not merge stores, split them, or remove the need for a second store where the business genuinely runs two operations. Decide the store topology first, from the business facts (see `shopify-markets`), then decide the merchant of record.
 
 ## Managed Markets versus self-managed duties
 
@@ -100,3 +106,5 @@ Not confirmed: we could not verify a complete list of destination countries Mana
 7. Considerations for charging duties and import taxes at checkout — https://help.shopify.com/en/manual/international/duties-and-import-taxes/considerations — "The duties and import taxes that are charged are estimates based on the latest information at the time that the customer places their order." — checked 2026-09-17
 8. Collecting international duties and import taxes at checkout — https://help.shopify.com/en/manual/international/duties-and-import-taxes/charging-duties — "0.85% transaction fee applies to orders that have duties and import taxes calculated" — checked 2026-09-17
 9. Buying DDP shipping labels — https://help.shopify.com/en/manual/fulfillment/fulfilling-orders/shipping-labels/buying-labels/ddp-ddu — "DDP (Delivered Duty Paid) labels are supported only for specific carriers when purchasing shipping labels through Shopify's carrier accounts" — checked 2026-09-17
+10. Overview of Managed Markets — https://help.shopify.com/en/manual/international/managed-markets/overview — "A disclaimer is displayed at checkout on your Managed Markets orders which states that your customer is purchasing from Global-e" · "3.25% for stores on the Shopify Plus plan" · "3.5% for stores that are on the Basic, Grow, or Advanced plan" · "A 1.5% currency conversion fee, also known as the foreign exchange (FX) fee" — checked 2026-09-18
+11. Requirements and considerations for using Managed Markets — https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations — "Managed Markets doesn't support multiple business entities" · "Managed Markets doesn't support subscriptions" · "Free orders that have a value of zero aren't supported" · "Managed Markets orders can't be edited after a shipping label is printed" — checked 2026-09-18

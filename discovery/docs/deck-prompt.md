@@ -34,6 +34,23 @@ Consultant decides what reaches the client's leadership, so the draft contains *
         cut-over and the rollback) when the engagement replatforms.
      6. `decision` slides for the architecture choices, `nfr` (performance, accessibility, privacy, security — each
         with a target and how it is verified), `split` for configuration versus custom.
+        **On more than one market, market topology is the first decision of them all** — how many Shopify stores the
+        markets run on — because it constrains the storefront decision that follows it. Three slides, in this order:
+        a `two_column` that *teaches the trade-off before the recommendation lands* (one store with Shopify Markets
+        on the left, separate stores per market on the right — what each gives and what each costs, in the client's
+        terms, not a Shopify tutorial); then the `decision` slide with topic "Market topology", weighing one store
+        with Markets, expansion stores and a hybrid, and naming the Managed Markets position explicitly (recommended,
+        rejected on economics with the fee on the client's own order volume, or not eligible with the failing
+        condition); then a `table` with the four impact lenses as rows — technical, project, merchant, customer.
+        `deck_xml` carries `<topology>` with the recommendation, the triggers, the rejected options, the assumptions,
+        the open inputs and the Managed Markets verdict: argue that data, never re-derive it. Where confidence is
+        `to_validate`, say on the slide which parts of the recommendation would move once the open questions are
+        answered, and carry those assumptions into the assumptions of the annex.
+        The delivery track branches here, and the deck says so: on **Liquid** the theme is store-wide, per-market
+        divergence runs through market customisations and Rollouts, and a second store means a second theme to
+        maintain; on **Hydrogen** routing, locale context and market resolution are application concerns, and a
+        second store means either a second storefront deployment or one application serving two Storefront API
+        endpoints — say which, and what it does to caching, CI/CD, preview environments and the shared design system.
      7. `gaps` (what Shopify cannot cover), `open_decisions` (what the client owes, with owner and date), `risks`,
         `out_of_scope`.
      8. `roadmap`, `investment`, `run_cost` (what it costs to run), `operating_model` (who runs what after go-live),

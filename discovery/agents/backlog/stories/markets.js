@@ -104,7 +104,7 @@ export default [
     points: 8,
     owner: 'consultant',
     depends_on: ['LWC-MKT-001'],
-    spec_refs: ['/markets/strategy', '/markets/list', '/shopify/target_plan'],
+    spec_refs: ['/markets/topology/recommendation', '/markets/list', '/shopify/target_plan'],
     gates: ['markets'],
     applies: (doc) => ['expansion_stores', 'hybrid'].includes(doc.markets?.strategy),
     security_flags: ['auth'],

@@ -1301,30 +1301,61 @@
     "architecture": {
       "decisions": [
         {
-          "topic": "Store structure",
-          "question": "One store with Shopify Markets or an expansion store per country?",
+          "topic": "Market topology",
+          "question": "Do Switzerland, Germany and Austria run on one store with Shopify Markets, on a store each, or on a hybrid?",
           "options": [
             {
               "option": "One store with Shopify Markets",
-              "pros": "One catalog, one admin, per-market prices and languages",
-              "cons": "Market-specific content handled with market customisations"
+              "pros": "One catalogue, one admin and one theme, with currency, language, domain and pricing set per market",
+              "cons": "Every market shares one theme, one app estate and one admin; per-market theme customisation starts at the Advanced plan"
             },
             {
-              "option": "Expansion stores per country",
-              "pros": "Full separation per country",
-              "cons": "Needs Shopify Plus, duplicate operations and apps"
+              "option": "An expansion store per country",
+              "pros": "Hard separation of data, staff, finance and local operations",
+              "cons": "Requires Shopify Plus, and nothing is shared: every catalogue, theme and app change is repeated in each store"
+            },
+            {
+              "option": "Hybrid — a core store plus a separate store for one market",
+              "pros": "Isolates a market that genuinely diverges without duplicating the ones that do not",
+              "cons": "Two estates to run for as long as the exception lasts; also requires Shopify Plus"
             }
           ],
           "decision": "One store with Shopify Markets for CH, DE and AT",
-          "rationale": "Three markets with CHF and EUR and manual price lists fit Markets; no requirement for separate operations.",
+          "rationale": "The client stated CHF and EUR checkout currencies, manual per-market price lists and three German-speaking markets. The engine derived one selling entity (ACME Watches AG invoices in all three markets), the same range everywhere and one central team, so no business fact separates the markets. Managed Markets is not eligible: the business is based in Switzerland, and Shopify documents eligibility for the continental United States and certain stores in Canada and the United Kingdom only. Confidence is to_validate: the entity mapping and the range relationship were assumed rather than stated, which is what exit rule 11.23 flags for the topology workshop.",
           "plan_impact": "none",
           "status": "recommended",
+          "why_not": [
+            {
+              "option": "Expansion stores per country",
+              "reason": "Nothing separates the markets by selling entity, range or team, so a second store would duplicate every catalogue, theme and app change for no benefit — and would require Shopify Plus"
+            },
+            {
+              "option": "Hybrid",
+              "reason": "No single market diverges enough to leave the core store; DE and AT share the entity, the range and the team with CH"
+            },
+            {
+              "option": "Managed Markets (Global-e as merchant of record)",
+              "reason": "Not eligible: the business is based in Switzerland, outside the documented US, Canada and United Kingdom eligibility"
+            }
+          ],
+          "impact": {
+            "technical": "One Shopify store, one theme and one app estate, with markets carrying currency, domain, language and price lists; no cross-store synchronisation to build.",
+            "project": "One build, one QA matrix and one release train. Per-market theme content would move the plan to Advanced, so it is scoped as a decision point rather than an assumption.",
+            "merchant": "One admin for the whole DACH business: the team edits products, prices and content once, and sees orders from all three markets in one place.",
+            "customer": "A local domain, local currency and local language in each market, with one checkout experience shared across them."
+          },
           "sources": [
-            "https://help.shopify.com/en/manual/markets/getting-started/market-types"
+            "https://help.shopify.com/en/manual/markets",
+            "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
+            "https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations",
+            "https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets"
           ],
           "question_ids": [
             "Q3.1.1",
-            "Q3.1.4"
+            "Q1.1.6",
+            "Q3.4.2",
+            "Q3.4.13",
+            "Q6.2.14"
           ]
         },
         {

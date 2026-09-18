@@ -179,9 +179,16 @@ function solutionDesign(x, doc) {
   x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
   x.field('architecture', `${doc.offer.delivery_track === 'hydrogen' ? 'Headless' : 'Online Store 2.0'} · ${markets.length > 1 ? `multi-market (${markets.filter((m) => m.code !== 'CN').length} markets${markets.some((m) => m.code === 'CN') ? ' + mainland China in a separate discovery' : ''})` : 'single market'}${b2b.enabled ? ' · B2B and DTC on one store' : ''}`);
   x.field('theme', doc.offer.delivery_track === 'liquid' ? `Horizon${doc.design?.theme_preference && doc.design.theme_preference !== 'Horizon' ? ` (client preference noted: ${doc.design.theme_preference})` : ''}` : 'Hydrogen');
-  x.open('markets', { strategy: doc.markets?.strategy, primary: doc.markets?.primary_markets?.join(', ') });
-  for (const mk of markets) x.empty('market', { code: mk.code, currency: mk.currency, languages: (mk.languages ?? []).join(', '), domain: mk.domain, pricing: mk.price_strategy, scope: mk.code === 'CN' ? 'separate China discovery' : undefined });
+  x.open('markets', { primary: doc.markets?.primary_markets?.join(', ') });
+  for (const mk of markets) {
+    x.empty('market', {
+      code: mk.code, currency: mk.currency, languages: (mk.languages ?? []).join(', '), domain: mk.domain, pricing: mk.price_strategy,
+      entity: mk.selling_entity, assortment: mk.assortment, 'run-by': mk.run_by,
+      scope: mk.code === 'CN' ? 'separate China discovery' : undefined,
+    });
+  }
   for (const mk of markets.filter((m) => m.code !== 'CN' && !m.price_strategy)) x.missing('market-pricing', `Q3.1.1 pricing not answered for ${mk.code}`, { code: mk.code });
+  topology(x, doc);
   x.close();
   x.open('payments-and-checkout');
   x.list('providers', doc.payments?.providers, 'Q4.1.1 not answered');
@@ -471,6 +478,40 @@ function appendixStories(x, backlog) {
  * @param {object|null} backlog  Parsed backlog.json, if any
  * @returns {{ xml: string, warnings: string[] }}
  */
+/**
+ * The derived market topology, as data: the recommendation the writer argues,
+ * what fired it, what it rules out, what it assumed and what would change it.
+ * The writer never re-derives this — the engine decided it (topology.js).
+ */
+function topology(x, doc) {
+  const t = doc.markets?.topology;
+  if (!t) return;
+  x.open('topology', { recommendation: t.recommendation, confidence: t.confidence, 'separate-stores': (t.separate_store_markets ?? []).join(', ') || undefined });
+  for (const trigger of t.triggers ?? []) {
+    x.empty('trigger', { criterion: trigger.criterion, weight: String(trigger.weight ?? ''), markets: (trigger.markets ?? []).join(', ') || undefined, evidence: trigger.evidence, questions: (trigger.question_ids ?? []).join(', ') });
+  }
+  for (const r of t.rejected ?? []) x.empty('rejected', { option: r.option, reason: r.reason });
+  for (const a of t.assumptions ?? []) x.empty('assumption', { about: a.about, assumed: a.assumed, 'impact-if-wrong': a.impact_if_wrong, question: a.question_id });
+  for (const o of t.open_inputs ?? []) x.empty('open-input', { question: o.question_id, swing: o.swing, why: o.why_it_matters });
+  const mm = t.managed_markets;
+  if (mm) {
+    x.open('managed-markets', { status: mm.status });
+    for (const c of mm.conditions ?? []) x.empty('condition', { met: String(c.met), condition: c.condition, evidence: c.evidence, source: c.source });
+    if (mm.cost_signal) {
+      x.empty('cost-signal', {
+        'fee-pct': String(mm.cost_signal.fee_pct ?? ''),
+        'per-order': mm.cost_signal.per_order !== undefined ? String(mm.cost_signal.per_order) : undefined,
+        'per-month': mm.cost_signal.per_month !== undefined ? String(mm.cost_signal.per_month) : undefined,
+        currency: mm.cost_signal.currency,
+        basis: mm.cost_signal.basis,
+      });
+    }
+    x.close();
+  }
+  if (t.stated_preference) x.empty('stated-preference', { client: t.stated_preference, computed: t.recommendation, disagreement: t.disagreement ? t.disagreement.why_computed : undefined });
+  x.close();
+}
+
 export function buildDeckXml(doc, backlog = null) {
   const x = new XmlWriter();
   x.depth = 1;

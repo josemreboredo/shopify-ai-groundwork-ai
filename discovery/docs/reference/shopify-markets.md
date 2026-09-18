@@ -1,8 +1,8 @@
 ---
 title: Shopify Markets
-verified: 2026-09-17
+verified: 2026-09-18
 topics: markets, cross_border
-summary: How Shopify Markets structures cross-border selling — domains, languages, pricing, catalogs, duties and taxes — and when an expansion store is the better answer.
+summary: How Shopify Markets structures cross-border selling — domains, languages, pricing, catalogs, duties and taxes — how the store topology is decided from business facts, and when an expansion store is the better answer.
 ---
 
 # Shopify Markets
@@ -84,6 +84,23 @@ Shopify also documents that "Starting July 1, 2026, the EU will begin removing t
 ## Tax registrations, Shopify Tax and Basic Tax
 
 Shopify Tax covers "the United States, European Union, United Kingdom, and Canada" [19]. Outside those, Basic Tax covers Norway, Switzerland, Australia, New Zealand and Singapore, and "requires you to input a tax registration number" [21]. Registrations are added per region under Settings > Taxes and duties [21]. Shopify Tax is free until a sales threshold, then charged per order with a cap [20]. Shopify does not file or remit: "It's your responsibility ... to ensure that you file and remit your taxes correctly" [21].
+
+## Choosing the topology: what actually decides it
+
+The choice between one store with Markets, a store per market, and a hybrid is decided by how the *business* is organised, not by a preference for one Shopify feature over another. Six facts decide it, and all six are things a country manager, a controller or a merchandiser can state without knowing anything about Shopify:
+
+| Fact | One store with Markets | Separate stores |
+|---|---|---|
+| Which company invoices the customer | One selling entity across the markets | A different selling entity per market, with its own settlement |
+| Tax and invoicing footprint | One registration footprint, or cross-border selling from the home entity | Each market registered, filing and invoicing in its own name |
+| The range | The same range, or a subset of it — a subset resolves with a market catalog [10] | A deliberately different range, structured differently |
+| Apps | One app estate serves every market (apps are installed store-wide) | A market needs apps the others cannot live with |
+| Who runs the market | One central team | Local teams with their own release cycle, data and P&L |
+| Regulatory or technical isolation | None | A market with its own legal or hosting requirement (mainland China is the canonical case) |
+
+Where those facts separate a *minority* of markets, the answer is a hybrid — a core store with Markets plus a separate store for the market that diverges — rather than a full multi-store estate. Where they separate most of them, it is expansion stores.
+
+**What Shopify does not publish.** There is no official side-by-side comparison of one store with Markets against expansion stores: Shopify documents each separately [1][22], and the comparison above is Merkle's, drawn from those two pages. Nor does Shopify publish a hard cap on markets, currencies or price lists per store — the documentation records no limit on country or region markets [2]. Treat the ceilings as architectural consequences (how much divergence one theme, one app estate and one admin can carry) rather than as published limits, and never quote a number Shopify has not published.
 
 ## Expansion stores as the alternative
 

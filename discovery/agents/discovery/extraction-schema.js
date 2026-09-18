@@ -94,7 +94,11 @@ const GAIA_TIERS = ['T1', 'T2', 'T3', 'T4'];
 
 /** @returns {object} */
 export function buildApproachSchema() {
-  const obj = (properties) => ({ type: 'object', additionalProperties: false, required: Object.keys(properties), properties });
+  const obj = (properties, optional = []) => ({
+    type: 'object', additionalProperties: false,
+    required: Object.keys(properties).filter((k) => !optional.includes(k)),
+    properties,
+  });
   const str = (description) => (description ? { type: 'string', description } : { type: 'string' });
   const sources = (description) => ({ type: 'array', items: { type: 'string' }, description });
 
@@ -127,7 +131,24 @@ export function buildApproachSchema() {
         status: { enum: ['recommended', 'to_validate_in_discovery'] },
         sources: sources('Official Shopify documentation the decision relies on (at least one)'),
         question_ids: { type: 'array', items: str(), description: 'Client answers the decision is founded on (at least one)' },
-      }),
+        why_not: {
+          type: 'array',
+          description: 'Options weighed and not taken, with the reason. Required for the "Market topology" decision.',
+          items: obj({ option: str(), reason: str('Why this option was not taken, on this engagement\'s facts') }),
+        },
+        impact: {
+          type: 'object',
+          description: 'What the decision changes, per audience. Required for the "Market topology" decision.',
+          properties: {
+            technical: str('What it changes in the build and the platform'),
+            project: str('What it changes for the plan, the timeline and the cost of delivery'),
+            merchant: str('What it changes for the client\'s team day to day'),
+            customer: str('What it changes for the shopper'),
+          },
+          required: ['technical', 'project', 'merchant', 'customer'],
+          additionalProperties: false,
+        },
+      }, ['why_not', 'impact']),
     },
     integration_architecture: {
       type: 'array',

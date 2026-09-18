@@ -1025,7 +1025,7 @@
       "name": "Zonos Duty and Tax",
       "url": "https://apps.shopify.com/duty-and-tax-calculator-iglobal-stores",
       "requirements": [
-        "Duties outside native / MoR alternative (Q3.1.6)"
+        "Duties outside native / merchant-of-record alternative (derived topology)"
       ],
       "category": {
         "name": "Cross-border / taxes"
@@ -1039,7 +1039,7 @@
       "name": "ESW International",
       "url": "https://apps.shopify.com/esw-international",
       "requirements": [
-        "Duties outside native / MoR alternative (Q3.1.6)"
+        "Duties outside native / merchant-of-record alternative (derived topology)"
       ],
       "category": {
         "name": "Cross-border / taxes"
@@ -1054,7 +1054,7 @@
       "url": "https://apps.shopify.com/taxjar",
       "developer": "US",
       "requirements": [
-        "Duties outside native / MoR alternative (Q3.1.6)"
+        "Duties outside native / merchant-of-record alternative (derived topology)"
       ],
       "category": {
         "name": "Cross-border / taxes"

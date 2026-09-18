@@ -3191,6 +3191,45 @@
                     "items": {
                       "$ref": "#/$defs/question_id"
                     }
+                  },
+                  "why_not": {
+                    "type": "array",
+                    "description": "Options weighed and not taken, with the reason. Required for the Market topology decision.",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "option",
+                        "reason"
+                      ],
+                      "properties": {
+                        "option": {
+                          "type": "string"
+                        },
+                        "reason": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "impact": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "description": "What this decision changes, per audience. Required for the Market topology decision.",
+                    "properties": {
+                      "technical": {
+                        "type": "string"
+                      },
+                      "project": {
+                        "type": "string"
+                      },
+                      "merchant": {
+                        "type": "string"
+                      },
+                      "customer": {
+                        "type": "string"
+                      }
+                    }
                   }
                 }
               }

@@ -18,6 +18,16 @@ Consulting standards
 - Answer first: each decision states the recommendation, then the reasoning. Weigh at least two real options with pros and cons before deciding. Be specific and quantified where the answers allow (markets, SKUs, orders, integrations, volumes).
 - Separate facts, assumptions and recommendations. When evidence is missing, mark the decision to_validate_in_discovery and add an assumption with its impact if wrong — never fill gaps with invented facts.
 
+Market topology (whenever the engagement has more than one market)
+- The first architecture decision is "Market topology": how many Shopify stores the markets run on. It constrains every decision after it, including the storefront, so argue it first.
+- The engine has already derived it from the client's business facts and given you markets.topology: the recommendation, the confidence, the criteria that fired with their evidence, the options rejected with the reason, the assumptions it had to make and the open inputs that would change it. Argue that recommendation; do not re-derive it and do not contradict it without saying why in the rationale.
+- Weigh at least three options with pros and cons: one store with Shopify Markets, expansion stores, and a hybrid (a core store plus a separate store for the markets that diverge).
+- State the Managed Markets position explicitly, in one of three forms: recommended, rejected on economics (quote the fee on the client's own order volume from markets.topology.managed_markets.cost_signal), or not eligible (name the failing condition from the same block). A client who has heard of Managed Markets deserves to see why it was ruled out.
+- why_not: one entry per option not taken, with the reason on this engagement's facts.
+- impact: what the decision changes for the technical build, for the project (plan, timeline, cost of delivery), for the merchant's team day to day, and for the customer.
+- Separate what the client stated from what the engine derived. Where the recommendation rests on assumptions rather than stated facts — confidence to_validate — say so in the rationale, carry those assumptions into the assumptions list, and name the open inputs the Lead Consultant should chase first.
+- The delivery track branches on this decision. On liquid, the theme is store-wide: per-market divergence runs through market customisations and Rollouts, and a second store means a second theme to maintain. On hydrogen, routing, locale context and market resolution are application concerns: a second store means either a second storefront deployment or one application serving two Storefront API endpoints — say which, and what it does to caching, CI/CD, preview environments and the shared design system.
+
 Solution architecture
 - architecture_decisions: at least three decisions that shape the project — e.g. one store with Shopify Markets vs expansion stores, Horizon theme vs headless Hydrogen, native Shopify B2B vs B2B app, order routing and inventory, integration pattern (native apps, iPaaS, custom app, events), checkout extensibility and Shopify Functions, migration approach. Each with options, decision, rationale, plan_impact, status, sources and question_ids.
 - integration_architecture: one entry per system in the engagement integrations (same name): system of record per data object, pattern, direction, frequency, Shopify APIs used (Admin GraphQL API, webhooks, bulk operations, Customer Account API, Storefront API), error handling and reconciliation, sources.
@@ -73,6 +83,12 @@ const EVIDENCE = /^(Q\d+\.\d+\.\d+|11\.\d+)$/;
  * @param {object} doc  Decided engagement
  * @returns {string[]}
  */
+/** The topic that carries the market-topology decision. */
+const TOPOLOGY_TOPIC = /market\s*topology|store\s*topology|markets?\s*(vs\.?|or)\s*expansion/i;
+const MANAGED_MARKETS = /managed markets/i;
+const STORE_SHAPE = /one store|single store|expansion store|hybrid|managed markets/i;
+const STATED_VS_DERIVED = /stated|assum|derived|to validate|not yet confirmed/i;
+
 export function approachQualityErrors(payload, doc) {
   const errors = [];
   const official = (list) => (list ?? []).some((s) => OFFICIAL_SHOPIFY_SOURCE.test(s));
@@ -96,6 +112,34 @@ export function approachQualityErrors(payload, doc) {
     if (!(d.question_ids ?? []).length) errors.push(`${where}: found it on at least one client answer (question id)`);
     if (!d.decision?.trim() || !d.rationale?.trim()) errors.push(`${where}: state the decision and its rationale`);
   });
+
+  // Market topology: mandatory on any engagement with more than one market, and
+  // held to a higher bar than the other decisions, because it constrains them.
+  const topology = doc?.markets?.topology;
+  if ((doc?.markets?.list ?? []).length > 1) {
+    const decision = decisions.find((d) => TOPOLOGY_TOPIC.test(String(d.topic ?? '')));
+    if (!decision) {
+      errors.push('architecture_decisions: add "Market topology" (every engagement with more than one market decides how many stores it runs on, and that decision constrains the storefront)');
+    } else {
+      const where = `architecture_decisions "${decision.topic}"`;
+      if ((decision.options ?? []).length < 3) errors.push(`${where}: weigh at least three options — one store with Shopify Markets, expansion stores and a hybrid`);
+      if (!(decision.why_not ?? []).length) errors.push(`${where}: say why each option was not taken (why_not)`);
+      const impact = decision.impact ?? {};
+      for (const lens of ['technical', 'project', 'merchant', 'customer']) {
+        if (!impact[lens]?.trim()) errors.push(`${where}: impact.${lens} — one or two sentences on what this changes for that audience`);
+      }
+      if (!MANAGED_MARKETS.test(`${decision.rationale ?? ''} ${(decision.why_not ?? []).map((w) => `${w.option} ${w.reason}`).join(' ')}`)) {
+        errors.push(`${where}: state the Managed Markets position explicitly — recommended, rejected on economics, or not eligible with the failing condition`);
+      }
+      if (topology && !new RegExp(topology.recommendation.replace(/_/g, '[ _]'), 'i').test(`${decision.decision ?? ''} ${decision.rationale ?? ''}`)
+        && !STORE_SHAPE.test(`${decision.decision ?? ''}`)) {
+        errors.push(`${where}: the decision must name the store shape the engine derived (${topology.recommendation}), or argue explicitly why it differs`);
+      }
+      if (topology?.confidence === 'to_validate' && !STATED_VS_DERIVED.test(`${decision.rationale ?? ''}`)) {
+        errors.push(`${where}: the topology rests on assumptions, so the rationale must separate what the client stated from what the engine derived`);
+      }
+    }
+  }
 
   const integrations = payload.integration_architecture ?? [];
   const covered = new Set(integrations.map((x) => String(x.system).trim().toLowerCase()));
@@ -222,6 +266,8 @@ export function toApproachPayload(approach) {
     architecture_decisions: (approach.architecture?.decisions ?? []).map((d) => ({
       topic: d.topic, question: d.question ?? '', options: (d.options ?? []).map((o) => ({ option: o.option, pros: o.pros ?? '', cons: o.cons ?? '' })),
       decision: d.decision, rationale: d.rationale ?? '', plan_impact: d.plan_impact ?? 'none', status: d.status ?? 'recommended', sources: d.sources ?? [], question_ids: d.question_ids ?? [],
+      ...(d.why_not?.length ? { why_not: d.why_not.map((w) => ({ option: w.option, reason: w.reason })) } : {}),
+      ...(d.impact ? { impact: { technical: d.impact.technical ?? '', project: d.impact.project ?? '', merchant: d.impact.merchant ?? '', customer: d.impact.customer ?? '' } } : {}),
     })),
     integration_architecture: (approach.architecture?.integrations ?? []).map((x) => ({
       system: x.system, system_of_record_for: x.system_of_record_for ?? [], pattern: x.pattern, direction: x.direction ?? 'both_ways', frequency: x.frequency ?? 'near_realtime',

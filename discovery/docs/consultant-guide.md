@@ -681,6 +681,11 @@ Sources: https://help.shopify.com/en/manual/products/inventory/purchase-orders
 
 **Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required · client)*
 Drives: gate Markets · gate Multi-currency · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP) · rule 11.23 (FLAG)
+Who holds this fact: Country manager or commercial lead for the range and the team; the controller for the invoicing company.
+
+**What a usable answer looks like.** One row per launch country, with the invoicing company named even when it is the same everywhere, and the range marked same, subset or different. A vague answer sounds like "Europe" or "the usual countries". The follow-up that sharpens it: "which company name appears on the invoice a customer in that country receives?"
+
+**If they do not know.** Markets with no selling entity are assumed to sell through the headquarters entity (Q1.1.2); a blank assortment is assumed to be the same range as the primary market; a blank owner is assumed to be the central team. Assumption recorded: One selling entity, one range, one team across all markets — the single-store case. Confidence: to_validate. To resolve: Name the invoicing company per country with the controller, and the range owner per country with the commercial lead.
 
 **Why it matters.** Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range and owner columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.
 
@@ -709,6 +714,11 @@ Sources: https://help.shopify.com/en/manual/markets
 Sources: https://help.shopify.com/en/manual/domains/managing-domains/international-domains
 
 **Q3.1.4** — Stated preference only — does the client already have a view on running all countries from one store or giving some countries their own store? Record it as their view, not as the answer. *(optional · consultant)*
+Who holds this fact: Ecommerce director or CTO, where one has already formed a view.
+
+**What a usable answer looks like.** A view the client actually holds, with the reason they hold it. Leave it blank when they have none — a blank is better than a guess.
+
+**If they do not know.** No stated preference is recorded and the computed recommendation stands alone. Assumption recorded: None — absence of a preference costs nothing. Confidence: high. To resolve: Nothing to resolve; this is an opinion, not a fact.
 
 **Why it matters.** This is the one question in the bank that asks for an opinion rather than a fact, and it is kept only so the closing document can address the client's own view. The topology itself is derived from the business facts in Q3.1.1, Q1.1.6, Q3.4.2, Q3.4.13, Q5.1.3 and Q6.2.14.
 
@@ -996,6 +1006,11 @@ If native is not enough: App Store — [Sufio: Professional Invoices](https://ap
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q3.4.13** — If selling in a country meant registering for tax there and filing returns, would you take that on yourself, or would you rather a partner were the legal seller for those orders? *(recommended · client)*
+Who holds this fact: Controller, head of finance or the external tax adviser.
+
+**What a usable answer looks like.** A position the finance function actually holds, ideally with the countries they will and will not register in. A vague answer sounds like "whatever is easiest". The follow-up that sharpens it: "who files your VAT returns today, and how many countries is that?"
+
+**If they do not know.** Assumed own_registrations: the business keeps its registrations and Shopify Markets handles duties and taxes itself. Assumption recorded: The client is willing to register where it sells. Confidence: to_validate. To resolve: One conversation with the controller about where they file today and where they refuse to.
 
 **Why it matters.** Together with the market list and the current registrations (Q3.4.2), this decides the cross-border model: self-managed duties on Shopify Markets, or a merchant of record. It replaces the retired Q3.1.6, which asked the client to name a model they had never heard of.
 
@@ -1430,6 +1445,11 @@ If native is not enough: [Fraud](https://apps.shopify.com/categories/store-manag
 
 **Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders), and in which countries are they? *(required · client)*
 Drives: rule 11.1 (STOP) · rule 11.13 (FLAG)
+Who holds this fact: Head of logistics or operations.
+
+**What a usable answer looks like.** A count and the country of each location, including 3PL sites. "Three warehouses" without countries is not usable — ask which countries they are in.
+
+**If they do not know.** Locations are assumed to sit in the headquarters country (Q1.1.2), which keeps cross-border duties and the tax position as they are today. Assumption recorded: All fulfilment happens from the home country. Confidence: medium. To resolve: A list of warehouse and 3PL sites from operations.
 
 **Why it matters.** Location count sets both plan and routing scope. Shopify allows 10 locations below Plus and 200 on Plus. More than two fulfilling locations with routing beyond the native rules triggers a multi-location inventory scoping exercise.
 
@@ -2137,6 +2157,11 @@ Sources: https://help.shopify.com/en/manual/b2b/checkout-and-orders/shipping-met
 
 **Q6.2.14** — Is the wholesale side of the business run by its own team, with its own targets or its own profit and loss? *(recommended · client)*
 Quick interview: ask if Q1.1.4 is Business to business (B2B), or Q1.1.4 is Hybrid (DTC and B2B)
+Who holds this fact: Sales director, wholesale lead or the head of ecommerce.
+
+**What a usable answer looks like.** A clear yes or no about the organisation. The follow-up that sharpens it: "who decides wholesale prices and campaigns, and do they report to the same person as ecommerce?"
+
+**If they do not know.** Assumed false: wholesale is run by the same team as the consumer business, which keeps it on the same store. Assumption recorded: One team runs both sides. Confidence: medium. To resolve: One question to the commercial lead about who owns the wholesale number.
 
 **Why it matters.** Native B2B runs on the same store as the consumer business, which is the cheaper answer whenever one team runs both. A separate wholesale team with its own P&L is the documented reason Shopify gives for an expansion store, so this answer is one of the criteria that moves the topology to a hybrid.
 

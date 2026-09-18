@@ -15,6 +15,10 @@
 const str = (description, max) => ({ type: 'string', description, ...(max ? { maxLength: max } : {}) });
 const list = (items, description, max) => ({ type: 'array', description, items, ...(max ? { maxItems: max } : {}) });
 
+/** The decision topic that carries market topology, and the audiences its impact slide covers. */
+const TOPOLOGY_TOPIC = /market\s*topology|store\s*topology/i;
+const LENSES = ['technical', 'project', 'merchant', 'customer'];
+
 /** Layout catalogue: what each slide type is for and which fields it takes. */
 export const LAYOUTS = {
   title: {
@@ -444,6 +448,29 @@ export function deckErrors(deck, doc = {}) {
   need('risks', 'the risk register');
   need('out_of_scope', 'what the engagement does not include');
   need('conclusion', 'what we recommend, what it delivers, what it does not, and the ask');
+
+  // Market topology: on more than one market it is the first architecture
+  // decision, because it constrains the storefront decision that follows it.
+  // The impact lenses ride on `table` rather than `two_column`: four labelled
+  // audiences are four rows, and the renderer already lays a table out cleanly.
+  if ((doc?.markets?.list ?? []).length > 1) {
+    const decisions = slides.map((s, i) => ({ ...s, i })).filter((s) => s.layout === 'decision');
+    const topology = decisions.find((s) => TOPOLOGY_TOPIC.test(String(s.topic ?? '')));
+    if (!topology) {
+      errors.push('the deck needs a "Market topology" decision slide — how many Shopify stores the markets run on, why, and what it rules out');
+    } else {
+      const earlier = decisions.find((s) => s.i < topology.i);
+      if (earlier) errors.push(`the "Market topology" decision comes first among the decisions — it constrains the storefront, but "${earlier.topic}" is argued before it`);
+      if ((topology.options ?? []).length < 3) errors.push('the "Market topology" decision weighs at least three options — one store with Shopify Markets, expansion stores and a hybrid');
+      const teaches = slides.slice(0, topology.i).some((s) => s.layout === 'two_column' && /store|market/i.test(JSON.stringify(s)));
+      if (!teaches) errors.push('the deck teaches the topology trade-off before it recommends: add a two-column slide before the decision comparing one store with Shopify Markets against separate stores per market');
+      const lenses = slides.some((s) => s.layout === 'table' && LENSES.every((lens) => new RegExp(lens, 'i').test(JSON.stringify(s.rows ?? []))));
+      if (!lenses) errors.push('the deck needs a table slide with the four impact lenses of the topology decision — technical, project, merchant and customer');
+      if (doc?.markets?.topology?.confidence === 'to_validate' && !/assum|to validate|not yet confirmed/i.test(JSON.stringify(topology))) {
+        errors.push('the topology recommendation rests on assumptions, so its slide says so — the client must see which parts would move once the open questions are answered');
+      }
+    }
+  }
 
   // What this engagement makes necessary.
   const systems = (doc?.integrations ?? []).map((i) => String(i.system ?? '').trim()).filter(Boolean);
