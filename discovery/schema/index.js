@@ -143,6 +143,25 @@ export function offeringReferences() {
  * @param {string} ref  e.g. "exit:11.3"
  * @returns {string[]}
  */
+/**
+ * The question that fills a schema pointer, so a validation error like
+ * "/meta/client must have required property 'name'" can be turned into something
+ * a consultant can click.
+ *
+ * @param {string} pointer  e.g. "/meta/client/name"
+ * @returns {{ id: string, text: string }|null}
+ */
+export function questionForPointer(pointer) {
+  const p = String(pointer ?? '').replace(/\/(\d+)(?=\/|$)/g, '/*');
+  if (!p.startsWith('/')) return null;
+  const covers = (target) => p === target || p.startsWith(`${target}/`) || target.startsWith(`${p}/`);
+  const match = questionBank.questions
+    .filter((q) => q.maps_to.some(covers))
+    // The most specific question wins: /markets/list/*/code over /markets/list.
+    .sort((a, b) => Math.max(...b.maps_to.map((m) => m.length)) - Math.max(...a.maps_to.map((m) => m.length)))[0];
+  return match ? { id: match.id, text: match.text } : null;
+}
+
 export function questionsFeeding(ref) {
   return questionBank.questions.filter((q) => q.feeds?.includes(ref)).map((q) => q.id);
 }

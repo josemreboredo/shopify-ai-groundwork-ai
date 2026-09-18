@@ -216,6 +216,18 @@ details.danger > summary { color: var(--red-ink); font-weight: 700; }
 button.destructive { background: var(--red-ink); border-color: var(--red-ink); }
 button.destructive:hover { background: #000; border-color: #000; }
 
+/* What is blocking the document: one action per blocker, in the order to do them */
+.blockers { list-style: none; counter-reset: blocker; padding: 0; margin: 16px 0 0; }
+.blockers li { counter-increment: blocker; position: relative; padding: 18px 0 18px 46px; border-top: 1px solid var(--line-soft); }
+.blockers li::before {
+  content: counter(blocker); position: absolute; left: 0; top: 18px; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center; border: 2px solid var(--red);
+  border-radius: 999px; font-size: 0.8rem; font-weight: 700; color: var(--red-ink);
+}
+.blocker-what { margin: 0 0 6px; font-weight: 700; font-size: 1.02rem; letter-spacing: -0.01em; }
+.blockers .muted { margin: 0 0 12px; max-width: 86ch; }
+.blockers a.button { font-size: 0.78rem; padding: 9px 20px; }
+
 /* Sign in */
 main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr); gap: 0; max-width: none; padding: 0; min-height: calc(100vh - 118px); }
 .signin-hero {

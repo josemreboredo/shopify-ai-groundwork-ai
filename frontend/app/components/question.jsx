@@ -34,6 +34,20 @@ export function EngagementNav({ client }) {
 }
 
 /**
+ * Turns every question id in a message into a link that opens that question.
+ * An error that names Q10.5.5 and then says "fix it in Review answers" makes the
+ * consultant hunt through 240 rows for a question the message already knew.
+ *
+ * @param {{ text: string, client: string }} props
+ */
+export function WithQuestionLinks({ text, client }) {
+  const parts = String(text ?? '').split(/(Q\d+\.\d+\.\d+)/g);
+  return parts.map((part, i) => (/^Q\d+\.\d+\.\d+$/.test(part)
+    ? <Link key={`${part}-${i}`} to={`/engagements/${client}/questions/${part}`}>{part}</Link>
+    : <span key={`t-${i}`}>{part}</span>));
+}
+
+/**
  * The black statement band every engagement page opens with, as on merkle.com:
  * where you came from, what this is, the client, the state of play, the tabs.
  *

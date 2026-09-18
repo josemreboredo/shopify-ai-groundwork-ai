@@ -302,7 +302,12 @@ describe('Discovery Closing Document from the shared engagement', () => {
       { question_id: 'Q1.1.1', values: { '/meta/client/name': 'RFP Demo' } },
       { question_id: 'Q4.2.1', values: { '/checkout/customisation': ['fully_custom_checkout_ui'] } },
     ]);
-    await assert.rejects(svc.prepareClosingDocument(lc, 'rfp-demo'), (err) => err instanceof ServiceError && err.status === 409 && /Q10\.5\.5/.test(err.message));
+    await assert.rejects(svc.prepareClosingDocument(lc, 'rfp-demo'), (err) => {
+      if (!(err instanceof ServiceError) || err.status !== 409) return false;
+      // The message is for a human; the blocker is what the app turns into a link.
+      const [blocker] = err.blockers;
+      return blocker.question_id === 'Q10.5.5' && /Larger Engagement/.test(blocker.why) && /dedicated Discovery Phase/.test(blocker.why);
+    });
   });
 
   test('the deck prompt module matches discovery/docs/deck-prompt.md (npm run deck:prompt)', () => {

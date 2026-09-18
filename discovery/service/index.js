@@ -17,7 +17,7 @@ import { openItems } from '../agents/interview/open-items.js';
 import { recordAnswer, markQuestion, addNote } from '../agents/interview/answer.js';
 import { preview } from '../agents/interview/preview.js';
 import { findPersonalData } from '../agents/discovery/input.js';
-import { questionBank } from '../schema/index.js';
+import { questionBank, questionForPointer } from '../schema/index.js';
 import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js';
 import { displayValue } from './summary.js';
 import { approachBrief, closingStatus, deckBrief, decideFromSession, finaliseEngagement, needsApproach } from './closing.js';
@@ -41,11 +41,18 @@ import { deckToMarkdown } from './pptx.js';
 /** @typedef {{ document: string, location?: string, quote?: string }} Evidence */
 
 export class ServiceError extends Error {
-  /** @param {number} status @param {string} message @param {string[]} [errors] */
-  constructor(status, message, errors = []) {
+  /**
+   * @param {number} status @param {string} message @param {string[]} [errors]
+   * @param {{ question_id?: string, what: string, why?: string }[]} [blockers]
+   *   What to do about it, in the order it should be done. The UI turns each one
+   *   into a link that opens the question, instead of asking the consultant to
+   *   decode an engine message and go hunting through the review table.
+   */
+  constructor(status, message, errors = [], blockers = []) {
     super(message);
     this.status = status;
     this.errors = errors;
+    this.blockers = blockers;
   }
 }
 
@@ -103,6 +110,27 @@ export function citation({ document, location, quote }) {
 function nextVersion(previous) {
   const [major, minor] = String(previous ?? '').split('.').map(Number);
   return Number.isFinite(major) && Number.isFinite(minor) ? `${major}.${minor + 1}` : '1.0';
+}
+
+/**
+ * Validation errors name a schema pointer; a consultant needs the question. Turns
+ * "/meta/client must have required property 'name'" into "open Q1.1.1".
+ *
+ * @param {string[]} errors
+ */
+function blockersFromErrors(errors) {
+  const seen = new Set();
+  const out = [];
+  for (const error of errors) {
+    const pointer = /(\/[a-z_]+(?:\/[a-z_0-9*]+)*)/i.exec(String(error))?.[1];
+    const missing = /required property '([^']+)'/.exec(String(error))?.[1];
+    const q = questionForPointer(missing && pointer ? `${pointer}/${missing}` : pointer);
+    const key = q?.id ?? error;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(q ? { question_id: q.id, what: q.text, why: error } : { what: error });
+  }
+  return out;
 }
 
 export function createDiscoveryService({ store, today = isoToday, visibility = 'own' }) {
@@ -475,11 +503,23 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     async prepareClosingDocument(user, client) {
       const session = await load(user, client);
       const decided = decideFromSession(session, today());
-      if (!decided.ok) throw new ServiceError(400, 'The answers can’t be turned into an engagement yet', decided.errors);
+      if (!decided.ok) {
+        throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
+      }
       const { doc } = decided;
       const status = closingStatus(doc);
       if (!doc.delivery.go && !stopRouteChosen(doc)) {
-        throw new ServiceError(409, 'Discovery hit a STOP: record how Merkle proceeds (Q10.5.5 — Larger Engagement or no bid) before the closing document', doc.exits.items.filter((i) => i.result === 'STOP').map((i) => `${i.rule_id}: ${i.evidence}`));
+        const stops = doc.exits.items.filter((i) => i.result === 'STOP');
+        throw new ServiceError(
+          409,
+          'The discovery hit a STOP, so the next step is a decision rather than a document',
+          stops.map((i) => `${i.rule_id}: ${i.evidence}`),
+          [{
+            question_id: 'Q10.5.5',
+            what: 'Record how Merkle proceeds',
+            why: `The requirements go beyond the S/M/L offers (${stops.map((i) => i.evidence).join('; ')}). Either Merkle proposes a Larger Engagement — an Enterprise Engagement that starts with a dedicated Discovery Phase — or it does not bid. The closing document is written differently for each, which is why it waits for this answer.`,
+          }],
+        );
       }
       if (needsApproach(doc)) return { status, step: 'approach', ...approachBrief(doc) };
       const final = finaliseEngagement(doc, null);

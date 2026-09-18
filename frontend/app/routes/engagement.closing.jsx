@@ -4,7 +4,7 @@ import { Link, useRevalidator } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';
-import { EngagementHeader } from '../components/question.jsx';
+import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 
 export const meta = ({ params }) => [{ title: `Discovery Closing Document · ${params.client} · Merkle Discovery` }];
@@ -19,7 +19,7 @@ export async function loader({ request, params }) {
       readiness = { ok: true, status: prepared.status, step: prepared.step };
     } catch (err) {
       if (!(err instanceof ServiceError)) throw err;
-      readiness = { ok: false, error: err.message, errors: err.errors };
+      readiness = { ok: false, error: err.message, errors: err.errors, blockers: err.blockers ?? [] };
     }
     return { ...saved, readiness, origin: originOf(request), preview: saved.document ? saved.document.markdown.split('\n').filter((l) => l.startsWith('## ')).map((l) => l.slice(3)) : [] };
   } catch (err) {
@@ -87,9 +87,30 @@ export default function Closing({ loaderData }) {
           </>
         ) : (
           <>
-            <p className="error">Not ready: {readiness.error}</p>
-            {readiness.errors?.length ? <ul className="errors">{readiness.errors.map((e) => <li key={e}>{e}</li>)}</ul> : null}
-            <p className="muted">Fix it in <Link to={`/engagements/${client}/review`}>Review answers</Link>, then come back.</p>
+            <p className="question">{readiness.error}</p>
+            {readiness.blockers?.length ? (
+              <ol className="blockers">
+                {readiness.blockers.map((b, i) => (
+                  <li key={b.question_id ?? i}>
+                    <p className="blocker-what">{b.what}</p>
+                    {b.why ? <p className="muted"><WithQuestionLinks text={b.why} client={client} /></p> : null}
+                    {b.question_id ? (
+                      <Link className={`button${i === 0 ? '' : ' secondary'}`} to={`/engagements/${client}/questions/${b.question_id}`}>
+                        Answer {b.question_id}
+                      </Link>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <ul className="errors">{(readiness.errors ?? []).map((e) => <li key={e}><WithQuestionLinks text={e} client={client} /></li>)}</ul>
+            )}
+            <p className="muted">
+              {readiness.blockers?.length > 1
+                ? 'Answer them in order — the first one is what the rest depend on.'
+                : 'Answer it and come back; this page picks the change up by itself.'}{' '}
+              You can also work through <Link to={`/engagements/${client}/review`}>Review answers</Link>.
+            </p>
           </>
         )}
       </section>
