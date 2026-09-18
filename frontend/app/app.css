@@ -200,6 +200,13 @@ details.card[open] > summary { margin-bottom: 12px; }
 .start-head .question { margin: 0 0 6px; font-size: 1.15rem; }
 .start-head .muted { margin: 0; }
 
+.filter { display: flex; gap: 8px; flex-wrap: wrap; }
+.filter button { font-size: 0.74rem; padding: 8px 16px; }
+.mode-form { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.mode-form label { white-space: nowrap; }
+.mode-form select { width: auto; }
+@media (max-width: 760px) { .mode-form { margin-left: 0; width: 100%; } }
+
 /* Deleting an engagement: out of the way, and it asks for the slug back */
 details.danger { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
 details.danger > summary { color: var(--red-ink); font-weight: 700; }

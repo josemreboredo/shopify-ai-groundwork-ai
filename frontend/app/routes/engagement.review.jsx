@@ -1,4 +1,5 @@
-import { Form, Link, redirect, useNavigation } from 'react-router';
+import { useState } from 'react';
+import { Form, Link, redirect, useNavigation, useSearchParams } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
@@ -18,7 +19,16 @@ export async function loader({ request, params }) {
 export async function action({ request, params }) {
   const user = await requireUser(request);
   const form = await request.formData();
-  if (String(form.get('intent')) !== 'delete') return { error: 'Unknown action' };
+  const intent = String(form.get('intent'));
+  if (intent === 'mode') {
+    try {
+      const result = await discovery().setInterviewMode(user, params.client, { mode: String(form.get('mode') ?? '') });
+      return { ok: true, mode: result.mode, was: result.was, remaining: result.remaining };
+    } catch (err) {
+      return serviceFailure(err);
+    }
+  }
+  if (intent !== 'delete') return { error: 'Unknown action' };
   try {
     await discovery().deleteEngagement(user, params.client, { confirm: String(form.get('confirm') ?? '') });
   } catch (err) {
@@ -26,6 +36,15 @@ export async function action({ request, params }) {
   }
   return redirect('/');
 }
+
+/** Filters on the review table: four of 157 rows are usually the ones that matter. */
+const FILTERS = [['all', 'All'], ['open', 'Open'], ['to_confirm', 'To confirm'], ['answered', 'Answered']];
+const MATCH = {
+  all: () => true,
+  open: (q) => q.state === 'open',
+  to_confirm: (q) => q.to_confirm || q.state === 'tbc',
+  answered: (q) => q.state === 'answered' || q.state === 'commented',
+};
 
 const STATE = {
   answered: ['go', 'Answered'],
@@ -40,6 +59,8 @@ export default function Review({ loaderData, actionData }) {
   const busy = useNavigation().state !== 'idle';
   const all = sections.flatMap((s) => s.questions);
   const count = (state) => all.filter((q) => q.state === state).length;
+  const [filter, setFilter] = useState('all');
+  const shown = (questions) => questions.filter((q) => MATCH[filter](q));
   return (
     <main>
       <EngagementHeader
@@ -48,14 +69,50 @@ export default function Review({ loaderData, actionData }) {
         eyebrow="Review answers"
         meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} TBC · ${count('skipped')} not applicable · ${count('open')} open`}
       />
-      <p className="muted">Click <strong>Edit</strong> on a question to change, clear or reopen it.</p>
-      {sections.map((section) => (
+      <p className="muted">
+        Click <strong>Edit</strong> on a question to change, clear or reopen it. A question that was
+        already answered before the questionnaire changed stays <em>answered</em> — open it to fill
+        what is new.
+      </p>
+
+      <section className="card">
+        <div className="actions">
+          <div className="filter" role="group" aria-label="Filter questions">
+            {FILTERS.map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                className={filter === key ? '' : 'secondary'}
+                onClick={() => setFilter(key)}
+              >
+                {label} · {key === 'all' ? all.length : all.filter((q) => MATCH[key](q)).length}
+              </button>
+            ))}
+          </div>
+          <Form method="post" className="mode-form">
+            <input type="hidden" name="intent" value="mode" />
+            <label htmlFor="mode" className="muted">Mode</label>
+            <select id="mode" name="mode" defaultValue={engagement.mode}>
+              <option value="quick">Quick — required only</option>
+              <option value="standard">Standard — required and recommended</option>
+              <option value="full">Full — everything</option>
+            </select>
+            <button type="submit" className="secondary" disabled={busy}>Change</button>
+          </Form>
+        </div>
+        {actionData?.mode ? <p className="muted">Mode changed from {actionData.was} to {actionData.mode} — {actionData.remaining} questions open.</p> : null}
+        <p className="muted">
+          The mode decides which questions are ever asked: a quick interview never reaches a
+          <em> recommended</em> question, however relevant it has become.
+        </p>
+      </section>
+      {sections.filter((section) => shown(section.questions).length).map((section) => (
         <section key={section.title}>
           <h2>{section.title}</h2>
           <table>
             <thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Status</th><th /></tr></thead>
             <tbody>
-              {section.questions.map((q) => (
+              {shown(section.questions).map((q) => (
                 <tr key={q.id} id={q.id}>
                   <td>{q.id}</td>
                   <td>{q.text}</td>

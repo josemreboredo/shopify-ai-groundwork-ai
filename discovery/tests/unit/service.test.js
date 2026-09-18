@@ -291,6 +291,17 @@ describe('review, change and summary', () => {
     assert.equal((await svc.getQuestion(consultant, 'demo-client', 'Q3.4.8')).state, 'open');
   });
 
+  test('the interview mode can be changed after it started, so a bank that gained a question can still ask it', async () => {
+    const store = createMemoryStore();
+    const svc = await started(store);
+    const open = async () => (await svc.reviewQuestions(consultant, 'demo-client')).sections.flatMap((s) => s.questions).map((q) => q.id);
+    assert.ok(!(await open()).includes('Q3.4.13'), 'a quick interview never reaches a recommended question');
+    const changed = await svc.setInterviewMode(consultant, 'demo-client', { mode: 'standard' });
+    assert.deepEqual([changed.was, changed.mode], ['quick', 'standard']);
+    assert.ok((await open()).includes('Q3.4.13'), 'and reaches it once the mode moves');
+    await rejects(svc.setInterviewMode(consultant, 'demo-client', { mode: 'deep' }), 400);
+  });
+
   test('deleting an engagement needs the slug back, and only the owner of the engagement or an owner can do it', async () => {
     const store = createMemoryStore();
     const svc = await started(store);

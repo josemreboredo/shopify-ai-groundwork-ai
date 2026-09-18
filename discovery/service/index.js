@@ -611,6 +611,25 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       };
     },
 
+    /**
+     * Change the interview mode after it started. An engagement that began as a
+     * quick interview and grew — or a question bank that gained a question after
+     * the interview ran — otherwise has no way to reach the questions it now
+     * needs, because the mode decides which priorities are ever asked.
+     *
+     * @param {User} user @param {string} client @param {{ mode: 'quick'|'standard'|'full' }} input
+     */
+    async setInterviewMode(user, client, { mode }) {
+      const session = await load(user, client);
+      if (!['quick', 'standard', 'full'].includes(mode)) throw new ServiceError(400, `mode must be quick, standard or full (got ${mode})`);
+      const before = session.mode;
+      session.mode = mode;
+      session.updated_at = today();
+      await store.save(session);
+      const open = nextQuestions(session, { limit: 500 });
+      return { ok: true, mode, was: before, remaining: open.remaining };
+    },
+
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */
     async markQuestion(user, client, { question_id, as, note }) {
       const session = await load(user, client);
