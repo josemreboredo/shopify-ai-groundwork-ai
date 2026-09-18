@@ -40,6 +40,43 @@ export function selectChapters(doc) {
 export const chapterBrief = (doc) => selectChapters(doc).map(({ slug, title, verified, summary }) => ({ slug, title, verified, summary }));
 
 /**
+ * The chapters as the writer needs them: the verified text itself, not a summary
+ * of it. A summary cannot stop the model from contradicting the chapter that is
+ * about to be stapled to its own annex — the body can.
+ *
+ * @param {object} doc
+ */
+/** Chapters almost every decision leans on, kept in full before the peripheral ones. */
+const CORE = ['shopify-plans', 'shopify-markets', 'managed-markets', 'liquid-vs-hydrogen'];
+
+export function chapterKnowledge(doc, { budget = 110_000 } = {}) {
+  const topics = topicsFor(doc);
+  // Most relevant first: a chapter matching two of this engagement's topics is
+  // worth more of the budget than one matching a single peripheral topic.
+  const ranked = selectChapters(doc)
+    .map((c) => ({ chapter: c, hits: c.topics.filter((t) => topics.has(t)).length, core: CORE.includes(c.slug) ? 1 : 0 }))
+    .sort((a, b) => b.core - a.core || b.hits - a.hits || a.chapter.slug.localeCompare(b.chapter.slug));
+
+  let spent = 0;
+  const out = [];
+  const dropped = [];
+  for (const [i, { chapter }] of ranked.entries()) {
+    const { slug, title, verified, summary, markdown } = chapter;
+    const size = Buffer.byteLength(markdown ?? '');
+    // The most relevant chapter always travels in full: a budget that silently
+    // drops the one chapter every decision leans on is worse than no budget.
+    if (i === 0 || spent + size <= budget) {
+      spent += size;
+      out.push({ slug, title, verified, summary, markdown });
+    } else {
+      dropped.push(slug);
+      out.push({ slug, title, verified, summary, body_omitted: 'over the payload budget — read it in the annex before writing about this topic' });
+    }
+  }
+  return { chapters: out, bytes: spent, ...(dropped.length ? { summaries_only: dropped } : {}) };
+}
+
+/**
  * The annex document as downloaded: Claude's tailored analysis plus the verified
  * chapters for this engagement.
  *

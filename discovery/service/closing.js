@@ -16,10 +16,11 @@ import { answerValidator, decide, finalize, needsApproach, stopRoute } from '../
 import { APPROACH_SYSTEM, approachInput, approachQualityErrors, fromApproachPayload } from '../agents/discovery/approach.js';
 import { buildApproachSchema } from '../agents/discovery/extraction-schema.js';
 import { buildDeckXml } from '../agents/discovery-deck/build.js';
+import { verifiedKnowledge, knowledgeBytes } from '../agents/discovery/knowledge.js';
 import { DECK_PROMPT } from '../agents/discovery-deck/prompt.js';
 import { selectStories, summariseByEpic } from '../agents/backlog/select.js';
 import { openItems } from '../agents/interview/open-items.js';
-import { chapterBrief } from './reference.js';
+import { chapterBrief, chapterKnowledge } from './reference.js';
 import { buildDeckSchema, layoutGuide } from './deck-template.js';
 
 let approachValidator;
@@ -104,12 +105,18 @@ export function deckBrief(engagement) {
   const stories = engagement.delivery?.go ? selectStories(engagement) : null;
   const backlog = stories ? { stories, summary: summariseByEpic(stories) } : null;
   const { xml, warnings } = buildDeckXml(engagement, backlog);
+  const chapters = chapterKnowledge(engagement);
+  const knowledge = verifiedKnowledge(engagement);
   return {
     instructions: `${DECK_PROMPT}\n\nThe deck data below (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`,
     deck_xml: xml,
     deck_schema: buildDeckSchema(),
-    reference_chapters: chapterBrief(engagement),
-    warnings,
+    reference_chapters: chapters.chapters,
+    verified_knowledge: knowledge,
+    warnings: [
+      ...warnings,
+      ...(chapters.summaries_only ? [`Payload budget: ${chapters.summaries_only.join(', ')} sent as a summary only — read the chapter in the annex before writing about it`] : []),
+    ],
   };
 }
 

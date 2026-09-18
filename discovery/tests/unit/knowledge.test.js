@@ -1,0 +1,73 @@
+/**
+ * What Merkle has already verified reaches the model that reasons. Before this,
+ * 154 documented limits and 139 weighed option sets were shown to the consultant
+ * during the interview and then dropped: the drafting step never saw them.
+ */
+import { test, describe } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { verifiedKnowledge, answeredQuestions } from '../../agents/discovery/knowledge.js';
+import { approachInput } from '../../agents/discovery/approach.js';
+import { deckBrief } from '../../service/closing.js';
+import { chapterKnowledge } from '../../service/reference.js';
+import { questionBank } from '../../schema/index.js';
+
+const fixture = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, '..', 'fixtures', 'engagements', 'acme-watches.json'), 'utf8'));
+
+describe('verified knowledge reaches the drafting step', () => {
+  test('only the questions this engagement answered, and everything they carry', () => {
+    const asked = answeredQuestions(fixture);
+    assert.ok(asked.length > 20, `expected a full engagement, got ${asked.length}`);
+    assert.ok(asked.length < questionBank.questions.length, 'an engagement never answers the whole bank');
+    const k = verifiedKnowledge(fixture);
+    for (const entry of k.limits) {
+      assert.ok(asked.some((q) => q.id === entry.question_id), `${entry.question_id} was not answered`);
+      assert.ok(entry.limits.trim() && entry.about.trim());
+    }
+    for (const entry of k.options) {
+      assert.ok(entry.options.length >= 2, `${entry.question_id}: an options block with one option is not a choice`);
+    }
+    for (const gate of k.plan_gates) {
+      assert.ok(['grow', 'advanced', 'plus', 'enterprise'].includes(gate.plan), `${gate.feature}: ${gate.plan}`);
+      assert.match(gate.docs, /^https:\/\//);
+    }
+    assert.ok(k.limits.length > 10 && k.options.length > 5, 'the fixture should carry real knowledge');
+  });
+
+  test('an engagement that answered nothing carries no knowledge, and does not crash', () => {
+    const k = verifiedKnowledge({ meta: {} });
+    assert.deepEqual([k.limits.length, k.options.length, k.plan_gates.length], [0, 0, 0]);
+  });
+
+  test('the approach step receives it, next to the answers it applies to', () => {
+    const input = approachInput(fixture);
+    assert.ok(input.verified_knowledge, 'the approach step was drafting blind');
+    assert.ok(input.verified_knowledge.limits.length > 0);
+    assert.match(input.verified_knowledge.note, /do not contradict it/i);
+  });
+
+  test('the deck step receives the chapter text, not a one-line summary of it', () => {
+    const brief = deckBrief(fixture);
+    assert.ok(brief.reference_chapters.length >= 4);
+    for (const c of brief.reference_chapters) {
+      assert.ok(c.markdown?.length > 1000 || c.body_omitted, `${c.slug}: neither body nor a reason for its absence`);
+      assert.match(c.verified, /^\d{4}-\d{2}-\d{2}$/, `${c.slug}: every chapter states when it was checked`);
+    }
+    assert.ok(brief.verified_knowledge.limits.length > 0);
+  });
+
+  test('the payload stays within budget, and says so when a chapter had to be cut', () => {
+    const tight = chapterKnowledge(fixture, { budget: 12_000 });
+    const first = tight.chapters[0];
+    // The budget is a cap on everything after the most relevant chapter, which
+    // always travels in full — a budget that drops it would defeat the point.
+    assert.ok(tight.bytes - Buffer.byteLength(first.markdown ?? '') <= 12_000, `${tight.bytes} bytes beyond the first chapter`);
+    assert.ok(tight.summaries_only?.length, 'a cut chapter must be named');
+    const cut = tight.chapters.find((c) => tight.summaries_only.includes(c.slug));
+    assert.match(cut.body_omitted, /annex/, 'and must say where to read it');
+    const core = tight.chapters[0];
+    assert.ok(core.markdown, 'the chapter the most decisions lean on keeps its body');
+  });
+});
