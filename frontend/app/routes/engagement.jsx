@@ -59,7 +59,9 @@ function PrefillCard({ client, documents, toConfirm }) {
   const [copied, setCopied] = useState(false);
   const instruction = `Read the documents in this project and pre-fill the Merkle Discovery engagement ${client}.
 
-Register each document with register_document, map what it says to the questionnaire with find_questions, and record answers with record_answers, each with its evidence (document, section, short quote). Where a document is unclear, mark the question TBC with a note instead of guessing. Then tell me what you recorded and what is still open.`;
+Register each document with register_document, map what it says to the questionnaire with find_questions, and record answers with record_answers, each with its evidence (document, section, short quote). Where a document is unclear, mark the question TBC with a note instead of guessing. Then tell me what you recorded and what is still open.
+
+If you cannot see any documents in this chat, stop and tell me: either I attach the RFP here, or I run this inside the Claude Project for ${client}, where the documents are.`;
   const started = documents.length > 0;
   // Closed by default: not every engagement starts from an RFP, and those that do
   // only need this once. The summary line still says where things stand.
@@ -86,25 +88,25 @@ Register each document with register_document, map what it says to the questionn
             Claude, because that is where the documents are — this tool cannot reach into your project.
           </p>
           <ol className="prefill-steps">
-            <li>Open your <strong>Claude Project</strong> for this client — the one with the RFP in it — and start a new chat <em>inside</em> it.</li>
-            <li>Paste the instruction below, or pick <strong>Pre-fill the engagement from the documents</strong> from the Merkle Discovery connector’s prompts.</li>
+            <li><strong>Pre-fill in Claude</strong> opens a chat with the instruction written — you only press Enter. Attach the RFP in that chat.</li>
+            <li>If the RFP is already in your <strong>Claude Project</strong> for this client, start the chat <em>inside the project</em> instead: copy the instruction and paste it there, or pick <strong>Pre-fill the engagement from the documents</strong> from the Merkle Discovery connector’s prompts.</li>
             <li>Come back here. The answers arrive marked <strong>to confirm</strong>, each with its citation; check them and confirm.</li>
           </ol>
         </>
       )}
       <div className="actions">
-        <button type="button" onClick={() => { navigator.clipboard?.writeText(instruction); setCopied(true); }}>
-          {copied ? 'Copied — paste it in your Claude Project' : 'Copy the instruction'}
+        <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(instruction)}`} target="_blank" rel="noreferrer">Pre-fill in Claude</a>
+        <button type="button" className="secondary" onClick={() => { navigator.clipboard?.writeText(instruction); setCopied(true); }}>
+          {copied ? 'Copied — paste it inside your Claude Project' : 'Copy the instruction'}
         </button>
-        <Link className="button secondary" to="/claude">How to set up the Claude Project</Link>
       </div>
       <details>
         <summary>The instruction</summary>
         <textarea readOnly rows={6} value={instruction} />
       </details>
       <p className="muted small">
-        Opening a brand-new chat outside the project will not work: Claude only sees the documents inside the project.
-        This page picks up the answers by itself while Claude records them.
+        Claude can only read the documents it can see: the ones attached to that chat, or the ones in the project the chat is in.
+        If it cannot see any, the instruction tells it to stop and ask rather than guess. This page picks up the answers by itself while Claude records them.
       </p>
     </details>
   );
