@@ -29,6 +29,7 @@ import { CLIENTS_DIR } from '../../paths.js';
 import { XmlWriter, esc } from './xml.js';
 import { stopRoute } from '../discovery/engine.js';
 import { axesForDecision } from '../discovery/rubric.js';
+import { runCost } from '../discovery/economics.js';
 import { planRequirements, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
 import { appSignals, appCandidates } from '../discovery/app-signals.js';
 
@@ -219,6 +220,43 @@ function solutionDesign(x, doc) {
   x.list('data', doc.migration?.data, source && source !== 'none' ? 'Q8.2.2 not answered' : 'No migration');
   x.close();
   architecture(x, doc);
+  economics(x, doc);
+  x.close();
+}
+
+/**
+ * What it costs to run, in the client's own numbers: their order volume and
+ * basket, the app subscriptions, the rates Shopify publishes that this
+ * engagement triggers — and what is not known, which the deck says out loud
+ * rather than rounding into a plausible figure.
+ */
+function economics(x, doc) {
+  const cost = runCost(doc);
+  x.open('run-cost');
+  const b = cost.basis;
+  x.empty('basis', {
+    'orders-per-month': b.orders_per_month !== undefined ? String(b.orders_per_month) : undefined,
+    'monthly-revenue': b.monthly_revenue !== undefined ? String(b.monthly_revenue) : undefined,
+    'average-order-value': b.average_order_value !== undefined ? String(b.average_order_value) : undefined,
+    currency: b.currency,
+    from: b.from.join(', '),
+  });
+  for (const line of cost.recurring) {
+    x.empty('subscription', { item: line.item, amount: line.amount !== undefined ? String(line.amount) : undefined, currency: line.currency, period: line.period, note: line.note });
+  }
+  for (const [currency, amount] of Object.entries(cost.totals.subscriptions_per_month)) {
+    x.empty('subscriptions-total', { currency, 'per-month': String(amount) });
+  }
+  for (const fee of cost.per_order) {
+    x.empty('per-order-fee', {
+      item: fee.item, pct: String(fee.pct),
+      'per-order': fee.per_order !== undefined ? String(fee.per_order) : undefined,
+      'per-month': fee.per_month !== undefined ? String(fee.per_month) : undefined,
+      currency: fee.currency, source: fee.source,
+    });
+  }
+  for (const u of cost.unknown) x.empty('not-known', { item: u.item, why: u.why, check: u.where_to_check });
+  if (cost.currency_note) x.field('currency-note', cost.currency_note);
   x.close();
 }
 

@@ -58,7 +58,14 @@ Consultant decides what reaches the client's leadership, so the draft contains *
         endpoints — say which, and what it does to caching, CI/CD, preview environments and the shared design system.
      7. `gaps` (what Shopify cannot cover), `open_decisions` (what the client owes, with owner and date), `risks`,
         `out_of_scope`.
-     8. `roadmap`, `investment`, `run_cost` (what it costs to run), `operating_model` (who runs what after go-live),
+     8. `roadmap`, `investment`, `run_cost` — and `run_cost` is not an estimate you write: `deck_xml`
+        carries `<run-cost>` with the client's own order volume and average basket, the app
+        subscriptions, and the rates Shopify publishes that this engagement triggers, each with its
+        per-order and per-month figure and its source. Put those numbers on the slide. Its
+        `<not-known>` entries go on the slide too, as things to confirm — above all the Shopify plan
+        price, which Shopify publishes per region and which this tool deliberately does not hold.
+        Never quote a plan price, and never convert between currencies: there is no sourced rate.
+        Then `operating_model` (who runs what after go-live),
         `ai_commerce` when the client sells through AI channels, `next_steps`, and `conclusion` to close.
    - **The headline is the decision**, never a label: "Native returns plus Loop for the labels, because Shopify
      cannot print a Swiss return label", not "Returns".

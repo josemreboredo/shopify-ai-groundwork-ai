@@ -11,6 +11,7 @@ import { buildApproachSchema } from './extraction-schema.js';
 import { appSignals, appCandidates } from './app-signals.js';
 import { verifiedKnowledge } from './knowledge.js';
 import { rubricBrief, rubricErrors, axesFor } from './rubric.js';
+import { runCost } from './economics.js';
 import { planSuggestion } from './plan.js';
 
 export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect and commerce consultant at Merkle drafting the implementation approach for a discovery engagement, to the standard of a top-tier strategy consultancy. A lead consultant reviews everything you write before the client sees it.
@@ -40,6 +41,7 @@ The comparison rubric
 - This is what makes a comparison a comparison. Free-form pros and cons make whichever option you thought about longest look strongest, and the axis nobody mentioned is the one that kills the project in month four.
 - 'Not applicable' is a valid assessment and should be used when an axis genuinely does not bite. An empty axis is not an answer.
 - Be specific where the answers allow it: "adds about CHF 79 a month at 4,000 orders" beats "adds cost"; "the client's merchandiser can change it in the admin" beats "flexible".
+- run_cost gives you the client's own numbers: orders a month, average basket, the app subscriptions, and the rates Shopify publishes that this engagement triggers, each with its source. Use them in the 'Cost to run' axis and in the run-cost slide. Its 'unknown' list is not a gap to paper over: quote it as something to confirm. In particular, never quote a Shopify plan price — Shopify publishes them per region and per currency, and this tool deliberately holds none.
 - pros and cons stay: they are the short argument. The assessment is the evidence underneath it, and the deck renders it as the comparison table.
 
 Solution architecture
@@ -211,6 +213,9 @@ export function approachInput(doc) {
     // The axes every option is measured on — eight always, the rest switched on
     // by this engagement's own answers (markets, B2B, retail, checkout…).
     decision_rubric: rubricBrief(doc),
+    // The client's own arithmetic: order volume, average basket, the rates Shopify
+    // publishes that this engagement triggers, and what is not known.
+    run_cost: runCost(doc),
     ...(planSuggestion(doc) ? { plan_suggestion: planSuggestion(doc) } : {}),
     question_ids_by_answer: Object.fromEntries(
       Object.entries(provenance ?? {}).map(([pointer, p]) => [pointer, p.question_id]).filter(([, id]) => id),
