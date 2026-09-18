@@ -76,12 +76,13 @@ function AnswersReview({ answers, documents, busy }) {
 }
 
 export default function Engagement({ loaderData, actionData }) {
-  const { engagement, next, preview, notes, tbc, commented, answers, documents, vocabularies } = loaderData;
+  const { engagement, next, preview, notes, tbc, commented, answers, documents, vocabularies, language } = loaderData;
   const busy = useNavigation().state !== 'idle';
   return (
     <main>
       <Vocabularies vocabularies={vocabularies} />
       <EngagementHeader
+        language={language}
         client={engagement.client}
         meta={`${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${next.remaining} questions open${typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}`}
       />

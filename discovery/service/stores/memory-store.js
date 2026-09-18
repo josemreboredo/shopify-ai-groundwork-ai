@@ -24,5 +24,8 @@ export function createMemoryStore() {
       if (!sessions.has(session.client)) throw new Error(`No interview for ${session.client}`);
       sessions.set(session.client, copy(session));
     },
+    async remove(client) {
+      sessions.delete(client);
+    },
   };
 }

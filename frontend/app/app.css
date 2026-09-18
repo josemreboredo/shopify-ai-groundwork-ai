@@ -93,6 +93,7 @@ li::marker { color: var(--red); }
 .page-head .eyebrow { color: #fff; }
 .page-head h1 { color: #fff; margin: 0; font-size: clamp(2rem, 3.6vw, 2.9rem); }
 .page-head > p { margin: 14px 0 0; color: rgba(255, 255, 255, 0.72); font-size: 0.95rem; max-width: 78ch; }
+.page-head .page-lang { margin: 10px 0 0; color: rgba(255, 255, 255, 0.72); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 .page-head .page-meta { margin: 16px 0 0; color: rgba(255, 255, 255, 0.55); font-size: 0.8rem; letter-spacing: 0.02em; }
 .page-head:has(.tabs) { padding-bottom: 0; }
 
@@ -199,6 +200,15 @@ details.card[open] > summary { margin-bottom: 12px; }
 .start-head .question { margin: 0 0 6px; font-size: 1.15rem; }
 .start-head .muted { margin: 0; }
 
+/* Deleting an engagement: out of the way, and it asks for the slug back */
+details.danger { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
+details.danger > summary { color: var(--red-ink); font-weight: 700; }
+.danger-form { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; max-width: 620px; }
+.danger-form .field { margin: 0; flex: 1 1 260px; }
+.danger-form code { background: var(--panel); padding: 1px 5px; }
+button.destructive { background: var(--red-ink); border-color: var(--red-ink); }
+button.destructive:hover { background: #000; border-color: #000; }
+
 /* Sign in */
 main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr); gap: 0; max-width: none; padding: 0; min-height: calc(100vh - 118px); }
 .signin-hero {
@@ -232,7 +242,10 @@ main.manual { --page: 860px; }
 main.manual li { margin: 5px 0; }
 main.manual code { background: var(--panel); padding: 1px 5px; font-size: 0.9em; overflow-wrap: anywhere; }
 main.manual h2 { scroll-margin-top: 12px; }
-.toc { columns: 2; column-gap: 32px; padding-left: 20px; }
+.toc { columns: 2; column-gap: 40px; padding: 0; margin: 0; list-style: none; }
+.toc li { break-inside: avoid; margin: 6px 0; }
+.toc a { text-decoration: none; }
+.toc a:hover { text-decoration: underline; text-decoration-color: var(--red); }
 
 /* “What this is”: a content page in merkle.com's band rhythm */
 main.story { padding-bottom: 0; }
@@ -242,9 +255,9 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .lede { font-size: 1.15rem; line-height: 1.5; max-width: 62ch; }
 .page-head .lede { color: rgba(255, 255, 255, 0.82); margin: 18px 0 0; }
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; list-style: none; padding: 0; margin: 40px 0 0; }
-.stats li { display: flex; flex-direction: column; gap: 6px; border-top: 3px solid var(--red); padding-top: 12px; }
+.stats li { display: flex; flex-direction: column; gap: 14px; }
 .stats strong { font-size: 2.4rem; line-height: 1; letter-spacing: -0.02em; }
-.stats span { font-size: 0.85rem; color: rgba(255, 255, 255, 0.66); }
+.stats span { font-size: 0.85rem; color: rgba(255, 255, 255, 0.66); border-top: 3px solid var(--red); padding-top: 14px; }
 .band { width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); background: var(--panel); padding: 64px max(var(--gutter), calc(50vw - var(--page) / 2 + var(--gutter))); }
 .band.dark { background: #000; color: #fff; }
 .band.dark .lede, .band.dark p { color: rgba(255, 255, 255, 0.78); }

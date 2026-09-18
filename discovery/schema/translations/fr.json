@@ -1,0 +1,9 @@
+{
+  "$comment": "Questionnaire in fr: what the client is asked and what the consultant reads while asking. Answers, summary, approach, deck and annex stay in English. Every string falls back to English when it is missing here.",
+  "language": "fr",
+  "updated": "2026-09-18",
+  "sections": {},
+  "subsections": {},
+  "options": {},
+  "questions": {}
+}

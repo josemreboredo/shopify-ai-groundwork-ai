@@ -52,5 +52,9 @@ export function createPostgresStore({ query }) {
       );
       if (!rows.length) throw new Error(`No interview for ${session.client}`);
     },
+    async remove(client) {
+      await ensure();
+      await query('DELETE FROM discovery_interviews WHERE client = $1', [client]);
+    },
   };
 }

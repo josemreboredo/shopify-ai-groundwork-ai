@@ -29,18 +29,26 @@ import {
   optionLabel,
 } from '../schema/index.js';
 import { DOCS_DIR } from '../paths.js';
+import { TRANSLATIONS, translationFor } from '../service/i18n.js';
 import { PLAN_RULES, PLAN_LABEL } from '../agents/discovery/plan.js';
 
 export const OUTPUT = path.join(DOCS_DIR, 'client-questionnaire.md');
+/** The questionnaire is handed to the client, so it is rendered per conversation language. */
+export const outputFor = (language) => (language && language !== 'en' ? path.join(DOCS_DIR, `client-questionnaire.${language}.md`) : OUTPUT);
 export const GUIDE_OUTPUT = path.join(DOCS_DIR, 'consultant-guide.md');
 
 const PRIORITY_LABEL = { required: 'required', recommended: 'recommended', optional: 'optional' };
 
-/** Readable option label (discovery/schema/option-labels.json + acronyms). @param {string} value */
-const humanise = (value) => optionLabel(value);
+/**
+ * Readable option label (discovery/schema/option-labels.json + acronyms), in the
+ * conversation language when the translation has it.
+ *
+ * @param {string} value @param {Record<string, string>} [labels]
+ */
+const humanise = (value, labels) => labels?.[value] ?? optionLabel(value);
 
-/** @param {object} q */
-function answerBlock(q) {
+/** @param {object} q @param {Record<string, string>} [labels] */
+function answerBlock(q, labels) {
   const node = q.maps_to.length === 1 ? schemaNodeAt(q.maps_to[0]) : null;
 
   switch (q.answer_type) {
@@ -50,7 +58,7 @@ function answerBlock(q) {
     case 'multi_enum': {
       const values = enumValues(node) ?? [];
       const hint = q.answer_type === 'multi_enum' ? 'tick all that apply' : 'tick one';
-      return [`*(${hint})*`, ...values.map((v) => `- [ ] ${humanise(v)}`)];
+      return [`*(${hint})*`, ...values.map((v) => `- [ ] ${humanise(v, labels)}`)];
     }
     case 'table': {
       const item = schemaNodeAt(`${q.maps_to[0]}/*`);
@@ -72,10 +80,12 @@ function answerBlock(q) {
 }
 
 /** @param {object} q */
-function renderQuestion(q) {
+function renderQuestion(q, t) {
+  const tr = t?.questions?.[q.id];
+  const labels = { ...(t?.options ?? {}), ...(tr?.options ?? {}) };
   const tags = [PRIORITY_LABEL[q.priority]];
   if (q.audience === 'consultant') tags.push('consultant');
-  const lines = [`**${q.id}** — ${q.text} *(${tags.join(' · ')})*`];
+  const lines = [`**${q.id}** — ${tr?.text ?? q.text} *(${tags.join(' · ')})*`];
 
   if (q.skip_if) {
     const target = q.skip_if.question;
@@ -86,21 +96,26 @@ function renderQuestion(q) {
   }
   if (q.only_if) lines.push(`*Only if ${q.only_if.map(describeCondition).join(' or ')}.*`);
   if (q.ask_if) lines.push(`*Ask if ${q.ask_if.map(describeCondition).join(', or ')}.*`);
-  if (q.help) lines.push(`*${q.help}*`);
-  lines.push('', ...answerBlock(q));
+  const help = tr?.help ?? q.help;
+  if (help) lines.push(`*${help}*`);
+  lines.push('', ...answerBlock(q, labels));
   return lines.join('\n');
 }
 
 /**
- * Render the full questionnaire Markdown.
+ * Render the full questionnaire Markdown, in English or in a conversation
+ * language. Anything the translation does not carry stays in English.
  *
+ * @param {string} [language]
  * @returns {string}
  */
-export function renderQuestionnaire() {
+export function renderQuestionnaire(language) {
+  const t = translationFor(language);
+  const doc = t?.document ?? {};
   const out = [
     '<!-- GENERATED FILE — do not edit. Source: discovery/schema/question-bank.json + discovery/schema/offering.json. Re-render: npm run questionnaire:render -->',
     '',
-    '# Shopify Discovery Questionnaire',
+    `# ${doc.title ?? 'Shopify Discovery Questionnaire'}`,
     '',
     `> **Version:** question bank ${questionBank.version} · offering ${offering.version}`,
     '>',
@@ -123,10 +138,10 @@ export function renderQuestionnaire() {
   }
 
   for (const section of questionBank.sections) {
-    out.push('', `## § ${section.id} — ${section.title}`, '', `> ${section.intro}`);
+    out.push('', `## § ${section.id} — ${t?.sections?.[section.id] ?? section.title}`, '', `> ${t?.intros?.[section.id] ?? section.intro}`);
     for (const sub of section.subsections) {
-      out.push('', `### ${sub.id} ${sub.title}`);
-      for (const q of (bySubsection.get(sub.id) ?? []).filter((x) => x.ask_when !== 'stop')) out.push('', renderQuestion(q));
+      out.push('', `### ${sub.id} ${t?.subsections?.[sub.id] ?? sub.title}`);
+      for (const q of (bySubsection.get(sub.id) ?? []).filter((x) => x.ask_when !== 'stop')) out.push('', renderQuestion(q, t));
     }
     out.push('', '---');
   }
@@ -274,7 +289,11 @@ export function renderConsultantGuide() {
 }
 
 function main() {
-  const outputs = [[OUTPUT, renderQuestionnaire()], [GUIDE_OUTPUT, renderConsultantGuide()]];
+  const outputs = [
+    [OUTPUT, renderQuestionnaire()],
+    ...Object.keys(TRANSLATIONS).map((language) => [outputFor(language), renderQuestionnaire(language)]),
+    [GUIDE_OUTPUT, renderConsultantGuide()],
+  ];
   if (process.argv.includes('--check')) {
     const stale = outputs.filter(([file, text]) => (fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '') !== text);
     for (const [file] of stale) console.error(`✗ ${path.relative(process.cwd(), file)} is out of date — run: npm run questionnaire:render`);
@@ -283,7 +302,7 @@ function main() {
     return;
   }
   for (const [file, text] of outputs) fs.writeFileSync(file, text, 'utf8');
-  console.log(`✓ Written → ${path.relative(process.cwd(), OUTPUT)} (${questionBank.questions.length} questions) and ${path.relative(process.cwd(), GUIDE_OUTPUT)}`);
+  console.log(`✓ Written → ${outputs.map(([file]) => path.relative(process.cwd(), file)).join(', ')} (${questionBank.questions.length} questions)`);
 }
 
 if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {

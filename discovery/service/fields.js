@@ -16,30 +16,36 @@ import { DATE_PATTERN, resolveCode, resolveDate, vocabularyExample, vocabularyFo
  *   options?: { value: string, label: string }[], columns?: (FieldSpec & { key: string, required: boolean })[] }} FieldSpec
  */
 
-/** @param {string[]} values */
-const options = (values) => values.map((value) => ({ value, label: optionLabel(value) }));
+/**
+ * @param {string[]} values
+ * @param {Record<string, string>} [labels]  Option labels in the conversation language
+ */
+const options = (values, labels) => values.map((value) => ({ value, label: labels?.[value] ?? optionLabel(value) }));
 
 /**
- * One input per field the question fills.
+ * One input per field the question fills. When the described question carries
+ * `option_labels` (the questionnaire in the engagement's language), the choices
+ * are shown with those labels; the recorded value is the English code either way.
  *
- * @param {{ fields: string[], answer_type: string }} question  Described question (nextQuestions)
+ * @param {{ fields: string[], answer_type: string, option_labels?: Record<string, string> }} question  Described question (nextQuestions)
  * @returns {FieldSpec[]}
  */
 export function fieldSpecs(question) {
-  return question.fields.flatMap((pointer) => specsFor(pointer, question.answer_type, '', pointer));
+  return question.fields.flatMap((pointer) => specsFor(pointer, question.answer_type, '', pointer, question.option_labels));
 }
 
 /**
  * @param {string} pointer @param {string} answerType @param {string} label  Sub-field path inside a group
  * @param {string} root  The question field the answer is recorded at
+ * @param {Record<string, string>} [labels]  Option labels in the conversation language
  * @returns {FieldSpec[]}
  */
-function specsFor(pointer, answerType, label, root) {
+function specsFor(pointer, answerType, label, root, labels) {
   const node = schemaNodeAt(pointer);
   const base = { pointer, ...(label ? { label, root } : {}) };
   const values = enumValues(node);
-  if (values && node.type === 'array') return [{ ...base, kind: 'multi_enum', options: options(values) }];
-  if (values) return [{ ...base, kind: 'enum', options: options(values) }];
+  if (values && node.type === 'array') return [{ ...base, kind: 'multi_enum', options: options(values, labels) }];
+  if (values) return [{ ...base, kind: 'enum', options: options(values, labels) }];
   if (node?.type === 'boolean') return [{ ...base, kind: 'boolean' }];
   if (node?.type === 'integer') return [{ ...base, kind: 'integer' }];
   if (node?.type === 'number') return [{ ...base, kind: 'number' }];
@@ -51,7 +57,7 @@ function specsFor(pointer, answerType, label, root) {
   }
   if (node?.type === 'object' && node.properties) {
     // A group (e.g. a money range) gets one input per field and is recorded as one object at `root`.
-    return Object.keys(node.properties).flatMap((key) => specsFor(`${pointer}/${key}`, answerType, label ? `${label} › ${key}` : key, root));
+    return Object.keys(node.properties).flatMap((key) => specsFor(`${pointer}/${key}`, answerType, label ? `${label} › ${key}` : key, root, labels));
   }
   const items = node?.type === 'array' ? schemaNodeAt(`${pointer}/*`) : null;
   if (items?.type === 'string') {
@@ -62,7 +68,7 @@ function specsFor(pointer, answerType, label, root) {
     // A table: one row per item, one column per item field (no JSON for the consultant).
     const required = new Set(items.required ?? []);
     const columns = Object.keys(items.properties).map((key) => ({
-      ...specsFor(`${pointer}/*/${key}`, 'text', '', `${pointer}/*/${key}`)[0],
+      ...specsFor(`${pointer}/*/${key}`, 'text', '', `${pointer}/*/${key}`, labels)[0],
       key,
       required: required.has(key),
     })).map(({ pointer: _p, root: _r, ...column }) => column);

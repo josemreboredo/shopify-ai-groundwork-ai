@@ -36,5 +36,10 @@ export function createFileStore({ workRoot = WORK_ROOT } = {}) {
     async save(session) {
       saveSession(sessionFile(workRoot, session.client), session);
     },
+    /** Deletes the whole work directory for the engagement, session included. */
+    async remove(client) {
+      if (!SLUG.test(client)) throw new Error(`${client}: not a client slug`);
+      fs.rmSync(path.join(workRoot, client), { recursive: true, force: true });
+    },
   };
 }

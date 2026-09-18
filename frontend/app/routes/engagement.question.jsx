@@ -34,12 +34,13 @@ const STATE_TEXT = {
 };
 
 export default function EditQuestion({ loaderData, actionData }) {
-  const { engagement, question, values, state, note, vocabularies } = loaderData;
+  const { engagement, question, values, state, note, vocabularies, language } = loaderData;
   const busy = useNavigation().state !== 'idle';
   return (
     <main>
       <Vocabularies vocabularies={vocabularies} />
       <EngagementHeader
+        language={language}
         client={engagement.client}
         eyebrow={`Question ${question.id}`}
         meta={STATE_TEXT[state]}

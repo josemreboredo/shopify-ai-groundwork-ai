@@ -24,6 +24,7 @@ import { approachBrief, closingStatus, deckBrief, decideFromSession, finaliseEng
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
+import { coverage, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
 /**
@@ -32,6 +33,7 @@ import { deckToMarkdown } from './pptx.js';
  * @property {(client: string) => Promise<object|null>} get
  * @property {(session: object) => Promise<void>} create
  * @property {(session: object) => Promise<void>} save
+ * @property {(client: string) => Promise<void>} remove
  */
 
 /** @typedef {{ login: string, role: 'owner'|'consultant' }} User */
@@ -191,6 +193,25 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       return sessions.map(summary).sort((a, b) => b.updated_at.localeCompare(a.updated_at) || a.client.localeCompare(b.client));
     },
 
+    /**
+     * Delete an engagement and everything recorded in it: answers, documents,
+     * notes, the approach and every version of the closing document. There is no
+     * undo, so the caller must send the client slug back as confirmation.
+     *
+     * @param {User} user @param {string} client @param {{ confirm?: string }} input
+     */
+    async deleteEngagement(user, client, { confirm } = {}) {
+      const session = await load(user, client);
+      if (user.role !== 'owner' && session.owner && session.owner !== user.login) {
+        throw new ServiceError(403, 'Only the consultant who owns this engagement, or an owner, can delete it');
+      }
+      if (String(confirm ?? '').trim() !== session.client) {
+        throw new ServiceError(400, `Type the client slug ${session.client} to confirm the deletion`);
+      }
+      await store.remove(session.client);
+      return { ok: true, client: session.client, deleted: true };
+    },
+
     /** @param {User} user @param {{ client: string, language?: string, mode?: string }} input */
     async startInterview(user, { client, language, mode }) {
       if (!user) throw new ServiceError(401, 'Sign in first');
@@ -214,7 +235,8 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const next = nextQuestions(session, { limit });
       return {
         engagement: summary(session),
-        next: { ...next, questions: next.questions.map((q) => ({ ...q, inputs: fieldSpecs(q) })) },
+        language: coverage(session.language),
+        next: { ...next, questions: translateQuestions(next.questions, session.language).map((q) => ({ ...q, inputs: fieldSpecs(q) })) },
         preview: preview(session, today()),
         notes: session.notes,
         tbc: session.tbc,
@@ -362,7 +384,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
      */
     async reviewQuestions(user, client) {
       const session = await load(user, client);
-      return { engagement: summary(session), sections: reviewSections(session, { includeOpen: true }) };
+      const sections = reviewSections(session, { includeOpen: true })
+        .map((section) => ({ ...section, questions: translateRows(section.questions, session.language) }));
+      return { engagement: summary(session), language: coverage(session.language), sections };
     },
 
     /**
@@ -374,10 +398,11 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const session = await load(user, client);
       const q = questionById(questionId);
       if (!q) throw new ServiceError(404, `${questionId}: unknown question`);
-      const described = describeQuestion(q);
+      const described = translateQuestion(describeQuestion(q), session.language);
       const inputs = fieldSpecs(described);
       return {
         engagement: summary(session),
+        language: coverage(session.language),
         question: { ...described, inputs },
         values: Object.fromEntries(inputs.map((i) => [i.pointer, valuesAt(session.answers, i.pointer)[0] ?? null])),
         ...questionState(session, q),

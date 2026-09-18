@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Form, Link, redirect, useNavigation } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
@@ -15,6 +15,18 @@ export async function loader({ request, params }) {
   }
 }
 
+export async function action({ request, params }) {
+  const user = await requireUser(request);
+  const form = await request.formData();
+  if (String(form.get('intent')) !== 'delete') return { error: 'Unknown action' };
+  try {
+    await discovery().deleteEngagement(user, params.client, { confirm: String(form.get('confirm') ?? '') });
+  } catch (err) {
+    return serviceFailure(err);
+  }
+  return redirect('/');
+}
+
 const STATE = {
   answered: ['go', 'Answered'],
   commented: ['flag', 'Clarified by comment'],
@@ -23,13 +35,15 @@ const STATE = {
   open: ['stop', 'Open'],
 };
 
-export default function Review({ loaderData }) {
-  const { engagement, sections } = loaderData;
+export default function Review({ loaderData, actionData }) {
+  const { engagement, sections, language } = loaderData;
+  const busy = useNavigation().state !== 'idle';
   const all = sections.flatMap((s) => s.questions);
   const count = (state) => all.filter((q) => q.state === state).length;
   return (
     <main>
       <EngagementHeader
+        language={language}
         client={engagement.client}
         eyebrow="Review answers"
         meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} TBC · ${count('skipped')} not applicable · ${count('open')} open`}
@@ -60,6 +74,23 @@ export default function Review({ loaderData }) {
           </table>
         </section>
       ))}
+
+      <details className="danger">
+        <summary>Delete this engagement</summary>
+        <p className="muted">
+          Deletes every answer, document, note, the approach and every version of the closing document for{' '}
+          <strong>{engagement.client}</strong>. It cannot be undone, and downloaded files are not affected.
+        </p>
+        {actionData?.error ? <p className="error">{actionData.error}</p> : null}
+        <Form method="post" className="danger-form">
+          <input type="hidden" name="intent" value="delete" />
+          <div className="field">
+            <label htmlFor="confirm">Type <code>{engagement.client}</code> to confirm</label>
+            <input id="confirm" name="confirm" autoComplete="off" placeholder={engagement.client} required />
+          </div>
+          <button type="submit" className="destructive" disabled={busy}>Delete engagement</button>
+        </Form>
+      </details>
     </main>
   );
 }

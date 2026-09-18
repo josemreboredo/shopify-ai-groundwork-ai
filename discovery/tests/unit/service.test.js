@@ -291,6 +291,29 @@ describe('review, change and summary', () => {
     assert.equal((await svc.getQuestion(consultant, 'demo-client', 'Q3.4.8')).state, 'open');
   });
 
+  test('deleting an engagement needs the slug back, and only the owner of the engagement or an owner can do it', async () => {
+    const store = createMemoryStore();
+    const svc = await started(store);
+    await rejects(svc.deleteEngagement(consultant, 'demo-client', { confirm: 'wrong-slug' }), 400);
+    await rejects(svc.deleteEngagement(consultant, 'demo-client', {}), 400);
+    assert.ok(await store.get('demo-client'), 'nothing is deleted until the slug matches');
+    await rejects(svc.deleteEngagement(other, 'demo-client', { confirm: 'demo-client' }), 403);
+    assert.deepEqual(await svc.deleteEngagement(consultant, 'demo-client', { confirm: 'demo-client' }), { ok: true, client: 'demo-client', deleted: true });
+    assert.equal(await store.get('demo-client'), null);
+    assert.deepEqual(await svc.listEngagements(consultant), []);
+    await rejects(svc.getInterview(consultant, 'demo-client'), 404);
+  });
+
+  test('an owner can delete another consultant\u2019s engagement; the file store removes the work directory', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'discovery-delete-'));
+    const store = createFileStore({ workRoot: dir });
+    const svc = await started(store);
+    assert.ok(fs.existsSync(path.join(dir, 'demo-client', 'interview.json')));
+    await svc.deleteEngagement(owner, 'demo-client', { confirm: 'demo-client' });
+    assert.equal(fs.existsSync(path.join(dir, 'demo-client')), false, 'the whole work directory goes');
+    fs.rmSync(dir, { recursive: true, force: true });
+  });
+
   test('summary from code: status, open items with questions, answers by section, Markdown without internal price bands', async () => {
     const store = createMemoryStore();
     const svc = await started(store);

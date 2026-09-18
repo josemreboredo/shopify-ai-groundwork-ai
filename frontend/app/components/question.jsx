@@ -6,6 +6,8 @@
 import { useState } from 'react';
 import { Form, Link, NavLink } from 'react-router';
 
+import { LANGUAGE_NAMES } from '../../../discovery/service/i18n.js';
+
 export const words = (id) => id.replace(/_/g, ' ');
 const leaf = (pointer) => words(pointer.split('/').at(-1));
 
@@ -38,13 +40,19 @@ export function EngagementNav({ client }) {
  * @param {{ client: string, eyebrow?: string, title?: string, meta?: import('react').ReactNode,
  *           back?: { to: string, label: string } }} props
  */
-export function EngagementHeader({ client, eyebrow = 'Discovery engagement', title, meta, back }) {
+export function EngagementHeader({ client, eyebrow = 'Discovery engagement', title, meta, back, language }) {
   return (
     <header className="page-head">
       <Link className="crumb" to={back?.to ?? '/'}>← {back?.label ?? 'Engagements'}</Link>
       <p className="eyebrow">{eyebrow}</p>
       <h1>{title ?? client}</h1>
       {meta ? <p className="page-meta">{meta}</p> : null}
+      {language?.translated ? (
+        <p className="page-lang">
+          Questions in {LANGUAGE_NAMES[language.language] ?? language.language} · answers and documents in English
+          {language.complete ? '' : ` · ${language.questions} of ${language.of} questions translated so far, the rest stay in English`}
+        </p>
+      ) : null}
       <EngagementNav client={client} />
     </header>
   );

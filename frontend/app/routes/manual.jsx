@@ -43,7 +43,7 @@ export default function Manual({ loaderData }) {
 
       <nav aria-label="Contents">
         <h2>Contents</h2>
-        <ol className="toc">{STEPS.map(([id, label]) => <li key={id}><a href={`#${id}`}>{label}</a></li>)}</ol>
+        <ul className="toc">{STEPS.map(([id, label]) => <li key={id}><a href={`#${id}`}>{label}</a></li>)}</ul>
       </nav>
 
       <h2 id="rules">Before you start</h2>
