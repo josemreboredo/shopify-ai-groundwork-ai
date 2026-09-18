@@ -43,6 +43,20 @@ const APPROACH = {
   },
 };
 
+/** The engine's classification condition as a sentence, built from the data it reads. */
+function plainRule(c) {
+  const when = String(c.when);
+  if (/l_trigger/.test(when)) return `Any of: ${offering.l_triggers.map((t) => t.label.toLowerCase()).join(', ')}`;
+  const n = /(>=|==)\s*(\d+)/.exec(when);
+  if (n) {
+    const count = Number(n[2]);
+    if (n[1] === '>=') return `${count} or more scope gates`;
+    if (count === 0) return 'No scope gate at all';
+    return `Exactly ${count} scope gate${count > 1 ? 's' : ''}${c.apply_modifier ? ', priced with its modifier' : ''}`;
+  }
+  return when.replace(/_/g, ' ');
+}
+
 /**
  * @param {{ pricing?: boolean }} [options]  pricing: include price bands, price
  *   additions and internal notes. Only for callers allowed to see Merkle pricing.
@@ -93,7 +107,7 @@ export function offeringView({ pricing = false } = {}) {
     version: offering.version,
     pricing,
     offers,
-    classification: offering.classification.map((c) => ({ order: c.order, when: c.when, offer: c.offer, ...(c.apply_modifier ? { with_modifier: true } : {}) })),
+    classification: offering.classification.map((c) => ({ order: c.order, when: c.when, offer: c.offer, plain: plainRule(c), ...(c.apply_modifier ? { with_modifier: true } : {}) })),
     gates,
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {
