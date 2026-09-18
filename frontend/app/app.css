@@ -228,6 +228,20 @@ button.destructive:hover { background: #000; border-color: #000; }
 .blockers .muted { margin: 0 0 12px; max-width: 86ch; }
 .blockers a.button { font-size: 0.78rem; padding: 9px 20px; }
 
+/* The offering page */
+.offers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.offer { border-top: 3px solid var(--red); padding: 22px 0 0; }
+.offer-code { margin: 0; font-size: 3rem; font-weight: 700; line-height: 1; color: var(--red); }
+.offer h2 { margin: 8px 0 6px; font-size: 1.3rem; letter-spacing: -0.01em; text-transform: none; }
+.offer-facts { display: grid; gap: 10px; margin: 18px 0; padding: 14px 0; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+.offer-facts div { display: flex; justify-content: space-between; gap: 12px; }
+.offer-facts dt { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.offer-facts dd { margin: 0; font-weight: 700; text-align: right; }
+.offer h3 { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.offer ul { padding-left: 18px; margin: 6px 0 0; }
+.table-scroll { overflow-x: auto; }
+@media (max-width: 900px) { .offers { grid-template-columns: 1fr; } }
+
 /* Sign in */
 main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr); gap: 0; max-width: none; padding: 0; min-height: calc(100vh - 118px); }
 .signin-hero {
@@ -345,6 +359,7 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .footer-main { display: flex; flex-direction: column; align-items: flex-start; gap: 34px; }
 .footer-mark img { display: block; height: 26px; width: auto; }
 .footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
+.footer-columns { display: grid; grid-template-columns: repeat(2, minmax(180px, max-content)); column-gap: 120px; row-gap: 22px; }
 .footer-links a { color: #fff; text-decoration: none; font-size: 1.05rem; position: relative; padding-bottom: 4px; }
 .footer-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
 .footer-links a:hover::after, .footer-links a:focus-visible::after { transform: scaleX(1); }
@@ -371,6 +386,7 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   .signin-panel { padding: 36px 20px 48px; }
   .site-footer { padding: 44px 16px 24px; }
   .footer-main { gap: 26px; }
+  .footer-columns { grid-template-columns: 1fr; }
   .footer-watermark { display: none; }
   .footer-base { margin-top: 28px; }
 }

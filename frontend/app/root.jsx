@@ -12,6 +12,17 @@ export const links = () => [
   { rel: 'stylesheet', href: stylesheet },
 ];
 
+/** The site's pages, once: the header and the footer both render from this. */
+const PAGES = [
+  { to: '/', label: 'Engagements', end: true, signedIn: true },
+  { to: '/offering', label: 'Offering', signedIn: true },
+  { to: '/about', label: 'What this is' },
+  { to: '/how-it-works', label: 'How it works' },
+  { to: '/manual', label: 'Manual' },
+  { to: '/claude', label: 'Claude Project', signedIn: true },
+];
+const pagesFor = (user) => PAGES.filter((p) => !p.signedIn || user);
+
 export async function loader({ request }) {
   return { user: await getUser(request) };
 }
@@ -30,11 +41,7 @@ export function Layout({ children }) {
         <header className="topbar">
           <Link to="/" className="brand" aria-label="Merkle Discovery — home"><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
           <nav className="topnav">
-            {root?.user ? <NavLink to="/" end>Engagements</NavLink> : null}
-            <NavLink to="/about">What this is</NavLink>
-            <NavLink to="/how-it-works">How it works</NavLink>
-            <NavLink to="/manual">Manual</NavLink>
-            {root?.user ? <NavLink to="/claude">Claude Project</NavLink> : null}
+            {pagesFor(root?.user).map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
           </nav>
           {root?.user ? (
             <Form method="post" action="/logout" className="user">
@@ -45,7 +52,7 @@ export function Layout({ children }) {
         </header>
         <p className="pilot">Pilot — demo or anonymised engagements only</p>
         {children}
-        <SiteFooter />
+        <SiteFooter pages={pagesFor(root?.user)} />
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -63,7 +70,7 @@ const SOCIAL = [
  * The footer as merkle.com builds it: the mark and the links on the left, the
  * outlined M watermark on the right, dentsu and the copyright on the base line.
  */
-function SiteFooter() {
+function SiteFooter({ pages = [] }) {
   return (
     <footer className="site-footer">
       <div className="footer-inner">
@@ -72,11 +79,16 @@ function SiteFooter() {
             <img src="/brand/merkle-mark.svg" alt="" width="32" height="18" />
           </a>
 
-          <nav className="footer-links" aria-label="Legal">
-            <a href="https://www.merkle.com/en/legal-terms.html" target="_blank" rel="noreferrer">Legal Terms</a>
-            <a href="https://www.merkle.com/en/privacy-policy.html" target="_blank" rel="noreferrer">Privacy Policy</a>
-            <a href="https://www.merkle.com/en/privacy-policy/data-product-privacy-notice/control-your-personal-information.html" target="_blank" rel="noreferrer">Your Privacy Choices</a>
-          </nav>
+          <div className="footer-columns">
+            <nav className="footer-links" aria-label="Pages">
+              {pages.map((p) => <Link key={p.to} to={p.to}>{p.label}</Link>)}
+            </nav>
+            <nav className="footer-links" aria-label="Legal">
+              <a href="https://www.merkle.com/en/legal-terms.html" target="_blank" rel="noreferrer">Legal Terms</a>
+              <a href="https://www.merkle.com/en/privacy-policy.html" target="_blank" rel="noreferrer">Privacy Policy</a>
+              <a href="https://www.merkle.com/en/privacy-policy/data-product-privacy-notice/control-your-personal-information.html" target="_blank" rel="noreferrer">Your Privacy Choices</a>
+            </nav>
+          </div>
 
           <nav className="footer-social" aria-label="Merkle on social media">
             {SOCIAL.map(([name, href, paths]) => (

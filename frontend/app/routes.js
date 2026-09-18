@@ -16,6 +16,7 @@ export default [
   route('engagements/:client/closing-annex.md', 'routes/engagement.closing-annex.js'),
   route('engagements/:client/closing-preview', 'routes/engagement.closing-preview.js'),
   route('engagements/:client/questions/:questionId', 'routes/engagement.question.jsx'),
+  route('offering', 'routes/offering.jsx'),
   route('about', 'routes/about.jsx'),
   route('how-it-works', 'routes/how-it-works.jsx'),
   route('claude', 'routes/claude.jsx'),
