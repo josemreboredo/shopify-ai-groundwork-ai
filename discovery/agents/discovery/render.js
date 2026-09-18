@@ -33,12 +33,12 @@ function table(headers, rows) {
   ].join('\n');
 }
 
-/** "GO", "Larger Engagement", "STOP" or "STOP → No bid". @param {object} doc */
+/** "GO", "Larger Engagement", "Beyond the standard offers" or the chosen route. @param {object} doc */
 function statusLabel(doc) {
   if (doc.delivery.go) return 'GO';
   const route = stopRoute(doc);
   if (route?.brief) return route.label;
-  return route ? `STOP → ${route.label}` : 'STOP';
+  return route ? `Beyond the standard offers → ${route.label}` : 'Beyond the standard offers';
 }
 
 /** @param {object} doc */

@@ -24,7 +24,10 @@ export async function action({ request }) {
 
 function Status({ e }) {
   if (e.go) return <span className="badge go">GO</span>;
-  return <span className="badge stop">{e.route === 'larger_engagement' ? 'Larger Engagement' : e.route === 'no_bid' ? 'No bid' : 'STOP'}</span>;
+  // Beyond the offers is not a refusal: only "No bid" reads as one.
+  if (e.route === 'larger_engagement') return <span className="badge flag">Larger Engagement</span>;
+  if (e.route === 'no_bid') return <span className="badge stop">No bid</span>;
+  return <span className="badge flag">Beyond offers · route needed</span>;
 }
 
 export default function Home({ loaderData, actionData }) {

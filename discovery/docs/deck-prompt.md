@@ -148,9 +148,18 @@ Follow the deck order above. For a **STOP** document (`mode="STOP"`) the deck is
 explaining that discovery cannot close yet and why, a `table` or `risks` slide with the blockers and their
 resolution paths, open questions, and `next_steps`.
 
-For a **Larger Engagement** document (`mode="LARGER_ENGAGEMENT"`): no offer, no price band and no duration on the
-investment slide — say they are agreed at the end of the Discovery Phase. The roadmap's first phase is the
-Discovery Phase, one workstream per open STOP. There are no user stories.
+For a **Larger Engagement** document (`mode="LARGER_ENGAGEMENT"`) the deck is a **full client deck, shared with
+the client** — not the short STOP deck. Nothing has stopped: the engagement is beyond the S/M/L offers, and Merkle
+proposes an Enterprise Engagement that opens with a full, **consultant-led Discovery Phase** — a traditional
+discovery run by people, which this document prepares rather than replaces. Write it as the case for that phase:
+what we already know, what we recommend on that evidence, and what the Discovery Phase has to settle before
+anyone commits to scope.
+- The engine's open STOP items arrive as `discovery-phase-topics`. They are the scope of the Discovery Phase,
+  one workstream each — never "blockers", and **never write the word STOP on a client slide**.
+- No offer, no price band and no duration on the investment slide — they are agreed at the end of the Discovery
+  Phase.
+- The roadmap's first phase is the Discovery Phase. There are no user stories, no Jira backlog and no Confluence
+  pages: the backlog is defined during that phase, and issuing one now would imply a scope nobody has agreed.
 
 Consultant notes stay out of the client deck: put them in the annex under a `## Consultant notes` heading, and the
 tool keeps them out of the client PowerPoint.

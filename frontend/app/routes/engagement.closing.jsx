@@ -172,7 +172,7 @@ export default function Closing({ loaderData }) {
       </details>
       <p className="muted">
         {approach ? `Approach saved ${approach.saved_at} by ${approach.by}.` : 'No approach saved yet.'}
-        {readiness.ok ? ` Engine decision: ${readiness.status.decision} · offer ${readiness.status.offer}${readiness.status.route ? ` · route ${readiness.status.route}` : ''}.` : ''}
+        {readiness.ok ? ` ${readiness.status.label ?? readiness.status.decision} · offer ${readiness.status.offer}.` : ''}
         {' '}Full guide: <Link to="/manual">Lead Consultant manual</Link>.
       </p>
     </main>

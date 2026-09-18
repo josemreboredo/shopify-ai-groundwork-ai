@@ -512,12 +512,12 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         const stops = doc.exits.items.filter((i) => i.result === 'STOP');
         throw new ServiceError(
           409,
-          'The discovery hit a STOP, so the next step is a decision rather than a document',
+          'This engagement is beyond the standard offers, so the next step is a decision rather than a document',
           stops.map((i) => `${i.rule_id}: ${i.evidence}`),
           [{
             question_id: 'Q10.5.5',
             what: 'Record how Merkle proceeds',
-            why: `The requirements go beyond the S/M/L offers (${stops.map((i) => i.evidence).join('; ')}). Either Merkle proposes a Larger Engagement — an Enterprise Engagement that starts with a dedicated Discovery Phase — or it does not bid. The closing document is written differently for each, which is why it waits for this answer.`,
+            why: `The requirements go beyond the S/M/L offers (${stops.map((i) => i.evidence).join('; ')}). Nothing stops here: either Merkle proposes a Larger Engagement — an Enterprise Engagement opening with a full, consultant-led Discovery Phase, with the client deck produced and shared as usual but no Jira backlog, because that is defined during the Discovery Phase — or Merkle does not bid. The document is written differently for each, which is why it waits for this answer.`,
           }],
         );
       }

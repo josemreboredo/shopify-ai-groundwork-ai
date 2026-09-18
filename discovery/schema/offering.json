@@ -267,7 +267,7 @@
     "note": "An integration is a live system-to-system data connection. Shopify App Store apps with native connectors (ESP, reviews, search, loyalty, analytics) are apps, not integrations — unless the connector is custom-built (connector = custom), in which case they count."
   },
   "exit_results": {
-    "STOP": "Blocks GO. Discovery cannot close until resolved or waived by the lead consultant.",
+    "STOP": "Beyond the S/M/L offers. Not a refusal: the engagement continues as a Larger Engagement with a consultant-led Discovery Phase, or Merkle does not bid. Recorded in Q10.5.5 before the closing document.",
     "FLAG": "Does not block GO. Requires a named owner and resolution before build starts.",
     "WARN": "Commercial adjustment. Recorded in the proposal; does not block GO."
   },
@@ -544,7 +544,7 @@
       "label": "Larger Engagement",
       "proposal": "Merkle Enterprise Engagement with a dedicated Discovery Phase",
       "brief": "larger-engagement-brief.md",
-      "description": "The requirements go beyond the S/M/L offers. Merkle proposes an Enterprise Engagement that starts with a dedicated Discovery Phase; the approach drafted here is its starting point. The client deck is generated; Jira tickets are not, because the backlog is defined in the Discovery Phase."
+      "description": "The requirements go beyond the S/M/L offers. This is not a refusal and not a pause: Merkle proposes an Enterprise Engagement that opens with a full, consultant-led Discovery Phase — a traditional discovery, run by people rather than by this tool. The approach drafted here is its starting point, and the client deck is produced and shared with the client as it would be for any engagement. What is not produced is the Jira backlog and the Confluence pages: the backlog is defined during that Discovery Phase, and issuing one now would imply a scope nobody has agreed."
     },
     {
       "id": "no_bid",

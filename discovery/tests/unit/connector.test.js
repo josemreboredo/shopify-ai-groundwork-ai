@@ -306,7 +306,7 @@ describe('Discovery Closing Document from the shared engagement', () => {
       if (!(err instanceof ServiceError) || err.status !== 409) return false;
       // The message is for a human; the blocker is what the app turns into a link.
       const [blocker] = err.blockers;
-      return blocker.question_id === 'Q10.5.5' && /Larger Engagement/.test(blocker.why) && /dedicated Discovery Phase/.test(blocker.why);
+      return blocker.question_id === 'Q10.5.5' && /Larger Engagement/.test(blocker.why) && /consultant-led Discovery Phase/.test(blocker.why);
     });
   });
 
