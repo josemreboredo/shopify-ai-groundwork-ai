@@ -271,7 +271,9 @@ main.signin { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320p
 main.signin + .site-footer { margin-top: 0; }
 
 /* Lead Consultant manual */
-main.manual { --page: 860px; }
+/* Same grid and left edge as every other page; only the reading measure is
+   narrower, and it stays aligned left rather than centred. */
+main.manual > *:not(.page-head) { max-width: 860px; }
 main.manual li { margin: 5px 0; }
 main.manual code { background: var(--panel); padding: 1px 5px; font-size: 0.9em; overflow-wrap: anywhere; }
 main.manual h2 { scroll-margin-top: 12px; }
