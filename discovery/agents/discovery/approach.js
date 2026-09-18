@@ -12,6 +12,7 @@ import { appSignals, appCandidates } from './app-signals.js';
 import { knowledgeFor } from './knowledge.js';
 import { rubricBrief, rubricErrors, axesFor } from './rubric.js';
 import { runCostFor } from './economics.js';
+import { organisationalProfile } from './feasibility.js';
 import { planSuggestion } from './plan.js';
 
 export const APPROACH_SYSTEM = `You are a senior Shopify solutions architect and commerce consultant at Merkle drafting the implementation approach for a discovery engagement, to the standard of a top-tier strategy consultancy. A lead consultant reviews everything you write before the client sees it.
@@ -64,6 +65,11 @@ App shortlist
 - Recommend only apps a requirement needs; prefer native features. Include apps you considered and rejected, with rejection_reason.
 - app_signals lists, per area, the answers that go beyond native Shopify (returns, post-purchase tracking, order editing, warranty, back-in-stock, pre-orders, product options, bundles, subscriptions, B2B quotes, loyalty, reviews, translation, consent, fraud guarantee, SMS, delivery scheduling, server-side tracking, wishlist). An empty list means native Shopify is enough (return and cancellation rules, self-serve returns including B2B orders, cancellation requests, staff order editing, order status page, Shopify Bundles, Shopify Subscriptions, store credit, Shopify Messaging, Translate & Adapt for 2 languages, Shopify's cookie banner). For a non-empty list, recommend one app per area that covers all listed reasons, preferring an app the client already uses or prefers, then app_candidates (apps.shopify.com listings from Merkle's registry; status "proposed" means the lead consultant has not approved it yet — say so in limitations). Quote the reasons in rationale. Do not recommend apps outside app_candidates unless no candidate fits, and say why.
 - Costs: typical public list price as a number with currency and period, and note "verify current pricing on the Shopify App Store". If unknown, omit cost.
+
+Can this client run it
+- 'organisation' says who operates the store after go-live: how many admin logins, what support model they expect, whether a retainer is signed, what training they asked for, what they said they would pay monthly for apps.
+- Test every recommendation against it. A solution only a developer can change, handed to a team that expects to be self-sufficient with no retainer, is technically correct and operationally impossible — and saying so is the difference between a consultant and an architect.
+- Where the fit is wrong, either recommend the option that fits and say why, or state plainly what has to change in the client's organisation for the recommendation to work. Put it in the approach, not in a footnote.
 
 Assumptions
 - State assumptions you made where answers were missing or ambiguous, and the impact if wrong.
@@ -217,6 +223,8 @@ export function approachInput(doc) {
     // The client's own arithmetic: order volume, average basket, the rates Shopify
     // publishes that this engagement triggers, and what is not known.
     run_cost: runCostFor(doc),
+    // Who has to run this after go-live, and with what.
+    organisation: organisationalProfile(doc),
     ...(planSuggestion(doc) ? { plan_suggestion: planSuggestion(doc) } : {}),
     question_ids_by_answer: Object.fromEntries(
       Object.entries(provenance ?? {}).map(([pointer, p]) => [pointer, p.question_id]).filter(([, id]) => id),

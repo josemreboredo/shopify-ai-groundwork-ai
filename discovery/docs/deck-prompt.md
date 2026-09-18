@@ -63,6 +63,11 @@ Consultant decides what reaches the client's leadership, so the draft contains *
         names the question or rule it rests on. Answer every high finding on a slide — in the decision
         it belongs to, in the gaps, or in the risks — because the client will find it otherwise, and a
         multi-market deck that leaves one unanswered is rejected before it is saved.
+        `<organisation>` next to them says who runs the store after go-live — admin logins, support
+        model, retainer, training, the monthly app ceiling they named. Where the recommendation asks
+        more of them than that, the deck says so plainly: what has to change in their organisation for
+        this to work, or which option we recommend instead given the team they have. "Technically yes,
+        organisationally no" is the sentence the client remembers, and the one no competitor writes.
         `out_of_scope`.
      8. `roadmap`, `investment`, `run_cost` — and `run_cost` is not an estimate you write: `deck_xml`
         carries `<run-cost>` with the client's own order volume and average basket, the app

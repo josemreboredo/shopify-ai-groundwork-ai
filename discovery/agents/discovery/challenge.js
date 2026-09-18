@@ -11,6 +11,8 @@
  *   2. A limit we had already written down does not appear anywhere in the draft.
  *   3. An assumption is carrying the recommendation, and no risk covers it.
  *   4. A number was available and the argument stayed vague.
+ *   5. An open flag from the engine that the draft never answers.
+ *   6. A recommendation that asks more of the client's organisation than they have.
  *
  * It is deterministic on purpose. A second model asked to "be critical" produces
  * plausible criticism; this produces criticism that can be traced to a question id
@@ -26,6 +28,7 @@
 import { knowledgeFor } from './knowledge.js';
 import { toApproachPayload } from './approach.js';
 import { runCostFor } from './economics.js';
+import { feasibilityFindings } from './feasibility.js';
 
 /** Words that mean the draft engaged with a subject, not just mentioned it. */
 const mentions = (haystack, needle) => haystack.toLowerCase().includes(needle.toLowerCase());
@@ -152,6 +155,10 @@ export function challengeApproach(payload, doc) {
       });
     }
   }
+
+  // 6 — the recommendation against the organisation that has to run it. The engine
+  // decides what can be built; this asks whether this client can operate it.
+  out.push(...feasibilityFindings(payload, doc));
 
   return out;
 }

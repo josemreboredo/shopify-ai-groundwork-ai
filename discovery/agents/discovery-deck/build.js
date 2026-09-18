@@ -31,6 +31,7 @@ import { stopRoute } from '../discovery/engine.js';
 import { axesForDecision } from '../discovery/rubric.js';
 import { runCostFor } from '../discovery/economics.js';
 import { challengesFor, topChallenges } from '../discovery/challenge.js';
+import { organisationalProfile } from '../discovery/feasibility.js';
 import { toApproachPayload } from '../discovery/approach.js';
 import { planRequirements, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
 import { appSignals, appCandidates } from '../discovery/app-signals.js';
@@ -236,6 +237,14 @@ function solutionDesign(x, doc) {
 function challenges(x, doc) {
   const found = topChallenges(challengesFor(doc));
   if (!found.length) return;
+  const org = organisationalProfile(doc);
+  x.empty('organisation', {
+    'admin-users': org.admin_users !== undefined ? String(org.admin_users) : undefined,
+    'support-model': org.support_model,
+    'retainer-signed': String(org.retainer_signed),
+    'training-requested': String(org.training_requested),
+    'app-budget-monthly': org.app_budget_monthly?.amount !== undefined ? `${org.app_budget_monthly.amount} ${org.app_budget_monthly.currency ?? ''}`.trim() : undefined,
+  });
   x.open('challenges', { count: String(found.length) });
   for (const f of found) x.empty('challenge', { severity: f.severity, finding: f.finding, why: f.why_it_matters, evidence: f.evidence });
   x.close();
