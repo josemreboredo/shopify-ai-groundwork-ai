@@ -119,14 +119,18 @@ export function renderQuestionnaire(language) {
     '',
     `> **Version:** question bank ${questionBank.version} · offering ${offering.version}`,
     '>',
-    '> **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every',
-    '> *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are',
-    '> answered by the lead consultant, not the client.',
+    ...(doc.how_to_use ?? [
+      '**How to use:** work through §§ 0–10 with the client in the discovery call. Answer every',
+      '*required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are',
+      'answered by the lead consultant, not the client.',
+    ]).map((line) => `> ${line}`),
     '>',
-    '> **Output:** the completed questionnaire is the input to the discovery engine, which produces',
-    '> the engagement spec, offer classification, capability map, closing deck and backlog.',
+    ...(doc.output ?? [
+      '**Output:** the completed questionnaire is the input to the discovery engine, which produces',
+      'the engagement spec, offer classification, capability map, closing deck and backlog.',
+    ]).map((line) => `> ${line}`),
     '>',
-    '> **Personal data:** do not record customer personal data. Stakeholder names are optional.',
+    `> ${doc.personal_data ?? '**Personal data:** do not record customer personal data. Stakeholder names are optional.'}`,
     '',
     '---',
   ];
@@ -148,12 +152,14 @@ export function renderQuestionnaire(language) {
 
   out.push(
     '',
-    '## Completion checklist',
+    `## ${doc.checklist_title ?? 'Completion checklist'}`,
     '',
-    '- [ ] Every *required* question in §§ 0–10 has an answer or "TBC"',
-    '- [ ] At least one KPI has a baseline and a target (Q0.4.2)',
-    '- [ ] Every connected system is listed in Q8.1.1 with direction and connector',
-    '- [ ] Consent for AI processing recorded (Q10.5.2)',
+    ...(doc.checklist ?? [
+      'Every *required* question in §§ 0–10 has an answer or "TBC"',
+      'At least one KPI has a baseline and a target (Q0.4.2)',
+      'Every connected system is listed in Q8.1.1 with direction and connector',
+      'Consent for AI processing recorded (Q10.5.2)',
+    ]).map((line) => `- [ ] ${line}`),
     '',
   );
 

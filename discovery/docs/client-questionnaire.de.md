@@ -1,55 +1,55 @@
 <!-- GENERATED FILE — do not edit. Source: discovery/schema/question-bank.json + discovery/schema/offering.json. Re-render: npm run questionnaire:render -->
 
-# Shopify Discovery Questionnaire
+# Shopify Discovery — Fragebogen
 
 > **Version:** question bank 1.2.0 · offering 1.3.0
 >
-> **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
-> *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
-> answered by the lead consultant, not the client.
+> **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
+> *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
+> der Lead Consultant, nicht der Kunde.
 >
-> **Output:** the completed questionnaire is the input to the discovery engine, which produces
-> the engagement spec, offer classification, capability map, closing deck and backlog.
+> **Ergebnis:** Der ausgefüllte Fragebogen ist der Input für die Discovery-Engine, die daraus Engagement-Spezifikation,
+> Angebotsklassifizierung, Capability Map, Abschlussdeck und Backlog erzeugt.
 >
-> **Personal data:** do not record customer personal data. Stakeholder names are optional.
+> **Personenbezogene Daten:** Erfassen Sie keine personenbezogenen Daten von Endkundinnen und Endkunden. Namen von Ansprechpersonen sind optional.
 
 ---
 
-## § 0 — Business outcomes
+## § 0 — Geschäftsziele
 
-> What is broken before what to build. This section is the primary brief: every capability we scope must trace back to an answer here.
+> Erst was nicht funktioniert, dann was gebaut wird. Dieser Abschnitt ist das eigentliche Briefing: Jede Fähigkeit, die wir in den Umfang nehmen, muss sich auf eine Antwort hier zurückführen lassen.
 
-### 0.1 The core problem
+### 0.1 Das Kernproblem
 
-**Q0.1.1** — What is the single biggest thing preventing your ecommerce from growing right now? *(required)*
-
-> Answer:
-
-**Q0.1.2** — How long has this been a problem, and what have you already tried to fix it? *(recommended)*
+**Q0.1.1** — Was hindert Ihren E-Commerce derzeit am stärksten am Wachstum? *(required)*
 
 > Answer:
 
-**Q0.1.3** — If we solved only one thing in this engagement, what would have the highest business impact? *(recommended)*
+**Q0.1.2** — Seit wann besteht dieses Problem, und was haben Sie bereits versucht, um es zu lösen? *(recommended)*
 
 > Answer:
 
-### 0.2 Revenue & conversion
+**Q0.1.3** — Wenn wir in diesem Projekt nur eine einzige Sache lösen würden: Was hätte den größten geschäftlichen Effekt? *(recommended)*
 
-**Q0.2.1** — What is your current monthly ecommerce revenue (range and currency)? *(required)*
+> Answer:
+
+### 0.2 Umsatz & Conversion
+
+**Q0.2.1** — Wie hoch ist Ihr aktueller monatlicher E-Commerce-Umsatz (Spanne und Währung)? *(required)*
 
 - min:
 - max:
 - currency:
 
-**Q0.2.2** — What is your current conversion rate (%)? *(required)*
+**Q0.2.2** — Wie hoch ist Ihre aktuelle Conversion Rate (%)? *(required)*
 
 > Answer:
 
-**Q0.2.3** — Which product categories, markets or customer segments under-perform? *(optional)*
+**Q0.2.3** — Welche Produktkategorien, Märkte oder Kundensegmente bleiben hinter den Erwartungen zurück? *(optional)*
 
 > Answer:
 
-**Q0.2.4** — Is the main bottleneck acquisition (traffic), conversion (traffic doesn't buy) or retention (customers don't return)? *(required)*
+**Q0.2.4** — Liegt der Engpass vor allem bei der Akquise (Traffic), der Conversion (Traffic kauft nicht) oder der Bindung (Kundinnen und Kunden kommen nicht zurück)? *(required)*
 
 *(tick one)*
 - [ ] Acquisition
@@ -58,56 +58,56 @@
 - [ ] Mixed
 - [ ] Not sure yet
 
-**Q0.2.5** — What share of revenue comes from each channel today (online store, retail stores, marketplaces, social commerce, wholesale / B2B, other)? *(recommended)*
-*Tells us whether retail, B2B and marketplace scope are in play.*
+**Q0.2.5** — Welchen Umsatzanteil hat heute jeder Kanal (Onlineshop, Filialen, Marktplätze, Social Commerce, Großhandel / B2B, sonstige)? *(recommended)*
+*Zeigt uns, ob Retail-, B2B- und Marktplatz-Umfang im Spiel sind.*
 
 | Channel | Share pct | Growth |
 |---|---|---|
 | | | |
 
-**Q0.2.6** — How many orders per month do you expect in the first year? *(required)*
-*Returns, tracking and fraud apps are priced by order volume.*
+**Q0.2.6** — Wie viele Bestellungen pro Monat erwarten Sie im ersten Jahr? *(required)*
+*Apps für Retouren, Sendungsverfolgung und Betrugsprüfung werden nach Bestellvolumen abgerechnet.*
 
 > Answer:
 
-### 0.3 Operational pain
+### 0.3 Operative Schmerzpunkte
 
-**Q0.3.1** — What manual work does your team do today that the platform should automate, and which processes break most often? *(required)*
-
-> Answer:
-
-**Q0.3.2** — How many hours per week does the team spend on workarounds? *(optional)*
+**Q0.3.1** — Welche manuelle Arbeit leistet Ihr Team heute, die die Plattform automatisieren sollte, und welche Prozesse brechen am häufigsten? *(required)*
 
 > Answer:
 
-### 0.4 Growth goals & KPIs
-
-**Q0.4.1** — What does success look like in 12 months (revenue, new markets, channels, customer volume)? *(required)*
+**Q0.3.2** — Wie viele Stunden pro Woche verbringt das Team mit Workarounds? *(optional)*
 
 > Answer:
 
-**Q0.4.2** — Which KPIs will measure success? For each: metric, today's baseline, target, horizon in months. *(required)*
+### 0.4 Wachstumsziele & KPIs
+
+**Q0.4.1** — Wie sieht Erfolg in zwölf Monaten aus (Umsatz, neue Märkte, Kanäle, Kundenvolumen)? *(required)*
+
+> Answer:
+
+**Q0.4.2** — Welche KPIs messen den Erfolg? Bitte je KPI: Kennzahl, heutiger Ausgangswert, Zielwert, Zeithorizont in Monaten. *(required)*
 
 | Metric | Baseline | Target | Horizon months |
 |---|---|---|---|
 | | | | |
 
-### 0.5 Platform context
+### 0.5 Plattform-Kontext
 
-**Q0.5.1** — What triggered this engagement — why Shopify, and why now? *(required)*
-
-> Answer:
-
-**Q0.5.2** — If you are moving from another platform, what must not be lost in the transition? *(recommended)*
+**Q0.5.1** — Was war der Auslöser für dieses Projekt — warum Shopify, und warum jetzt? *(required)*
 
 > Answer:
 
-**Q0.5.3** — What are you most unhappy with in the current store or set-up? *(recommended)*
+**Q0.5.2** — Falls Sie von einer anderen Plattform wechseln: Was darf beim Übergang keinesfalls verloren gehen? *(recommended)*
 
 > Answer:
 
-**Q0.5.4** — Which platform are you migrating from (or none — greenfield)? *(required)*
-*Shopify's Store Migration app imports products and customers from some platforms (e.g. WooCommerce, Wix, Square); other platforms use a migration app or the API.*
+**Q0.5.3** — Womit sind Sie im heutigen Shop oder Setup am unzufriedensten? *(recommended)*
+
+> Answer:
+
+**Q0.5.4** — Von welcher Plattform migrieren Sie (oder keine — Neuaufbau)? *(required)*
+*Shopifys Store-Migration-App importiert Produkte und Kundinnen und Kunden von einigen Plattformen (z. B. WooCommerce, Wix, Square); andere Plattformen benötigen eine Migrations-App oder die API.*
 
 *(tick one)*
 - [ ] None
@@ -122,64 +122,64 @@
 
 ### 0.6 Budget
 
-**Q0.6.1** — What is the approximate budget envelope for this project (range and currency)? *(required)*
+**Q0.6.1** — Welcher Budgetrahmen steht für dieses Projekt ungefähr zur Verfügung (Spanne und Währung)? *(required)*
 
 - Min:
 - Max:
 - Currency:
 
-**Q0.6.2** — Is the priority to minimise upfront cost (apps and configuration), to own the solution (custom build), or a balance? *(required)*
+**Q0.6.2** — Liegt die Priorität darauf, die Anfangskosten gering zu halten (Apps und Konfiguration), die Lösung zu besitzen (Individualentwicklung), oder auf einer Balance? *(required)*
 
 *(tick one)*
 - [ ] Minimise upfront
 - [ ] Own solution
 - [ ] Balanced
 
-**Q0.6.3** — Is there a monthly ceiling for app subscriptions? *(optional)*
-*Many needs are covered by Shopify's own apps (e.g. Subscriptions, Bundles, Search & Discovery, Translate & Adapt, Flow, Messaging). We check those first.*
+**Q0.6.3** — Gibt es eine monatliche Obergrenze für App-Abos? *(optional)*
+*Viele Anforderungen decken Shopifys eigene Apps ab (z. B. Subscriptions, Bundles, Search & Discovery, Translate & Adapt, Flow, Messaging). Diese prüfen wir zuerst.*
 
 > Answer:
 
 ---
 
-## § 1 — Company, brand & Shopify
+## § 1 — Unternehmen, Marke & Shopify
 
-> Store setup, Shopify plan, brand positioning and assets.
+> Shop-Setup, Shopify-Plan, Markenpositionierung und Assets.
 
-### 1.1 Company identity
+### 1.1 Unternehmensidentität
 
-**Q1.1.1** — Trading name and legal entity name (if different). *(required)*
+**Q1.1.1** — Firmenname im Markt und Name der juristischen Person (falls abweichend). *(required)*
 
 - Name:
 - Legal name:
 
-**Q1.1.2** — Country of incorporation / headquarters. *(required)*
+**Q1.1.2** — Land der Gesellschaftsgründung / Hauptsitz. *(required)*
 
 > Answer:
 
-**Q1.1.3** — Industry and product vertical. *(required)*
+**Q1.1.3** — Branche und Produktsegment. *(required)*
 
 > Answer:
 
-**Q1.1.4** — Is the business direct-to-consumer, B2B, or hybrid? *(required)*
-*B2B or hybrid brings the B2B and wholesale questions (§ 6.2).*
+**Q1.1.4** — Ist das Geschäft Direct-to-Consumer, B2B oder hybrid? *(required)*
+*B2B oder hybrid bringt die Fragen zu B2B und Großhandel mit sich (§ 6.2).*
 
 *(tick one)*
 - [ ] Direct to consumer (DTC)
 - [ ] Business to business (B2B)
 - [ ] Hybrid (DTC and B2B)
 
-**Q1.1.5** — Current website URL. *(optional)*
+**Q1.1.5** — Aktuelle Website-URL. *(optional)*
 
 > Answer:
 
-**Q1.1.6** — Do you sell through more than one legal entity (e.g. one per country or region)? List them. *(required)*
-*Several selling entities in one store, or one store per entity, changes the store set-up.*
+**Q1.1.6** — Verkaufen Sie über mehr als eine juristische Person (z. B. eine je Land oder Region)? Bitte auflisten. *(required)*
+*Mehrere verkaufende Einheiten in einem Shop oder ein Shop je Einheit verändern das Shop-Setup.*
 
 > Answer:
 
-**Q1.1.7** — Where will you sell at launch? *(required)*
-*Online store, Shopify POS, Shop app, marketplaces, social channels, B2B, headless or app front ends, AI shopping agents.*
+**Q1.1.7** — Wo werden Sie zum Launch verkaufen? *(required)*
+*Onlineshop, Shopify POS, Shop-App, Marktplätze, Social-Kanäle, B2B, Headless- oder App-Frontends, KI-Shopping-Agenten.*
 
 *(tick all that apply)*
 - [ ] Online store
@@ -195,22 +195,22 @@
 - [ ] None
 - [ ] Not sure yet
 
-### 1.2 Shopify account
+### 1.2 Shopify-Konto
 
-**Q1.2.1** — Is there an existing Shopify store? *(required)*
+**Q1.2.1** — Gibt es bereits einen Shopify-Shop? *(required)*
 
 - [ ] Yes
 - [ ] No
 
-**Q1.2.2** — Existing store URL, current Shopify plan and current theme. *(recommended)*
+**Q1.2.2** — URL des bestehenden Shops, aktueller Shopify-Plan und aktuelles Theme. *(recommended)*
 *Skip if Q1.2.1 = no.*
 
 - Store URL:
 - Current plan:
 - Current theme:
 
-**Q1.2.3** — Which Shopify plan will the new store run on (if already decided)? *(required)*
-*We recommend the plan once the requirements are known.*
+**Q1.2.3** — Auf welchem Shopify-Plan soll der neue Shop laufen (falls bereits entschieden)? *(required)*
+*Wir empfehlen den Plan, sobald die Anforderungen bekannt sind.*
 
 *(tick one)*
 - [ ] None
@@ -223,16 +223,16 @@
 - [ ] Retail
 - [ ] Not sure yet
 
-**Q1.2.4** — Which apps are installed today, what do they do, and which must stay? *(recommended)*
+**Q1.2.4** — Welche Apps sind heute installiert, was leisten sie, und welche müssen bleiben? *(recommended)*
 *Skip if Q1.2.1 = no.*
 
 | App | Purpose | Decision |
 |---|---|---|
 | | | |
 
-**Q1.2.5** — Existing store audit: which retired or deprecated Shopify features does it still use? *(required · consultant)*
+**Q1.2.5** — Audit des bestehenden Shops: Welche eingestellten oder abgekündigten Shopify-Funktionen nutzt er noch? *(required · consultant)*
 *Skip if Q1.2.1 = no.*
-*Shopify Scripts stopped running on 2026-06-30; checkout.liquid and additional scripts are retired; online store script tags stop on 2027-03-01; legacy customer accounts are deprecated; Stocky is retired; the Geolocation app is retired.*
+*Shopify Scripts laufen seit dem 30.06.2026 nicht mehr; checkout.liquid und Additional Scripts sind eingestellt; Script Tags im Onlineshop enden am 01.03.2027; Legacy-Kundenkonten sind abgekündigt; Stocky ist eingestellt; die Geolocation-App ist eingestellt.*
 
 *(tick all that apply)*
 - [ ] Shopify Scripts
@@ -244,15 +244,15 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q1.2.6** — How many people need their own Shopify admin login after go-live? *(required)*
-*Collaborator accounts and POS-only staff are not counted.*
+**Q1.2.6** — Wie viele Personen benötigen nach dem Go-live einen eigenen Shopify-Admin-Zugang? *(required)*
+*Mitarbeit über Collaborator-Konten und reines POS-Personal zählen nicht mit.*
 
 > Answer:
 
-### 1.3 Brand & positioning
+### 1.3 Marke & Positionierung
 
-**Q1.3.1** — How would you describe the brand's positioning: value, mid-market, premium, luxury or enterprise? *(required)*
-*Positioning shapes the design depth and the solution approach.*
+**Q1.3.1** — Wie würden Sie die Positionierung der Marke beschreiben: Value, Mid-Market, Premium, Luxus oder Enterprise? *(required)*
+*Die Positionierung prägt Designtiefe und Lösungsansatz.*
 
 *(tick one)*
 - [ ] Value
@@ -261,42 +261,42 @@
 - [ ] Luxury
 - [ ] Enterprise
 
-**Q1.3.2** — Is the brand identity finalised (logo, colour palette, typography)? *(recommended)*
+**Q1.3.2** — Ist die Markenidentität final (Logo, Farbpalette, Typografie)? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
-**Q1.3.3** — In which formats are brand assets available (SVG, PNG, Figma, guidelines PDF)? *(optional)*
+**Q1.3.3** — In welchen Formaten liegen die Markenassets vor (SVG, PNG, Figma, Guidelines-PDF)? *(optional)*
 *Skip if Q1.3.2 = no.*
 
 > Answer:
 
-**Q1.3.4** — Are there strict brand guidelines that must be followed? *(recommended)*
+**Q1.3.4** — Gibt es strikte Markenrichtlinien, die eingehalten werden müssen? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
-**Q1.3.5** — What differentiates the brand — price, quality, exclusivity, community, sustainability? *(optional)*
+**Q1.3.5** — Was unterscheidet die Marke — Preis, Qualität, Exklusivität, Community, Nachhaltigkeit? *(optional)*
 
 > Answer:
 
-### 1.4 Competitive context
+### 1.4 Wettbewerbsumfeld
 
-**Q1.4.1** — Who are your top three online competitors? *(optional)*
+**Q1.4.1** — Wer sind Ihre drei wichtigsten Online-Wettbewerber? *(optional)*
 
 > Answer:
 
-**Q1.4.2** — Which stores (competitor or not) have a UX you want to reference? *(optional)*
+**Q1.4.2** — Welche Shops (von Wettbewerbern oder nicht) möchten Sie als UX-Referenz heranziehen? *(optional)*
 
 > Answer:
 
 ---
 
-## § 2 — Catalogue & products
+## § 2 — Katalog & Produkte
 
-> Product model, variants, metafields, pricing and inventory.
+> Produktmodell, Varianten, Metafelder, Preise und Bestand.
 
-### 2.1 Catalogue size & variants
+### 2.1 Katalogumfang & Varianten
 
 **Q2.1.1** — How many active SKUs are in the catalogue (approximate)? *(required)*
 
@@ -318,7 +318,7 @@
 - [ ] Yes
 - [ ] No
 
-### 2.2 Product types
+### 2.2 Produktarten
 
 **Q2.2.1** — Which product types exist in the catalogue? *(required)*
 *Shopify Bundles creates fixed bundles and multipacks; mix-and-match bundles need an app.*
@@ -399,7 +399,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-### 2.3 Catalogue data
+### 2.3 Katalogdaten
 
 **Q2.3.1** — Roughly how many collections? *(optional)*
 
@@ -432,7 +432,7 @@
 
 > Answer:
 
-### 2.4 Pricing
+### 2.4 Preise
 
 **Q2.4.1** — Are there special prices for consumer groups (VIP or member prices)? *(recommended)*
 *Prices for business customers are covered in § 6.2. Consumer group prices use discounts for customer segments or an app.*
@@ -452,7 +452,7 @@
 - [ ] Yes
 - [ ] No
 
-### 2.5 Inventory
+### 2.5 Bestand
 
 **Q2.5.1** — Where is the inventory source of truth — Shopify, ERP, WMS, other? *(recommended)*
 *With the ERP as source of truth, Shopify still needs stock per location.*
@@ -496,11 +496,11 @@
 
 ---
 
-## § 3 — Markets & internationalisation
+## § 3 — Märkte & Internationalisierung
 
-> Shopify Markets, currencies, languages, tax and duties.
+> Shopify Markets, Währungen, Sprachen, Steuern und Zölle.
 
-### 3.1 Markets at launch
+### 3.1 Märkte zum Launch
 
 **Q3.1.1** — Which markets (countries) go live at launch? For each: country code, checkout currency, languages, domain, and how prices are set (the store's base currency, auto-converted, a manual price list, or display only). *(required)*
 *List each country or group of countries that shares prices and currency. Mainland China is handled in a separate China discovery.*
@@ -555,7 +555,7 @@
 - [ ] Yes
 - [ ] No
 
-### 3.2 Language
+### 3.2 Sprache
 
 **Q3.2.1** — How will translation be handled? *(recommended)*
 *Ask if Q3.1.1 has 3+ languages.*
@@ -594,7 +594,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-### 3.4 Tax & duties
+### 3.4 Steuern & Zölle
 
 **Q3.4.1** — Should duties and import taxes be collected at checkout (DDP)? *(recommended)*
 *Duties and import taxes can be charged at checkout (DDP) or paid by the customer on delivery (DAP), chosen per country. Needs HS codes (and country of origin) on products; not combinable with tax overrides, manual tax rates or customer tax exemptions; DDP labels only with some carriers.*
@@ -696,7 +696,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-### 3.5 Mainland China
+### 3.5 Festlandchina
 
 **Q3.5.1** — Do you want to sell to mainland China cross-border (from outside China) or onshore, behind the Great Firewall? *(required)*
 *Only if the launch markets include mainland China (CN).*
@@ -901,11 +901,11 @@
 
 ---
 
-## § 4 — Payments & checkout
+## § 4 — Zahlungen & Checkout
 
-> Payment providers, PCI scope and checkout customisation.
+> Zahlungsanbieter, PCI-Umfang und Checkout-Anpassung.
 
-### 4.1 Payments
+### 4.1 Zahlungen
 
 **Q4.1.1** — Which payment providers will you use (Shopify Payments, Adyen, Stripe, PayPal…)? *(required)*
 *Shopify Payments is required for some features (Shop Pay Installments, Managed Markets, some Markets pricing); third-party gateways are supported.*
@@ -1022,7 +1022,7 @@
 - [ ] Yes
 - [ ] No
 
-### 4.3 Fraud & risk
+### 4.3 Betrug & Risiko
 
 **Q4.3.1** — Is manual fraud review needed for high-value orders? *(optional)*
 *Native: fraud analysis and the Shopify Fraud Control app.*
@@ -1051,11 +1051,11 @@
 
 ---
 
-## § 5 — Shipping & fulfilment
+## § 5 — Versand & Fulfillment
 
-> How orders reach customers and come back: fulfilment, shipping, returns, cancellations, refunds and the post-purchase experience — and whether native Shopify (return and cancellation rules, self-serve returns, order status page, delivery dates) is enough or an app is needed.
+> Wie Bestellungen zu Kundinnen und Kunden gelangen und zurückkommen: Fulfillment, Versand, Retouren, Stornierungen, Erstattungen und das Erlebnis nach dem Kauf — und ob natives Shopify (Retouren- und Stornoregeln, Self-Service-Retouren, Bestellstatusseite, Lieferdaten) ausreicht oder eine App nötig ist.
 
-### 5.1 Fulfilment model
+### 5.1 Fulfillment-Modell
 
 **Q5.1.1** — Do you fulfil in-house, through a 3PL, or both? *(required)*
 
@@ -1162,7 +1162,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-### 5.2 Returns & exchanges
+### 5.2 Retouren & Umtausch
 
 **Q5.2.1** — Summarise the returns policy (window, conditions, who pays return postage). *(recommended)*
 
@@ -1253,7 +1253,7 @@
 - [ ] Yes
 - [ ] No
 
-### 5.3 Notifications
+### 5.3 Benachrichtigungen
 
 **Q5.3.1** — Do order, shipping and delivery notifications need custom design or content? *(optional)*
 *Shopify notifications are editable; SMS shipping notifications are native.*
@@ -1268,7 +1268,7 @@
 - [ ] ESP
 - [ ] Mixed
 
-### 5.4 Cancellations & refunds
+### 5.4 Stornierungen & Erstattungen
 
 **Q5.4.2** — Should customers be able to cancel orders themselves? *(recommended)*
 *Ask if Q0.2.6 is 500 or more.*
@@ -1352,7 +1352,7 @@
 - [ ] Yes
 - [ ] No
 
-### 5.5 Post-purchase experience
+### 5.5 Erlebnis nach dem Kauf
 
 **Q5.5.1** — Do you want a branded order-tracking page on your own site? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
@@ -1424,11 +1424,11 @@
 
 ---
 
-## § 6 — Customers, B2B & privacy
+## § 6 — Kundinnen und Kunden, B2B & Datenschutz
 
-> Customer accounts, B2B, loyalty, segmentation and personal-data obligations.
+> Kundenkonten, B2B, Loyalty, Segmentierung und Pflichten zu personenbezogenen Daten.
 
-### 6.1 Customer accounts
+### 6.1 Kundenkonten
 
 **Q6.1.1** — Is guest checkout the default, are accounts optional, or is registration required? *(recommended)*
 
@@ -1465,7 +1465,7 @@
 - [ ] Sign in from another site
 - [ ] Not sure yet
 
-### 6.2 B2B & wholesale
+### 6.2 B2B & Großhandel
 
 **Q6.2.2** — Do B2B customers need company accounts with their own login? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
@@ -1568,7 +1568,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-### 6.3 Loyalty & segmentation
+### 6.3 Loyalty & Segmentierung
 
 **Q6.3.1** — Which loyalty components are planned? *(recommended)*
 *Ask if Q1.1.4 is Direct to consumer (DTC) or Hybrid (DTC and B2B).*
@@ -1619,7 +1619,7 @@
 
 > Answer:
 
-### 6.4 Privacy & consent
+### 6.4 Datenschutz & Einwilligung
 
 **Q6.4.1** — Which privacy laws apply to your customers (GDPR, UK GDPR, CCPA, Swiss nFADP, other)? *(required)*
 
@@ -1674,9 +1674,9 @@
 
 ---
 
-## § 7 — Marketing & promotions
+## § 7 — Marketing & Promotions
 
-> SEO, analytics, email, reviews, affiliates, discounts, campaigns and AI-driven commerce.
+> SEO, Analytics, E-Mail, Bewertungen, Affiliates, Rabatte, Kampagnen und KI-gestützter Commerce.
 
 ### 7.1 SEO
 
@@ -1703,7 +1703,7 @@
 - [ ] Yes
 - [ ] No
 
-### 7.2 Analytics & tracking
+### 7.2 Analytics & Tracking
 
 **Q7.2.1** — Which analytics platforms do you use (GA4, Adobe, other)? *(recommended)*
 
@@ -1730,7 +1730,7 @@
 
 > Answer:
 
-### 7.3 Email & CRM
+### 7.3 E-Mail & CRM
 
 **Q7.3.1** — Which email / CRM platform do you use or plan to use: Shopify Messaging or another platform (name)? *(recommended)*
 *Shopify Messaging covers email, SMS and WhatsApp campaigns and automations.*
@@ -1754,7 +1754,7 @@
 - [ ] Yes
 - [ ] No
 
-### 7.4 Reviews & affiliates
+### 7.4 Bewertungen & Affiliates
 
 **Q7.4.1** — Which product reviews app is used or preferred? *(optional)*
 *Ask if Q1.2.1 is yes, or Q0.5.4 is not None.*
@@ -1785,7 +1785,7 @@
 - [ ] Both
 - [ ] None
 
-### 7.5 Discounts & coupons
+### 7.5 Rabatte & Gutscheincodes
 
 **Q7.5.1** — Which discount types are used? *(recommended)*
 
@@ -1852,7 +1852,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-### 7.6 Gift cards & campaigns
+### 7.6 Geschenkkarten & Kampagnen
 
 **Q7.6.1** — Are gift cards sold as a product? *(optional)*
 *Gift cards are native: digital cards by email, physical cards on POS; they never expire by default. Also covers gift cards accepted at checkout.*
@@ -1899,7 +1899,7 @@
 - [ ] Yes
 - [ ] No
 
-### 7.7 AI & agentic commerce
+### 7.7 KI & agentischer Commerce
 
 **Q7.7.1** — Do you want your products to be found and bought inside AI assistants such as ChatGPT, Google AI or Copilot? *(recommended)*
 *AI assistants are becoming a shopping channel. Shopify already switches eligible stores on by default, so this is a decision to confirm or reverse, not one to postpone.*
@@ -2005,11 +2005,11 @@
 
 ---
 
-## § 8 — Integrations & migration
+## § 8 — Integrationen & Migration
 
-> Every system that exchanges data with the store, and what moves from the current platform.
+> Jedes System, das Daten mit dem Shop austauscht, und was von der heutigen Plattform mitkommt.
 
-### 8.1 Connected systems
+### 8.1 Angebundene Systeme
 
 **Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required)*
 *Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status.*
@@ -2028,7 +2028,7 @@
 - Daily updates:
 - Latency minutes:
 
-### 8.2 Data migration
+### 8.2 Datenmigration
 
 **Q8.2.2** — Which data must be migrated? *(recommended)*
 *Skip if Q0.5.4 = None.*
@@ -2080,11 +2080,11 @@
 
 ---
 
-## § 9 — Design & experience
+## § 9 — Design & Erlebnis
 
-> Design source, storefront approach, accessibility and performance.
+> Design-Quelle, Storefront-Ansatz, Barrierefreiheit und Performance.
 
-### 9.1 Design input
+### 9.1 Design-Input
 
 **Q9.1.1** — Is there a Figma file or design mockup for the new store? *(required)*
 
@@ -2207,7 +2207,7 @@
 - [ ] Yes
 - [ ] No
 
-### 9.3 Accessibility
+### 9.3 Barrierefreiheit
 
 **Q9.3.1** — Which accessibility standard applies? *(required)*
 *Shopify checkout is tested against WCAG 2.2 AA; the theme and apps are your responsibility (e.g. under the European Accessibility Act).*
@@ -2244,11 +2244,11 @@
 
 ---
 
-## § 10 — Delivery, governance & compliance
+## § 10 — Umsetzung, Steuerung & Compliance
 
-> Timeline, decision-making, support, legal and project tooling.
+> Zeitplan, Entscheidungswege, Support, Recht und Projektwerkzeuge.
 
-### 10.1 Timeline
+### 10.1 Zeitplan
 
 **Q10.1.1** — What is the target go-live date? *(required)*
 *A date sooner than the delivery time the scope needs leads to a phased, MVP-first plan.*
@@ -2268,7 +2268,7 @@
 
 > Answer:
 
-### 10.2 Team & decisions
+### 10.2 Team & Entscheidungen
 
 **Q10.2.1** — Who is involved on the client side? For each: role, RACI (R/A/C/I), decision-maker (yes/no). Names are optional. *(required)*
 
@@ -2287,7 +2287,7 @@
 - [ ] Yes
 - [ ] No
 
-### 10.3 Support & training
+### 10.3 Support & Schulung
 
 **Q10.3.1** — Which training is needed (products, orders, discounts, reports)? *(optional)*
 
@@ -2321,7 +2321,7 @@
 - [ ] Yes
 - [ ] No
 
-### 10.4 Legal & regulated industries
+### 10.4 Recht & regulierte Branchen
 
 **Q10.4.1** — Is the business in a regulated industry (pharma, alcohol, firearms, age-restricted goods, financial products, medical devices)? If yes, which? *(required)*
 *A regulated industry needs legal review. Shopify has its own rules: e.g. alcohol needs age verification; some business types can't use Shopify Payments.*
@@ -2345,7 +2345,7 @@
 - [ ] Yes
 - [ ] No
 
-### 10.5 Project set-up (consultant)
+### 10.5 Projekt-Setup (Consultant)
 
 **Q10.5.1** — Lead consultant. *(required · consultant)*
 
@@ -2368,9 +2368,9 @@
 
 ---
 
-## Completion checklist
+## Checkliste zur Vollständigkeit
 
-- [ ] Every *required* question in §§ 0–10 has an answer or "TBC"
-- [ ] At least one KPI has a baseline and a target (Q0.4.2)
-- [ ] Every connected system is listed in Q8.1.1 with direction and connector
-- [ ] Consent for AI processing recorded (Q10.5.2)
+- [ ] Jede *erforderliche* Frage in §§ 0–10 hat eine Antwort oder „TBC“
+- [ ] Mindestens ein KPI hat einen Ausgangswert und einen Zielwert (Q0.4.2)
+- [ ] Jedes angebundene System ist in Q8.1.1 mit Richtung und Konnektor aufgeführt
+- [ ] Einwilligung in die KI-Verarbeitung ist erfasst (Q10.5.2)

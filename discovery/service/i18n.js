@@ -90,6 +90,17 @@ export function translateQuestion(question, language) {
   };
 }
 
+/**
+ * A section or subsection heading ("§ 3 Markets…", "3.1 Markets at launch") in the
+ * conversation language, numbering kept.
+ *
+ * @param {string} value @param {string} [language] @param {'sections'|'subsections'} [kind]
+ */
+export const translateHeading = (value, language, kind = 'sections') => {
+  const t = translationFor(language);
+  return t ? heading(value, t[kind]) : value;
+};
+
 /** @param {object[]} questions @param {string} [language] */
 export const translateQuestions = (questions, language) =>
   (translationFor(language) ? questions.map((q) => translateQuestion(q, language)) : questions);

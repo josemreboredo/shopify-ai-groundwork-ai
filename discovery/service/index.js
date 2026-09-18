@@ -24,7 +24,7 @@ import { approachBrief, closingStatus, deckBrief, decideFromSession, finaliseEng
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
-import { coverage, translateQuestion, translateQuestions, translateRows } from './i18n.js';
+import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
 /**
@@ -384,8 +384,12 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
      */
     async reviewQuestions(user, client) {
       const session = await load(user, client);
-      const sections = reviewSections(session, { includeOpen: true })
-        .map((section) => ({ ...section, questions: translateRows(section.questions, session.language) }));
+      const sections = reviewSections(session, { includeOpen: true }).map((section) => ({
+        ...section,
+        title: translateHeading(section.title, session.language),
+        questions: translateRows(section.questions, session.language)
+          .map((q) => ({ ...q, subsection: translateHeading(q.subsection, session.language, 'subsections') })),
+      }));
       return { engagement: summary(session), language: coverage(session.language), sections };
     },
 
