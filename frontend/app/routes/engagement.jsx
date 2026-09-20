@@ -245,25 +245,38 @@ export default function Engagement({ loaderData, actionData }) {
                   much was left, in what, or go back to a part of it. */}
               {next.sections?.length ? (
                 <nav className="sections" aria-label="Sections with questions open">
-                  <NavLink to={`/engagements/${engagement.client}`} end className={next.section ? 'secondary' : 'active'}>
+                  <Link
+                    to={`/engagements/${engagement.client}`}
+                    aria-current={next.section ? undefined : 'true'}
+                    className={next.section ? 'secondary' : 'active'}
+                  >
                     All · {next.remaining} to ask
-                  </NavLink>
+                  </Link>
                   {next.sections.map((sec) => (
-                    <NavLink
+                    <Link
                       key={sec.id}
                       to={`/engagements/${engagement.client}?section=${encodeURIComponent(sec.id)}`}
+                      aria-current={next.section === sec.id ? 'true' : undefined}
                       className={next.section === sec.id ? 'active' : 'secondary'}
                     >
                       {sec.id} {sec.title} · {sec.open}
-                    </NavLink>
+                    </Link>
                   ))}
                 </nav>
               ) : null}
-              <p className="muted small">
-                {next.section
-                  ? `Section ${next.section} · showing ${next.questions.length} of ${next.in_section} still to ask here · ${next.remaining} in this depth in all`
-                  : `Showing ${next.questions.length} of ${next.remaining} still to ask in this ${engagement.mode} depth · ${engagement.coverage?.required_answered ?? 0} of ${engagement.coverage?.required_total ?? 0} required answered`}
-              </p>
+              {/* A chip with a border was the only sign a filter was on, and the
+                  line under it named a section number rather than the section. */}
+              {next.section ? (
+                <p className="filtered-by">
+                  <strong>Showing only §{next.section} {next.sections.find((x) => x.id === next.section)?.title ?? ''}</strong>
+                  {' — '}{next.questions.length} of {next.in_section} still to ask here, {next.remaining} in this depth in all.{' '}
+                  <Link to={`/engagements/${engagement.client}`}>Show all sections</Link>
+                </p>
+              ) : (
+                <p className="muted small">
+                  Showing {next.questions.length} of {next.remaining} still to ask in this {engagement.mode} depth · {engagement.coverage?.required_answered ?? 0} of {engagement.coverage?.required_total ?? 0} required answered
+                </p>
+              )}
               {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} language={engagement.language} />) : (
                 <section className="card">
                   <p className="question">All questions for this {engagement.mode} interview are answered.</p>

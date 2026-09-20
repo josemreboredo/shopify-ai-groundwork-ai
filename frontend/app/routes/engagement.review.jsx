@@ -104,6 +104,13 @@ export default function Review({ loaderData, actionData }) {
                 if you have already read the document.
               </p>
             </div>
+          {filter !== 'all' ? (
+            <p className="filtered-by">
+              <strong>Showing only {FILTERS.find(([k]) => k === filter)?.[1]}</strong>
+              {' — '}{all.filter((q) => MATCH[filter](q)).length} of {all.length} questions.{' '}
+              <button type="button" className="link" onClick={() => setFilter('all')}>Show all</button>
+            </p>
+          ) : null}
             <span className="badge flag">{waiting}</span>
           </div>
           <div className="actions">
@@ -139,6 +146,7 @@ export default function Review({ loaderData, actionData }) {
               <button
                 key={key}
                 type="button"
+                aria-pressed={filter === key}
                 className={filter === key ? '' : 'secondary'}
                 onClick={() => setFilter(key)}
               >

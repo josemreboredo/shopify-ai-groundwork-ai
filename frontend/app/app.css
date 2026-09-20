@@ -257,6 +257,7 @@ details.card[open] > summary { margin-bottom: 12px; }
 
 .filter { display: flex; gap: 8px; flex-wrap: wrap; }
 .filter button { font-size: 0.74rem; padding: 8px 16px; }
+.filter button[aria-pressed='true'] { background: var(--ink); color: #fff; border-color: var(--ink); }
 .mode-form { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 .mode-form label { white-space: nowrap; }
 .mode-form select { width: auto; }
@@ -287,7 +288,15 @@ button[type='submit'][aria-disabled='true'] { cursor: progress; }
   border: 1px solid var(--line-strong); text-decoration: none;
   font-size: 0.78rem; font-weight: 600; color: var(--muted); background: #fff;
 }
-.sections a.active { border-color: #000; color: var(--ink); background: var(--panel); }
+.sections a.active, .sections a[aria-current='true'] {
+  border-color: #000; color: #fff; background: var(--ink);
+}
+/* A filter that is on says so in words, not only as a chip with a darker edge. */
+.filtered-by {
+  margin: 0 0 16px; padding: 8px 12px; border-left: 3px solid var(--red);
+  background: var(--panel); font-size: 0.92rem;
+}
+.filtered-by strong { letter-spacing: -0.01em; }
 .sections a:hover { border-color: var(--red); color: var(--red-ink); }
 
 .just-recorded > td { background: rgba(12, 99, 66, 0.08); box-shadow: inset 3px 0 0 var(--ok); }
@@ -365,9 +374,28 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
 .ticks li::before { content: ''; position: absolute; left: 0; top: 7px; width: 8px; height: 8px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 
 /* 2 — the decision, as four lines on black */
-.decide { list-style: none; counter-reset: q; padding: 0; margin: 32px 0 0; display: grid; gap: 0; }
-.decide li { counter-increment: q; display: grid; grid-template-columns: 44px minmax(0, 1fr) 40px 64px; align-items: center; gap: 12px; padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, 0.16); }
-.decide li::before { content: counter(q, decimal-leading-zero); color: var(--red); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; }
+/* Four questions, and the rule is that it stops at the first yes. A numbered
+   list shows four equal things; the chain shows the order and the stopping.
+   Drawn on the real list, so the question is inside the picture. */
+.decide { list-style: none; counter-reset: q; padding: 0; margin: 32px 0 0; display: grid; gap: 0; position: relative; }
+.decide li {
+  counter-increment: q; position: relative;
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) 40px 64px; align-items: center; gap: 12px;
+  padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+.decide li::before {
+  content: counter(q, decimal-leading-zero); color: var(--red); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em;
+  padding-left: 22px;
+}
+/* the dot on the chain, and the thread on to the next question */
+.decide li::after {
+  content: ''; position: absolute; left: 3px; top: 50%; width: 11px; height: 11px;
+  margin-top: -5.5px; background: var(--red);
+}
+.decide li:not(:last-child) .decide-q::before {
+  content: ''; position: absolute; left: 8px; top: calc(50% + 6px); bottom: -18px; width: 1px;
+  background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0 3px, transparent 3px 7px);
+}
 .decide-q { color: #fff; font-size: 1.08rem; }
 .decide-arrow { color: var(--red); font-size: 1.3rem; text-align: center; }
 .decide-a { font-size: 2rem; font-weight: 700; color: #fff; line-height: 1; }
@@ -1012,3 +1040,193 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 8px; top: 8px; z-index: 99; background: #000; color: #fff; padding: 10px 16px; text-decoration: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ─── The story pages ────────────────────────────────────────────────────────
+   Measured before this was written: "What this is" ran 2,000 words over seven
+   screens, with eighteen sentences past thirty words — and eight sections in a
+   row were the same two-column grid of text cards. Nothing stood out, so
+   nothing was remembered, and the only element that read fast was the one that
+   was not prose: the numbers.
+
+   So the page reads down, one beat at a time, and the form follows what the
+   content is. A sequence is drawn as a sequence. A comparison lines up row by
+   row. A claim stands alone and its evidence folds underneath. */
+
+/* One beat per screen: the air is what makes it linear.
+   padding-block, not the shorthand: a band brings its own side padding and the
+   shorthand set it to zero, so every black section ran to the window edge. */
+.story > section { padding-block: clamp(48px, 7vw, 92px); border-top: 1px solid var(--line-soft); }
+.story > section:first-of-type { border-top: 0; }
+.story > section.band, .story > section.band.dark { border-top: 0; }
+
+/* The answer, before anything asks for attention. */
+.answer-line {
+  margin: 18px 0 0; max-width: 24ch;
+  font-size: clamp(1.5rem, 3.2vw, 2.15rem); font-weight: 700; line-height: 1.18; letter-spacing: -0.015em;
+}
+.page-head .answer-line { color: #fff; }
+.page-head .lede { max-width: 62ch; }
+
+/* ── Claims: the line is the point, the evidence folds ────────────────────── */
+.claims { list-style: none; counter-reset: claim; padding: 0; margin: 28px 0 0; max-width: 92ch; }
+.claims > li { counter-increment: claim; border-top: 1px solid var(--line); }
+.claims > li:last-child { border-bottom: 1px solid var(--line); }
+.claims > li > details > summary { display: grid; grid-template-columns: 3rem 1fr; padding: 20px 1.9rem 20px 0; margin: 0; }
+.claims > li > details > summary::before {
+  content: counter(claim, decimal-leading-zero); grid-row: 1 / span 2;
+  color: var(--red); font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.claims > li > details > summary::after { top: 22px; }
+.claims .claim { font-size: clamp(1.1rem, 1.9vw, 1.4rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
+.claims .claim-line { grid-column: 2; color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
+.claims p { margin: 0 0 22px 3rem; max-width: 76ch; color: var(--muted); }
+
+/* ── Diagrams ─────────────────────────────────────────────────────────────── */
+/* Drawn at the size it was drawn for. Left to fill the column, a 640-wide
+   viewBox stretches to 1280 and every label doubles with it. */
+.dgm { display: block; width: 100%; max-width: 760px; height: auto; margin: 32px 0; overflow: visible; }
+.dgm-box { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
+.dgm-box rect { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
+.dgm-solid { fill: var(--ink); stroke: none; }
+.dgm-line { fill: none; stroke: var(--ink); stroke-width: 1.5; color: var(--ink); }
+.dgm-tick { fill: none; stroke: var(--line-strong); stroke-width: 1.5; stroke-dasharray: 3 4; }
+.dgm-dot { fill: var(--red); }
+.dgm-wedge { fill: var(--red); }
+.dgm-label { fill: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+.dgm-label text, text.dgm-label { fill: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+.dgm-sub { fill: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: 0.02em; }
+.dgm-on-solid { fill: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+.dgm-on-solid.dgm-sub { fill: rgba(255, 255, 255, 0.72); font-weight: 500; letter-spacing: 0.02em; }
+/* On the black band the ink lines would vanish. */
+.band.dark .dgm-box rect { stroke: rgba(255, 255, 255, 0.45); }
+.band.dark .dgm-line { stroke: rgba(255, 255, 255, 0.75); color: rgba(255, 255, 255, 0.75); }
+.band.dark .dgm-tick { stroke: rgba(255, 255, 255, 0.3); }
+.band.dark .dgm-solid { fill: var(--red); }
+.band.dark .dgm-label, .band.dark text.dgm-label { fill: #fff; }
+.band.dark .dgm-sub { fill: rgba(255, 255, 255, 0.62); }
+
+/* ── The hands: what the hand-off diagram labels, spelled out ─────────────── */
+.hands { list-style: none; counter-reset: hand; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.hands > li { border-top: 2px solid var(--red); padding-top: 16px; }
+.hands .hand-n { margin: 0; color: var(--red); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; }
+.hands h3 { margin: 6px 0 4px; font-size: 1.12rem; }
+.hands .hand-line { margin: 0 0 12px; color: rgba(255, 255, 255, 0.72); font-size: 0.92rem; }
+.hands ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.hands ul li { color: rgba(255, 255, 255, 0.72); font-size: 0.88rem; }
+
+/* ── The ladder: two paths, rung by rung, with the engine down the middle ─── */
+.paths-rungs { list-style: none; padding: 0; margin: 12px 0 0; counter-reset: rung; }
+.paths-rungs > li {
+  counter-increment: rung;
+  display: grid; grid-template-columns: 8.5rem 1fr 1fr; gap: 0 24px; align-items: stretch;
+  border-top: 1px solid var(--line);
+}
+.paths-rungs > li:last-child { border-bottom: 1px solid var(--line); }
+.rung-stage {
+  margin: 0; padding: 22px 0; align-self: start;
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+.rung-stage::before {
+  content: counter(rung, decimal-leading-zero) ' '; color: var(--red); font-variant-numeric: tabular-nums;
+}
+.rung { padding: 22px 20px; }
+/* The spine: the engine both paths run on, drawn once down the whole ladder. */
+.rung.bid { border-left: 3px solid var(--ink); }
+.rung.discovery { border-left: 1px solid var(--line); }
+.rung.empty { border-left: 1px dashed var(--line); background: repeating-linear-gradient(135deg, transparent 0 7px, var(--line-soft) 7px 8px); }
+.rung.empty p { margin: 0; color: var(--line-strong); }
+.rung h3 { margin: 0 0 6px; font-size: 1rem; }
+.rung p { margin: 0; color: var(--muted); font-size: 0.9rem; max-width: 48ch; }
+.paths-rungs > li.bid-only .rung-stage { color: var(--red-ink); }
+
+/* ── Outputs: named, with who reads them ──────────────────────────────────── */
+.outputs { list-style: none; padding: 0; margin: 28px 0 0; max-width: 92ch; }
+.outputs > li {
+  display: grid; grid-template-columns: 11rem 1fr; gap: 4px 20px; align-items: baseline;
+  padding: 16px 0; border-top: 1px solid var(--line);
+}
+.outputs > li:last-child { border-bottom: 1px solid var(--line); }
+.outputs .badge { grid-row: 1 / span 2; justify-self: start; }
+.outputs strong { font-size: 1.02rem; }
+.outputs .muted { grid-column: 2; }
+
+/* ── Arriving ──────────────────────────────────────────────────────────────
+   Words never fade in. The first version animated opacity from zero on every
+   block in the page, which means the text is invisible until an animation
+   decides otherwise — and a full-page render, a print, or an arrival at an
+   anchor mid-page all skip that animation. Half the page came out blank.
+
+   So prose moves and never disappears, and only the drawings fade: if a
+   drawing never arrives, the sentences beside it still carry the meaning. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .story > section > *, .story .page-head > * {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 38%;
+    }
+    .story .dgm {
+      animation: draw linear both;
+      animation-timeline: view();
+      animation-range: entry 6% entry 52%;
+    }
+  }
+}
+@keyframes rise { from { transform: translateY(16px); } to { transform: none; } }
+@keyframes draw { from { opacity: 0.25; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 900px) {
+  .hands { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  /* On a phone the ladder stacks, so the stage label becomes the heading of
+     its own pair rather than a column nobody can see. */
+  .paths-rungs > li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .rung-stage { padding: 18px 0 6px; }
+  .rung { padding: 0 0 18px 16px; }
+  .rung.discovery { border-left: 1px solid var(--line); margin-top: 8px; }
+  .rung.empty { display: none; }
+  .outputs > li { grid-template-columns: minmax(0, 1fr); }
+  .outputs .badge { grid-row: auto; }
+  .outputs .muted { grid-column: 1; }
+}
+
+/* ─── The offering, split per segment ─────────────────────────────────────────
+   Everything about three offers, seven gates, three triggers, twenty-three exit
+   rules and two routes used to sit on one page. A consultant opens it with one
+   question — is this an M, and what would move it — and had to assemble the
+   answer out of five sections that each described all of them at once. The
+   index is a map now; each segment answers its own question. */
+
+.segments { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 0; }
+.segments > li { border-top: 1px solid var(--line); }
+.segments > li:last-child { border-bottom: 1px solid var(--line); }
+.segments a {
+  display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1.1fr); gap: 4px 24px;
+  align-items: baseline; padding: 24px 2rem 24px 0; position: relative;
+  text-decoration: none; color: inherit;
+}
+.segments a:hover { background: var(--panel); }
+.segments a::after {
+  content: '→'; position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  color: var(--line-strong); font-size: 1.1rem;
+}
+.segments a:hover::after { color: var(--red); transform: translateY(-50%) translateX(4px); transition: transform 120ms ease; }
+.seg-code { grid-row: 1 / span 2; font-size: 2rem; font-weight: 700; line-height: 1; color: var(--red); font-variant-numeric: tabular-nums; }
+.seg-name { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+.seg-when { grid-column: 3; grid-row: 1; color: var(--muted); font-size: 0.9rem; }
+.seg-meta { grid-column: 2 / span 2; color: var(--muted); font-size: 0.82rem; letter-spacing: 0.02em; }
+.segments > li.beyond .seg-code { color: var(--line-strong); }
+
+/* Prev and next: the offers are a progression, so the page after one is the
+   next one up. */
+.seg-next { display: flex; justify-content: space-between; gap: 20px; margin-top: 8px; padding-top: 22px; border-top: 1px solid var(--line); }
+.seg-next a { font-weight: 700; text-decoration: none; }
+.seg-next a:hover { color: var(--red-ink); }
+.seg-next .seg-prev { color: var(--muted); font-weight: 500; }
+
+/* The scope list on a segment page carries weight: it is what the client buys. */
+.ticks.big > li { font-size: 1.02rem; padding-block: 5px; }
+
+@media (max-width: 760px) {
+  .segments a { grid-template-columns: 3.2rem minmax(0, 1fr); padding-right: 1.6rem; }
+  .seg-when, .seg-meta { grid-column: 2; }
+}
