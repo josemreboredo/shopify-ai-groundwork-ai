@@ -221,3 +221,28 @@ describe('one engine, two processes', () => {
     assert.deepEqual(preview(asBid, TODAY), preview(asDiscovery, TODAY), 'the offer, the gates and the exit rules are blind to it');
   });
 });
+
+describe('the two screens the information passes through', () => {
+  test('what a document produced is counted from the citation kept with each answer', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await consented(svc, 'a-bid', 'rfp');
+    await svc.registerDocument(consultant, 'a-bid', { name: 'RFP-2024.pdf', type: 'rfp' });
+    await svc.recordAnswers(consultant, 'a-bid', [
+      { question_id: 'Q0.1.1', values: { '/business/primary_problem': 'Mobile checkout friction' }, evidence: { document: 'RFP-2024.pdf', location: 'p.3' } },
+    ]);
+    const { document_yield: read } = await svc.getInterview(consultant, 'a-bid');
+    assert.equal(read.length, 1);
+    assert.equal(read[0].name, 'RFP-2024.pdf');
+    assert.ok(read[0].answers >= 1, '"RFP.pdf · rfp" says nothing about whether reading it was worth anything');
+    assert.equal(read[0].to_confirm, read[0].answers, 'nothing a model extracted counts as confirmed on its own');
+  });
+
+  test('a document nobody could get anything out of says so, rather than looking successful', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await consented(svc, 'a-bid', 'rfp');
+    await svc.registerDocument(consultant, 'a-bid', { name: 'Annex-B.pdf', type: 'other' });
+    const { document_yield: read } = await svc.getInterview(consultant, 'a-bid');
+    assert.equal(read[0].answers, 0);
+    assert.equal(read[0].sections, 0);
+  });
+});

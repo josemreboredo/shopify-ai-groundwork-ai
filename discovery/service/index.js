@@ -139,6 +139,25 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
   }
 
   /** @param {object} session */
+  /**
+   * What each document actually produced.
+   *
+   * "RFP.pdf · rfp" tells a consultant nothing about whether reading it was
+   * worth anything. The count comes from the citation kept with each answer,
+   * which begins "Source: <document>" — the document is not stored as its own
+   * field on the answer, so this is a match on that prefix rather than a join.
+   *
+   * @param {object} session
+   */
+  function documentYield(session) {
+    const entries = Object.values(session.provenance ?? {});
+    return (session.documents ?? []).map((d) => {
+      const from = entries.filter((p) => typeof p.note === 'string' && p.note.startsWith(`Source: ${d.name}`));
+      const sections = new Set(from.map((p) => String(p.question_id ?? '').replace(/^Q/, '').split('.')[0]).filter(Boolean));
+      return { ...d, answers: from.length, sections: sections.size, to_confirm: from.filter((p) => p.status === 'tbc').length };
+    });
+  }
+
   function summary(session) {
     const p = preview(session, today());
     return {
@@ -265,6 +284,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         next: { ...next, questions: translateQuestions(next.questions, session.language).map((q) => ({ ...q, inputs: fieldSpecs(q) })) },
         preview: preview(session, today()),
         notes: session.notes,
+        document_yield: documentYield(session),
         tbc: session.tbc,
         skipped: session.skipped,
         commented: session.commented ?? {},

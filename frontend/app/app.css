@@ -533,6 +533,16 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 /* What the number does not say on its own */
 .sc-watch { margin: 12px 0 0; padding-left: 14px; border-left: 2px solid var(--warn); color: var(--muted); font-size: 0.88rem; max-width: 78ch; }
 
+/* What a bid has read, and what each document produced */
+.read-docs { list-style: none; padding: 0; margin: 14px 0 0; }
+.read-docs > li { position: relative; padding: 0 0 14px 22px; }
+.read-docs > li::before {
+  content: ''; position: absolute; left: 0; top: 8px; width: 8px; height: 8px;
+  background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+.doc-name { margin: 0; font-weight: 600; }
+.read-docs .muted { margin: 2px 0 0; }
+
 /* Confirm or edit, side by side on the row */
 .row-actions { display: flex; gap: 14px; align-items: baseline; white-space: nowrap; }
 .row-actions form { display: inline; }

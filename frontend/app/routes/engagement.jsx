@@ -51,6 +51,51 @@ function AnswerRow({ a, busy }) {
 }
 
 /**
+ * What reading the documents produced.
+ *
+ * On a bid this screen is the intake and nothing else: the RFP goes in, and what
+ * came out of it is stated so the consultant can see whether reading it was worth
+ * anything. It used to carry the interview questions and a second answers table
+ * with its own Confirm buttons — the questions because this route was built for a
+ * discovery, where the conversation *is* the intake, and the table because it
+ * grew here before Review existed. Two places to confirm the same answer is how
+ * answers get confirmed twice and reviewed never.
+ */
+function DocumentsRead({ client, documents, toConfirm }) {
+  const answers = documents.reduce((n, d) => n + d.answers, 0);
+  return (
+    <>
+      <h2>What has been read ({documents.length})</h2>
+      {documents.length ? (
+        <>
+          <ul className="read-docs">
+            {documents.map((d) => (
+              <li key={d.name}>
+                <p className="doc-name">{d.name} <span className="badge">{d.type}</span></p>
+                <p className="muted">
+                  {d.answers ? `${d.answers} answer${d.answers === 1 ? '' : 's'} across ${d.sections} section${d.sections === 1 ? '' : 's'}` : 'Nothing recorded from it yet'}
+                  {d.date ? ` · ${d.date}` : ''}
+                  {d.summary ? ` — ${d.summary}` : ''}
+                </p>
+              </li>
+            ))}
+          </ul>
+          <p className="muted">
+            {toConfirm
+              ? <>Everything read out of a document waits on you. <Link to={`/engagements/${client}/review`}><strong>{toConfirm} answer{toConfirm === 1 ? '' : 's'} to confirm</strong></Link> — each one carries the section and sentence it came from.</>
+              : answers ? <>All {answers} answers have been confirmed. <Link to={`/engagements/${client}/review`}>Review or change them</Link>.</> : null}
+          </p>
+        </>
+      ) : (
+        <p className="muted">
+          No document registered yet. They stay in your Claude Project — Claude registers the ones it reads.
+        </p>
+      )}
+    </>
+  );
+}
+
+/**
  * Pre-filling from the client's documents has to start in Claude: the documents
  * live in the Claude Project, and the connector can only answer when Claude calls
  * it — it cannot go and read them. This card says so, gives the exact instruction
@@ -147,7 +192,10 @@ function AnswersReview({ answers, documents, busy }) {
 }
 
 export default function Engagement({ loaderData, actionData }) {
-  const { engagement, next, preview, notes, tbc, commented, answers, documents, vocabularies, language } = loaderData;
+  const { engagement, next, preview, notes, tbc, commented, answers, documents, document_yield: documentYield, vocabularies, language } = loaderData;
+  // On a bid this screen is the intake: a document arrives. In a discovery the
+  // intake is the conversation, so the interview stays exactly as it was.
+  const bid = engagement.process === 'rfp';
   const busy = useNavigation().state !== 'idle';
   const toConfirm = answers.filter((a) => a.status === 'tbc').length;
   // While Claude is reading the documents, the answers appear without a reload.
@@ -165,24 +213,32 @@ export default function Engagement({ loaderData, actionData }) {
       <EngagementHeader
         language={language}
         engagement={engagement}
-        meta={`${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${next.remaining} questions open${typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}`}
+        meta={bid
+          ? `${documents.length} document${documents.length === 1 ? '' : 's'} read · ${toConfirm} answer${toConfirm === 1 ? '' : 's'} to confirm · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at}`
+          : `${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${next.remaining} questions open${typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}`}
       />
       <div className="layout">
         <div>
           {next.consent_required ? <p className="error">Record the client's consent for AI processing before any other answer.</p> : null}
           {!next.consent_required ? <PrefillCard client={engagement.client} documents={documents} toConfirm={toConfirm} process={engagement.process} /> : null}
-          {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} />) : (
-            <section className="card">
-              <p className="question">All questions for this {engagement.mode} interview are answered.</p>
-              <div className="actions">
-                <Link className="button" to={`/engagements/${engagement.client}/summary`}>See the summary</Link>
-                <Link className="button secondary" to={`/engagements/${engagement.client}/review`}>Review or change answers</Link>
-                <Link className="button secondary" to={`/engagements/${engagement.client}/closing-document`}>{processMeta(engagement.process).document}</Link>
-              </div>
-            </section>
-          )}
+          {bid ? (
+            <DocumentsRead client={engagement.client} documents={documentYield} toConfirm={toConfirm} />
+          ) : (
+            <>
+              {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} />) : (
+                <section className="card">
+                  <p className="question">All questions for this {engagement.mode} interview are answered.</p>
+                  <div className="actions">
+                    <Link className="button" to={`/engagements/${engagement.client}/summary`}>See the summary</Link>
+                    <Link className="button secondary" to={`/engagements/${engagement.client}/review`}>Review or change answers</Link>
+                    <Link className="button secondary" to={`/engagements/${engagement.client}/closing-document`}>{processMeta(engagement.process).document}</Link>
+                  </div>
+                </section>
+              )}
 
-          <AnswersReview answers={answers} documents={documents} busy={busy} />
+              <AnswersReview answers={answers} documents={documents} busy={busy} />
+            </>
+          )}
 
           <h2>Consultant notes</h2>
           {notes.length ? <ul>{notes.map((n, i) => <li key={i}>{n.at}: {n.text}</li>)}</ul> : <p className="muted">No notes.</p>}
@@ -208,7 +264,7 @@ export default function Engagement({ loaderData, actionData }) {
             </>
           ) : null}
         </div>
-        <PreviewPanel preview={preview} />
+        {bid ? null : <PreviewPanel preview={preview} />}
       </div>
     </main>
   );
