@@ -24,7 +24,7 @@
  * @module discovery/service/readiness
  */
 
-import { offering } from '../schema/index.js';
+import { offering, questionBank } from '../schema/index.js';
 import { answeredAt } from '../agents/discovery/knowledge.js';
 import { requiredPlan, planRequirements, PLAN_LABEL } from '../agents/discovery/plan.js';
 
@@ -52,10 +52,42 @@ const matcher = (input) => new RegExp(`^${input.split('*').map((p) => p.replace(
  * on a human does not count: it is the same precondition step 3 already enforces,
  * because a bid cannot rest on an extraction nobody has checked.
  */
+/**
+ * An input the answers have already ruled out.
+ *
+ * Exit rule 11.26 reads where the editorial content lives and which front end
+ * the storefront is — questions the bank skips outright when the storefront is
+ * not headless. On every engagement that is not headless those pointers can
+ * never be answered, so the rule counted as open for ever and dragged the
+ * denominator down on every bid in the system. A decision nobody can ever
+ * settle is not an open decision; it is one the answers have closed.
+ *
+ * @param {string} pointer  a decision input, e.g. "/design/headless/framework"
+ * @param {object} doc
+ */
+function ruledOut(pointer, doc) {
+  const owner = questionBank.questions.find((q) => q.maps_to.some((m) => m === pointer || pointer.startsWith(`${m}/`) || m.startsWith(`${pointer}/`)));
+  const rule = owner?.skip_if;
+  if (!rule) return false;
+  const target = questionBank.questions.find((q) => q.id === rule.question);
+  const value = target && answeredAt(doc, target.maps_to[0]) ? valueAt(doc, target.maps_to[0]) : undefined;
+  if (value === undefined) return false;
+  if ('equals' in rule) return value === rule.equals;
+  if ('excludes' in rule) return Array.isArray(value) && !value.includes(rule.excludes);
+  return false;
+}
+
+/** The value a pointer holds in the document, or undefined. */
+function valueAt(doc, pointer) {
+  return pointer.replace(/^\//, '').split('/').reduce((node, key) => (node == null ? undefined : node[key]), doc);
+}
+
 function settle(decision, doc, provenance, fired) {
   if (fired.has(decision.id)) return { settled: true, why: 'fired on the answers' };
-  const inputs = decision.inputs;
-  if (!inputs.length) return { settled: false, why: 'reads nothing this tool records' };
+  const declared = decision.inputs;
+  if (!declared.length) return { settled: false, why: 'reads nothing this tool records' };
+  const inputs = declared.filter((p) => !ruledOut(p, doc));
+  if (!inputs.length) return { settled: true, why: 'the answers ruled out everything it reads' };
   const missing = inputs.filter((p) => !answeredAt(doc, p));
   if (missing.length) return { settled: false, why: 'nothing recorded for it', missing };
   const unconfirmed = Object.entries(provenance ?? {})

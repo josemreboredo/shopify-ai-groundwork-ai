@@ -511,8 +511,9 @@ describe('assuming the shape of the solution is not assuming a detail', () => {
     // which decided the offer outright; it now feeds exit rule 11.26, which
     // decides whether these offers apply at all.
     const byId = new Map(questionBank.questions.map((x) => [x.id, x]));
-    assert.deepEqual(byId.get('Q9.2.1').feeds, ['exit:11.26']);
-    assert.deepEqual(byId.get('Q9.1.3').feeds, ['exit:11.27', 'gate:storefront_design']);
+    assert.deepEqual(byId.get('Q9.2.1').feeds, ['l_trigger:headless']);
+    assert.deepEqual(byId.get('Q9.2.8').feeds, ['exit:11.26', 'l_trigger:headless'], 'where the content lives is the line, not whether it is headless');
+    assert.deepEqual(byId.get('Q9.1.3').feeds, ['gate:storefront_design']);
   });
 
   test('the rule is a set of question ids, and only the high topics are in it', () => {

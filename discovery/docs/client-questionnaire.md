@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.2.0 · offering 2.0.0
+> **Version:** question bank 1.2.0 · offering 2.1.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
@@ -2198,6 +2198,14 @@
 - [ ] Shopify metaobjects
 - [ ] Headless CMS
 - [ ] PIM
+- [ ] Not sure yet
+
+**Q9.2.11** — Which front end: Shopify Hydrogen, or another framework? *(recommended · consultant)*
+*Skip if Q9.2.1 = no.*
+
+*(tick one)*
+- [ ] Hydrogen
+- [ ] Other framework
 - [ ] Not sure yet
 
 **Q9.2.9** — Headless platform features required? *(recommended · consultant)*

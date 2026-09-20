@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 2.0.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 2.1.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 121 of 298 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 122 of 299 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -2862,21 +2862,21 @@ Drives: rule 11.14 (FLAG) · gate Subscriptions
 ### 9.1 Design input
 
 **Q9.1.1** — Is there a Figma file or design mockup for the new store? *(required · client)*
-Drives: rule 11.27 (STOP)
+Drives: gate Storefront design
 
 **Why it matters.** Decides whether design is an input or a work package. No Figma means design effort sits inside the engagement; a complete Figma design system covering every template is an L trigger, because implementing someone else's system costs more, not less.
 
 Sources: https://shopify.dev/docs/storefronts/themes/architecture
 
 **Q9.1.2** — How complete is it — brand only, key screens, or every template? *(required · client)*
-Drives: rule 11.27 (STOP) · gate Storefront design
+Drives: gate Storefront design
 
 **Why it matters.** Completeness is the estimate. Brand only means the theme's own sections carry the design. Key screens mean you interpolate the rest. Every template means matching each one in Liquid, which is where a theme build turns into a custom build.
 
 Sources: https://shopify.dev/docs/storefronts/themes/architecture
 
 **Q9.1.3** — Does the Figma file contain a full design system (tokens and components)? *(required · client)*
-Drives: rule 11.27 (STOP) · gate Storefront design
+Drives: gate Storefront design
 
 **Why it matters.** Tokens and components map onto theme settings and theme blocks, which are defined at theme level and reused across sections. A file of flat screens does not, and each screen then becomes bespoke Liquid - the difference between configuring a theme and writing one.
 
@@ -2904,7 +2904,7 @@ Drives: gate Storefront design
 ### 9.2 Storefront
 
 **Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required · client)*
-Drives: rule 11.26 (STOP)
+Drives: L trigger Headless storefront
 
 **Why it matters.** The largest architectural decision in the questionnaire. The commerce engine is identical either way; what changes is who owns the presentation layer. Headless removes the theme editor, so marketing can no longer restructure pages without a release.
 
@@ -2958,6 +2958,7 @@ If native is not enough: [Wishlists](https://apps.shopify.com/categories/marketi
 Sources: https://help.shopify.com/en/manual/online-store/web-performance/web-performance-reports
 
 **Q9.2.6** — Why headless? *(required · client)*
+Drives: rule 11.26 (STOP)
 
 **Why it matters.** Tests the reason against the architecture. A front end serving more than the store, a design that theme architecture cannot express, or an existing CMS as source of truth are real reasons. Speed and 'modern stack' usually are not.
 
@@ -2984,6 +2985,7 @@ Sources: https://shopify.dev/docs/storefronts/headless/hydrogen/environments · 
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q9.2.8** — Where is editorial content managed for the headless storefront? *(recommended · client)*
+Drives: rule 11.26 (STOP) · L trigger Headless storefront
 
 **Why it matters.** Headless removes the theme editor, so somebody has to own content editing: whatever you build inside the storefront, or a separate CMS the client licenses and you integrate. Decide it before the build, not after launch when marketing asks.
 
@@ -2995,6 +2997,25 @@ Sources: https://shopify.dev/docs/storefronts/headless/hydrogen/environments · 
 **Limits.** A CMS is a licence, an integration and a second publishing workflow, and it adds a preview and cache story on the storefront side.
 
 Sources: https://shopify.dev/docs/storefronts/headless
+
+**Q9.2.11** — Which front end: Shopify Hydrogen, or another framework? *(recommended · consultant)*
+Drives: rule 11.26 (STOP) · L trigger Headless storefront
+
+**Why it matters.** This is the line between a Shopify engagement and a composable one. Hydrogen is Shopify’s own framework on the Storefront API, and with content in metaobjects it is still a Shopify build. Another framework, a native app, or several front ends on one backend is Merkle Arc, and these offers do not price it.
+
+| Option | Pros | Cons |
+|---|---|---|
+| Shopify Hydrogen | Stays inside the offers, and inside Shopify: one system, the Storefront API, Oxygen hosting included, and content in metaobjects beside the products it sells. | React and a deployment pipeline to own; the theme editor is gone, so editors get whatever editing experience is built for them. |
+| Another framework, a native app, or several front ends | Whatever the brand already runs on, and one backend behind several experiences. | Not a Shopify build: it goes to Merkle Arc, which scopes and prices it separately. Nothing in these offers estimates it. |
+
+**Limits.** Hydrogen needs the Storefront API on any plan, and Oxygen is included from Basic upward. Below Plus only one Oxygen environment can be public, so parallel stakeholder review links need a store login.
+
+Sources: https://shopify.dev/docs/storefronts/headless/hydrogen · https://shopify.dev/docs/storefronts/headless/hydrogen/environments
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Hydrogen on the Storefront API | Basic |  | https://shopify.dev/docs/storefronts/headless/hydrogen |
+*Verified 2026-09-20 against shopify.dev (Spring '26).*
 
 **Q9.2.9** — Headless platform features required? *(recommended · consultant)*
 
@@ -3261,5 +3282,4 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.22 | WARN | More than 5 retail stores in scope | Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team | Q5.6.1 |
 | 11.23 | FLAG | More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision — the engine still recommends a topology. | Market topology and legal-entity mapping workshop before the solution architecture is baselined. | Q1.1.6, Q3.1.1 |
 | 11.24 | FLAG | A system Merkle has to build a connector for has no non-production environment to integrate against (test_environment none). Shopify itself needs no instance ladder — a theme stages as an unpublished theme in the production store and checkout is managed — so the only environment risk on a Shopify build sits on the client side. Without a sandbox, integration testing serialises against the client’s live system and the schedule stretches | A named owner on the client side and a decision before the build starts: provide a sandbox, or agree the testing window against production | Q8.1.1 |
-| 11.26 | STOP | A headless or custom-framework storefront is required — Hydrogen, another framework, or a native app front end. The commerce engine may stay on Shopify; the storefront is no longer a theme, and no offer here builds one | Merkle Arc — not quoted or estimated here; the Arc practice scopes it | Q9.2.1 |
-| 11.27 | STOP | A complete Figma design system covering every template is the design source, rather than a brand to apply to a theme. Building to it means owning the component layer, which is a composable engagement rather than a theme one | Merkle Arc — not quoted or estimated here; the Arc practice scopes it | Q9.1.1, Q9.1.2, Q9.1.3 |
+| 11.26 | STOP | The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track | Merkle Arc — not quoted or estimated here; the Arc practice scopes it | Q9.2.6, Q9.2.8, Q9.2.11 |

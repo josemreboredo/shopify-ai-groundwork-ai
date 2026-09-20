@@ -77,10 +77,21 @@ describe('classification edge cases', () => {
     // gate reads.
     const offer = classifyOffer({ ...base(), brand: { positioning: 'luxury' } });
     assert.equal(offer.code, 'S');
-    assert.deepEqual(offer.l_triggers, {}, 'nothing qualitative decides the offer any more');
+    assert.equal(offer.l_triggers.headless.active, false);
   });
 
-  test('every offer is built the same way, so no offer changes the track', () => {
+  test('a headless storefront is Ecommerce Growth, and the track follows the answer', () => {
+    // Headless is a floor, not a size: four weeks of Foundation cannot produce
+    // a headless storefront at any catalogue. It is still a Shopify build while
+    // Shopify holds the content — what leaves is exit rule 11.26's business.
+    const head = classifyOffer({ ...base(), design: { headless_required: true, headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects' } } });
+    assert.equal(head.code, 'L');
+    assert.equal(head.delivery_track, 'hydrogen');
+    // And the same offer without it is the same offer, on a theme.
+    assert.equal(classifyOffer(base()).delivery_track, 'liquid');
+  });
+
+  test('S and M have no headless variant', () => {
     const big = {
       ...base(),
       markets: { list: [{ code: 'CH', currency: 'CHF' }, { code: 'DE', currency: 'EUR' }, { code: 'FR', currency: 'EUR' }] },
@@ -181,21 +192,23 @@ describe('exit rule edge cases', () => {
     assert.match(item.evidence, /Navision \(client\)/, 'the flag names the system and whose it is');
   });
 
-  test('a storefront that is not a Shopify theme leaves the offers for ARC', () => {
-    // Headless used to be an L trigger, back when L was the Hydrogen offer. It
-    // is not a size, it is a different build — Merkle delivers those through
-    // ARC — so it stops the offers rather than choosing between them.
-    assert.ok(ids({ ...base, design: { headless_required: true } }).includes('11.26'));
-    assert.ok(!ids({ ...base, design: { headless_required: false } }).includes('11.26'));
+  test('11.26 fires where Shopify stops holding the storefront, not where the theme stops', () => {
+    // Hydrogen with content in metaobjects is a Shopify build: Shopify's own
+    // framework, Shopify's content, priced by these offers on the headless
+    // track. What leaves is a second system to unify.
+    const head = (headless) => ids({ ...base, design: { headless_required: true, headless } });
+    assert.ok(!head({ framework: 'hydrogen', content_source: 'shopify_metaobjects' }).includes('11.26'));
 
-    // And the design system, for the same reason rather than a Shopify limit:
-    // owning the component layer is the shape of a composable engagement.
-    const figma = (f) => ids({ ...base, design: { figma: f } });
-    assert.ok(figma({ design_system: true, completeness: 'all_templates' }).includes('11.27'));
-    // A full template set that is not a system is still a theme build, and
-    // stays inside the offers priced by the storefront design gate.
-    assert.ok(!figma({ completeness: 'all_templates' }).includes('11.27'));
-    assert.ok(!figma({ design_system: true, completeness: 'key_screens' }).includes('11.27'));
+    assert.ok(head({ framework: 'hydrogen', content_source: 'headless_cms' }).includes('11.26'), 'content outside Shopify');
+    assert.ok(head({ framework: 'hydrogen', content_source: 'pim' }).includes('11.26'));
+    assert.ok(head({ framework: 'other_framework', content_source: 'shopify_metaobjects' }).includes('11.26'), 'a front end Shopify does not build');
+    assert.ok(head({ framework: 'hydrogen', content_source: 'shopify_metaobjects', reasons: ['native_mobile_app'] }).includes('11.26'));
+    assert.ok(head({ framework: 'hydrogen', content_source: 'shopify_metaobjects', reasons: ['multiple_frontends_one_backend'] }).includes('11.26'));
+
+    // A complete Figma design system was an exit for one commit and should not
+    // have been: Shopify renders anything a design system describes, and
+    // building one is the storefront design gate at its bespoke tier.
+    assert.ok(!ids({ ...base, design: { figma: { design_system: true, completeness: 'all_templates' } } }).includes('11.26'));
   });
 
   test('LLM candidates are added once, for known rules only, and never replace rule results', () => {
@@ -261,11 +274,11 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(withHeavy.price_band.max > bare.price_band.max + 30000, 'and so is the price');
   });
 
-  test('scope that outgrows the M ceiling becomes an L, which is the same build one size up', () => {
-    // This rule was removed and is back. It was wrong while L was the Hydrogen
-    // offer — half a week past the ceiling quoted a Liquid build at a headless
-    // band and dragged the architecture after it. Every offer is Liquid now, so
-    // the offer following the work is exactly right.
+  test('scope that outgrows the M ceiling becomes an L, on the track the answers chose', () => {
+    // This rule was removed and is back. It was wrong while the offer decided
+    // the track — half a week past the ceiling quoted a theme build at a
+    // headless band and dragged the architecture after it. The track is an
+    // answer now, so the offer following the work is exactly right.
     const heavy = classifyOffer({
       ...base(),
       ...markets('CH', 'DE', 'FR'),
@@ -274,8 +287,8 @@ describe('the offer follows the effort, not the gate count', () => {
       integrations: [{ category: 'erp', connector: 'custom' }],
     });
     assert.equal(heavy.code, 'L');
-    assert.equal(heavy.delivery_track, 'liquid', 'the largest Shopify offer, not a different kind of build');
-    assert.deepEqual(heavy.l_triggers, {});
+    assert.equal(heavy.delivery_track, 'liquid', 'nothing here asked for a headless storefront');
+    assert.equal(heavy.l_triggers.headless.active, false);
     assert.ok(heavy.scope_effort_weeks.max > offering.offers.M.duration_weeks.max);
   });
 

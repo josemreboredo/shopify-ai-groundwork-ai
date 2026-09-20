@@ -107,6 +107,7 @@ describe('the page explains the rule the engine actually follows', () => {
 
   /** One engagement per published rule, in the order the page prints them. */
   const CASES = [
+    ['any l_trigger', { ...base(), design: { headless_required: true, headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects' } } }, 'L'],
     ['scope beyond the M ceiling', {
       ...base(),
       ...markets('CH', 'DE', 'FR'),

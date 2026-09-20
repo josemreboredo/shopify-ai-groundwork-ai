@@ -327,6 +327,31 @@ export function Channels({ channels }) {
 }
 
 /**
+ * How the storefront is built, where the offer builds it more than one way.
+ *
+ * The track used to be a property of the offer, which told a headless
+ * engagement it was getting a theme. It is an answer: Ecommerce Growth builds
+ * either way and spends the same weeks differently, exactly as it does per
+ * channel.
+ *
+ * @param {{ tracks: {liquid: string, hydrogen: string} }} props
+ */
+export function Tracks({ tracks }) {
+  if (!tracks) return null;
+  const rows = [
+    ['Shopify theme', tracks.liquid],
+    ['Headless · Hydrogen', tracks.hydrogen],
+  ];
+  return (
+    <dl className="channels">
+      {rows.map(([label, body]) => (
+        <div key={label}><dt>{label}</dt><dd>{body}</dd></div>
+      ))}
+    </dl>
+  );
+}
+
+/**
  * The two lists an offer is argued about in week six for not having.
  *
  * An offer that only says what it includes leaves every boundary to be

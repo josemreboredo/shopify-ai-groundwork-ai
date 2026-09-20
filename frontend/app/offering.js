@@ -12,9 +12,9 @@
 /** In the order an engagement travels: the smallest offer first, then past them. */
 export const SEGMENTS = ['s', 'm', 'l', 'arc'];
 
-/* One track. Every offer is the same Shopify theme build, one size apart —
-   a storefront that is not a theme is Merkle Arc, and leaves these offers. */
-export const TRACK = { liquid: 'Online Store · Horizon' };
+/* S and M are themes. Ecommerce Growth builds either way and spends the same
+   weeks differently — the track follows the answers, not the offer. */
+export const TRACK = { liquid: 'Online Store · Horizon', hydrogen: 'Headless · Hydrogen on Oxygen' };
 
 /** "4" or "6–9". */
 export const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`) : '—');

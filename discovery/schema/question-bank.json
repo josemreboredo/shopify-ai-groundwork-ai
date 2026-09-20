@@ -8438,7 +8438,7 @@
         "/design/figma/exists"
       ],
       "feeds": [
-        "exit:11.27"
+        "gate:storefront_design"
       ],
       "teach": {
         "why": "Decides whether design is an input or a work package. No Figma means design effort sits inside the engagement; a complete Figma design system covering every template is an L trigger, because implementing someone else's system costs more, not less.",
@@ -8458,7 +8458,6 @@
         "/design/figma/completeness"
       ],
       "feeds": [
-        "exit:11.27",
         "gate:storefront_design"
       ],
       "skip_if": {
@@ -8483,7 +8482,6 @@
         "/design/figma/design_system"
       ],
       "feeds": [
-        "exit:11.27",
         "gate:storefront_design"
       ],
       "skip_if": {
@@ -8563,7 +8561,7 @@
         "/design/headless_required"
       ],
       "feeds": [
-        "exit:11.26"
+        "l_trigger:headless"
       ],
       "shopify": {
         "native": [
@@ -8728,7 +8726,10 @@
           "https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid",
           "https://shopify.dev/docs/storefronts/headless/getting-started/build-options"
         ]
-      }
+      },
+      "feeds": [
+        "exit:11.26"
+      ]
     },
     {
       "id": "Q9.2.7",
@@ -8811,6 +8812,63 @@
         "limits": "A CMS is a licence, an integration and a second publishing workflow, and it adds a preview and cache story on the storefront side.",
         "sources": [
           "https://shopify.dev/docs/storefronts/headless"
+        ]
+      },
+      "feeds": [
+        "exit:11.26",
+        "l_trigger:headless"
+      ]
+    },
+    {
+      "id": "Q9.2.11",
+      "subsection": "9.2",
+      "priority": "recommended",
+      "audience": "consultant",
+      "answer_type": "enum",
+      "text": "Which front end: Shopify Hydrogen, or another framework?",
+      "maps_to": [
+        "/design/headless/framework"
+      ],
+      "feeds": [
+        "exit:11.26",
+        "l_trigger:headless"
+      ],
+      "skip_if": {
+        "question": "Q9.2.1",
+        "equals": false
+      },
+      "shopify": {
+        "native": [
+          {
+            "feature": "Hydrogen on the Storefront API",
+            "plan": "basic",
+            "docs": "https://shopify.dev/docs/storefronts/headless/hydrogen"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-20",
+          "source": "shopify.dev",
+          "edition": "Spring '26"
+        }
+      },
+      "teach": {
+        "why": "This is the line between a Shopify engagement and a composable one. Hydrogen is Shopify’s own framework on the Storefront API, and with content in metaobjects it is still a Shopify build. Another framework, a native app, or several front ends on one backend is Merkle Arc, and these offers do not price it.",
+        "limits": "Hydrogen needs the Storefront API on any plan, and Oxygen is included from Basic upward. Below Plus only one Oxygen environment can be public, so parallel stakeholder review links need a store login.",
+        "options": [
+          {
+            "option": "Shopify Hydrogen",
+            "pros": "Stays inside the offers, and inside Shopify: one system, the Storefront API, Oxygen hosting included, and content in metaobjects beside the products it sells.",
+            "cons": "React and a deployment pipeline to own; the theme editor is gone, so editors get whatever editing experience is built for them."
+          },
+          {
+            "option": "Another framework, a native app, or several front ends",
+            "pros": "Whatever the brand already runs on, and one backend behind several experiences.",
+            "cons": "Not a Shopify build: it goes to Merkle Arc, which scopes and prices it separately. Nothing in these offers estimates it."
+          }
+        ],
+        "sources": [
+          "https://shopify.dev/docs/storefronts/headless/hydrogen",
+          "https://shopify.dev/docs/storefronts/headless/hydrogen/environments"
         ]
       }
     },

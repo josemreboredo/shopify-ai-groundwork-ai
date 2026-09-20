@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.2.0 · offering 2.0.0
+> **Version:** question bank 1.2.0 · offering 2.1.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -2198,6 +2198,14 @@
 - [ ] Shopify metaobjects
 - [ ] Headless CMS
 - [ ] PIM
+- [ ] Pas encore certain
+
+**Q9.2.11** — Quel front end : Shopify Hydrogen, ou un autre framework ? *(recommended · consultant)*
+*Skip if Q9.2.1 = no.*
+
+*(tick one)*
+- [ ] Hydrogen
+- [ ] Other framework
 - [ ] Pas encore certain
 
 **Q9.2.9** — Quelles fonctionnalités de plateforme sont nécessaires en headless ? *(recommended · consultant)*

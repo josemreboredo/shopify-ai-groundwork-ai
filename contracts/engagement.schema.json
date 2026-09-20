@@ -432,7 +432,8 @@
         },
         "delivery_track": {
           "enum": [
-            "liquid"
+            "liquid",
+            "hydrogen"
           ]
         },
         "scope_gates": {
@@ -486,8 +487,12 @@
         "l_triggers": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Deliberately empty. L used to be reached by three answers about what was being built — luxury positioning, a headless requirement, a complete Figma design system. Two of them leave the offers entirely (exit rules 11.26 and 11.27 route a storefront that is not a Shopify theme to ARC) and the third was never a size. The key stays so the shape of the document does, and so a trigger can earn its way back.",
-          "properties": {}
+          "description": "One trigger. A headless storefront cannot be a Foundation or a Scale at any catalogue size, so it lands in Ecommerce Growth and the delivery track follows the answer. Luxury positioning was never a size and a complete Figma design system is built inside the offers (the storefront design gate, bespoke tier). Content or a front end outside Shopify is not a trigger at all — it is exit rule 11.26 and Merkle Arc.",
+          "properties": {
+            "headless": {
+              "$ref": "#/$defs/gate"
+            }
+          }
         },
         "modifiers": {
           "type": "array",
@@ -2911,6 +2916,14 @@
                 "pim",
                 "not_sure"
               ]
+            },
+            "framework": {
+              "enum": [
+                "hydrogen",
+                "other_framework",
+                "not_sure"
+              ],
+              "description": "Which front end. Hydrogen is Shopify's own, on the Storefront API and hosted on Oxygen; anything else is a front end Shopify does not build, and with an external CMS it is what takes an engagement to Merkle Arc (11.26)."
             },
             "features": {
               "type": "array",

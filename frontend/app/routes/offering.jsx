@@ -18,6 +18,8 @@ export async function loader({ request }) {
   return { view: offeringView({ pricing: user.role === 'owner' }) };
 }
 
+const COUNT = { 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven' };
+
 /** The resolution ladder every requirement climbs, cheapest first. */
 const LADDER = [
   ['Native Shopify', 'A feature the platform already has, configured'],
@@ -76,14 +78,15 @@ export default function Offering({ loaderData }) {
               </Link>
             </li>
           ))}
-          {/* Not a fourth offer. Arc is where the storefront stops being a
-              Shopify theme, and this engine prices Shopify theme builds — so
-              the card names it and gives no number, which is the whole point. */}
+          {/* Not a fourth offer. Headless is inside the offers — Hydrogen with
+              content in Shopify is a Shopify build. Arc is where a second system
+              arrives: content in an external CMS, or a front end Shopify does not
+              build. The card names it and gives no number, which is the point. */}
           <li className="beyond">
             <Link to="/offering/arc">
               <span className="seg-code">—</span>
               <span className="seg-name">Merkle Arc</span>
-              <span className="seg-when">The storefront is not a Shopify theme, or the requirements go past S, M and L</span>
+              <span className="seg-when">Content or a front end that lives outside Shopify, or requirements that go past S, M and L</span>
               <span className="seg-meta">A separate engagement · not quoted or estimated here · {view.exits.beyond_offers.length} rules</span>
             </Link>
           </li>
@@ -99,7 +102,10 @@ export default function Offering({ loaderData }) {
       <section className="band dark">
         <div className="band-inner">
           <p className="eyebrow">How the offer is decided</p>
-          <h2 className="plain">Four questions, in order. It stops at the first yes.</h2>
+          {/* Counted, not typed. It read "four" while the engine asked five for
+              as long as the fifth rule existed, which is the exact failure this
+              whole page is meant to prevent. */}
+          <h2 className="plain">{COUNT[view.classification.length] ?? view.classification.length} questions, in order. It stops at the first yes.</h2>
           <ol className="decide">
             {view.classification.map((c) => (
               <li key={c.order}>

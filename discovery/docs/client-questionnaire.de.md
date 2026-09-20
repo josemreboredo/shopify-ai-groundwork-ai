@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.2.0 · offering 2.0.0
+> **Version:** question bank 1.2.0 · offering 2.1.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -2198,6 +2198,14 @@
 - [ ] Shopify metaobjects
 - [ ] Headless CMS
 - [ ] PIM
+- [ ] Noch unklar
+
+**Q9.2.11** — Welches Frontend: Shopify Hydrogen oder ein anderes Framework? *(recommended · consultant)*
+*Skip if Q9.2.1 = no.*
+
+*(tick one)*
+- [ ] Hydrogen
+- [ ] Other framework
 - [ ] Noch unklar
 
 **Q9.2.9** — Welche Plattformfunktionen werden für Headless benötigt? *(recommended · consultant)*

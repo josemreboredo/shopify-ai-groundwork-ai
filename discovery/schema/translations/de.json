@@ -300,7 +300,8 @@
     "Q9.3.2": "6630ad795cac",
     "Q9.4.1": "0d36dc79db10",
     "Q9.4.2": "362eb5c47373",
-    "Q9.4.3": "0a2675fcb9a2"
+    "Q9.4.3": "0a2675fcb9a2",
+    "Q9.2.11": "01272779a513"
   },
   "sections": {
     "0": "Geschäftsziele",
@@ -3676,6 +3677,25 @@
       "teach": {
         "why": "Drittanbieter-Skripte sind der übliche Grund, warum ein Shopify-Storefront langsam ist, und sie kommen, nachdem Sie gegangen sind — Chat, Personalisierung, Heatmaps, Tag Manager. Sie jetzt zu benennen erlaubt ein Budget und die Entscheidung, was auf welchem Template lädt, bevor Zielwerte vereinbart werden.",
         "limits": "Skripte wirken auf dieselben Core Web Vitals, an denen der Kunde Sie messen wird, und jedes ist ebenso eine Einwilligungs- und Datenschutzfrage wie eine Performance-Frage."
+      }
+    },
+    "Q9.2.11": {
+      "text": "Welches Frontend: Shopify Hydrogen oder ein anderes Framework?",
+      "teach": {
+        "why": "Hier verläuft die Grenze zwischen einem Shopify-Engagement und einem Composable-Engagement. Hydrogen ist Shopifys eigenes Framework auf der Storefront API, und mit Inhalten in Metaobjects bleibt es ein Shopify-Build. Ein anderes Framework, eine native App oder mehrere Frontends auf einem Backend ist Merkle Arc, und diese Angebote kalkulieren das nicht.",
+        "limits": "Hydrogen braucht die Storefront API auf jedem Plan, Oxygen ist ab Basic enthalten. Unterhalb von Plus darf nur eine Oxygen-Umgebung öffentlich sein, parallele Review-Links für Stakeholder brauchen also ein Store-Login.",
+        "options": [
+          {
+            "option": "Shopify Hydrogen",
+            "pros": "Bleibt innerhalb der Angebote und innerhalb von Shopify: ein System, die Storefront API, Oxygen-Hosting inklusive, Inhalte in Metaobjects neben den Produkten, die sie verkaufen.",
+            "cons": "React und eine Deployment-Pipeline in eigener Verantwortung; der Theme-Editor entfällt, Redaktionen bekommen also genau die Bearbeitungsoberfläche, die gebaut wird."
+          },
+          {
+            "option": "Anderes Framework, native App oder mehrere Frontends",
+            "pros": "Was die Marke ohnehin betreibt, und ein Backend hinter mehreren Erlebnissen.",
+            "cons": "Kein Shopify-Build: Es geht an Merkle Arc, das es separat kalkuliert und liefert. Nichts in diesen Angeboten schätzt es."
+          }
+        ]
       }
     }
   },

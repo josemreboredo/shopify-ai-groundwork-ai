@@ -2067,6 +2067,14 @@ Managing Director, with the Finance Controller informed.
 - [ ] pim
 - [ ] undecided
 
+**Q9.2.11** — Which front end: Shopify Hydrogen, or another framework? *(recommended · consultant)*
+*Skip if Q9.2.1 = no.*
+
+*(tick one)*
+- [ ] hydrogen
+- [ ] other framework
+- [ ] undecided
+
 **Q9.2.9** — Headless platform features required? *(recommended · consultant)*
 *Skip if Q9.2.1 = no.*
 

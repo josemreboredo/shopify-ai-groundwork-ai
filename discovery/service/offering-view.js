@@ -90,6 +90,10 @@ export function offeringView({ pricing = false } = {}) {
     /* And who is being sold to. B2B used to be a modifier on a consumer base,
        which charged a wholesale-only client for consumer work they never got. */
     channels: o.channels ?? null,
+    /* And how it is built. Ecommerce Growth builds as a theme or as Hydrogen
+       and spends the same weeks differently, so the track is a decision inside
+       the offer rather than a label on it. */
+    tracks: o.tracks ?? null,
     /* What is deliberately not in it, and what the client has to bring. An
        offer that only lists what it includes is the one that gets argued about
        in week six — and "we assumed you had a sandbox" is not an argument

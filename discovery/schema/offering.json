@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -301,8 +301,8 @@
       "name": "Ecommerce Growth",
       "for_whom": "A brand already selling professionally, on an enterprise platform. Salesforce Commerce Cloud, Adobe Commerce or similar, with the traffic and the operation to match — the move to Shopify has to land on a store that performs at least as well, and is measured to prove it.",
       "delivery_track": "liquid",
-      "triggered_by": "Scope that adds up to more than an M can hold — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · The enterprise migration: the data, the redirect estate and the integrations the old platform was carrying · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · One Shopify theme, built out: a design system as sections and blocks over one token layer, every template against it · Still Liquid, still the merchant’s to edit — a storefront that is not a theme is Merkle Arc, and a different conversation",
+      "triggered_by": "A headless storefront, or scope that adds up to more than an M can hold — the largest of the three Shopify offers",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · The enterprise migration: the data, the redirect estate and the integrations the old platform was carrying · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 140000,
         "max": 220000,
@@ -442,28 +442,37 @@
         "The design, complete enough to build from: a template set with its states, not a set of key screens",
         "Whoever can approve a performance and accessibility target and then hold the project to it",
         "A decision on who owns the store after handover, taken before the build rather than at the end of it"
-      ]
+      ],
+      "tracks": {
+        "liquid": "One Shopify theme, built out: the design system as sections and blocks over one token layer, every template against it, and the merchant still able to rearrange them. The default, and the right answer more often than it is chosen.",
+        "hydrogen": "Not an extra on top — the same weeks spent differently. There is no theme to select, so the route structure, the rendering strategy and the caching model are the decision instead, and the component layer is owned rather than configured. Content stays in Shopify: metaobjects and metafields through the Storefront API, which is what keeps this a Shopify build. Content or a front end outside Shopify is Merkle Arc."
+      }
     }
   },
   "classification": [
     {
       "order": 1,
-      "when": "base weeks + active gate modifiers > offers.M.duration_weeks.max",
+      "when": "any l_trigger active",
       "offer": "L"
     },
     {
       "order": 2,
+      "when": "base weeks + active gate modifiers > offers.M.duration_weeks.max",
+      "offer": "L"
+    },
+    {
+      "order": 3,
       "when": "active scope gates >= 2",
       "offer": "M"
     },
     {
-      "order": 3,
+      "order": 4,
       "when": "active scope gates == 1",
       "offer": "S",
       "apply_modifier": true
     },
     {
-      "order": 4,
+      "order": 5,
       "when": "active scope gates == 0",
       "offer": "S"
     }
@@ -655,7 +664,18 @@
       ]
     }
   ],
-  "l_triggers": [],
+  "l_triggers": [
+    {
+      "id": "headless",
+      "label": "Headless storefront",
+      "condition": "A headless storefront is required and it is still a Shopify build: Hydrogen on the Storefront API, with content in Shopify through metaobjects and metafields. A storefront whose content or front end lives outside Shopify is Merkle Arc (exit rule 11.26), not this",
+      "inputs": [
+        "/design/headless_required",
+        "/design/headless/content_source",
+        "/design/headless/framework"
+      ]
+    }
+  ],
   "modifiers": [
     {
       "id": "+Markets",
@@ -1291,24 +1311,14 @@
       "id": "11.26",
       "result": "STOP",
       "status": "canonical",
-      "condition": "A headless or custom-framework storefront is required — Hydrogen, another framework, or a native app front end. The commerce engine may stay on Shopify; the storefront is no longer a theme, and no offer here builds one",
+      "condition": "The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track",
       "destination": "Merkle Arc — not quoted or estimated here; the Arc practice scopes it",
       "inputs": [
-        "/design/headless_required"
+        "/design/headless/content_source",
+        "/design/headless/framework",
+        "/design/headless/reasons"
       ],
-      "label": "A storefront that is not a Shopify theme"
-    },
-    {
-      "id": "11.27",
-      "result": "STOP",
-      "status": "canonical",
-      "condition": "A complete Figma design system covering every template is the design source, rather than a brand to apply to a theme. Building to it means owning the component layer, which is a composable engagement rather than a theme one",
-      "destination": "Merkle Arc — not quoted or estimated here; the Arc practice scopes it",
-      "inputs": [
-        "/design/figma/design_system",
-        "/design/figma/completeness"
-      ],
-      "label": "A design system as the source, not a brand to apply"
+      "label": "Content or a front end that lives outside Shopify"
     }
   ],
   "routes": [

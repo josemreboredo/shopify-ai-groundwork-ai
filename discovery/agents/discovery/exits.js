@@ -1,7 +1,7 @@
 /**
  * @file exits.js
  * @description Deterministic exit-rule evaluation (ADR 0003) for rules
- * 11.1–11.27 in discovery/schema/offering.json, plus merging of LLM-detected candidates.
+ * 11.1–11.26 in discovery/schema/offering.json, plus merging of LLM-detected candidates.
  * LLM candidates are added, never allowed to remove or overwrite rule results.
  *
  * @module discovery/exits
@@ -200,37 +200,34 @@ const EVALUATORS = {
   },
 
   /*
-   * The storefront leaves the offers.
+   * Where Shopify stops holding the storefront.
    *
-   * A headless front end used to be an L: that offer was Hydrogen on Oxygen, so
-   * the classification read "we want a custom storefront" as a size. It is not
-   * a size, it is a different build — the commerce engine may still be Shopify
-   * while the storefront is not a theme at all — and Merkle scopes and delivers
-   * those through ARC. So it is a STOP with a destination rather than an offer,
-   * and the discovery that produced it goes with it.
+   * Not headless: Hydrogen is Shopify's own framework on the Storefront API,
+   * and with content in metaobjects and metafields it is a Shopify build — the
+   * headless track of Ecommerce Growth, priced by these offers. The line is
+   * what sits outside Shopify. Editorial content in an external CMS or a PIM
+   * means a second system to unify; another framework, a native app or several
+   * front ends on one backend means a front end Shopify does not build. Either
+   * is the architecture Merkle builds on Arc — a tokenised design system, a
+   * component library and GraphQL middleware over several sources — and this
+   * engine prices Shopify builds, so it stops and names the destination.
    *
-   * What went with the old offer: rule 11.25, which flagged that a Hydrogen
-   * storefront below Plus can only make one preview public. True, and no longer
-   * anyone's decision here — the build is not quoted from these offers.
+   * The design system went the other way. A complete Figma design system was an
+   * exit for one commit and should not have been: Shopify renders anything a
+   * design system describes, and building one is the storefront design gate at
+   * its bespoke tier, inside the offers, priced.
    */
-  '11.26': (doc) => (doc.design?.headless_required === true
-    ? 'A headless or custom-framework storefront is required, so the storefront is not a Shopify theme'
-    : null),
-
-  /*
-   * And the design system, for the same reason rather than a Shopify limit.
-   *
-   * Shopify renders anything a design system describes. What decides this is
-   * where the component layer lives: a system that is the design source for
-   * every template is owned and versioned as components, which is the shape of
-   * a composable engagement. A brand to apply to a theme is not — that is the
-   * storefront design gate, and it stays inside the offers, priced.
-   */
-  '11.27': (doc) => {
-    const f = doc.design?.figma ?? {};
-    return f.design_system === true && f.completeness === 'all_templates'
-      ? 'A complete Figma design system covering every template is the design source, not a brand applied to a theme'
-      : null;
+  '11.26': (doc) => {
+    const h = doc.design?.headless ?? {};
+    const outsideContent = h.content_source === 'headless_cms' || h.content_source === 'pim';
+    const outsideFrontEnd = h.framework === 'other_framework'
+      || (h.reasons ?? []).some((r) => r === 'native_mobile_app' || r === 'multiple_frontends_one_backend');
+    if (!outsideContent && !outsideFrontEnd) return null;
+    const why = [
+      outsideContent ? `editorial content in ${String(h.content_source).replace(/_/g, ' ')}` : null,
+      outsideFrontEnd ? `a front end Shopify does not build (${h.framework === 'other_framework' ? 'another framework' : (h.reasons ?? []).filter((r) => r === 'native_mobile_app' || r === 'multiple_frontends_one_backend').join(', ').replace(/_/g, ' ')})` : null,
+    ].filter(Boolean).join(' and ');
+    return `The storefront lives partly outside Shopify: ${why}`;
   },
 
 };

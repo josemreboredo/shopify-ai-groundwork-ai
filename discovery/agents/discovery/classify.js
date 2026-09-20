@@ -415,23 +415,37 @@ const GATE_EVALUATORS = {
 };
 
 /**
- * Nothing qualitative decides the offer any more.
+ * The one answer that cannot be a Foundation or a Scale.
  *
- * L used to be reached by three answers about what was being built — a luxury
- * brand, a headless requirement, a complete Figma design system — and none of
- * them said anything about how much there was. Two of them have left the offers
- * altogether: a storefront that is not a Shopify theme is a composable build and
- * goes to ARC (exit rules 11.26 and 11.27). The third, brand positioning, is not
- * a scope fact — a luxury brand with one market and a small catalogue is a small
- * engagement, and a luxury brand that wants every template designed answers the
- * design questions, which is what the storefront design gate reads.
+ * Headless was a trigger, then it was an exit, and it is a trigger again — the
+ * line moved, not the mechanism. A headless storefront is still a Shopify build
+ * while Shopify holds the content: Hydrogen on the Storefront API, metaobjects
+ * and metafields, Oxygen underneath. What leaves is content or a front end that
+ * lives outside Shopify — an external CMS, another framework, a native app,
+ * several front ends on one backend — and that is exit rule 11.26 and Merkle
+ * Arc, evaluated on its own answers rather than on this one.
  *
- * The map stays because the shape of the engagement document does, and because
- * a trigger may yet earn its way back. It is empty on purpose.
+ * It is a trigger rather than a gate because it is a floor, not a size: four
+ * weeks of Foundation cannot produce a headless storefront at any catalogue.
+ * What it is not is an extra on the band — Ecommerce Growth spends the same
+ * weeks differently, which is what offers.L.tracks says.
  *
  * @type {Record<string, (doc: object) => Gate>}
  */
-const L_TRIGGER_EVALUATORS = {};
+const L_TRIGGER_EVALUATORS = {
+  headless: (doc) => {
+    const h = doc.design ?? {};
+    const required = h.headless_required === true;
+    const source = h.headless?.content_source;
+    const framework = h.headless?.framework;
+    return {
+      active: required,
+      evidence: required
+        ? `Headless storefront required (${framework ? framework.replace(/_/g, ' ') : 'front end not recorded'}, content in ${source ? source.replace(/_/g, ' ') : 'a source not recorded'})`
+        : `Headless storefront required: ${h.headless_required === undefined ? 'not recorded' : 'no'}`,
+    };
+  },
+};
 
 /**
  * Compute the `offer` block for an engagement document.
@@ -553,7 +567,10 @@ export function classifyOffer(doc) {
    * as an L would over-quote work the engine itself estimated at ten. Scope
    * that outgrows every offer is exit rule 11.3's, and is a programme.
    */
-  if (total.max > offering.offers.M.duration_weeks.max) {
+  if (activeTriggers.length > 0) {
+    code = 'L';
+    rationale = `L trigger(s): ${activeTriggers.map((t) => t.label).join(', ')}`;
+  } else if (total.max > offering.offers.M.duration_weeks.max) {
     code = 'L';
     rationale = `Scope reaches ${total.min}–${total.max} weeks (${activeGates.map((g) => g.label).join(', ')}), beyond the M ceiling of ${offering.offers.M.duration_weeks.max}`;
   } else if (activeGates.length >= 2) {
@@ -615,10 +632,20 @@ export function classifyOffer(doc) {
       ? { weeks: overflow, price: { min: toThousand(overflow.min * perWeek), max: toThousand(overflow.max * perWeek) } }
       : gateTotals;
 
+  /*
+   * The track is an answer, not a property of the offer.
+   *
+   * Ecommerce Growth builds either way and spends the same weeks differently,
+   * so reading the track off the offer would tell a Hydrogen engagement it was
+   * getting a theme. S and M have no headless variant: nothing there fires the
+   * trigger, so they resolve to their own track and stay Liquid.
+   */
+  const delivery_track = l_triggers.headless?.active ? 'hydrogen' : offer.delivery_track;
+
   return {
     code,
     name: offer.name,
-    delivery_track: offer.delivery_track,
+    delivery_track,
     scope_gates,
     l_triggers,
     modifiers,

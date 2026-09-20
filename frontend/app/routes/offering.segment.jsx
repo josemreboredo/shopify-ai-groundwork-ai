@@ -4,7 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { Boundaries, Channels, OfferScale, PhasePlan } from '../components/diagram.jsx';
+import { Boundaries, Channels, OfferScale, PhasePlan, Tracks } from '../components/diagram.jsx';
 
 /**
  * One offer, on its own page.
@@ -119,6 +119,18 @@ export default function OfferingSegment({ loaderData }) {
         <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} />
       </section>
 
+      {offer.tracks ? (
+        <section>
+          <h2>How the storefront is built</h2>
+          <p className="lede">
+            Two ways, one band. The track is an answer rather than a property of the offer — a headless build
+            spends the same weeks differently, it does not add weeks on top. Content stays in Shopify either way;
+            content or a front end outside it is <Link to="/offering/arc">Merkle Arc</Link>.
+          </p>
+          <Tracks tracks={offer.tracks} />
+        </section>
+      ) : null}
+
       <section>
         <h2>Who it sells to</h2>
         <p className="lede">
@@ -145,14 +157,15 @@ export default function OfferingSegment({ loaderData }) {
         <section>
           <h2>What lands an engagement here</h2>
           <p className="lede">
-            The work, in weeks. When the scope gates add up to more than an Ecommerce Scale can hold, this is the
-            same Shopify build one size up — not a different kind of build, and not a different track.
+            Two ways. A headless storefront lands here whatever the scope says — four weeks of Foundation cannot
+            produce one at any catalogue size — and so does scope that adds up to more than an Ecommerce Scale can
+            hold. Either way it is the same offer, one size up.
           </p>
           <p className="muted">
-            Nothing qualitative puts an engagement here. A luxury brand with one market and a small catalogue is a
-            small engagement; a brand that wants every template designed answers the design questions, and those
-            are priced by the storefront design gate below. A storefront that is not a Shopify theme at all is{' '}
-            <Link to="/offering/arc">Merkle Arc</Link>, which these offers do not quote.
+            Nothing else qualitative puts an engagement here. A luxury brand with one market and a small catalogue
+            is a small engagement; a brand that wants every template designed answers the design questions, and
+            those are priced by the storefront design gate below. What does leave the offers is content or a front
+            end outside Shopify — <Link to="/offering/arc">Merkle Arc</Link>, which these offers do not quote.
           </p>
         </section>
       ) : null}
@@ -215,9 +228,11 @@ export default function OfferingSegment({ loaderData }) {
  * Not an offer, and deliberately not priced.
  *
  * Arc is Merkle's enterprise platform for unifying brand design, content and
- * commerce in one architecture. This engine prices Shopify theme builds; a
- * storefront that is not a theme is Arc's, and the honest thing for this page
- * to do is name it and stop — no band, no weeks, no estimate.
+ * commerce in one architecture. Headless is not the line — Hydrogen with content
+ * in Shopify metaobjects is a Shopify build, and Ecommerce Growth prices it. The
+ * line is a second system: content in an external CMS or PIM, or a front end
+ * Shopify does not build. The honest thing for this page to do is name it and
+ * stop — no band, no weeks, no estimate.
  */
 function Arc({ view, segment }) {
   return (
@@ -228,9 +243,11 @@ function Arc({ view, segment }) {
         <h1>Merkle Arc</h1>
         <p className="answer-line">Unify brand design, content and commerce in one architecture.</p>
         <p className="lede">
-          Where the storefront stops being a Shopify theme, the offers stop too. Arc is the enterprise platform
-          Merkle builds those storefronts on — a tokenised design system, a multi-channel component library,
-          GraphQL middleware and its own console: composable and headless, without the vendor lock-in.
+          Headless is not the line: Hydrogen with content in Shopify is <Link to="/offering/l">Ecommerce Growth</Link>,
+          priced like any other build. The offers stop where a second system arrives — editorial content in an
+          external CMS or PIM, or a front end Shopify does not build. Arc is the enterprise platform Merkle
+          unifies those on: a tokenised design system, a multi-channel component library, GraphQL middleware and
+          its own console, composable and headless without the vendor lock-in.
         </p>
         <p className="callout">
           <strong>Nothing here quotes it, and nothing here estimates it.</strong> This engine prices Shopify
