@@ -9368,7 +9368,7 @@
       "audience": "consultant",
       "answer_type": "enum",
       "ask_when": "stop",
-      "text": "Discovery hit a STOP. How will Merkle proceed: Larger Engagement or no bid?",
+      "text": "The requirements go beyond the S, M and L offers. How will Merkle proceed: a Larger Engagement, or no bid?",
       "help": "Larger Engagement: Merkle proposes an Enterprise Engagement with a dedicated Discovery Phase; the approach, a brief and the client deck are still produced, Jira tickets are not. No bid produces the STOP report only.",
       "maps_to": [
         "/delivery/route"

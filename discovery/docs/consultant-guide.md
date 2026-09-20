@@ -3208,7 +3208,7 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 
 **Why it matters.** Components let the generated tickets land inside the client's existing Jira structure rather than as a flat list. It is the difference between a backlog the delivery team can use on day one and one somebody has to sort first.
 
-**Q10.5.5** — Discovery hit a STOP. How will Merkle proceed: Larger Engagement or no bid? *(recommended · consultant · only on STOP)*
+**Q10.5.5** — The requirements go beyond the S, M and L offers. How will Merkle proceed: a Larger Engagement, or no bid? *(recommended · consultant · only on STOP)*
 
 **Why it matters.** After a STOP the engagement cannot continue as a standard offer, and the tool must know which output to produce. Larger Engagement drafts the approach, brief and client deck with no Jira tickets; no bid produces the STOP report only.
 
