@@ -11,7 +11,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-import { goNoGoView, complexityProfile } from '../../service/go-no-go.js';
+import { goNoGoView, complexityProfile, exclusions } from '../../service/go-no-go.js';
 import { clarificationTopics } from '../../agents/discovery/clarifications.js';
 
 const fixture = (name) => JSON.parse(fs.readFileSync(new URL(`../fixtures/engagements/${name}.json`, import.meta.url), 'utf8'));
@@ -169,5 +169,41 @@ describe('where the complexity sits', () => {
     const markets = axes.find((a) => a.id === 'markets');
     assert.ok(markets.rules.some((r) => r.result === 'FLAG'), 'the fixture flags the topology on markets');
     assert.equal(markets.level, 1);
+  });
+});
+
+describe('what leaves the deal', () => {
+  const withChina = () => {
+    const doc = fixture('acme-watches');
+    doc.markets.list.push({ code: 'CN', name: 'China' });
+    doc.exits.items.push({ rule_id: '11.20', result: 'FLAG', evidence: 'Mainland China (CN) is a launch market' });
+    return doc;
+  };
+
+  test('an engagement without mainland China excludes nothing', () => {
+    assert.deepEqual(exclusions(fixture('acme-watches')), []);
+  });
+
+  test('mainland China is named as leaving the deal, not as a complexity', () => {
+    // It arrived as a rule id among others under Markets, while 11.20's own
+    // words are that CN is excluded from the markets, languages, offer, plan and
+    // build scope. A meeting weighing 37 markets weighs the wrong bid.
+    const [cn] = exclusions(withChina());
+    assert.equal(cn.what, 'Mainland China');
+    assert.equal(cn.rule_id, '11.20');
+    assert.match(cn.removes, /offer/);
+    assert.match(cn.where_it_goes, /separate China discovery/i);
+  });
+
+  test('and it says what the bid is actually for once it is out', () => {
+    const doc = withChina();
+    const [cn] = exclusions(doc);
+    assert.equal(cn.leaves, `${doc.markets.list.length - 1} of ${doc.markets.list.length} markets`);
+  });
+
+  test('the exclusion travels with the view, beside the shape rather than inside it', () => {
+    const v = goNoGoView(withChina(), state(), null);
+    assert.equal(v.exclusions.length, 1);
+    assert.ok(!v.profile.some((a) => /china/i.test(a.label)), 'it is not an axis — it is a carve-out');
   });
 });

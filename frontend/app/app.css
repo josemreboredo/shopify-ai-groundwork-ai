@@ -543,6 +543,12 @@ h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; tex
 .before { border-top: 1px solid var(--line); padding-top: 16px; }
 .before .eyebrow { margin-bottom: 8px; }
 
+/* What leaves the deal: smaller bid, not a harder one */
+.exclusions { list-style: none; padding: 0; margin: 18px 0 0; }
+.exclusions > li { border-left: 3px solid var(--warn); padding: 2px 0 2px 18px; margin-bottom: 18px; max-width: 84ch; }
+.excl-what { margin: 0 0 6px; font-weight: 700; font-size: 1.02rem; }
+.exclusions p { margin: 0 0 5px; }
+
 /* The shape and the numbers behind it, side by side */
 .profile { display: grid; grid-template-columns: minmax(340px, 0.9fr) 1.1fr; gap: 34px; align-items: start; }
 .profile tr.idle th, .profile tr.idle td { color: var(--muted); }

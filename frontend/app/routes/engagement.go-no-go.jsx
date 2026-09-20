@@ -94,6 +94,9 @@ export default function GoNoGo({ loaderData }) {
                         {a.rules.length ? <div className="muted small">{a.rules.map((r) => r.rule_id).join(', ')}</div> : null}
                       </td>
                       <td>
+                        {a.id === 'markets' && g.exclusions?.length ? (
+                          <span className="muted small">{g.exclusions[0].leaves} once {g.exclusions[0].what} is taken out. </span>
+                        ) : null}
                         {a.evidence ?? (a.known === false
                           ? <span className="muted">Nothing in the documents either way — <a href={`/engagements/${client}/clarifications`}>it is in the Q&amp;A</a> ({a.settled_by.join(', ')})</span>
                           : <span className="muted">—</span>)}
@@ -104,6 +107,28 @@ export default function GoNoGo({ loaderData }) {
               </table>
             </div>
           </div>
+        </section>
+      ) : null}
+
+      {/* What leaves the deal. Not a complexity — a piece of the request that
+          is not ours to bid for. */}
+      {g.exclusions?.length ? (
+        <section>
+          <h2>What we would not be bidding for</h2>
+          <p className="muted">
+            Part of what they asked for is outside Merkle’s offering entirely. It does not make the bid harder;
+            it makes it smaller, and a meeting weighing the wrong number is weighing the wrong bid.
+          </p>
+          <ul className="exclusions">
+            {g.exclusions.map((x) => (
+              <li key={x.rule_id}>
+                <p className="excl-what">{x.what} <span className="rule-id flag">{x.rule_id}</span></p>
+                <p><strong>{x.removes}.</strong> {x.where_it_goes}.</p>
+                <p className="muted">{x.why}</p>
+                <p className="muted small">Leaves {x.leaves} in this bid.</p>
+              </li>
+            ))}
+          </ul>
         </section>
       ) : null}
 

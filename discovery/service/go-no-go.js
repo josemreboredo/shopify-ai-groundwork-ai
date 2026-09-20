@@ -80,6 +80,42 @@ export function complexityProfile(doc) {
   });
 }
 
+/**
+ * What Merkle would not be bidding for.
+ *
+ * An exclusion is not a complexity — it is a piece of the client's request that
+ * leaves the deal — and the page had nowhere to say it. Mainland China arrived as
+ * a rule id among others under Markets, while rule 11.20's own words are "CN is
+ * excluded from this engagement's markets, languages, offer, plan and build
+ * scope". A bid meeting weighing 37 markets is weighing the wrong number if one
+ * of them is being carved out and routed elsewhere.
+ *
+ * Only what the offering genuinely excludes appears here. Merkle sells no
+ * mainland China build — Shopify has no infrastructure there, selling onshore
+ * needs a PRC entity, an ICP licence and onshore hosting — so it goes to its own
+ * discovery rather than being priced badly in this one.
+ *
+ * @param {object} doc  decided engagement
+ */
+export function exclusions(doc) {
+  const out = [];
+  const markets = doc.markets?.list ?? [];
+  if (markets.some((m) => m.code === 'CN')) {
+    const rule = (doc.exits?.items ?? []).find((i) => i.rule_id === '11.20');
+    out.push({
+      what: 'Mainland China',
+      rule_id: '11.20',
+      why: 'Shopify has no infrastructure in mainland China. Selling onshore needs a PRC entity, an ICP filing or licence and onshore hosting; the cross-border routes carry their own customs and product rules.',
+      where_it_goes: 'A separate China discovery',
+      removes: 'Out of this engagement’s markets, languages, offer, Shopify plan and build scope',
+      evidence: rule?.evidence ?? 'Mainland China is a launch market',
+      // What the bid is actually for, once it is taken out.
+      leaves: `${markets.length - 1} of ${markets.length} markets`,
+    });
+  }
+  return out;
+}
+
 /** Scope gates and L triggers read as capabilities the RFP is asking us for. */
 const CAPABILITY = {
   markets: 'Selling into several markets',
@@ -283,6 +319,8 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
     // The same gates as a shape, so where the complexity sits is visible before
     // it is read.
     profile: complexityProfile(doc),
+    // And what leaves the deal entirely, which is not a complexity at all.
+    exclusions: exclusions(doc),
     scope: {
       applies: offer.applies,
       offer: offer.code,
