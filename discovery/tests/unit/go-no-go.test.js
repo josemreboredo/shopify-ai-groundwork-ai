@@ -28,10 +28,11 @@ describe('go/no-go support', () => {
     const r = view({ to_review: 46 }).recommendation;
     assert.equal(r.verdict, 'not yet');
     assert.match(r.headline, /cannot stand behind/i);
-    assert.ok(r.because.some((b) => /46 of those are still unconfirmed/.test(b)));
+    // One sentence answers "why"; the rest is the ground it stands on.
+    assert.match(r.why, /46 of those are still unconfirmed/);
     assert.ok(r.before_you_go.some((b) => /Confirm what it says/.test(b)));
-    // and it does not go on to argue about topics or assumptions first
-    assert.ok(!r.because.some((b) => /topics are still open/.test(b)));
+    assert.ok(!/topics are still open/.test(r.why), 'it does not argue about topics before the answers are checked');
+    assert.ok(r.because.every((b) => !/unconfirmed/.test(b)), 'the deciding fact is not repeated underneath itself');
   });
 
   test('once confirmed, it says so and moves on to what is still unknown', () => {
@@ -43,18 +44,30 @@ describe('go/no-go support', () => {
   test('a requirement outside the offers is a different conversation, not a worse price', () => {
     const r = goNoGoView(fixture('stop-custom-checkout'), state(), null).recommendation;
     assert.equal(r.verdict, 'not a standard bid');
-    assert.ok(r.because.some((b) => /outside Merkle's standard offers/.test(b)));
+    assert.match(r.why, /outside Merkle's standard offers/);
     assert.ok(r.before_you_go.some((b) => /bespoke work at a standard price/.test(b)));
   });
 
   test('the reasons are facts, in the order he reads them, and never a percentage', () => {
     for (const over of [{}, { to_review: 12 }, { documents: 0 }]) {
       const r = view(over).recommendation;
-      assert.ok(r.because.length, 'a position with no reasons is an opinion');
-      for (const line of r.because) {
+      assert.ok(r.why, 'a position with no why is an opinion');
+      for (const line of [r.why, ...r.because]) {
         assert.ok(!/%/.test(line), '"28% of what sets the price" was a coverage ratio wearing a claim it could not support');
       }
     }
+  });
+
+  test('the why is one sentence, and never repeats the ground beneath it', () => {
+    for (const over of [{}, { to_review: 3 }, { documents: 0 }]) {
+      const r = view(over).recommendation;
+      assert.equal(r.why.trim().split(/(?<=\.)\s+/).filter(Boolean).length <= 2, true, 'a paragraph is not a reason');
+      assert.ok(!r.because.includes(r.why), 'the deciding fact appears once');
+    }
+    // What it rests on is context, and reads as context.
+    const grounded = view().recommendation;
+    assert.ok(grounded.because.some((b) => /document/.test(b)));
+    assert.ok(grounded.because.some((b) => /confirmed by a person/.test(b)));
   });
 
   test('every verdict it can reach is one a person would say out loud', () => {

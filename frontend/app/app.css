@@ -523,6 +523,26 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
+/* The architect's position: one verdict, one why, and the ground under it.
+   It used to be a headline and an unlabelled list in which the sentence that
+   actually answered "why" sat third, weighing the same as "1 document read". */
+.card.position { border-left: 4px solid var(--muted); padding-bottom: 22px; }
+.card.position.go { border-left-color: var(--ok); }
+.card.position.flag { border-left-color: var(--warn); }
+.card.position.stop { border-left-color: var(--red); }
+.card.position .eyebrow { margin: 0 0 10px; }
+h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; text-transform: none; margin: 0 0 16px; max-width: 30ch; }
+/* The one sentence that decides it, set apart from what it rests on. */
+.why-line {
+  margin: 0 0 16px; padding-left: 16px; border-left: 3px solid var(--red);
+  font-size: 1.02rem; line-height: 1.5; max-width: 78ch;
+}
+.grounds { list-style: none; padding: 0; margin: 0 0 20px; }
+.grounds > li { position: relative; padding: 0 0 5px 18px; font-size: 0.9rem; color: var(--muted); max-width: 78ch; }
+.grounds > li::before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 1px; background: var(--muted); }
+.before { border-top: 1px solid var(--line); padding-top: 16px; }
+.before .eyebrow { margin-bottom: 8px; }
+
 /* The shape and the numbers behind it, side by side */
 .profile { display: grid; grid-template-columns: minmax(300px, 470px) 1fr; gap: 28px; align-items: start; }
 .profile tr.idle th, .profile tr.idle td { color: var(--muted); }

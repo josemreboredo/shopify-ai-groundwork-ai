@@ -135,57 +135,57 @@ function offerOf(doc) {
  * @param {object} doc @param {object} counts
  */
 function recommend({ documents, answered, unconfirmed, openTopics, stops, cannotPrice, assumptions }) {
-  const because = [];
-  const before = [];
+  // Two different things were being read as one list. The fact that decides the
+  // position, and the facts it rests on. Printed together they read as a wall,
+  // and the sentence that actually answers "why" sat third with nothing marking
+  // it. So: one why, and the ground underneath it.
+  const ground = [];
+  const said = (verdict, headline, why, before = []) => ({ verdict, headline, why, because: [...ground], before_you_go: before });
 
   if (!documents) {
-    return {
-      verdict: 'nothing to go on',
-      headline: 'Nothing has been read yet.',
-      because: ['No document has been read into this bid, so there is nothing for this desk to assess.'],
-      before_you_go: ['Read the RFP in on the first step.'],
-    };
+    return said(
+      'nothing to go on',
+      'Nothing has been read yet.',
+      'No document has been read into this bid, so there is nothing for this desk to assess.',
+      ['Read the RFP in on the first step.'],
+    );
   }
 
-  because.push(`${documents} document${documents === 1 ? '' : 's'} read, ${answered} answer${answered === 1 ? '' : 's'} taken from ${documents === 1 ? 'it' : 'them'}.`);
+  ground.push(`${documents} document${documents === 1 ? '' : 's'} read, ${answered} answer${answered === 1 ? '' : 's'} taken from ${documents === 1 ? 'it' : 'them'}.`);
 
   // 1 — nothing else matters until a human has checked what the model read.
   if (unconfirmed) {
-    because.push(`${unconfirmed} of those ${unconfirmed === 1 ? 'is' : 'are'} still unconfirmed: a model read ${unconfirmed === 1 ? 'it' : 'them'} out of the document and nobody has checked ${unconfirmed === 1 ? 'it' : 'them'} yet.`);
-    before.push(`Confirm what it says — ${unconfirmed} answer${unconfirmed === 1 ? '' : 's'} waiting.`);
-    return {
-      verdict: 'not yet',
-      headline: 'I cannot stand behind this until what was read has been confirmed.',
-      because,
-      before_you_go: before,
-    };
+    return said(
+      'not yet',
+      'I cannot stand behind this until what was read has been confirmed.',
+      `${unconfirmed} of those ${unconfirmed === 1 ? 'is' : 'are'} still unconfirmed: a model read ${unconfirmed === 1 ? 'it' : 'them'} out of the document and nobody has checked ${unconfirmed === 1 ? 'it' : 'them'} yet.`,
+      [`Confirm what it says — ${unconfirmed} answer${unconfirmed === 1 ? '' : 's'} waiting.`],
+    );
   }
 
-  because.push('Everything read out of the documents has been confirmed by a person.');
+  ground.push('Everything read out of the documents has been confirmed by a person.');
 
   // 2 — requirements that put the work outside what Merkle sells as a standard offer.
   if (stops.length) {
-    because.push(`${stops.length} requirement${stops.length === 1 ? '' : 's'} put this outside Merkle's standard offers: ${stops.map((s) => s.evidence).join('; ')}.`);
-    return {
-      verdict: 'not a standard bid',
-      headline: 'We can describe this, but not price it as one of our offers.',
-      because,
-      before_you_go: [
+    return said(
+      'not a standard bid',
+      'We can describe this, but not price it as one of our offers.',
+      `${stops.length} requirement${stops.length === 1 ? '' : 's'} put this outside Merkle's standard offers: ${stops.map((s) => s.evidence).join('; ')}.`,
+      [
         'Decide the route before pricing: an Enterprise Engagement with its own Discovery Phase, or no bid.',
         'Anything quoted at S, M or L here would sell bespoke work at a standard price.',
       ],
-    };
+    );
   }
 
   // 3 — things that cannot be costed at all, whatever we assume.
   if (cannotPrice.length) {
-    because.push(`${cannotPrice.length} input${cannotPrice.length === 1 ? '' : 's'} cannot be costed at all until answered: ${cannotPrice.join('; ')}.`);
-    return {
-      verdict: 'ask first',
-      headline: 'Part of this cannot be costed at all from what we were sent.',
-      because,
-      before_you_go: ['Use the Q&A window on the inputs above — there is no assumption that covers them.'],
-    };
+    return said(
+      'ask first',
+      'Part of this cannot be costed at all from what we were sent.',
+      `${cannotPrice.length} input${cannotPrice.length === 1 ? '' : 's'} cannot be costed at all until answered: ${cannotPrice.join('; ')}.`,
+      ['Use the Q&A window on the inputs above — there is no assumption that covers them.'],
+    );
   }
 
   // 4 — open topics that move the price, but that we could assume around.
@@ -196,32 +196,25 @@ function recommend({ documents, answered, unconfirmed, openTopics, stops, cannot
   // and stop meaning anything.
   const shaping = openTopics.filter((t) => t.impact === 'high');
   if (shaping.length > 2) {
-    because.push(`${shaping.length} topics are still open that change the shape of the solution: ${shaping.map((t) => t.title).join(', ')}${openTopics.length > shaping.length ? `, with ${openTopics.length - shaping.length} smaller ones behind them` : ''}.`);
-    return {
-      verdict: 'go, but ask',
-      headline: 'We can price this, and the price would rest on more assumptions than it should.',
-      because,
-      before_you_go: [
+    return said(
+      'go, but ask',
+      'We can price this, and the price would rest on more assumptions than it should.',
+      `${shaping.length} topics are still open that change the shape of the solution: ${shaping.map((t) => t.title).join(', ')}${openTopics.length > shaping.length ? `, with ${openTopics.length - shaping.length} smaller ones behind them` : ''}.`,
+      [
         `Send the questions on the ${shaping.length} topics above before the price is committed.`,
         `Anything left unanswered becomes one of the ${assumptions} assumptions the proposal states.`,
       ],
-    };
+    );
   }
 
-  if (openTopics.length) {
-    because.push(`${openTopics.length} topic${openTopics.length === 1 ? '' : 's'} still open, none of them large: ${openTopics.map((t) => t.title).join(', ')}.`);
-  } else {
-    because.push('Nothing material is still open.');
-  }
-
-  return {
-    verdict: 'go',
-    headline: 'We can put a number on this and stand behind it.',
-    because,
-    before_you_go: assumptions
-      ? [`The proposal will state ${assumptions} assumption${assumptions === 1 ? '' : 's'}. Read them before the price is committed.`]
-      : [],
-  };
+  return said(
+    'go',
+    'We can put a number on this and stand behind it.',
+    openTopics.length
+      ? `${openTopics.length} topic${openTopics.length === 1 ? '' : 's'} still open, none of them large enough to move the shape of the solution.`
+      : 'Nothing material is still open.',
+    assumptions ? [`The proposal will state ${assumptions} assumption${assumptions === 1 ? '' : 's'}. Read them before the price is committed.`] : [],
+  );
 }
 
 /** The capabilities this RFP is asking Merkle for, each with the answer that says so. */

@@ -45,24 +45,26 @@ export default function GoNoGo({ loaderData }) {
     <main>
       <EngagementHeader engagement={engagement} eyebrow="Go/No-Go support" />
 
-      {/* The position */}
-      <section className={`card start ${tone === 'go' ? 'current' : 'blocked'}`}>
-        <div className="start-head">
-          <div>
-            <p className="eyebrow">Solution Architect</p>
-            <p className="question">{r.headline}</p>
-          </div>
-          <span className={`badge ${tone}`}>{r.verdict}</span>
-        </div>
-        <ul className="because">
-          {r.because.map((line) => <li key={line}>{line}</li>)}
-        </ul>
+      {/* The position: the verdict, then one why, then the ground under it */}
+      <section className={`card position ${tone}`}>
+        <p className="eyebrow">Solution Architect · {r.verdict}</p>
+        <h2 className="plain verdict">{r.headline}</h2>
+
+        <p className="why-line">{r.why}</p>
+
+        {r.because.length ? (
+          <ul className="grounds">
+            {r.because.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+        ) : null}
+
         {r.before_you_go.length ? (
-          <>
+          <div className="before">
             <p className="eyebrow">Before the price is committed</p>
             <ul className="ticks">{r.before_you_go.map((line) => <li key={line}>{line}</li>)}</ul>
-          </>
+          </div>
         ) : null}
+
         <p className="muted small">
           A recommendation, not the decision. The relationship, the competition and the pipeline are weighed in
           the room, and this desk knows nothing about them.
