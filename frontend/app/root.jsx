@@ -39,12 +39,18 @@ const SECTIONS = [
     title: 'The offer',
     pages: [
       { to: '/offering', label: 'Offering', signedIn: true, header: true },
-      /* Short in the menu: the full product name is the page's own title, and
-         at footer column width "S · Ecommerce Foundation" wraps onto three
-         lines and reads as three links. */
-      { to: '/offering/s', label: 'Offer S', signedIn: true },
-      { to: '/offering/m', label: 'Offer M', signedIn: true },
-      { to: '/offering/l', label: 'Offer L', signedIn: true },
+      /* The product names, not the letters. "Offer S" is a filing code; nobody
+         in a client conversation says it, and a consultant looking for what an
+         engagement was sold as is looking for the name. They are the names in
+         discovery/schema/offering.json verbatim, pinned there by a test, so the
+         menu cannot drift from the offering the engine runs.
+
+         Two words each, which wraps to two lines at footer column width — the
+         same as "Your Privacy Choices" already does in the Legal column. What
+         did not fit was the earlier "S · Ecommerce Foundation", at three. */
+      { to: '/offering/s', label: 'Ecommerce Foundation', signedIn: true },
+      { to: '/offering/m', label: 'Ecommerce Scale', signedIn: true },
+      { to: '/offering/l', label: 'Ecommerce Growth', signedIn: true },
       { to: '/offering/larger-engagement', label: 'Beyond the offers', signedIn: true },
     ],
   },

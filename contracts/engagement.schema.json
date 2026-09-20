@@ -452,6 +452,9 @@
             "integration": {
               "$ref": "#/$defs/gate"
             },
+            "storefront_design": {
+              "$ref": "#/$defs/gate"
+            },
             "sku_complexity": {
               "$ref": "#/$defs/gate"
             },
@@ -486,6 +489,8 @@
           "items": {
             "enum": [
               "+B2B",
+              "+Design (bespoke)",
+              "+Design (extended)",
               "+Integration",
               "+Languages",
               "+Markets",
@@ -3951,9 +3956,11 @@
         "tier": {
           "type": "string",
           "enum": [
+            "bespoke",
+            "extended",
+            "heavy",
             "light",
-            "medium",
-            "heavy"
+            "medium"
           ],
           "description": "How much of a project this gate is. Set for migration, from the source platform: WooCommerce is light, Shopware medium, Magento or a custom platform heavy — the published DACH durations differ by a factor of two."
         }

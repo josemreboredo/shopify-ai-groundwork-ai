@@ -23,7 +23,7 @@ describe('can we price this yet', () => {
   test('the denominator is the engine’s own decisions, and it is a constant of the offering', () => {
     const r = readiness(acme(), state(acme()));
     assert.equal(r.decisions.total, offering.scope_gates.length + offering.l_triggers.length + offering.exit_rules.length);
-    assert.equal(r.decisions.total, 34, 'eight gates, three triggers, twenty-three rules');
+    assert.equal(r.decisions.total, 35, 'nine gates, three triggers, twenty-three rules');
     // A ratio of questions is not comparable between bids: only_if moves the
     // question count per client, and one question can drive six rules.
     for (const d of [...offering.scope_gates, ...offering.l_triggers, ...offering.exit_rules]) {

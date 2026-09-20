@@ -2859,20 +2859,21 @@ Drives: L trigger Full Figma design system
 Sources: https://shopify.dev/docs/storefronts/themes/architecture
 
 **Q9.1.2** — How complete is it — brand only, key screens, or every template? *(required · client)*
-Drives: L trigger Full Figma design system
+Drives: L trigger Full Figma design system · gate Storefront design
 
 **Why it matters.** Completeness is the estimate. Brand only means the theme's own sections carry the design. Key screens mean you interpolate the rest. Every template means matching each one in Liquid, which is where a theme build turns into a custom build.
 
 Sources: https://shopify.dev/docs/storefronts/themes/architecture
 
 **Q9.1.3** — Does the Figma file contain a full design system (tokens and components)? *(required · client)*
-Drives: L trigger Full Figma design system
+Drives: L trigger Full Figma design system · gate Storefront design
 
 **Why it matters.** Tokens and components map onto theme settings and theme blocks, which are defined at theme level and reused across sections. A file of flat screens does not, and each screen then becomes bespoke Liquid - the difference between configuring a theme and writing one.
 
 Sources: https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid
 
 **Q9.1.4** — Is the design mapped to Shopify sections and blocks? *(optional · consultant)*
+Drives: gate Storefront design
 
 **Why it matters.** A design already mapped to sections and blocks is buildable as a theme. One that is not usually hides layouts the merchant could never rebuild in the theme editor. Ask early - remapping after design sign-off is rework on both sides.
 
@@ -2881,6 +2882,7 @@ Sources: https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-b
 Sources: https://help.shopify.com/en/manual/online-store/themes/theme-structure/extend
 
 **Q9.1.5** — Is a fully custom design required, rather than a theme with brand customisation? *(recommended · client)*
+Drives: gate Storefront design
 
 **Why it matters.** Separates brand customisation of a current-generation theme from a bespoke build. Theme architecture constrains layout; going outside it means custom sections. If the design cannot be expressed in theme architecture at all, that is a headless argument, not a styling one.
 

@@ -511,7 +511,7 @@ describe('assuming the shape of the solution is not assuming a detail', () => {
     // l_trigger:headless, and an L trigger decides the offer outright.
     const byId = new Map(questionBank.questions.map((x) => [x.id, x]));
     assert.deepEqual(byId.get('Q9.2.1').feeds, ['l_trigger:headless']);
-    assert.deepEqual(byId.get('Q9.1.3').feeds, ['l_trigger:figma_design_system']);
+    assert.deepEqual(byId.get('Q9.1.3').feeds, ['l_trigger:figma_design_system', 'gate:storefront_design']);
   });
 
   test('the rule is a set of question ids, and only the high topics are in it', () => {

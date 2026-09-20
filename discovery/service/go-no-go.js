@@ -142,6 +142,7 @@ const CAPABILITY = {
   b2b: 'B2B / wholesale',
   integration: 'Integration with the client’s systems',
   migration: 'Migration from another platform',
+  storefront_design: 'A storefront beyond theme configuration',
   sku_complexity: 'A complex catalogue',
   retail_pos: 'Retail / point of sale',
   languages: 'Storefront in several languages',

@@ -94,6 +94,19 @@
       "migration": {
         "active": false,
         "evidence": "Q0.5.4: greenfield, no source platform."
+      },
+      "storefront_design": {
+        "active": true,
+        "tier": "extended",
+        "evidence": "Storefront design: key screens designed in Figma"
+      },
+      "retail_pos": {
+        "active": false,
+        "evidence": "No retail stores"
+      },
+      "languages": {
+        "active": false,
+        "evidence": "1 distinct language(s): en"
       }
     },
     "l_triggers": {
@@ -121,10 +134,10 @@
       "min": 6,
       "max": 13
     },
-    "rationale": "Two scope gates are active (markets, multi-currency) and no L trigger applies, so the engagement classifies as M — Ecommerce Scale; delivery is blocked by exit 11.6.",
+    "rationale": "Three scope gates are active (markets, multi-currency, storefront design) and no L trigger applies, so the engagement classifies as M — Ecommerce Scale; delivery is blocked by exit 11.6.",
     "scope_effort_weeks": {
-      "min": 5.5,
-      "max": 6.5
+      "min": 6.5,
+      "max": 8.5
     }
   },
   "markets": {

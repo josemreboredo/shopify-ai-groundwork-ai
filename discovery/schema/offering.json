@@ -120,6 +120,22 @@
       "modifier": "+Integration"
     },
     {
+      "id": "storefront_design",
+      "label": "Storefront design",
+      "condition": "The storefront needs more than theme configuration: bespoke sections or blocks from a key-screens design (extended), or a full template set from a mapped design system (bespoke). Horizon with brand tokens is in every offer and does not fire.",
+      "inputs": [
+        "/design/figma/completeness",
+        "/design/custom_design",
+        "/design/figma/design_system",
+        "/design/figma/mapped_to_sections"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "extended",
+        "bespoke"
+      ]
+    },
+    {
       "id": "sku_complexity",
       "label": "SKU complexity",
       "condition": "sku_count >= 500 AND at least one of: variant_options_max >= 2, custom attributes (metafields) needed, product types include bundle or product_set",
@@ -220,6 +236,34 @@
       "price_add": {
         "min": 10000,
         "max": 15000
+      }
+    },
+    {
+      "id": "+Design (extended)",
+      "gate": "storefront_design",
+      "tier": "extended",
+      "description": "Bespoke sections and blocks built as Online Store 2.0 theme blocks from a key-screens design: schema, presets, translatable labels, Theme Check",
+      "effort_weeks": {
+        "min": 1,
+        "max": 2
+      },
+      "price_add": {
+        "min": 8000,
+        "max": 18000
+      }
+    },
+    {
+      "id": "+Design (bespoke)",
+      "gate": "storefront_design",
+      "tier": "bespoke",
+      "description": "A full template set from a mapped design system: every template, tokens wired to theme settings, motion and right-to-left where the markets need it",
+      "effort_weeks": {
+        "min": 3,
+        "max": 5
+      },
+      "price_add": {
+        "min": 25000,
+        "max": 45000
       }
     },
     {

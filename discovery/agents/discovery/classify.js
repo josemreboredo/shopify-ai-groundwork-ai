@@ -162,6 +162,36 @@ const GATE_EVALUATORS = {
     };
   },
 
+  /**
+   * How much storefront, not which storefront.
+   *
+   * The track (Liquid or Hydrogen) was always part of the offer, and the
+   * backlog already had stories guarding on these same answers. What was
+   * missing was the price: an engagement taking Horizon with brand tokens and
+   * one building the full template set from Figma came out of the engine with
+   * the same band, and the second is three to five weeks more. Horizon plus
+   * tokens is in every offer, so `brand_only` and `none` do not fire.
+   */
+  storefront_design: (doc) => {
+    const d = doc.design ?? {};
+    const completeness = d.figma?.completeness;
+    // Bespoke is the full template set, and a mapped design system is the
+    // signal that it is meant to be built as theme blocks rather than traced.
+    const bespoke = completeness === 'all_templates' || (d.custom_design === true && d.figma?.design_system === true);
+    const extended = completeness === 'key_screens' || d.custom_design === true;
+    const tier = bespoke ? 'bespoke' : extended ? 'extended' : null;
+    const why = bespoke
+      ? completeness === 'all_templates' ? 'a full template set in Figma' : 'bespoke design with a design system'
+      : extended
+        ? completeness === 'key_screens' ? 'key screens designed in Figma' : 'bespoke design elements'
+        : 'theme configuration only';
+    return {
+      active: Boolean(tier),
+      ...(tier ? { tier } : {}),
+      evidence: `Storefront design: ${why}${tier ? '' : ' — Horizon with brand tokens is in every offer'}`,
+    };
+  },
+
   migration: (doc) => {
     const source = doc.migration?.source_platform;
     const active = Boolean(source) && !NON_MIGRATION_SOURCES.has(source);
@@ -212,11 +242,25 @@ const L_TRIGGER_EVALUATORS = {
  */
 function modifierFor(gate, evaluated, doc) {
   const all = offering.modifiers ?? [];
-  if (gate.id === 'migration') {
-    return all.find((m) => m.gate === 'migration' && m.tier === evaluated?.tier)
-      ?? all.find((m) => m.gate === 'migration' && m.tier === 'medium')
+
+  /*
+   * A gate priced by tier resolves by tier, whatever the gate.
+   *
+   * This was written for migration alone and then storefront_design arrived
+   * with the same shape: every bespoke design was quoted at the extended tier,
+   * because the lookup below takes the first modifier for the gate and the
+   * tiers happen to be declared cheapest first. Where a tier cannot be
+   * resolved, the middle one stands in rather than the cheapest — an
+   * unrecognised answer is rarely the simple case.
+   */
+  if (gate.modifier_tiers?.length) {
+    const forGate = all.filter((m) => m.gate === gate.id);
+    const middle = gate.modifier_tiers[Math.floor(gate.modifier_tiers.length / 2)];
+    return forGate.find((m) => m.tier === evaluated?.tier)
+      ?? forGate.find((m) => m.tier === middle)
       ?? null;
   }
+
   const modifier = all.find((m) => m.gate === gate.id) ?? null;
   if (!modifier) return null;
 

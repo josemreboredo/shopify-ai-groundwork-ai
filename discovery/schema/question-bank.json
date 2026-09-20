@@ -8418,7 +8418,8 @@
         "/design/figma/completeness"
       ],
       "feeds": [
-        "l_trigger:figma_design_system"
+        "l_trigger:figma_design_system",
+        "gate:storefront_design"
       ],
       "skip_if": {
         "question": "Q9.1.1",
@@ -8442,7 +8443,8 @@
         "/design/figma/design_system"
       ],
       "feeds": [
-        "l_trigger:figma_design_system"
+        "l_trigger:figma_design_system",
+        "gate:storefront_design"
       ],
       "skip_if": {
         "question": "Q9.1.1",
@@ -8475,7 +8477,10 @@
         "sources": [
           "https://help.shopify.com/en/manual/online-store/themes/theme-structure/extend"
         ]
-      }
+      },
+      "feeds": [
+        "gate:storefront_design"
+      ]
     },
     {
       "id": "Q9.1.5",
@@ -8501,7 +8506,10 @@
             "cons": "Custom sections to build and maintain; every merchant-editable area has to be designed as a setting or it becomes a developer ticket"
           }
         ]
-      }
+      },
+      "feeds": [
+        "gate:storefront_design"
+      ]
     },
     {
       "id": "Q9.2.1",
@@ -9324,7 +9332,7 @@
       "audience": "consultant",
       "answer_type": "boolean",
       "text": "Has the client agreed that their answers may be processed by AI (no customer personal data included)?",
-      "help": "Nothing else can be recorded until this is Yes, and it has to be true \u2014 an RFP arriving in your inbox is not consent to put it through an AI tool. If the client\u2019s process has no such clause, ask, or stop.",
+      "help": "Nothing else can be recorded until this is Yes, and it has to be true — an RFP arriving in your inbox is not consent to put it through an AI tool. If the client’s process has no such clause, ask, or stop.",
       "maps_to": [
         "/meta/consent/llm_processing"
       ],

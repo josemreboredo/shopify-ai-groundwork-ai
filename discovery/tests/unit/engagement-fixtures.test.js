@@ -133,7 +133,7 @@ test('golden fixtures produce the expected outcomes', () => {
       exits: ['11.10', '11.14', '11.23'],
     },
     'foundation-minimal.json': { code: 'S', go: true, gates: [], exits: [] },
-    'stop-custom-checkout.json': { code: 'M', go: false, gates: ['markets', 'multi_currency'], exits: ['11.6', '11.23'] },
+    'stop-custom-checkout.json': { code: 'M', go: false, gates: ['markets', 'multi_currency', 'storefront_design'], exits: ['11.6', '11.23'] },
   };
 
   for (const [file, want] of Object.entries(expected)) {

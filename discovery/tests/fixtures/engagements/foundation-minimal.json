@@ -110,6 +110,18 @@
       "migration": {
         "active": false,
         "evidence": "Q0.5.4: greenfield, no source platform."
+      },
+      "storefront_design": {
+        "active": false,
+        "evidence": "Storefront design: theme configuration only — Horizon with brand tokens is in every offer"
+      },
+      "retail_pos": {
+        "active": false,
+        "evidence": "No retail stores"
+      },
+      "languages": {
+        "active": false,
+        "evidence": "1 distinct language(s): de"
       }
     },
     "l_triggers": {

@@ -276,6 +276,33 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(store(5).price_band.max > store(1).price_band.max);
   });
 
+  test('the storefront is priced by how much of it is designed, not by the track', () => {
+    // Two engagements with identical commerce scope — one taking Horizon with
+    // brand tokens, one building the full template set from Figma — came out of
+    // the engine with the same band, and the second is three to five weeks more.
+    const design = (over) => classifyOffer({ ...base(), design: over });
+    assert.equal(design({ figma: { completeness: 'brand_only' } }).scope_gates.storefront_design.active, false,
+      'Horizon with brand tokens is in every offer');
+
+    const extended = design({ figma: { completeness: 'key_screens' } });
+    const bespoke = design({ figma: { completeness: 'all_templates' } });
+    assert.equal(extended.scope_gates.storefront_design.tier, 'extended');
+    assert.equal(bespoke.scope_gates.storefront_design.tier, 'bespoke');
+    assert.deepEqual(extended.modifiers, ['+Design (extended)']);
+    assert.deepEqual(bespoke.modifiers, ['+Design (bespoke)']);
+
+    // A tiered gate resolving to the first declared tier is the bug this test
+    // exists for: every bespoke design was quoted at the extended price.
+    assert.ok(bespoke.duration_weeks.max > extended.duration_weeks.max + 2,
+      `bespoke ${bespoke.duration_weeks.max}wk must be well past extended ${extended.duration_weeks.max}wk`);
+    assert.ok(bespoke.price_band.max > extended.price_band.max);
+
+    // And the tiers stay resolved by tier for the gate this pattern came from.
+    const migration = (source) => classifyOffer({ ...base(), migration: { source_platform: source } });
+    assert.deepEqual(migration('woocommerce').modifiers, ['+Migration (light)']);
+    assert.deepEqual(migration('magento').modifiers, ['+Migration (heavy)']);
+  });
+
   test('markets have no ceiling of their own — the effort total is the ceiling', () => {
     // "More than five markets" used to be a STOP. It was a third of what an L
     // can hold, and the segment Merkle sells to is Swiss exporters running five
