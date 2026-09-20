@@ -307,11 +307,13 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
    3,103px inside a 1,216px container and put Confirm and Edit off-screen — and
    the clip on the viewport meant page scroll could not reach them. Prose columns
    get a measure; the row's actions never leave the screen. */
-.answers-table { table-layout: auto; }
-.answers-table th, .answers-table td { max-width: 46ch; }
 .answers-table .row-actions { white-space: nowrap; }
 @media (min-width: 761px) {
-  .table-scroll > .answers-table { width: 100%; }
+  /* At desk width the table fits the page and the prose columns take a measure,
+     so the row's actions never leave the screen. Below that it goes back to
+     being a scroller, where a capped column only makes it taller. */
+  .table-scroll > .answers-table { width: 100%; table-layout: auto; }
+  .answers-table th, .answers-table td { max-width: 46ch; }
 }
 .chip { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
 .offering .small { font-size: 0.8rem; }
@@ -912,6 +914,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
   .menu-toggle { order: 1; }
   .brand { order: 2; }
   .user { order: 3; margin-left: auto; }
+  .topbar > .cta { order: 3; margin-left: auto; }
   .user .who { display: none; }
   .topnav.open a { padding: 10px 0; }
   /* `flex: 0 0 auto` froze these at max-content, so "Change" — the only way to
