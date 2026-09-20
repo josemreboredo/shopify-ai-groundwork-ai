@@ -74,9 +74,16 @@ function TopNav({ pages }) {
         className="menu-toggle"
         aria-expanded={open}
         aria-controls="topnav"
+        aria-label={open ? 'Close menu' : 'Menu'}
         onClick={() => setOpen((v) => !v)}
       >
-        {open ? 'Close' : 'Menu'}
+        {/* The word is gone from the screen, not from the accessibility tree:
+            the button keeps its name in aria-label, and the icon is decoration. */}
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" focusable="false">
+          {open
+            ? <><path d="M6.5 6.5l11 11" /><path d="M17.5 6.5l-11 11" /></>
+            : <><path d="M3.5 7h17" /><path d="M3.5 12h17" /><path d="M3.5 17h17" /></>}
+        </svg>
       </button>
       <nav id="topnav" className={open ? 'topnav open' : 'topnav'} aria-label="Main">
         {pages.map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
