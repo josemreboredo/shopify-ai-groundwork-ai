@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, Link, useNavigation, useRevalidator } from 'react-router';
+import { NavLink, Form, Link, useNavigation, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
@@ -13,9 +13,10 @@ export const meta = ({ params }) => [{ title: pageTitle(params.client) }];
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);
+  const section = new URL(request.url).searchParams.get('section');
   try {
     const [view, answers] = await Promise.all([
-      discovery().getInterview(user, params.client, { limit: 3 }),
+      discovery().getInterview(user, params.client, { limit: 3, section }),
       discovery().listAnswers(user, params.client),
     ]);
     return { ...view, answers, vocabularies: vocabulariesFor(view.next.questions) };
@@ -240,6 +241,24 @@ export default function Engagement({ loaderData, actionData }) {
             <DocumentsRead client={engagement.client} documents={documentYield} toConfirm={toConfirm} />
           ) : (
             <>
+              {/* Three cards at a time with no map: a consultant could not say how
+                  much was left, in what, or go back to a part of it. */}
+              {next.sections?.length ? (
+                <nav className="sections" aria-label="Sections with questions open">
+                  <NavLink to={`/engagements/${engagement.client}`} end className={next.section ? 'secondary' : 'active'}>
+                    All · {next.remaining}
+                  </NavLink>
+                  {next.sections.map((sec) => (
+                    <NavLink
+                      key={sec.id}
+                      to={`/engagements/${engagement.client}?section=${encodeURIComponent(sec.id)}`}
+                      className={next.section === sec.id ? 'active' : 'secondary'}
+                    >
+                      {sec.id} {sec.title} · {sec.open}
+                    </NavLink>
+                  ))}
+                </nav>
+              ) : null}
               {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} language={engagement.language} />) : (
                 <section className="card">
                   <p className="question">All questions for this {engagement.mode} interview are answered.</p>

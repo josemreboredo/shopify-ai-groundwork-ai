@@ -171,7 +171,7 @@ export function describeQuestion(q) {
  * @param {{ limit?: number }} [options]
  * @returns {{ questions: object[], remaining: number }}
  */
-export function nextQuestions(session, { limit = 3 } = {}) {
+export function nextQuestions(session, { limit = 3, section = null } = {}) {
   if (!hasConsent(session.answers)) {
     return { questions: [describeQuestion(BY_ID.get(CONSENT_QUESTION))], remaining: 1, consent_required: true };
   }
@@ -192,8 +192,32 @@ export function nextQuestions(session, { limit = 3 } = {}) {
       (b.q.feeds?.length ? 1 : 0) - (a.q.feeds?.length ? 1 : 0) ||
       a.index - b.index);
 
-  const questions = open.slice(0, limit).map(({ q }) => ({ ...describeQuestion(q), block: wrapUp(q) ? 'consultant_wrap_up' : 'client' }));
-  return { questions, remaining: open.length, remaining_client: open.filter(({ q }) => !wrapUp(q)).length };
+  // Where the work sits, so a consultant can see the shape of what is left and
+  // go to a part of it. Three cards at a time with no map made "how far through
+  // am I" unanswerable and "go back to markets" impossible.
+  const bySection = new Map();
+  for (const { q } of open) {
+    const sec = SECTION_OF.get(q.subsection);
+    const entry = bySection.get(sec.id) ?? { id: sec.id, title: sec.title, open: 0 };
+    entry.open += 1;
+    bySection.set(sec.id, entry);
+  }
+  const sections = sectionOrder
+    .map((id) => bySection.get(id))
+    .filter(Boolean);
+
+  const inSection = section
+    ? open.filter(({ q }) => SECTION_OF.get(q.subsection).id === section)
+    : open;
+  const questions = inSection.slice(0, limit).map(({ q }) => ({ ...describeQuestion(q), block: wrapUp(q) ? 'consultant_wrap_up' : 'client' }));
+  return {
+    questions,
+    remaining: open.length,
+    remaining_client: open.filter(({ q }) => !wrapUp(q)).length,
+    sections,
+    section: section ?? null,
+    in_section: section ? inSection.length : null,
+  };
 }
 
 /**

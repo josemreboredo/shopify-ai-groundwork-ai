@@ -349,9 +349,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     },
 
     /** @param {User} user @param {string} client @param {{ limit?: number }} [options] */
-    async getInterview(user, client, { limit = 3 } = {}) {
+    async getInterview(user, client, { limit = 3, section = null } = {}) {
       const session = await load(user, client);
-      const next = nextQuestions(session, { limit });
+      const next = nextQuestions(session, { limit, section });
       return {
         engagement: summary(session),
         language: coverage(session.language),
