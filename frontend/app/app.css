@@ -709,6 +709,15 @@ h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; tex
 
 /* The standfirst: one answer, the shape of the gap and what blocks it, read in
    three seconds. Below it the page goes into detail; this part does not. */
+/* What the engine quoted, set apart from the rest of the working state: it is
+   the one number on this page that leaves the room, so it does not sit in the
+   run of sections as though it were another count. */
+.quote { border: 1px solid var(--line); border-left: 3px solid var(--red); padding: 20px 24px; margin: 28px 0; }
+.quote h2 { margin-top: 0; }
+.quote > ul { margin-bottom: 8px; }
+.quote > .muted.small { max-width: 78ch; }
+.quote.provisional { border-left-color: var(--line-strong); }
+
 .standfirst { border-top: 3px solid var(--muted); padding: 26px 0 30px; margin-bottom: 8px; }
 .standfirst.go { border-top-color: var(--ok); }
 .standfirst.flag { border-top-color: var(--warn); }

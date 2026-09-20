@@ -109,6 +109,51 @@ export function offerStanding(p) {
   };
 }
 
+/**
+ * What the engine actually quoted for this engagement, and how it got there.
+ *
+ * The page warned "this page carries the offer and the price band" and carried
+ * neither: offerStanding returns a code and a headline, and the band existed
+ * only inside the go/no-go document and the deck XML. That was survivable while
+ * the band was simply the offer's — a consultant could read it off the offering
+ * page. It stopped being survivable when gates started being quoted past the
+ * envelope a band already holds, because the two numbers now differ and nothing
+ * in the app showed the one that counts.
+ *
+ * It carries its own arithmetic for the same reason the offering pages do: a
+ * number a consultant has to defend in a room is worth less than a number they
+ * can rebuild. Provisional is not hidden either — a band computed while gates
+ * are still unknown is a guess, and says so.
+ *
+ * @param {object} doc  decided engagement
+ * @param {{ pricing?: boolean, provisional?: boolean }} [options]
+ *   pricing: include the price band. Merkle's commercial position travels to
+ *   engagement leads, never to a client and never into anything generated.
+ */
+/** "4" or "13\u201317.5". */
+const span = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}\u2013${w.max}`) : '\u2014');
+
+export function quote(doc, { pricing = false, provisional = false } = {}) {
+  const o = doc.offer;
+  if (!o?.code) return null;
+  return {
+    code: o.code,
+    name: o.name,
+    track: o.delivery_track,
+    weeks: o.duration_weeks,
+    ...(pricing && o.price_band ? { band: o.price_band } : {}),
+    pricing_withheld: !pricing,
+    provisional,
+    // The two numbers the quote is built from: what the gates add up to, and
+    // how much of that the band already holds. Anything past the second is what
+    // "quoted on top" means, and the modifiers name which gates did it.
+    scope_effort_weeks: o.scope_effort_weeks ?? null,
+    gate_capacity_weeks: o.gate_capacity_weeks ?? null,
+    modifiers: o.modifiers ?? [],
+    rationale: o.rationale ?? null,
+  };
+}
+
 const ROUTE_SHORT = { larger_engagement: 'Larger Engagement', arc: 'Merkle Arc' };
 
 const ROUTE_HEADLINE = {
@@ -133,6 +178,14 @@ export function renderSummaryMarkdown(s) {
         ...(st.note ? [`- **Note:** ${st.note}`] : []),
       ];
     })(),
+    ...(s.quote ? (() => {
+      const q = s.quote;
+      const over = q.modifiers.length > 0;
+      return [
+        `- **Quoted:** ${q.code} \u00b7 ${q.name} \u00b7 ${span(q.weeks)} weeks${q.band ? ` \u00b7 ${q.band.currency} ${Math.round(q.band.min / 1000)}k\u2013${Math.round(q.band.max / 1000)}k${q.band.open_ended ? '+' : ''}` : ''}${q.provisional ? ' (provisional \u2014 some scope gates are still unknown)' : ''}`,
+        `- **How that number is built:** the gates add up to ${span(q.scope_effort_weeks)} weeks against the ${span(q.gate_capacity_weeks)} this offer\u2019s band already holds${over ? `, so the excess is quoted on top of it \u2014 ${q.modifiers.join(', ')}` : ', so nothing is quoted on top of it'}.`,
+      ];
+    })() : []),
     `- **Coverage:** ${p.coverage.required_answered} of ${p.coverage.required_total} required questions answered · ${p.coverage.required_tbc} TBC · ${p.coverage.required_commented ?? 0} clarified by comment · ${p.coverage.required_open} open`,
     `- **Interview:** ${s.engagement.mode} mode · ${s.engagement.language} · updated ${s.engagement.updated_at}`,
     ...(p.plan_suggestion ? [`- **Minimum Shopify plan for these answers:** ${p.plan_suggestion.value} — ${p.plan_suggestion.reasons.join('; ')}`] : []),

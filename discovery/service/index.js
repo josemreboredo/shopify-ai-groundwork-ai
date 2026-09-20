@@ -19,7 +19,7 @@ import { preview } from '../agents/interview/preview.js';
 import { findPersonalData } from '../agents/discovery/input.js';
 import { questionBank, questionForPointer } from '../schema/index.js';
 import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js';
-import { displayValue } from './summary.js';
+import { quote, displayValue } from './summary.js';
 import { approachBrief, closingStatus, deckBrief, deckDataPages, decideFromSession, finaliseEngagement, needsApproach, referencePiece } from './closing.js';
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
@@ -670,6 +670,11 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         // When the engine cannot weigh the answers yet, what is missing — named
         // and linked, as every other blocked page in the app now does.
         blocked: decided.ok ? null : { errors: decided.errors, blockers: blockersFromErrors(decided.errors) },
+        // What the engine quoted, and the arithmetic behind it. The page has
+        // warned that it carries the price band since long before it did.
+        quote: decided.ok
+          ? quote(decided.doc, { pricing: user.role === 'owner', provisional: preview(session, today()).offer.provisional === true })
+          : null,
         // What the offer owes the client whatever its commercial shape: what it
         // would be built on, and which plan the requirements force.
         technical: decided.ok ? technicalAnswer(decided.doc) : null,

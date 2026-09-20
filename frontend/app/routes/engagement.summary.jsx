@@ -37,6 +37,46 @@ function Bar({ settled, total }) {
   );
 }
 
+/** "4" or "13–17.5". */
+const span = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}\u2013${w.max}`) : '—');
+const money = (b) => `${b.currency} ${Math.round(b.min / 1000)}k\u2013${Math.round(b.max / 1000)}k${b.open_ended ? '+' : ''}`;
+
+/**
+ * What the engine quoted for this engagement, with the arithmetic behind it.
+ *
+ * Not the published band of the offer: once the gates outgrow the weeks a band
+ * already holds, the excess is added and the two numbers part company. A
+ * consultant who can only read the offering page is reading the wrong one.
+ *
+ * @param {{ q: object }} props
+ */
+function Quote({ q }) {
+  const over = q.modifiers.length > 0;
+  return (
+    <section className={`quote${q.provisional ? ' provisional' : ''}`}>
+      <h2>What the engine quotes</h2>
+      <ul className="stats kpis">
+        <li><strong>{q.code}</strong><span>{q.name} · {q.track === 'hydrogen' ? 'headless, Hydrogen on Oxygen' : 'Shopify theme'}</span></li>
+        <li><strong>{span(q.weeks)}</strong><span>weeks, end to end</span></li>
+        {q.band
+          ? <li><strong>{money(q.band)}</strong><span>internal price band — never in a client document</span></li>
+          : <li><strong>—</strong><span>price bands are shown to engagement leads</span></li>}
+      </ul>
+      <p className="muted small">
+        {over
+          ? `The gates add up to ${span(q.scope_effort_weeks)} weeks against the ${span(q.gate_capacity_weeks)} this offer\u2019s band already holds, so the excess is quoted on top of it — ${q.modifiers.join(', ')}.`
+          : `The gates add up to ${span(q.scope_effort_weeks)} weeks and this offer\u2019s band already holds ${span(q.gate_capacity_weeks)}, so nothing is quoted on top of it.`}
+      </p>
+      {q.provisional ? (
+        <p className="callout">
+          <strong>Provisional.</strong> Some scope gates are still unknown, so this is what the answers so far add
+          up to rather than a position to take into a room.
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
 function Points({ title, lead, rows, client, tone }) {
   if (!rows.length) return null;
   return (
@@ -73,7 +113,7 @@ function Points({ title, lead, rows, client, tone }) {
 }
 
 export default function Summary({ loaderData }) {
-  const { engagement, preview: p, readiness: r, technical: t, open_points: open, documents, notes, blocked, generated_at: generatedAt } = loaderData;
+  const { engagement, preview: p, readiness: r, technical: t, quote: q, open_points: open, documents, notes, blocked, generated_at: generatedAt } = loaderData;
   const client = engagement.client;
   const standing = offerStanding(p);
 
@@ -103,8 +143,9 @@ export default function Summary({ loaderData }) {
 
       {/* The rule is stated on the offering page, in the manual, on the about
           page and beside the questions download — and was missing from the one
-          page that carries the offer, the price band and a download button. */}
-      <p className="pilot">Internal — this page carries the offer and the price band. Never send it, or its download, to the client.</p>
+          page that carries the offer, the price band and a download button.
+          It then went on saying it for months while carrying neither. */}
+      <p className="pilot">Internal — this page carries the offer, and the price band where you are an engagement lead. Never send it, or its download, to the client.</p>
 
       {/* 1 — the slide. One answer, the shape of the gap, and what blocks it. */}
       <section className={`standfirst ${r.ready ? 'go' : 'flag'}`}>
@@ -145,7 +186,12 @@ export default function Summary({ loaderData }) {
         </div>
       </section>
 
-      {/* 2 — the two answers the offer owes whatever its commercial shape */}
+      {/* 2 — what the engine quoted, which this page promised and never carried.
+             Survivable while the band was simply the offer's; not once gates
+             started being quoted past the envelope a band already holds. */}
+      {q ? <Quote q={q} /> : null}
+
+      {/* 3 — the two answers the offer owes whatever its commercial shape */}
       {t ? (
         <div className="answers">
           <div className="answer">
@@ -166,7 +212,7 @@ export default function Summary({ loaderData }) {
         </div>
       ) : null}
 
-      {/* 3 — the numbers, each one countable */}
+      {/* 4 — the numbers, each one countable */}
       <ul className="stats kpis">
         <li><strong>{r.counts.to_confirm}</strong><span>answers read from a document and still waiting on you</span></li>
         <li><strong>{r.counts.undecided}</strong><span>questions not yet asked or turned into an assumption</span></li>
@@ -175,7 +221,7 @@ export default function Summary({ loaderData }) {
         <li><strong>{r.counts.stops}<span className="of"> · {r.counts.flags} · {r.counts.warns}</span></strong><span>rules fired — outside the offers · needs an owner · commercial</span></li>
       </ul>
 
-      {/* 4 — why those two answers, with the page that sets each limit */}
+      {/* 5 — why those two answers, with the page that sets each limit */}
       {t ? (
         <section>
           <h2>Why that plan, and why that storefront</h2>
