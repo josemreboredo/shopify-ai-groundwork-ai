@@ -98,6 +98,19 @@ li::marker { color: var(--red); }
 .page-head .page-meta { margin: 16px 0 0; color: rgba(255, 255, 255, 0.55); font-size: 0.8rem; letter-spacing: 0.02em; }
 .page-head:has(.tabs), .page-head:has(.wayfinder) { padding-bottom: 0; }
 
+/* Links on the black bands. They inherited the ink colour — #101223 on #000,
+   about 1.1:1 — so they were present, clickable and invisible. White text with
+   a dimmed underline that turns red on hover keeps the brand's link behaviour
+   without borrowing a colour that cannot carry body text on black. */
+.page-head p a, .page-head li a, .page-head dd a,
+.band.dark p a, .band.dark li a, .band.dark dd a {
+  color: #fff; text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+.page-head p a:hover, .page-head li a:hover, .page-head dd a:hover,
+.band.dark p a:hover, .band.dark li a:hover, .band.dark dd a:hover {
+  color: #fff; text-decoration-color: var(--red); text-decoration-thickness: 2px;
+}
+
 /* Tabs */
 .tabs { display: flex; gap: 30px; margin: 28px 0 0; border-bottom: 1px solid var(--line); }
 .tabs a {
@@ -690,6 +703,11 @@ button.link:disabled { color: var(--muted); cursor: default; }
 .clarifications > li.q-proposed { border-left: 3px solid var(--red); padding-left: 18px; }
 .decide-actions { display: flex; gap: 10px; margin: 14px 0 0 2.2rem; }
 .decide-actions form { display: inline; }
+
+/* Assuming the shape of the solution is not assuming a detail inside it */
+.shape-warning { margin-top: 16px; padding: 14px 16px; border-left: 3px solid var(--warn); background: rgba(138, 90, 0, 0.05); }
+.shape-warning p { margin: 0 0 6px; max-width: 84ch; }
+.shape-note { margin: 0 0 6px; color: var(--warn); font-size: 0.84rem; font-weight: 600; }
 
 /* What the proposal stands on when nobody could tell us otherwise */
 .assumptions { list-style: none; padding: 0; margin: 18px 0 0; }

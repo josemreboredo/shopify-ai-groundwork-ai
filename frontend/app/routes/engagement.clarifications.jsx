@@ -144,6 +144,13 @@ Write every question we need answered to price this properly — the Lead Consul
           </ul>
         )}
         {actionData?.error ? <p className="error">{actionData.error}</p> : null}
+        {actionData?.warning ? (
+          <div className="shape-warning">
+            <p className="eyebrow">This one is not a detail</p>
+            <p>{actionData.warning}</p>
+            <ul className="ticks">{(actionData.shape_assumed ?? []).map((q) => <li key={q}>{q}</li>)}</ul>
+          </div>
+        ) : null}
       </section>
 
       {/* The questions are a snapshot and the engagement moves under them: answers
@@ -238,6 +245,9 @@ Write every question we need answered to price this properly — the Lead Consul
                 <p className="why"><strong>Why we ask.</strong> {q.why_we_ask}</p>
                 <div className="for-us">
                   <p className="eyebrow">For us — not sent</p>
+                  {q.shape_changing ? (
+                    <p className="shape-note">Changes the shape of the solution, not a detail inside it — assuming it is assuming the size of the engagement.</p>
+                  ) : null}
                   {(q.covers ?? []).length ? (
                     <p className="muted">Covers <WithQuestionLinks text={(q.covers ?? []).join(', ')} client={client} /></p>
                   ) : null}

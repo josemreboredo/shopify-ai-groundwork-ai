@@ -13,7 +13,7 @@ import fs from 'node:fs';
 
 import { clarificationTopics, clarificationBrief } from '../../agents/discovery/clarifications.js';
 import { renderClarificationsMarkdown } from '../../service/clarifications-view.js';
-import { clarificationsFreshness, repliesReceived, replyPrompt, statedAssumptions } from '../../service/assumptions.js';
+import { clarificationsFreshness, repliesReceived, replyPrompt, statedAssumptions, shapeChangingIds, changesShape } from '../../service/assumptions.js';
 import { createDiscoveryService, ServiceError } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 import { questionBank } from '../../schema/index.js';
@@ -485,4 +485,75 @@ describe('a question about a subject the client does not have is never asked', (
     const asked = new Set(clarificationTopics(doc).flatMap((t) => t.covers.map((c) => c.question_id)));
     assert.ok(asked.has('Q3.5.1'), 'China is in the markets, so the route question applies');
   });
+});
+
+describe('assuming the shape of the solution is not assuming a detail', () => {
+  const bid = async (questions) => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-bid', { questions });
+    return svc;
+  };
+  const q = (question, covers) => ({ question, why_we_ask: 'the trade-off', covers, assume_if_unanswered: 'we assume', impact_if_wrong: 'it costs' });
+
+  test('the questions that decide the offer size are the ones that feed an L trigger', () => {
+    // "Should the whole site run on Shopify, or should the shop sit behind a
+    // separate content platform" is not a detail: Q9.2.1 feeds
+    // l_trigger:headless, and an L trigger decides the offer outright.
+    const byId = new Map(questionBank.questions.map((x) => [x.id, x]));
+    assert.deepEqual(byId.get('Q9.2.1').feeds, ['l_trigger:headless']);
+    assert.deepEqual(byId.get('Q9.1.3').feeds, ['l_trigger:figma_design_system']);
+  });
+
+  test('the rule is a set of question ids, and only the high topics are in it', () => {
+    const topics = clarificationTopics(acme());
+    const ids = shapeChangingIds(topics);
+    const high = topics.filter((t) => t.impact === 'high');
+    assert.ok(high.length, 'the fixture has some');
+    for (const t of high) for (const c of t.covers) assert.ok(ids.has(c.question_id));
+    for (const t of topics.filter((x) => x.impact !== 'high')) {
+      for (const c of t.covers) {
+        if (!high.some((h) => h.covers.some((x) => x.question_id === c.question_id))) {
+          assert.ok(!ids.has(c.question_id), `${c.question_id} is a detail`);
+        }
+      }
+    }
+  });
+
+  test('a question resting on one of them changes the shape; one that does not, does not', () => {
+    const ids = shapeChangingIds(clarificationTopics(acme()));
+    const [anyShaping] = [...ids];
+    assert.equal(changesShape({ covers: [anyShaping] }, ids), true);
+    assert.equal(changesShape({ covers: ['Q7.3.4'] }, ids), false);
+    assert.equal(changesShape({ covers: [] }, ids), false, 'a question resting on nothing shapes nothing');
+  });
+
+  test('a detail is rejected without ceremony', async () => {
+    const svc = await bid([q('A detail', ['Q7.3.4'])]);
+    const result = await svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'rejected' });
+    assert.equal(result.rejected, 1);
+    assert.ok(!result.warning, 'or the warning stops meaning anything');
+  });
+
+  test('accepting one never warns — it is being asked, not assumed', async () => {
+    const doc = acme();
+    const shaping = clarificationTopics(doc).find((t) => t.impact === 'high');
+    const svc = await bid([q('The one that shapes it', shaping.covers.map((c) => c.question_id))]);
+    const result = await svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'accepted' });
+    assert.ok(!result.warning);
+  });
+
+  test('the assumption it creates carries which kind it was', () => {
+    // The proposal has to be able to say whether Merkle guessed at a detail or
+    // at what it is being asked to build.
+    // On a question still open — an assumption about something the client has
+    // since answered retires, which is its own rule.
+    const rejected = { status: 'rejected', question: 'Headless or one storefront?', assume_if_unanswered: 'One Shopify storefront', impact_if_wrong: 'a second build stream', covers: ['Q10.5.9'], shape_changing: true, decided_by: 'lc-one' };
+    const [a] = statedAssumptions(acme(), { questions: [rejected] });
+    assert.equal(a.shape_changing, true);
+    assert.equal(a.impact_if_wrong, 'a second build stream');
+    assert.equal(a.owner, 'lc-one');
+  });
+
 });

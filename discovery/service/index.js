@@ -27,7 +27,7 @@ import { deckErrors } from './deck-template.js';
 import { clarificationBrief, clarificationTopics, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
-import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt } from './assumptions.js';
+import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
 import { readiness, openPoints } from './readiness.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
@@ -1045,14 +1045,34 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (!saved?.questions?.length) throw new ServiceError(409, 'There are no questions to decide on yet');
       if (!['accepted', 'rejected', 'proposed'].includes(status)) throw new ServiceError(400, `status must be accepted, rejected or proposed (got ${status})`);
       if (!all && !saved.questions.some((q) => q.id === id)) throw new ServiceError(404, `No question ${id}`);
+      // Which of these decide the shape of the solution rather than a detail
+      // inside one. Assuming an answer to "is this headless" is assuming the
+      // size of the engagement, and the tool used to let that happen in one
+      // silent click.
+      const decided = decideFromSession(session, today());
+      const shaping = shapeChangingIds(decided.ok ? clarificationTopics(decided.doc) : []);
+
       saved.questions = saved.questions.map((q) => (all || q.id === id
-        ? { ...q, status, decided_at: today(), decided_by: user.login }
+        ? { ...q, status, decided_at: today(), decided_by: user.login, ...(changesShape(q, shaping) ? { shape_changing: true } : {}) }
         : q));
       session.closing = { ...session.closing, clarifications: saved };
       session.updated_at = today();
       await store.save(session);
       const count = (s) => saved.questions.filter((q) => q.status === s).length;
-      return { ok: true, accepted: count('accepted'), rejected: count('rejected'), proposed: count('proposed') };
+      // Not a refusal — it is the consultant's decision — but it is not allowed
+      // to be silent. A price built on a guess about the offer size is a
+      // different commercial object from one built on a guess about a detail.
+      const assumedShape = saved.questions.filter((q) => q.status === 'rejected' && q.shape_changing);
+      return {
+        ok: true,
+        accepted: count('accepted'),
+        rejected: count('rejected'),
+        proposed: count('proposed'),
+        ...(assumedShape.length ? {
+          warning: `${assumedShape.length} of the questions you decided not to ask change the shape of the solution, not a detail inside it. The proposal will state an assumption about what Merkle is being asked to build, and the offer size rests on it.`,
+          shape_assumed: assumedShape.map((q) => q.question),
+        } : {}),
+      };
     },
 
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */

@@ -52,6 +52,9 @@ export function statedAssumptions(doc, clarifications) {
       impact_if_wrong: q.impact_if_wrong ?? null,
       owner: q.decided_by ?? null,
       source: 'rejected',
+      // An assumption about the shape of the solution is not the same object as
+      // an assumption about a detail inside it, and the proposal has to say so.
+      shape_changing: Boolean(q.shape_changing),
       question_id: null,
       covers: q.covers ?? [],
       decided_by: q.decided_by ?? null,
@@ -191,3 +194,27 @@ If the reply does not cover one of them, say so and leave it — it stays a stat
 
 Then tell me which questions came back, which are still open, and whether any answer changes what we had assumed.`;
 }
+
+/**
+ * The discovery questions whose answers decide the shape of the solution.
+ *
+ * "Should the whole site run on Shopify, or should the shop sit behind a
+ * separate content platform" is not a detail — it feeds an L trigger, and an L
+ * trigger decides the offer outright. Deciding not to ask it is deciding to
+ * guess the size of the engagement, which is a different commercial object from
+ * guessing a detail inside one, and the tool took both in the same click.
+ *
+ * @param {object[]} topics  open topics from the engine
+ * @returns {Set<string>}
+ */
+export function shapeChangingIds(topics) {
+  return new Set(
+    (topics ?? [])
+      .filter((t) => t.impact === 'high')
+      .flatMap((t) => (t.covers ?? []).map((c) => c.question_id))
+      .filter(Boolean),
+  );
+}
+
+/** Whether a question rests on any of them. @param {object} question @param {Set<string>} ids */
+export const changesShape = (question, ids) => (question.covers ?? []).some((c) => ids.has(c));
