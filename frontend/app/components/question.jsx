@@ -56,7 +56,7 @@ export function EngagementNav({ engagement }) {
       </button>
       <ol className="steps-spine" id="spine-steps">
         {steps.map((step) => (
-          <li key={step.path || 'start'} className={step.state}>
+          <li key={step.path || 'start'} className={step.satisfied && step.state !== 'done' ? `${step.state} satisfied` : step.state}>
             <NavLink to={to(step.path)} end={step.path === ''}>
               <span className="step-n" aria-hidden="true">{String(step.n).padStart(2, '0')}</span>
               <span className="step-label">{step.label}</span>

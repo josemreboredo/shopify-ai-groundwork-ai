@@ -199,6 +199,12 @@ export function stepsFor(engagement) {
     hint: s.hint ?? null,
     n: i + 1,
     state: current === -1 || i < current ? 'done' : i === current ? 'current' : 'todo',
+    // A step can meet its own condition while an earlier one does not — a closing
+    // document saved before the interview finished. Progress still stops at the
+    // first unmet step, but "met, and waiting on the work before it" is not the
+    // same as untouched, and a hint reading "Saved 2026-09-18" under a step
+    // styled as never started says two different things at once.
+    satisfied: s.done,
   }));
 }
 

@@ -79,13 +79,13 @@ export default function Home({ loaderData, actionData }) {
           they fold away and the list comes first. */}
       <details className="card prefill new-record">
         <summary>
-          <span className="prefill-title">New — answer an RFP, or run a discovery</span>
+          <span className="prefill-title">New — answer a new RFP, or run a new discovery</span>
           <span className="muted prefill-status">{engagements.length} open · start another</span>
         </summary>
       <div className="doors">
         <section className="door rfp">
           <p className="door-n" aria-hidden="true">01</p>
-          <h2>Answer an RFP</h2>
+          <h2>Answer a new RFP</h2>
           <p>A Shopify RFP arrived with a deadline. Read it in, confirm what it says, send the few questions that change the answer, and write the proposal.</p>
           <Form method="post" className="door-form">
             <input type="hidden" name="process" value="rfp" />
@@ -106,7 +106,7 @@ export default function Home({ loaderData, actionData }) {
 
         <section className="door discovery">
           <p className="door-n" aria-hidden="true">02</p>
-          <h2>Run a discovery</h2>
+          <h2>Run a new discovery</h2>
           <p>A client is engaged and the Shopify build needs scoping. Work through the questions with them, then write the closing document and the delivery backlog.</p>
           <Form method="post" className="door-form">
             <input type="hidden" name="process" value="discovery" />
