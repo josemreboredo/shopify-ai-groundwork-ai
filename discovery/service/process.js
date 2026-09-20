@@ -100,8 +100,19 @@ const STEPS = {
       // price the work, what it would cost us to be wrong, and where it lands.
       path: 'go-no-go',
       label: 'Go/No-Go support',
-      done: Boolean(e.go || e.route),
-      hint: e.go ? `Within the offers · ${e.offer?.code ?? ''}`.trim() : e.route ? ROUTE_LABEL[e.route] ?? e.route : 'Evidence for the decision',
+      // The engine has a position from the moment the record exists — an empty
+      // bid is a GO on the smallest offer — so "the engine computed something"
+      // was never the same as "there is a position to take into the room", and
+      // the step marked itself done on a bid nobody had read. It follows the
+      // page's own gates now: nothing read is nothing to assess, and an
+      // extraction nobody has checked is not something to stand behind.
+      done: (e.documents ?? 0) > 0 && (e.to_review ?? 0) === 0 && Boolean(e.go || e.route),
+      hint: !(e.documents ?? 0)
+        ? 'Nothing to assess yet'
+        : e.to_review
+          ? `${e.to_review} to confirm first`
+          : e.go ? `Within the offers · ${e.offer?.code ?? ''}`.trim()
+            : e.route ? ROUTE_LABEL[e.route] ?? e.route : 'Evidence for the decision',
     },
     {
       path: 'clarifications',
@@ -125,9 +136,11 @@ const STEPS = {
       // Its own condition. It shared one with "Write the proposal", so the two
       // flipped together and the spine pointed at the summary for ever — the
       // step that actually produces the document was never the current one.
-      // The check is passed when nothing is left blocking it.
-      done: e.to_review === 0 && !e.clarifications_undecided && Boolean(e.go || e.route),
-      hint: 'Everything the proposal will rest on, in one page',
+      // The check is passed when nothing is left blocking it — and an empty bid
+      // blocks nothing, which is not the same as being settled: with no document
+      // read there is nothing to confirm, nothing to ask and nothing to check.
+      done: (e.documents ?? 0) > 0 && e.to_review === 0 && !e.clarifications_undecided && Boolean(e.go || e.route),
+      hint: (e.documents ?? 0) ? 'Everything the proposal will rest on, in one page' : 'Nothing to check yet',
     },
     {
       path: 'closing-document',

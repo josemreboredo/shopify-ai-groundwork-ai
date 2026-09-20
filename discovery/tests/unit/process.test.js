@@ -72,6 +72,26 @@ describe('one engine, two processes', () => {
     assert.deepEqual(at({ go: true, clarifications_at: '2026-09-20', clarifications_undecided: 2 }), ['done', 'done', 'done', 'current', 'todo', 'todo'], 'an untriaged question takes it back');
   });
 
+  test('the go/no-go step is not done because the engine has an opinion', () => {
+    // An empty bid is a GO on the smallest offer, so `go` is set from the moment
+    // the record exists. Marking the step done on that put a red wedge — the mark
+    // for finished — on a bid nobody had read, and the same wedge said something
+    // true two steps earlier. The step follows the page's own gates instead.
+    const step = (e) => stepsFor({ process: 'rfp', ...e }).find((s) => s.path === 'go-no-go');
+    assert.equal(step({ go: true, documents: 0 }).state, 'todo', 'nothing read is nothing to assess');
+    assert.equal(step({ go: true, documents: 0 }).satisfied, false);
+    assert.equal(step({ go: true, documents: 2, to_review: 9 }).satisfied, false, 'an architect cannot stand behind extractions nobody has checked');
+    assert.equal(step({ go: true, documents: 2, to_review: 9 }).hint, '9 to confirm first');
+    assert.equal(step({ go: true, documents: 2, to_review: 0, offer: { code: 'M' } }).satisfied, true);
+
+    // The same mistake, one step later: an empty bid has nothing to confirm and
+    // nothing asked, and both of those read as "nothing is blocking it".
+    const check = (e) => stepsFor({ process: 'rfp', ...e }).find((s) => s.path === 'summary');
+    assert.equal(check({ go: true, documents: 0, to_review: 0 }).satisfied, false, 'absence is not settlement');
+    assert.equal(check({ go: true, documents: 0, to_review: 0 }).hint, 'Nothing to check yet');
+    assert.equal(check({ go: true, documents: 3, to_review: 0, clarifications_at: '2026-09-20' }).satisfied, true);
+  });
+
   test('every step can be the current one, including the last', () => {
     // "Check where it stands" and "Write the proposal" shared a done condition,
     // so they flipped together and the spine pointed at the summary for ever.
