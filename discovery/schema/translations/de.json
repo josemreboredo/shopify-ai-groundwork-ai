@@ -1116,6 +1116,163 @@
     "why": "Merkle erbringt keine rechtliche, steuerliche oder zollrechtliche Beratung zur VR China. Wird hier niemand genannt, hat der China-Weg für seine risikoreichsten Entscheidungen keine verantwortliche Stelle, und die eigene China-Discovery kann nicht verantwortbar starten.",
     "limits": "Gesellschaftsgründung, ICP-Status, Zollverfahren, Produkteinstufung, Prüfung der Produktaussagen und PIPL-Pflichten brauchen alle eine benannte Beratung in der VR China. Shopifys Dokumentation deckt nichts davon ab."
    }
+  },
+  "Q4.1.1": {
+   "text": "Welche Zahlungsanbieter werden Sie einsetzen (Shopify Payments, Adyen, Stripe, PayPal …)?",
+   "help": "Shopify Payments ist für einige Funktionen erforderlich (Shop Pay Installments, Managed Markets, bestimmte Preisfunktionen in Markets); Gateways von Drittanbietern werden unterstützt.",
+   "teach": {
+    "why": "Der Anbieter entscheidet über mehr als die Gebühren. Käuferinnen und Käufer in ihrer eigenen Währung zu belasten, setzt Shopify Payments oder Adyen voraus; bei jedem anderen Anbieter sind lokale Preise reine Anzeige, und belastet wird in der Standardwährung Ihres Stores.",
+    "limits": "Shopify Payments ist nur in unterstützten Ländern verfügbar, jeweils mit eigenen Anforderungen an Bankkonto und Verifizierung — prüfen Sie das Sitzland der Gesellschaft des Kunden, bevor Sie es als Option annehmen. Auf allen Gateways von Drittanbietern fallen Drittanbieter-Transaktionsgebühren an; PayPal und manuelle Zahlungen sind davon ausgenommen, wenn Shopify Payments aktiv ist.",
+    "options": [
+     {
+      "option": "Shopify Payments",
+      "pros": "Belastet Käuferinnen und Käufer in lokaler Währung; lokale Zahlungsarten, Shop Pay und Betrugsanalyse sind enthalten; keine Drittanbieter-Transaktionsgebühr",
+      "cons": "Nur in unterstützten Ländern; der Kunde muss dort eine zulässige Gesellschaft und ein Bankkonto haben"
+     },
+     {
+      "option": "Gateway eines Drittanbieters (nicht Adyen)",
+      "pros": "Erhält eine bestehende Acquirer-Beziehung und deren verhandelte Konditionen",
+      "cons": "Die lokale Währung wird zur reinen Anzeige — belastet wird in der Store-Währung; Drittanbieter-Transaktionsgebühren fallen an; die Betrugsanalyse setzt Grow oder höher voraus"
+     }
+    ]
+   }
+  },
+  "Q4.1.2": {
+   "text": "Welche lokalen Zahlungsarten werden benötigt?",
+   "teach": {
+    "why": "Lokale Zahlungsarten entscheiden Markt für Markt über die Conversion. Shopify Payments bietet sie je Land an und zeigt sie anhand des Standorts der Käuferin oder des Käufers — was verfügbar ist, legt also Shopifys Länderseite fest und nicht der Build.",
+    "limits": "Die Seite mit den Zahlungsarten des Store-Landes ist die führende Quelle, und die Sets unterscheiden sich: Für die Schweiz ist TWINT dokumentiert, für Deutschland EPS und BLIK, für Österreich EPS. Eine nicht gelistete Zahlungsart braucht ein Gateway eines Drittanbieters, mit eigener Transaktionsgebühr."
+   }
+  },
+  "Q4.1.3": {
+   "text": "Welche Buy-now-pay-later-Optionen, falls überhaupt?",
+   "help": "Shop Pay Installments steht Stores in den USA, Kanada und dem Vereinigten Königreich zur Verfügung.",
+   "teach": {
+    "why": "Jetzt kaufen, später zahlen bewegt den durchschnittlichen Bestellwert, und die native Option ist geografisch festgelegt. Shop Pay Installments deckt nur Stores in den USA, Kanada und dem Vereinigten Königreich ab; überall sonst braucht der Kunde einen Drittanbieter oder eine App.",
+    "limits": "Shop Pay Installments: Stores in den USA, Kanada und dem Vereinigten Königreich."
+   }
+  },
+  "Q4.1.4": {
+   "text": "Brauchen Sie Auszahlungen in mehr als einer Währung?",
+   "teach": {
+    "why": "In einer Währung ausgezahlt zu werden, ist eine andere Funktion als in ihr zu belasten — und es ist die, die einen Plan kostet. Auszahlungen in mehreren Währungen setzen Advanced oder Plus voraus; darunter verkauft der Kunde weiterhin international, wird aber in seiner Heimatwährung abgerechnet.",
+    "limits": "Nur Advanced oder Plus. Der Kunde braucht eine Gesellschaft und ein Bankkonto in einer zulässigen Region, nur die Inhaberin oder der Inhaber des Stores kann es aktivieren, und es gibt ein Bankkonto je unterstützter Auszahlungswährung. Auf jede Auszahlung in einer Fremdwährung fällt eine Gebühr für Auszahlungen in mehreren Währungen an; inländische Auszahlungen sind gebührenfrei.",
+    "options": [
+     {
+      "option": "Auszahlung in jeder Verkaufswährung (Advanced oder Plus)",
+      "pros": "Ein Bankkonto passend zur Bestellwährung erspart die Umrechnung und deren Gebühr; sauberere Abstimmung je Markt",
+      "cons": "Erzwingt Advanced oder Plus; auf jede Auszahlung in Fremdwährung fällt eine Gebühr an; je Währung ein Bankkonto zu eröffnen und zu führen"
+     },
+     {
+      "option": "Alles in der Heimatwährung abrechnen",
+      "pros": "Funktioniert in jedem Plan; ein Bankkonto; keine Gebühr für Auszahlungen in mehreren Währungen",
+      "cons": "Auf Transaktionen in Fremdwährung fällt eine Umrechnungsgebühr an; das Währungsrisiko trägt der Kunde"
+     }
+    ]
+   }
+  },
+  "Q4.1.5": {
+   "text": "Werden Kartendaten ausschließlich vom Shopify-gehosteten Checkout verarbeitet, von einer gehosteten Zahlungsseite eines Drittanbieters, oder von einer eigenen Karten-Oberfläche bzw. Tokenisierung?",
+   "help": "Kartendaten außerhalb des Shopify-gehosteten Checkouts erfordern eine eigene Sicherheitsprüfung.",
+   "teach": {
+    "why": "Shopifys gehosteter Checkout hält Kartendaten aus Ihrem Build heraus: Shopify ist nach PCI DSS Level 1 zertifiziert, und das erstreckt sich auf Stores auf der Plattform. Werden Kartendaten irgendwo anders verarbeitet, fällt der PCI-Geltungsbereich an den Kunden zurück, und ein Bedrohungsmodell wird verpflichtend.",
+    "limits": "Shopifys Zertifizierung deckt Store, Warenkorb und Hosting ab. Sie hebt die eigenen PCI-Pflichten des Händlers nicht auf, wo immer dieser Karteninhaberdaten außerhalb von Shopify speichert, verarbeitet oder überträgt.",
+    "options": [
+     {
+      "option": "Nur der Shopify-gehostete Checkout",
+      "pros": "Kartendaten berühren Ihren Code nie; Shopifys PCI-DSS-Level-1-Konformität erstreckt sich auf den Store",
+      "cons": "Änderungen am Checkout sind auf Checkout Extensibility begrenzt, und die tiefer liegenden Schritte brauchen Plus"
+     },
+     {
+      "option": "Gehostete Zahlungsseite eines Drittanbieters",
+      "pros": "Erhält den Acquirer des Kunden und dessen Kartendaten-Geltungsbereich; keine Kartendaten in Ihrem Build",
+      "cons": "Bricht die Checkout-Strecke; Drittanbieter-Transaktionsgebühren; die Belastung in lokaler Währung entfällt, sofern der Anbieter nicht Adyen ist"
+     },
+     {
+      "option": "Eigene Karten-Oberfläche oder Tokenisierung",
+      "pros": "Volle Kontrolle über das Zahlungserlebnis",
+      "cons": "Bringt den Kunden zurück in den PCI-Geltungsbereich, löst eine verpflichtende Sicherheitsprüfung und ein Bedrohungsmodell aus und ist für das Standardangebot ein STOPP"
+     }
+    ]
+   }
+  },
+  "Q4.1.6": {
+   "text": "Welche Express-Checkouts werden benötigt?",
+   "help": "B2B-Checkout und Vorbestellungen unterstützen keine Express-Checkouts.",
+   "teach": {
+    "why": "Express-Wallets sind der stärkste einzelne Conversion-Hebel im Checkout, aber sie gelten nicht überall: B2B-Checkout und Vorbestellungen unterstützen sie nicht. Bestätigen Sie das, bevor Sie einem Geschäftskundenpublikum oder einem Vorbestell-Launch den Kauf mit einem Fingertipp zusagen.",
+    "limits": "B2B-Checkout und Vorbestellungen unterstützen keine Express-Checkouts."
+   }
+  },
+  "Q4.1.7": {
+   "text": "Müssen Zahlungsarten je Markt, Kundentyp oder Warenkorb ausgeblendet, umbenannt oder umsortiert werden?",
+   "help": "Erfordert eine App zur Zahlungsanpassung (Shopify Function).",
+   "teach": {
+    "why": "Zahlungsarten auszublenden, umzubenennen oder umzusortieren ist keine Einstellung. Es ist eine Payment-Customization-Shopify-Function und bedeutet damit eine App. Eine öffentliche App mit dieser Function lässt sich in jedem Plan installieren; dieselbe Function in einer Custom App setzt Plus voraus.",
+    "limits": "Öffentliche Apps aus dem App Store, die Shopify Functions enthalten, lassen sich in jedem Plan installieren. Eine Custom App mit einer Function setzt Plus voraus — diese Unterscheidung, nicht die Regel selbst, entscheidet über den Plan."
+   }
+  },
+  "Q4.2.1": {
+   "text": "Welche Änderungen am Checkout werden benötigt?",
+   "help": "Der Shopify-Checkout wird über den Checkout-Editor und Checkout Extensibility angepasst (Blöcke, Felder, Logik über Functions). Eine vollständig eigene Checkout-Oberfläche ist auf Shopify nicht möglich.",
+   "teach": {
+    "why": "Das ist die Planfrage in Verkleidung. Erweiterungen auf der Dankes- und der Bestellstatusseite laufen in jedem Plan; alles, was die Schritte Information, Versand oder Zahlung berührt oder den Checkout über die Checkout Branding API umgestaltet, ist Plus. Eine vollständig eigene Checkout-Oberfläche ist überhaupt nicht möglich.",
+    "limits": "checkout.liquid ist eingestellt — Checkout Extensibility (Blöcke, Felder, Functions) ist der einzige Weg. Ein maßgeschneidertes Checkout-Frontend ist damit ein STOPP und ein Gespräch über eine Composable-Plattform, keine Schätzung."
+   }
+  },
+  "Q4.2.2": {
+   "text": "Welche Checkout-Erweiterungen werden benötigt?",
+   "teach": {
+    "why": "Benennt die tatsächlichen Erweiterungspunkte, damit die Arbeit schätzbar wird: UI-Erweiterungen für das, was die Kundschaft sieht, und Functions für Versandoptionen, Zahlungsregeln, Warenkorb- und Checkout-Validierung sowie Abholpunkte. Jede Function ist eine App, die gebaut, geprüft und gepflegt werden muss.",
+    "limits": "Checkout-UI-Erweiterungen laufen ab Basic, Erweiterungen auf den Schritten Information, Versand und Zahlung sind jedoch Plus. Functions in einer Custom App sind Plus; in einer öffentlichen App aus dem App Store sind sie es nicht."
+   }
+  },
+  "Q4.2.3": {
+   "text": "Welche zusätzlichen Checkout-Felder werden benötigt (Firma, USt-IdNr., Bestellnummer des Kunden, Lieferhinweise)?",
+   "teach": {
+    "why": "Zusatzfelder — Firma, USt-IdNr., Bestellnummer, Lieferhinweise — sind Checkout-UI-Erweiterungen. Wo sie sitzen, entscheidet also über den Plan: auf den Schritten Information, Versand oder Zahlung sind sie Plus, auf der Dankesseite nicht.",
+    "limits": "Jedes Feld braucht außerdem ein Ziel im nachgelagerten System; es im Checkout zu erfassen, ist nur die halbe Anforderung, wenn ERP oder Rechnungssystem es empfangen müssen."
+   }
+  },
+  "Q4.2.4": {
+   "text": "Werden Upsells nach dem Kauf benötigt?",
+   "help": "Upsells auf der Dankesseite sind nativ; eine eigene Post-Purchase-Seite ist eine Shopify-Beta.",
+   "teach": {
+    "why": "Upsells nach der Zahlung sind der günstigste zusätzliche Umsatz im Checkout und brauchen, anders als Änderungen an den Checkout-Schritten, kein Plus. Erweiterungen auf der Dankesseite laufen ab Basic; die eigene Post-Purchase-Seite ist bei Shopify weiterhin Beta.",
+    "limits": "Upsell-Erweiterungen auf der Dankesseite: ab Basic. Eine eigene Post-Purchase-Seite ist in der Beta — behandeln Sie sie als Risiko, nicht als Zusage."
+   }
+  },
+  "Q4.2.6": {
+   "text": "Wird ein Guthaben im Shop benötigt?",
+   "help": "Shop-Guthaben ist nativ: Erstattung als Guthaben oder direkte Gutschrift; eingelöst wird es im angemeldeten Zustand.",
+   "teach": {
+    "why": "Räumt die verbreitete Annahme aus, dafür brauche es eine App. Shopify kann als Guthaben erstatten oder es direkt gutschreiben, und eingelöst wird es im angemeldeten Zustand — womit Kundenkonten stillschweigend Teil der Strecke werden, die Sie gestalten.",
+    "limits": "Kundinnen und Kunden müssen angemeldet sein, um Shop-Guthaben einzulösen."
+   }
+  },
+  "Q4.3.1": {
+   "text": "Ist eine manuelle Betrugsprüfung für hochpreisige Bestellungen nötig?",
+   "help": "Nativ: Betrugsanalyse und die App Shopify Fraud Control.",
+   "teach": {
+    "why": "Die Betrugsprüfung ist nativ, die Verfügbarkeit hängt aber ebenso sehr am Zahlungs-Setup wie am Plan. Die Betrugsanalyse deckt Stores mit Shopify Payments ab sowie Stores auf Grow, Advanced oder Plus bei den meisten Drittanbieter-Prozessoren — ein Basic-Store auf einem Drittanbieter-Gateway hat also keine.",
+    "limits": "Betrugsanalyse: Stores mit Shopify Payments oder Stores auf Grow, Advanced und Plus bei den meisten Drittanbieter-Prozessoren."
+   }
+  },
+  "Q4.3.2": {
+   "text": "Welche Bestellbeschränkungen werden benötigt?",
+   "help": "Länder zu sperren ist nativ (Märkte und Versandzonen); andere Regeln brauchen eine App zur Warenkorb- und Checkout-Validierung (Shopify Function).",
+   "teach": {
+    "why": "Teilt die Antwort in kostenlos und kostenpflichtig. Ganze Länder zu sperren ist über Märkte und Versandzonen nativ; alles Bedingte — Bestellwert, Menge, Produktmix, Kundentyp — ist eine Cart-and-Checkout-Validation-Function und bedeutet damit eine App.",
+    "limits": "Eine Validierungs-Function in einer öffentlichen App aus dem App Store funktioniert in jedem Plan; dieselbe Function in einer Custom App setzt Plus voraus."
+   }
+  },
+  "Q4.3.3": {
+   "text": "Möchten Sie eine Garantie, dass betrugsbedingte Rückbuchungen erstattet werden?",
+   "help": "Außerhalb von Shopify Protect (Shop-Pay-Bestellungen in den USA) braucht das eine Betrugs-App.",
+   "teach": {
+    "why": "Eine Erstattungsgarantie ist selten nativ. Shopify Protect setzt einen in den USA ansässigen Händler mit einem US-Shopify-Payments-Konto voraus und deckt nur Shop-Pay-Bestellungen physischer Waren ab — in Europa ist das also immer eine kostenpflichtige Betrugs-App.",
+    "limits": "Shopify Protect verlangt außerdem den Versand mit gültiger Sendungsverfolgung innerhalb von 7 Tagen und die Bestellung im Transit innerhalb von 10 Tagen. Behandeln Sie es im europäischen Scoping als reinen US-Vorteil."
+   }
   }
  },
  "document": {

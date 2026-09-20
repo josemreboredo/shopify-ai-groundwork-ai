@@ -1010,6 +1010,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         engagement: summary(session),
         approach: session.closing?.approach ? { saved_at: session.closing.approach.saved_at, by: session.closing.approach.by, via: session.closing.approach.via } : null,
         document: session.closing?.document ?? null,
+        // When the instruction was last sent to Claude, so the page can tell
+        // "still working" from "nobody ever pressed Enter".
+        requested: session.closing?.requested ?? null,
         history: (session.closing?.history ?? []).map(({ saved_at, by, via, version }) => ({ saved_at, by, via, version: version ?? '1.0' })),
       };
     },

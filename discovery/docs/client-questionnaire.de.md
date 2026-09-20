@@ -910,12 +910,12 @@
 
 ### 4.1 Zahlungen
 
-**Q4.1.1** — Which payment providers will you use (Shopify Payments, Adyen, Stripe, PayPal…)? *(required)*
-*Shopify Payments is required for some features (Shop Pay Installments, Managed Markets, some Markets pricing); third-party gateways are supported.*
+**Q4.1.1** — Welche Zahlungsanbieter werden Sie einsetzen (Shopify Payments, Adyen, Stripe, PayPal …)? *(required)*
+*Shopify Payments ist für einige Funktionen erforderlich (Shop Pay Installments, Managed Markets, bestimmte Preisfunktionen in Markets); Gateways von Drittanbietern werden unterstützt.*
 
 > Answer:
 
-**Q4.1.2** — Which local payment methods are required? *(recommended)*
+**Q4.1.2** — Welche lokalen Zahlungsarten werden benötigt? *(recommended)*
 
 *(tick all that apply)*
 - [ ] Klarna
@@ -936,8 +936,8 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.1.3** — Which buy-now-pay-later options, if any? *(optional)*
-*Shop Pay Installments is available to stores in the US, Canada and the UK.*
+**Q4.1.3** — Welche Buy-now-pay-later-Optionen, falls überhaupt? *(optional)*
+*Shop Pay Installments steht Stores in den USA, Kanada und dem Vereinigten Königreich zur Verfügung.*
 
 *(tick all that apply)*
 - [ ] Shop Pay Installments
@@ -946,21 +946,21 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.1.4** — Do you need payouts in more than one currency? *(required)*
+**Q4.1.4** — Brauchen Sie Auszahlungen in mehr als einer Währung? *(required)*
 
 - [ ] Yes
 - [ ] No
 
-**Q4.1.5** — Will card data be handled only by Shopify-hosted checkout, by a third-party hosted payment page, or by custom card UI / tokenisation? *(required · consultant)*
-*Card data handled outside Shopify-hosted checkout needs a separate security review.*
+**Q4.1.5** — Werden Kartendaten ausschließlich vom Shopify-gehosteten Checkout verarbeitet, von einer gehosteten Zahlungsseite eines Drittanbieters, oder von einer eigenen Karten-Oberfläche bzw. Tokenisierung? *(required · consultant)*
+*Kartendaten außerhalb des Shopify-gehosteten Checkouts erfordern eine eigene Sicherheitsprüfung.*
 
 *(tick one)*
 - [ ] Shopify-hosted checkout
 - [ ] Third-party hosted payment page
 - [ ] Custom card handling
 
-**Q4.1.6** — Which express checkouts are required? *(recommended)*
-*B2B checkout and pre-orders do not support express checkouts.*
+**Q4.1.6** — Welche Express-Checkouts werden benötigt? *(recommended)*
+*B2B-Checkout und Vorbestellungen unterstützen keine Express-Checkouts.*
 
 *(tick all that apply)*
 - [ ] Shop Pay
@@ -971,16 +971,16 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.1.7** — Must payment methods be hidden, renamed or reordered by market, customer type or cart? *(recommended)*
-*Needs a payment customization app (Shopify Function).*
+**Q4.1.7** — Müssen Zahlungsarten je Markt, Kundentyp oder Warenkorb ausgeblendet, umbenannt oder umsortiert werden? *(recommended)*
+*Erfordert eine App zur Zahlungsanpassung (Shopify Function).*
 
 - [ ] Yes
 - [ ] No
 
 ### 4.2 Checkout
 
-**Q4.2.1** — Which checkout changes are needed? *(required)*
-*Shopify checkout is customised with the checkout editor and Checkout Extensibility (blocks, fields, logic via Functions). A fully custom checkout UI is not possible on Shopify.*
+**Q4.2.1** — Welche Änderungen am Checkout werden benötigt? *(required)*
+*Der Shopify-Checkout wird über den Checkout-Editor und Checkout Extensibility angepasst (Blöcke, Felder, Logik über Functions). Eine vollständig eigene Checkout-Oberfläche ist auf Shopify nicht möglich.*
 
 *(tick all that apply)*
 - [ ] Branding in the checkout editor
@@ -992,7 +992,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.2.2** — Which checkout extensions are needed? *(optional · consultant)*
+**Q4.2.2** — Welche Checkout-Erweiterungen werden benötigt? *(optional · consultant)*
 *Skip if Q4.2.1 = None.*
 
 *(tick all that apply)*
@@ -1009,32 +1009,32 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.2.3** — Which custom checkout fields are needed (company, VAT number, PO number, delivery instructions)? *(optional)*
+**Q4.2.3** — Welche zusätzlichen Checkout-Felder werden benötigt (Firma, USt-IdNr., Bestellnummer des Kunden, Lieferhinweise)? *(optional)*
 
 > Answer:
 
-**Q4.2.4** — Are post-purchase upsells needed? *(optional)*
-*Upsells on the Thank you page are native; a separate post-purchase page is a Shopify beta.*
+**Q4.2.4** — Werden Upsells nach dem Kauf benötigt? *(optional)*
+*Upsells auf der Dankesseite sind nativ; eine eigene Post-Purchase-Seite ist eine Shopify-Beta.*
 
 - [ ] Yes
 - [ ] No
 
-**Q4.2.6** — Is store credit needed? *(optional)*
-*Store credit is native: refund to store credit or issue credit; customers spend it when signed in.*
+**Q4.2.6** — Wird ein Guthaben im Shop benötigt? *(optional)*
+*Shop-Guthaben ist nativ: Erstattung als Guthaben oder direkte Gutschrift; eingelöst wird es im angemeldeten Zustand.*
 
 - [ ] Yes
 - [ ] No
 
 ### 4.3 Betrug & Risiko
 
-**Q4.3.1** — Is manual fraud review needed for high-value orders? *(optional)*
-*Native: fraud analysis and the Shopify Fraud Control app.*
+**Q4.3.1** — Ist eine manuelle Betrugsprüfung für hochpreisige Bestellungen nötig? *(optional)*
+*Nativ: Betrugsanalyse und die App Shopify Fraud Control.*
 
 - [ ] Yes
 - [ ] No
 
-**Q4.3.2** — Which order restrictions are needed? *(optional)*
-*Blocking countries is native (markets and shipping zones); other rules need a cart and checkout validation app (Shopify Function).*
+**Q4.3.2** — Welche Bestellbeschränkungen werden benötigt? *(optional)*
+*Länder zu sperren ist nativ (Märkte und Versandzonen); andere Regeln brauchen eine App zur Warenkorb- und Checkout-Validierung (Shopify Function).*
 
 *(tick all that apply)*
 - [ ] Block countries
@@ -1045,9 +1045,9 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.3.3** — Do you want a guarantee that fraud chargebacks are reimbursed? *(optional)*
+**Q4.3.3** — Möchten Sie eine Garantie, dass betrugsbedingte Rückbuchungen erstattet werden? *(optional)*
 *Ask if Q1.3.1 is Premium, Luxury or Enterprise.*
-*Outside Shopify Protect (US Shop Pay orders) this needs a fraud app.*
+*Außerhalb von Shopify Protect (Shop-Pay-Bestellungen in den USA) braucht das eine Betrugs-App.*
 
 - [ ] Yes
 - [ ] No

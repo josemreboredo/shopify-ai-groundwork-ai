@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { Link, useRevalidator } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Link, useFetcher, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
@@ -31,8 +31,56 @@ export async function loader({ request, params }) {
 
 const VIA = { claude: 'Claude', web: 'web app', cli: 'CLI' };
 
+export async function action({ request, params }) {
+  const user = await requireUser(request);
+  try {
+    return await discovery().noteDraftRequested(user, params.client);
+  } catch (err) {
+    return serviceFailure(err);
+  }
+}
+
+/** How long ago, in the words a person uses for a wait. */
+function ago(iso, now) {
+  const mins = Math.max(0, Math.round((now - new Date(iso).getTime()) / 60000));
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins} minute${mins === 1 ? '' : 's'} ago`;
+  const hours = Math.round(mins / 60);
+  return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+}
+
+/**
+ * The wait, said out loud. Drafting runs in another application for up to
+ * three quarters of an hour, and this page showed the same words throughout —
+ * so "Claude is working", "I never pressed Enter" and "it failed" all looked
+ * identical.
+ */
+function Waiting({ requested, checkedAt, onCheck, busy }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 30000);
+    return () => clearInterval(id);
+  }, []);
+  if (!requested) return null;
+  const mins = Math.round((now - new Date(requested.at).getTime()) / 60000);
+  return (
+    <div className={mins > 60 ? 'card blocked' : 'card'}>
+      <p className="question">
+        {mins > 60 ? 'Nothing has arrived in over an hour' : 'Waiting for Claude'}
+      </p>
+      <p className="muted">
+        Instruction sent {ago(requested.at, now)} by {requested.by} · this page last checked {ago(checkedAt, now)}.
+        {mins > 60 ? ' Drafting can take 45 minutes, so this is longer than it should be: check the chat is still running, that the connector is on in it, and that the model did not stop and ask you something.' : ' It can take up to 45 minutes. You can close this tab — the document is saved to the record, not to the chat.'}
+      </p>
+      <div className="actions">
+        <button type="button" className="secondary" onClick={onCheck} disabled={busy}>{busy ? 'Checking…' : 'Check now'}</button>
+      </div>
+    </div>
+  );
+}
+
 export default function Closing({ loaderData }) {
-  const { engagement, approach, document, history, readiness, preview, origin, freshness, version } = loaderData;
+  const { engagement, approach, document, history, readiness, preview, origin, freshness, version, requested } = loaderData;
   const client = engagement.client;
   const words = processMeta(engagement.process);
   const startPrompt = document
@@ -40,14 +88,23 @@ export default function Closing({ loaderData }) {
     : `Draft the ${words.document} for ${client}.\n\nWork as a Shopify Solution Architect: call prepare_closing_document, read the whole engagement, research every Shopify fact in the official documentation before you state it, draft and save the approach, then fill the deck templates and write the annex and save both with save_closing_document. Tell me the version you saved, the decisions taken and what is still to validate.`;
   // While Claude is working, the page picks up the new version by itself.
   const revalidator = useRevalidator();
+  const note = useFetcher();
   const waiting = !document || !freshness.up_to_date;
+  const [checkedAt, setCheckedAt] = useState(() => Date.now());
+  useEffect(() => { setCheckedAt(Date.now()); }, [document, freshness.up_to_date]);
   useEffect(() => {
     if (!waiting) return undefined;
     const id = setInterval(() => {
-      if (revalidator.state === 'idle' && globalThis.document?.visibilityState === 'visible') revalidator.revalidate();
+      if (revalidator.state === 'idle' && globalThis.document?.visibilityState === 'visible') {
+        revalidator.revalidate();
+        setCheckedAt(Date.now());
+      }
     }, 20000);
     return () => clearInterval(id);
   }, [revalidator, waiting]);
+  // The instruction goes to Claude in another tab; the record keeps the moment
+  // it was sent, which is the only thing that makes the wait readable.
+  const sent = () => note.submit({}, { method: 'post' });
   const status = !document ? 'none' : freshness.up_to_date ? 'current' : 'stale';
   const action = status === 'none' ? 'Generate the document' : `Update the document${freshness.changes.length ? ` · ${freshness.changes.length} answer${freshness.changes.length > 1 ? 's' : ''} changed` : ''}`;
 
@@ -76,13 +133,21 @@ export default function Closing({ loaderData }) {
         {readiness.ok ? (
           <>
             <div className="actions">
-              <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(startPrompt)}`} target="_blank" rel="noreferrer">{action}</a>
-              <button type="button" className="secondary" onClick={() => navigator.clipboard?.writeText(startPrompt)}>Copy the instruction</button>
-              {waiting ? <span className="muted">This page updates itself when Claude saves.</span> : null}
+              <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(startPrompt)}`} target="_blank" rel="noreferrer" onClick={sent}>{action}</a>
+              <button type="button" className="secondary" onClick={() => { navigator.clipboard?.writeText(startPrompt); sent(); }}>Copy the instruction</button>
+              {waiting && !requested ? <span className="muted">This page updates itself when Claude saves.</span> : null}
             </div>
             <p className="muted">
               Opens a Claude chat with the instruction written — you only press Enter. Check that the <strong>{CONNECTOR}</strong> connector is on and the strongest model is selected. To use the RFPs you uploaded, start it inside your Claude Project and pick <strong>Draft the client document</strong> from the connector’s prompts. It can take up to 45 minutes, so <strong>Cowork</strong> suits it better than a normal chat.
             </p>
+            {waiting ? (
+              <Waiting
+                requested={requested}
+                checkedAt={checkedAt}
+                busy={revalidator.state !== 'idle'}
+                onCheck={() => { revalidator.revalidate(); setCheckedAt(Date.now()); }}
+              />
+            ) : null}
             <details>
               <summary>The instruction it sends</summary>
               <textarea readOnly rows={5} value={startPrompt} />

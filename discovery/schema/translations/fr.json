@@ -1116,6 +1116,163 @@
     "why": "Merkle ne fournit pas de conseil juridique, fiscal ou douanier en RPC. Si personne n'est nommé ici, la voie chinoise n'a de responsable pour aucune de ses décisions les plus risquées, et la discovery Chine distincte ne peut pas démarrer de façon responsable.",
     "limits": "Création d'entité, statut ICP, régime douanier, classification produit, revue des allégations et obligations PIPL exigent tous un conseil nommé en RPC. La documentation de Shopify n'en couvre aucun."
    }
+  },
+  "Q4.1.1": {
+   "text": "Quels prestataires de paiement utiliserez-vous (Shopify Payments, Adyen, Stripe, PayPal…) ?",
+   "help": "Shopify Payments est requis pour certaines fonctionnalités (Shop Pay Installments, Managed Markets, certaines options de prix de Markets) ; les passerelles tierces sont prises en charge.",
+   "teach": {
+    "why": "Le prestataire décide de bien plus que des frais. Débiter les acheteurs dans leur propre devise exige Shopify Payments ou Adyen ; avec tout autre prestataire, les prix locaux ne sont qu'un affichage et l'acheteur est débité dans la devise par défaut de votre boutique.",
+    "limits": "Shopify Payments n'est disponible que dans les pays pris en charge, chacun avec ses propres exigences de compte bancaire et de vérification — vérifiez le pays de l'entité du client avant de supposer que c'est une option. Des frais de transaction tiers s'appliquent sur toutes les passerelles tierces ; PayPal et les paiements manuels en sont exclus lorsque Shopify Payments est actif.",
+    "options": [
+     {
+      "option": "Shopify Payments",
+      "pros": "Débite les acheteurs en devise locale ; moyens de paiement locaux, Shop Pay et analyse de fraude inclus ; aucun frais de transaction tiers",
+      "cons": "Uniquement dans les pays pris en charge ; le client doit y détenir une entité et un compte bancaire éligibles"
+     },
+     {
+      "option": "Passerelle tierce (hors Adyen)",
+      "pros": "Conserve une relation d'acquéreur existante et ses conditions négociées",
+      "cons": "La devise locale devient un simple affichage — l'acheteur est débité dans la devise de la boutique ; des frais de transaction tiers s'appliquent ; l'analyse de fraude exige Grow ou supérieur"
+     }
+    ]
+   }
+  },
+  "Q4.1.2": {
+   "text": "Quels moyens de paiement locaux sont nécessaires ?",
+   "teach": {
+    "why": "Les moyens locaux décident de la conversion marché par marché. Shopify Payments les propose par pays et les affiche selon la localisation de l'acheteur : ce qui est disponible est donc fixé par la page pays de Shopify, et non par le développement.",
+    "limits": "La page des moyens de paiement du pays de la boutique fait référence, et les ensembles diffèrent : la Suisse documente TWINT, l'Allemagne documente EPS et BLIK, l'Autriche documente EPS. Un moyen absent de la liste exige une passerelle tierce, avec ses propres frais de transaction."
+   }
+  },
+  "Q4.1.3": {
+   "text": "Quelles options de paiement fractionné, le cas échéant ?",
+   "help": "Shop Pay Installments est disponible pour les boutiques aux États-Unis, au Canada et au Royaume-Uni.",
+   "teach": {
+    "why": "Le paiement fractionné fait bouger le panier moyen, et l'option native est géographiquement figée. Shop Pay Installments ne couvre que les boutiques aux États-Unis, au Canada et au Royaume-Uni ; partout ailleurs, le client a besoin d'un prestataire ou d'une application tierce.",
+    "limits": "Shop Pay Installments : boutiques aux États-Unis, au Canada et au Royaume-Uni."
+   }
+  },
+  "Q4.1.4": {
+   "text": "Avez-vous besoin de versements dans plus d'une devise ?",
+   "teach": {
+    "why": "Être payé dans une devise est une fonctionnalité distincte de celle d'y débiter, et c'est celle qui coûte un plan. Les versements multidevises exigent Advanced ou Plus ; en dessous, le client vend toujours à l'international mais est réglé dans sa devise domestique.",
+    "limits": "Advanced ou Plus uniquement. Le client a besoin d'une entité et d'un compte bancaire dans une région éligible, seul le propriétaire de la boutique peut l'activer, et il faut un compte bancaire par devise de versement prise en charge. Des frais de versement multidevise s'appliquent à tout versement dans une devise non domestique ; les versements domestiques n'en supportent aucun.",
+    "options": [
+     {
+      "option": "Versements dans chaque devise de vente (Advanced ou Plus)",
+      "pros": "Un compte bancaire correspondant à la devise de la commande supprime la conversion et ses frais ; un rapprochement plus propre par marché",
+      "cons": "Impose Advanced ou Plus ; des frais s'appliquent à chaque versement non domestique ; un compte bancaire par devise à ouvrir et à tenir"
+     },
+     {
+      "option": "Tout régler dans la devise domestique",
+      "pros": "Fonctionne sur tous les plans ; un seul compte bancaire ; aucun frais de versement multidevise",
+      "cons": "Des frais de conversion s'appliquent aux transactions non domestiques ; le client porte le risque de change"
+     }
+    ]
+   }
+  },
+  "Q4.1.5": {
+   "text": "Les données de carte seront-elles traitées uniquement par le paiement hébergé par Shopify, par une page de paiement hébergée par un tiers, ou par une interface de carte sur mesure / de la tokenisation ?",
+   "help": "Des données de carte traitées hors du paiement hébergé par Shopify exigent une revue de sécurité distincte.",
+   "teach": {
+    "why": "Le paiement hébergé par Shopify tient les données de carte hors de votre développement : Shopify est certifié PCI DSS de niveau 1 et cela couvre les boutiques de la plateforme. Traitez des données de carte ailleurs et le périmètre PCI revient au client, avec un modèle de menaces obligatoire.",
+    "limits": "La certification de Shopify couvre la boutique, le panier et l'hébergement. Elle ne supprime pas les obligations PCI propres au marchand partout où celui-ci stocke, traite ou transmet des données de porteur de carte hors de Shopify.",
+    "options": [
+     {
+      "option": "Paiement hébergé par Shopify uniquement",
+      "pros": "Les données de carte ne touchent jamais votre code ; la conformité PCI DSS de niveau 1 de Shopify s'étend à la boutique",
+      "cons": "Les modifications du paiement se limitent à Checkout Extensibility, et les étapes plus profondes exigent Plus"
+     },
+     {
+      "option": "Page de paiement hébergée par un tiers",
+      "pros": "Conserve l'acquéreur du client et son périmètre de données de carte ; aucune donnée de carte dans votre développement",
+      "cons": "Rompt le parcours de paiement ; frais de transaction tiers ; le débit en devise locale est perdu sauf si le prestataire est Adyen"
+     },
+     {
+      "option": "Interface de carte sur mesure ou tokenisation",
+      "pros": "Contrôle total de l'expérience de paiement",
+      "cons": "Remet le client dans le périmètre PCI, déclenche une revue de sécurité et un modèle de menaces obligatoires, et constitue un ARRÊT pour l'offre standard"
+     }
+    ]
+   }
+  },
+  "Q4.1.6": {
+   "text": "Quels paiements express sont nécessaires ?",
+   "help": "Le paiement B2B et les précommandes ne prennent pas en charge les paiements express.",
+   "teach": {
+    "why": "Les portefeuilles express sont le levier de conversion le plus fort au paiement, mais ils ne sont pas universels : le paiement B2B et les précommandes ne les prennent pas en charge. Vérifiez-le avant de promettre l'achat en un geste à une audience professionnelle ou à un lancement en précommande.",
+    "limits": "Le paiement B2B et les précommandes ne prennent pas en charge les paiements express."
+   }
+  },
+  "Q4.1.7": {
+   "text": "Les moyens de paiement doivent-ils être masqués, renommés ou réordonnés selon le marché, le type de client ou le panier ?",
+   "help": "Exige une application de personnalisation du paiement (Shopify Function).",
+   "teach": {
+    "why": "Masquer, renommer ou réordonner des moyens de paiement n'est pas un réglage. C'est une Shopify Function de personnalisation du paiement, donc une application. Une application publique qui porte cette Function s'installe sur tous les plans ; la même Function dans une application personnalisée exige Plus.",
+    "limits": "Les applications publiques de l'App Store contenant des Shopify Functions s'installent sur tous les plans. Une application personnalisée contenant une Function exige Plus — c'est cette distinction, et non la règle elle-même, qui décide du plan."
+   }
+  },
+  "Q4.2.1": {
+   "text": "Quelles modifications du paiement sont nécessaires ?",
+   "help": "Le paiement Shopify se personnalise via l'éditeur de paiement et Checkout Extensibility (blocs, champs, logique via Functions). Une interface de paiement entièrement sur mesure n'est pas possible sur Shopify.",
+   "teach": {
+    "why": "C'est la question du plan déguisée. Les extensions des pages de remerciement et de statut de commande fonctionnent sur tous les plans ; tout ce qui touche aux étapes information, livraison ou paiement, ou qui restyle via la Checkout Branding API, exige Plus. Une interface de paiement entièrement sur mesure n'est pas possible du tout.",
+    "limits": "checkout.liquid est retiré — Checkout Extensibility (blocs, champs, Functions) est la seule voie : un front de paiement sur mesure est donc un ARRÊT et une conversation sur une plateforme composable, pas une estimation."
+   }
+  },
+  "Q4.2.2": {
+   "text": "Quelles extensions de paiement sont nécessaires ?",
+   "teach": {
+    "why": "Nomme les véritables points d'extension pour rendre le travail estimable : des extensions d'interface pour ce que l'acheteur voit, et des Functions pour les options de livraison, les règles de paiement, la validation du panier et du paiement et les points de retrait. Chaque Function est une application à construire, faire valider et maintenir.",
+    "limits": "Les extensions d'interface de paiement fonctionnent dès Basic, mais les extensions sur les étapes information, livraison et paiement exigent Plus. Les Functions dans une application personnalisée exigent Plus ; dans une application publique de l'App Store, non."
+   }
+  },
+  "Q4.2.3": {
+   "text": "Quels champs de paiement supplémentaires sont nécessaires (société, numéro de TVA, numéro de commande d'achat, consignes de livraison) ?",
+   "teach": {
+    "why": "Les champs supplémentaires — société, numéro de TVA, numéro de commande d'achat, consignes de livraison — sont des extensions d'interface de paiement : l'endroit où ils se placent décide donc du plan. Sur les étapes information, livraison ou paiement, ils exigent Plus ; sur la page de remerciement, non.",
+    "limits": "Chaque champ a aussi besoin d'une destination en aval ; le capter au paiement ne répond qu'à la moitié du besoin si l'ERP ou le système de facturation doit le recevoir."
+   }
+  },
+  "Q4.2.4": {
+   "text": "Des ventes additionnelles après achat sont-elles nécessaires ?",
+   "help": "Les ventes additionnelles sur la page de remerciement sont natives ; une page dédiée après achat est une bêta de Shopify.",
+   "teach": {
+    "why": "Les ventes additionnelles après paiement sont le revenu incrémental le moins cher du paiement et, contrairement aux modifications des étapes de paiement, elles n'exigent pas Plus. Les extensions de la page de remerciement fonctionnent dès Basic ; la page dédiée après achat est encore en bêta chez Shopify.",
+    "limits": "Extensions de vente additionnelle sur la page de remerciement : Basic et au-delà. Une page dédiée après achat est en bêta — traitez-la comme un risque, pas comme un engagement."
+   }
+  },
+  "Q4.2.6": {
+   "text": "Un avoir en boutique est-il nécessaire ?",
+   "help": "L'avoir en boutique est natif : rembourser en avoir ou émettre un avoir ; les clients le dépensent une fois connectés.",
+   "teach": {
+    "why": "Lève l'idée courante qu'il faudrait une application. Shopify peut rembourser en avoir ou en émettre directement, et les clients le dépensent une fois connectés — ce qui fait discrètement des comptes clients une partie du parcours que vous concevez.",
+    "limits": "Les clients doivent être connectés pour dépenser un avoir en boutique."
+   }
+  },
+  "Q4.3.1": {
+   "text": "Une revue manuelle de la fraude est-elle nécessaire pour les commandes à forte valeur ?",
+   "help": "Natif : l'analyse de fraude et l'application Shopify Fraud Control.",
+   "teach": {
+    "why": "La revue de fraude est native, mais sa disponibilité dépend autant de la configuration de paiement que du plan. L'analyse de fraude couvre les boutiques sous Shopify Payments, ainsi que les boutiques Grow, Advanced ou Plus sur la plupart des processeurs tiers : une boutique Basic sur une passerelle tierce n'en a donc aucune.",
+    "limits": "Analyse de fraude : boutiques sous Shopify Payments, ou boutiques Grow, Advanced et Plus sur la plupart des processeurs tiers."
+   }
+  },
+  "Q4.3.2": {
+   "text": "Quelles restrictions de commande sont nécessaires ?",
+   "help": "Bloquer des pays est natif (marchés et zones d'expédition) ; les autres règles exigent une application de validation du panier et du paiement (Shopify Function).",
+   "teach": {
+    "why": "Sépare la réponse entre gratuit et payant. Bloquer des pays entiers est natif via les marchés et les zones d'expédition ; tout ce qui est conditionnel — montant, quantité, composition du panier, type de client — est une Function de validation du panier et du paiement, donc une application.",
+    "limits": "Une Function de validation dans une application publique de l'App Store fonctionne sur tous les plans ; la même Function dans une application personnalisée exige Plus."
+   }
+  },
+  "Q4.3.3": {
+   "text": "Souhaitez-vous une garantie de remboursement des rétrofacturations pour fraude ?",
+   "help": "En dehors de Shopify Protect (commandes Shop Pay aux États-Unis), cela exige une application de lutte contre la fraude.",
+   "teach": {
+    "why": "Une garantie de remboursement est rarement native. Shopify Protect exige un marchand établi aux États-Unis avec un compte Shopify Payments américain et ne couvre que les commandes Shop Pay de biens physiques : en Europe, c'est donc toujours une application payante de lutte contre la fraude.",
+    "limits": "Shopify Protect exige en outre une expédition avec un suivi valide sous 7 jours et la commande en transit sous 10 jours. Traitez-le comme un avantage réservé aux États-Unis dans un cadrage européen."
+   }
   }
  },
  "document": {

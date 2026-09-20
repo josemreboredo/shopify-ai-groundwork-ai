@@ -910,12 +910,12 @@
 
 ### 4.1 Paiements
 
-**Q4.1.1** — Which payment providers will you use (Shopify Payments, Adyen, Stripe, PayPal…)? *(required)*
-*Shopify Payments is required for some features (Shop Pay Installments, Managed Markets, some Markets pricing); third-party gateways are supported.*
+**Q4.1.1** — Quels prestataires de paiement utiliserez-vous (Shopify Payments, Adyen, Stripe, PayPal…) ? *(required)*
+*Shopify Payments est requis pour certaines fonctionnalités (Shop Pay Installments, Managed Markets, certaines options de prix de Markets) ; les passerelles tierces sont prises en charge.*
 
 > Answer:
 
-**Q4.1.2** — Which local payment methods are required? *(recommended)*
+**Q4.1.2** — Quels moyens de paiement locaux sont nécessaires ? *(recommended)*
 
 *(tick all that apply)*
 - [ ] Klarna
@@ -936,8 +936,8 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.1.3** — Which buy-now-pay-later options, if any? *(optional)*
-*Shop Pay Installments is available to stores in the US, Canada and the UK.*
+**Q4.1.3** — Quelles options de paiement fractionné, le cas échéant ? *(optional)*
+*Shop Pay Installments est disponible pour les boutiques aux États-Unis, au Canada et au Royaume-Uni.*
 
 *(tick all that apply)*
 - [ ] Shop Pay Installments
@@ -946,21 +946,21 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.1.4** — Do you need payouts in more than one currency? *(required)*
+**Q4.1.4** — Avez-vous besoin de versements dans plus d'une devise ? *(required)*
 
 - [ ] Yes
 - [ ] No
 
-**Q4.1.5** — Will card data be handled only by Shopify-hosted checkout, by a third-party hosted payment page, or by custom card UI / tokenisation? *(required · consultant)*
-*Card data handled outside Shopify-hosted checkout needs a separate security review.*
+**Q4.1.5** — Les données de carte seront-elles traitées uniquement par le paiement hébergé par Shopify, par une page de paiement hébergée par un tiers, ou par une interface de carte sur mesure / de la tokenisation ? *(required · consultant)*
+*Des données de carte traitées hors du paiement hébergé par Shopify exigent une revue de sécurité distincte.*
 
 *(tick one)*
 - [ ] Shopify-hosted checkout
 - [ ] Third-party hosted payment page
 - [ ] Custom card handling
 
-**Q4.1.6** — Which express checkouts are required? *(recommended)*
-*B2B checkout and pre-orders do not support express checkouts.*
+**Q4.1.6** — Quels paiements express sont nécessaires ? *(recommended)*
+*Le paiement B2B et les précommandes ne prennent pas en charge les paiements express.*
 
 *(tick all that apply)*
 - [ ] Shop Pay
@@ -971,16 +971,16 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.1.7** — Must payment methods be hidden, renamed or reordered by market, customer type or cart? *(recommended)*
-*Needs a payment customization app (Shopify Function).*
+**Q4.1.7** — Les moyens de paiement doivent-ils être masqués, renommés ou réordonnés selon le marché, le type de client ou le panier ? *(recommended)*
+*Exige une application de personnalisation du paiement (Shopify Function).*
 
 - [ ] Yes
 - [ ] No
 
 ### 4.2 Checkout
 
-**Q4.2.1** — Which checkout changes are needed? *(required)*
-*Shopify checkout is customised with the checkout editor and Checkout Extensibility (blocks, fields, logic via Functions). A fully custom checkout UI is not possible on Shopify.*
+**Q4.2.1** — Quelles modifications du paiement sont nécessaires ? *(required)*
+*Le paiement Shopify se personnalise via l'éditeur de paiement et Checkout Extensibility (blocs, champs, logique via Functions). Une interface de paiement entièrement sur mesure n'est pas possible sur Shopify.*
 
 *(tick all that apply)*
 - [ ] Branding in the checkout editor
@@ -992,7 +992,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.2.2** — Which checkout extensions are needed? *(optional · consultant)*
+**Q4.2.2** — Quelles extensions de paiement sont nécessaires ? *(optional · consultant)*
 *Skip if Q4.2.1 = None.*
 
 *(tick all that apply)*
@@ -1009,32 +1009,32 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.2.3** — Which custom checkout fields are needed (company, VAT number, PO number, delivery instructions)? *(optional)*
+**Q4.2.3** — Quels champs de paiement supplémentaires sont nécessaires (société, numéro de TVA, numéro de commande d'achat, consignes de livraison) ? *(optional)*
 
 > Answer:
 
-**Q4.2.4** — Are post-purchase upsells needed? *(optional)*
-*Upsells on the Thank you page are native; a separate post-purchase page is a Shopify beta.*
+**Q4.2.4** — Des ventes additionnelles après achat sont-elles nécessaires ? *(optional)*
+*Les ventes additionnelles sur la page de remerciement sont natives ; une page dédiée après achat est une bêta de Shopify.*
 
 - [ ] Yes
 - [ ] No
 
-**Q4.2.6** — Is store credit needed? *(optional)*
-*Store credit is native: refund to store credit or issue credit; customers spend it when signed in.*
+**Q4.2.6** — Un avoir en boutique est-il nécessaire ? *(optional)*
+*L'avoir en boutique est natif : rembourser en avoir ou émettre un avoir ; les clients le dépensent une fois connectés.*
 
 - [ ] Yes
 - [ ] No
 
 ### 4.3 Fraude & risque
 
-**Q4.3.1** — Is manual fraud review needed for high-value orders? *(optional)*
-*Native: fraud analysis and the Shopify Fraud Control app.*
+**Q4.3.1** — Une revue manuelle de la fraude est-elle nécessaire pour les commandes à forte valeur ? *(optional)*
+*Natif : l'analyse de fraude et l'application Shopify Fraud Control.*
 
 - [ ] Yes
 - [ ] No
 
-**Q4.3.2** — Which order restrictions are needed? *(optional)*
-*Blocking countries is native (markets and shipping zones); other rules need a cart and checkout validation app (Shopify Function).*
+**Q4.3.2** — Quelles restrictions de commande sont nécessaires ? *(optional)*
+*Bloquer des pays est natif (marchés et zones d'expédition) ; les autres règles exigent une application de validation du panier et du paiement (Shopify Function).*
 
 *(tick all that apply)*
 - [ ] Block countries
@@ -1045,9 +1045,9 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q4.3.3** — Do you want a guarantee that fraud chargebacks are reimbursed? *(optional)*
+**Q4.3.3** — Souhaitez-vous une garantie de remboursement des rétrofacturations pour fraude ? *(optional)*
 *Ask if Q1.3.1 is Premium, Luxury or Enterprise.*
-*Outside Shopify Protect (US Shop Pay orders) this needs a fraud app.*
+*En dehors de Shopify Protect (commandes Shop Pay aux États-Unis), cela exige une application de lutte contre la fraude.*
 
 - [ ] Yes
 - [ ] No
