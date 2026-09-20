@@ -280,7 +280,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
 
   tool('save_clarifications', {
     title: 'Save the clarification questions',
-    description: 'Save the questions to send to the client. One entry per question: "question" (the client-facing text, in their context), "why_we_ask" (the trade-off, with the Shopify source for any platform fact), "covers" (the discovery question ids it answers), "assume_if_unanswered" (what the proposal will state if they do not answer) and "impact_if_wrong" (what that costs us if it turns out wrong).',
+    description: 'Save the questions to send to the client. One entry per question: "question" (the client-facing text, in their context), "why_we_ask" (the trade-off, with the Shopify source for any platform fact), "covers" (the discovery question ids it answers), "assume_if_unanswered" (what the proposal will state if they do not answer) and "impact_if_wrong" (what that costs us if it turns out wrong). Always send the whole list, including questions already saved. Re-saving is safe and is the normal way to add one: a question resting on the same "covers" keeps the Lead Consultant\'s accept or reject and who made it, and only genuinely new ground arrives undecided. Never leave a topic out to protect an earlier triage — that is the one thing this does not need protecting from.',
     inputSchema: z.object({
       client: z.string().describe('Client slug'),
       questions: z.array(z.object({

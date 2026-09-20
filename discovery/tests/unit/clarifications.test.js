@@ -557,3 +557,38 @@ describe('assuming the shape of the solution is not assuming a detail', () => {
   });
 
 });
+
+describe('adding a topic does not cost the triage', () => {
+  test('ten decided, one added: the ten keep their verdicts', async () => {
+    // Claude refused to add a topic because re-saving "may reset your accepted
+    // and rejected triage". It does not — but nothing in the tool told it so,
+    // and a model protecting work the tool already protects is a model that
+    // leaves a topic unasked.
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    const q = (question, covers) => ({ question, why_we_ask: 'w', covers, assume_if_unanswered: 'a', impact_if_wrong: 'i' });
+
+    const ten = Array.from({ length: 10 }, (_, i) => q(`Question ${i + 1}`, [`Q${i + 1}.1.1`]));
+    await svc.saveClarifications(consultant, 'a-bid', { questions: ten });
+    for (let i = 1; i <= 10; i += 1) {
+      await svc.decideClarifications(consultant, 'a-bid', { id: `q${i}`, status: i <= 7 ? 'accepted' : 'rejected' });
+    }
+
+    await svc.saveClarifications(consultant, 'a-bid', {
+      questions: [...ten.map((x, i) => q(`Question ${i + 1}, better worded`, x.covers)), q('Mainland China', ['Q3.5.1', 'Q3.5.6'])],
+    });
+
+    const { triage: t } = await svc.getClarifications(consultant, 'a-bid');
+    assert.equal(t.accepted.length, 7);
+    assert.equal(t.rejected.length, 3);
+    assert.deepEqual(t.proposed.map((x) => x.question), ['Mainland China'], 'only the new ground waits on a decision');
+    assert.match(t.accepted[0].question, /better worded/, 'and the better wording wins');
+  });
+
+  test('the connector says so, or the model keeps guessing', async () => {
+    const { CLARIFICATIONS_PROMPT } = await import('../../agents/discovery/clarifications.js');
+    assert.match(CLARIFICATIONS_PROMPT, /re-saving is how a topic gets added/i);
+    assert.match(CLARIFICATIONS_PROMPT, /keeps the Lead Consultant's decision/i);
+  });
+});

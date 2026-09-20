@@ -253,6 +253,8 @@ For each topic you are given:
 - Then, in a short paragraph headed "Why we ask", show the trade-off using the documented limits and options you are given: what changes in the solution depending on the answer, and what it does to the plan, the store count or the running cost. Cite the official Shopify page for any platform fact, exactly as everywhere else.
 - Keep the client-facing part to a question and that paragraph. No sub-questions, no brackets, no jargon the client has not used themselves.
 
+If questions are already saved, write the whole list again including them — re-saving is how a topic gets added. A question that rests on the same discovery questions keeps the Lead Consultant's decision and its author, and only genuinely new ground arrives undecided, so there is nothing to protect by leaving a topic out. Keep an existing question's wording unless you can improve it.
+
 Order the questions by impact, highest first. Never write more than the topics you are given, and drop any topic where you cannot show a real trade-off — a question that does not demonstrate anything is one the client will resent.
 
 For each question also record, for the consultant only: which discovery questions it covers, what we will assume in the proposal if the client does not answer it, and what that costs us if the assumption turns out to be wrong — in scope, in the Shopify plan, in the number of stores or in what it costs to run.
