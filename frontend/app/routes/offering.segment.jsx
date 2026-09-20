@@ -86,7 +86,12 @@ export default function OfferingSegment({ loaderData }) {
 
       <section>
         <h2>What it covers</h2>
-        <ul className="ticks big">{offer.base_scope.map((line) => <li key={line}>{line}</li>)}</ul>
+        {/* The first line is the offer's claim — what makes "Foundation" a
+            foundation and "Growth" growth — and it is not a scope item. Ticked
+            alongside the rest it read as one, which is how an offer ends up with
+            a name nobody can connect to what it delivers. */}
+        <p className="answer-line">{offer.base_scope[0]}.</p>
+        <ul className="ticks big">{offer.base_scope.slice(1).map((line) => <li key={line}>{line}</li>)}</ul>
       </section>
 
       <section>
