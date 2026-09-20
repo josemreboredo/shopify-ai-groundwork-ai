@@ -31,7 +31,7 @@ import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, re
 import { goNoGoView } from './go-no-go.js';
 import { readiness, openPoints, technicalAnswer } from './readiness.js';
 import { record as recordOutcomeEntry, ledger, OUTCOME_IDS } from './outcome.js';
-import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
+import { coverage, LANGUAGES, supportedLanguage, translateHeading, translateQuestion, translateQuestions, translateRows, writtenIn } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
 /**
@@ -411,7 +411,13 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const draft = structuredClone(session);
       applyAnswers(draft, question, records, { user, via: 'web', source, status, note });
       await store.save(draft);
-      return { ok: true, preview: preview(draft, today()) };
+      // In the words it was stored as, so the page can say it back. Recording an
+      // answer made the card disappear and said nothing, which made a mis-click
+      // on a select invisible until somebody found it in Review.
+      const stored = reviewSections(draft, { includeOpen: false })
+        .flatMap((sec) => sec.questions)
+        .find((q) => q.id === question.id);
+      return { ok: true, preview: preview(draft, today()), recorded: stored ? { id: stored.id, value: stored.value, state: stored.state } : null };
     },
 
     /**
@@ -641,6 +647,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
             documents: documentYield(session),
           })
           : null,
+        // When the engine cannot weigh the answers yet, what is missing — named
+        // and linked, as every other blocked page in the app now does.
+        blocked: decided.ok ? null : { errors: decided.errors, blockers: blockersFromErrors(decided.errors) },
         // What the offer owes the client whatever its commercial shape: what it
         // would be built on, and which plan the requirements force.
         technical: decided.ok ? technicalAnswer(decided.doc) : null,
@@ -792,6 +801,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
           saved_at: today(),
           by: user.login,
           via,
+          // Which language the model was told to write in. Without it a saved
+          // document cannot say what language it is, and the engagement's
+          // language can be corrected afterwards.
+          language: session.language ?? 'en',
         },
       };
       session.updated_at = today();
@@ -937,8 +950,8 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.closing = {
         ...session.closing,
         document: { markdown: `${text}
-`, ...(deck ? { deck } : {}), ...(annexText ? { annex: `${annexText}\n` } : {}), version, saved_at: today(), by: user.login, via, answers: answerSnapshot(session) },
-        history: [...(previous ? [{ version: previous.version ?? '1.0', saved_at: previous.saved_at, by: previous.by, via: previous.via, markdown: previous.markdown, ...(previous.deck ? { deck: previous.deck } : {}), ...(previous.annex ? { annex: previous.annex } : {}) }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
+`, ...(deck ? { deck } : {}), ...(annexText ? { annex: `${annexText}\n` } : {}), version, saved_at: today(), by: user.login, via, language: session.language ?? 'en', answers: answerSnapshot(session) },
+        history: [...(previous ? [{ version: previous.version ?? '1.0', saved_at: previous.saved_at, by: previous.by, via: previous.via, language: previous.language, markdown: previous.markdown, ...(previous.deck ? { deck: previous.deck } : {}), ...(previous.annex ? { annex: previous.annex } : {}) }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
       };
       session.updated_at = today();
       await store.save(session);
@@ -1034,6 +1047,50 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       await store.save(session);
       const open = nextQuestions(session, { limit: 500 });
       return { ok: true, mode, was: before, remaining: open.remaining };
+    },
+
+    /**
+     * What language this engagement is run in, how much of the question bank
+     * exists in it, and what the model has already written — in which language.
+     *
+     * @param {User} user @param {string} client
+     */
+    async languageState(user, client) {
+      const session = await load(user, client);
+      return writtenIn(session);
+    },
+
+    /**
+     * Correct the language the engagement is run in.
+     *
+     * There was no way to do this, and an engagement created in the wrong
+     * language stayed in it for ever — asked in English, and every document
+     * written in English, on a record labelled French.
+     *
+     * It is always allowed, because refusing a correction leaves a record
+     * permanently wrong, which is worse than the mismatch it avoids. Nothing
+     * recorded moves: answers are held in English whatever language the
+     * questions were asked in, and a quotation from the client's own RFP is
+     * theirs and is never touched. The questions simply re-render.
+     *
+     * What does not move is anything the model already wrote — the clarification
+     * questions, which may already be in the client's inbox, and every saved
+     * version of the document. Those keep the language they were written in, so
+     * the caller is told exactly which ones are now out of step rather than
+     * finding out from a client.
+     *
+     * @param {User} user @param {string} client @param {{ language: string }} input
+     */
+    async setLanguage(user, client, { language }) {
+      const session = await load(user, client);
+      if (!supportedLanguage(language)) {
+        throw new ServiceError(400, `language must be one of ${LANGUAGES.join(', ')} (got ${language || 'nothing'})`);
+      }
+      const was = session.language ?? 'en';
+      session.language = language;
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, language, was, written_in: writtenIn(session), coverage: coverage(language) };
     },
 
     /**

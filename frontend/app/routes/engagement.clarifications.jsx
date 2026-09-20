@@ -5,9 +5,10 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { Blockers, EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
+import { processMeta, processOf } from '../../../discovery/service/process.js';
 import { pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: pageTitle('RFP Q&A', params.client) }];
+export const meta = ({ data, params }) => [{ title: pageTitle(processOf(data?.engagement?.process) === 'rfp' ? 'RFP Q&A' : 'Questions to the client', params.client) }];
 
 /**
  * What Merkle sends back after reading an RFP. The engine has already chosen the
@@ -94,11 +95,13 @@ Write every question we need answered to price this properly — the Lead Consul
     return () => clearInterval(id);
   }, [revalidator, saved]);
 
+  const rfp = processOf(engagement.process) === 'rfp';
+  const words = processMeta(engagement.process);
   return (
     <main id="main">
       <EngagementHeader
         engagement={engagement}
-        eyebrow="RFP Q&A"
+        eyebrow={rfp ? 'RFP Q&A' : 'Questions to the client'}
         meta={saved ? `${triage.accepted.length} to ask · ${triage.rejected.length} assumed · ${triage.proposed.length} to decide` : null}
       />
 
@@ -115,7 +118,7 @@ Write every question we need answered to price this properly — the Lead Consul
               {readiness.ok && !saved
                 ? `The engine found ${readiness.topics.length} topic${readiness.topics.length > 1 ? 's' : ''} that have to be settled before this can be priced. Claude writes a question for each; you decide which are actually asked.`
                 : saved
-                  ? 'Every question here is one the proposal needs an answer to. Ask it, or decide not to and it becomes a stated assumption — there is no third option, and nothing is dropped.'
+                  ? `Every question here is one the ${words.document.toLowerCase()} needs an answer to. Ask it, or decide not to and it becomes a stated assumption — there is no third option, and nothing is dropped.`
                   : readiness.error}
             </p>
           </div>
@@ -263,11 +266,11 @@ Write every question we need answered to price this properly — the Lead Consul
       {/* 3 — what the proposal will stand on */}
       {assumptions.length ? (
         <section>
-          <h2>What the proposal will assume ({assumptions.length})</h2>
+          <h2>What the {words.document.toLowerCase()} will assume ({assumptions.length})</h2>
           <p className="muted">
             Everything nobody could tell us otherwise — what the engine had to assume to recommend anything, and
-            every question you decided not to ask. This is where a bid loses money, so it is written down rather
-            than carried in somebody’s head, and it goes into the proposal as a stated assumption.
+            every question you decided not to ask. This is where money is lost, so it is written down rather
+            than carried in somebody’s head, and it goes into the {words.document.toLowerCase()} as a stated assumption.
           </p>
           <ul className="assumptions">
             {assumptions.map((a, i) => (

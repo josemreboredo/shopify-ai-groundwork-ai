@@ -20,12 +20,12 @@ import { questionBank } from '../schema/index.js';
 // The list of languages and their names belong with the prompts that write in
 // them, and the agents may not import the service — so they live there and are
 // re-exported here, where the rest of the app already looks for them.
-import { LANGUAGES, LANGUAGE_NAMES } from '../agents/language.js';
+import { LANGUAGES, LANGUAGE_NAMES, supported } from '../agents/language.js';
 
 /** Translations by language code. English is the source, so it has no file. */
 export const TRANSLATIONS = { de, fr };
 
-export { LANGUAGES, LANGUAGE_NAMES };
+export { LANGUAGES, LANGUAGE_NAMES, supported as supportedLanguage };
 
 /** @param {string} [language] */
 export function translationFor(language) {
@@ -116,3 +116,47 @@ export const translateRows = (rows, language) => {
   if (!t) return rows;
   return rows.map((row) => ({ ...row, ...(text(t.questions?.[row.id]?.text) ? { text: t.questions[row.id].text } : {}) }));
 };
+
+/**
+ * What language each thing the model wrote is actually in, and whether that is
+ * still the engagement's language.
+ *
+ * The engagement's language can be corrected at any time; a document that was
+ * already written cannot re-write itself. Anything from before the stamp existed
+ * reports `unknown` rather than guessing — a document claiming a language it was
+ * never checked against is worse than one admitting it does not know.
+ *
+ * @param {object} session
+ * @returns {{ what: string, language: string|null, matches: boolean, where: string, detail?: string }[]}
+ */
+export function writtenIn(session) {
+  const now = session?.language ?? 'en';
+  const out = [];
+  const add = (what, language, where, detail) => out.push({
+    what,
+    language: language ?? null,
+    matches: language ? language === now : false,
+    where,
+    ...(detail ? { detail } : {}),
+  });
+
+  const clarifications = session?.closing?.clarifications;
+  if (clarifications?.questions?.length) {
+    const sent = clarifications.questions.filter((q) => (q.status ?? 'proposed') === 'accepted').length;
+    add(
+      `${clarifications.questions.length} clarification question${clarifications.questions.length === 1 ? '' : 's'}`,
+      clarifications.language,
+      'clarifications',
+      sent ? `${sent} of them accepted to send` : undefined,
+    );
+  }
+
+  const document = session?.closing?.document;
+  if (document) {
+    add(`the document, version ${document.version ?? '1.0'}`, document.language, 'closing-document');
+  }
+  for (const old of session?.closing?.history ?? []) {
+    add(`the document, version ${old.version ?? '1.0'}`, old.language, 'closing-document');
+  }
+  return out;
+}

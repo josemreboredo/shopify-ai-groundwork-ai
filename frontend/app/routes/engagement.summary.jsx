@@ -2,9 +2,10 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader } from '../components/question.jsx';
+import { Blockers, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 import { offerStanding } from '../../../discovery/service/summary.js';
+import { processOf } from '../../../discovery/service/process.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Where it stands', params.client) }];
 
@@ -72,7 +73,7 @@ function Points({ title, lead, rows, client, tone }) {
 }
 
 export default function Summary({ loaderData }) {
-  const { engagement, preview: p, readiness: r, technical: t, open_points: open, documents, notes, generated_at: generatedAt } = loaderData;
+  const { engagement, preview: p, readiness: r, technical: t, open_points: open, documents, notes, blocked, generated_at: generatedAt } = loaderData;
   const client = engagement.client;
   const standing = offerStanding(p);
 
@@ -82,7 +83,15 @@ export default function Summary({ loaderData }) {
         <EngagementHeader engagement={engagement} eyebrow="Where it stands" meta={`Computed by the engine on ${generatedAt}`} />
         <section className="card start blocked">
           <p className="question">Not enough recorded yet</p>
-          <p className="muted">The engine cannot make an engagement of these answers, so there is nothing to weigh. Read the documents in and confirm what they say.</p>
+          {/* This page used to send every consultant to "read the documents in" —
+              the other job's instruction, on a discovery that has no documents
+              and no intake step, with nothing named and nothing linked. */}
+          <p className="muted">
+            {processOf(engagement.process) === 'rfp'
+              ? 'The engine cannot make a bid of these answers yet. Read the RFP in on the first step, and confirm what it says.'
+              : 'The engine cannot weigh these answers yet. Keep going with the interview — these are what it is waiting for.'}
+          </p>
+          <Blockers items={blocked?.blockers ?? []} errors={blocked?.errors ?? []} client={engagement.client} />
         </section>
       </main>
     );
@@ -91,6 +100,11 @@ export default function Summary({ loaderData }) {
   return (
     <main id="main">
       <EngagementHeader engagement={engagement} eyebrow="Where it stands" meta={`Recomputed on every document and every confirmation · ${generatedAt}`} />
+
+      {/* The rule is stated on the offering page, in the manual, on the about
+          page and beside the questions download — and was missing from the one
+          page that carries the offer, the price band and a download button. */}
+      <p className="pilot">Internal — this page carries the offer and the price band. Never send it, or its download, to the client.</p>
 
       {/* 1 — the slide. One answer, the shape of the gap, and what blocks it. */}
       <section className={`standfirst ${r.ready ? 'go' : 'flag'}`}>

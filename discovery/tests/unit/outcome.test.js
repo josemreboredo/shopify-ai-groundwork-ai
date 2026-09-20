@@ -10,7 +10,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { record, ledger, OUTCOMES, OUTCOME_IDS } from '../../service/outcome.js';
+import { record, ledger, OUTCOMES, OUTCOME_IDS, outcomesFor } from '../../service/outcome.js';
 import { createDiscoveryService, ServiceError } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 
@@ -18,11 +18,15 @@ const TODAY = '2026-09-20';
 const consultant = { login: 'lc-one', role: 'consultant' };
 
 describe('the outcome ledger', () => {
-  test('a bid can end every way a bid actually ends', () => {
-    assert.deepEqual(OUTCOME_IDS, ['submitted', 'won', 'lost', 'no_bid', 'withdrawn']);
+  test('each process can end every way that process actually ends', () => {
+    assert.deepEqual(OUTCOME_IDS, ['submitted', 'won', 'lost', 'no_bid', 'withdrawn', 'delivered', 'cancelled']);
     for (const id of OUTCOME_IDS) {
       assert.ok(OUTCOMES[id].label && OUTCOMES[id].meaning, `${id} says what it means`);
     }
+    // Offering "The proposal went to the client" on work Merkle already has is
+    // how a form tells a consultant it has not understood them.
+    assert.deepEqual(Object.keys(outcomesFor('rfp')), ['submitted', 'won', 'lost', 'no_bid', 'withdrawn']);
+    assert.deepEqual(Object.keys(outcomesFor('discovery')), ['withdrawn', 'delivered', 'cancelled']);
   });
 
   test('a submission is still in play; the rest close it', () => {

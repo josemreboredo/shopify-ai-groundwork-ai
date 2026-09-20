@@ -22,12 +22,26 @@
 
 /** What can happen to a bid, and what each one means. */
 export const OUTCOMES = {
-  submitted: { label: 'Submitted', meaning: 'The proposal went to the client and the decision is theirs' },
-  won: { label: 'Won', meaning: 'Merkle was appointed' },
-  lost: { label: 'Lost', meaning: 'The client appointed somebody else, or nobody' },
-  no_bid: { label: 'No bid', meaning: 'Merkle decided not to respond' },
+  submitted: { label: 'Submitted', meaning: 'The proposal went to the client and the decision is theirs', on: 'rfp' },
+  won: { label: 'Won', meaning: 'Merkle was appointed', on: 'rfp' },
+  lost: { label: 'Lost', meaning: 'The client appointed somebody else, or nobody', on: 'rfp' },
+  no_bid: { label: 'No bid', meaning: 'Merkle decided not to respond', on: 'rfp' },
   withdrawn: { label: 'Withdrawn', meaning: 'Merkle pulled out after starting' },
+  delivered: { label: 'Delivered', meaning: 'The work was scoped and handed to delivery', on: 'discovery' },
+  cancelled: { label: 'Cancelled', meaning: 'The client stopped the work before it was scoped', on: 'discovery' },
 };
+
+/**
+ * The outcomes that can happen to a record of this kind. A bid is won, lost or
+ * not bid for; an engagement is delivered or cancelled — and offering a
+ * consultant "The proposal went to the client" on work Merkle already has is
+ * how a form teaches people that the tool has not understood them.
+ *
+ * @param {'rfp'|'discovery'} process
+ */
+export const outcomesFor = (process) => Object.fromEntries(
+  Object.entries(OUTCOMES).filter(([, o]) => !o.on || o.on === process),
+);
 
 export const OUTCOME_IDS = Object.keys(OUTCOMES);
 

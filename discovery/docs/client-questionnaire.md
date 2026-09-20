@@ -2364,8 +2364,8 @@
 
 > Answer:
 
-**Q10.5.2** — Has the client agreed that answers may be processed by the AI discovery engine (no customer personal data included)? *(required · consultant)*
-*ADR 0007 — the engine refuses to run without recorded consent.*
+**Q10.5.2** — Has the client agreed that their answers may be processed by AI (no customer personal data included)? *(required · consultant)*
+*Nothing else can be recorded until this is Yes, and it has to be true — an RFP arriving in your inbox is not consent to put it through an AI tool. If the client’s process has no such clause, ask, or stop.*
 
 - [ ] Yes
 - [ ] No

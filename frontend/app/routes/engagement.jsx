@@ -259,6 +259,17 @@ export default function Engagement({ loaderData, actionData }) {
           {actionData?.intent === 'note' && actionData.error ? <ul className="errors">{(actionData.errors?.length ? actionData.errors : [actionData.error]).map((e) => <li key={e}>{e}</li>)}</ul> : null}
 
           {actionData?.ok && actionData.commented ? <p className="muted">Saved as a comment: the question counts as clarified and the comment stays an open point for the offer.</p> : null}
+          {/* Every mode says what it did. Three of the four used to say nothing
+              at all — the card simply vanished. */}
+          {actionData?.ok && actionData.recorded && !actionData.commented ? (
+            <p className="muted" role="status"><strong>{actionData.recorded.id}</strong> recorded as “{actionData.recorded.value}”.</p>
+          ) : null}
+          {actionData?.ok && actionData.intent === 'tbc' ? (
+            <p className="muted" role="status"><strong>{actionData.question_id}</strong> marked to check with the client{actionData.note ? `: ${actionData.note}` : ''}.</p>
+          ) : null}
+          {actionData?.ok && actionData.intent === 'skipped' ? (
+            <p className="muted" role="status"><strong>{actionData.question_id}</strong> marked not applicable.</p>
+          ) : null}
 
           {Object.keys(commented).length ? (
             <>

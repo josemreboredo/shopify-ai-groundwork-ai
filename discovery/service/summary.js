@@ -183,7 +183,13 @@ export function statusOf(e) {
     return { id: 'reading', label: 'Read, not yet asked', tone: '' };
   }
 
-  if (e.closing_document_at) return { id: 'scope_agreed', label: 'Scope agreed', tone: 'go' };
+  // A document saved before the interview finished is not an agreed scope. The
+  // list read "Scope agreed" on a record 1 of 85 through its questions, because
+  // this checked the document before it checked the work behind it.
+  const cov = e.coverage ?? {};
+  const covered = (cov.required_total ?? 0) > 0 && cov.required_answered >= cov.required_total;
+  if (e.closing_document_at && covered) return { id: 'scope_agreed', label: 'Scope agreed', tone: 'go' };
+  if (e.closing_document_at) return { id: 'document_ahead', label: 'Document ahead of the answers', tone: 'flag' };
   if (e.to_review) return { id: 'reviewing', label: `${e.to_review} to confirm`, tone: 'flag' };
   const c = e.coverage ?? {};
   if ((c.required_total ?? 0) && c.required_answered >= c.required_total) return { id: 'ready_to_close', label: 'Ready to close', tone: 'go' };

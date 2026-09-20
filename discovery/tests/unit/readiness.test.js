@@ -274,7 +274,13 @@ describe('the offer and the status are two axes', () => {
     assert.match(disc({}), /Interviewing — 20 of 85/);
     assert.match(disc({ to_review: 9 }), /9 to confirm/);
     assert.match(disc({ coverage: { required_answered: 85, required_total: 85 } }), /Ready to close/);
-    assert.match(disc({ closing_document_at: '2026-09-21' }), /Scope agreed/);
+    // A document saved while the interview is 20 of 85 is not an agreed scope,
+    // and the list said it was — on the one page a lead scans for trouble.
+    assert.match(disc({ closing_document_at: '2026-09-21' }), /Document ahead of the answers/);
+    assert.match(
+      disc({ closing_document_at: '2026-09-21', coverage: { required_answered: 85, required_total: 85 } }),
+      /Scope agreed/,
+    );
   });
 
   test('a status never repeats the offer’s own verdict', () => {

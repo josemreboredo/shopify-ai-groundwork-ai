@@ -3194,7 +3194,7 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 
 **Why it matters.** The named consultant owns the engagement record. Every artefact the tool produces — engagement file, deck, backlog, closing document — carries this name, so each answer and judgement can be traced back to a person.
 
-**Q10.5.2** — Has the client agreed that answers may be processed by the AI discovery engine (no customer personal data included)? *(required · consultant)*
+**Q10.5.2** — Has the client agreed that their answers may be processed by AI (no customer personal data included)? *(required · consultant)*
 
 **Why it matters.** Under ADR 0007 the engine refuses to run without recorded consent. Nothing is processed, stored or generated until the client has agreed to AI processing. Record it explicitly, and keep customer personal data out of the answers regardless.
 
