@@ -1435,14 +1435,14 @@
 
 ### 6.1 Comptes clients
 
-**Q6.1.1** — Is guest checkout the default, are accounts optional, or is registration required? *(recommended)*
+**Q6.1.1** — Le paiement en tant qu'invité est-il la norme, les comptes sont-ils facultatifs, ou l'inscription est-elle obligatoire ? *(recommended)*
 
 *(tick one)*
 - [ ] Guest default
 - [ ] Optional
 - [ ] Required
 
-**Q6.1.3** — What should the account area include (order history, addresses, returns, wishlist, subscriptions)? *(required)*
+**Q6.1.3** — Que doit contenir l'espace compte (historique des commandes, adresses, retours, liste d'envies, abonnements) ? *(required)*
 
 *(tick all that apply)*
 - [ ] Order history
@@ -1459,8 +1459,8 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q6.1.4** — How should customers sign in? *(required)*
-*One-time email code and Google or Facebook sign-in are native.*
+**Q6.1.4** — Comment les clients doivent-ils se connecter ? *(required)*
+*Le code à usage unique par e-mail et la connexion via Google ou Facebook sont natifs.*
 
 *(tick all that apply)*
 - [ ] One-time email code
@@ -1472,26 +1472,26 @@
 
 ### 6.2 B2B & vente en gros
 
-**Q6.2.2** — Do B2B customers need company accounts with their own login? *(required)*
+**Q6.2.2** — Les clients professionnels ont-ils besoin de comptes d'entreprise avec leur propre connexion ? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.2.3** — Do B2B customers get company-specific price lists? *(required)*
+**Q6.2.3** — Les clients professionnels ont-ils des listes de prix propres à leur entreprise ? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
-*Business price lists are B2B catalogs.*
+*Les listes de prix professionnelles sont des catalogues B2B.*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.2.4** — Are there B2B volume discounts or quantity rules? *(required)*
+**Q6.2.4** — Existe-t-il des remises sur quantité ou des règles de quantité en B2B ? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.2.5** — Which payment terms are needed (net 30, invoice, purchase order)? *(required)*
+**Q6.2.5** — Quelles conditions de paiement sont nécessaires (30 jours nets, facture, bon de commande) ? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 *(tick all that apply)*
@@ -1506,21 +1506,21 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q6.2.6** — Is there a request-for-quote workflow, or is pricing negotiated per buyer? *(required)*
+**Q6.2.6** — Existe-t-il un processus de demande de devis, ou les prix sont-ils négociés acheteur par acheteur ? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
-*Shopify has no built-in request-for-quote: orders can be submitted for review as drafts, or a quote app handles negotiation.*
+*Shopify n'a pas de demande de devis intégrée : les commandes peuvent être soumises en provisoire pour revue, ou une application de devis gère la négociation.*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.2.7** — Must B2B accounts be approved before they can order? *(optional)*
+**Q6.2.7** — Les comptes B2B doivent-ils être validés avant de pouvoir commander ? *(optional)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
-*Native: a wholesale application form (Shopify Forms) plus Flow to create and approve companies.*
+*Natif : un formulaire de demande de compte de gros (Shopify Forms) plus Flow pour créer et valider les entreprises.*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.2.8** — Native Shopify B2B or an app? *(recommended · consultant)*
+**Q6.2.8** — B2B Shopify natif ou une application ? *(recommended · consultant)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 *(tick one)*
@@ -1530,26 +1530,26 @@
 - [ ] Separate B2B expansion store
 - [ ] Not sure yet
 
-**Q6.2.9** — How many B2B accounts are expected within 12 months? *(optional)*
+**Q6.2.9** — Combien de comptes B2B sont attendus sous 12 mois ? *(optional)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 > Answer:
 
-**Q6.2.10** — How many distinct B2B price lists (catalogs) do you need, and must any be specific to one company? *(required)*
+**Q6.2.10** — De combien de listes de prix B2B distinctes (catalogues) avez-vous besoin, et l'une d'elles doit-elle être propre à une seule entreprise ? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 - Catalog count:
 - Company specific catalogs:
 
-**Q6.2.11** — Should B2B buyers see a different storefront or checkout from consumers? *(required)*
+**Q6.2.11** — Les acheteurs professionnels doivent-ils voir une vitrine ou un paiement différents de ceux des particuliers ? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.2.12** — Do B2B orders need any of these: subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards? *(required · consultant)*
+**Q6.2.12** — Les commandes B2B ont-elles besoin de l'un de ces éléments : abonnements, livraison locale ou points relais, paiements express, plus de 500 lignes, cartes cadeaux ? *(required · consultant)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
-*Shopify B2B does not support these.*
+*Le B2B Shopify ne les prend pas en charge.*
 
 *(tick all that apply)*
 - [ ] Subscriptions
@@ -1560,9 +1560,9 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q6.2.13** — Which shipping rules differ for B2B buyers? *(recommended)*
+**Q6.2.13** — Quelles règles d'expédition diffèrent pour les acheteurs professionnels ? *(recommended)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
-*By default B2B and consumer buyers see the same shipping methods. Different options need Checkout Blocks, an app or a delivery customization function; orders can also be submitted as drafts so shipping is quoted before payment.*
+*Par défaut, acheteurs professionnels et particuliers voient les mêmes modes de livraison. Des options différentes exigent Checkout Blocks, une application ou une Function de personnalisation de la livraison ; les commandes peuvent aussi être soumises en provisoire pour chiffrer la livraison avant le paiement.*
 
 *(tick all that apply)*
 - [ ] Separate rates or methods
@@ -1573,19 +1573,19 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q6.2.14** — Is the wholesale side of the business run by its own team, with its own targets or its own profit and loss? *(recommended)*
+**Q6.2.14** — L'activité de gros est-elle pilotée par sa propre équipe, avec ses propres objectifs ou son propre compte de résultat ? *(recommended)*
 *Ask if Q1.1.4 is Business to business (B2B), or Q1.1.4 is Hybrid (DTC and B2B).*
 *Why we ask: A wholesale business with its own team, targets and customers usually wants to move at its own pace — its own campaigns, its own releases, its own data. That is the difference between wholesale living alongside the consumer store and wholesale having a store of its own.*
-*We are asking about how the business is organised, not about the website.*
+*Nous interrogeons l'organisation de l'entreprise, pas le site web.*
 
 - [ ] Yes
 - [ ] No
 
 ### 6.3 Fidélité & segmentation
 
-**Q6.3.1** — Which loyalty components are planned? *(recommended)*
+**Q6.3.1** — Quels éléments de fidélité sont prévus ? *(recommended)*
 *Ask if Q1.1.4 is Direct to consumer (DTC) or Hybrid (DTC and B2B).*
-*Shopify has no native points programme; store credit can be a reward currency. Loyalty needs an app.*
+*Shopify n'a pas de programme de points natif ; l'avoir en boutique peut servir de monnaie de récompense. La fidélité exige une application.*
 
 *(tick all that apply)*
 - [ ] Points purchase
@@ -1598,28 +1598,28 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q6.3.2** — Is loyalty needed at launch or in a later phase? *(recommended)*
+**Q6.3.2** — La fidélité est-elle nécessaire au lancement ou dans une phase ultérieure ? *(recommended)*
 
 *(tick one)*
 - [ ] Launch
 - [ ] Phase 2
 - [ ] None
 
-**Q6.3.3** — Which loyalty app is used or preferred? *(optional)*
+**Q6.3.3** — Quelle application de fidélité est utilisée ou préférée ? *(optional)*
 
 > Answer:
 
-**Q6.3.4** — Must loyalty status sync to the email platform or CRM? *(optional)*
+**Q6.3.4** — Le statut de fidélité doit-il être synchronisé avec la plateforme e-mail ou le CRM ? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.3.5** — Which customer segments do you use today? *(optional)*
+**Q6.3.5** — Quels segments de clientèle utilisez-vous aujourd'hui ? *(optional)*
 
 > Answer:
 
-**Q6.3.6** — Where is segmentation driven from — Shopify, the email platform, a CDP, or a mix? *(optional)*
-*Customer segments are native in Shopify; the email platform or CDP may own them instead.*
+**Q6.3.6** — D'où la segmentation est-elle pilotée — Shopify, la plateforme e-mail, une CDP, ou un mélange ? *(optional)*
+*Les segments de clientèle sont natifs dans Shopify ; la plateforme e-mail ou une CDP peuvent les détenir à la place.*
 
 *(tick one)*
 - [ ] Shopify
@@ -1628,13 +1628,13 @@
 - [ ] Mixed
 - [ ] None
 
-**Q6.3.7** — Which customer tags drive custom logic today (pricing, access, discounts)? *(optional)*
+**Q6.3.7** — Quelles étiquettes client pilotent aujourd'hui une logique sur mesure (prix, accès, réductions) ? *(optional)*
 
 > Answer:
 
 ### 6.4 Confidentialité & consentement
 
-**Q6.4.1** — Which privacy laws apply to your customers (GDPR, UK GDPR, CCPA, Swiss nFADP, other)? *(required)*
+**Q6.4.1** — Quelles lois sur la protection des données s'appliquent à vos clients (RGPD, RGPD britannique, CCPA, nLPD suisse, autres) ? *(required)*
 
 *(tick all that apply)*
 - [ ] GDPR (EU)
@@ -1645,37 +1645,37 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q6.4.2** — Cookie consent: Shopify's cookie banner or a consent management platform? Name the tool if known. *(recommended)*
+**Q6.4.2** — Consentement aux cookies : la bannière de Shopify ou une plateforme de gestion du consentement ? Nommez l'outil si vous le connaissez. *(recommended)*
 *Ask if Q6.4.1 includes GDPR (EU), UK GDPR, Swiss nFADP or CCPA (US).*
-*Shopify's cookie banner is native; a third-party platform must integrate Shopify's Customer Privacy API.*
+*La bannière de cookies de Shopify est native ; une plateforme tierce doit intégrer la Customer Privacy API de Shopify.*
 
 - Consent approach:
 - Cookie consent tool:
 
-**Q6.4.3** — Is explicit opt-in required for marketing emails? *(recommended)*
+**Q6.4.3** — Un consentement explicite est-il requis pour les e-mails marketing ? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.4.4** — Do you collect sensitive personal data (health, age, biometric, financial)? *(required)*
-*Sensitive data needs a data protection impact assessment and legal sign-off.*
+**Q6.4.4** — Recueillez-vous des données personnelles sensibles (santé, âge, biométrie, finances) ? *(required)*
+*Les données sensibles exigent une analyse d'impact relative à la protection des données et une validation juridique.*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.4.5** — Must data-access or deletion requests reach systems beyond Shopify (ERP, email platform) or run without staff involvement? *(required)*
-*Shopify handles export and erasure requests in admin; other systems or automation need extra design and legal sign-off.*
+**Q6.4.5** — Les demandes d'accès ou de suppression doivent-elles atteindre des systèmes au-delà de Shopify (ERP, plateforme e-mail) ou s'exécuter sans intervention humaine ? *(required)*
+*Shopify traite les demandes d'export et d'effacement dans l'interface d'administration ; d'autres systèmes ou l'automatisation exigent une conception supplémentaire et une validation juridique.*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.4.6** — Do US state privacy laws require a 'Do not sell or share my personal information' page? *(optional)*
-*A native opt-out page honours Global Privacy Control.*
+**Q6.4.6** — Les lois des États américains sur la vie privée imposent-elles une page « Do not sell or share my personal information » ? *(optional)*
+*Une page d'opposition native respecte le Global Privacy Control.*
 
 - [ ] Yes
 - [ ] No
 
-**Q6.4.7** — Where do you collect marketing consent? *(optional)*
+**Q6.4.7** — Où recueillez-vous le consentement marketing ? *(optional)*
 
 *(tick all that apply)*
 - [ ] Checkout

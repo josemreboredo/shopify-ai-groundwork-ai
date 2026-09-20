@@ -1734,6 +1734,287 @@
    "teach": {
     "why": "Les pays des magasins décident de la configuration de paiement, de fiscalité et de matériel dont chaque magasin a besoin, et si le retail s'inscrit dans un marché existant. Confirmez-les : le matériel POS et la disponibilité des paiements en magasin sont propres à chaque pays et doivent être vérifiés pays par pays."
    }
+  },
+  "Q6.1.1": {
+   "text": "Le paiement en tant qu'invité est-il la norme, les comptes sont-ils facultatifs, ou l'inscription est-elle obligatoire ?",
+   "teach": {
+    "why": "Cela fixe le modèle de connexion pour toute la boutique : peut-on acheter sans compte. Cela rencontre aussi le B2B — un acheteur professionnel doit se connecter avec un compte client et être rattaché à un emplacement d'entreprise avant que les prix contractuels ne s'appliquent.",
+    "options": [
+     {
+      "option": "Le paiement en tant qu'invité est la norme",
+      "pros": "Le moins d'étapes jusqu'à la première commande ; rien à migrer le premier jour.",
+      "cons": "Pas d'espace compte : l'historique des commandes, le rachat, les retours et l'avoir n'ont nulle part où vivre."
+     },
+     {
+      "option": "Comptes facultatifs",
+      "pros": "Les invités convertissent toujours, et les clients inscrits obtiennent l'espace compte natif (historique, rachat, retours, avoir).",
+      "cons": "Deux parcours à concevoir, tester et supporter ; l'adoption des comptes doit se gagner."
+     },
+     {
+      "option": "Inscription obligatoire",
+      "pros": "Chaque commande est rattachée à une fiche client — c'est de toute façon ainsi que le B2B doit fonctionner.",
+      "cons": "Une barrière devant le premier achat grand public."
+     }
+    ]
+   }
+  },
+  "Q6.1.3": {
+   "text": "Que doit contenir l'espace compte (historique des commandes, adresses, retours, liste d'envies, abonnements) ?",
+   "teach": {
+    "why": "Historique des commandes, rachat, retours et avoir sont natifs dans les comptes clients sur tous les plans dès Basic. Les listes d'envies ne le sont pas — elles exigent une application. Tout ce qui dépasse la liste native se construit en extensions d'interface de compte client : énumérez donc précisément les fonctionnalités voulues.",
+    "limits": "La liste d'envies est une décision d'application : un éditeur, un coût mensuel et une intégration à la boutique, pas un réglage."
+   }
+  },
+  "Q6.1.4": {
+   "text": "Comment les clients doivent-ils se connecter ?",
+   "help": "Le code à usage unique par e-mail et la connexion via Google ou Facebook sont natifs.",
+   "teach": {
+    "why": "Les comptes clients actuels de Shopify se connectent avec un code à usage unique par e-mail, plus Google ou Facebook — sans mot de passe. La connexion depuis un autre site passe par Multipass, qui exige Plus et n'est pas compatible avec la Customer Account API qu'utilise une vitrine headless.",
+    "limits": "Les anciens comptes clients (avec mot de passe) sont la génération précédente : le B2B ne les prend pas en charge, et les comptes clients headless imposent de déplacer le code d'authentification hors de ceux-ci."
+   }
+  },
+  "Q6.2.2": {
+   "text": "Les clients professionnels ont-ils besoin de comptes d'entreprise avec leur propre connexion ?",
+   "teach": {
+    "why": "Cela active le modèle B2B de Shopify : entreprises, emplacements d'entreprise, et acheteurs qui se connectent avec des comptes clients. Cela ouvre le seuil de périmètre B2B — et notez que l'essentiel du B2B fonctionne sur tous les plans dès Basic, et pas seulement sur Plus.",
+    "limits": "Une commande B2B doit être passée par un acheteur associé à un emplacement d'entreprise ; sans cette association, ce sont les tarifs grand public qui s'appliquent. Les anciens comptes clients ne sont pas pris en charge : les comptes clients doivent donc être activés d'abord."
+   }
+  },
+  "Q6.2.3": {
+   "text": "Les clients professionnels ont-ils des listes de prix propres à leur entreprise ?",
+   "help": "Les listes de prix professionnelles sont des catalogues B2B.",
+   "teach": {
+    "why": "Les listes de prix B2B sont des catalogues. En dessous de Plus, vous disposez de trois catalogues actifs au maximum et aucun ne peut être affecté directement à une entreprise nommée — la tarification propre à une entreprise est, de loin, la raison la plus fréquente pour laquelle un projet B2B exige Plus. Vérifiez ce qui est visé.",
+    "limits": "Les catalogues B2B sur Basic, Grow et Advanced exigent que la boutique soit sur le nouveau Shopify Markets. Même sur Plus, un emplacement d'entreprise peut détenir au plus 25 catalogues."
+   }
+  },
+  "Q6.2.4": {
+   "text": "Existe-t-il des remises sur quantité ou des règles de quantité en B2B ?",
+   "teach": {
+    "why": "Les paliers de prix par quantité et les règles de quantité sont du B2B natif sur tous les plans dès Basic : une grille de prix de gros exige donc rarement une application. La réponse déclenche aussi le seuil de périmètre B2B, et c'est lui qui dimensionne l'engagement."
+   }
+  },
+  "Q6.2.5": {
+   "text": "Quelles conditions de paiement sont nécessaires (30 jours nets, facture, bon de commande) ?",
+   "teach": {
+    "why": "Les délais nets (7 à 90 jours), les numéros de bon de commande, les cartes enregistrées et les commandes provisoires sont natifs dès Basic. Acomptes, paiements partiels et demandes de paiement par expédition sont réservés à Plus. Une seule réponse peut ici forcer une montée de plan : précisez donc exactement quelles conditions s'appliquent.",
+    "limits": "Le paiement B2B ne prend pas en charge les paiements accélérés — Shop Pay, Apple Pay, Google Pay, Amazon Pay."
+   }
+  },
+  "Q6.2.6": {
+   "text": "Existe-t-il un processus de demande de devis, ou les prix sont-ils négociés acheteur par acheteur ?",
+   "help": "Shopify n'a pas de demande de devis intégrée : les commandes peuvent être soumises en provisoire pour revue, ou une application de devis gère la négociation.",
+   "teach": {
+    "why": "Shopify n'a pas de demande de devis intégrée. Nativement, ce qui s'en approche le plus est d'exiger que les commandes B2B soient passées en provisoire, revues et modifiées par les équipes avant confirmation. Tout ce qui ressemble à une vraie négociation exige une application de devis — dans les deux cas, cela signale une revue d'architecture B2B.",
+    "options": [
+     {
+      "option": "Revue native des commandes provisoires",
+      "pros": "Aucun éditeur supplémentaire ; fonctionne dès Basic ; peut être imposée par emplacement d'entreprise et conserve une source de vérité unique pour les prix.",
+      "cons": "C'est une étape de revue et de modification, pas un document de devis avec une trace de négociation."
+     },
+     {
+      "option": "Une application de devis (catégorie App Store « Pricing quotes »)",
+      "pros": "Couvre la demande de devis, la négociation et le passage du devis à la commande comme une fonctionnalité produit.",
+      "cons": "Ajoute une dépendance éditeur et une seconde source de vérité pour les prix ; la capacité n'est pas documentée par Shopify et doit être prouvée application par application."
+     }
+    ]
+   }
+  },
+  "Q6.2.7": {
+   "text": "Les comptes B2B doivent-ils être validés avant de pouvoir commander ?",
+   "help": "Natif : un formulaire de demande de compte de gros (Shopify Forms) plus Flow pour créer et valider les entreprises.",
+   "teach": {
+    "why": "L'accès B2B est accordé par le marchand : un acheteur ne devient acheteur B2B qu'une fois que les équipes l'ont rattaché à un emplacement d'entreprise. Nativement, un formulaire de demande de compte d'entreprise (application gratuite Shopify Forms) recueille les demandes et Shopify Flow automatise les étapes de validation.",
+    "limits": "Au sein d'un emplacement d'entreprise, il existe deux niveaux de permission : commande seule (ses propres commandes) et administration de l'emplacement (toutes les commandes de l'emplacement, plus la mise à jour des adresses)."
+   }
+  },
+  "Q6.2.8": {
+   "text": "B2B Shopify natif ou une application ?",
+   "teach": {
+    "why": "C'est l'aiguillage d'architecture du B2B. Shopify ne publie aucune comparaison des trois voies : tranchez donc sur deux éléments prouvables — les manques documentés du B2B natif, et le plan que le modèle de catalogues exige réellement.",
+    "options": [
+     {
+      "option": "B2B Shopify natif",
+      "pros": "Une source unique de produits et de stocks ; entreprises, emplacements, délais de paiement, numéros de bon de commande et paliers de prix sur tous les plans ; aucun sous-traitant tiers.",
+      "cons": "Manques documentés : pas de paiement accéléré, ni abonnements, ni livraison locale, ni points relais, ni pourboire ; plusieurs fonctionnalités désactivées par défaut ; catalogues plafonnés à trois en dessous de Plus."
+     },
+     {
+      "option": "Une boutique de gros séparée",
+      "pros": "Séparation complète du catalogue, du thème et du paiement ; sur Plus, ce peut être une boutique d'expansion sur le même contrat.",
+      "cons": "Deux boutiques à construire et à exploiter ; les boutiques d'une organisation ne partagent pas de données par défaut, et les boutiques d'expansion sont une fonctionnalité contractuelle de Plus."
+     },
+     {
+      "option": "Une application B2B",
+      "pros": "Peut combler des manques documentés — par exemple la restriction des moyens de paiement, pour laquelle Shopify renvoie aux applications ou à la Payment Customization Function API.",
+      "cons": "Dépendance éditeur et seconde source de vérité pour les prix ; la capacité de l'application n'est pas documentée par Shopify et doit être prouvée au cas par cas."
+     }
+    ]
+   }
+  },
+  "Q6.2.9": {
+   "text": "Combien de comptes B2B sont attendus sous 12 mois ?",
+   "teach": {
+    "why": "Le volume fixe l'effort : combien d'entreprises et d'emplacements doivent être créés, importés et tenus en phase avec les systèmes du client, et combien de listes de prix distinctes le modèle exige réellement — c'est précisément là que la limite de trois catalogues en dessous de Plus commence à mordre.",
+    "limits": "Une entreprise peut avoir jusqu'à 10 000 emplacements ; chaque emplacement d'entreprise peut se voir affecter au plus 25 catalogues."
+   }
+  },
+  "Q6.2.10": {
+   "text": "De combien de listes de prix B2B distinctes (catalogues) avez-vous besoin, et l'une d'elles doit-elle être propre à une seule entreprise ?",
+   "teach": {
+    "why": "Le test de plan le plus net en B2B. En dessous de Plus, vous disposez de trois catalogues actifs au maximum sur l'ensemble des marchés B2B, et aucun ne peut être affecté directement à une entreprise ou à un emplacement. Plus de trois, ou une tarification propre à une entreprise, signifie Plus.",
+    "limits": "Sur Basic, Grow et Advanced, la boutique doit être sur le nouveau Shopify Markets pour utiliser des catalogues B2B."
+   }
+  },
+  "Q6.2.11": {
+   "text": "Les acheteurs professionnels doivent-ils voir une vitrine ou un paiement différents de ceux des particuliers ?",
+   "teach": {
+    "why": "Une vitrine et un paiement propres au B2B se livrent via Markets, et personnaliser le thème par marché commence à Advanced. Si les acheteurs doivent voir un site différent de celui des particuliers, le plan plancher monte — établissez-le avant de chiffrer Basic ou Grow."
+   }
+  },
+  "Q6.2.12": {
+   "text": "Les commandes B2B ont-elles besoin de l'un de ces éléments : abonnements, livraison locale ou points relais, paiements express, plus de 500 lignes, cartes cadeaux ?",
+   "help": "Le B2B Shopify ne les prend pas en charge.",
+   "teach": {
+    "why": "Voici la liste de ce que le B2B Shopify ne fait pas du tout : paiements accélérés, abonnements, livraison locale, points relais, pourboire, et commandes de plus de 500 lignes. Un oui ici est une revue d'architecture signalée ou un changement de processus, jamais une tâche de configuration.",
+    "limits": "Le retrait en magasin, les cartes cadeaux au paiement, les scripts de ligne et les paiements abandonnés sont désactivés par défaut en B2B et doivent être demandés au support Shopify par le propriétaire de la boutique ou de l'organisation."
+   }
+  },
+  "Q6.2.13": {
+   "text": "Quelles règles d'expédition diffèrent pour les acheteurs professionnels ?",
+   "help": "Par défaut, acheteurs professionnels et particuliers voient les mêmes modes de livraison. Des options différentes exigent Checkout Blocks, une application ou une Function de personnalisation de la livraison ; les commandes peuvent aussi être soumises en provisoire pour chiffrer la livraison avant le paiement.",
+   "teach": {
+    "why": "Par défaut, les acheteurs professionnels voient les mêmes modes de livraison que les particuliers. Des options différentes exigent Checkout Blocks, une application ou une Function de personnalisation de la livraison — et une Function dans une application personnalisée exige Plus, tandis qu'une application publique qui en contient une fonctionne sur tous les plans.",
+    "limits": "La livraison locale et les points relais ne sont pas pris en charge en B2B. Lorsque la livraison doit être chiffrée commande par commande, les commandes B2B peuvent être soumises en provisoire et tarifées avant le paiement."
+   }
+  },
+  "Q6.2.14": {
+   "text": "L'activité de gros est-elle pilotée par sa propre équipe, avec ses propres objectifs ou son propre compte de résultat ?",
+   "help": "Nous interrogeons l'organisation de l'entreprise, pas le site web.",
+   "teach": {
+    "why": "Le B2B natif fonctionne sur la même boutique que l'activité grand public, et c'est la réponse la moins chère dès qu'une seule équipe pilote les deux. Une équipe de gros distincte avec son propre compte de résultat est la raison documentée que Shopify donne pour une boutique d'expansion : cette réponse est donc l'un des critères qui font basculer la topologie vers une solution hybride.",
+    "limits": "Une boutique d'expansion exige Shopify Plus, et rien n'est partagé entre boutiques — produits, stocks, applications et thèmes sont entretenus deux fois. Pesez-le face au maintien du B2B sur une boutique unique avec ses propres catalogues."
+   }
+  },
+  "Q6.3.1": {
+   "text": "Quels éléments de fidélité sont prévus ?",
+   "help": "Shopify n'a pas de programme de points natif ; l'avoir en boutique peut servir de monnaie de récompense. La fidélité exige une application.",
+   "teach": {
+    "why": "Shopify n'a pas de programme de points natif : la fidélité implique donc une application. Ce qui est natif, c'est l'avoir en boutique, qui peut servir de monnaie de récompense et apparaît dans le compte client. Nommer les éléments maintenant dimensionne le choix de l'application et son travail d'intégration."
+   }
+  },
+  "Q6.3.2": {
+   "text": "La fidélité est-elle nécessaire au lancement ou dans une phase ultérieure ?",
+   "teach": {
+    "why": "La fidélité est une application plus de l'intégration et du travail de vitrine, pas un interrupteur : elle appartient donc à une phase. Trancher entre lancement et plus tard l'empêche d'être discrètement supposée dans la première mise en ligne et garde le périmètre de lancement honnête.",
+    "limits": "L'avoir en boutique est natif et peut être en production dès le lancement, même si le programme de points vient plus tard."
+   }
+  },
+  "Q6.3.3": {
+   "text": "Quelle application de fidélité est utilisée ou préférée ?",
+   "teach": {
+    "why": "Si une application de fidélité tourne déjà, le travail consiste à migrer soldes, paliers et historique plutôt qu'à choisir un éditeur. S'il n'y a qu'une préférence, cela fixe tôt la surface d'intégration. S'il n'y a ni l'un ni l'autre, nous établissons une sélection dans la catégorie fidélité de l'App Store."
+   }
+  },
+  "Q6.3.4": {
+   "text": "Le statut de fidélité doit-il être synchronisé avec la plateforme e-mail ou le CRM ?",
+   "teach": {
+    "why": "Un statut de fidélité qui vit dans l'application pendant que les campagnes vivent dans la plateforme e-mail ou le CRM signifie une synchronisation à construire, surveiller et maintenir juste. C'est du périmètre d'intégration avec ses propres modes de défaillance, et c'est là que le travail de fidélité dérape le plus souvent."
+   }
+  },
+  "Q6.3.5": {
+   "text": "Quels segments de clientèle utilisez-vous aujourd'hui ?",
+   "teach": {
+    "why": "Les segments d'aujourd'hui montrent quelles données client doivent arriver dans Shopify et y rester justes. Shopify a des segments de clientèle natifs : la liste indique donc ce qui peut être reconstruit nativement et ce qui dépend de données détenues par un autre système."
+   }
+  },
+  "Q6.3.6": {
+   "text": "D'où la segmentation est-elle pilotée — Shopify, la plateforme e-mail, une CDP, ou un mélange ?",
+   "help": "Les segments de clientèle sont natifs dans Shopify ; la plateforme e-mail ou une CDP peuvent les détenir à la place.",
+   "teach": {
+    "why": "Les segments peuvent vivre nativement dans Shopify, dans la plateforme e-mail ou dans une CDP. L'endroit où ils vivent décide qui possède les définitions, quel système déclenche les campagnes et dans quel sens les données client doivent circuler — et un mélange implique de réconcilier les deux.",
+    "options": [
+     {
+      "option": "Shopify",
+      "pros": "Segments de clientèle natifs, aucune licence supplémentaire ; ils se trouvent à côté des données de commande et de client qui les définissent.",
+      "cons": "Tout outil hors de Shopify qui a besoin du segment doit être alimenté par une intégration."
+     },
+     {
+      "option": "La plateforme e-mail ou une CDP",
+      "pros": "Une définition unique sur des canaux plus larges que la boutique, dans un outil que le client exploite peut-être déjà.",
+      "cons": "La logique côté Shopify qui s'appuie sur les segments ou les étiquettes — prix, accès, réductions — doit alors être pilotée de l'extérieur."
+     },
+     {
+      "option": "Un mélange",
+      "pros": "Chaque système conserve les segments qu'il est réellement le mieux placé pour détenir.",
+      "cons": "Deux sources de vérité ; la frontière doit être écrite dans le projet, sinon elle dérive."
+     }
+    ]
+   }
+  },
+  "Q6.3.7": {
+   "text": "Quelles étiquettes client pilotent aujourd'hui une logique sur mesure (prix, accès, réductions) ?",
+   "teach": {
+    "why": "Les étiquettes client sont en général porteuses sur l'ancienne plateforme — elles conditionnent l'accès, les prix ou les réductions. Elles doivent être migrées et réimplémentées ici, et une partie de ce que faisaient les étiquettes là-bas devient un catalogue B2B ou un segment de clientèle dans Shopify."
+   }
+  },
+  "Q6.4.1": {
+   "text": "Quelles lois sur la protection des données s'appliquent à vos clients (RGPD, RGPD britannique, CCPA, nLPD suisse, autres) ?",
+   "teach": {
+    "why": "Les régimes fixent la ligne de base de conformité pour tout le reste de cette section : consentement avant mesure, pages d'opposition, traitement des demandes des personnes concernées, et ce que le juridique doit valider. Posez la question avant celles sur le consentement et les données, pas après."
+   }
+  },
+  "Q6.4.2": {
+   "text": "Consentement aux cookies : la bannière de Shopify ou une plateforme de gestion du consentement ? Nommez l'outil si vous le connaissez.",
+   "help": "La bannière de cookies de Shopify est native ; une plateforme tierce doit intégrer la Customer Privacy API de Shopify.",
+   "teach": {
+    "why": "Quelle que soit la bannière utilisée, la décision de consentement doit parvenir à Shopify via la Customer Privacy API — sinon la mesure de Shopify et les applications installées n'en sauront jamais rien. La bannière native de Shopify le fait déjà ; une plateforme tierce doit être intégrée.",
+    "options": [
+     {
+      "option": "La bannière de cookies native de Shopify",
+      "pros": "Native dès Basic dans les réglages de confidentialité, aucune licence, déjà reliée au traitement du consentement de Shopify.",
+      "cons": "Elle ne couvre que cette boutique — aucune aide si le client tient un registre de consentement à l'échelle du groupe sur d'autres sites."
+     },
+     {
+      "option": "Une plateforme de gestion du consentement",
+      "pros": "Une approche unique du consentement sur tout le parc du client, souvent déjà contractée et portée par son équipe juridique.",
+      "cons": "Elle doit intégrer la Customer Privacy API de Shopify — du vrai travail de livraison et une exigence testable, en plus de la licence."
+     }
+    ]
+   }
+  },
+  "Q6.4.3": {
+   "text": "Un consentement explicite est-il requis pour les e-mails marketing ?",
+   "teach": {
+    "why": "Le consentement explicite change les formulaires d'inscription, la case de consentement au paiement et ce que la plateforme e-mail a le droit d'envoyer. Obtenez la réponse par écrit : elle décide lesquelles des adresses recueillies peuvent réellement être sollicitées, au lancement comme après une migration."
+   }
+  },
+  "Q6.4.4": {
+   "text": "Recueillez-vous des données personnelles sensibles (santé, âge, biométrie, finances) ?",
+   "help": "Les données sensibles exigent une analyse d'impact relative à la protection des données et une validation juridique.",
+   "teach": {
+    "why": "Les données de catégorie particulière (santé, âge, biométrie, finances) relèvent le niveau d'exigence : une analyse d'impact relative à la protection des données et une validation juridique sur la minimisation, le lieu de stockage et le consentement, avant le développement. C'est signalé tôt parce que cela peut remodeler le modèle de données et le calendrier."
+   }
+  },
+  "Q6.4.5": {
+   "text": "Les demandes d'accès ou de suppression doivent-elles atteindre des systèmes au-delà de Shopify (ERP, plateforme e-mail) ou s'exécuter sans intervention humaine ?",
+   "help": "Shopify traite les demandes d'export et d'effacement dans l'interface d'administration ; d'autres systèmes ou l'automatisation exigent une conception supplémentaire et une validation juridique.",
+   "teach": {
+    "why": "Shopify traite les demandes d'export et d'effacement des données client à l'intérieur de l'interface d'administration. Dès qu'une demande doit aussi atteindre l'ERP, la plateforme e-mail ou l'entrepôt, ou s'exécuter sans personne, cela devient un chantier de livraison avec validation juridique — pas un réglage Shopify.",
+    "limits": "Chaque système connecté qui détient des données client élargit la demande : chacun exige un responsable, un chemin et la preuve que cela a été fait."
+   }
+  },
+  "Q6.4.6": {
+   "text": "Les lois des États américains sur la vie privée imposent-elles une page « Do not sell or share my personal information » ?",
+   "help": "Une page d'opposition native respecte le Global Privacy Control.",
+   "teach": {
+    "why": "Les lois de certains États américains peuvent imposer une page « Do not sell or share my personal information ». La page d'opposition native de Shopify respecte les signaux Global Privacy Control : c'est donc en général de la configuration plutôt que du développement — mais cela doit être demandé, tranché et prouvé."
+   }
+  },
+  "Q6.4.7": {
+   "text": "Où recueillez-vous le consentement marketing ?",
+   "teach": {
+    "why": "Chaque point où un consentement est recueilli — formulaire d'inscription, paiement, création de compte, fenêtre surgissante, magasin — est un point où la trace doit être créée et transportée. La liste montre quelles intégrations doivent réécrire le consentement, et où un audit trouverait des trous."
+   }
   }
  },
  "document": {
