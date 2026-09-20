@@ -4,7 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { Channels, OfferScale, PhasePlan } from '../components/diagram.jsx';
+import { Boundaries, Channels, OfferScale, PhasePlan } from '../components/diagram.jsx';
 
 /**
  * One offer, on its own page.
@@ -53,9 +53,14 @@ export default function OfferingSegment({ loaderData }) {
   if (segment.slug === 'larger-engagement') return <Beyond view={view} segment={segment} currency={currency} />;
 
   const { offer } = segment;
-  const moves = segment.slug === 'l'
-    ? []
-    : view.gates.map((g) => ({ ...g, to: segment.slug === 's' ? 'M' : 'L' }));
+  /* Every offer's gates, L included.
+     L used to show none of them, which was defensible while its band absorbed
+     whatever they came to: the gates changed nothing about what was quoted. They
+     do now — past the weeks the band already holds, each one is added to it — so
+     an L page listing only its triggers says the opposite of what the engine
+     does. */
+  const moves = view.gates;
+  const envelope = view.gate_capacity_weeks;
 
   return (
     <main id="main" className="story offering">
@@ -95,12 +100,22 @@ export default function OfferingSegment({ loaderData }) {
       </section>
 
       <section>
-        <h2>Where the weeks go</h2>
+        <h2>What you get, phase by phase</h2>
         <p className="lede">
-          The phases, in the order they run. Set-up, template selection, app selection and template
+          The phases in the order they run, each with the weeks it takes and the things that are
+          handed over at the end of it. Set-up, template selection, app selection and template
           customisation are the four a client asks about by name, so they are named.
         </p>
         <PhasePlan phases={offer.phases} weeks={offer.duration_weeks} />
+      </section>
+
+      <section>
+        <h2>Where this offer stops</h2>
+        <p className="lede">
+          Everything below is deliberate. An offer that only lists what it includes is the one
+          argued about in week six.
+        </p>
+        <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} />
       </section>
 
       <section>
@@ -125,78 +140,82 @@ export default function OfferingSegment({ loaderData }) {
         </div>
       </section>
 
+      {segment.slug === 'l' ? (
+        <section>
+          <h2>What lands an engagement here</h2>
+          <p className="lede">
+            One way in: any one of the triggers below, whatever the scope gates say. Scope alone never lands an
+            engagement here — a Liquid build that runs long is still a Liquid build, and this offer is the
+            headless one.
+          </p>
+          <p className="muted">
+            Which is why the triggers are the whole entry: each is a statement about what is being built, not
+            about how much of it there is. Scope that outgrows every offer is not an L either — that is{' '}
+            <Link to="/offering/larger-engagement">beyond the offers</Link>, and a programme rather than a bigger
+            one.
+          </p>
+          <h3>The triggers</h3>
+          <ol className="claims">
+            {view.l_triggers.map((t) => (
+              <li key={t.id}>
+                <details>
+                  <summary>
+                    <span className="claim">{t.label}</span>
+                    <span className="claim-line">On its own, enough to make this an L.</span>
+                  </summary>
+                  <p>{t.condition}</p>
+                </details>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
+
+      {/* The gates, on every offer — and what the band already holds before any
+          of them is added to it. A page that lists what a gate costs without
+          saying what the offer already covers leaves the consultant to guess
+          whether the number is inside the band or on top of it. */}
       <section>
-        <h2>{segment.slug === 'l' ? 'What lands an engagement here' : 'What moves an engagement out of here'}</h2>
-        {segment.slug === 'l' ? (
-          <>
-            <p className="lede">
-              Two ways in. Any one of the triggers below lands an engagement here whatever the scope gates say —
-              and so does scope that adds up to more than an M can hold, with no trigger at all.
-            </p>
-            <p className="muted">
-              The second route is the one that catches a heavy migration with B2B and two integrations: four gates
-              that come to more than {view.offers.find((o) => o.code === 'M')?.duration_weeks.max} weeks. The engine
-              adds up what the gates cost and compares it with the M ceiling, so the offer follows the work rather
-              than the number of boxes ticked.
-            </p>
-            <h3>The triggers</h3>
-            <ol className="claims">
-              {view.l_triggers.map((t) => (
-                <li key={t.id}>
-                  <details>
-                    <summary>
-                      <span className="claim">{t.label}</span>
-                      <span className="claim-line">On its own, enough to make this an L.</span>
-                    </summary>
-                    <p>{t.condition}</p>
-                  </details>
-                </li>
-              ))}
-            </ol>
-          </>
-        ) : (
-          <>
-            <p className="lede">
-              {segment.slug === 's'
-                ? 'One gate keeps it in S with a modifier, and the modifier is added to the weeks and the band — an S with a heavy migration quotes what a heavy migration costs. Two gates or more make it an M.'
-                : 'The gates below are already priced into M. What takes it past M is an L trigger, or scope that adds up to more than an M can hold.'}
-            </p>
-            <ol className="claims">
-              {moves.map((g) => (
-                <li key={g.id}>
-                  <details>
-                    <summary>
-                      <span className="claim">{g.label}</span>
-                      <span className="claim-line">
-                        {g.effort_weeks ? `+${weeks(g.effort_weeks)} week${g.effort_weeks.max === 1 ? '' : 's'}` : 'No fixed effort'}
-                        {view.pricing && g.price_add ? ` · ${band(g.price_add, currency)}` : ''}
-                      </span>
-                    </summary>
-                    <p><strong>The exact rule.</strong> {g.condition}</p>
-                    {g.adds ? <p>{g.adds}</p> : null}
-                    {/* A gate priced by tier shows every tier. One headline
-                        number is right for a third of engagements and wrong by
-                        a factor of five for the rest. */}
-                    {g.tiers ? (
-                      <ul className="tiers">
-                        {g.tiers.map((t) => (
-                          <li key={t.tier}>
-                            <strong>{t.tier}</strong>
-                            <span className="muted small">{t.adds}</span>
-                            <span className="tier-cost">
-                              +{weeks(t.effort_weeks)} week{t.effort_weeks.max === 1 ? '' : 's'}
-                              {view.pricing && t.price_add ? ` · ${band(t.price_add, currency)}` : ''}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </details>
-                </li>
-              ))}
-            </ol>
-          </>
-        )}
+        <h2>{segment.slug === 'l' ? 'What the gates add to it' : 'What moves an engagement out of here'}</h2>
+        <p className="lede">
+          {segment.slug === 's'
+            ? 'One gate keeps it in S with a modifier, and the modifier is added to the weeks and the band — an S with a heavy migration quotes what a heavy migration costs. Two gates or more make it an M.'
+            : `This band already holds ${envelope.min}\u2013${envelope.max} weeks of scope gates: inside that they cost nothing more. Past it, each one is added to the weeks and to the band.${segment.slug === 'm' ? ' Only an L trigger takes an engagement out of this offer.' : ''}`}
+        </p>
+        <ol className="claims">
+          {moves.map((g) => (
+            <li key={g.id}>
+              <details>
+                <summary>
+                  <span className="claim">{g.label}</span>
+                  <span className="claim-line">
+                    {g.effort_weeks ? `+${weeks(g.effort_weeks)} week${g.effort_weeks.max === 1 ? '' : 's'}` : 'No fixed effort'}
+                    {view.pricing && g.price_add ? ` · ${band(g.price_add, currency)}` : ''}
+                  </span>
+                </summary>
+                <p><strong>The exact rule.</strong> {g.condition}</p>
+                {g.adds ? <p>{g.adds}</p> : null}
+                {/* A gate priced by tier shows every tier. One headline number
+                    is right for a third of engagements and wrong by a factor of
+                    five for the rest. */}
+                {g.tiers ? (
+                  <ul className="tiers">
+                    {g.tiers.map((t) => (
+                      <li key={t.tier}>
+                        <strong>{t.tier}</strong>
+                        <span className="muted small">{t.adds}</span>
+                        <span className="tier-cost">
+                          +{weeks(t.effort_weeks)} week{t.effort_weeks.max === 1 ? '' : 's'}
+                          {view.pricing && t.price_add ? ` · ${band(t.price_add, currency)}` : ''}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </details>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section>

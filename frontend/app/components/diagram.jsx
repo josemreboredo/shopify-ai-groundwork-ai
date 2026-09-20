@@ -280,6 +280,13 @@ export function PhasePlan({ phases, weeks }) {
             </p>
           </div>
           <p className="phase-covers">{p.covers}</p>
+          {/* The things handed over, not the activity. "What do I actually get"
+              had no answer on this page: the offer said what it covered in four
+              lines and how long it took, and a consultant had to invent the
+              middle in the room. */}
+          {p.deliverables?.length ? (
+            <ul className="phase-gets">{p.deliverables.map((d) => <li key={d}>{d}</li>)}</ul>
+          ) : null}
         </li>
       ))}
       <li className="phases-total">
@@ -316,5 +323,31 @@ export function Channels({ channels }) {
         <div key={label}><dt>{label}</dt><dd>{body}</dd></div>
       ))}
     </dl>
+  );
+}
+
+/**
+ * The two lists an offer is argued about in week six for not having.
+ *
+ * An offer that only says what it includes leaves every boundary to be
+ * discovered, and "we assumed you had a sandbox" is not an argument anybody
+ * wins. Side by side, because they are the same conversation: where this offer
+ * stops, and where the client starts.
+ *
+ * @param {{ notIncluded: string[], clientProvides: string[] }} props
+ */
+export function Boundaries({ notIncluded, clientProvides }) {
+  if (!notIncluded?.length && !clientProvides?.length) return null;
+  return (
+    <div className="boundaries">
+      <section className="boundary out">
+        <h3>Not in this offer</h3>
+        <ul>{notIncluded.map((line) => <li key={line}>{line}</li>)}</ul>
+      </section>
+      <section className="boundary theirs">
+        <h3>What we need from the client</h3>
+        <ul>{clientProvides.map((line) => <li key={line}>{line}</li>)}</ul>
+      </section>
+    </div>
   );
 }

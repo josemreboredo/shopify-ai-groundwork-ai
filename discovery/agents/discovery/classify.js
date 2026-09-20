@@ -51,7 +51,7 @@ const MIGRATION_TIER = {
  * a Magento estate, six markets and four integrations was quoted at the same
  * 13–20 weeks as one with a single market and no migration.
  */
-const GATE_CAPACITY = {
+export const GATE_CAPACITY = {
   min: offering.offers.M.duration_weeks.min - offering.offers.S.duration_weeks.min,
   max: offering.offers.M.duration_weeks.max - offering.offers.S.duration_weeks.max,
 };

@@ -103,6 +103,16 @@ export default function Offering({ loaderData }) {
               </li>
             ))}
           </ol>
+          {/* What the gates do once the offer is decided. The pages quoted each
+              gate's cost and never said what the band already covered, so a
+              consultant could not tell whether "+5 to 7 weeks" was inside the
+              number or on top of it. */}
+          <p className="decide-note">
+            Then the gates. Every band already holds <strong>{weeks(view.gate_capacity_weeks)} weeks</strong> of
+            them, and inside that they cost nothing more. Past it, each one is added to the weeks and to the band —
+            which is how a luxury brand with a Magento estate and six markets stops being quoted the same as a
+            luxury brand with one market. Scope alone never moves an engagement to a bigger offer.
+          </p>
         </div>
       </section>
 
