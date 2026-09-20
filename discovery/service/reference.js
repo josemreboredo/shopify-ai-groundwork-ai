@@ -9,6 +9,7 @@
  */
 
 import { REFERENCE_CHAPTERS } from './reference-chapters.js';
+import { countedIntegrations } from '../agents/discovery/classify.js';
 
 /** Topics an engagement needs, from what the answers say. @param {object} doc  Decided or finalised engagement */
 export function topicsFor(doc) {
@@ -22,6 +23,11 @@ export function topicsFor(doc) {
     ...(crossBorder ? ['markets', 'cross_border'] : []),
     ...(doc?.b2b?.enabled ? ['b2b'] : []),
     ...(doc?.migration?.source_platform && doc.migration.source_platform !== 'none' ? ['migration'] : []),
+    /* Which API, what a call costs and what the quarterly version cycle commits
+       the client to. It matters where there is a system to connect, and on a
+       headless build where the storefront is an API consumer too — not on a
+       theme engagement with nothing behind it. */
+    ...(countedIntegrations(doc ?? {}).length || doc?.design?.headless_required === true ? ['integrations'] : []),
   ]);
 }
 

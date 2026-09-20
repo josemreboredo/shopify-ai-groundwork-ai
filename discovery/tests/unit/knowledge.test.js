@@ -102,3 +102,38 @@ describe('what we send to the model', () => {
     assert.equal(challengesFor(doc), challengesFor(doc), 'the deck path asks three times');
   });
 });
+
+describe('the API chapter reaches the engagements that need it', () => {
+  test('a system to connect, or a storefront that is an API consumer', async () => {
+    // The topic existed in no chapter and was emitted by nothing, so the first
+    // chapter tagged with it surfaced through "storefront" — which every
+    // engagement has — and therefore surfaced on all of them, by accident.
+    const { topicsFor } = await import('../../service/reference.js');
+    const has = (doc) => topicsFor(doc).has('integrations');
+
+    assert.equal(has({}), false, 'a theme store with nothing behind it does not need it');
+    // An App Store app with a native connector is an app, not an integration —
+    // the same definition the integration gate prices on.
+    assert.equal(has({ integrations: [{ system: 'Klaviyo', category: 'esp', connector: 'native_app' }] }), false);
+    assert.equal(has({ integrations: [{ system: 'Client ERP', category: 'erp', connector: 'custom' }] }), true);
+    // And a headless storefront is an API consumer whether or not anything else is.
+    assert.equal(has({ design: { headless_required: true } }), true);
+  });
+
+  test('it is a chapter like any other: front matter, citations and a checked date', async () => {
+    const { REFERENCE_CHAPTERS } = await import('../../service/reference-chapters.js');
+    const c = REFERENCE_CHAPTERS.find((x) => x.slug === 'shopify-apis');
+    assert.ok(c, 'shopify-apis is rendered into the module');
+    assert.match(c.verified, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(c.summary.length > 40);
+    const cited = new Set((c.markdown.match(/\[(\d+)\]/g) ?? []).map((m) => m.slice(1, -1)));
+    // Counted in the Sources section alone: a numbered list in the body is prose.
+    const sources = c.markdown.slice(c.markdown.indexOf('## Sources'));
+    const listed = (sources.match(/^\d+\. /gm) ?? []).length;
+    assert.ok(cited.size >= 5, 'a chapter that asserts Shopify facts cites them');
+    assert.equal(listed, cited.size, 'every citation has a source and every source is cited');
+    for (const url of c.markdown.match(/https?:\/\/[^\s)\]]+/g) ?? []) {
+      assert.match(url, /^https:\/\/(shopify\.dev|help\.shopify\.com|changelog\.shopify\.com|www\.shopify\.com)\//, url);
+    }
+  });
+});
