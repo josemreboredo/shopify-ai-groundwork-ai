@@ -15,6 +15,7 @@ export default [
   route('engagements/:client/closing-document.pptx', 'routes/engagement.closing-pptx.js'),
   route('engagements/:client/closing-annex.md', 'routes/engagement.closing-annex.js'),
   route('engagements/:client/closing-preview', 'routes/engagement.closing-preview.js'),
+  route('engagements/:client/go-no-go', 'routes/engagement.go-no-go.jsx'),
   route('engagements/:client/handover', 'routes/engagement.handover.jsx'),
   route('engagements/:client/handover-backlog.csv', 'routes/engagement.handover-file.js', { id: 'handover-backlog-csv' }),
   route('engagements/:client/handover-backlog.md', 'routes/engagement.handover-file.js', { id: 'handover-backlog-md' }),

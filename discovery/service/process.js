@@ -95,16 +95,19 @@ const STEPS = {
       hint: e.to_review ? `${e.to_review} to confirm` : e.documents ? 'All confirmed' : null,
     },
     {
-      path: 'summary',
-      label: 'Do we bid?',
+      // Not the decision — that is taken in a room, by people. This is what a
+      // Solution Architect brings to that room: whether the document even lets us
+      // price the work, what it would cost us to be wrong, and where it lands.
+      path: 'go-no-go',
+      label: 'Go/No-Go support',
       done: Boolean(e.go || e.route),
-      hint: e.go ? `Within the offers · ${e.offer?.code ?? ''}`.trim() : e.route ? ROUTE_LABEL[e.route] ?? e.route : 'Beyond the offers — a decision is needed',
+      hint: e.go ? `Within the offers · ${e.offer?.code ?? ''}`.trim() : e.route ? ROUTE_LABEL[e.route] ?? e.route : 'Evidence for the decision',
     },
     {
       path: 'clarifications',
-      label: 'Send the questions',
+      label: 'RFP Q&A',
       done: Boolean(e.clarifications_at),
-      hint: e.clarifications_at ? `Prepared ${e.clarifications_at}` : 'The few that change the answer',
+      hint: e.clarifications_at ? `Prepared ${e.clarifications_at}` : 'What we must ask to price it',
     },
     {
       path: 'closing-document',
@@ -191,13 +194,12 @@ export function viewsFor(engagement) {
   const e = engagement ?? {};
   const rfp = processOf(e.process) === 'rfp';
   return [
-    // On a bid the summary is a step ("Do we bid?"), so it is not repeated here.
-    ...(rfp ? [] : [{ path: 'summary', label: 'Summary' }]),
-    // And the other way round for the questions: on a bid the window closes, so
-    // they are a step; in a discovery the consultant is already talking to the
-    // client, so they are a view like any other.
-    ...(rfp ? [] : [{ path: 'clarifications', label: 'Questions to the client' }]),
-    ...(rfp ? [{ path: 'handover', label: 'Handover' }] : []),
+    // The engine's own working summary is reference in both, never a step.
+    { path: 'summary', label: 'Summary' },
+    // The questions are a step on a bid, where the window closes; in a discovery
+    // the consultant is already talking to the client, so they are a view. The
+    // handover is the mirror of that: a discovery's last step, a bid's side note.
+    ...(rfp ? [{ path: 'handover', label: 'Handover' }] : [{ path: 'clarifications', label: 'Questions to the client' }]),
     { path: 'settings', label: 'Change' },
   ];
 }

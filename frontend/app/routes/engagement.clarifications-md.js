@@ -16,7 +16,7 @@ export async function loader({ request, params }) {
   } catch (err) {
     throw serviceFailure(err);
   }
-  const markdown = renderClarificationsMarkdown(saved.engagement, saved.clarifications, { internal });
+  const markdown = renderClarificationsMarkdown(saved.engagement, saved.clarifications, { internal, assumptions: saved.assumptions });
   const name = `${params.client}-clarification-questions${internal ? '-internal' : ''}.md`;
   return new Response(markdown, {
     headers: {

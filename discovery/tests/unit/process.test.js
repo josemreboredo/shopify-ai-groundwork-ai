@@ -68,10 +68,13 @@ describe('one engine, two processes', () => {
     assert.deepEqual(at({ go: true, clarifications_at: '2026-09-20' }), ['done', 'done', 'done', 'done', 'current']);
   });
 
-  test('whether to bid at all is a step on a bid, and does not exist on a discovery', () => {
+  test('a bid carries the evidence for the go/no-go, and a discovery does not', () => {
     const labels = (process) => stepsFor({ process, documents: 1, to_review: 0, coverage: { required_answered: 85, required_total: 85 } }).map((s) => s.label);
-    assert.ok(labels('rfp').includes('Do we bid?'), 'the decision that saves the most money is not buried in Q10.5.5');
-    assert.ok(!labels('discovery').includes('Do we bid?'), 'a discovery is already won');
+    // The decision itself is taken in a meeting. What belongs here is what a
+    // Solution Architect brings to it, which is why the step is support, not a verdict.
+    assert.ok(labels('rfp').includes('Go/No-Go support'));
+    assert.ok(!labels('rfp').some((l) => /^Do we bid/.test(l)), 'the tool does not decide whether Merkle bids');
+    assert.ok(!labels('discovery').includes('Go/No-Go support'), 'a discovery is already won');
     const beyond = stepsFor({ process: 'rfp', documents: 1, to_review: 0, go: false, route: 'larger_engagement' });
     assert.match(beyond[2].hint, /Larger Engagement/, 'the route is shown, not just that there is one');
   });
@@ -114,9 +117,11 @@ describe('one engine, two processes', () => {
       ...stepsFor({ ...e, process }).map((s) => s.path),
       ...viewsFor({ ...e, process }).map((v) => v.path),
     ].sort();
-    const every = ['', 'clarifications', 'closing-document', 'handover', 'review', 'settings', 'summary'];
-    assert.deepEqual(reachable('rfp'), every);
-    assert.deepEqual(reachable('discovery'), every, 'neither process loses a page — they order them differently');
+    const shared = ['', 'clarifications', 'closing-document', 'handover', 'review', 'settings', 'summary'];
+    // Everything shared is reachable from both. The one page that is not shared is
+    // the go/no-go: a discovery has already been won, so there is nothing to weigh.
+    assert.deepEqual(reachable('rfp'), [...shared, 'go-no-go'].sort());
+    assert.deepEqual(reachable('discovery'), shared);
     assert.notDeepEqual(stepsFor({ ...e, process: 'rfp' }).map((s) => s.label), stepsFor({ ...e, process: 'discovery' }).map((s) => s.label));
     // On a bid the window to send questions closes, so it is a step. In a
     // discovery the consultant is already talking to the client, so it is a view.

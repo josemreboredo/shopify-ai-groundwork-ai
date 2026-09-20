@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { useRevalidator } from 'react-router';
+import { Form, useNavigation, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 
-export const meta = ({ params }) => [{ title: `Questions on the RFP · ${params.client} · Merkle Discovery` }];
+export const meta = ({ params }) => [{ title: `RFP Q&A · ${params.client} · Merkle Discovery` }];
 
 /**
  * What Merkle sends back after reading an RFP. The engine has already chosen the
@@ -31,19 +31,57 @@ export async function loader({ request, params }) {
   }
 }
 
+export async function action({ request, params }) {
+  const user = await requireUser(request);
+  const form = await request.formData();
+  try {
+    const result = await discovery().decideClarifications(user, params.client, {
+      id: form.get('id') ? String(form.get('id')) : undefined,
+      status: String(form.get('status') ?? ''),
+      all: form.get('all') === '1',
+    });
+    return { ok: true, ...result };
+  } catch (err) {
+    return serviceFailure(err);
+  }
+}
+
 const VIA = { claude: 'Claude', web: 'web app', cli: 'CLI' };
 
-export default function Clarifications({ loaderData }) {
-  const { engagement, clarifications, documents, readiness } = loaderData;
+/** Accept or reject, as two plain posts. */
+function Decide({ id, status, busy }) {
+  return (
+    <div className="decide-actions">
+      <Form method="post">
+        <input type="hidden" name="id" value={id} />
+        <input type="hidden" name="status" value="accepted" />
+        <button type="submit" className={status === 'accepted' ? '' : 'secondary'} disabled={busy}>
+          {status === 'accepted' ? 'Accepted' : 'Ask this'}
+        </button>
+      </Form>
+      <Form method="post">
+        <input type="hidden" name="id" value={id} />
+        <input type="hidden" name="status" value="rejected" />
+        <button type="submit" className={status === 'rejected' ? 'destructive' : 'secondary'} disabled={busy}>
+          {status === 'rejected' ? 'Not asked' : 'Don’t ask — assume it'}
+        </button>
+      </Form>
+    </div>
+  );
+}
+
+export default function Clarifications({ loaderData, actionData }) {
+  const { engagement, clarifications, triage, assumptions, documents, readiness } = loaderData;
   const client = engagement.client;
+  const busy = useNavigation().state !== 'idle';
   const questions = clarifications?.questions ?? [];
   const saved = questions.length > 0;
 
-  const prompt = `Write Merkle's clarification questions on the RFP for ${client}.
+  const prompt = `Write Merkle's questions on the RFP for ${client}.
 
-Call prepare_clarifications and read the topics the engine chose — they are the unknowns that move the offer, the Shopify plan, the store topology, the cost or the risk. Check every Shopify fact in the official documentation before you state it. Then write one question per topic, each opening in the client's own words and followed by a short "Why we ask" that shows the trade-off, and save them with save_clarifications.
+Call prepare_clarifications and read the topics the engine chose — the unknowns that move the offer, the Shopify plan, the store topology, the cost or the risk. Check every Shopify fact in the official documentation before you state it. Then write one question per topic, each opening in the client's own words and followed by a short "Why we ask" that shows the trade-off, and save them with save_clarifications.
 
-These go to the client before we bid, so a long list costs us more than a short one. Tell me what you saved and what each question is for.`;
+Write every question we need answered to price this properly — the Lead Consultant decides which are actually sent, and anything not asked becomes a stated assumption in the proposal. Tell me what you saved and what each question is for.`;
 
   // While Claude is writing them, the page picks them up by itself.
   const revalidator = useRevalidator();
@@ -59,24 +97,28 @@ These go to the client before we bid, so a long list costs us more than a short 
     <main>
       <EngagementHeader
         engagement={engagement}
-        eyebrow="Questions to the client"
-        meta={saved ? `${questions.length} question${questions.length > 1 ? 's' : ''} · prepared ${clarifications.saved_at} by ${clarifications.by} (${VIA[clarifications.via] ?? clarifications.via})` : null}
+        eyebrow="RFP Q&A"
+        meta={saved ? `${triage.accepted.length} to ask · ${triage.rejected.length} assumed · ${triage.proposed.length} to decide` : null}
       />
 
       {/* 1 — what to do now */}
-      <section className={`card start ${readiness.ok ? (saved ? 'current' : 'none') : 'blocked'}`}>
+      <section className={`card start ${readiness.ok ? (triage.ready_to_send ? 'current' : 'none') : 'blocked'}`}>
         <div className="start-head">
           <div>
-            <p className="question">{saved ? `${questions.length} question${questions.length > 1 ? 's' : ''} ready to send` : 'Not written yet'}</p>
+            <p className="question">
+              {!saved ? 'Not written yet'
+                : triage.proposed.length ? `${triage.proposed.length} question${triage.proposed.length > 1 ? 's' : ''} waiting on you`
+                  : `${triage.accepted.length} question${triage.accepted.length === 1 ? '' : 's'} ready to send`}
+            </p>
             <p className="muted">
               {readiness.ok && !saved
-                ? `The engine found ${readiness.topics.length} topic${readiness.topics.length > 1 ? 's' : ''} worth asking about — the unknowns that move the offer, the plan, the store topology, the cost or the risk. Everything it could safely assume has already been taken off the list.`
+                ? `The engine found ${readiness.topics.length} topic${readiness.topics.length > 1 ? 's' : ''} that have to be settled before this can be priced. Claude writes a question for each; you decide which are actually asked.`
                 : saved
-                  ? 'Read them as the client will. Anything they do not answer becomes a stated assumption in the proposal.'
+                  ? 'Every question here is one the proposal needs an answer to. Ask it, or decide not to and it becomes a stated assumption — there is no third option, and nothing is dropped.'
                   : readiness.error}
             </p>
           </div>
-          {saved ? <span className="badge go">ready</span> : null}
+          {saved && triage.ready_to_send ? <span className="badge go">ready</span> : null}
         </div>
 
         {readiness.ok ? (
@@ -100,25 +142,41 @@ These go to the client before we bid, so a long list costs us more than a short 
             ))}
           </ul>
         )}
+        {actionData?.error ? <p className="error">{actionData.error}</p> : null}
       </section>
 
-      {/* 2 — the questions */}
+      {/* 2 — the triage */}
       {saved ? (
         <section>
           <div className="section-head">
-            <h2>The questions</h2>
-            <div className="actions">
-              <a className="button secondary" href={`/engagements/${client}/clarifications.md`}>Download to send</a>
-              <a className="muted-link" href={`/engagements/${client}/clarifications.md?internal=1`}>Internal copy</a>
-            </div>
+            <h2>{triage.proposed.length ? `To decide (${triage.proposed.length})` : 'The questions'}</h2>
+            {triage.proposed.length ? (
+              <div className="actions">
+                <Form method="post">
+                  <input type="hidden" name="all" value="1" />
+                  <input type="hidden" name="status" value="accepted" />
+                  <button type="submit" className="secondary" disabled={busy}>Ask all of them</button>
+                </Form>
+                <Form method="post">
+                  <input type="hidden" name="all" value="1" />
+                  <input type="hidden" name="status" value="rejected" />
+                  <button type="submit" className="secondary" disabled={busy}>Assume all of them</button>
+                </Form>
+              </div>
+            ) : (
+              <div className="actions">
+                <a className="button secondary" href={`/engagements/${client}/clarifications.md`}>Download to send</a>
+                <a className="muted-link" href={`/engagements/${client}/clarifications.md?internal=1`}>Internal copy</a>
+              </div>
+            )}
           </div>
           <p className="muted">
-            The download to send holds the question and the “Why we ask” paragraph — nothing else. What we would
-            assume, and which discovery questions each one covers, are in the internal copy only.
+            The download to send holds only what you accepted — the question and the “Why we ask” paragraph.
+            What we would assume, and which discovery questions each one covers, are in the internal copy.
           </p>
           <ol className="clarifications">
-            {questions.map((q, i) => (
-              <li key={q.question ?? i}>
+            {questions.map((q) => (
+              <li key={q.id} className={`q-${q.status ?? 'proposed'}`}>
                 <h3>{q.question}</h3>
                 <p className="why"><strong>Why we ask.</strong> {q.why_we_ask}</p>
                 <div className="for-us">
@@ -126,26 +184,45 @@ These go to the client before we bid, so a long list costs us more than a short 
                   {(q.covers ?? []).length ? (
                     <p className="muted">Covers <WithQuestionLinks text={(q.covers ?? []).join(', ')} client={client} /></p>
                   ) : null}
-                  <p className="muted">If unanswered, the proposal assumes: {q.assume_if_unanswered}</p>
+                  <p className="muted">If we don’t ask it, the proposal assumes: {q.assume_if_unanswered}</p>
                 </div>
+                <Decide id={q.id} status={q.status ?? 'proposed'} busy={busy} />
               </li>
             ))}
           </ol>
         </section>
       ) : null}
 
-      {/* 3 — what it was read from */}
+      {/* 3 — what the proposal will stand on */}
+      {assumptions.length ? (
+        <section>
+          <h2>What the proposal will assume ({assumptions.length})</h2>
+          <p className="muted">
+            Everything nobody could tell us otherwise — what the engine had to assume to recommend anything, and
+            every question you decided not to ask. This is where a bid loses money, so it is written down rather
+            than carried in somebody’s head, and it goes into the proposal as a stated assumption.
+          </p>
+          <ul className="assumptions">
+            {assumptions.map((a, i) => (
+              <li key={`${a.assumed}-${i}`} className={a.source}>
+                <p className="assumed">{a.assumed}</p>
+                <p className="muted">
+                  {a.about}
+                  {a.covers?.length ? <> · <WithQuestionLinks text={a.covers.join(', ')} client={client} /></> : null}
+                  {a.source === 'rejected' ? ' · we decided not to ask this' : ''}
+                </p>
+                {a.impact_if_wrong ? <p className="muted small">If wrong: {a.impact_if_wrong}</p> : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
+      {/* 4 — what it was read from */}
       {documents.length ? (
         <section>
           <h2>Read from</h2>
           <ul>{documents.map((d) => <li key={d.name}><strong>{d.name}</strong> · {d.type}{d.date ? ` · ${d.date}` : ''}</li>)}</ul>
-        </section>
-      ) : null}
-
-      {readiness.ok && readiness.cannot_price?.length ? (
-        <section>
-          <h2>Cannot be priced until answered</h2>
-          <ul className="ticks">{readiness.cannot_price.map((item) => <li key={item}>{item}</li>)}</ul>
         </section>
       ) : null}
     </main>

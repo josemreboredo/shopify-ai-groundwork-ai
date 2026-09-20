@@ -459,10 +459,14 @@ main.story > section:last-of-type { margin-bottom: 72px; }
    own vocabulary: the red wedge marks what is finished, the red bar marks where
    you are, and nothing else is coloured at all. */
 .wayfinder {
-  display: flex; justify-content: space-between; align-items: flex-end; gap: 30px;
-  flex-wrap: wrap; margin: 28px 0 0; border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  display: flex; align-items: flex-end; gap: 12px 28px; flex-wrap: wrap;
+  margin: 28px 0 0; border-bottom: 1px solid rgba(255, 255, 255, 0.22);
 }
-.steps-spine { display: flex; list-style: none; padding: 0; margin: 0; gap: 30px; flex-wrap: wrap; }
+/* The steps take the room they need; the side links keep to the right of
+   whatever is left, and drop to their own line rather than squeezing the work. */
+.steps-spine { display: flex; list-style: none; padding: 0; margin: 0; gap: 22px; flex: 1 1 auto; flex-wrap: wrap; }
+.views { margin-left: auto; flex: 0 0 auto; }
+.step-hint { max-width: 22ch; }
 .steps-spine a {
   position: relative; display: grid; grid-template-columns: auto 1fr; column-gap: 8px;
   padding: 10px 0 15px; text-decoration: none; color: rgba(255, 255, 255, 0.55);
@@ -501,6 +505,27 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   color: rgba(255, 255, 255, 0.55); text-decoration: none;
 }
 .views a:hover, .views a.active { color: #fff; }
+/* end wayfinder — the design test reads everything above back to its opening
+   comment, so anything added below belongs to a different surface. */
+
+/* RFP Q&A: every question is asked or assumed, and the list shows which */
+.clarifications > li.q-accepted { border-left: 3px solid var(--ok); padding-left: 18px; }
+.clarifications > li.q-rejected { border-left: 3px solid var(--line); padding-left: 18px; opacity: 0.72; }
+.clarifications > li.q-proposed { border-left: 3px solid var(--red); padding-left: 18px; }
+.decide-actions { display: flex; gap: 10px; margin: 14px 0 0 2.2rem; }
+.decide-actions form { display: inline; }
+
+/* What the proposal stands on when nobody could tell us otherwise */
+.assumptions { list-style: none; padding: 0; margin: 18px 0 0; }
+.assumptions > li { position: relative; padding: 0 0 16px 22px; }
+.assumptions > li::before {
+  content: ''; position: absolute; left: 0; top: 7px; width: 8px; height: 8px;
+  background: var(--line); clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+/* One we chose: it carries the brand's own marker, because it was a decision. */
+.assumptions > li.rejected::before { background: var(--red); }
+.assumptions .assumed { margin: 0; font-weight: 600; max-width: 78ch; }
+.assumptions .muted { margin: 2px 0 0; max-width: 78ch; }
 
 /* Which of the two processes a record is in */
 .badge.process-rfp { background: var(--navy); color: #fff; }

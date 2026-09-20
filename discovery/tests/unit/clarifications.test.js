@@ -22,6 +22,8 @@ const consultant = { login: 'lc-one', role: 'consultant' };
 const acme = () => JSON.parse(fs.readFileSync(new URL('../fixtures/engagements/acme-watches.json', import.meta.url), 'utf8'));
 
 const QUESTION = {
+  id: 'q1',
+  status: 'accepted',
   question: 'Will the Swiss and EU stores sell the same catalogue at the same prices?',
   why_we_ask: 'Shopify Markets serves several countries from one store; genuinely different catalogues need separate stores, which changes the build and the running cost.',
   covers: ['Q3.4.13', 'Q6.2.14'],
@@ -104,6 +106,27 @@ describe('clarification questions (RFP)', () => {
     assert.match(md, /^# Clarification questions — Ricola AG$/m, 'the company form keeps its own capitalisation');
   });
 
+  test('only what the Lead Consultant accepted leaves the building', () => {
+    const questions = [
+      { ...QUESTION, id: 'q1', status: 'accepted' },
+      { ...QUESTION, id: 'q2', status: 'proposed', question: 'Still being decided?' },
+      { ...QUESTION, id: 'q3', status: 'rejected', question: 'Decided not to ask?' },
+    ];
+    const sent = renderClarificationsMarkdown({ client: 'ricola-ag' }, { saved_at: TODAY, questions });
+    assert.match(sent, /Will the Swiss and EU stores/, 'the accepted one goes');
+    assert.ok(!sent.includes('Still being decided?'), 'a draft is not a question to a client');
+    assert.ok(!sent.includes('Decided not to ask?'), 'and one we chose not to ask is an assumption, not a question');
+
+    const internal = renderClarificationsMarkdown({ client: 'ricola-ag' }, { saved_at: TODAY, questions }, { internal: true });
+    for (const q of questions) assert.ok(internal.includes(q.question), 'the internal copy keeps all three, with what happened to each');
+    assert.match(internal, /Not asked — stated as an assumption instead/);
+  });
+
+  test('nothing accepted means nothing to send, said plainly', () => {
+    const md = renderClarificationsMarkdown({ client: 'ricola-ag' }, { saved_at: TODAY, questions: [{ ...QUESTION, status: 'proposed' }] });
+    assert.match(md, /No questions have been accepted yet/);
+  });
+
   test('the internal copy carries both, and says it must not be sent', () => {
     const md = renderClarificationsMarkdown({ client: 'ricola-ag' }, { saved_at: TODAY, by: 'lc-one', questions: [QUESTION] }, { internal: true });
     assert.match(md, /do not send/i);
@@ -152,5 +175,53 @@ describe('clarification questions (RFP)', () => {
       (err) => err instanceof ServiceError && (err.status === 400 || err.status === 409) && (err.blockers ?? []).length > 0,
       'the consultant gets something to do, not an empty page',
     );
+  });
+});
+
+describe('asking or assuming, one or the other', () => {
+  const started = async (svc, questions) => {
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-bid', { questions });
+    return svc;
+  };
+  const three = [
+    { ...QUESTION, question: 'One catalogue?' },
+    { ...QUESTION, question: 'Who invoices?' },
+    { ...QUESTION, question: 'B2B in phase one?' },
+  ].map(({ status, id, ...q }) => q);
+
+  test('every question arrives undecided — the model drafts, the consultant sends', async () => {
+    const svc = await started(createDiscoveryService({ store: createMemoryStore(), today: () => TODAY }), three);
+    const { clarifications, triage } = await svc.getClarifications(consultant, 'a-bid');
+    assert.deepEqual(clarifications.questions.map((q) => q.status), ['proposed', 'proposed', 'proposed']);
+    assert.deepEqual(clarifications.questions.map((q) => q.id), ['q1', 'q2', 'q3'], 'each one is addressable on its own');
+    assert.equal(triage.ready_to_send, false, 'a half-triaged list is the worst of both');
+  });
+
+  test('a rejected question does not vanish — it becomes what the proposal states', async () => {
+    const svc = await started(createDiscoveryService({ store: createMemoryStore(), today: () => TODAY }), three);
+    await svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'accepted' });
+    await svc.decideClarifications(consultant, 'a-bid', { id: 'q2', status: 'rejected' });
+    const { triage, assumptions } = await svc.getClarifications(consultant, 'a-bid');
+    assert.equal(triage.accepted.length, 1);
+    assert.equal(triage.rejected.length, 1);
+    assert.equal(triage.proposed.length, 1);
+    assert.ok(assumptions.some((a) => a.source === 'rejected' && a.assumed === QUESTION.assume_if_unanswered),
+      'choosing not to ask is choosing to assume, and it is written down');
+    assert.equal(triage.ready_to_send, false, 'one is still undecided');
+  });
+
+  test('all of them at once, because triaging eight questions one by one is how it stops being done', async () => {
+    const svc = await started(createDiscoveryService({ store: createMemoryStore(), today: () => TODAY }), three);
+    const r = await svc.decideClarifications(consultant, 'a-bid', { all: true, status: 'accepted' });
+    assert.deepEqual({ accepted: r.accepted, rejected: r.rejected, proposed: r.proposed }, { accepted: 3, rejected: 0, proposed: 0 });
+    assert.equal((await svc.getClarifications(consultant, 'a-bid')).triage.ready_to_send, true);
+  });
+
+  test('a decision on a question that is not there, or a status that is not real, is refused', async () => {
+    const svc = await started(createDiscoveryService({ store: createMemoryStore(), today: () => TODAY }), three);
+    await assert.rejects(svc.decideClarifications(consultant, 'a-bid', { id: 'q9', status: 'accepted' }), (e) => e instanceof ServiceError && e.status === 404);
+    await assert.rejects(svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'maybe' }), (e) => e instanceof ServiceError && e.status === 400);
   });
 });

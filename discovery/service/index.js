@@ -27,6 +27,8 @@ import { deckErrors } from './deck-template.js';
 import { clarificationBrief, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
+import { statedAssumptions, triage } from './assumptions.js';
+import { goNoGoView } from './go-no-go.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
@@ -566,7 +568,14 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (problems.length) throw new ServiceError(400, 'Questions not saved', problems);
       session.closing = {
         ...session.closing,
-        clarifications: { questions: list, saved_at: today(), by: user.login, via },
+        clarifications: {
+          // Every question arrives proposed. The model drafts; the Lead Consultant
+          // decides what is actually sent, because it is their name on the mail.
+          questions: list.map((q, i) => ({ id: `q${i + 1}`, status: 'proposed', ...q })),
+          saved_at: today(),
+          by: user.login,
+          via,
+        },
       };
       session.updated_at = today();
       await store.save(session);
@@ -583,9 +592,14 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     async getClarifications(user, client) {
       const session = await load(user, client);
       const saved = session.closing?.clarifications ?? null;
+      const decided = decideFromSession(session, today());
       return {
         engagement: summary(session),
         clarifications: saved,
+        triage: triage(saved),
+        // What the proposal will state because nobody told us otherwise — from the
+        // engine, and from every question the consultant decided not to ask.
+        assumptions: statedAssumptions(decided.ok ? decided.doc : null, saved),
         documents: (session.documents ?? []).map(({ name, type, date }) => ({ name, type, date })),
       };
     },
@@ -807,6 +821,24 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     },
 
     /**
+     * The evidence a Solution Architect takes to the bid/no-bid meeting. The
+     * decision is not taken here and this never renders one.
+     *
+     * @param {User} user @param {string} client
+     */
+    async getGoNoGo(user, client) {
+      const session = await load(user, client);
+      const decided = decideFromSession(session, today());
+      if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
+      const p = preview(session, today());
+      return {
+        engagement: summary(session),
+        go_no_go: goNoGoView(decided.doc, p.coverage, session.closing?.clarifications ?? null),
+        documents: (session.documents ?? []).map(({ name, type, date }) => ({ name, type, date })),
+      };
+    },
+
+    /**
      * What delivery receives: the Jira backlog and the configuration workbook.
      * Both existed only as CLI commands against an engagement.json the web app
      * never writes, so the engagement path looked as if it ended at the closing
@@ -840,6 +872,34 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         throw new ServiceError(409, 'No backlog for this engagement', [], blocked ? [{ what: blocked.label ?? 'Beyond the standard offers', why: blocked.why }] : []);
       }
       return content;
+    },
+
+    /**
+     * Accept or reject a proposed question — one, or all of them at once.
+     *
+     * This is the decision the whole RFP step turns on. An accepted question goes
+     * to the client in the Q&A window. A rejected one does not disappear: what we
+     * would have asked becomes a stated assumption in the proposal, so the thing
+     * we chose not to ask is still written down and still answerable later. That
+     * is the difference between a decision and an omission.
+     *
+     * @param {User} user @param {string} client
+     * @param {{ id?: string, status: 'accepted'|'rejected'|'proposed', all?: boolean }} input
+     */
+    async decideClarifications(user, client, { id, status, all = false }) {
+      const session = await load(user, client);
+      const saved = session.closing?.clarifications;
+      if (!saved?.questions?.length) throw new ServiceError(409, 'There are no questions to decide on yet');
+      if (!['accepted', 'rejected', 'proposed'].includes(status)) throw new ServiceError(400, `status must be accepted, rejected or proposed (got ${status})`);
+      if (!all && !saved.questions.some((q) => q.id === id)) throw new ServiceError(404, `No question ${id}`);
+      saved.questions = saved.questions.map((q) => (all || q.id === id
+        ? { ...q, status, decided_at: today(), decided_by: user.login }
+        : q));
+      session.closing = { ...session.closing, clarifications: saved };
+      session.updated_at = today();
+      await store.save(session);
+      const count = (s) => saved.questions.filter((q) => q.status === s).length;
+      return { ok: true, accepted: count('accepted'), rejected: count('rejected'), proposed: count('proposed') };
     },
 
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */

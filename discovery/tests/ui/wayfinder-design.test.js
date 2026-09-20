@@ -15,8 +15,19 @@ import fs from 'node:fs';
 
 const css = fs.readFileSync(new URL('../../../frontend/app/app.css', import.meta.url), 'utf8');
 
-/** The block of rules the spine and its side links are declared in. */
-const spine = css.slice(css.indexOf('/* Where you are in the work.'), css.indexOf('/* Which of the two processes'));
+/**
+ * The block of rules the spine and its side links are declared in, bounded by its
+ * own marker. It used to end at whatever section happened to come next, so adding
+ * an unrelated rule below moved the boundary and failed these tests for the wrong
+ * reason — the spine lives on the black band, and the rules that matter are only
+ * the ones drawn there.
+ */
+const spine = (() => {
+  const from = css.indexOf('/* Where you are in the work.');
+  const to = css.indexOf('/* end wayfinder');
+  assert.ok(from !== -1 && to > from, 'the spine block and its end marker are both present');
+  return css.slice(from, to);
+})();
 
 const lin = (c) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; };
 const luminance = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);

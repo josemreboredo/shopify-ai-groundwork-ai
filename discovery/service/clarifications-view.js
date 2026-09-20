@@ -48,8 +48,11 @@ const clientName = (slug) => String(slug ?? '')
  *   and which discovery questions each one covers. Never send that version out.
  * @returns {string}
  */
-export function renderClarificationsMarkdown(engagement, clarifications, { internal = false } = {}) {
-  const questions = clarifications?.questions ?? [];
+export function renderClarificationsMarkdown(engagement, clarifications, { internal = false, assumptions = [] } = {}) {
+  const all = clarifications?.questions ?? [];
+  // Only what the Lead Consultant accepted leaves the building. A question still
+  // marked proposed is a draft, and a rejected one is now an assumption.
+  const questions = internal ? all : all.filter((q) => (q.status ?? 'proposed') === 'accepted');
   const name = clientName(engagement?.client);
   const out = [];
 
@@ -61,7 +64,9 @@ export function renderClarificationsMarkdown(engagement, clarifications, { inter
   out.push('');
 
   if (!questions.length) {
-    out.push('_No questions have been prepared yet._');
+    out.push(all.length && !internal
+      ? '_No questions have been accepted yet — nothing is ready to send._'
+      : '_No questions have been prepared yet._');
     return `${out.join('\n')}\n`;
   }
 
@@ -77,12 +82,27 @@ export function renderClarificationsMarkdown(engagement, clarifications, { inter
     out.push('');
     if (internal) {
       const covers = (q.covers ?? []).filter(Boolean);
+      const status = q.status ?? 'proposed';
       out.push('> **For us**  ');
+      out.push(`> ${status === 'accepted' ? 'Accepted — sent to the client' : status === 'rejected' ? 'Not asked — stated as an assumption instead' : 'Still to decide'}${q.decided_by ? ` (${q.decided_by}, ${q.decided_at})` : ''}  `);
       if (covers.length) out.push(`> Covers ${covers.join(', ')}  `);
       out.push(`> If unanswered, the proposal will assume: ${clean(q.assume_if_unanswered) || '—'}`);
       out.push('');
     }
   });
+
+  if (internal && assumptions.length) {
+    out.push('---');
+    out.push('');
+    out.push(`## What the proposal will assume (${assumptions.length})`);
+    out.push('');
+    out.push('Everything nobody could tell us otherwise. This is where a bid loses money, so it is written down rather than carried in someone’s head.');
+    out.push('');
+    for (const a of assumptions) {
+      out.push(`- **${clean(a.about)}** — ${clean(a.assumed)}${a.impact_if_wrong ? `  \n  _If wrong:_ ${clean(a.impact_if_wrong)}` : ''}${a.source === 'rejected' ? '  \n  _Chosen: we decided not to ask this._' : ''}`);
+    }
+    out.push('');
+  }
 
   if (!internal) {
     out.push('---');
