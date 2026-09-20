@@ -25,6 +25,7 @@
 import { clarificationBrief } from '../agents/discovery/clarifications.js';
 import { statedAssumptions } from './assumptions.js';
 import { selectStories } from '../agents/backlog/select.js';
+import { offering } from '../schema/index.js';
 
 const SEVERITY = { STOP: 0, FLAG: 1, WARN: 2 };
 const SEVERITY_LABEL = {
@@ -32,6 +33,42 @@ const SEVERITY_LABEL = {
   FLAG: 'Needs a named owner before build',
   WARN: 'Commercial adjustment',
 };
+
+/**
+ * Where the complexity sits, on the engine's own axes.
+ *
+ * Three levels and no invented scale: a dimension is not in play, in play and
+ * inside what Merkle's offers cover, or beyond them. "Beyond" is not a judgement
+ * — an exit rule fired on the same answers the gate reads, and rules and gates
+ * both declare the pointers they read, so the link is structural rather than a
+ * guess at which rule belongs to which subject.
+ *
+ * A chart wants a number per axis, which is exactly where a tool like this
+ * invents one. This is the only scale the engine can actually defend.
+ *
+ * @param {object} doc  decided engagement
+ */
+export function complexityProfile(doc) {
+  const gates = new Map(offering.scope_gates.map((g) => [g.id, g]));
+  const fired = doc.exits?.items ?? [];
+  const ruleInputs = new Map(offering.exit_rules.map((r) => [r.id, r.inputs ?? []]));
+
+  return offering.scope_gates.map((g) => {
+    const state = doc.offer?.scope_gates?.[g.id];
+    const active = Boolean(state?.active);
+    // The rules that read the same answers this gate reads.
+    const rules = fired.filter((i) => (ruleInputs.get(i.rule_id) ?? []).some((input) => (g.inputs ?? []).includes(input)));
+    const beyond = rules.some((r) => r.result === 'STOP');
+    return {
+      id: g.id,
+      label: g.label,
+      level: !active ? 0 : beyond ? 2 : 1,
+      standing: !active ? 'not in play' : beyond ? 'beyond the offers' : 'within the offers',
+      evidence: state?.evidence ?? null,
+      rules: rules.map((r) => ({ rule_id: r.rule_id, result: r.result, evidence: r.evidence })),
+    };
+  });
+}
 
 /** Scope gates and L triggers read as capabilities the RFP is asking us for. */
 const CAPABILITY = {
@@ -240,6 +277,9 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
     },
     // What the RFP is asking for, from the gates the engine fired.
     capabilities: capabilities(doc),
+    // The same gates as a shape, so where the complexity sits is visible before
+    // it is read.
+    profile: complexityProfile(doc),
     scope: {
       applies: offer.applies,
       offer: offer.code,

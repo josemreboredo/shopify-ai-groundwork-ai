@@ -1,6 +1,7 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader } from '../components/question.jsx';
+import { Radar } from '../components/radar.jsx';
 import { pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Go/No-Go support', params.client) }];
@@ -68,6 +69,37 @@ export default function GoNoGo({ loaderData }) {
         </p>
       </section>
 
+      {/* Where the complexity sits, before it is read */}
+      {g.profile?.length ? (
+        <section>
+          <h2>Where the complexity sits</h2>
+          <p className="muted">
+            Each axis is one of the seven things that grow a Shopify build. Inside the dashed line is what
+            Merkle’s standard offers cover; anything past it is scoped and priced on its own.
+          </p>
+          <div className="profile">
+            <Radar axes={g.profile.filter((a) => a.level > 0).length ? g.profile : g.profile} />
+            <div className="table-scroll">
+              <table>
+                <thead><tr><th>Dimension</th><th>Standing</th><th>What they asked for</th></tr></thead>
+                <tbody>
+                  {g.profile.map((a) => (
+                    <tr key={a.id} className={a.level === 0 ? 'idle' : undefined}>
+                      <th scope="row">{a.label}</th>
+                      <td>
+                        <span className={`badge ${a.level === 2 ? 'stop' : a.level === 1 ? 'go' : ''}`}>{a.standing}</span>
+                        {a.rules.length ? <div className="muted small">{a.rules.map((r) => r.rule_id).join(', ')}</div> : null}
+                      </td>
+                      <td>{a.evidence ?? <span className="muted">—</span>}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {/* What the RFP is asking for */}
       {g.capabilities.length ? (
         <section>
@@ -83,31 +115,14 @@ export default function GoNoGo({ loaderData }) {
         </section>
       ) : null}
 
-      {/* What it would take to build */}
-      <section>
-        <h2>What it would take</h2>
-        {g.scope.applies ? (
-          <ul className="ticks">
-            <li><strong>{g.scope.offer} · {g.scope.name}</strong> — {g.scope.track}</li>
-            <li>{g.scope.weeks} weeks of build{g.scope.band ? `, ${money(g.scope.band)}` : ''}</li>
-            {g.scope.shape.length ? <li>Shaped as {g.scope.shape.map((s) => `${s.stories} ${OWNER[s.owner] ?? s.owner}`).join(', ').toLowerCase()}</li> : null}
-          </ul>
-        ) : (
-          <>
-            <p className="muted">
-              It does not map to S, M or L, so there is no standard scope or price to quote. Pricing it at{' '}
-              <strong>{g.scope.offer}</strong> — what the scope gates classify it as — would sell bespoke work
-              at a standard price.
-            </p>
-            <ul className="ticks">{g.scope.why_not.map((w) => <li key={w}>{w}</li>)}</ul>
-          </>
-        )}
-      </section>
-
-      {/* What could move the margin */}
+      {/* Complexity sources and risks */}
       {g.risks.length ? (
         <section>
-          <h2>What could move the margin</h2>
+          <h2>Complexity sources and risks</h2>
+          <p className="muted">
+            Every rule the requirements fired, worst first — what takes it outside the offers, and what needs a
+            named owner before a build starts.
+          </p>
           <ul className="rules">
             {g.risks.map((x) => (
               <li key={x.rule_id}>
@@ -122,43 +137,11 @@ export default function GoNoGo({ loaderData }) {
         </section>
       ) : null}
 
-      {/* What we would be betting on */}
-      {g.assumptions.length ? (
-        <section>
-          <h2>What we would be betting on ({g.assumptions_total})</h2>
-          <p className="muted">
-            Which of these to settle before the price is committed is decided in{' '}
-            <a href={`/engagements/${client}/clarifications`}>RFP Q&amp;A</a>.
-          </p>
-          <ul className="assumptions">
-            {g.assumptions.map((a, i) => (
-              <li key={`${a.assumed}-${i}`} className={a.source}>
-                <p className="assumed">{a.assumed}</p>
-                <p className="muted">{a.about}</p>
-                {a.impact_if_wrong ? <p className="muted small">If wrong: {a.impact_if_wrong}</p> : null}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-
-      {/* The boundary */}
-      <details className="rules-more">
-        <summary>The rest of the scorecard is not this desk’s ({g.not_ours.length})</summary>
-        <p className="muted">
-          Commercial and relationship ground — the opportunity value, the NPS, the buying centre, whether a
-          pitch team is confirmed. An RFP cannot tell us any of it, and a guess written into a scorecard gets
-          read as a fact.
-        </p>
-        <div className="table-scroll">
-          <table>
-            <thead><tr><th>#</th><th>Question</th><th>Who answers it</th></tr></thead>
-            <tbody>
-              {g.not_ours.map((q) => <tr key={q.n}><td>{q.n}</td><td>{q.ask}</td><td>{q.owner}</td></tr>)}
-            </tbody>
-          </table>
-        </div>
-      </details>
+      <p className="muted small">
+        The rest of Merkle’s Go/No-Go scorecard is commercial and relationship ground — the opportunity value,
+        the NPS, the buying centre, whether a pitch team is confirmed. An RFP cannot tell us any of it, and this
+        desk does not guess at it.
+      </p>
     </main>
   );
 }

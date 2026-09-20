@@ -523,6 +523,28 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
+/* The shape and the numbers behind it, side by side */
+.profile { display: grid; grid-template-columns: minmax(300px, 470px) 1fr; gap: 28px; align-items: start; }
+.profile tr.idle th, .profile tr.idle td { color: var(--muted); }
+@media (max-width: 900px) { .profile { grid-template-columns: 1fr; } }
+
+/* Where the complexity sits. Square surfaces, one accent, three rings. */
+.radar { margin: 18px 0 0; }
+.radar svg { width: 100%; max-width: 470px; height: auto; display: block; }
+.radar-ring, .radar-covered { fill: none; stroke: var(--line); stroke-width: 1; }
+.radar-covered { fill: var(--panel); }
+.radar-spoke { stroke: var(--line); stroke-width: 1; }
+.radar-envelope { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.radar-shape { fill: rgba(221, 48, 57, 0.14); stroke: var(--red); stroke-width: 2; }
+.radar-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--ink); }
+.radar-label.idle { fill: var(--muted); font-weight: 400; }
+.radar-label.beyond { fill: var(--red-ink); }
+.radar figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.radar-key { width: 14px; height: 10px; display: inline-block; }
+.radar-key.covered { background: var(--panel); border: 1px dashed var(--muted); }
+.radar-key.shape { background: rgba(221, 48, 57, 0.14); border: 2px solid var(--red); }
+.radar-key + .radar-key { margin-left: 12px; }
+
 /* The Go/No-Go scorecard, numbered as the meeting numbers it */
 .scorecard { list-style: none; padding: 0; margin: 18px 0 0; counter-reset: none; }
 .scorecard > li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 0 14px; padding: 20px 0; border-top: 1px solid var(--line); }
