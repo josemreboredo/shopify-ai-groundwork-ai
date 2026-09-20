@@ -54,6 +54,7 @@ Solution architecture
 - risk_register: at least three delivery risks with likelihood, impact, mitigation, owner and evidence (question ids or exit rules).
 
 Capability map
+- **Every requirement the engine found must be answered here.** The active scope gates and L triggers are the engine's own list of what this engagement needs, each carrying the answer that proves it, and a requirement missing from the map is a requirement Merkle has not answered — on a bid that is losing on compliance to a gap nobody saw. Anything you resolve as out of scope still gets a row saying so; silence is not an answer.
 - One row per client requirement found in the engagement. Resolve each at the cheapest safe level, in order: native Shopify feature → Shopify App Store app → theme customisation (Liquid / Horizon blocks) → custom (metafields, metaobjects, Shopify Functions, custom app). Do not skip a level without saying why in notes.
 - gaia_tier: T1 trivial configuration · T2 standard work on existing patterns · T3 new capability, integration or data model · T4 foundational (payments provider, PCI, re-platforming).
 - client_requirement: the requirement in the client's own words, quoted from the answer, so the client recognises it.
@@ -96,6 +97,25 @@ Never include prices for Merkle's services, internal modifiers or commercial ter
 export const OFFICIAL_SHOPIFY_SOURCE = /^https:\/\/(help\.shopify\.com|shopify\.dev|www\.shopify\.com|shopify\.com|changelog\.shopify\.com|apps\.shopify\.com|shopify\.engineering)\//;
 const HTTPS = /^https:\/\/[^\s]+$/;
 const EVIDENCE = /^(Q\d+\.\d+\.\d+|11\.\d+)$/;
+
+/**
+ * How each engine-found requirement reads in a capability map, so the coverage
+ * check recognises it however the draft worded it. Deliberately broad: a false
+ * pass is a missed hole, but a false failure sends a consultant hunting for
+ * something that is already there, and only one of those is recoverable.
+ */
+const REQUIREMENT_WORDS = {
+  markets: ['market', 'international', 'country', 'countries'],
+  multi_currency: ['currenc', 'chf', 'eur', 'price list', 'pricing'],
+  b2b: ['b2b', 'wholesale', 'company account', 'price list'],
+  integration: ['integrat', 'erp', 'pim', 'middleware', 'api', 'sync'],
+  migration: ['migrat', 'replatform', 'import', 'redirect', 'cut-over', 'cutover'],
+  sku_complexity: ['sku', 'catalogue', 'catalog', 'metafield', 'variant', 'product data'],
+  retail_pos: ['pos', 'retail', 'store', 'in-store'],
+  luxury: ['luxur', 'premium', 'brand experience'],
+  headless: ['headless', 'hydrogen', 'storefront api'],
+  figma_design_system: ['design system', 'figma', 'component librar'],
+};
 
 /**
  * Consulting-standard checks on a drafted approach (ADR 0017): every Shopify
@@ -164,6 +184,34 @@ export function approachQualityErrors(payload, doc) {
       if (topology?.confidence === 'to_validate' && !STATED_VS_DERIVED.test(`${decision.rationale ?? ''}`)) {
         errors.push(`${where}: the topology rests on assumptions, so the rationale must separate what the client stated from what the engine derived`);
       }
+    }
+  }
+
+  // Every requirement the engine found has to be answered somewhere.
+  //
+  // Integrations were coverage-checked from the start and requirements were not,
+  // so a requirement the draft simply did not enumerate vanished without anything
+  // objecting — on a bid, that is losing on compliance to a gap nobody saw. The
+  // scope gates and L triggers are the engine's own statement of what this
+  // engagement needs, each already carrying the answer that proves it, so they
+  // are the list to check against rather than one the model wrote itself.
+  const capability = payload.capability_map ?? [];
+  const addressed = (needle) => capability.some((r) => {
+    const hay = `${r.requirement ?? ''} ${r.client_requirement ?? ''} ${r.tool ?? ''} ${(r.question_ids ?? []).join(' ')}`.toLowerCase();
+    return needle.some((word) => hay.includes(word));
+  });
+  for (const [id, gate] of Object.entries(doc.offer?.scope_gates ?? {})) {
+    if (!gate.active) continue;
+    const words = REQUIREMENT_WORDS[id];
+    if (words && !addressed(words)) {
+      errors.push(`capability_map: nothing addresses "${id.replace(/_/g, ' ')}" (${gate.evidence}) — every requirement the engine found has to be answered somewhere in the map`);
+    }
+  }
+  for (const [id, trigger] of Object.entries(doc.offer?.l_triggers ?? {})) {
+    if (!trigger.active) continue;
+    const words = REQUIREMENT_WORDS[id];
+    if (words && !addressed(words)) {
+      errors.push(`capability_map: nothing addresses "${id.replace(/_/g, ' ')}" (${trigger.evidence})`);
     }
   }
 

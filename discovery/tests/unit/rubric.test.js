@@ -80,3 +80,38 @@ describe('comparison rubric', () => {
     for (const entry of brief) assert.ok(entry.axis && entry.label && entry.asks);
   });
 });
+
+describe('every requirement the engine found is answered somewhere', () => {
+  const holes = (approach, doc = fixture) => approachQualityErrors(approach, doc).filter((e) => e.startsWith('capability_map: nothing addresses'));
+
+  test('the golden approach answers all of them', () => {
+    assert.deepEqual(holes(fixture.approach), [], 'and the check does not invent holes in a good draft');
+  });
+
+  test('a requirement the draft never enumerated is caught, with the answer that proves it', () => {
+    // Integrations were coverage-checked from the start and requirements were
+    // not, so a requirement the model simply did not write down vanished with
+    // nothing objecting. On a bid that is losing on compliance to a gap nobody
+    // saw.
+    const withoutB2b = structuredClone(fixture.approach);
+    withoutB2b.capability_map = withoutB2b.capability_map.filter((r) => !/b2b|wholesale|company/i.test(JSON.stringify(r)));
+    const errors = holes(withoutB2b);
+    assert.equal(errors.length, 1);
+    assert.match(errors[0], /nothing addresses "b2b"/);
+    assert.match(errors[0], /Q1\.1\.4/, 'and names the answer the engine found it in, so it can be checked');
+  });
+
+  test('a gate that never fired is never demanded', () => {
+    const doc = structuredClone(fixture);
+    doc.offer.scope_gates.b2b.active = false;
+    const withoutB2b = structuredClone(fixture.approach);
+    withoutB2b.capability_map = withoutB2b.capability_map.filter((r) => !/b2b|wholesale|company/i.test(JSON.stringify(r)));
+    assert.deepEqual(holes(withoutB2b, doc), []);
+  });
+
+  test('an L trigger counts the same as a scope gate', () => {
+    const doc = structuredClone(fixture);
+    doc.offer.l_triggers.headless.active = true;
+    assert.ok(holes(fixture.approach, doc).some((e) => /headless/.test(e)), 'a headless build the map never mentions is a hole');
+  });
+});

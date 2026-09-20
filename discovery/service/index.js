@@ -596,6 +596,25 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         );
       }
       const document = processMeta(session.process).document;
+
+      // A bid does not get written while questions are still waiting on a human.
+      // Every one of them is either asked or assumed — that is the rule the whole
+      // Q&A step rests on — and a proposal drafted mid-triage states neither: the
+      // undecided ones are silently absent from the questions and from the
+      // assumptions, which is the outcome the step exists to prevent.
+      const undecided = (session.closing?.clarifications?.questions ?? []).filter((q) => (q.status ?? 'proposed') === 'proposed');
+      if (processOf(session.process) === 'rfp' && undecided.length) {
+        throw new ServiceError(
+          409,
+          `${undecided.length} question${undecided.length === 1 ? ' is' : 's are'} still waiting on you`,
+          undecided.map((q) => q.question),
+          [{
+            what: 'Decide each question in RFP Q&A — ask it, or state it as an assumption',
+            why: 'Anything left undecided reaches the client as neither: it is not in the questions you send and it is not in the assumptions the proposal states. Deciding takes one click each, and rejecting is a decision, not a gap.',
+          }],
+        );
+      }
+
       if (needsApproach(doc)) return { status, step: 'approach', document, ...approachBrief(doc) };
       const final = finaliseEngagement(doc, null);
       if (!final.ok) throw new ServiceError(400, 'Engagement not valid', final.errors);

@@ -394,3 +394,34 @@ describe('the questions come home', () => {
     assert.ok(!nowAnswered.some((a) => a.assumed === 'one entity'));
   });
 });
+
+describe('the proposal waits for the triage', () => {
+  test('a bid with questions still waiting is refused, and told what to do', async () => {
+    const store = createMemoryStore();
+    const svc = createDiscoveryService({ store, today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-bid', { questions: [QUESTION, { ...QUESTION, question: 'And B2B?' }] });
+
+    // An undecided question reaches the client as neither: not in the questions
+    // sent, not in the assumptions stated. That is the outcome the step exists
+    // to prevent, so the proposal does not get written around it.
+    await assert.rejects(
+      svc.prepareClosingDocument(consultant, 'a-bid'),
+      (err) => err instanceof ServiceError
+        && (err.status === 409 ? /still waiting on you/.test(err.message) : err.status === 400),
+    );
+  });
+
+  test('a discovery is never gated on it — it has no Q&A step', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-discovery', language: 'en', mode: 'quick', process: 'discovery' });
+    await svc.answerQuestion(consultant, 'a-discovery', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-discovery', { questions: [QUESTION] });
+    await assert.rejects(
+      svc.prepareClosingDocument(consultant, 'a-discovery'),
+      (err) => err instanceof ServiceError && err.status === 400 && !/still waiting on you/.test(err.message),
+      'it stops for missing answers, never for an untriaged question list',
+    );
+  });
+});
