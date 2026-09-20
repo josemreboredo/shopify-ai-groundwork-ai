@@ -613,8 +613,9 @@ button.link:disabled { color: var(--muted); cursor: default; }
 .footer-inner { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
 .footer-main { display: flex; flex-direction: column; align-items: flex-start; gap: 34px; }
 .footer-mark img { display: block; height: 26px; width: auto; }
-.footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
-.footer-columns { display: grid; grid-template-columns: repeat(2, minmax(180px, max-content)); column-gap: 120px; row-gap: 22px; }
+.footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.footer-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(172px, max-content)); column-gap: 76px; row-gap: 34px; }
+.footer-col-title { margin: 0 0 16px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); }
 .footer-links a { color: #fff; text-decoration: none; font-size: 1.05rem; position: relative; padding-bottom: 4px; }
 .footer-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
 .footer-links a:hover::after, .footer-links a:focus-visible::after { transform: scaleX(1); }

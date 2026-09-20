@@ -13,16 +13,45 @@ export const links = () => [
   { rel: 'stylesheet', href: stylesheet },
 ];
 
-/** The site's pages, once: the header and the footer both render from this. */
-const PAGES = [
-  { to: '/', label: 'Bids and engagements', end: true, signedIn: true },
-  { to: '/offering', label: 'Offering', signedIn: true },
-  { to: '/about', label: 'What this is' },
-  { to: '/how-it-works', label: 'How it works' },
-  { to: '/manual', label: 'Manual' },
-  { to: '/claude', label: 'Claude Project', signedIn: true },
+/**
+ * The site's pages, once. The header carries the top of each group, because a
+ * top bar that lists every page is a menu nobody reads; the footer carries all
+ * of them, grouped — it is where you look when you know the thing exists and
+ * cannot remember where it lives.
+ */
+const SECTIONS = [
+  {
+    title: 'Work',
+    pages: [
+      { to: '/', label: 'Bids and engagements', end: true, signedIn: true, header: true },
+      { to: '/offering', label: 'Offering', signedIn: true, header: true },
+      { to: '/claude', label: 'Claude Project', signedIn: true, header: true },
+    ],
+  },
+  {
+    title: 'The tool',
+    pages: [
+      { to: '/about', label: 'What this is', header: true },
+      { to: '/how-it-works', label: 'How it works', header: true },
+    ],
+  },
+  {
+    title: 'Manual',
+    pages: [
+      { to: '/manual', label: 'Manual', header: true },
+      { to: '/manual/bid', label: 'Answer an RFP' },
+      { to: '/manual/discovery', label: 'Run a discovery' },
+    ],
+  },
 ];
-const pagesFor = (user) => PAGES.filter((p) => !p.signedIn || user);
+
+const visible = (pages, user) => pages.filter((p) => !p.signedIn || user);
+/** The header: one link per group top, in the order the sections are declared. */
+const headerPages = (user) => SECTIONS.flatMap((s) => visible(s.pages, user).filter((p) => p.header));
+/** The footer: everything, grouped, minus any group that signing out empties. */
+const footerSections = (user) => SECTIONS
+  .map((s) => ({ ...s, pages: visible(s.pages, user) }))
+  .filter((s) => s.pages.length);
 
 export async function loader({ request }) {
   return { user: await getUser(request) };
@@ -42,7 +71,7 @@ export function Layout({ children }) {
         <header className="topbar">
           <Link to="/" className="brand" aria-label={`${PRODUCT} — home`}><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
           <nav className="topnav">
-            {pagesFor(root?.user).map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
+            {headerPages(root?.user).map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
           </nav>
           {root?.user ? (
             <Form method="post" action="/logout" className="user">
@@ -53,7 +82,7 @@ export function Layout({ children }) {
         </header>
         <p className="pilot">Pilot — demo or anonymised engagements only</p>
         {children}
-        <SiteFooter pages={pagesFor(root?.user)} />
+        <SiteFooter sections={footerSections(root?.user)} />
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -71,7 +100,7 @@ const SOCIAL = [
  * The footer as merkle.com builds it: the mark and the links on the left, the
  * outlined M watermark on the right, dentsu and the copyright on the base line.
  */
-function SiteFooter({ pages = [] }) {
+function SiteFooter({ sections = [] }) {
   return (
     <footer className="site-footer">
       <div className="footer-inner">
@@ -81,13 +110,21 @@ function SiteFooter({ pages = [] }) {
           </a>
 
           <div className="footer-columns">
-            <nav className="footer-links" aria-label="Pages">
-              {pages.map((p) => <Link key={p.to} to={p.to}>{p.label}</Link>)}
-            </nav>
-            <nav className="footer-links" aria-label="Legal">
-              <a href="https://www.merkle.com/en/legal-terms.html" target="_blank" rel="noreferrer">Legal Terms</a>
-              <a href="https://www.merkle.com/en/privacy-policy.html" target="_blank" rel="noreferrer">Privacy Policy</a>
-              <a href="https://www.merkle.com/en/privacy-policy/data-product-privacy-notice/control-your-personal-information.html" target="_blank" rel="noreferrer">Your Privacy Choices</a>
+            {sections.map((s) => (
+              <nav className="footer-col" key={s.title} aria-label={s.title}>
+                <p className="footer-col-title">{s.title}</p>
+                <div className="footer-links">
+                  {s.pages.map((p) => <Link key={p.to} to={p.to}>{p.label}</Link>)}
+                </div>
+              </nav>
+            ))}
+            <nav className="footer-col" aria-label="Legal">
+              <p className="footer-col-title">Legal</p>
+              <div className="footer-links">
+                <a href="https://www.merkle.com/en/legal-terms.html" target="_blank" rel="noreferrer">Legal Terms</a>
+                <a href="https://www.merkle.com/en/privacy-policy.html" target="_blank" rel="noreferrer">Privacy Policy</a>
+                <a href="https://www.merkle.com/en/privacy-policy/data-product-privacy-notice/control-your-personal-information.html" target="_blank" rel="noreferrer">Your Privacy Choices</a>
+              </div>
             </nav>
           </div>
 
