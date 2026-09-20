@@ -80,11 +80,39 @@ describe('go/no-go support', () => {
     assert.match(q4({}).says, /shown to engagement leads/);
   });
 
+  test('an engagement beyond the offers quotes no price anywhere, even to an owner', () => {
+    // The engine keeps emitting offer.code when an exit rule takes the engagement
+    // outside, because the classification is real — it just stops being the
+    // answer. Reading it without checking delivery.go said "beyond S/M/L" in one
+    // question and quoted M's band three questions later, into a meeting where
+    // somebody writes the number down.
+    const v = goNoGoView(fixture('stop-custom-checkout'), coverage, null, { pricing: true });
+    const everything = JSON.stringify(v);
+    assert.ok(!/\d+k–\d+k/.test(everything), 'no band is quoted for an offer that does not apply');
+    // Currencies are named all over the evidence — "CHF and EUR, both
+    // transactional" is a fact about the client, not a price. What must not
+    // appear is a figure attached to one.
+    assert.ok(!/(EUR|CHF|GBP|USD)\s*[\d]/.test(everything), 'no currency figure reaches the page');
+
+    const q4 = v.sections.flatMap((s) => s.questions).find((q) => q.n === 4);
+    assert.match(q4.says, /no standard band/i);
+    // The classification is still shown — it is a real thing — but as what it is.
+    assert.match(q4.watch, /classify it as M, and that is not the answer/i);
+    assert.match(q4.watch, /bespoke engagement at a standard price/i);
+  });
+
+  test('a GO engagement does quote it, to an owner only', () => {
+    const q4 = (opts) => goNoGoView(fixture('acme-watches'), coverage, null, opts).sections.flatMap((s) => s.questions).find((q) => q.n === 4);
+    assert.match(q4({ pricing: true }).says, /65k–100k/);
+    assert.ok(!/65k/.test(q4({}).says));
+  });
+
   test('an engagement beyond the offers says so rather than sizing work it cannot size', () => {
     const v = view('stop-custom-checkout');
     const q2 = v.sections[0].questions.find((q) => q.n === 2);
     const q3 = v.sections[0].questions.find((q) => q.n === 3);
-    assert.match(q2.says, /beyond S\/M\/L|built from scratch/i);
+    assert.match(q2.says, /beyond S, M and L|built from scratch/i);
+    assert.match(q2.says, /11\.6/, 'and it names the rule that took it there');
     assert.match(q3.says, /Not sizeable/i);
   });
 });

@@ -72,7 +72,11 @@ describe('the step spine follows the Merkle system it is drawn in', () => {
     assert.match(spine, /\.steps-spine \.done[^{]*\{[^}]*clip-path: polygon\(100% 0, 100% 100%, 0 0\)/, 'finished steps take the red wedge');
     // The red bar of the tab ribbon, which is how this app has always said "here".
     assert.match(spine, /\.steps-spine a::after \{[^}]*background: var\(--red\)/);
-    assert.match(spine, /\.steps-spine \.current a::after[^{]*\{[^}]*transform: scaleX\(1\)/);
+    // The bar means "you are here", which is what an underline means in every
+    // other navigation in this app. Binding it to the current step instead left
+    // it under Confirm what it says while you were reading RFP Q&A.
+    assert.match(spine, /\.steps-spine a\.active::after[^{]*\{[^}]*transform: scaleX\(1\)/);
+    assert.ok(!/\.steps-spine \.current a::after/.test(spine), 'the step to do next is not the page you are on');
   });
 
   test('the step you are on is the brightest thing in the ribbon', () => {

@@ -481,15 +481,22 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   color: rgba(255, 255, 255, 0.55); margin-top: 3px;
 }
 
-/* The red bar of the tab ribbon: it marks where you are. */
+/* Two different things, so two different signals.
+   The red bar means "you are on this page", as an underline does in every other
+   navigation in this app and on merkle.com. It was bound to the current step
+   instead, so opening RFP Q&A left the bar sitting under Confirm what it says and
+   the ribbon disagreed with the page you were looking at.
+   What to do next is said by weight, not by the bar: the current step is the only
+   one in full white. When you are on it — the usual case — the two coincide. */
 .steps-spine a::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: var(--red);
   transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease;
 }
-.steps-spine .current a::after, .steps-spine a:hover::after, .steps-spine a:focus-visible::after { transform: scaleX(1); }
-.steps-spine .current a, .steps-spine a:hover, .steps-spine a:focus-visible { color: #fff; }
-.steps-spine .current .step-n { color: #fff; }
-.steps-spine .current .step-hint { color: rgba(255, 255, 255, 0.72); }
+.steps-spine a.active::after, .steps-spine a:hover::after, .steps-spine a:focus-visible::after { transform: scaleX(1); }
+.steps-spine .current a, .steps-spine a.active, .steps-spine a:hover, .steps-spine a:focus-visible { color: #fff; }
+.steps-spine .current .step-label { font-weight: 700; }
+.steps-spine .current .step-n, .steps-spine a.active .step-n { color: #fff; }
+.steps-spine .current .step-hint, .steps-spine a.active .step-hint { color: rgba(255, 255, 255, 0.72); }
 
 /* The red wedge of the Merkle mark: it marks what is finished. */
 .steps-spine .done .step-n::before {

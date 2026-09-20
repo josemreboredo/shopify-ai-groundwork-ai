@@ -52,6 +52,41 @@ const TRACK = { liquid: 'Shopify Online Store (Horizon theme)', hydrogen: 'Headl
 const money = (band) => (band ? `${band.currency ?? ''} ${Math.round(band.min / 1000)}k–${Math.round(band.max / 1000)}k${band.open_ended ? '+' : ''}`.trim() : null);
 const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`) : null);
 
+const ROUTE = {
+  larger_engagement: 'a Merkle Enterprise Engagement with a dedicated Discovery Phase',
+  no_bid: 'no bid',
+};
+
+/**
+ * Whether the offer classification is actually the answer.
+ *
+ * The engine keeps emitting offer.code even when an exit rule takes the
+ * engagement beyond the offers, because the classification is a real thing: it is
+ * what the scope gates say. It just stops being the answer. Reading it without
+ * checking delivery.go produced a page that said "beyond S/M/L" in one question
+ * and quoted M's price band three questions later — into a bid meeting, where
+ * somebody writes the number down and a bespoke engagement gets sold at the price
+ * of a standard one.
+ *
+ * So the offer is resolved once, here, and the band exists only when it applies.
+ *
+ * @param {object} doc
+ */
+function offerOf(doc) {
+  const applies = Boolean(doc.delivery?.go);
+  const stops = (doc.exits?.items ?? []).filter((i) => i.result === 'STOP');
+  return {
+    applies,
+    code: doc.offer?.code ?? null,
+    name: doc.offer?.name ?? null,
+    track: doc.offer?.delivery_track ?? null,
+    weeks: applies ? weeks(doc.offer?.duration_weeks) : null,
+    band: applies ? doc.offer?.price_band ?? null : null,
+    route: doc.delivery?.route ?? null,
+    why_not: stops.map((i) => `${i.rule_id}: ${i.evidence}`),
+  };
+}
+
 /**
  * How much of what sets the price the document actually told us.
  *
@@ -102,6 +137,7 @@ export function goNoGoView(doc, coverage, clarifications, { pricing = false } = 
   const items = (doc.exits?.items ?? []).slice().sort((a, b) => (SEVERITY[a.result] ?? 3) - (SEVERITY[b.result] ?? 3));
   const stops = items.filter((i) => i.result === 'STOP');
   const go = Boolean(doc.delivery?.go);
+  const offer = offerOf(doc);
   const caps = capabilities(doc);
   const stories = go ? selectStories(doc) : [];
   const byOwner = {};
@@ -134,18 +170,18 @@ export function goNoGoView(doc, coverage, clarifications, { pricing = false } = 
               : null,
           }),
           answer(2, 'Do we know how to deliver this for the client?', {
-            says: go
-              ? `Yes — it maps to offer ${doc.offer?.code} (${doc.offer?.name}) on ${TRACK[doc.offer?.delivery_track] ?? doc.offer?.delivery_track}, a shape Merkle has a defined scope and backlog for.`
-              : 'Not as a standard offer — the requirements take it beyond S/M/L, so the approach would be built from scratch.',
+            says: offer.applies
+              ? `Yes — it maps to offer ${offer.code} (${offer.name}) on ${TRACK[offer.track] ?? offer.track}, a shape Merkle has a defined scope and backlog for.`
+              : `Not as a standard offer — ${offer.why_not[0] ?? 'an exit rule'} takes it beyond S, M and L, so the approach would be built from scratch.`,
             detail: go && stories.length ? [{ capability: 'Build backlog already derived', evidence: `${stories.length} stories across ${summariseByEpic(stories).length} epics` }] : [],
             watch: topology && topology.confidence !== 'confirmed'
               ? `Store topology is a recommendation, not a fact yet: ${String(topology.recommendation).replace(/_/g, ' ')} at ${String(topology.confidence).replace(/_/g, ' ')}.`
               : null,
           }),
           answer(3, 'Can we mobilise sufficient resources to deliver if we were selected?', {
-            says: go
-              ? `The work is ${weeks(doc.offer?.duration_weeks)} weeks of build, shaped as ${Object.entries(byOwner).map(([o, n]) => `${n} ${o}`).join(', ')}.`
-              : 'Not sizeable from the standard offers.',
+            says: offer.applies
+              ? `The work is ${offer.weeks} weeks of build, shaped as ${Object.entries(byOwner).map(([o, n]) => `${n} ${o}`).join(', ')}.`
+              : 'Not sizeable from the standard offers — the shape has to be built before it can be staffed.',
             detail: [],
             // The tool knows the demand. It knows nothing about who is free.
             watch: 'This is the demand only. Whether Merkle has those people free is not something this tool can see — Delivery Lead owns it.',
@@ -157,11 +193,15 @@ export function goNoGoView(doc, coverage, clarifications, { pricing = false } = 
         title: 'Is it profitable?',
         questions: [
           answer(4, 'What is the estimated opportunity amount (TCV) that we pitch for?', {
-            says: pricing && doc.offer?.price_band
-              ? `Merkle's band for offer ${doc.offer.code} is ${money(doc.offer.price_band)} over ${weeks(doc.offer.duration_weeks)} weeks. This is the build only — retainer, licences and media are not in it.`
-              : `Offer ${doc.offer?.code ?? '—'} over ${weeks(doc.offer?.duration_weeks) ?? '—'} weeks. The commercial band is shown to engagement leads.`,
+            says: !offer.applies
+              ? `There is no standard band for this. The requirements take it beyond S, M and L, so it would be scoped and priced on its own${offer.route ? ` as ${ROUTE[offer.route] ?? offer.route.replace(/_/g, ' ')}` : ''}.`
+              : pricing && offer.band
+                ? `Merkle's band for offer ${offer.code} is ${money(offer.band)} over ${offer.weeks} weeks. This is the build only — retainer, licences and media are not in it.`
+                : `Offer ${offer.code} over ${offer.weeks} weeks. The commercial band is shown to engagement leads.`,
             detail: [],
-            watch: 'The total contract value is a commercial figure and comes from Salesforce, not from here.',
+            watch: !offer.applies
+              ? `The scope gates classify it as ${offer.code}, and that is not the answer — ${offer.why_not[0] ?? 'an exit rule'} takes it outside. Pricing it at ${offer.code} would sell a bespoke engagement at a standard price.`
+              : 'The total contract value is a commercial figure and comes from Salesforce, not from here.',
           }),
           answer(9, 'How likely is it that margins are jeopardised by risks?', {
             says: `${items.length} rule${items.length === 1 ? '' : 's'} fired on the requirements — ${stops.length} outside the offers, ${items.filter((i) => i.result === 'FLAG').length} needing a named owner before build — and the proposal would rest on ${assumptions.length} stated assumption${assumptions.length === 1 ? '' : 's'}.`,
@@ -184,9 +224,11 @@ export function goNoGoView(doc, coverage, clarifications, { pricing = false } = 
         title: 'Is it winnable?',
         questions: [
           answer(19, 'Is the project budgeted, and does it match our estimation?', {
-            says: pricing && doc.offer?.price_band
-              ? `Our side of it: ${money(doc.offer.price_band)}. Whether the client has budgeted that, and at what figure, is only known if the RFP says so.`
-              : 'Our estimate is the offer band, shown to engagement leads. The client’s budget is only known if the RFP states it.',
+            says: !offer.applies
+              ? 'We have no standard estimate to compare a budget against: this falls outside S, M and L and would be estimated on its own.'
+              : pricing && offer.band
+                ? `Our side of it: ${money(offer.band)}. Whether the client has budgeted that, and at what figure, is only known if the RFP says so.`
+                : 'Our estimate is the offer band, shown to engagement leads. The client’s budget is only known if the RFP states it.',
             detail: [],
             watch: null,
           }),
