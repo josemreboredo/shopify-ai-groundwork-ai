@@ -1,7 +1,7 @@
 {
  "$comment": "Questionnaire in de: what the client is asked and what the consultant reads while asking. Answers, summary, approach, deck and annex stay in English. Every string falls back to English when it is missing here.",
  "language": "de",
- "updated": "2026-09-18",
+ "updated": "2026-09-20",
  "sections": {
   "0": "Geschäftsziele",
   "1": "Unternehmen, Marke & Shopify",
@@ -432,6 +432,241 @@
    "text": "Welche Shops (von Wettbewerbern oder nicht) möchten Sie als UX-Referenz heranziehen?",
    "teach": {
     "why": "UX-Referenzen übersetzen Geschmack in Konkretes — Navigation, Produktseite, Warenkorb und Checkout-Verhalten. Nutzen Sie sie, um den Frontend-Umfang vor dem Designstart zu vereinbaren und um zu erkennen, welche Verhaltensweisen eine App oder Individualentwicklung brauchen."
+   }
+  },
+  "Q2.1.1": {
+   "text": "Wie viele aktive SKUs umfasst der Katalog (ungefähr)?",
+   "teach": {
+    "why": "Die Kataloggröße bestimmt den Aufwand für Aufbau und Migration und fließt in das Scope-Gate zur SKU-Komplexität ein: ab 500 SKUs in Verbindung mit mehreren Varianten-Optionen, eigenen Attributen oder Bundles kommt der Modifikator +SKU auf das Angebot."
+   }
+  },
+  "Q2.1.2": {
+   "text": "Wie viele Optionen hat ein Produkt maximal (z. B. Größe, Farbe, Material = 3)?",
+   "help": "Shopify erlaubt bis zu 3 Optionen je Produkt; mehr Optionen erfordern ein anderes Produktmodell.",
+   "teach": {
+    "why": "Shopify bildet ein Produkt mit höchstens drei Optionen ab (zum Beispiel Größe, Farbe, Material). Eine vierte Option bedeutet, dass sich das Produktmodell ändern muss — diese Antwort entscheidet also über das Datenmodell, bevor irgendetwas kalkuliert oder migriert wird.",
+    "limits": "Bis zu 3 Optionen je Produkt. Darüber hinaus dokumentiert Shopify Combined Listings (nur Plus, bis zu 60 untergeordnete Produkte), eine App für Produktoptionen, die keine Lagerartikel sind, oder das Aufteilen des Produkts. Bei einem Import per CSV oder Migrations-App werden Optionen ab der vierten nicht übernommen. Exit-Regel 11.5 markiert dies für eine Prüfung des Produktmodells."
+   }
+  },
+  "Q2.1.3": {
+   "text": "Wie viele Varianten hat ein einzelnes Produkt maximal?",
+   "help": "Shopify erlaubt bis zu 2.048 Varianten je Produkt.",
+   "teach": {
+    "why": "Das größte Produkt im Katalog zeigt, ob die Variantenobergrenze überhaupt eine Rolle spielt. Ein Produkt über dem Limit muss aufgeteilt oder umstrukturiert werden, was SKUs, URLs und den Importplan verändert — deshalb wird es jetzt gefunden und nicht erst beim Datenladen.",
+    "limits": "Bis zu 2.048 Varianten je Produkt. Oberhalb von 100 Varianten müssen Apps die aktuellen GraphQL-Produkt-APIs verwenden, was für jede Integration und jedes Bulk-Update-Tooling relevant ist."
+   }
+  },
+  "Q2.1.4": {
+   "text": "Werden Varianten wie Farben als eigene Produkte geführt (eigene SKUs, Bilder, URLs), die im Shop aber als ein Produkt erscheinen sollen?",
+   "help": "Das nennt Shopify Combined Listings.",
+   "teach": {
+    "why": "Shopify nennt das ein Combined Listing: getrennte Produkte mit jeweils eigenen SKUs, Bildern und eigener URL, die Kundinnen und Kunden als ein Produkt sehen. Es ist eine reine Plus-App, ein Ja kann hier also den Plan nach oben zwingen. Exit-Regel 11.1 greift.",
+    "limits": "Die Combined Listings App ist nur in den Plänen Plus und Enterprise verfügbar, mit bis zu 60 untergeordneten Produkten je Listing.",
+    "options": [
+     {
+      "option": "Combined Listings auf Plus",
+      "pros": "Jede Farbe behält eigene SKU, eigene Bilder und eigene URL, während der Shop ein Produkt zeigt.",
+      "cons": "Setzt den Plus-Plan voraus, das gesamte Engagement trägt also die höheren Plankosten."
+     },
+     {
+      "option": "Ein Produkt mit Farbe als Varianten-Option",
+      "pros": "Funktioniert ab Basic, innerhalb der Grenzen von drei Optionen und 2.048 Varianten.",
+      "cons": "Farben verlieren ihre eigene Produkt-URL; SEO und bezahlte Feeds, die auf diesen URLs aufbauen, müssen neu aufgesetzt werden."
+     }
+    ]
+   }
+  },
+  "Q2.2.1": {
+   "text": "Welche Produktarten gibt es im Katalog?",
+   "help": "Shopify Bundles erstellt feste Bundles und Multipacks; Mix-and-Match-Bundles brauchen eine App.",
+   "teach": {
+    "why": "Die Produktarten entscheiden, was nativ geht und was eine App braucht. Feste Bundles, Multipacks, Abos und Geschenkkarten sind ab Basic nativ; Mix-and-Match-Bundles und Vorbestellungen brauchen Apps. Die Antwort fließt außerdem in das Gate zur SKU-Komplexität ein.",
+    "limits": "Shopify Bundles deckt feste Bundles und Multipacks ab. Mix-and-Match-Bundles brauchen eine App. Vorbestellungen brauchen immer eine App."
+   }
+  },
+  "Q2.2.2": {
+   "text": "Laufen Abos über Shopify Subscriptions (Shopifys eigene App) oder über eine Drittanbieter-App? Bitte die App nennen, falls bekannt.",
+   "help": "Shopify Subscriptions: Kundinnen und Kunden überspringen, pausieren und kündigen im eigenen Konto; nicht mit Bundles oder B2B.",
+   "teach": {
+    "why": "Shopifys eigene Subscriptions App ist kostenlos und lässt Kundinnen und Kunden Lieferungen aus ihrem Konto heraus überspringen, pausieren und kündigen. Sie funktioniert jedoch nicht mit Bundles, B2B oder Entwürfen von Bestellungen und unterstützt nur eine begrenzte Auswahl an Gateways. Genau diese Ausschlüsse entscheiden, ob eine kostenpflichtige App ins Kostenmodell kommt.",
+    "limits": "Shopify Subscriptions ist nicht kompatibel mit Bundles, B2B oder Bestellentwürfen und unterstützt nur begrenzte Zahlungs-Gateways.",
+    "options": [
+     {
+      "option": "Shopify Subscriptions",
+      "pros": "Von Shopify selbst, keine Lizenzgebühr, Selbstverwaltung im Kundenkonto.",
+      "cons": "Fällt weg, sobald Bundles, B2B oder ein nicht unterstütztes Gateway im Spiel sind."
+     },
+     {
+      "option": "Abo-App eines Drittanbieters",
+      "pros": "Deckt die Fälle ab, die Shopifys App ausschließt, und bietet reichhaltigere Abonnentenverwaltung.",
+      "cons": "Monatliche Lizenz, häufig eine Umsatzbeteiligung, und ein zweites System, das Abonnenten- und Zahlungsdaten hält."
+     }
+    ]
+   }
+  },
+  "Q2.2.3": {
+   "text": "Falls Sie Bundles verkaufen: Was müssen diese können?",
+   "help": "Shopify Bundles: bis zu 30 Komponenten; nicht mit Abos oder Vorbestellungen; keine verschachtelten Bundles.",
+   "teach": {
+    "why": "Die Details dessen, was ein Bundle können muss, trennen das native Shopify Bundles von einer kostenpflichtigen Bundle-App. Verschachtelung, Mix-and-Match oder Bundles, die zugleich Abos sind, liegen alle außerhalb der nativen App und werden zu einer Lizenzposition und einer Build-Aufgabe.",
+    "limits": "Shopify Bundles: bis zu 30 Komponenten je Bundle, keine verschachtelten Bundles, nicht kompatibel mit Abos oder Vorbestellungen. Das Verhalten von Bundles im Warenkorb wird über die Cart Transform Function erweitert."
+   }
+  },
+  "Q2.2.4": {
+   "text": "Welche Abo-Funktionen werden benötigt?",
+   "teach": {
+    "why": "Funktion für Funktion durchzugehen ist der einzige Weg zu prüfen, ob Shopify Subscriptions ausreicht. Alles, was die App nicht abdeckt, setzt das Signal subscriptions_app und bringt eine App-Lizenz, eine Datenmigration bestehender Abonnentinnen und Abonnenten sowie Integrationsarbeit ins Backlog."
+   }
+  },
+  "Q2.2.5": {
+   "text": "Wann wird bei Vorbestellungen abgerechnet?",
+   "help": "Vorbestellungen brauchen eine Pre-Order-App; Express-Checkouts (Shop Pay, Apple Pay, Google Pay) stehen für Vorbestellungen nicht zur Verfügung.",
+   "teach": {
+    "why": "Vorbestellungen laufen über Verkaufspläne und brauchen immer eine App. Der Abrechnungszeitpunkt entscheidet über das Zahlungs-Setup: die spätere Zahlung ist auf Shopify Payments oder PayPal Express beschränkt, und Express-Checkout-Buttons erscheinen bei Vorbestellungen nicht.",
+    "limits": "Vorbestellungen brauchen eine App. Nur Shopify Payments oder PayPal Express; Shop Pay, Apple Pay und Google Pay stehen für Vorbestellungen nicht zur Verfügung.",
+    "options": [
+     {
+      "option": "Voller Betrag bei Bestellung",
+      "pros": "Geld sofort und keine Gateway-Beschränkung durch spätere Zahlung.",
+      "cons": "Höheres Rückerstattungsrisiko, wenn sich der Liefertermin verschiebt."
+     },
+     {
+      "option": "Spätere Abrechnung bei Versand",
+      "pros": "Es wird erst gezahlt, wenn das Produkt versandt wird — das hebt die Conversion bei langen Vorlaufzeiten.",
+      "cons": "An Shopify Payments oder PayPal Express gebunden, und fehlgeschlagene Zahlungen beim Versand müssen behandelt werden."
+     }
+    ]
+   }
+  },
+  "Q2.2.6": {
+   "text": "Personalisieren Kundinnen und Kunden Produkte mit Angaben, die keine Lagervarianten sind (Gravur, Datei-Upload, kostenpflichtige Zusatzoptionen, Konfiguratoren)?",
+   "teach": {
+    "why": "Gravuren, Uploads, kostenpflichtige Zusatzoptionen und Konfiguratoren sind keine Lagervarianten und verbrauchen deshalb weder die drei Optionen noch das Variantenlimit. Sie brauchen eine App für Produktoptionen und in der Regel Theme-Arbeit — also eine Lizenz und eine Build-Position, keine Konfigurationsaufgabe.",
+    "limits": "Shopify hat keine native Produktpersonalisierung; das ist App-Gebiet (Kategorie Custom products)."
+   }
+  },
+  "Q2.3.1": {
+   "text": "Wie viele Kategorien (Collections) gibt es ungefähr?",
+   "teach": {
+    "why": "Die Anzahl der Kategorien bemisst das Merchandising-Setup und den Aufbau der Navigation und zeigt, wie viel Katalogstruktur nachgebaut oder migriert werden muss, statt über Regeln zu entstehen."
+   }
+  },
+  "Q2.3.2": {
+   "text": "Sind die Kategorien manuell, regelbasiert (automatisiert) oder gemischt?",
+   "teach": {
+    "why": "Automatisierte Kategorien entstehen aus Bedingungen auf den Produktdaten und funktionieren deshalb nur, wenn die Produktdaten die Felder mitbringen, die die Regeln brauchen. Die Antwort zeigt, wie viel Merchandising laufende Handarbeit ist und wie viel eine einmalige Arbeit am Datenmodell.",
+    "options": [
+     {
+      "option": "Regelbasierte (automatisierte) Kategorien",
+      "pros": "Produkte kommen und gehen automatisch, sobald sich Produktdaten ändern; kaum laufender Pflegeaufwand.",
+      "cons": "Hängt an sauberen, konsistenten Produktdaten und verlagert die Arbeit damit in Attribute und Tags."
+     },
+     {
+      "option": "Manuelle Kategorien",
+      "pros": "Volle Merchandising-Kontrolle und exakte Reihenfolge, ohne Abhängigkeit von der Datenqualität.",
+      "cons": "Jedes neue Produkt muss von Hand einsortiert werden — das skaliert bei großem Katalog nicht."
+     }
+    ]
+   }
+  },
+  "Q2.3.3": {
+   "text": "Welche Produktattribute gehen über Shopifys Standardfelder hinaus (technische Daten, Zertifikate, Passform-Hinweise, Inhaltsstoffe)?",
+   "help": "Shopify speichert zusätzliche Attribute als Metafelder und Metaobjekte und nutzt die Standard-Produkttaxonomie für Kategorieattribute (Filter, Google- und Meta-Feeds). Mit einem PIM kommen die Attribute aus dem PIM.",
+   "teach": {
+    "why": "Alles jenseits von Shopifys Standard-Produktfeldern wird zu Metafeldern und Metaobjekten, und Kategorieattribute kommen aus der Standard-Produkttaxonomie. Diese Liste bestimmt das Datenmodell, die Filter im Shop, die Google- und Meta-Feeds sowie das Gate zur SKU-Komplexität.",
+    "limits": "Metaobjekt-Definitionen sind unterhalb von Plus auf 128 und auf Plus auf 256 begrenzt. Kategorie-Metafelder stammen aus der Standard-Produkttaxonomie."
+   }
+  },
+  "Q2.3.4": {
+   "text": "Wo werden die Katalogdaten heute gepflegt?",
+   "help": "Typisch: Produkte und Inhalte aus dem PIM; Preise und Bestände aus dem ERP.",
+   "teach": {
+    "why": "Wo die Produktdaten führend gepflegt werden, entscheidet über die Integrationsarbeit: Ist ein PIM oder ERP die Quelle, ist Shopify ein Zielsystem und braucht eine Synchronisation für Produkte, Preise und Bestände — statt dass Mitarbeitende im Admin pflegen."
+   }
+  },
+  "Q2.3.5": {
+   "text": "Nach welchen Attributen sollen Kundinnen und Kunden auf Kategorie- und Suchseiten filtern können?",
+   "help": "Shopify Search & Discovery: bis zu 25 Filter; keine Filter auf Kategorien mit mehr als 5.000 Produkten.",
+   "teach": {
+    "why": "Filter werden aus Produktdaten gebaut — Optionen, Metafelder und Taxonomieattribute —, die Filterliste ist also in Wahrheit eine Datenanforderung. Sie entscheidet außerdem, ob das native Search & Discovery reicht oder eine Such-App ins Kostenmodell kommt.",
+    "limits": "Shopify Search & Discovery unterstützt bis zu 25 Filter, und Filter funktionieren nicht auf Kategorien mit mehr als 5.000 Produkten.",
+    "options": [
+     {
+      "option": "Natives Search & Discovery",
+      "pros": "Von Shopify selbst, keine Lizenzgebühr, im Admin konfiguriert.",
+      "cons": "Auf 25 Filter begrenzt und bei Kategorien über 5.000 Produkten nicht verfügbar."
+     },
+     {
+      "option": "Such- und Filter-App",
+      "pros": "Bewältigt große Kategorien, mehr Filter und Merchandising-Regeln auf Suchergebnissen.",
+      "cons": "Monatliche Lizenz, ein Katalogindex, der synchron gehalten werden muss, und Integrationsarbeit im Theme."
+     }
+    ]
+   }
+  },
+  "Q2.4.1": {
+   "text": "Gibt es Sonderpreise für Endkundengruppen (VIP- oder Mitgliederpreise)?",
+   "help": "Preise für Geschäftskunden behandelt § 6.2. Preise für Endkundengruppen laufen über Rabatte auf Kundensegmente oder über eine App.",
+   "teach": {
+    "why": "Mitglieder- und VIP-Preise für Endkunden sind keine native Preisliste: Sie werden über Rabatte auf Kundensegmente oder mit einer App umgesetzt. Klären Sie, ob Endkundengruppen oder Geschäftskunden gemeint sind — Geschäftskundenpreise laufen stattdessen über B2B-Kataloge (Abschnitt 6.2).",
+    "limits": "B2B-Kataloge sind unterhalb von Plus auf 3 aktive Kataloge begrenzt; Kataloge, die direkt einem Unternehmen oder Standort zugeordnet sind, gibt es nur auf Plus."
+   }
+  },
+  "Q2.4.2": {
+   "text": "Gibt es Mengenangebote für Endkunden (z. B. 3 für 2, Staffelrabatte)?",
+   "help": "Automatische Rabatte und Kaufe X, erhalte Y decken die meisten Mengenangebote nativ ab. Mengenpreise für Geschäftskunden behandelt § 6.2.",
+   "teach": {
+    "why": "Drei für zwei und Staffelangebote sind meist automatische Rabatte oder Kaufe X, erhalte Y — nativ und konfiguriert, nicht gebaut. Die Antwort entscheidet, ob Promotions eine Setup-Aufgabe sind oder ein Shopify-Function-Build im Backlog.",
+    "limits": "Mehrere Produktrabatte auf denselben Artikel anzuwenden ist eine Plus-Funktion (Exit-Regel 11.1)."
+   }
+  },
+  "Q2.4.3": {
+   "text": "Unterscheiden sich die Preise je Markt (über die reine Währungsumrechnung hinaus)?",
+   "help": "Shopify Markets unterstützt prozentuale Anpassungen, feste Preise je Produkt und Land sowie Preisrundung.",
+   "teach": {
+    "why": "Die reine Währungsumrechnung läuft automatisch; wirklich unterschiedliche Preise je Markt sind eine Katalogaufgabe in Shopify Markets, über prozentuale Anpassungen, Rundungsregeln oder feste Preise je Produkt und Land. Das verändert, wie der Preis-Feed aus dem ERP gebaut werden muss.",
+    "limits": "Shopify Markets bietet prozentuale Anpassung je Markt, Rundungsregeln und feste Preise je Produkt nach Land oder Region. Ein fester Preis hat Vorrang vor jeder anderen Anpassung, und die Währung der Preisliste muss zur Währung des Markts passen."
+   }
+  },
+  "Q2.5.1": {
+   "text": "Wo liegt die führende Quelle für Bestände — Shopify, ERP, WMS oder ein anderes System?",
+   "help": "Auch wenn das ERP führend ist, braucht Shopify den Bestand je Standort.",
+   "teach": {
+    "why": "Die führende Quelle bestimmt die Richtung der Bestandsintegration und wer Konflikte auflöst. Selbst wenn ERP oder WMS den Bestand besitzen, braucht Shopify eine Menge je Standort — der Feed muss also standortgenau sein und darf keine Gesamtsumme liefern.",
+    "options": [
+     {
+      "option": "Shopify ist führend",
+      "pros": "Keine eingehende Bestandssynchronisation; Mitarbeitende korrigieren im Admin, und der Shop ist immer korrekt.",
+      "cons": "Passt nicht, wenn Lager- oder Filialsysteme den Bestand ohnehin außerhalb von Shopify bewegen."
+     },
+     {
+      "option": "ERP oder WMS ist führend",
+      "pros": "Eine Bestandszahl über alle Kanäle, im Besitz des Systems, das die Ware tatsächlich hält.",
+      "cons": "Braucht einen Feed je Standort nach Shopify, und Verzögerungen bei der Synchronisation zeigen sich als Überverkauf."
+     }
+    ]
+   }
+  },
+  "Q2.5.2": {
+   "text": "Werden Benachrichtigungen bei niedrigem Bestand benötigt?",
+   "help": "Shopify hat keine eingebaute Benachrichtigung bei niedrigem Bestand; wir richten sie mit Shopify Flow ein.",
+   "teach": {
+    "why": "Shopify verschickt von Haus aus keine Benachrichtigungen bei niedrigem Bestand. Erwartet der Kunde sie, ist das ein Shopify-Flow-Workflow, der gebaut und gepflegt werden muss — er gehört also ins Backlog und nicht in die Annahme, es sei eine Einstellung."
+   }
+  },
+  "Q2.5.3": {
+   "text": "Was soll passieren, wenn ein Produkt nicht auf Lager ist?",
+   "help": "Weiterverkaufen (Nachbestellung) ist nativ; Benachrichtigungen bei Wiederverfügbarkeit und Vorbestellungen brauchen Apps.",
+   "teach": {
+    "why": "Das Verhalten bei Nichtverfügbarkeit teilt sich sauber auf: weiter zu verkaufen (Nachbestellung) ist eine native Produkteinstellung, während Benachrichtigungen bei Wiederverfügbarkeit und Vorbestellungen beide Apps brauchen. Die Antwort setzt die Signale back_in_stock_app und pre_order_app samt ihrer Lizenzen.",
+    "limits": "Weiterverkaufen bei fehlendem Bestand ist ab Basic nativ. Benachrichtigungen bei Wiederverfügbarkeit und Vorbestellungen erfordern Apps."
+   }
+  },
+  "Q2.5.4": {
+   "text": "Welche Bestandsaufgaben wird Ihr Team in Shopify erledigen?",
+   "help": "Einkaufsbestellungen, Transfers und Bestandskorrekturen sind im Shopify Admin nativ (Stocky ist eingestellt).",
+   "teach": {
+    "why": "Einkaufsbestellungen, Transfers und Bestandskorrekturen sind im Shopify Admin nativ. Die Antwort zeigt deshalb, wie viel vom Bestandsbetrieb des Kunden nach Shopify wandert — und das treibt Schulung, Rollen und Berechtigungen, nicht den Build-Aufwand."
    }
   }
  },

@@ -298,30 +298,30 @@
 
 ### 2.1 Taille du catalogue & variantes
 
-**Q2.1.1** — How many active SKUs are in the catalogue (approximate)? *(required)*
+**Q2.1.1** — Combien de SKU actifs le catalogue compte-t-il (approximativement) ? *(required)*
 
 > Answer:
 
-**Q2.1.2** — What is the maximum number of variant options on a product (e.g. size, colour, material = 3)? *(required)*
-*Shopify allows up to 3 options per product; more options need a different product model.*
+**Q2.1.2** — Quel est le nombre maximal d'options sur un produit (par exemple taille, couleur, matière = 3) ? *(required)*
+*Shopify autorise jusqu'à 3 options par produit ; au-delà, il faut un autre modèle de produit.*
 
 > Answer:
 
-**Q2.1.3** — What is the maximum number of variants on a single product? *(required)*
-*Shopify allows up to 2,048 variants per product.*
+**Q2.1.3** — Quel est le nombre maximal de variantes sur un seul produit ? *(required)*
+*Shopify autorise jusqu'à 2 048 variantes par produit.*
 
 > Answer:
 
-**Q2.1.4** — Are variants such as colours managed as separate products (own SKUs, images, URLs) that should appear as one product on the storefront? *(required)*
-*This is what Shopify calls combined listings.*
+**Q2.1.4** — Des variantes comme les couleurs sont-elles gérées en produits distincts (SKU, images et URL propres) qui doivent apparaître comme un seul produit sur la boutique ? *(required)*
+*C'est ce que Shopify appelle les combined listings.*
 
 - [ ] Yes
 - [ ] No
 
 ### 2.2 Types de produits
 
-**Q2.2.1** — Which product types exist in the catalogue? *(required)*
-*Shopify Bundles creates fixed bundles and multipacks; mix-and-match bundles need an app.*
+**Q2.2.1** — Quels types de produits existent dans le catalogue ? *(required)*
+*Shopify Bundles crée des offres groupées fixes et des lots ; les offres groupées à composition libre nécessitent une application.*
 
 *(tick all that apply)*
 - [ ] Simple
@@ -341,16 +341,16 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q2.2.2** — Will subscriptions run on Shopify Subscriptions (Shopify's app) or a third-party subscription app? Name the app if known. *(recommended)*
+**Q2.2.2** — Les abonnements passeront-ils par Shopify Subscriptions (l'application de Shopify) ou par une application tierce ? Précisez laquelle si vous la connaissez. *(recommended)*
 *Ask if Q2.2.1 includes Subscription.*
-*Shopify Subscriptions: customers skip, pause and cancel in their account; not with bundles or B2B.*
+*Shopify Subscriptions : les clients sautent, suspendent et résilient depuis leur compte ; incompatible avec les offres groupées et le B2B.*
 
 - Approach:
 - Subscription app:
 
-**Q2.2.3** — If you sell bundles: what must they do? *(recommended)*
+**Q2.2.3** — Si vous vendez des offres groupées : que doivent-elles permettre ? *(recommended)*
 *Ask if Q2.2.1 includes Fixed bundle, Multipack, Mix and match bundle or Bundle.*
-*Shopify Bundles: up to 30 components; not with subscriptions or pre-orders; no nested bundles.*
+*Shopify Bundles : jusqu'à 30 composants ; incompatible avec les abonnements et les précommandes ; pas d'imbrication.*
 
 *(tick all that apply)*
 - [ ] Fixed price bundle
@@ -363,7 +363,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q2.2.4** — Which subscription features are needed? *(recommended)*
+**Q2.2.4** — Quelles fonctionnalités d'abonnement sont nécessaires ? *(recommended)*
 *Ask if Q2.2.1 includes Subscription.*
 
 *(tick all that apply)*
@@ -378,16 +378,16 @@
 - [ ] Migrate existing contracts
 - [ ] Not sure yet
 
-**Q2.2.5** — For pre-orders, when is the customer charged? *(recommended)*
+**Q2.2.5** — Pour les précommandes, à quel moment le client est-il débité ? *(recommended)*
 *Ask if Q2.2.1 includes Pre order.*
-*Pre-orders need a pre-order app; express checkouts (Shop Pay, Apple Pay, Google Pay) are not available for pre-orders.*
+*Les précommandes nécessitent une application dédiée ; les paiements express (Shop Pay, Apple Pay, Google Pay) ne sont pas disponibles pour les précommandes.*
 
 *(tick one)*
 - [ ] Full at order
 - [ ] Deposit then balance
 - [ ] Charged at fulfilment
 
-**Q2.2.6** — Do customers personalise products with choices that are not stock variants (engraving, file upload, paid add-ons, configurators)? *(recommended)*
+**Q2.2.6** — Les clients personnalisent-ils les produits avec des choix qui ne sont pas des variantes en stock (gravure, envoi de fichier, options payantes, configurateurs) ? *(recommended)*
 *Ask if Q2.1.2 is 3 or more, or Q2.2.1 includes Made to order.*
 
 *(tick all that apply)*
@@ -401,24 +401,24 @@
 
 ### 2.3 Données catalogue
 
-**Q2.3.1** — Roughly how many collections? *(optional)*
+**Q2.3.1** — Combien de collections, approximativement ? *(optional)*
 
 > Answer:
 
-**Q2.3.2** — Are collections manual, rule-based (automated), or mixed? *(optional)*
+**Q2.3.2** — Les collections sont-elles manuelles, basées sur des règles (automatisées), ou mixtes ? *(optional)*
 
 *(tick one)*
 - [ ] Manual
 - [ ] Automated
 - [ ] Mixed
 
-**Q2.3.3** — Which product attributes go beyond Shopify's standard fields (technical specs, certifications, fit guides, ingredients)? *(required)*
-*Shopify stores extra attributes as metafields and metaobjects and uses the Standard Product Taxonomy for category attributes (filters, Google and Meta feeds). With a PIM, attributes come from the PIM.*
+**Q2.3.3** — Quels attributs produit vont au-delà des champs standards de Shopify (caractéristiques techniques, certifications, guides de taille, ingrédients) ? *(required)*
+*Shopify stocke les attributs supplémentaires sous forme de métachamps et de métaobjets et utilise la taxonomie produit standard pour les attributs de catégorie (filtres, flux Google et Meta). Avec un PIM, les attributs viennent du PIM.*
 
 > Answer:
 
-**Q2.3.4** — Where is catalogue data maintained today? *(recommended)*
-*Typical: products and content from the PIM; prices and inventory from the ERP.*
+**Q2.3.4** — Où les données de catalogue sont-elles maintenues aujourd'hui ? *(recommended)*
+*Cas courant : produits et contenus depuis le PIM ; prix et stocks depuis l'ERP.*
 
 *(tick one)*
 - [ ] Shopify admin
@@ -427,35 +427,35 @@
 - [ ] PIM
 - [ ] Mixed
 
-**Q2.3.5** — Which attributes should shoppers filter by on collection and search pages? *(recommended)*
-*Shopify Search & Discovery: up to 25 filters; no filters on collections over 5,000 products.*
+**Q2.3.5** — Sur quels attributs les clients doivent-ils pouvoir filtrer dans les pages de collection et de recherche ? *(recommended)*
+*Shopify Search & Discovery : jusqu'à 25 filtres ; pas de filtres sur les collections de plus de 5 000 produits.*
 
 > Answer:
 
 ### 2.4 Prix
 
-**Q2.4.1** — Are there special prices for consumer groups (VIP or member prices)? *(recommended)*
-*Prices for business customers are covered in § 6.2. Consumer group prices use discounts for customer segments or an app.*
+**Q2.4.1** — Existe-t-il des prix particuliers pour des groupes de clients particuliers (prix VIP ou adhérents) ? *(recommended)*
+*Les prix pour les clients professionnels sont traités au § 6.2. Les prix par groupe de particuliers passent par des réductions sur des segments de clientèle ou par une application.*
 
 - [ ] Yes
 - [ ] No
 
-**Q2.4.2** — Are there volume offers for shoppers (e.g. 3 for 2, tiered discounts)? *(recommended)*
-*Automatic discounts and buy X get Y cover most volume offers natively. Business volume pricing is covered in § 6.2.*
+**Q2.4.2** — Existe-t-il des offres sur quantité pour les particuliers (par exemple 3 pour 2, remises par paliers) ? *(recommended)*
+*Les réductions automatiques et « achetez X, obtenez Y » couvrent nativement la plupart des offres sur quantité. La tarification par volume en B2B est traitée au § 6.2.*
 
 - [ ] Yes
 - [ ] No
 
-**Q2.4.3** — Do prices differ by market (not just currency conversion)? *(recommended)*
-*Shopify Markets supports percentage adjustments, fixed prices per product per country and price rounding.*
+**Q2.4.3** — Les prix diffèrent-ils selon le marché (au-delà de la simple conversion de devise) ? *(recommended)*
+*Shopify Markets prend en charge les ajustements en pourcentage, les prix fixes par produit et par pays, et l'arrondi des prix.*
 
 - [ ] Yes
 - [ ] No
 
 ### 2.5 Stock
 
-**Q2.5.1** — Where is the inventory source of truth — Shopify, ERP, WMS, other? *(recommended)*
-*With the ERP as source of truth, Shopify still needs stock per location.*
+**Q2.5.1** — Où se trouve la source de vérité des stocks — Shopify, ERP, WMS, autre ? *(recommended)*
+*Même avec l'ERP comme source de vérité, Shopify a besoin du stock par emplacement.*
 
 *(tick one)*
 - [ ] Shopify
@@ -465,15 +465,15 @@
 - [ ] POS
 - [ ] Other
 
-**Q2.5.2** — Are low-stock alerts needed? *(optional)*
-*Shopify has no built-in low-stock alert; we set it up with Shopify Flow.*
+**Q2.5.2** — Des alertes de stock bas sont-elles nécessaires ? *(optional)*
+*Shopify n'a pas d'alerte de stock bas intégrée ; nous la mettons en place avec Shopify Flow.*
 
 - [ ] Yes
 - [ ] No
 
-**Q2.5.3** — What should happen when a product is out of stock? *(optional)*
+**Q2.5.3** — Que doit-il se passer lorsqu'un produit est en rupture de stock ? *(optional)*
 *Ask if Q2.2.1 includes Pre order, or Q2.1.1 is 500 or more.*
-*Continue selling (backorder) is native; back-in-stock alerts and pre-orders need apps.*
+*Continuer à vendre (réapprovisionnement) est natif ; les alertes de retour en stock et les précommandes exigent des applications.*
 
 *(tick all that apply)*
 - [ ] Hide
@@ -483,8 +483,8 @@
 - [ ] Pre order
 - [ ] Not sure yet
 
-**Q2.5.4** — Which inventory tasks will your team do in Shopify? *(optional)*
-*Purchase orders, transfers and stock adjustments are native in Shopify admin (Stocky is retired).*
+**Q2.5.4** — Quelles tâches de gestion des stocks votre équipe réalisera-t-elle dans Shopify ? *(optional)*
+*Bons de commande, transferts et ajustements de stock sont natifs dans l'interface d'administration Shopify (Stocky est retiré).*
 
 *(tick all that apply)*
 - [ ] Purchase orders
