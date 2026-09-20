@@ -2,8 +2,9 @@ import { Form, Link, redirect } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
+import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
 
-export const meta = () => [{ title: 'Engagements · Merkle Discovery' }];
+export const meta = () => [{ title: 'Bids and engagements · Merkle Discovery' }];
 
 export async function loader({ request }) {
   const user = await requireUser(request);
@@ -15,7 +16,12 @@ export async function action({ request }) {
   const form = await request.formData();
   const client = String(form.get('client') ?? '').trim();
   try {
-    await discovery().startInterview(user, { client, language: String(form.get('language') ?? 'en'), mode: String(form.get('mode') ?? 'standard') });
+    await discovery().startInterview(user, {
+      client,
+      language: String(form.get('language') ?? 'en'),
+      mode: String(form.get('mode') ?? 'standard'),
+      process: String(form.get('process') ?? 'discovery'),
+    });
   } catch (err) {
     return serviceFailure(err);
   }
@@ -36,11 +42,17 @@ export default function Home({ loaderData, actionData }) {
     <main>
       <header className="page-head">
         <p className="eyebrow">Merkle Discovery</p>
-        <h1>Engagements</h1>
-        <p>Every engagement in the pilot, shared across consultants.</p>
+        <h1>Bids and engagements</h1>
+        <p>One engine, two ways in: an RFP to answer, or a discovery to run. Everything in the pilot, shared across consultants.</p>
       </header>
-      <h2>Start an interview</h2>
+      <h2>Start</h2>
       <Form method="post" className="inline-form">
+        <div className="field">
+          <label htmlFor="process">What is this</label>
+          <select id="process" name="process" defaultValue="discovery">
+            {Object.values(PROCESSES).map((p) => <option key={p.id} value={p.id}>{p.start}</option>)}
+          </select>
+        </div>
         <div className="field">
           <label htmlFor="client">Client slug</label>
           <input id="client" name="client" placeholder="acme-watches" pattern="[a-z0-9][a-z0-9-]*" required />
@@ -63,16 +75,17 @@ export default function Home({ loaderData, actionData }) {
       </Form>
       {actionData?.error ? <p className="error">{actionData.error}</p> : null}
 
-      <h2>Engagements</h2>
-      {engagements.length === 0 ? <p className="muted">No engagements yet.</p> : (
+      <h2>Open now</h2>
+      {engagements.length === 0 ? <p className="muted">Nothing open yet.</p> : (
         <table>
           <thead>
-            <tr><th>Client</th><th>Offer</th><th>Status</th><th>Required answered</th><th>To confirm</th><th>Mode</th><th>Owner</th><th>Updated</th></tr>
+            <tr><th>Client</th><th>What</th><th>Offer</th><th>Status</th><th>Required answered</th><th>To confirm</th><th>Mode</th><th>Owner</th><th>Updated</th></tr>
           </thead>
           <tbody>
             {engagements.map((e) => (
               <tr key={e.client}>
                 <td><Link to={`/engagements/${e.client}`}>{e.client}</Link></td>
+                <td><span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span></td>
                 <td>{e.offer.code} · {e.offer.name}{e.offer.provisional ? <> <span className="badge provisional">provisional</span></> : null}</td>
                 <td><Status e={e} /></td>
                 <td>{e.coverage.required_answered} / {e.coverage.required_total}{e.coverage.required_tbc ? ` (${e.coverage.required_tbc} TBC)` : ''}</td>

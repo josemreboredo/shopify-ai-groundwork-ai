@@ -25,6 +25,7 @@ import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
 import { clarificationBrief, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
+import { processOf, PROCESS_IDS } from './process.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
@@ -141,6 +142,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       client: session.client,
       language: session.language,
       mode: session.mode,
+      process: processOf(session.process),
       owner: session.owner ?? null,
       started_at: session.started_at,
       updated_at: session.updated_at,
@@ -229,11 +231,11 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     },
 
     /** @param {User} user @param {{ client: string, language?: string, mode?: string }} input */
-    async startInterview(user, { client, language, mode }) {
+    async startInterview(user, { client, language, mode, process }) {
       if (!user) throw new ServiceError(401, 'Sign in first');
       let session;
       try {
-        session = createSession({ client, language, mode, today: today() });
+        session = createSession({ client, language, mode, process: processOf(process), today: today() });
       } catch (err) {
         throw new ServiceError(400, err.message);
       }
@@ -750,6 +752,24 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       await store.save(session);
       const open = nextQuestions(session, { limit: 500 });
       return { ok: true, mode, was: before, remaining: open.remaining };
+    },
+
+    /**
+     * Move a record between the two processes. Everything recorded stays exactly
+     * as it is — the engine reads it the same way either way. What changes is the
+     * order of the steps and the words, which is the whole point: a bid that is
+     * being run as if it were a discovery asks the client sixty questions.
+     *
+     * @param {User} user @param {string} client @param {{ process: 'rfp'|'discovery' }} input
+     */
+    async setProcess(user, client, { process }) {
+      const session = await load(user, client);
+      if (!PROCESS_IDS.includes(process)) throw new ServiceError(400, `process must be one of ${PROCESS_IDS.join(', ')} (got ${process})`);
+      const was = processOf(session.process);
+      session.process = process;
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, process, was };
     },
 
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */

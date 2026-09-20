@@ -42,6 +42,7 @@ export default function EditQuestion({ loaderData, actionData }) {
       <EngagementHeader
         language={language}
         client={engagement.client}
+        process={engagement.process}
         eyebrow={`Question ${question.id}`}
         meta={STATE_TEXT[state]}
         back={{ to: `/engagements/${engagement.client}/review#${question.id}`, label: 'Review answers' }}

@@ -59,7 +59,8 @@ These go to the client before we bid, so a long list costs us more than a short 
     <main>
       <EngagementHeader
         client={client}
-        eyebrow="Questions on the RFP"
+        process={engagement.process}
+        eyebrow="Questions to the client"
         meta={saved ? `${questions.length} question${questions.length > 1 ? 's' : ''} · prepared ${clarifications.saved_at} by ${clarifications.by} (${VIA[clarifications.via] ?? clarifications.via})` : null}
       />
 

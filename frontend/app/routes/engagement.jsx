@@ -55,24 +55,30 @@ function AnswerRow({ a, busy }) {
  * it — it cannot go and read them. This card says so, gives the exact instruction
  * to paste, and watches for the answers to arrive.
  */
-function PrefillCard({ client, documents, toConfirm }) {
+function PrefillCard({ client, documents, toConfirm, process }) {
   const [copied, setCopied] = useState(false);
-  const instruction = `Read the documents in this project and pre-fill the Merkle Discovery engagement ${client}.
+  const rfp = process === 'rfp';
+  const instruction = `Read the documents in this project and pre-fill the Merkle Discovery ${rfp ? 'bid' : 'engagement'} ${client}.
 
 Register each document with register_document, map what it says to the questionnaire with find_questions, and record answers with record_answers, each with its evidence (document, section, short quote). Where a document is unclear, mark the question TBC with a note instead of guessing. Then tell me what you recorded and what is still open.
 
 If you cannot see any documents in this chat, stop and tell me: either I attach the RFP here, or I run this inside the Claude Project for ${client}, where the documents are.`;
   const started = documents.length > 0;
-  // Closed by default: not every engagement starts from an RFP, and those that do
-  // only need this once. The summary line still says where things stand.
+  // On a bid this is the first thing that happens and there is nothing to do
+  // until it has: it opens. In a discovery the consultant is interviewing, and
+  // not every discovery has a document at all, so it stays a closed accordion.
   return (
-    <details className={`card prefill${started ? ' done' : ''}`}>
+    <details className={`card prefill${started ? ' done' : ''}`} open={rfp && !started}>
       <summary>
-        <span className="prefill-title">{started ? 'Pre-fill again from new documents' : 'Pre-fill the answers from the client’s documents'}</span>
+        <span className="prefill-title">
+          {started
+            ? 'Read in more documents'
+            : rfp ? 'Start here — read the RFP in' : 'Pre-fill the answers from the client’s documents'}
+        </span>
         <span className="muted prefill-status">
           {started
             ? `${documents.length} document${documents.length > 1 ? 's' : ''} read · ${toConfirm} to confirm`
-            : 'Optional — if you have an RFP or brief'}
+            : rfp ? 'Nothing can be decided until the RFP is read' : 'Optional — if you have an RFP or brief'}
         </span>
       </summary>
       {started ? (
@@ -158,12 +164,13 @@ export default function Engagement({ loaderData, actionData }) {
       <EngagementHeader
         language={language}
         client={engagement.client}
+        process={engagement.process}
         meta={`${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${next.remaining} questions open${typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}`}
       />
       <div className="layout">
         <div>
           {next.consent_required ? <p className="error">Record the client's consent for AI processing before any other answer.</p> : null}
-          {!next.consent_required ? <PrefillCard client={engagement.client} documents={documents} toConfirm={toConfirm} /> : null}
+          {!next.consent_required ? <PrefillCard client={engagement.client} documents={documents} toConfirm={toConfirm} process={engagement.process} /> : null}
           {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} />) : (
             <section className="card">
               <p className="question">All questions for this {engagement.mode} interview are answered.</p>

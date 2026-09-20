@@ -438,6 +438,10 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   .steps li { grid-template-columns: 52px minmax(0, 1fr); gap: 14px; }
 }
 
+/* Which of the two processes a record is in */
+.badge.process-rfp { background: var(--navy); color: #fff; }
+.badge.process-discovery { background: var(--panel); color: var(--muted); }
+
 /* Questions on the RFP: few, considered, and split from what stays with us */
 .section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; }
 .section-head h2 { margin-bottom: 0; }

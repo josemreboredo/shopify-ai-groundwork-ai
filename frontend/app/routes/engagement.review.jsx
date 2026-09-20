@@ -4,6 +4,7 @@ import { Form, Link, redirect, useNavigation, useSearchParams } from 'react-rout
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader } from '../components/question.jsx';
+import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
 
 export const meta = ({ params }) => [{ title: `Review answers · ${params.client} · Merkle Discovery` }];
 
@@ -24,6 +25,14 @@ export async function action({ request, params }) {
     try {
       const result = await discovery().setInterviewMode(user, params.client, { mode: String(form.get('mode') ?? '') });
       return { ok: true, mode: result.mode, was: result.was, remaining: result.remaining };
+    } catch (err) {
+      return serviceFailure(err);
+    }
+  }
+  if (intent === 'process') {
+    try {
+      const result = await discovery().setProcess(user, params.client, { process: String(form.get('process') ?? '') });
+      return { ok: true, process: result.process, wasProcess: result.was };
     } catch (err) {
       return serviceFailure(err);
     }
@@ -66,6 +75,7 @@ export default function Review({ loaderData, actionData }) {
       <EngagementHeader
         language={language}
         client={engagement.client}
+        process={engagement.process}
         eyebrow="Review answers"
         meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} TBC · ${count('skipped')} not applicable · ${count('open')} open`}
       />
@@ -99,11 +109,21 @@ export default function Review({ loaderData, actionData }) {
             </select>
             <button type="submit" className="secondary" disabled={busy}>Change</button>
           </Form>
+          <Form method="post" className="mode-form">
+            <input type="hidden" name="intent" value="process" />
+            <label htmlFor="process" className="muted">This is</label>
+            <select id="process" name="process" defaultValue={engagement.process}>
+              {Object.values(PROCESSES).map((p) => <option key={p.id} value={p.id}>{p.start}</option>)}
+            </select>
+            <button type="submit" className="secondary" disabled={busy}>Change</button>
+          </Form>
         </div>
         {actionData?.mode ? <p className="muted">Mode changed from {actionData.was} to {actionData.mode} — {actionData.remaining} questions open.</p> : null}
+        {actionData?.process ? <p className="muted">Now a {processMeta(actionData.process).record.toLowerCase()}, was a {processMeta(actionData.wasProcess).record.toLowerCase()} — the steps and the words follow; nothing recorded has changed.</p> : null}
         <p className="muted">
           The mode decides which questions are ever asked: a quick interview never reaches a
-          <em> recommended</em> question, however relevant it has become.
+          <em> recommended</em> question, however relevant it has become. The process decides the
+          order of the work and what the documents are called — an RFP is answered, a discovery is run.
         </p>
       </section>
       {sections.filter((section) => shown(section.questions).length).map((section) => (

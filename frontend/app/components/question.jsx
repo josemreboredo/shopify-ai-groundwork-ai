@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Form, Link, NavLink } from 'react-router';
 
 import { LANGUAGE_NAMES } from '../../../discovery/service/i18n.js';
+import { tabsFor, processMeta } from '../../../discovery/service/process.js';
 
 export const words = (id) => id.replace(/_/g, ' ');
 const leaf = (pointer) => words(pointer.split('/').at(-1));
@@ -22,14 +23,17 @@ export function Vocabularies({ vocabularies }) {
   ));
 }
 
-export function EngagementNav({ client }) {
+/**
+ * The steps in the order this process does them. Same routes for both — what
+ * changes is the order and the words, because a bid and a discovery are two
+ * different jobs on one engine.
+ */
+export function EngagementNav({ client, process }) {
   return (
     <nav className="tabs">
-      <NavLink to={`/engagements/${client}`} end>Interview</NavLink>
-      <NavLink to={`/engagements/${client}/review`}>Review answers</NavLink>
-      <NavLink to={`/engagements/${client}/summary`}>Summary</NavLink>
-      <NavLink to={`/engagements/${client}/clarifications`}>Questions to the client</NavLink>
-      <NavLink to={`/engagements/${client}/closing-document`}>Closing document</NavLink>
+      {tabsFor(process).map(({ path, label }) => (
+        <NavLink key={path} to={`/engagements/${client}${path ? `/${path}` : ''}`} end={path === ''}>{label}</NavLink>
+      ))}
     </nav>
   );
 }
@@ -55,11 +59,12 @@ export function WithQuestionLinks({ text, client }) {
  * @param {{ client: string, eyebrow?: string, title?: string, meta?: import('react').ReactNode,
  *           back?: { to: string, label: string } }} props
  */
-export function EngagementHeader({ client, eyebrow = 'Discovery engagement', title, meta, back, language }) {
+export function EngagementHeader({ client, eyebrow, title, meta, back, language, process }) {
+  const words = processMeta(process);
   return (
     <header className="page-head">
       <Link className="crumb" to={back?.to ?? '/'}>← {back?.label ?? 'Engagements'}</Link>
-      <p className="eyebrow">{eyebrow}</p>
+      <p className="eyebrow">{eyebrow ?? `${words.label} · ${words.record}`}</p>
       <h1>{title ?? client}</h1>
       {meta ? <p className="page-meta">{meta}</p> : null}
       {language?.translated ? (
@@ -68,7 +73,7 @@ export function EngagementHeader({ client, eyebrow = 'Discovery engagement', tit
           {language.complete ? '' : ` · ${language.questions} of ${language.of} questions translated so far, the rest stay in English`}
         </p>
       ) : null}
-      <EngagementNav client={client} />
+      <EngagementNav client={client} process={process} />
     </header>
   );
 }

@@ -6,6 +6,7 @@ import { discovery, serviceFailure } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';
 import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
+import { processMeta } from '../../../discovery/service/process.js';
 
 export const meta = ({ params }) => [{ title: `Discovery Closing Document · ${params.client} · Merkle Discovery` }];
 
@@ -52,7 +53,8 @@ export default function Closing({ loaderData }) {
     <main>
       <EngagementHeader
         client={client}
-        eyebrow="Discovery Closing Document"
+        process={engagement.process}
+        eyebrow={processMeta(engagement.process).document}
         meta={document ? `Version ${version} · saved ${document.saved_at} by ${document.by}` : null}
       />
 

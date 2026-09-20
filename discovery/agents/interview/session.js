@@ -14,6 +14,7 @@ import { WORK_ROOT } from '../../paths.js';
 export const DEFAULT_WORK_ROOT = WORK_ROOT;
 export const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
 const MODES = ['quick', 'standard', 'full'];
+const PROCESSES = ['rfp', 'discovery'];
 const LANGUAGE = /^[a-z]{2}$/;
 
 /**
@@ -21,6 +22,7 @@ const LANGUAGE = /^[a-z]{2}$/;
  * @property {string} client
  * @property {string} language            ISO 639-1 language the interview is held in
  * @property {'quick'|'standard'|'full'} mode
+ * @property {'rfp'|'discovery'} [process]  How Merkle came to this client
  * @property {object} answers              Engagement-shaped answers (English)
  * @property {Record<string, {source: string, status: string, question_id?: string, note?: string}>} provenance
  * @property {Record<string, string>} tbc  question id → note
@@ -32,17 +34,22 @@ const LANGUAGE = /^[a-z]{2}$/;
  */
 
 /**
- * @param {{ client: string, language?: string, mode?: string, today: string }} options
+ * @param {{ client: string, language?: string, mode?: string, process?: string, today: string }} options
  * @returns {Session}
  */
-export function createSession({ client, language = 'en', mode = 'standard', today }) {
+export function createSession({ client, language = 'en', mode = 'standard', process = 'discovery', today }) {
   if (!SLUG.test(client ?? '')) throw new Error('Invalid client — use a kebab-case slug, e.g. acme-watches');
   if (!LANGUAGE.test(language)) throw new Error('Invalid language — use a two-letter ISO 639-1 code, e.g. de');
   if (!MODES.includes(mode)) throw new Error(`Invalid mode — use one of ${MODES.join(', ')}`);
+  if (!PROCESSES.includes(process)) throw new Error(`Invalid process — use one of ${PROCESSES.join(', ')}`);
   return {
     client,
     language,
     mode,
+    // Which way Merkle came to this client: an RFP to answer, or a discovery to
+    // run. Same engine either way — it decides the order of the work and the
+    // words the consultant reads, not what the engine concludes.
+    process,
     answers: { meta: { client: { slug: client } } },
     provenance: {},
     tbc: {},
