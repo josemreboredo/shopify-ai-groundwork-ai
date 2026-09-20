@@ -138,7 +138,7 @@ export default function Closing({ loaderData }) {
               {waiting && !requested ? <span className="muted">This page updates itself when Claude saves.</span> : null}
             </div>
             <p className="muted">
-              Opens a Claude chat with the instruction written — you only press Enter. Check that the <strong>{CONNECTOR}</strong> connector is on and the strongest model is selected. To use the RFPs you uploaded, start it inside your Claude Project and pick <strong>Draft the client document</strong> from the connector’s prompts. It can take up to 45 minutes, so <strong>Cowork</strong> suits it better than a normal chat.
+              Opens a Claude chat with the instruction written — you only press Enter. Check that the <strong>{CONNECTOR}</strong> connector is on and the strongest model is selected. To use the documents you uploaded, start it inside your Claude Project and pick <strong>Draft the client document</strong> from the connector’s prompts. It can take up to 45 minutes, so <strong>Cowork</strong> suits it better than a normal chat.
             </p>
             {waiting ? (
               <Waiting

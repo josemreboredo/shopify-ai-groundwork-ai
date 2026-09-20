@@ -2508,6 +2508,475 @@
     "why": "Sur une boutique existante, les réglages sont déjà en production : le consultant lit donc l'état réel au lieu de demander au client de l'imaginer.",
     "limits": "Désactiver l'inscription peut prendre jusqu'à sept jours avant de prendre effet sur certains canaux."
    }
+  },
+  "Q10.1.1": {
+   "text": "Quelle est la date de mise en ligne visée ?",
+   "help": "Une date plus proche que le délai de livraison qu'exige le périmètre conduit à un plan par phases, MVP d'abord.",
+   "teach": {
+    "why": "La date de mise en ligne fixe tout le plan. La règle de sortie 11.15 compare les semaines entre le lancement des travaux et la mise en ligne à la durée minimale de l'offre ; si la date est trop proche, l'engagement est recadré MVP d'abord avant le moindre sprint.",
+    "limits": "La règle 11.15 compte à partir de delivery.kickoff_date, à défaut de la date de création de la discovery : un lancement de travaux inconnu rend donc le contrôle optimiste."
+   }
+  },
+  "Q10.1.2": {
+   "text": "Qu'est-ce qui impose l'échéance (haute saison, lancement produit, fin de contrat) ?",
+   "teach": {
+    "why": "Une échéance fixée par quelque chose d'extérieur au projet — haute saison, lancement de collection, fin de contrat — ne bouge pas. Cela change le registre des risques : c'est le périmètre qui absorbe les glissements, pas la date. Un objectif interne souple laisse une marge de négociation."
+   }
+  },
+  "Q10.1.3": {
+   "text": "Un lancement par phases est-il prévu ?",
+   "teach": {
+    "why": "Indique si vous planifiez un lancement ou plusieurs. Un lancement par phases permet de garder la première livraison étroite et repousse les parties risquées ; un lancement unique signifie que tout doit être prêt le jour J.",
+    "options": [
+     {
+      "option": "Lancement par phases",
+      "pros": "Mise en ligne plus tôt sur un périmètre étroit ; le travail risqué passe à une phase ultérieure ; le trafic réel éclaire la suite.",
+      "cons": "Davantage de livraisons à planifier, tester et supporter, et le client vit un temps avec des manques connus."
+     },
+     {
+      "option": "Lancement unique",
+      "pros": "Une seule bascule, un seul moment de communication, rien d'inachevé sur la boutique.",
+      "cons": "Tout doit être prêt à la date ; le moindre glissement décale tout le lancement."
+     }
+    ]
+   }
+  },
+  "Q10.1.4": {
+   "text": "Date souhaitée de lancement des travaux.",
+   "teach": {
+    "why": "Le lancement des travaux démarre le compteur utilisé par la règle de sortie 11.15 — les semaines disponibles se comptent à partir de là. Un démarrage tardif face à une mise en ligne fixe raccourcit la livraison sans raccourcir le périmètre, et cela doit se voir en discovery, pas au deuxième sprint."
+   }
+  },
+  "Q10.2.1": {
+   "text": "Qui intervient côté client ? Pour chacun : rôle, RACI (R/A/C/I), décideur (oui/non). Les noms sont facultatifs.",
+   "teach": {
+    "why": "La matrice RACI indique qui valide, qui doit être consulté et qui doit seulement être informé. Chaque « C » ajoute une boucle de retour à chaque revue de design, de contenu et de périmètre, et les valideurs que personne n'a nommés ressortent plus tard en retard."
+   }
+  },
+  "Q10.2.2": {
+   "text": "Y a-t-il un décideur unique pour le périmètre, les validations et les retours ?",
+   "help": "Un décideur unique doit être nommé avant le cahier des charges.",
+   "teach": {
+    "why": "La règle de sortie 11.16 le signale. Sans décideur unique nommé, les questions de périmètre reçoivent plusieurs réponses et les validations s'enlisent — la cause la plus fréquente de dépassement. Le nom doit être confirmé avant la signature du cahier des charges.",
+    "limits": "La règle 11.16 est un SIGNALEMENT, pas un ARRÊT : la discovery continue, mais le signalement doit être levé avant la signature."
+   }
+  },
+  "Q10.2.3": {
+   "text": "Sait-on clairement qui a l'autorité d'engager le budget ?",
+   "teach": {
+    "why": "La même règle de sortie 11.16. Si personne ne peut dire oui à une dépense, le périmètre convenu est provisoire — demandes de changement, applications à abonnement mensuel et forfait de maintenance s'enlisent tous. Nommez le responsable du budget avant le cahier des charges.",
+    "limits": "La règle 11.16 est un SIGNALEMENT, pas un ARRÊT : la discovery continue, mais le responsable du budget doit être confirmé avant la signature."
+   }
+  },
+  "Q10.3.1": {
+   "text": "Quelles formations sont nécessaires (produits, commandes, réductions, rapports) ?",
+   "teach": {
+    "why": "Cela décide de la passation que vous construisez et chiffrez. Former aux produits, aux commandes, aux réductions et aux rapports est un vrai travail de livraison — séances, supports, enregistrements. Tout ce qui n'est pas listé ici sort du périmètre et revient plus tard en tickets de support."
+   }
+  },
+  "Q10.3.2": {
+   "text": "Des procédures écrites sont-elles exigées ?",
+   "teach": {
+    "why": "Les procédures écrites sont un livrable à part entière : quelqu'un les rédige, les relit et les entretient. Poser la question maintenant évite qu'elles n'apparaissent en demande imprévue au dernier sprint.",
+    "options": [
+     {
+      "option": "Procédures écrites livrées",
+      "pros": "L'équipe du client peut exploiter la boutique seule ; moins de tickets de support et moins de dépendance aux personnes clés.",
+      "cons": "Les rédiger, les relire et les maintenir est un effort à cadrer et à chiffrer."
+     },
+     {
+      "option": "Pas de procédures écrites",
+      "pros": "Passation plus légère ; formation en direct et enregistrements peuvent suffire pour une petite équipe.",
+      "cons": "La connaissance reste chez des individus, et chaque changement devient une question pour la maintenance."
+     }
+    ]
+   }
+  },
+  "Q10.3.3": {
+   "text": "Quel modèle de support après lancement est attendu ?",
+   "teach": {
+    "why": "Cela façonne tout l'après-lancement : qui répare un paiement cassé le week-end, qui charge la collection de la saison prochaine. Le modèle attendu porte la conversation sur la maintenance et décide quelle équipe reste en place après le lancement.",
+    "options": [
+     {
+      "option": "Forfait de maintenance continu",
+      "pros": "Équipe nommée, délais de réponse convenus et améliorations planifiées après la mise en ligne.",
+      "cons": "Un engagement récurrent que le client doit budgéter et faire valider."
+     },
+     {
+      "option": "Support à la demande",
+      "pros": "Le client ne paie que lorsque quelque chose est réellement nécessaire.",
+      "cons": "Aucune disponibilité garantie ; les correctifs urgents entrent en concurrence avec d'autres travaux et coûtent plus cher."
+     },
+     {
+      "option": "L'équipe du client l'exploite",
+      "pros": "Coût récurrent le plus bas et délai interne le plus court pour les changements de routine.",
+      "cons": "Exige une formation complète et des procédures à la passation, ce qui élargit le périmètre de livraison."
+     }
+    ]
+   }
+  },
+  "Q10.3.4": {
+   "text": "Le forfait Grow est-il signé ?",
+   "teach": {
+    "why": "La règle de sortie 11.11 alerte lorsqu'un engagement M ou L n'a pas de forfait Grow signé. La construction est chiffrée en supposant que le travail continue après le lancement ; sans la signature, les conditions commerciales sont ajustées. Vérifiez la signature, pas l'intention.",
+    "limits": "La règle 11.11 est un AVERTISSEMENT et ne s'applique qu'aux engagements M et L ; elle n'arrête pas la discovery."
+   }
+  },
+  "Q10.3.5": {
+   "text": "Durée du forfait, en mois.",
+   "teach": {
+    "why": "La durée décide combien de temps l'équipe reste et quelle part du travail après lancement est déjà couverte. Elle alimente le modèle commercial et dit au client exactement ce qu'il obtient après la mise en ligne, au lieu de le laisser ouvert."
+   }
+  },
+  "Q10.3.6": {
+   "text": "Le client revérifiera-t-il applications et fonctionnalités Shopify à chaque Shopify Edition après le lancement ?",
+   "teach": {
+    "why": "Shopify annonce des changements de plateforme à chaque Edition, et les applications comme les fonctionnalités dont dépend la boutique peuvent changer. Quelqu'un doit les revérifier. Un non ici signifie que personne ne surveille la dérive de la boutique — ce qui devient en général du travail de maintenance."
+   }
+  },
+  "Q10.4.1": {
+   "text": "L'entreprise évolue-t-elle dans un secteur réglementé (pharmacie, alcool, armes, produits soumis à un âge minimum, produits financiers, dispositifs médicaux) ? Si oui, lequel ?",
+   "help": "Un secteur réglementé exige une revue juridique. Shopify a ses propres règles : l'alcool exige par exemple une vérification de l'âge ; certains types d'activité ne peuvent pas utiliser Shopify Payments.",
+   "teach": {
+    "why": "C'est un ARRÊT. La règle de sortie 11.8 envoie toute activité réglementée — pharmacie, alcool, armes, produits soumis à un âge minimum, produits financiers, dispositifs médicaux — en revue juridique et conformité. Shopify a aussi ses propres règles, et certains types d'activité ne peuvent pas utiliser Shopify Payments.",
+    "limits": "Les règles de Shopify sur les marchandises réglementées (l'alcool par exemple) s'appliquent dès le plan Basic ; les applications de vérification de l'âge figurent dans la présélection. Vérifié le 17/09/2026."
+   }
+  },
+  "Q10.4.2": {
+   "text": "Les pages légales (conditions, confidentialité, cookies, retours) sont-elles prêtes, à mettre à jour, ou encore à rédiger ?",
+   "teach": {
+    "why": "Les pages légales sont du contenu que quelqu'un doit écrire, faire valider et publier avant le lancement. « Encore à rédiger » est une tâche client sur le chemin critique, en général avec un juriste dans la boucle — et non un travail de thème que l'on boucle en un sprint."
+   }
+  },
+  "Q10.4.3": {
+   "text": "Y a-t-il d'autres exigences de conformité propres au secteur ?",
+   "teach": {
+    "why": "Cela rattrape l'exigence que personne n'a pensé à mentionner — agréments, étiquetage, conservation des registres, codes sectoriels. C'est le filet de sécurité de la règle de sortie 11.8 : tout ce qui est soulevé ici part vers la même revue juridique avant que le périmètre ne soit arrêté."
+   }
+  },
+  "Q10.4.4": {
+   "text": "L'activité et la gamme de produits sont-elles éligibles à Shopify Payments (aucune catégorie restreinte ou interdite) ?",
+   "teach": {
+    "why": "Shopify Payments n'est pas ouvert à tous les pays ni à toutes les catégories d'activité. Si le client n'est pas éligible, la pile de paiement, les frais et une partie de l'expérience de paiement changent : cela doit donc se régler en discovery, pas au lancement.",
+    "limits": "L'éligibilité dépend du pays de la boutique et des catégories de produits vendues ; la page des pays pris en charge fait référence. Vérifié le 17/09/2026."
+   }
+  },
+  "Q10.5.1": {
+   "text": "Lead consultant (responsable de l'engagement).",
+   "teach": {
+    "why": "Le consultant nommé porte le dossier d'engagement. Chaque artefact produit par l'outil — fichier d'engagement, présentation, backlog, document de clôture — porte ce nom, pour que chaque réponse et chaque jugement puissent être rattachés à une personne."
+   }
+  },
+  "Q10.5.2": {
+   "text": "Le client a-t-il accepté que les réponses soient traitées par le moteur de discovery IA (aucune donnée personnelle de client incluse) ?",
+   "help": "ADR 0007 — le moteur refuse de fonctionner sans consentement enregistré.",
+   "teach": {
+    "why": "Au titre de l'ADR 0007, le moteur refuse de fonctionner sans consentement enregistré. Rien n'est traité, stocké ni généré tant que le client n'a pas accepté le traitement par IA. Enregistrez-le explicitement, et tenez de toute façon les données personnelles de clients hors des réponses.",
+    "limits": "Le consentement ne couvre que les réponses de la discovery ; les données personnelles de clients ne doivent jamais être saisies, avec ou sans consentement."
+   }
+  },
+  "Q10.5.3": {
+   "text": "Instance Jira et clé de projet pour le backlog.",
+   "teach": {
+    "why": "Le backlog est généré pour être importé dans le Jira du client. L'instance et la clé de projet indiquent à l'outil où les tickets appartiennent ; sans elles, l'export est générique et quelqu'un le ressaisit à la main."
+   }
+  },
+  "Q10.5.4": {
+   "text": "Composants Jira à utiliser.",
+   "teach": {
+    "why": "Les composants font atterrir les tickets générés dans la structure Jira existante du client plutôt qu'en liste plate. C'est la différence entre un backlog que l'équipe de livraison peut utiliser dès le premier jour et un backlog que quelqu'un doit d'abord trier."
+   }
+  },
+  "Q10.5.5": {
+   "text": "Les exigences dépassent les offres S, M et L. Comment Merkle procède-t-il : un Larger Engagement, ou pas de proposition ?",
+   "help": "Larger Engagement : Merkle propose un Enterprise Engagement avec une phase de discovery dédiée ; l'approche, une note de cadrage et la présentation client sont toujours produites, les tickets Jira non. Pas de proposition ne produit que le rapport d'ARRÊT.",
+   "teach": {
+    "why": "Après un ARRÊT, l'engagement ne peut pas se poursuivre en offre standard, et l'outil doit savoir quel résultat produire. Larger Engagement rédige l'approche, la note de cadrage et la présentation client sans tickets Jira ; pas de proposition ne produit que le rapport d'ARRÊT.",
+    "options": [
+     {
+      "option": "Larger Engagement",
+      "pros": "Conserve le client ; le point bloquant reçoit une phase de discovery dédiée, avec les bonnes personnes et le bon budget.",
+      "cons": "Cycle de vente plus long, aucun ticket Jira et aucun démarrage de livraison maintenant ; exige un Merkle Enterprise Engagement pour être viable."
+     },
+     {
+      "option": "Pas de proposition",
+      "pros": "Honnête et rapide, sans effort englouti dans un engagement qui ne peut pas être livré tel que cadré.",
+      "cons": "L'opportunité s'arrête là et seul le rapport d'ARRÊT est produit."
+     }
+    ]
+   }
+  },
+  "Q8.1.1": {
+   "text": "Énumérez chaque système qui échange des données de produit, de stock, de commande, de client ou de finance avec la boutique. Pour chacun : système, catégorie, sens, objets de données, fréquence, connecteur (application native / iPaaS / sur mesure / aucun), responsable, statut.",
+   "help": "Répartition courante : le PIM fournit produits, attributs et traductions ; l'ERP fournit les prix (y compris les catalogues B2B), le stock par emplacement et le statut des commandes.",
+   "teach": {
+    "why": "Ce tableau décide de l'architecture d'intégration — connecteur natif, iPaaS ou application sur mesure — et de la surface d'API dont chaque flux a besoin. C'est aussi le décompte derrière l'ARRÊT : plus de trois intégrations au lancement relèvent d'une phase de discovery, pas d'un sprint de construction.",
+    "limits": "La livraison des webhooks n'est pas garantie : un travail de rapprochement — une relecture planifiée ou une requête en masse — appartient au périmètre de chaque connexion, quel que soit le connecteur. Le budget de l'Admin API diffère aussi selon le plan : 100 points/seconde sur Basic et Grow, 200 sur Advanced, 1000 sur Plus."
+   }
+  },
+  "Q8.1.2": {
+   "text": "Existe-t-il une couche de middleware / iPaaS, ou des connecteurs sur mesure ?",
+   "teach": {
+    "why": "Indique qui porte la correspondance des champs, les reprises et la gestion d'erreurs. Un iPaaS déjà en place transforme la plupart des flux en configuration ; sans iPaaS et sans connecteur tout prêt pour l'ERP ou le PIM, cela signale un cadrage d'intégration à part, en T3 ou T4.",
+    "options": [
+     {
+      "option": "Connecteur natif de l'App Store",
+      "pros": "Le plus rapide et le moins cher ; l'éditeur le maintient face aux versions d'API de Shopify",
+      "cons": "Ne couvre que les flux que l'éditeur a construits ; la correspondance des champs est souvent figée ; un abonnement de plus et une frontière de support de plus"
+     },
+     {
+      "option": "iPaaS ou middleware existant",
+      "pros": "Correspondances, reprises, journalisation et supervision existent déjà ; l'équipe du client peut changer les flux sans livraison",
+      "cons": "Licence et coût par message ; un second endroit où vit la logique commerce ; exige quand même un rapprochement avec Shopify"
+     },
+     {
+      "option": "Application sur mesure sur l'Admin API",
+      "pros": "Contrôle exact de la correspondance, du traitement par lots et des erreurs ; peut utiliser les Bulk Operations pour le volume",
+      "cons": "Vous construisez et maintenez le traitement des webhooks, les reprises, le rapprochement et les montées de version d'API ; une application personnalisée contenant des Functions exige Plus"
+     }
+    ]
+   }
+  },
+  "Q8.1.3": {
+   "text": "À quelle fréquence prix et stocks changent-ils (mises à jour par jour), et les changements doivent-ils être visibles en quelques minutes ?",
+   "help": "Dimensionne la conception de la synchronisation (Bulk Operations contre webhooks).",
+   "teach": {
+    "why": "Dimensionne la conception de la synchronisation et le budget d'API. Des volumes élevés mais non urgents relèvent des Bulk Operations ; une fraîcheur en minutes implique des webhooks plus un rapprochement. La réponse vérifie aussi si la limite de l'Admin API du plan visé suffit.",
+    "limits": "Imports en masse : le fichier JSONL ne peut dépasser 100 Mo, et l'opération doit se terminer sous 24 heures, sinon elle est arrêtée et marquée en échec. Les limites de l'Admin API sont par plan : une synchronisation lourde peut donc à elle seule imposer Advanced ou Plus."
+   }
+  },
+  "Q8.2.2": {
+   "text": "Quelles données doivent être migrées ?",
+   "help": "Les mots de passe des clients ne peuvent pas être migrés ; la connexion se fait par code à usage unique.",
+   "teach": {
+    "why": "L'application Store Migration de Shopify déplace produits et clients depuis dix plateformes nommées. Elle ne déplace ni l'historique des commandes, ni les avis, ni les prix par emplacement. Tout ce qui sort de cette liste est une licence d'application de migration ou un script sur mesure — et c'est là que partent les budgets de migration.",
+    "limits": "Les mots de passe ne peuvent pas être migrés parce qu'ils sont chiffrés hors de Shopify. Les comptes clients actuels se connectent avec un code à six chiffres à usage unique : prévoyez donc la communication plutôt qu'une migration de mots de passe. Les produits de plus de trois options perdent leurs options à l'import ; les prix par emplacement sont alignés sur le prix le plus élevé."
+   }
+  },
+  "Q8.2.3": {
+   "text": "Volumes approximatifs : produits, clients, commandes, redirections d'URL.",
+   "teach": {
+    "why": "Les volumes décident de la voie : CSV, application de migration, ou imports en masse par script. C'est le nombre de redirections qui pèse le plus, car ce sont elles qui font passer le trafic de recherche du client — et Shopify les plafonne à 100 000, ou 20 000 000 sur Plus.",
+    "limits": "Les fichiers CSV de clients ne doivent pas dépasser 15 Mo : les grandes bases se répartissent donc sur plusieurs fichiers. Les produits admettent jusqu'à 2 048 variantes, trois options et 250 images. Importez d'abord les produits, puis les clients, puis les commandes historiques, pour que les commandes puissent se rattacher aux deux."
+   }
+  },
+  "Q8.2.4": {
+   "text": "L'historique des commandes doit-il être consultable dans Shopify ?",
+   "teach": {
+    "why": "L'application de migration de Shopify n'importe pas les commandes. Faire entrer l'historique implique un importateur tiers comme Matrixify ou des appels orderCreate scriptés — plus un problème de répétition, car les boutiques de développement et d'essai plafonnent orderCreate à cinq commandes par minute.",
+    "limits": "Désactivez d'abord les notifications de nouvelle commande : chaque commande importée envoie un e-mail à chaque collaborateur configuré pour les recevoir, propriétaire du compte compris. orderCreate exige la portée write_orders et une application avec un jeton hors ligne.",
+    "options": [
+     {
+      "option": "Importer l'historique dans Shopify",
+      "pros": "Support, retours et valeur client fonctionnent tous depuis une seule interface ; aucun second système à apprendre pour les équipes",
+      "cons": "Non couvert par l'application de Shopify — licence d'importateur ou développement ; les plafonds des boutiques de développement rendent une répétition à pleine charge impraticable"
+     },
+     {
+      "option": "Conserver l'ancien système en lecture seule pour l'historique",
+      "pros": "Retire du chemin critique du lancement la part la plus lourde et la plus risquée de la migration",
+      "cons": "Deux endroits où chercher une commande ; l'ancienne plateforme continue de coûter ; le reporting à cheval sur la date de bascule doit être recousu"
+     }
+    ]
+   }
+  },
+  "Q8.2.5": {
+   "text": "Quelle part du capital de référencement (positions, liens entrants) doit être préservée ?",
+   "teach": {
+    "why": "Détermine si la migration avance avec le sprint de construction ou exige son propre chantier. Shopify génère sitemap.xml automatiquement, mais les positions survivent grâce aux redirections que vous écrivez — et la réindexation prend de 48 à 72 heures, parfois quelques semaines.",
+    "limits": "Les redirections s'importent par CSV sous Contenu > Menus > Redirections d'URL, plafonnées à 100 000 ou 20 000 000 sur Plus. Retirez aussi les protocoles http: et https: explicites des URL de ressources pendant la bascule."
+   }
+  },
+  "Q8.2.6": {
+   "text": "Les abonnements actifs doivent-ils migrer vers la nouvelle boutique sans que les clients ressaisissent leur carte ?",
+   "teach": {
+    "why": "Les abonnements actifs sont la chose la plus difficile à déplacer : le contrat, le moyen de paiement enregistré et l'échéancier de facturation doivent survivre ensemble. Si ce n'est pas possible, chaque abonné ressaisit une carte, et c'est un événement d'attrition plutôt qu'une tâche.",
+    "limits": "Nos chapitres Shopify vérifiés ne documentent aucun outil de Shopify pour déplacer des abonnements en cours ; traitez-le comme un chantier de migration dédié et vérifiez ce que la passerelle et l'application d'abonnement actuelles accepteront de libérer avant de vous engager sur une date."
+   }
+  },
+  "Q9.1.1": {
+   "text": "Existe-t-il un fichier Figma ou une maquette pour la nouvelle boutique ?",
+   "teach": {
+    "why": "Décide si le design est une donnée d'entrée ou un lot de travail. Pas de Figma signifie que l'effort de design se trouve dans l'engagement ; un système de design Figma complet couvrant tous les gabarits est un déclencheur L, car mettre en œuvre le système d'un autre coûte plus cher, pas moins."
+   }
+  },
+  "Q9.1.2": {
+   "text": "Quel est son degré d'achèvement — marque seulement, écrans clés, ou tous les gabarits ?",
+   "teach": {
+    "why": "Le degré d'achèvement, c'est l'estimation. Marque seulement signifie que les sections du thème portent le design. Écrans clés signifie que vous interpolez le reste. Tous les gabarits signifie reproduire chacun d'eux en Liquid — et c'est là qu'une construction de thème devient une construction sur mesure."
+   }
+  },
+  "Q9.1.3": {
+   "text": "Le fichier Figma contient-il un système de design complet (tokens et composants) ?",
+   "teach": {
+    "why": "Tokens et composants se projettent sur les réglages de thème et les theme blocks, définis au niveau du thème et réutilisés d'une section à l'autre. Un fichier d'écrans plats ne le permet pas, et chaque écran devient alors du Liquid sur mesure — toute la différence entre configurer un thème et en écrire un."
+   }
+  },
+  "Q9.1.4": {
+   "text": "Le design est-il projeté sur les sections et blocs Shopify ?",
+   "teach": {
+    "why": "Un design déjà projeté sur des sections et des blocs est constructible en thème. Un design qui ne l'est pas cache en général des mises en page que le marchand ne pourrait jamais reconstruire dans l'éditeur de thème. Posez la question tôt — reprojeter après validation du design, c'est de la reprise des deux côtés.",
+    "limits": "Des sections peuvent être ajoutées à toute page de la boutique en ligne sauf la carte cadeau et le paiement : un design qui suppose une mise en page de paiement modifiable est donc projeté sur quelque chose qui n'existe pas."
+   }
+  },
+  "Q9.1.5": {
+   "text": "Un design entièrement sur mesure est-il exigé, plutôt qu'un thème avec personnalisation de marque ?",
+   "teach": {
+    "why": "Sépare la personnalisation de marque d'un thème de génération actuelle d'une construction sur mesure. L'architecture du thème contraint la mise en page ; en sortir implique des sections personnalisées. Si le design ne peut pas du tout s'exprimer dans l'architecture de thème, c'est un argument pour le headless et non une question de style.",
+    "options": [
+     {
+      "option": "Thème avec personnalisation de marque",
+      "pros": "Chemin le plus court vers le lancement ; le marketing restructure les pages dans l'éditeur de thème ; les theme app extensions s'installent sans code",
+      "cons": "La mise en page est contrainte par l'architecture du thème ; un design distinctif peut quand même exiger des sections personnalisées"
+     },
+     {
+      "option": "Design entièrement sur mesure",
+      "pros": "Design visuel et interactif sans contrainte",
+      "cons": "Des sections personnalisées à construire et à maintenir ; chaque zone modifiable par le marchand doit être conçue comme un réglage, sinon elle devient un ticket pour un développeur"
+     }
+    ]
+   }
+  },
+  "Q9.2.1": {
+   "text": "Une vitrine headless est-elle exigée (Hydrogen, un autre framework, ou le front d'une application native) ?",
+   "help": "Headless signifie un front sur mesure bâti sur Shopify ; le paiement reste le paiement Shopify.",
+   "teach": {
+    "why": "La plus grande décision d'architecture du référentiel. Le moteur commerce est identique dans les deux cas ; ce qui change, c'est qui porte la couche de présentation. Le headless supprime l'éditeur de thème : le marketing ne peut plus restructurer les pages sans une livraison.",
+    "limits": "Le paiement reste hébergé par Shopify — vous envoyez l'acheteur vers la checkoutUrl du panier. Comptes clients, Markets et localisation, B2B, analytique et consentement deviennent chacun un travail explicite. Environnements publics Oxygen : 1 en dessous de Plus, 25 sur Plus.",
+    "options": [
+     {
+      "option": "Online Store (thème Liquid)",
+      "pros": "Le plus rapide à lancer ; le marchand modifie les pages avec sections et theme blocks ; les fonctionnalités d'applications arrivent par theme app extensions ; les nouveautés sortent d'abord sur l'Online Store",
+      "cons": "Design contraint par l'architecture du thème ; la pile front est Liquid"
+     },
+     {
+      "option": "Headless (Hydrogen ou votre propre pile)",
+      "pros": "Design sans contrainte ; n'importe quel framework ; un seul front peut servir plus que la boutique",
+      "cons": "Construction la plus longue ; édition de contenu, comptes clients, Markets, B2B, analytique et consentement sont tous à construire ; la maintenance du framework et de la sécurité est permanente"
+     }
+    ]
+   }
+  },
+  "Q9.2.2": {
+   "text": "Une licence de thème à conserver ?",
+   "help": "Les nouvelles constructions partent du thème Horizon de Shopify ; une licence de thème tiers ne compte que pour une base autre qu'Horizon.",
+   "teach": {
+    "why": "Les nouvelles constructions partent du thème Horizon de Shopify : une licence existante ne compte donc que si le client insiste sur une base autre qu'Horizon. Hériter d'un thème tiers, c'est aussi hériter de son chemin de mise à jour et du rythme de publication de son éditeur."
+   }
+  },
+  "Q9.2.3": {
+   "text": "Quelle est la direction esthétique (minimale, éditoriale, luxe, ludique, fonctionnelle) ?",
+   "teach": {
+    "why": "Fixe la présélection de thèmes et la quantité de sections personnalisées derrière le design. Mise en page éditoriale dense, vidéo pleine largeur et animation abondante poussent l'effort vers des sections personnalisées ; une direction sobre relève surtout des réglages de thème et du contenu."
+   }
+  },
+  "Q9.2.4": {
+   "text": "Quels motifs interactifs sont exigés (méga-menu, ajout rapide, nuanciers, recherche prédictive, lookbook, vidéo en bannière) ?",
+   "teach": {
+    "why": "Chaque motif est natif, une application ou une construction, et la répartition n'a rien d'évident. Recherche prédictive, nuanciers de variantes et filtres viennent avec Search & Discovery. Les listes d'envies exigent une application. Les combined listings sont réservés à Plus.",
+    "limits": "Combined listings : Plus. La recherche de vitrine enrichie de Shopify exige Grow ou supérieur et moins de 200 000 produits. Une application de liste d'envies est un coût récurrent et une intégration au thème, pas un réglage de thème."
+   }
+  },
+  "Q9.2.5": {
+   "text": "De l'animation sur mesure est-elle exigée ?",
+   "teach": {
+    "why": "L'animation sur mesure est de l'ingénierie front, pas un réglage de thème, et elle retombe sur les mêmes Core Web Vitals sur lesquels la boutique sera jugée — Largest Contentful Paint, Interaction to Next Paint et Cumulative Layout Shift. Chiffrez-la en conséquence."
+   }
+  },
+  "Q9.2.6": {
+   "text": "Pourquoi le headless ?",
+   "help": "Aide à vérifier si les theme blocks d'Horizon suffiraient.",
+   "teach": {
+    "why": "Confronte la raison à l'architecture. Un front qui sert plus que la boutique, un design que l'architecture de thème ne peut pas exprimer, ou un CMS existant comme source de vérité sont de vraies raisons. La vitesse et « une pile moderne » ne le sont en général pas.",
+    "limits": "Les thèmes de génération actuelle avec theme blocks couvrent bien plus qu'Online Store 2.0 : vérifiez donc le besoin face à l'architecture de blocs d'Horizon avant d'accepter une réponse headless. Une construction headless exige aussi une équipe front permanente après le lancement."
+   }
+  },
+  "Q9.2.7": {
+   "text": "Hébergement du headless ?",
+   "teach": {
+    "why": "Oxygen est l'hébergement sans serveur de Shopify pour Hydrogen, inclus sans supplément de Basic à Plus, mais les environnements publics sont plafonnés à un en dessous de Plus et à 25 sur Plus. S'héberger soi-même échappe au plafond et endosse le travail d'exploitation.",
+    "limits": "Oxygen n'est pas disponible sur le plan Agentic. La bannière de cookies d'Hydrogen ne fonctionne pas sur les URL Oxygen par défaut : il faut donc un domaine personnalisé pour que le consentement se comporte correctement.",
+    "options": [
+     {
+      "option": "Oxygen",
+      "pros": "Inclus sans supplément de Basic à Plus ; déploiement en périphérie ; les patrons Hydrogen de Shopify pour l'analytique et le consentement",
+      "cons": "Un seul environnement public en dessous de Plus, ce qui contraint prévisualisation et préproduction ; lié à Hydrogen ; la bannière de consentement exige un domaine personnalisé"
+     },
+     {
+      "option": "Votre propre hébergement",
+      "pros": "N'importe quel framework, autant d'environnements que voulu, la plateforme et la CI existantes du client",
+      "cons": "Coût d'hébergement et responsabilité d'exploitation ; les patrons d'hébergement Hydrogen de Shopify ne s'appliquent plus tels quels"
+     }
+    ]
+   }
+  },
+  "Q9.2.8": {
+   "text": "Où le contenu éditorial est-il géré pour la vitrine headless ?",
+   "teach": {
+    "why": "Le headless supprime l'éditeur de thème : quelqu'un doit donc porter l'édition de contenu — soit ce que vous construisez dans la vitrine, soit un CMS distinct que le client licencie et que vous intégrez. Tranchez avant la construction, et non après le lancement quand le marketing le demande.",
+    "limits": "Un CMS est une licence, une intégration et un second flux de publication, et il ajoute côté vitrine une question de prévisualisation et de cache.",
+    "options": [
+     {
+      "option": "Le contenu reste dans Shopify",
+      "pros": "Un système, une connexion, aucune licence supplémentaire ; le contenu se trouve à côté des produits qu'il vend",
+      "cons": "Les rédacteurs obtiennent l'expérience d'édition que vous construisez ; la liberté de structure de page de l'éditeur de thème disparaît"
+     },
+     {
+      "option": "CMS distinct",
+      "pros": "Outillage éditorial dédié, flux de validation et réemploi multicanal ; convient à une marque où le contenu mène",
+      "cons": "Coût de licence, une intégration à construire et à maintenir, et deux systèmes qui doivent s'accorder sur produits, marchés et langues"
+     }
+    ]
+   }
+  },
+  "Q9.2.9": {
+   "text": "Quelles fonctionnalités de plateforme sont nécessaires en headless ?",
+   "teach": {
+    "why": "Chaque fonctionnalité nommée ici est un travail que l'Online Store offre gratuitement. Les comptes clients impliquent OAuth sur la Customer Account API ; Markets implique d'interroger soi-même les prix internationaux et de poser le contexte du panier ; analytique et consentement suivent les patrons d'Hydrogen ou se construisent de zéro.",
+    "limits": "Le B2B ne fonctionne qu'avec des comptes clients, et les routes propres à un acheteur ne peuvent pas être mises en cache parce que les requêtes renvoient des données personnalisées. La bannière de cookies d'Hydrogen ne fonctionne pas sur les URL Oxygen par défaut."
+   }
+  },
+  "Q9.2.10": {
+   "text": "Souhaitez-vous faire des tests A/B sur les thèmes ou les configurations de paiement ?",
+   "help": "Natif avec les expériences Shopify Rollouts.",
+   "teach": {
+    "why": "Les expériences natives de thème et de paiement passent par Shopify Rollouts, et Rollouts commence au plan Grow. Un client Basic qui compte faire des tests A/B relève donc d'une conversation sur le plan ou d'une application tierce — et cela ressort tard si vous ne posez pas la question maintenant.",
+    "limits": "Expériences Rollouts : plan Grow et au-delà."
+   }
+  },
+  "Q9.3.1": {
+   "text": "Quelle norme d'accessibilité s'applique ?",
+   "help": "Le paiement Shopify est testé au regard de WCAG 2.2 AA ; le thème et les applications relèvent de votre responsabilité (par exemple au titre de l'European Accessibility Act).",
+   "teach": {
+    "why": "Le paiement de Shopify est testé au regard de WCAG 2.2 AA, mais le thème, les applications et toute vitrine headless relèvent de la responsabilité du client. Au titre de l'European Accessibility Act, c'est une exposition juridique et non une préférence de qualité — et cela décide du périmètre de recette."
+   }
+  },
+  "Q9.3.2": {
+   "text": "Un audit d'accessibilité a-t-il été réalisé sur le site actuel ?",
+   "teach": {
+    "why": "Un audit existant transforme l'accessibilité d'une inconnue en une liste de défauts que l'on peut dimensionner. Pas d'audit, sur un site qui court vers une échéance légale, signifie un périmètre de correction ouvert — mettez l'audit au plan plutôt que de le découvrir à la recette."
+   }
+  },
+  "Q9.4.1": {
+   "text": "Objectifs Core Web Vitals : LCP (secondes), CLS, INP (millisecondes).",
+   "teach": {
+    "why": "Des chiffres rendent la performance testable plutôt que discutable. Shopify rapporte les mêmes trois Core Web Vitals — Largest Contentful Paint, Interaction to Next Paint et Cumulative Layout Shift : des objectifs exprimés dans ces unités sont donc vérifiables dans l'interface d'administration après le lancement.",
+    "limits": "Le rapport de performance web couvre l'Online Store ; une vitrine headless exige sa propre supervision, et sa performance dépend du code et de l'hébergement que vous choisissez. Les données couvrent les 90 derniers jours et peuvent accuser jusqu'à 36 heures de retard."
+   }
+  },
+  "Q9.4.2": {
+   "text": "La vitesse des pages est-elle un problème connu aujourd'hui ?",
+   "help": "Le rapport de performance web de Shopify montre les Core Web Vitals de la boutique actuelle.",
+   "teach": {
+    "why": "Si la boutique actuelle est déjà sur Shopify, son rapport de performance web est une preuve et non une opinion : les trois Core Web Vitals, sur du trafic réel. Si la boutique est ailleurs, traitez la réponse comme une hypothèse jusqu'à mesure.",
+    "limits": "Le rapport ne conserve que les 90 derniers jours et peut accuser jusqu'à 36 heures de retard : un changement récent peut donc ne pas encore apparaître."
+   }
+  },
+  "Q9.4.3": {
+   "text": "Quels scripts tiers doivent se charger (chat, personnalisation, cartes de chaleur) ?",
+   "teach": {
+    "why": "Les scripts tiers sont la raison habituelle pour laquelle une vitrine Shopify est lente, et ils arrivent après votre départ — chat, personnalisation, cartes de chaleur, gestionnaires de balises. Les énumérer maintenant permet de fixer un budget et de décider ce qui se charge sur quel gabarit avant que les objectifs ne soient arrêtés.",
+    "limits": "Les scripts pèsent sur les mêmes Core Web Vitals que le client vous opposera, et chacun est autant une question de consentement et de protection des données qu'une question de performance."
+   }
   }
  },
  "document": {

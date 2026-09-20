@@ -2024,28 +2024,28 @@
 
 ### 8.1 Angebundene Systeme
 
-**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required)*
-*Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status.*
+**Q8.1.1** — Listen Sie jedes System auf, das Produkt-, Bestands-, Bestell-, Kunden- oder Finanzdaten mit dem Store austauscht. Je System: System, Kategorie, Richtung, Datenobjekte, Frequenz, Konnektor (native App / iPaaS / eigen / keiner), verantwortliche Stelle, Status. *(required)*
+*Typische Zuständigkeiten: Das PIM liefert Produkte, Attribute und Übersetzungen; das ERP liefert Preise (auch B2B-Kataloge), Bestände je Standort und Bestellstatus.*
 
 | System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes |
 |---|---|---|---|---|---|---|---|---|---|---|
 | | | | | | | | | | | |
 
-**Q8.1.2** — Is there a middleware / iPaaS layer, or custom connectors? *(optional)*
+**Q8.1.2** — Gibt es eine Middleware-/iPaaS-Ebene oder eigene Konnektoren? *(optional)*
 
 > Answer:
 
-**Q8.1.3** — How often do prices and stock change (updates per day), and must changes be live within minutes? *(recommended)*
-*Sizes the sync design (bulk operations vs webhooks).*
+**Q8.1.3** — Wie oft ändern sich Preise und Bestände (Aktualisierungen pro Tag), und müssen Änderungen innerhalb von Minuten live sein? *(recommended)*
+*Bemisst das Design der Synchronisation (Bulk Operations gegenüber Webhooks).*
 
 - Daily updates:
 - Latency minutes:
 
 ### 8.2 Datenmigration
 
-**Q8.2.2** — Which data must be migrated? *(recommended)*
+**Q8.2.2** — Welche Daten müssen migriert werden? *(recommended)*
 *Skip if Q0.5.4 = None.*
-*Customer passwords can't be migrated; customers sign in with a one-time code.*
+*Kundenpasswörter lassen sich nicht migrieren; die Anmeldung erfolgt über einen Einmalcode.*
 
 *(tick all that apply)*
 - [ ] Products
@@ -2063,7 +2063,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q8.2.3** — Approximate volumes: products, customers, orders, URL redirects. *(required)*
+**Q8.2.3** — Ungefähre Mengen: Produkte, Kundinnen und Kunden, Bestellungen, URL-Weiterleitungen. *(required)*
 *Skip if Q0.5.4 = None.*
 
 - Products:
@@ -2071,13 +2071,13 @@
 - Orders:
 - Redirects:
 
-**Q8.2.4** — Must historical orders be available inside Shopify? *(required)*
+**Q8.2.4** — Müssen historische Bestellungen in Shopify verfügbar sein? *(required)*
 *Skip if Q0.5.4 = None.*
 
 - [ ] Yes
 - [ ] No
 
-**Q8.2.5** — How much SEO equity (rankings, backlinks) must be preserved? *(required · consultant)*
+**Q8.2.5** — Wie viel SEO-Substanz (Rankings, Backlinks) muss erhalten bleiben? *(required · consultant)*
 *Skip if Q0.5.4 = None.*
 
 *(tick one)*
@@ -2085,7 +2085,7 @@
 - [ ] Moderate
 - [ ] Significant
 
-**Q8.2.6** — Must active subscriptions move to the new store without customers re-entering cards? *(required)*
+**Q8.2.6** — Müssen aktive Abos ohne erneute Karteneingabe der Kundschaft in den neuen Store umziehen? *(required)*
 *Skip if Q0.5.4 = None.*
 
 - [ ] Yes
@@ -2099,12 +2099,12 @@
 
 ### 9.1 Design-Input
 
-**Q9.1.1** — Is there a Figma file or design mockup for the new store? *(required)*
+**Q9.1.1** — Gibt es eine Figma-Datei oder ein Design-Mockup für den neuen Store? *(required)*
 
 - [ ] Yes
 - [ ] No
 
-**Q9.1.2** — How complete is it — brand only, key screens, or every template? *(required)*
+**Q9.1.2** — Wie vollständig ist es — nur Marke, Schlüsselseiten, oder jedes Template? *(required)*
 *Skip if Q9.1.1 = no.*
 
 *(tick one)*
@@ -2113,41 +2113,41 @@
 - [ ] Key screens
 - [ ] All templates
 
-**Q9.1.3** — Does the Figma file contain a full design system (tokens and components)? *(required)*
+**Q9.1.3** — Enthält die Figma-Datei ein vollständiges Designsystem (Tokens und Komponenten)? *(required)*
 *Skip if Q9.1.1 = no.*
 
 - [ ] Yes
 - [ ] No
 
-**Q9.1.4** — Is the design mapped to Shopify sections and blocks? *(optional · consultant)*
+**Q9.1.4** — Ist das Design auf Shopify-Abschnitte und -Blöcke abgebildet? *(optional · consultant)*
 *Skip if Q9.1.1 = no.*
 
 - [ ] Yes
 - [ ] No
 
-**Q9.1.5** — Is a fully custom design required, rather than a theme with brand customisation? *(recommended)*
+**Q9.1.5** — Wird ein vollständig eigenes Design verlangt statt eines Themes mit Markenanpassung? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
 ### 9.2 Storefront
 
-**Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required)*
-*Headless means a custom front end built on Shopify; checkout stays Shopify checkout.*
+**Q9.2.1** — Wird ein Headless-Storefront benötigt (Hydrogen, ein anderes Framework oder das Frontend einer nativen App)? *(required)*
+*Headless heißt ein eigenes Frontend auf Shopify; der Checkout bleibt der Shopify-Checkout.*
 
 - [ ] Yes
 - [ ] No
 
-**Q9.2.2** — Any theme licence to keep? *(optional)*
-*New builds start from Shopify's Horizon theme; a third-party theme licence only matters for a non-Horizon base.*
+**Q9.2.2** — Gibt es eine Theme-Lizenz, die erhalten bleiben soll? *(optional)*
+*Neubauten starten von Shopifys Horizon-Theme; eine Drittanbieter-Theme-Lizenz zählt nur bei einer Nicht-Horizon-Basis.*
 
 > Answer:
 
-**Q9.2.3** — What is the aesthetic direction (minimal, editorial, luxury, playful, utilitarian)? *(optional)*
+**Q9.2.3** — Welche ästhetische Richtung (minimal, redaktionell, Luxus, verspielt, funktional)? *(optional)*
 
 > Answer:
 
-**Q9.2.4** — Which interactive patterns are required (mega-menu, quick-add, swatches, predictive search, lookbook, video hero)? *(required)*
+**Q9.2.4** — Welche interaktiven Muster werden gebraucht (Mega-Menü, Schnellkauf, Farbfelder, vorausschauende Suche, Lookbook, Video-Hero)? *(required)*
 
 *(tick all that apply)*
 - [ ] Mega menu
@@ -2164,14 +2164,14 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q9.2.5** — Is custom motion or animation required? *(recommended)*
+**Q9.2.5** — Werden eigene Bewegung oder Animationen benötigt? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
-**Q9.2.6** — Why headless? *(required)*
+**Q9.2.6** — Warum Headless? *(required)*
 *Skip if Q9.2.1 = no.*
-*Helps check whether Horizon theme blocks would do.*
+*Hilft zu prüfen, ob Theme Blocks in Horizon genügen würden.*
 
 *(tick all that apply)*
 - [ ] UX not possible in a theme
@@ -2183,7 +2183,7 @@
 - [ ] Other
 - [ ] Not sure yet
 
-**Q9.2.7** — Headless hosting? *(recommended · consultant)*
+**Q9.2.7** — Hosting für Headless? *(recommended · consultant)*
 *Skip if Q9.2.1 = no.*
 
 *(tick one)*
@@ -2191,7 +2191,7 @@
 - [ ] Self-hosted JavaScript runtime
 - [ ] Not sure yet
 
-**Q9.2.8** — Where is editorial content managed for the headless storefront? *(recommended)*
+**Q9.2.8** — Wo werden die redaktionellen Inhalte für den Headless-Storefront gepflegt? *(recommended)*
 *Skip if Q9.2.1 = no.*
 
 *(tick one)*
@@ -2200,7 +2200,7 @@
 - [ ] PIM
 - [ ] Not sure yet
 
-**Q9.2.9** — Headless platform features required? *(recommended · consultant)*
+**Q9.2.9** — Welche Plattformfunktionen werden für Headless benötigt? *(recommended · consultant)*
 *Skip if Q9.2.1 = no.*
 
 *(tick all that apply)*
@@ -2214,16 +2214,16 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q9.2.10** — Do you want to A/B test themes or checkout configurations? *(required)*
-*Native with Shopify Rollouts experiments.*
+**Q9.2.10** — Möchten Sie Themes oder Checkout-Konfigurationen A/B-testen? *(required)*
+*Nativ über Experimente in Shopify Rollouts.*
 
 - [ ] Yes
 - [ ] No
 
 ### 9.3 Barrierefreiheit
 
-**Q9.3.1** — Which accessibility standard applies? *(required)*
-*Shopify checkout is tested against WCAG 2.2 AA; the theme and apps are your responsibility (e.g. under the European Accessibility Act).*
+**Q9.3.1** — Welcher Barrierefreiheitsstandard gilt? *(required)*
+*Shopifys Checkout wird gegen WCAG 2.2 AA geprüft; Theme und Apps liegen in Ihrer Verantwortung (z. B. nach dem European Accessibility Act).*
 
 *(tick one)*
 - [ ] WCAG 2.1 AA
@@ -2232,26 +2232,26 @@
 - [ ] Section 508
 - [ ] None
 
-**Q9.3.2** — Has an accessibility audit been done on the current site? *(optional)*
+**Q9.3.2** — Wurde die aktuelle Seite auf Barrierefreiheit geprüft? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
 ### 9.4 Performance
 
-**Q9.4.1** — Core Web Vitals targets: LCP (seconds), CLS, INP (milliseconds). *(optional)*
+**Q9.4.1** — Zielwerte für die Core Web Vitals: LCP (Sekunden), CLS, INP (Millisekunden). *(optional)*
 
 - Lcp s:
 - Cls:
 - Inp ms:
 
-**Q9.4.2** — Is page speed a known problem today? *(recommended)*
-*Shopify's web performance report shows Core Web Vitals for the current store.*
+**Q9.4.2** — Ist die Seitengeschwindigkeit heute ein bekanntes Problem? *(recommended)*
+*Shopifys Web-Performance-Bericht zeigt die Core Web Vitals des aktuellen Stores.*
 
 - [ ] Yes
 - [ ] No
 
-**Q9.4.3** — Which third-party scripts must load (chat, personalisation, heatmaps)? *(optional)*
+**Q9.4.3** — Welche Drittanbieter-Skripte müssen geladen werden (Chat, Personalisierung, Heatmaps)? *(optional)*
 
 > Answer:
 
@@ -2263,55 +2263,55 @@
 
 ### 10.1 Zeitplan
 
-**Q10.1.1** — What is the target go-live date? *(required)*
-*A date sooner than the delivery time the scope needs leads to a phased, MVP-first plan.*
+**Q10.1.1** — Was ist der angestrebte Go-live-Termin? *(required)*
+*Ein Termin, der früher liegt als die Lieferzeit, die der Umfang braucht, führt zu einem phasenweisen Plan nach dem MVP-Prinzip.*
 
 > Answer:
 
-**Q10.1.2** — What drives the deadline (peak season, product launch, contract end)? *(recommended)*
+**Q10.1.2** — Woraus ergibt sich der Termin (Hochsaison, Produktlaunch, Vertragsende)? *(recommended)*
 
 > Answer:
 
-**Q10.1.3** — Is a phased launch planned? *(optional)*
+**Q10.1.3** — Ist ein phasenweiser Launch geplant? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q10.1.4** — Preferred project kick-off date. *(recommended)*
+**Q10.1.4** — Gewünschter Kick-off-Termin für das Projekt. *(recommended)*
 
 > Answer:
 
 ### 10.2 Team & Entscheidungen
 
-**Q10.2.1** — Who is involved on the client side? For each: role, RACI (R/A/C/I), decision-maker (yes/no). Names are optional. *(required)*
+**Q10.2.1** — Wer ist auf Kundenseite beteiligt? Je Person: Rolle, RACI (R/A/C/I), entscheidungsbefugt (ja/nein). Namen sind optional. *(required)*
 
 | Role | Raci | Decision maker | Name |
 |---|---|---|---|
 | | | | |
 
-**Q10.2.2** — Is there a single decision-maker for scope, approvals and feedback? *(required · consultant)*
-*A single decision-maker must be named before the statement of work.*
+**Q10.2.2** — Gibt es eine einzige entscheidungsbefugte Person für Umfang, Freigaben und Rückmeldungen? *(required · consultant)*
+*Eine einzige entscheidungsbefugte Person muss vor dem Leistungsschein benannt sein.*
 
 - [ ] Yes
 - [ ] No
 
-**Q10.2.3** — Is budget approval authority clear? *(required · consultant)*
+**Q10.2.3** — Ist klar, wer das Budget freigeben darf? *(required · consultant)*
 
 - [ ] Yes
 - [ ] No
 
 ### 10.3 Support & Schulung
 
-**Q10.3.1** — Which training is needed (products, orders, discounts, reports)? *(optional)*
+**Q10.3.1** — Welche Schulungen werden benötigt (Produkte, Bestellungen, Rabatte, Auswertungen)? *(optional)*
 
 > Answer:
 
-**Q10.3.2** — Are written SOPs required? *(optional)*
+**Q10.3.2** — Werden schriftliche Arbeitsanweisungen benötigt? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q10.3.3** — What post-launch support model is expected? *(recommended)*
+**Q10.3.3** — Welches Supportmodell nach dem Launch wird erwartet? *(recommended)*
 
 *(tick one)*
 - [ ] Hypercare only
@@ -2319,63 +2319,63 @@
 - [ ] Self sufficient
 - [ ] Third party
 
-**Q10.3.4** — Is the Grow retainer signed? *(required · consultant)*
+**Q10.3.4** — Ist der Grow-Retainer unterschrieben? *(required · consultant)*
 
 - [ ] Yes
 - [ ] No
 
-**Q10.3.5** — Retainer length in months. *(recommended · consultant)*
+**Q10.3.5** — Laufzeit des Retainers in Monaten. *(recommended · consultant)*
 *Skip if Q10.3.4 = no.*
 
 > Answer:
 
-**Q10.3.6** — Will the client re-verify apps and Shopify features at each Shopify Edition after launch? *(optional · consultant)*
+**Q10.3.6** — Wird der Kunde Apps und Shopify-Funktionen nach dem Launch bei jeder Shopify Edition neu prüfen? *(optional · consultant)*
 
 - [ ] Yes
 - [ ] No
 
 ### 10.4 Recht & regulierte Branchen
 
-**Q10.4.1** — Is the business in a regulated industry (pharma, alcohol, firearms, age-restricted goods, financial products, medical devices)? If yes, which? *(required)*
-*A regulated industry needs legal review. Shopify has its own rules: e.g. alcohol needs age verification; some business types can't use Shopify Payments.*
+**Q10.4.1** — Ist das Geschäft in einer regulierten Branche tätig (Pharma, Alkohol, Waffen, altersbeschränkte Waren, Finanzprodukte, Medizinprodukte)? Falls ja, in welcher? *(required)*
+*Eine regulierte Branche erfordert eine rechtliche Prüfung. Shopify hat eigene Regeln: Alkohol braucht zum Beispiel eine Altersprüfung; manche Geschäftsarten können Shopify Payments nicht nutzen.*
 
 - Active:
 - Category:
 
-**Q10.4.2** — Are legal pages (terms, privacy, cookies, returns) ready, in need of updates, or still to be drafted? *(recommended)*
+**Q10.4.2** — Sind die Rechtstexte (AGB, Datenschutz, Cookies, Retouren) fertig, aktualisierungsbedürftig oder noch zu erstellen? *(recommended)*
 
 *(tick one)*
 - [ ] Ready
 - [ ] Needs update
 - [ ] Needs drafting
 
-**Q10.4.3** — Any other industry-specific compliance requirements? *(optional)*
+**Q10.4.3** — Gibt es weitere branchenspezifische Compliance-Anforderungen? *(optional)*
 
 > Answer:
 
-**Q10.4.4** — Is the business and product range eligible for Shopify Payments (no restricted or prohibited categories)? *(required · consultant)*
+**Q10.4.4** — Sind Geschäft und Sortiment für Shopify Payments zulässig (keine eingeschränkten oder verbotenen Kategorien)? *(required · consultant)*
 
 - [ ] Yes
 - [ ] No
 
 ### 10.5 Projekt-Setup (Consultant)
 
-**Q10.5.1** — Lead consultant. *(required · consultant)*
+**Q10.5.1** — Lead Consultant. *(required · consultant)*
 
 > Answer:
 
-**Q10.5.2** — Has the client agreed that their answers may be processed by AI (no customer personal data included)? *(required · consultant)*
-*Nothing else can be recorded until this is Yes, and it has to be true — an RFP arriving in your inbox is not consent to put it through an AI tool. If the client’s process has no such clause, ask, or stop.*
+**Q10.5.2** — Hat der Kunde zugestimmt, dass die Antworten von der KI-Discovery-Engine verarbeitet werden dürfen (keine personenbezogenen Kundendaten enthalten)? *(required · consultant)*
+*ADR 0007 — die Engine verweigert den Betrieb ohne erfasste Einwilligung.*
 
 - [ ] Yes
 - [ ] No
 
-**Q10.5.3** — Jira site and project key for the backlog. *(recommended · consultant)*
+**Q10.5.3** — Jira-Instanz und Projektschlüssel für das Backlog. *(recommended · consultant)*
 
 - Site:
 - Project key:
 
-**Q10.5.4** — Jira components to use. *(optional · consultant)*
+**Q10.5.4** — Zu verwendende Jira-Komponenten. *(optional · consultant)*
 
 > Answer:
 

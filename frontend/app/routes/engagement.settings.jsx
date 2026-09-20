@@ -103,7 +103,7 @@ export default function Settings({ loaderData, actionData }) {
               <p className="muted">
                 The proposal went out on {engagement.closing_document_at}. If Merkle won, this becomes an
                 engagement and the work carries on here — the RFP, every answer read out of it with its
-                citation, the questions you sent and each version of the proposal all stay where they are.
+                citation, the questions you sent and each version of the client document all stay where they are.
               </p>
             </div>
           </div>

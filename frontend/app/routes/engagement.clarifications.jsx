@@ -78,12 +78,14 @@ export default function Clarifications({ loaderData, actionData }) {
   const busy = useNavigation().state !== 'idle';
   const questions = clarifications?.questions ?? [];
   const saved = questions.length > 0;
+  const rfp = processOf(engagement.process) === 'rfp';
+  const words = processMeta(engagement.process);
 
-  const prompt = `Write Merkle's questions on the RFP for ${client}.
+  const prompt = `Write Merkle's questions to the client for ${client}.
 
 Call prepare_clarifications and read the topics the engine chose — the unknowns that move the offer, the Shopify plan, the store topology, the cost or the risk. Check every Shopify fact in the official documentation before you state it. Then write one question per topic, each opening in the client's own words and followed by a short "Why we ask" that shows the trade-off, and save them with save_clarifications.
 
-Write every question we need answered to price this properly — the Lead Consultant decides which are actually sent, and anything not asked becomes a stated assumption in the proposal. Tell me what you saved and what each question is for.`;
+Write every question we need answered to price this properly — the Lead Consultant decides which are actually sent, and anything not asked becomes a stated assumption in the ${words.document.toLowerCase()}. Tell me what you saved and what each question is for.`;
 
   // While Claude is writing them, the page picks them up by itself.
   const revalidator = useRevalidator();
@@ -95,8 +97,6 @@ Write every question we need answered to price this properly — the Lead Consul
     return () => clearInterval(id);
   }, [revalidator, saved]);
 
-  const rfp = processOf(engagement.process) === 'rfp';
-  const words = processMeta(engagement.process);
   return (
     <main id="main">
       <EngagementHeader
@@ -252,7 +252,7 @@ Write every question we need answered to price this properly — the Lead Consul
                     {(q.covers ?? []).length ? (
                       <p className="muted">Covers <WithQuestionLinks text={(q.covers ?? []).join(', ')} client={client} /></p>
                     ) : null}
-                    <p className="muted">If we don’t ask it, the proposal assumes: {q.assume_if_unanswered}</p>
+                    <p className="muted">If we don’t ask it, the {words.document.toLowerCase()} assumes: {q.assume_if_unanswered}</p>
                   </div>
                 </details>
                 {/* Outside the fold: you can decide without opening it. */}
