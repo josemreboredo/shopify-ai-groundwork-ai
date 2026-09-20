@@ -564,10 +564,21 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       return { ok: true, saved_at: today(), questions: list.length };
     },
 
-    /** The saved questions, for the app to show and download. @param {User} user @param {string} client */
+    /**
+     * The saved questions, for the app to show and download and for Claude to
+     * read back before it writes the proposal — what was asked, and what the
+     * proposal has to state as an assumption wherever the answer never came.
+     *
+     * @param {User} user @param {string} client
+     */
     async getClarifications(user, client) {
       const session = await load(user, client);
-      return session.closing?.clarifications ?? null;
+      const saved = session.closing?.clarifications ?? null;
+      return {
+        engagement: summary(session),
+        clarifications: saved,
+        documents: (session.documents ?? []).map(({ name, type, date }) => ({ name, type, date })),
+      };
     },
 
     /**

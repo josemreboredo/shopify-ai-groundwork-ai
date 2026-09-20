@@ -28,6 +28,7 @@ export function EngagementNav({ client }) {
       <NavLink to={`/engagements/${client}`} end>Interview</NavLink>
       <NavLink to={`/engagements/${client}/review`}>Review answers</NavLink>
       <NavLink to={`/engagements/${client}/summary`}>Summary</NavLink>
+      <NavLink to={`/engagements/${client}/clarifications`}>Questions to the client</NavLink>
       <NavLink to={`/engagements/${client}/closing-document`}>Closing document</NavLink>
     </nav>
   );

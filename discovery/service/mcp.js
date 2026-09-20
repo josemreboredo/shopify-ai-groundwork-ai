@@ -293,6 +293,13 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     annotations: write,
   }, (user, { client, questions }) => service.saveClarifications(user, client, { questions }, { via: 'claude' }));
 
+  tool('get_clarifications', {
+    title: 'The questions already sent on this RFP',
+    description: 'The clarification questions saved for this engagement, with what each one covers and what the proposal will assume if it comes back unanswered. Read it before writing the proposal: every question the client did not answer has to appear there as a stated assumption.',
+    inputSchema: z.object({ client: slug }),
+    annotations: read,
+  }, (user, { client }) => service.getClarifications(user, client));
+
   tool('get_reference', {
     title: 'Read the verified Shopify reference',
     description: 'The Shopify knowledge Merkle has already verified for this engagement, one piece at a time so no single result is too large. Call it without a section for the index, then fetch what you need: "limits:N" (documented limits — what breaks a naive answer), "options:N" (options already weighed with pros and cons), "plan_gates", and "chapter:<slug>" (the reference chapters appended to the annex). Read the limits and the relevant chapters before drafting the approach and before writing the deck.',

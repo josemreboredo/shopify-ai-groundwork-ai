@@ -209,7 +209,7 @@ describe('MCP connector tools', () => {
   test('lists the discovery tools and runs the document workflow as the signed-in consultant', async () => {
     const { rpc, call, service } = await connector();
     const tools = (await rpc('tools/list', {})).payload.result.tools.map((t) => t.name).sort();
-    assert.deepEqual(tools, ['add_note', 'find_questions', 'get_closing_document', 'get_interview', 'get_preview', 'get_reference', 'get_summary', 'list_answers', 'list_engagements', 'mark_questions', 'prepare_clarifications', 'prepare_closing_document', 'record_answers', 'register_document', 'save_approach', 'save_clarifications', 'save_closing_document', 'start_interview']);
+    assert.deepEqual(tools, ['add_note', 'find_questions', 'get_clarifications', 'get_closing_document', 'get_interview', 'get_preview', 'get_reference', 'get_summary', 'list_answers', 'list_engagements', 'mark_questions', 'prepare_clarifications', 'prepare_closing_document', 'record_answers', 'register_document', 'save_approach', 'save_clarifications', 'save_closing_document', 'start_interview']);
 
     assert.equal((await call('list_engagements', {})).data[0].client, 'rfp-demo');
     const view = (await call('get_interview', { client: 'rfp-demo', limit: 5 })).data;

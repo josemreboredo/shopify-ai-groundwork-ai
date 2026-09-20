@@ -438,6 +438,30 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   .steps li { grid-template-columns: 52px minmax(0, 1fr); gap: 14px; }
 }
 
+/* Questions on the RFP: few, considered, and split from what stays with us */
+.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; }
+.section-head h2 { margin-bottom: 0; }
+.section-head .actions { margin: 0; }
+.muted-link { font-size: 0.85rem; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.muted-link:hover { color: var(--ink); }
+
+.clarifications { list-style: none; counter-reset: clarification; padding: 0; margin: 22px 0 0; }
+.clarifications > li { counter-increment: clarification; border-top: 1px solid var(--line); padding: 22px 0 24px; }
+.clarifications > li:last-child { border-bottom: 1px solid var(--line); }
+.clarifications > li > h3 {
+  display: grid; grid-template-columns: 2.2rem 1fr; gap: 4px;
+  margin: 0 0 10px; font-size: 1.12rem; line-height: 1.35; max-width: 68ch;
+}
+.clarifications > li > h3::before { content: counter(clarification); color: var(--red); font-variant-numeric: tabular-nums; }
+.clarifications .why { margin: 0 0 14px 2.2rem; max-width: 68ch; }
+.clarifications .why strong { color: var(--ink); }
+/* What we would assume is ours: it is set apart so it is never read as part of
+   the question, and it is not in the download a consultant sends. */
+.for-us { margin-left: 2.2rem; padding: 12px 16px; background: var(--panel); border-left: 2px solid var(--line); max-width: 68ch; }
+.for-us .eyebrow { margin: 0 0 6px; }
+.for-us p { margin: 0; font-size: 0.88rem; }
+.for-us p + p { margin-top: 4px; }
+
 /* Footer (merkle.com) */
 .site-footer { position: relative; background: #000; color: #fff; margin-top: 64px; padding: 64px 40px 28px; overflow: hidden; }
 .footer-inner { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
