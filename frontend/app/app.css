@@ -515,6 +515,14 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 /* end wayfinder — the design test reads everything above back to its opening
    comment, so anything added below belongs to a different surface. */
 
+/* The architect's reasoning: facts, one per line, in the order he reads them */
+.because { list-style: none; padding: 0; margin: 16px 0; }
+.because > li { position: relative; padding: 0 0 9px 22px; max-width: 84ch; }
+.because > li::before {
+  content: ''; position: absolute; left: 0; top: 8px; width: 8px; height: 8px;
+  background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
 /* The Go/No-Go scorecard, numbered as the meeting numbers it */
 .scorecard { list-style: none; padding: 0; margin: 18px 0 0; counter-reset: none; }
 .scorecard > li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 0 14px; padding: 20px 0; border-top: 1px solid var(--line); }

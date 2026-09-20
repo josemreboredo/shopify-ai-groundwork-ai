@@ -1,30 +1,30 @@
 /**
  * @file go-no-go.js
- * @description What the Solution Architect brings to the Go/No-Go meeting.
+ * @description Where the Solution Architect stands on the bid, and why.
  *
- * Merkle's bid decision runs off a scorecard of twenty-eight questions across
- * three headings — is it deliverable, is it profitable, is it winnable. The
- * architect does not answer twenty-eight of them. Most are commercial: the
- * opportunity value in Salesforce, the NPS, who sits in the buying centre, how
- * many competitors, whether a pitch team is confirmed. Guessing at those from an
- * RFP would be worse than leaving them blank, because a number on a scorecard
- * gets treated as a fact.
+ * Merkle's Go/No-Go meeting works through twenty-eight questions, most of them
+ * commercial — the opportunity value, the NPS, the buying centre, the pitch team.
+ * The architect is not there to answer those. He is there to say one thing: from
+ * the documents we were sent and what we have actually verified in them, can
+ * Merkle put a number on this work and stand behind it.
  *
- * So this answers the ones the engine can actually evidence, in the order the
- * meeting asks them, and names an owner for every one it cannot. Being explicit
- * about the boundary is half the value: nobody arrives expecting an answer that
- * was never coming.
+ * So this gives a position and what it rests on, rather than a grid of answers
+ * to questions nobody asked this desk. The position turns on two things, in this
+ * order: whether a human has confirmed what was read out of the documents, and
+ * whether what is still unknown would change the price. An architect cannot
+ * stand behind an extraction nobody has checked, however much of it there is —
+ * which is why "confirm what it says" is a precondition here and not a
+ * formality.
  *
- * The question this page exists for is number 20 — "based on the RFP, can we
- * grasp a scope that can be estimated and leads to comparable offers?" That is
- * the architect's question, and everything else here supports it.
+ * It is still a recommendation. The decision is taken in the room, weighing a
+ * relationship and a pipeline this desk knows nothing about.
  *
  * @module discovery/service/go-no-go
  */
 
 import { clarificationBrief } from '../agents/discovery/clarifications.js';
 import { statedAssumptions } from './assumptions.js';
-import { selectStories, summariseByEpic } from '../agents/backlog/select.js';
+import { selectStories } from '../agents/backlog/select.js';
 
 const SEVERITY = { STOP: 0, FLAG: 1, WARN: 2 };
 const SEVERITY_LABEL = {
@@ -88,26 +88,96 @@ function offerOf(doc) {
 }
 
 /**
- * How much of what sets the price the document actually told us.
+ * Where the architect stands, and the facts he stands on.
  *
- * Banded, never scored. A single number invites the meeting to argue with the
- * number instead of with the gaps behind it.
+ * Read in order, the first thing that stops him is the answer. Percentages are
+ * deliberately absent: "28% of what sets the price is answered" was a coverage
+ * ratio wearing a claim it could not support, and a number like that gets argued
+ * with instead of acted on. Counts of real things do not.
+ *
+ * @param {object} doc @param {object} counts
  */
-function evidenceOf(coverage, brief) {
-  const total = coverage?.required_total ?? 0;
-  const answered = coverage?.required_answered ?? 0;
-  const pct = total ? Math.round((answered / total) * 100) : 0;
+function recommend({ documents, answered, unconfirmed, openTopics, stops, cannotPrice, assumptions }) {
+  const because = [];
+  const before = [];
+
+  if (!documents) {
+    return {
+      verdict: 'nothing to go on',
+      headline: 'Nothing has been read yet.',
+      because: ['No document has been read into this bid, so there is nothing for this desk to assess.'],
+      before_you_go: ['Read the RFP in on the first step.'],
+    };
+  }
+
+  because.push(`${documents} document${documents === 1 ? '' : 's'} read, ${answered} answer${answered === 1 ? '' : 's'} taken from ${documents === 1 ? 'it' : 'them'}.`);
+
+  // 1 — nothing else matters until a human has checked what the model read.
+  if (unconfirmed) {
+    because.push(`${unconfirmed} of those ${unconfirmed === 1 ? 'is' : 'are'} still unconfirmed: a model read ${unconfirmed === 1 ? 'it' : 'them'} out of the document and nobody has checked ${unconfirmed === 1 ? 'it' : 'them'} yet.`);
+    before.push(`Confirm what it says — ${unconfirmed} answer${unconfirmed === 1 ? '' : 's'} waiting.`);
+    return {
+      verdict: 'not yet',
+      headline: 'I cannot stand behind this until what was read has been confirmed.',
+      because,
+      before_you_go: before,
+    };
+  }
+
+  because.push('Everything read out of the documents has been confirmed by a person.');
+
+  // 2 — requirements that put the work outside what Merkle sells as a standard offer.
+  if (stops.length) {
+    because.push(`${stops.length} requirement${stops.length === 1 ? '' : 's'} put this outside Merkle's standard offers: ${stops.map((s) => s.evidence).join('; ')}.`);
+    return {
+      verdict: 'not a standard bid',
+      headline: 'We can describe this, but not price it as one of our offers.',
+      because,
+      before_you_go: [
+        'Decide the route before pricing: an Enterprise Engagement with its own Discovery Phase, or no bid.',
+        'Anything quoted at S, M or L here would sell bespoke work at a standard price.',
+      ],
+    };
+  }
+
+  // 3 — things that cannot be costed at all, whatever we assume.
+  if (cannotPrice.length) {
+    because.push(`${cannotPrice.length} input${cannotPrice.length === 1 ? '' : 's'} cannot be costed at all until answered: ${cannotPrice.join('; ')}.`);
+    return {
+      verdict: 'ask first',
+      headline: 'Part of this cannot be costed at all from what we were sent.',
+      because,
+      before_you_go: ['Use the Q&A window on the inputs above — there is no assumption that covers them.'],
+    };
+  }
+
+  // 4 — open topics that move the price, but that we could assume around.
+  if (openTopics.length > 2) {
+    because.push(`${openTopics.length} topics are still open that move the offer, the plan, the store topology or the cost: ${openTopics.map((t) => t.title).join(', ')}.`);
+    return {
+      verdict: 'go, but ask',
+      headline: 'We can price this, and the price would rest on more assumptions than it should.',
+      because,
+      before_you_go: [
+        `Send the questions on the ${openTopics.length} topics above before the price is committed.`,
+        `Anything left unanswered becomes one of the ${assumptions} assumptions the proposal states.`,
+      ],
+    };
+  }
+
+  if (openTopics.length) {
+    because.push(`${openTopics.length} topic${openTopics.length === 1 ? '' : 's'} still open, none of them large: ${openTopics.map((t) => t.title).join(', ')}.`);
+  } else {
+    because.push('Nothing material is still open.');
+  }
+
   return {
-    answered,
-    total,
-    pct,
-    open_topics: brief.topics.length,
-    cannot_price: brief.cannot_price_until_answered,
-    verdict: pct >= 80 && !brief.cannot_price_until_answered.length
-      ? 'enough to price'
-      : pct >= 55
-        ? 'priceable with stated assumptions'
-        : 'not enough to price without asking',
+    verdict: 'go',
+    headline: 'We can put a number on this and stand behind it.',
+    because,
+    before_you_go: assumptions
+      ? [`The proposal will state ${assumptions} assumption${assumptions === 1 ? '' : 's'}. Read them before the price is committed.`]
+      : [],
   };
 }
 
@@ -123,124 +193,68 @@ function capabilities(doc) {
 }
 
 /**
- * The scorecard, as the meeting reads it.
+ * Where the architect stands on this bid.
  *
  * @param {object} doc  decided engagement
- * @param {object} coverage  required-question coverage from the engine preview
+ * @param {{ coverage?: object, to_review?: number, documents?: number }} state  what the engagement holds now
  * @param {{ questions?: object[] }|null} clarifications
  * @param {{ pricing?: boolean }} [options]  pricing: include Merkle's internal bands
  */
-export function goNoGoView(doc, coverage, clarifications, { pricing = false } = {}) {
+export function goNoGoView(doc, state, clarifications, { pricing = false } = {}) {
   const brief = clarificationBrief(doc);
-  const evidence = evidenceOf(coverage, brief);
   const assumptions = statedAssumptions(doc, clarifications);
   const items = (doc.exits?.items ?? []).slice().sort((a, b) => (SEVERITY[a.result] ?? 3) - (SEVERITY[b.result] ?? 3));
   const stops = items.filter((i) => i.result === 'STOP');
-  const go = Boolean(doc.delivery?.go);
   const offer = offerOf(doc);
-  const caps = capabilities(doc);
-  const stories = go ? selectStories(doc) : [];
+  const stories = offer.applies ? selectStories(doc) : [];
   const byOwner = {};
-  for (const s of stories) byOwner[s.owner] = (byOwner[s.owner] ?? 0) + 1;
-  const topology = doc.markets?.topology ?? null;
+  for (const st of stories) byOwner[st.owner] = (byOwner[st.owner] ?? 0) + 1;
 
-  const answer = (n, ask, body) => ({ n, ask, ...body });
+  const recommendation = recommend({
+    documents: state.documents ?? 0,
+    answered: state.coverage?.required_answered ?? 0,
+    unconfirmed: state.to_review ?? 0,
+    openTopics: brief.topics,
+    stops,
+    cannotPrice: brief.cannot_price_until_answered,
+    assumptions: assumptions.length,
+  });
 
   return {
-    // Question 20, and the reason this page exists.
-    headline: {
-      n: 20,
-      ask: 'Based on the RFP, can we grasp a scope that can be estimated and leads to comparable offers?',
-      verdict: evidence.verdict,
-      ...evidence,
-      assumptions_total: assumptions.length,
+    recommendation,
+    // The facts behind the position, so it can be argued with on its evidence
+    // rather than taken or left on trust.
+    rests_on: {
+      documents: state.documents ?? 0,
+      answered: state.coverage?.required_answered ?? 0,
+      required: state.coverage?.required_total ?? 0,
+      unconfirmed: state.to_review ?? 0,
+      open_topics: brief.topics.map((t) => ({ title: t.title, changes: t.changes, settles: t.covers.length })),
+      cannot_price: brief.cannot_price_until_answered,
     },
-    sections: [
-      {
-        id: 'deliverable',
-        title: 'Is it deliverable?',
-        questions: [
-          answer(1, 'Do we have the requested skills and capabilities?', {
-            says: caps.length
-              ? `The RFP asks for ${caps.length} capabilit${caps.length === 1 ? 'y' : 'ies'} beyond a standard store build.`
-              : 'Nothing in the RFP goes beyond a standard store build.',
-            detail: caps,
-            watch: stops.length
-              ? `${stops.length} requirement${stops.length === 1 ? '' : 's'} fall outside Merkle's standard offers and would be bespoke.`
-              : null,
-          }),
-          answer(2, 'Do we know how to deliver this for the client?', {
-            says: offer.applies
-              ? `Yes — it maps to offer ${offer.code} (${offer.name}) on ${TRACK[offer.track] ?? offer.track}, a shape Merkle has a defined scope and backlog for.`
-              : `Not as a standard offer — ${offer.why_not[0] ?? 'an exit rule'} takes it beyond S, M and L, so the approach would be built from scratch.`,
-            detail: go && stories.length ? [{ capability: 'Build backlog already derived', evidence: `${stories.length} stories across ${summariseByEpic(stories).length} epics` }] : [],
-            watch: topology && topology.confidence !== 'confirmed'
-              ? `Store topology is a recommendation, not a fact yet: ${String(topology.recommendation).replace(/_/g, ' ')} at ${String(topology.confidence).replace(/_/g, ' ')}.`
-              : null,
-          }),
-          answer(3, 'Can we mobilise sufficient resources to deliver if we were selected?', {
-            says: offer.applies
-              ? `The work is ${offer.weeks} weeks of build, shaped as ${Object.entries(byOwner).map(([o, n]) => `${n} ${o}`).join(', ')}.`
-              : 'Not sizeable from the standard offers — the shape has to be built before it can be staffed.',
-            detail: [],
-            // The tool knows the demand. It knows nothing about who is free.
-            watch: 'This is the demand only. Whether Merkle has those people free is not something this tool can see — Delivery Lead owns it.',
-          }),
-        ],
-      },
-      {
-        id: 'profitable',
-        title: 'Is it profitable?',
-        questions: [
-          answer(4, 'What is the estimated opportunity amount (TCV) that we pitch for?', {
-            says: !offer.applies
-              ? `There is no standard band for this. The requirements take it beyond S, M and L, so it would be scoped and priced on its own${offer.route ? ` as ${ROUTE[offer.route] ?? offer.route.replace(/_/g, ' ')}` : ''}.`
-              : pricing && offer.band
-                ? `Merkle's band for offer ${offer.code} is ${money(offer.band)} over ${offer.weeks} weeks. This is the build only — retainer, licences and media are not in it.`
-                : `Offer ${offer.code} over ${offer.weeks} weeks. The commercial band is shown to engagement leads.`,
-            detail: [],
-            watch: !offer.applies
-              ? `The scope gates classify it as ${offer.code}, and that is not the answer — ${offer.why_not[0] ?? 'an exit rule'} takes it outside. Pricing it at ${offer.code} would sell a bespoke engagement at a standard price.`
-              : 'The total contract value is a commercial figure and comes from Salesforce, not from here.',
-          }),
-          answer(9, 'How likely is it that margins are jeopardised by risks?', {
-            says: `${items.length} rule${items.length === 1 ? '' : 's'} fired on the requirements — ${stops.length} outside the offers, ${items.filter((i) => i.result === 'FLAG').length} needing a named owner before build — and the proposal would rest on ${assumptions.length} stated assumption${assumptions.length === 1 ? '' : 's'}.`,
-            detail: items.map((i) => ({ capability: `${i.rule_id} · ${SEVERITY_LABEL[i.result] ?? i.result}`, evidence: i.evidence })),
-            watch: assumptions.length > 6
-              ? 'A proposal resting on this many assumptions is a different commercial object from one resting on two, whatever the price says.'
-              : null,
-          }),
-          answer(10, 'Is the investment for the pitch in solid relation to the expected TCV?', {
-            says: evidence.open_topics
-              ? `${evidence.open_topics} topic${evidence.open_topics === 1 ? '' : 's'} still have to be settled before this can be priced properly — that is the work the pitch needs, before any writing.`
-              : 'Nothing material is still open: the pitch is writing, not investigation.',
-            detail: brief.topics.map((t) => ({ capability: t.title, evidence: `settles ${t.covers.length} unknown${t.covers.length === 1 ? '' : 's'}; changes ${t.changes.join(', ')}` })),
-            watch: null,
-          }),
-        ],
-      },
-      {
-        id: 'winnable',
-        title: 'Is it winnable?',
-        questions: [
-          answer(19, 'Is the project budgeted, and does it match our estimation?', {
-            says: !offer.applies
-              ? 'We have no standard estimate to compare a budget against: this falls outside S, M and L and would be estimated on its own.'
-              : pricing && offer.band
-                ? `Our side of it: ${money(offer.band)}. Whether the client has budgeted that, and at what figure, is only known if the RFP says so.`
-                : 'Our estimate is the offer band, shown to engagement leads. The client’s budget is only known if the RFP states it.',
-            detail: [],
-            watch: null,
-          }),
-          answer(22, 'What is the price weighting?', {
-            says: 'Stated in the RFP or not at all — this tool does not infer it.',
-            detail: [],
-            watch: null,
-          }),
-        ],
-      },
-    ],
-    // Named, so nobody waits in the meeting for an answer that was never coming.
+    // What the RFP is asking for, from the gates the engine fired.
+    capabilities: capabilities(doc),
+    scope: {
+      applies: offer.applies,
+      offer: offer.code,
+      name: offer.name,
+      track: offer.track ? TRACK[offer.track] ?? offer.track : null,
+      weeks: offer.weeks,
+      band: pricing ? offer.band : null,
+      route: offer.route,
+      why_not: offer.why_not,
+      shape: Object.entries(byOwner).map(([owner, n]) => ({ owner, stories: n })).sort((a, b) => b.stories - a.stories),
+    },
+    risks: items.map((i) => ({
+      rule_id: i.rule_id,
+      result: i.result,
+      severity: SEVERITY_LABEL[i.result] ?? i.result,
+      evidence: i.evidence,
+    })),
+    assumptions: assumptions.slice(0, 8),
+    assumptions_total: assumptions.length,
+    // Kept because the meeting will ask, and "that one is the Client lead's" is a
+    // useful answer where a guess would be a liability.
     not_ours: [
       { n: 5, ask: 'Is the client an internationally known brand with high revenue?', owner: 'Client lead' },
       { n: 6, ask: 'If an international enterprise, which branch issued the RFP?', owner: 'Client lead' },
@@ -258,11 +272,9 @@ export function goNoGoView(doc, coverage, clarifications, { pricing = false } = 
       { n: 23, ask: 'How strong is our positioning in the market for the requested topic?', owner: 'Marketing' },
       { n: 24, ask: 'Are we solving a problem, or delivering services/projects?', owner: 'Pitch lead' },
       { n: 25, ask: 'Do we have the perfect reference cases?', owner: 'Pitch lead' },
-      { n: 26, ask: 'Are we the leading alliance partner, or is there another key prove point?', owner: 'Pitch lead' },
+      { n: 26, ask: 'Are we the leading alliance partner, or another key prove point?', owner: 'Pitch lead' },
       { n: 27, ask: 'Is an experienced pitch team staffed and confirmed?', owner: 'Delivery Lead' },
       { n: 28, ask: 'How differentiating and unique are our win themes?', owner: 'Pitch lead' },
     ],
-    assumptions: assumptions.slice(0, 8),
-    assumptions_total: assumptions.length,
   };
 }

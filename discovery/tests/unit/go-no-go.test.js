@@ -1,12 +1,11 @@
 /**
- * The architect's side of Merkle's Go/No-Go scorecard.
+ * Where the Solution Architect stands on a bid.
  *
- * The scorecard has twenty-eight numbered questions and the meeting works
- * through them in order. The tool answers the ones it can evidence from the RFP
- * and the engine, and names an owner for the rest — the important property being
- * that no question quietly disappears. A page that skips nineteen of them looks
- * like a page that forgot them, and the number nobody notices missing is the one
- * that loses the bid.
+ * The meeting's scorecard is mostly commercial and this desk does not answer it.
+ * It answers one thing: can Merkle put a number on this work and stand behind it.
+ * The order the reasons are checked in is the design — a position built on
+ * extractions nobody has verified is not a position, however much of it there is
+ * — so the tests walk that order rather than the numbers.
  */
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
@@ -15,104 +14,85 @@ import fs from 'node:fs';
 import { goNoGoView } from '../../service/go-no-go.js';
 
 const fixture = (name) => JSON.parse(fs.readFileSync(new URL(`../fixtures/engagements/${name}.json`, import.meta.url), 'utf8'));
-const coverage = { required_answered: 62, required_total: 85 };
-const view = (name = 'acme-watches', opts = {}) => goNoGoView(fixture(name), coverage, null, opts);
+const state = (over = {}) => ({ documents: 1, coverage: { required_answered: 62, required_total: 85 }, to_review: 0, ...over });
+const view = (over = {}, name = 'acme-watches', opts = {}) => goNoGoView(fixture(name), state(over), null, opts);
 
 describe('go/no-go support', () => {
-  test('every one of the 28 scorecard questions is accounted for, exactly once', () => {
-    const v = view();
-    const answered = v.sections.flatMap((s) => s.questions.map((q) => q.n));
-    const numbers = [v.headline.n, ...answered, ...v.not_ours.map((q) => q.n)].sort((a, b) => a - b);
-    assert.equal(numbers.length, 28, 'the scorecard has 28 questions and all 28 appear');
-    assert.deepEqual(numbers, Array.from({ length: 28 }, (_, i) => i + 1), 'none missing, none twice');
+  test('with nothing read, it says so instead of assessing thin air', () => {
+    const r = view({ documents: 0, coverage: { required_answered: 0, required_total: 85 } }).recommendation;
+    assert.equal(r.verdict, 'nothing to go on');
+    assert.deepEqual(r.before_you_go, ['Read the RFP in on the first step.']);
   });
 
-  test('question 20 is the headline, because it is the architect’s question', () => {
-    const v = view();
-    assert.equal(v.headline.n, 20);
-    assert.match(v.headline.ask, /can we grasp a scope that can be estimated/i);
-    assert.ok(['enough to price', 'priceable with stated assumptions', 'not enough to price without asking'].includes(v.headline.verdict));
+  test('unconfirmed extractions stop everything else — that is the whole point of Review', () => {
+    const r = view({ to_review: 46 }).recommendation;
+    assert.equal(r.verdict, 'not yet');
+    assert.match(r.headline, /cannot stand behind/i);
+    assert.ok(r.because.some((b) => /46 of those are still unconfirmed/.test(b)));
+    assert.ok(r.before_you_go.some((b) => /Confirm what it says/.test(b)));
+    // and it does not go on to argue about topics or assumptions first
+    assert.ok(!r.because.some((b) => /topics are still open/.test(b)));
   });
 
-  test('the verdict is banded, never a score', () => {
-    assert.equal(typeof view().headline.verdict, 'string');
-    const thin = goNoGoView(fixture('acme-watches'), { required_answered: 12, required_total: 85 }, null);
-    assert.equal(thin.headline.verdict, 'not enough to price without asking');
-    const full = goNoGoView(fixture('acme-watches'), { required_answered: 85, required_total: 85 }, null);
-    assert.ok(full.headline.verdict !== 'not enough to price without asking');
+  test('once confirmed, it says so and moves on to what is still unknown', () => {
+    const r = view().recommendation;
+    assert.notEqual(r.verdict, 'not yet');
+    assert.ok(r.because.some((b) => /confirmed by a person/.test(b)));
   });
 
-  test('every question it answers says something, and the evidence is the engine’s own', () => {
-    const v = view();
-    const gates = Object.entries(fixture('acme-watches').offer.scope_gates).filter(([, g]) => g.active);
-    for (const section of v.sections) {
-      assert.ok(section.title && section.questions.length, `${section.id} is a real section`);
-      for (const q of section.questions) {
-        assert.ok(q.says && q.says.length > 20, `Q${q.n} says something a person can read`);
-        assert.ok(Array.isArray(q.detail));
+  test('a requirement outside the offers is a different conversation, not a worse price', () => {
+    const r = goNoGoView(fixture('stop-custom-checkout'), state(), null).recommendation;
+    assert.equal(r.verdict, 'not a standard bid');
+    assert.ok(r.because.some((b) => /outside Merkle's standard offers/.test(b)));
+    assert.ok(r.before_you_go.some((b) => /bespoke work at a standard price/.test(b)));
+  });
+
+  test('the reasons are facts, in the order he reads them, and never a percentage', () => {
+    for (const over of [{}, { to_review: 12 }, { documents: 0 }]) {
+      const r = view(over).recommendation;
+      assert.ok(r.because.length, 'a position with no reasons is an opinion');
+      for (const line of r.because) {
+        assert.ok(!/%/.test(line), '"28% of what sets the price" was a coverage ratio wearing a claim it could not support');
       }
     }
-    const capabilities = v.sections[0].questions[0].detail;
-    assert.equal(capabilities.length, gates.length, 'the capabilities are the gates the engine fired, not a new list');
-    for (const c of capabilities) assert.ok(c.evidence, 'each one carries the answer that proves it');
   });
 
-  test('what the tool cannot see is named with who owns it, not left blank', () => {
+  test('every verdict it can reach is one a person would say out loud', () => {
+    const seen = new Set([
+      view({ documents: 0 }).recommendation.verdict,
+      view({ to_review: 4 }).recommendation.verdict,
+      view().recommendation.verdict,
+      goNoGoView(fixture('stop-custom-checkout'), state(), null).recommendation.verdict,
+    ]);
+    for (const v of seen) assert.ok(/^(go|go, but ask|ask first|not yet|not a standard bid|nothing to go on)$/.test(v), v);
+    assert.ok(seen.size >= 3, 'the chain actually discriminates');
+  });
+
+  test('it stands on what the engine derived, not on a second list', () => {
+    const v = view();
+    const gates = Object.entries(fixture('acme-watches').offer.scope_gates).filter(([, g]) => g.active);
+    assert.equal(v.capabilities.length, gates.length);
+    for (const c of v.capabilities) assert.ok(c.evidence, 'each capability carries the answer that proves it');
+    assert.equal(v.rests_on.unconfirmed, 0);
+    assert.equal(v.rests_on.documents, 1);
+  });
+
+  test('no price is quoted for an offer that does not apply, even to an owner', () => {
+    const v = goNoGoView(fixture('stop-custom-checkout'), state(), null, { pricing: true });
+    assert.equal(v.scope.applies, false);
+    assert.equal(v.scope.band, null);
+    assert.ok(!/(EUR|CHF|GBP|USD)\s*[\d]/.test(JSON.stringify(v)), 'no currency figure survives');
+    assert.ok(v.scope.why_not.length, 'and the rule that took it outside is named');
+  });
+
+  test('a GO engagement quotes the band to an owner only', () => {
+    assert.ok(view({}, 'acme-watches', { pricing: true }).scope.band);
+    assert.equal(view({}, 'acme-watches', {}).scope.band, null);
+  });
+
+  test('the rest of the scorecard is named with who owns it', () => {
     const v = view();
     assert.equal(v.not_ours.length, 19);
-    for (const q of v.not_ours) {
-      assert.ok(q.ask && q.owner, `Q${q.n} names an owner`);
-    }
-    assert.ok(v.not_ours.some((q) => /Salesforce|revenue|competitor|buying centre|pitch team/i.test(q.ask) || q.owner));
-  });
-
-  test('capacity is answered as demand, and says plainly that supply is somebody else’s', () => {
-    const q3 = view().sections[0].questions.find((q) => q.n === 3);
-    assert.match(q3.says, /weeks of build/);
-    assert.match(q3.watch, /demand only/i, 'the tool knows the work, not who is free');
-    assert.match(q3.watch, /Delivery Lead/);
-  });
-
-  test('Merkle’s commercial band travels only to owners', () => {
-    const q4 = (opts) => goNoGoView(fixture('acme-watches'), coverage, null, opts).sections[1].questions.find((q) => q.n === 4);
-    assert.match(q4({ pricing: true }).says, /EUR 65k–100k/);
-    assert.ok(!/65k/.test(q4({}).says), 'a consultant without pricing rights never sees the band');
-    assert.match(q4({}).says, /shown to engagement leads/);
-  });
-
-  test('an engagement beyond the offers quotes no price anywhere, even to an owner', () => {
-    // The engine keeps emitting offer.code when an exit rule takes the engagement
-    // outside, because the classification is real — it just stops being the
-    // answer. Reading it without checking delivery.go said "beyond S/M/L" in one
-    // question and quoted M's band three questions later, into a meeting where
-    // somebody writes the number down.
-    const v = goNoGoView(fixture('stop-custom-checkout'), coverage, null, { pricing: true });
-    const everything = JSON.stringify(v);
-    assert.ok(!/\d+k–\d+k/.test(everything), 'no band is quoted for an offer that does not apply');
-    // Currencies are named all over the evidence — "CHF and EUR, both
-    // transactional" is a fact about the client, not a price. What must not
-    // appear is a figure attached to one.
-    assert.ok(!/(EUR|CHF|GBP|USD)\s*[\d]/.test(everything), 'no currency figure reaches the page');
-
-    const q4 = v.sections.flatMap((s) => s.questions).find((q) => q.n === 4);
-    assert.match(q4.says, /no standard band/i);
-    // The classification is still shown — it is a real thing — but as what it is.
-    assert.match(q4.watch, /classify it as M, and that is not the answer/i);
-    assert.match(q4.watch, /bespoke engagement at a standard price/i);
-  });
-
-  test('a GO engagement does quote it, to an owner only', () => {
-    const q4 = (opts) => goNoGoView(fixture('acme-watches'), coverage, null, opts).sections.flatMap((s) => s.questions).find((q) => q.n === 4);
-    assert.match(q4({ pricing: true }).says, /65k–100k/);
-    assert.ok(!/65k/.test(q4({}).says));
-  });
-
-  test('an engagement beyond the offers says so rather than sizing work it cannot size', () => {
-    const v = view('stop-custom-checkout');
-    const q2 = v.sections[0].questions.find((q) => q.n === 2);
-    const q3 = v.sections[0].questions.find((q) => q.n === 3);
-    assert.match(q2.says, /beyond S, M and L|built from scratch/i);
-    assert.match(q2.says, /11\.6/, 'and it names the rule that took it there');
-    assert.match(q3.says, /Not sizeable/i);
+    for (const q of v.not_ours) assert.ok(q.ask && q.owner, `Q${q.n} names an owner`);
   });
 });

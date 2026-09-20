@@ -900,7 +900,14 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       return {
         engagement: summary(session),
         // Merkle's commercial bands travel only to owners, as everywhere else.
-        go_no_go: goNoGoView(decided.doc, p.coverage, session.closing?.clarifications ?? null, { pricing: user.role === 'owner' }),
+        // The position turns on what a person has confirmed, not on what a model
+        // extracted, so the confirmation count from Review goes in with it.
+        go_no_go: goNoGoView(
+          decided.doc,
+          { coverage: p.coverage, to_review: summary(session).to_review, documents: (session.documents ?? []).length },
+          session.closing?.clarifications ?? null,
+          { pricing: user.role === 'owner' },
+        ),
         documents: (session.documents ?? []).map(({ name, type, date }) => ({ name, type, date })),
       };
     },
