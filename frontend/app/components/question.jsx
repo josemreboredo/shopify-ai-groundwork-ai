@@ -83,7 +83,7 @@ export function EngagementNav({ engagement }) {
  *
  * @param {{ items?: object[], errors?: string[], client: string }} props
  */
-export function Blockers({ items = [], errors = [], client }) {
+export function Blockers({ items = [], errors = [], client, from }) {
   if (!items.length) {
     return errors.length ? (
       <ul className="blockers">
@@ -98,7 +98,7 @@ export function Blockers({ items = [], errors = [], client }) {
           <p className="blocker-what">{b.what}</p>
           {b.why ? <p className="muted"><WithQuestionLinks text={b.why} client={client} /></p> : null}
           {b.question_id ? (
-            <Link className={`button${i === 0 ? '' : ' secondary'}`} to={`/engagements/${client}/questions/${b.question_id}`}>
+            <Link className={`button${i === 0 ? '' : ' secondary'}`} to={`/engagements/${client}/questions/${b.question_id}?back=${encodeURIComponent(from ?? '')}`}>
               Answer {b.question_id}
             </Link>
           ) : null}
@@ -349,7 +349,7 @@ function ShopifyKnowledge({ shopify }) {
  * A question with its inputs and actions. `values` pre-fills the inputs (edit page);
  * `children` adds actions (e.g. reopen, clear).
  */
-export function QuestionCard({ question, actionData, busy, values = {}, note = '', language, children }) {
+export function QuestionCard({ question, actionData, busy, values = {}, note = '', language, back = '', children }) {
   const errors = actionData?.question_id === question.id && actionData.error ? (actionData.errors?.length ? actionData.errors : [actionData.error]) : [];
   const consent = question.id === 'Q10.5.2';
   return (
@@ -365,6 +365,7 @@ export function QuestionCard({ question, actionData, busy, values = {}, note = '
       <ShopifyKnowledge shopify={question.shopify} />
       <Form method="post" key={question.id}>
         <input type="hidden" name="question_id" value={question.id} />
+        {back ? <input type="hidden" name="back" value={back} /> : null}
         {question.inputs.map((spec) => (
           <FieldInput
             key={spec.pointer}
@@ -435,7 +436,15 @@ export function PreviewPanel({ preview }) {
       ) : null}
 
       <h3>How far through</h3>
-      <p>{preview.coverage.required_answered} of {preview.coverage.required_total} required answered · {preview.coverage.required_tbc} TBC · {preview.coverage.required_commented ?? 0} by comment · {preview.coverage.required_open} open</p>
+      {/* The same denominator the header and the steps use. This panel used to
+          count a fourth thing, so one screen offered four answers to "how far
+          through am I". */}
+      <p>{preview.coverage.required_answered} of {preview.coverage.required_total} required answered</p>
+      <p className="muted small">
+        {preview.coverage.required_open} still open
+        {preview.coverage.required_tbc ? ` · ${preview.coverage.required_tbc} with the client` : ''}
+        {preview.coverage.required_commented ? ` · ${preview.coverage.required_commented} clarified by comment` : ''}
+      </p>
 
       {signals.length ? (
         <>

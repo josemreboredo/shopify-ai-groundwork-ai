@@ -104,6 +104,15 @@
               "$ref": "#/$defs/date"
             }
           }
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "en",
+            "de",
+            "fr"
+          ],
+          "description": "The language the engagement is run in, and the language every client-facing document generated from it is written in. Stamped from the interview session; absent on engagements produced before it existed."
         }
       }
     },

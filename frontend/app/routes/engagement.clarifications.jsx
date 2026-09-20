@@ -134,7 +134,7 @@ Write every question we need answered to price this properly — the Lead Consul
             {!saved ? <span className="muted">This page updates itself when Claude saves.</span> : null}
           </div>
         ) : (
-          <Blockers items={readiness.blockers} errors={readiness.errors} client={client} />
+          <Blockers from={`/engagements/${client}/clarifications`} items={readiness.blockers} errors={readiness.errors} client={client} />
         )}
         {actionData?.error ? <p className="error">{actionData.error}</p> : null}
         {actionData?.warning ? (

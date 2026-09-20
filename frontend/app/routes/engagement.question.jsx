@@ -11,9 +11,10 @@ export const meta = ({ params }) => [{ title: pageTitle(`${params.questionId}`, 
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);
+  const back = new URL(request.url).searchParams.get('back') ?? '';
   try {
     const view = await discovery().getQuestion(user, params.client, params.questionId);
-    return { ...view, vocabularies: vocabulariesFor([view.question]) };
+    return { ...view, back, vocabularies: vocabulariesFor([view.question]) };
   } catch (err) {
     throw serviceFailure(err);
   }
@@ -21,8 +22,17 @@ export async function loader({ request, params }) {
 
 export async function action({ request, params }) {
   const user = await requireUser(request);
-  const result = await questionAction(user, params.client, await request.formData());
-  if (result?.ok) throw redirect(`/engagements/${params.client}/review#${params.questionId}`);
+  const form = await request.formData();
+  const back = String(form.get('back') ?? '');
+  const result = await questionAction(user, params.client, form);
+  // Every blocker links here, and answering it dropped the consultant at the top
+  // of a 173-row table with no way back to the page that sent them — on every
+  // blocker, every time. It returns where it came from, and says what happened.
+  if (result?.ok) {
+    const to = back.startsWith(`/engagements/${params.client}`) ? back : `/engagements/${params.client}/review`;
+    const sep = to.includes('?') ? '&' : '?';
+    throw redirect(`${to}${sep}recorded=${encodeURIComponent(params.questionId)}#${params.questionId}`);
+  }
   return result;
 }
 
@@ -35,7 +45,7 @@ const STATE_TEXT = {
 };
 
 export default function EditQuestion({ loaderData, actionData }) {
-  const { engagement, question, values, state, note, vocabularies, language } = loaderData;
+  const { engagement, question, values, state, note, vocabularies, language, back } = loaderData;
   const busy = useNavigation().state !== 'idle';
   return (
     <main id="main">
@@ -47,7 +57,7 @@ export default function EditQuestion({ loaderData, actionData }) {
         meta={STATE_TEXT[state]}
         back={{ to: `/engagements/${engagement.client}/review#${question.id}`, label: 'Review answers' }}
       />
-      <QuestionCard question={question} actionData={actionData} busy={busy} values={values} note={note} language={engagement.language}>
+      <QuestionCard question={question} actionData={actionData} busy={busy} values={values} note={note} language={engagement.language} back={back}>
         {['tbc', 'skipped', 'commented'].includes(state) ? <button type="submit" name="intent" value="reopen" className="secondary" disabled={busy}>Reopen question</button> : null}
         {state === 'answered' && question.id !== 'Q10.5.2' ? <button type="submit" name="intent" value="clear" className="secondary" disabled={busy}>Clear answer</button> : null}
       </QuestionCard>

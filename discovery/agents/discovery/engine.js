@@ -55,7 +55,7 @@ class EngagementInvalidError extends Error {
  * @param {object} answers
  * @param {{ today: string, clientSlug?: string, source?: 'questionnaire'|'chatbot'|'brief' }} options
  */
-export function assemble(answers, { today, clientSlug, source = 'questionnaire' }) {
+export function assemble(answers, { today, clientSlug, source = 'questionnaire', language }) {
   const { meta = {}, ...rest } = structuredClone(answers);
   // B2B follows the business model unless answered explicitly (question bank 1.1.0: DTC → no B2B; B2B or hybrid → B2B).
   const model = meta.client?.business_model;
@@ -66,6 +66,10 @@ export function assemble(answers, { today, clientSlug, source = 'questionnaire' 
       ...meta,
       client: { ...meta.client, ...(clientSlug ? { slug: clientSlug } : {}) },
       source,
+      // The language the engagement is run in. Everything generated downstream
+      // from engagement.json — the configuration workbook above all — otherwise
+      // has no way to know what language to write the client's copy in.
+      ...(language ? { language } : {}),
       created_at: meta.created_at ?? today,
       updated_at: today,
     },

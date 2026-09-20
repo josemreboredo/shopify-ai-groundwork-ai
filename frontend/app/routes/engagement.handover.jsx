@@ -70,7 +70,7 @@ export default function Handover({ loaderData }) {
         <section className="card start blocked">
           <p className="question">{blocked.error}</p>
           <p className="muted">Delivery gets nothing from this record until the answers behind it exist.</p>
-          <Blockers items={blocked.blockers} errors={blocked.errors} client={client} />
+          <Blockers from={`/engagements/${client}/handover`} items={blocked.blockers} errors={blocked.errors} client={client} />
         </section>
       </main>
     );

@@ -271,6 +271,8 @@ details.card[open] > summary { margin-bottom: 12px; }
 .record-progress { margin-top: 6px !important; font-size: 0.92rem; }
 .record-meta { margin-top: 8px !important; color: var(--muted); font-size: 0.8rem; }
 
+.just-recorded > td { background: rgba(12, 99, 66, 0.08); box-shadow: inset 3px 0 0 var(--ok); }
+
 /* The engine's own wording, kept and available, but not the first thing read. */
 .rule-exact { margin-top: 6px; }
 .rule-exact > summary { font-size: 0.78rem; color: var(--muted); cursor: pointer; }

@@ -91,7 +91,7 @@ export default function Summary({ loaderData }) {
               ? 'The engine cannot make a bid of these answers yet. Read the RFP in on the first step, and confirm what it says.'
               : 'The engine cannot weigh these answers yet. Keep going with the interview — these are what it is waiting for.'}
           </p>
-          <Blockers items={blocked?.blockers ?? []} errors={blocked?.errors ?? []} client={engagement.client} />
+          <Blockers from={`/engagements/${engagement.client}/summary`} items={blocked?.blockers ?? []} errors={blocked?.errors ?? []} client={engagement.client} />
         </section>
       </main>
     );

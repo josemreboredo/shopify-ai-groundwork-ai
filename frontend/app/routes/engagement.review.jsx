@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Link, useNavigation } from 'react-router';
+import { Form, Link, useNavigation, useSearchParams } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
@@ -65,6 +65,10 @@ export default function Review({ loaderData, actionData }) {
   // questions is the default doing the opposite of the job.
   const [filter, setFilter] = useState(() => (all.some((q) => q.to_confirm) ? 'to_confirm' : 'all'));
   const [armed, setArmed] = useState(false);
+  // Answering a question landed here with nothing said and nothing marked, so
+  // the only evidence the save worked was finding the row by eye.
+  const [params] = useSearchParams();
+  const recorded = params.get('recorded');
   const shown = (questions) => questions.filter((q) => MATCH[filter](q));
   return (
     <main id="main">
@@ -74,6 +78,9 @@ export default function Review({ loaderData, actionData }) {
         eyebrow="Review answers"
         meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} TBC · ${count('skipped')} not applicable · ${count('open')} open`}
       />
+      {recorded ? (
+        <p className="pilot" role="status"><strong>{recorded}</strong> recorded. It is highlighted below.</p>
+      ) : null}
       <p className="muted">
         <strong>Confirm</strong> accepts an answer as it stands; <strong>Edit</strong> changes, clears or reopens
         it. A question that was
@@ -149,7 +156,7 @@ export default function Review({ loaderData, actionData }) {
             <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col">Answer</th><th scope="col">Status</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
             <tbody>
               {shown(section.questions).map((q) => (
-                <tr key={q.id} id={q.id}>
+                <tr key={q.id} id={q.id} className={q.id === recorded ? 'just-recorded' : undefined}>
                   <td>{q.id}</td>
                   <td>{q.text}</td>
                   <td>

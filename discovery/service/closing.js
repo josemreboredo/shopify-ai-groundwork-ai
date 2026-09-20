@@ -44,7 +44,7 @@ export function approachErrors(payload) {
  * @returns {{ ok: true, doc: object } | { ok: false, errors: string[] }}
  */
 export function decideFromSession(session, today) {
-  const options = { today, clientSlug: session.client, source: 'chatbot' };
+  const options = { today, clientSlug: session.client, source: 'chatbot', language: session.language };
   const data = {
     answers: flattenAnswers(session.answers),
     provenance: Object.entries(session.provenance).map(([pointer, p]) => ({ pointer, source: p.source, status: p.status, question_id: p.question_id ?? '', note: p.note ?? '' })),

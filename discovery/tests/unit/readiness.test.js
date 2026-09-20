@@ -251,11 +251,22 @@ describe('the offer and the status are two axes', () => {
   test('an engagement beyond the offers is not still an M', () => {
     // The list read "M · Ecommerce Scale" under Offer and "Larger Engagement"
     // under Status: an answer beside the rule that superseded it.
-    const beyond = { offer: { code: 'M', name: 'Ecommerce Scale' }, go: false, route: 'larger_engagement' };
+    const answered = { coverage: { required_answered: 12, required_total: 85 } };
+    const beyond = { offer: { code: 'M', name: 'Ecommerce Scale' }, go: false, route: 'larger_engagement', ...answered };
     assert.equal(offerStanding(beyond).short, 'Larger Engagement');
     assert.equal(offerStanding(beyond).applies, false);
-    assert.equal(offerStanding({ offer: { code: 'S', name: 'Ecommerce Foundation' }, go: true }).short, 'S');
-    assert.equal(offerStanding({ offer: { code: 'M' }, go: false, route: 'no_bid' }).short, 'No bid');
+    assert.equal(offerStanding({ offer: { code: 'S', name: 'Ecommerce Foundation' }, go: true, ...answered }).short, 'S');
+    assert.equal(offerStanding({ offer: { code: 'M' }, go: false, route: 'no_bid', ...answered }).short, 'No bid');
+  });
+
+  test('an empty record has no offer, because it is not an engagement yet', () => {
+    // Nothing recorded classifies as the smallest offer and reads GO, because no
+    // gate has fired — so the list stated a commercial position on a bid nobody
+    // had opened.
+    const empty = offerStanding({ offer: { code: 'S', name: 'Ecommerce Foundation' }, go: true, coverage: { required_answered: 0, required_total: 85 } });
+    assert.equal(empty.short, '—');
+    assert.equal(empty.applies, false);
+    assert.match(empty.standing, /Nothing has been recorded/);
   });
 
   test('a bid reports where it is in bidding', () => {

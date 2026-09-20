@@ -140,18 +140,23 @@ If you cannot see any documents in this chat, stop and tell me: either I attach 
             already answer, and records them here with the page and quote they came from. It has to start in
             Claude, because that is where the documents are — this tool cannot reach into your project.
           </p>
+          {/* The button opened a fresh chat — outside the Project, with the
+              connector off — carrying an instruction that begins "read the
+              documents in this project". The order is reversed: the path that
+              works is first, and the one-click path says what it costs. */}
           <ol className="prefill-steps">
-            <li><strong>Pre-fill in Claude</strong> opens a chat with the instruction written — you only press Enter. Attach the RFP in that chat.</li>
-            <li>If the RFP is already in your <strong>Claude Project</strong> for this client, start the chat <em>inside the project</em> instead: copy the instruction and paste it there, or pick <strong>Pre-fill the engagement from the documents</strong> from the {CONNECTOR} connector’s prompts.</li>
+            <li><strong>Copy the instruction</strong>, open your <strong>Claude Project</strong> for this client, and paste it into a chat <em>inside the project</em> — that is where the documents are. Check the {CONNECTOR} connector is on in that chat (<strong>+ → Connectors</strong>); <a href="/claude">how to add it</a>.</li>
+            <li>Or pick <strong>Pre-fill the engagement from the documents</strong> from the connector’s own prompts, which carries the same instruction.</li>
+            <li><strong>Pre-fill in Claude</strong> opens a new chat instead — quicker, but outside your Project, so you have to attach the documents to that chat yourself and turn the connector on in it.</li>
             <li>Come back here. The answers arrive marked <strong>to confirm</strong>, each with its citation; check them and confirm.</li>
           </ol>
         </>
       )}
       <div className="actions">
-        <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(instruction)}`} target="_blank" rel="noreferrer">Pre-fill in Claude</a>
-        <button type="button" className="secondary" onClick={() => { navigator.clipboard?.writeText(instruction); setCopied(true); }}>
+        <button type="button" onClick={() => { navigator.clipboard?.writeText(instruction); setCopied(true); }}>
           {copied ? 'Copied — paste it inside your Claude Project' : 'Copy the instruction'}
         </button>
+        <a className="button secondary" href={`https://claude.ai/new?q=${encodeURIComponent(instruction)}`} target="_blank" rel="noreferrer">Open a new chat instead</a>
       </div>
       <details>
         <summary>The instruction</summary>
@@ -216,7 +221,7 @@ export default function Engagement({ loaderData, actionData }) {
         engagement={engagement}
         meta={bid
           ? `${documents.length} document${documents.length === 1 ? '' : 's'} read · ${toConfirm} answer${toConfirm === 1 ? '' : 's'} to confirm · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at}`
-          : `${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${next.remaining} questions open${typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}`}
+          : `${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${engagement.coverage?.required_answered ?? 0} of ${engagement.coverage?.required_total ?? 0} required answered${next.remaining ? ` · ${next.remaining} questions left in this depth` : ''}`}
       />
       <div className="layout">
         <div>

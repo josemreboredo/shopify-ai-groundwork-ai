@@ -133,7 +133,7 @@ export default function Closing({ loaderData }) {
         {readiness.ok ? (
           <>
             <div className="actions">
-              <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(startPrompt)}`} target="_blank" rel="noreferrer" onClick={sent}>{action}</a>
+              <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(startPrompt)}`} target="_blank" rel="noreferrer" onClick={sent}>{action} in a new chat</a>
               <button type="button" className="secondary" onClick={() => { navigator.clipboard?.writeText(startPrompt); sent(); }}>Copy the instruction</button>
               {waiting && !requested ? <span className="muted">This page updates itself when Claude saves.</span> : null}
             </div>
@@ -156,7 +156,7 @@ export default function Closing({ loaderData }) {
         ) : (
           <>
             <p className="question">{readiness.error}</p>
-            <Blockers items={readiness.blockers} errors={readiness.errors} client={client} />
+            <Blockers from={`/engagements/${client}/closing-document`} items={readiness.blockers} errors={readiness.errors} client={client} />
             <p className="muted">
               {readiness.blockers?.length > 1
                 ? 'Answer them in order — the first one is what the rest depend on.'

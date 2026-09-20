@@ -62,6 +62,22 @@ const cell = (s) => String(s ?? '').replace(/\|/g, '/').replace(/\n/g, '<br>');
  */
 export function offerStanding(p) {
   const name = `${p.offer.code} · ${p.offer.name}`;
+  // An empty record classifies as the smallest offer and reads GO, because no
+  // gate has fired — so the list stated a commercial position on a bid nobody
+  // had opened. Nothing recorded is not a small engagement; it is not an
+  // engagement yet.
+  const c = p.coverage ?? {};
+  if (!(c.required_answered ?? 0)) {
+    return {
+      applies: false,
+      unknown: true,
+      short: '—',
+      headline: 'Not classified yet',
+      standing: 'Nothing has been recorded, so there is no offer to state',
+      tone: '',
+      note: null,
+    };
+  }
   if (p.go) {
     return {
       applies: true,
