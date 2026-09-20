@@ -120,10 +120,29 @@ describe('the API chapter reaches the engagements that need it', () => {
     assert.equal(has({ design: { headless_required: true } }), true);
   });
 
-  test('it is a chapter like any other: front matter, citations and a checked date', async () => {
+  test('the custom-apps chapter follows the checkout, not only the integrations', async () => {
+    // A Plus client with live Scripts has a deadline and usually no integration
+    // at all: Scripts stop executing on 30 June 2026 and the work surfaces as
+    // checkout answers. Tagging the chapter "checkout" did nothing until
+    // something emitted it.
+    const { topicsFor } = await import('../../service/reference.js');
+    const has = (doc) => topicsFor(doc).has('checkout');
+
+    assert.equal(has({}), false);
+    assert.equal(has({ checkout: { customisation: ['branding_in_editor'] } }), false,
+      'the editor is in every offer');
+    assert.equal(has({ checkout: { extensions: ['custom_fields'] } }), true);
+    assert.equal(has({ checkout: { custom_fields: ['PO number'] } }), true);
+    assert.equal(has({ checkout: { order_restrictions: ['block_countries'] } }), false,
+      'blocking a country is a market setting');
+    assert.equal(has({ checkout: { order_restrictions: ['quantity_limits'] } }), true);
+  });
+
+  test('both new chapters are chapters like any other: front matter, citations, checked dates', async () => {
     const { REFERENCE_CHAPTERS } = await import('../../service/reference-chapters.js');
-    const c = REFERENCE_CHAPTERS.find((x) => x.slug === 'shopify-apis');
-    assert.ok(c, 'shopify-apis is rendered into the module');
+    for (const slug of ['shopify-apis', 'custom-apps']) {
+    const c = REFERENCE_CHAPTERS.find((x) => x.slug === slug);
+    assert.ok(c, `${slug} is rendered into the module`);
     assert.match(c.verified, /^\d{4}-\d{2}-\d{2}$/);
     assert.ok(c.summary.length > 40);
     const cited = new Set((c.markdown.match(/\[(\d+)\]/g) ?? []).map((m) => m.slice(1, -1)));
@@ -134,6 +153,7 @@ describe('the API chapter reaches the engagements that need it', () => {
     assert.equal(listed, cited.size, 'every citation has a source and every source is cited');
     for (const url of c.markdown.match(/https?:\/\/[^\s)\]]+/g) ?? []) {
       assert.match(url, /^https:\/\/(shopify\.dev|help\.shopify\.com|changelog\.shopify\.com|www\.shopify\.com)\//, url);
+    }
     }
   });
 });
