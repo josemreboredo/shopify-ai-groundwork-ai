@@ -13,6 +13,7 @@ import fs from 'node:fs';
 
 import { clarificationTopics, clarificationBrief } from '../../agents/discovery/clarifications.js';
 import { renderClarificationsMarkdown } from '../../service/clarifications-view.js';
+import { clarificationsFreshness } from '../../service/assumptions.js';
 import { createDiscoveryService, ServiceError } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 import { questionBank } from '../../schema/index.js';
@@ -290,5 +291,56 @@ describe('what the Lead Consultant decides not to ask reaches the proposal', () 
     assert.match(bidGuide, /Answer their document, not ours/);
     // and the eight thousand words that are right either way are not forked
     assert.ok(bidGuide.includes(discovery), 'the preamble is added, the instruction is not rewritten');
+  });
+});
+
+describe('the questions are a snapshot, and the engagement moves under them', () => {
+  const svcWith = async (questions) => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-bid', { questions });
+    return svc;
+  };
+  const q = (question, covers) => ({ question, why_we_ask: 'the trade-off', covers, assume_if_unanswered: 'we assume', impact_if_wrong: 'it costs' });
+
+  test('a topic no saved question covers is reported, rather than leaving a stale list looking current', () => {
+    const topics = clarificationTopics(acme());
+    const saved = { questions: topics.slice(0, 2).map((t, i) => ({ id: `q${i}`, covers: t.covers.map((c) => c.question_id) })) };
+    const f = clarificationsFreshness(topics, saved);
+    assert.equal(f.up_to_date, false);
+    assert.equal(f.uncovered.length, topics.length - 2, 'everything the saved questions do not reach');
+    for (const u of f.uncovered) assert.ok(u.title && u.settles > 0);
+  });
+
+  test('nothing saved is not out of date — it is not started', () => {
+    const f = clarificationsFreshness(clarificationTopics(acme()), null);
+    assert.deepEqual(f, { known: false, up_to_date: true, uncovered: [] });
+  });
+
+  test('writing them again keeps the decisions already taken', async () => {
+    // Rewriting is a normal thing to do, and it used to cost the Lead Consultant
+    // every verdict they had reached. A question resting on the same discovery
+    // questions is the same question in better words.
+    const svc = await svcWith([q('One catalogue?', ['Q3.4.13']), q('Who invoices?', ['Q3.1.1'])]);
+    await svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'accepted' });
+    await svc.decideClarifications(consultant, 'a-bid', { id: 'q2', status: 'rejected' });
+
+    await svc.saveClarifications(consultant, 'a-bid', {
+      questions: [q('Will the markets share one catalogue?', ['Q3.4.13']), q('Which entity invoices?', ['Q3.1.1']), q('Is B2B in scope?', ['Q6.2.14'])],
+    });
+    const { clarifications, triage: t } = await svc.getClarifications(consultant, 'a-bid');
+    assert.deepEqual(clarifications.questions.map((x) => x.status), ['accepted', 'rejected', 'proposed']);
+    assert.equal(clarifications.questions[0].question, 'Will the markets share one catalogue?', 'the better wording wins');
+    assert.equal(clarifications.questions[0].decided_by, 'lc-one', 'and the decision keeps its author');
+    assert.equal(t.proposed.length, 1, 'only what is genuinely new waits on a decision');
+  });
+
+  test('a question that now rests on different ground arrives undecided', async () => {
+    const svc = await svcWith([q('One catalogue?', ['Q3.4.13'])]);
+    await svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'accepted' });
+    await svc.saveClarifications(consultant, 'a-bid', { questions: [q('One catalogue?', ['Q3.4.13', 'Q6.2.14'])] });
+    const { clarifications } = await svc.getClarifications(consultant, 'a-bid');
+    assert.equal(clarifications.questions[0].status, 'proposed', 'it covers something nobody ruled on');
   });
 });

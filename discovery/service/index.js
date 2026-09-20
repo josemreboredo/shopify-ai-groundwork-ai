@@ -24,10 +24,10 @@ import { approachBrief, closingStatus, deckBrief, deckDataPages, decideFromSessi
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
-import { clarificationBrief, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
+import { clarificationBrief, clarificationTopics, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
-import { statedAssumptions, triage } from './assumptions.js';
+import { statedAssumptions, triage, clarificationsFreshness } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
@@ -643,12 +643,34 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         if (!q.impact_if_wrong?.trim()) problems.push(`${where}: say what it costs us if that assumption is wrong — without it the proposal states a gap rather than a decision`);
       });
       if (problems.length) throw new ServiceError(400, 'Questions not saved', problems);
+      // Writing the questions again is a normal thing to do — the engagement moves
+      // and the engine finds more — and it used to cost the Lead Consultant every
+      // decision they had already taken. A rewritten question that rests on the
+      // same discovery questions is the same question in better words, so it
+      // keeps its verdict; anything genuinely new arrives undecided.
+      const previous = session.closing?.clarifications?.questions ?? [];
+      // Every discovery question the rewrite rests on must already have been ruled
+      // on. A narrower question is inside what was approved; a broader one asks
+      // something nobody agreed to send, and inheriting a verdict there would put
+      // a question in front of a client on an approval that never covered it.
+      const decidedBefore = (covers) => previous.find((old) => (old.status ?? 'proposed') !== 'proposed'
+        && (covers ?? []).length
+        && (covers ?? []).every((c) => (old.covers ?? []).includes(c)));
+
       session.closing = {
         ...session.closing,
         clarifications: {
           // Every question arrives proposed. The model drafts; the Lead Consultant
           // decides what is actually sent, because it is their name on the mail.
-          questions: list.map((q, i) => ({ id: `q${i + 1}`, status: 'proposed', ...q })),
+          questions: list.map((q, i) => {
+            const kept = decidedBefore(q.covers);
+            return {
+              id: `q${i + 1}`,
+              status: kept?.status ?? 'proposed',
+              ...(kept ? { decided_at: kept.decided_at, decided_by: kept.decided_by, carried_over: true } : {}),
+              ...q,
+            };
+          }),
           saved_at: today(),
           by: user.login,
           via,
@@ -670,10 +692,13 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const session = await load(user, client);
       const saved = session.closing?.clarifications ?? null;
       const decided = decideFromSession(session, today());
+      const topics = decided.ok ? clarificationTopics(decided.doc) : [];
       return {
         engagement: summary(session),
         clarifications: saved,
         triage: triage(saved),
+        // The questions are a snapshot and the engagement moves under them.
+        freshness: clarificationsFreshness(topics, saved),
         // What the proposal will state because nobody told us otherwise — from the
         // engine, and from every question the consultant decided not to ask.
         assumptions: statedAssumptions(decided.ok ? decided.doc : null, saved),

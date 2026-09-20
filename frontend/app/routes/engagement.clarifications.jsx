@@ -72,7 +72,7 @@ function Decide({ id, status, busy }) {
 }
 
 export default function Clarifications({ loaderData, actionData }) {
-  const { engagement, clarifications, triage, assumptions, documents, readiness } = loaderData;
+  const { engagement, clarifications, triage, assumptions, documents, readiness, freshness } = loaderData;
   const client = engagement.client;
   const busy = useNavigation().state !== 'idle';
   const questions = clarifications?.questions ?? [];
@@ -145,6 +145,31 @@ Write every question we need answered to price this properly — the Lead Consul
         )}
         {actionData?.error ? <p className="error">{actionData.error}</p> : null}
       </section>
+
+      {/* The questions are a snapshot and the engagement moves under them: answers
+          get confirmed, documents get read in, and what is still open changes. */}
+      {saved && !freshness.up_to_date ? (
+        <section className="card start blocked">
+          <div className="start-head">
+            <div>
+              <p className="question">
+                {freshness.uncovered.length} topic{freshness.uncovered.length === 1 ? '' : 's'} these questions do not cover
+              </p>
+              <p className="muted">
+                They were written from an earlier reading of the engagement. Since then the engine has found more
+                that has to be settled before this can be priced — writing them again keeps what you already
+                decided on the questions it rewrites.
+              </p>
+            </div>
+            <span className="badge flag">out of date</span>
+          </div>
+          <ul className="ticks">
+            {freshness.uncovered.map((t) => (
+              <li key={t.title}><strong>{t.title}</strong> — settles {t.settles} unknown{t.settles === 1 ? '' : 's'}{t.impact === 'high' ? ', and changes the shape of the solution' : ''}</li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {/* 2 — the triage */}
       {saved ? (

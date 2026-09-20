@@ -104,3 +104,30 @@ export function triage(clarifications) {
     ready_to_send: questions.length > 0 && of('proposed').length === 0 && of('accepted').length > 0,
   };
 }
+
+/**
+ * Whether the saved questions still match what the engine now knows.
+ *
+ * The questions are a snapshot: Claude writes them once and they sit there. But
+ * the engagement keeps moving underneath — answers get confirmed, documents get
+ * read in, the engine's view of what is still open changes. A consultant looking
+ * at five questions has no way to tell whether five is what the engine would say
+ * today or what it said a week ago, and the page gave no hint either way. The
+ * closing document has had this check since the beginning; this did not.
+ *
+ * @param {object[]} topics  what the engine would ask about now
+ * @param {{ questions?: object[] }|null} clarifications  what is saved
+ */
+export function clarificationsFreshness(topics, clarifications) {
+  const saved = clarifications?.questions ?? [];
+  if (!saved.length) return { known: false, up_to_date: true, uncovered: [] };
+  const covered = new Set(saved.flatMap((q) => q.covers ?? []));
+  // A topic is missing from the saved set when not one of the questions behind
+  // it is covered by anything that was written.
+  const uncovered = topics.filter((t) => !(t.covers ?? []).some((c) => covered.has(c.question_id)));
+  return {
+    known: true,
+    up_to_date: uncovered.length === 0,
+    uncovered: uncovered.map((t) => ({ title: t.title, impact: t.impact, settles: (t.covers ?? []).length })),
+  };
+}
