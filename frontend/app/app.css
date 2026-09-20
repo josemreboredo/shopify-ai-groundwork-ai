@@ -303,6 +303,16 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
 /* The offering page */
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
 .table-scroll > table { width: max-content; min-width: 100%; max-width: none; }
+/* A table of sentences has no natural width, so `max-content` let Review render
+   3,103px inside a 1,216px container and put Confirm and Edit off-screen — and
+   the clip on the viewport meant page scroll could not reach them. Prose columns
+   get a measure; the row's actions never leave the screen. */
+.answers-table { table-layout: auto; }
+.answers-table th, .answers-table td { max-width: 46ch; }
+.answers-table .row-actions { white-space: nowrap; }
+@media (min-width: 761px) {
+  .table-scroll > .answers-table { width: 100%; }
+}
 .chip { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
 .offering .small { font-size: 0.8rem; }
 

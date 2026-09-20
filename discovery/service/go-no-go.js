@@ -199,7 +199,7 @@ function offerOf(doc) {
  *
  * @param {object} doc @param {object} counts
  */
-function recommend({ documents, answered, fromDocuments, unconfirmed, openTopics, stops, cannotPrice, assumptions }) {
+function recommend({ documents, answered, fromDocuments, unconfirmed, openTopics, stops, cannotPrice, assumptions, record = 'bid' }) {
   // Two different things were being read as one list. The fact that decides the
   // position, and the facts it rests on. Printed together they read as a wall,
   // and the sentence that actually answers "why" sat third with nothing marking
@@ -207,14 +207,19 @@ function recommend({ documents, answered, fromDocuments, unconfirmed, openTopics
   const ground = [];
   const said = (verdict, headline, why, before = []) => ({ verdict, headline, why, because: [...ground], before_you_go: before });
 
-  if (!documents) {
+  // Nothing read is only nothing to go on when nothing was answered either. A
+  // discovery has no intake step at all, so gating on documents told a record
+  // holding two hundred confirmed answers that there was nothing to assess —
+  // directly above the assessment this page then drew from them.
+  if (!documents && !answered) {
     return said(
       'nothing to go on',
       'Nothing has been read yet.',
-      'No document has been read into this bid, so there is nothing for this desk to assess.',
-      ['Read the RFP in on the first step.'],
+      `Nothing has been recorded against this ${record}, so there is nothing for this desk to assess.`,
+      [record === 'bid' ? 'Read the RFP in on the first step.' : 'Record what the client has told us on the first step.'],
     );
   }
+  if (!documents) ground.push(`Assessed from the interview — no documents have been read into this ${record}.`);
 
   // `answered` is every required answer from any channel — the web form and the
   // consultant's own included — so one document beside forty hand-typed answers
@@ -319,6 +324,7 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
   for (const st of stories) byOwner[st.owner] = (byOwner[st.owner] ?? 0) + 1;
 
   const recommendation = recommend({
+    record: state.record ?? 'bid',
     documents: state.documents ?? 0,
     answered: state.coverage?.required_answered ?? 0,
     fromDocuments: state.fromDocuments ?? null,

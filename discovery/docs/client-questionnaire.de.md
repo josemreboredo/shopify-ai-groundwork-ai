@@ -502,34 +502,34 @@
 
 ### 3.1 Märkte zum Launch
 
-**Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required)*
+**Q3.1.1** — In welche Länder verkaufen Sie zum Launch? Je Land: das Land, die Währung, in der Kundinnen und Kunden zahlen, die Sprachen, die Internetadresse, die dort heute genutzt wird, wie die Preise gebildet werden, welche Ihrer Gesellschaften die Kundschaft fakturiert, ob das Sortiment dem Ihres Hauptmarkts entspricht, und wer dieses Land operativ verantwortet. *(required)*
 *Why we ask: These rows decide how many Shopify stores your business needs. Countries that share one selling company, one range and one team can run on a single store; countries that differ on those points usually need their own store, which multiplies the build, the running cost and the work of every future change.*
-*One row per country. Leave a cell blank if you do not know it — we will come back to it.*
+*Eine Zeile je Land. Lassen Sie ein Feld leer, wenn Sie es nicht wissen — wir kommen darauf zurück.*
 
 | Code | Currency | Languages | Domain | Price strategy | Domain type | Selling entity | Assortment | Run by |
 |---|---|---|---|---|---|---|---|---|
 | | | | | | | | | |
 
-**Q3.1.2** — Which are the primary markets (one or more country or market codes)? *(required)*
-*The markets that lead revenue and launch priority, e.g. US and EU for a global brand.*
+**Q3.1.2** — Welches sind die Primärmärkte (ein oder mehrere Länder- oder Marktcodes)? *(required)*
+*Die Märkte, die Umsatz und Launch-Priorität anführen, z. B. USA und EU bei einer globalen Marke.*
 
 > Answer:
 
-**Q3.1.3** — Which countries are planned in the next 12 months? *(optional)*
+**Q3.1.3** — Welche Länder sind in den nächsten 12 Monaten geplant? *(optional)*
 
 > Answer:
 
-**Q3.1.4** — Stated preference only — does the client already have a view on running all countries from one store or giving some countries their own store? Record it as their view, not as the answer. *(optional · consultant)*
+**Q3.1.4** — Nur als geäußerte Präferenz — hat der Kunde bereits eine Meinung dazu, ob alle Länder aus einem Store laufen oder einzelne Länder einen eigenen Store bekommen? Erfassen Sie sie als seine Sicht, nicht als die Antwort. *(optional · consultant)*
 *Why we ask: If you already have a view, we will say where the evidence agrees with it and where it does not, rather than quietly designing around it.*
-*Recorded as a stated preference. It never decides the recommendation; where it differs, the closing document argues the gap.*
+*Wird als geäußerte Präferenz erfasst. Sie entscheidet nie über die Empfehlung; weicht sie ab, begründet das Abschlussdokument den Unterschied.*
 
 *(tick one)*
 - [ ] Shopify markets
 - [ ] Expansion stores
 - [ ] Hybrid (DTC and B2B)
 
-**Q3.1.5** — How should visitors reach their local market? *(optional)*
-*Automatic redirection is native; EU visitors on EU country domains are not redirected automatically.*
+**Q3.1.5** — Wie sollen Besucherinnen und Besucher in ihren lokalen Markt gelangen? *(optional)*
+*Die automatische Weiterleitung ist nativ; EU-Besucher auf EU-Länderdomains werden nicht automatisch weitergeleitet.*
 
 *(tick one)*
 - [ ] Automatic redirect
@@ -537,22 +537,22 @@
 - [ ] Suggest banner
 - [ ] None
 
-**Q3.1.7** — Should any market have its own theme content, section order, checkout or customer-account settings? *(required)*
+**Q3.1.7** — Soll ein Markt eigene Theme-Inhalte, eine eigene Abschnittsreihenfolge, einen eigenen Checkout oder eigene Einstellungen für Kundenkonten haben? *(required)*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.1.8** — Are some products not allowed to be sold in certain markets (regulation, registration, licensing or distribution agreements)? *(recommended)*
-*List them in a note. In Shopify, products are excluded from the catalog of that market.*
+**Q3.1.8** — Gibt es Produkte, die in bestimmten Märkten nicht verkauft werden dürfen (Regulierung, Registrierung, Lizenzen oder Vertriebsvereinbarungen)? *(recommended)*
+*Bitte in einer Notiz auflisten. In Shopify werden die Produkte aus dem Katalog dieses Markts ausgeschlossen.*
 
 - [ ] Yes
 - [ ] No
 
 ### 3.2 Sprache
 
-**Q3.2.1** — How will translation be handled? *(recommended)*
+**Q3.2.1** — Wie wird die Übersetzung gehandhabt? *(recommended)*
 *Ask if Q3.1.1 has 3+ languages.*
-*Translate & Adapt (Shopify's free app) auto-translates up to 2 languages; more languages need manual work or a translation app. Checkout is pre-translated.*
+*Translate & Adapt (Shopifys kostenlose App) übersetzt bis zu 2 Sprachen automatisch; mehr Sprachen brauchen Handarbeit oder eine Übersetzungs-App. Der Checkout ist vorübersetzt.*
 
 *(tick one)*
 - [ ] In house
@@ -562,19 +562,19 @@
 - [ ] Supplied by the PIM
 - [ ] Not sure yet
 
-**Q3.2.2** — Does any language need right-to-left layout? *(optional)*
+**Q3.2.2** — Braucht eine der Sprachen ein Layout von rechts nach links? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.2.3** — Is SEO per language a priority? *(optional)*
+**Q3.2.3** — Ist SEO je Sprache eine Priorität? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.2.4** — What must be translated? *(recommended)*
+**Q3.2.4** — Was muss übersetzt werden? *(recommended)*
 *Ask if Q3.1.1 has 3+ languages.*
-*Translate & Adapt does not auto-translate policies or URL handles.*
+*Translate & Adapt übersetzt Richtlinien und URL-Handles nicht automatisch.*
 
 *(tick all that apply)*
 - [ ] Product data from the PIM
@@ -589,22 +589,22 @@
 
 ### 3.4 Steuern & Zölle
 
-**Q3.4.1** — Should duties and import taxes be collected at checkout (DDP)? *(recommended)*
-*Duties and import taxes can be charged at checkout (DDP) or paid by the customer on delivery (DAP), chosen per country. Needs HS codes (and country of origin) on products; not combinable with tax overrides, manual tax rates or customer tax exemptions; DDP labels only with some carriers.*
+**Q3.4.1** — Sollen Zölle und Einfuhrsteuern im Checkout erhoben werden (DDP)? *(recommended)*
+*Zölle und Einfuhrsteuern können im Checkout erhoben (DDP) oder von der Kundschaft bei Zustellung bezahlt werden (DAP) — wählbar je Land. Erfordert HS-Codes (und Ursprungsland) an den Produkten; nicht kombinierbar mit Steuerüberschreibungen, manuellen Steuersätzen oder Steuerbefreiungen von Kunden; DDP-Labels nur bei bestimmten Carriern.*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.4.2** — In which countries are you VAT-registered? *(recommended)*
+**Q3.4.2** — In welchen Ländern sind Sie umsatzsteuerlich registriert? *(recommended)*
 
 > Answer:
 
-**Q3.4.3** — Do you sell into the US with state sales tax obligations? *(optional)*
+**Q3.4.3** — Verkaufen Sie in die USA mit Pflichten zur State Sales Tax? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.4.4** — Do products have HS codes and country of origin, and where do they come from? *(recommended)*
+**Q3.4.4** — Haben die Produkte HS-Codes und ein Ursprungsland, und woher stammen diese Angaben? *(recommended)*
 *Skip if Q3.4.1 = no.*
 
 *(tick one)*
@@ -613,16 +613,16 @@
 - [ ] To be created
 - [ ] Not needed
 
-**Q3.4.5** — Should prices include tax (VAT) in some markets and exclude it in others? *(required)*
-*Shopify can show tax-inclusive prices per market (dynamic tax display).*
+**Q3.4.5** — Sollen die Preise in manchen Märkten inklusive Steuer (MwSt.) und in anderen exklusive Steuer angezeigt werden? *(required)*
+*Shopify kann Preise je Markt inklusive Steuer anzeigen (dynamische Steueranzeige).*
 
 *(tick one)*
 - [ ] Include everywhere
 - [ ] Exclude everywhere
 - [ ] Dynamic by market
 
-**Q3.4.6** — Which tax service? *(recommended · consultant)*
-*Shopify Tax covers the US, EU, UK and Canada; since 2026-05-13 new stores selling in the EU, UK or Canada cannot use Basic Tax.*
+**Q3.4.6** — Welcher Steuerdienst? *(recommended · consultant)*
+*Shopify Tax deckt USA, EU, UK und Kanada ab; seit dem 13.05.2026 können neue Stores, die in der EU, in UK oder Kanada verkaufen, Basic Tax nicht mehr nutzen.*
 
 *(tick one)*
 - [ ] Shopify Tax
@@ -630,21 +630,21 @@
 - [ ] Manual rates
 - [ ] Not sure yet
 
-**Q3.4.7** — Do business customers buy tax-exempt (VAT number validation, reverse charge)? *(optional)*
-*VAT ID validation at checkout is native.*
+**Q3.4.7** — Kaufen Geschäftskunden steuerbefreit ein (Prüfung der USt-IdNr., Reverse Charge)? *(optional)*
+*Die Prüfung der USt-IdNr. im Checkout ist nativ.*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.4.8** — In which countries should duties and import taxes be collected at checkout (DDP)? In the others the customer pays on delivery (DAP). *(recommended)*
+**Q3.4.8** — In welchen Ländern sollen Zölle und Einfuhrsteuern im Checkout erhoben werden (DDP)? In den übrigen zahlt die Kundschaft bei Zustellung (DAP). *(recommended)*
 *Skip if Q3.4.1 = no.*
-*Countries, e.g. United States, United Kingdom, Switzerland. One choice per country: DDP and DAP can't both be offered in the same country. If you don't ship across borders, say so in a comment.*
+*Länder, z. B. Vereinigte Staaten, Vereinigtes Königreich, Schweiz. Eine Wahl je Land: DDP und DAP lassen sich im selben Land nicht parallel anbieten. Falls Sie nicht grenzüberschreitend versenden, halten Sie das bitte in einem Kommentar fest.*
 
 > Answer:
 
-**Q3.4.9** — When you ship low-value parcels into these territories from outside them, are you registered to collect the import VAT or GST at checkout? *(recommended)*
+**Q3.4.9** — Wenn Sie geringwertige Sendungen von außerhalb in diese Gebiete versenden: Sind Sie registriert, um die Einfuhrumsatzsteuer oder GST bereits im Checkout zu erheben? *(recommended)*
 *Ask if Q3.1.1 has 2+ markets.*
-*Low-value parcels into the EU (IOSS), the UK, Switzerland, Norway (VOEC), Australia and New Zealand. Tick the schemes you are registered for.*
+*Geringwertige Sendungen in die EU (IOSS), nach UK, in die Schweiz, nach Norwegen (VOEC), Australien und Neuseeland. Bitte die Verfahren ankreuzen, für die Sie registriert sind.*
 
 *(tick all that apply)*
 - [ ] EU Import One-Stop Shop (IOSS)
@@ -656,15 +656,15 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q3.4.10** — Do some products have reduced or zero tax rates, or tax exemptions, in any market (e.g. medicines, books, food, children's clothing)? *(recommended)*
-*Finance confirms the rates; Merkle does not give tax advice.*
+**Q3.4.10** — Gibt es Produkte mit ermäßigten oder Nullsteuersätzen oder mit Steuerbefreiungen in einem Markt (z. B. Arzneimittel, Bücher, Lebensmittel, Kinderbekleidung)? *(recommended)*
+*Die Sätze bestätigt die Finanzabteilung; Merkle erteilt keine Steuerberatung.*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.4.11** — Who issues invoices to customers? *(recommended)*
+**Q3.4.11** — Wer stellt die Rechnungen an die Kundschaft aus? *(recommended)*
 *Ask if Q1.1.4 is Business to business (B2B) or Hybrid (DTC and B2B), or the launch markets include GB / DE / FR / IT / PL / BE / ES / EU / AT / NL / PT / IE / SE / DK / FI.*
-*Shopify can generate VAT invoices for EU and UK orders (shown on the order status page, not emailed, not for orders with duties). The free Order Printer app prints invoices from templates. Invoices can also come from the ERP or an invoicing app.*
+*Shopify kann MwSt.-Rechnungen für EU- und UK-Bestellungen erzeugen (auf der Bestellstatusseite sichtbar, nicht per E-Mail, nicht für Bestellungen mit Zöllen). Die kostenlose App Order Printer druckt Rechnungen aus Vorlagen. Rechnungen können auch aus dem ERP oder einer Rechnungs-App kommen.*
 
 *(tick one)*
 - [ ] Shopify VAT invoices (EU and UK)
@@ -674,9 +674,9 @@
 - [ ] Billing or tax service
 - [ ] Not sure yet
 
-**Q3.4.12** — Which electronic invoicing (e-invoicing) obligations apply to your sales? *(recommended)*
+**Q3.4.12** — Welche Pflichten zur elektronischen Rechnungsstellung (E-Invoicing) gelten für Ihre Umsätze? *(recommended)*
 *Ask if Q1.1.4 is Business to business (B2B) or Hybrid (DTC and B2B), or the launch markets include DE / FR / IT / PL / BE / ES / EU.*
-*For example Peppol, XRechnung or ZUGFeRD (Germany), Factur-X (France), SdI (Italy), KSeF (Poland) or VeriFactu (Spain). Shopify has no built-in e-invoicing: it comes from the ERP or an invoicing app.*
+*Zum Beispiel Peppol, XRechnung oder ZUGFeRD (Deutschland), Factur-X (Frankreich), SdI (Italien), KSeF (Polen) oder VeriFactu (Spanien). Shopify hat kein eingebautes E-Invoicing: Es kommt aus dem ERP oder einer Rechnungs-App.*
 
 *(tick all that apply)*
 - [ ] Peppol
@@ -689,9 +689,9 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q3.4.13** — If selling in a country meant registering for tax there and filing returns, would you take that on yourself, or would you rather a partner were the legal seller for those orders? *(recommended)*
+**Q3.4.13** — Wenn der Verkauf in einem Land bedeutete, sich dort steuerlich registrieren und Erklärungen abgeben zu müssen: Würden Sie das selbst übernehmen, oder wäre Ihnen lieber, ein Partner wäre für diese Bestellungen der rechtliche Verkäufer? *(recommended)*
 *Why we ask: This decides who carries the tax and customs liability on cross-border orders. Keeping it yourself means registering, filing and remitting in each country; handing it to a partner removes that work and that risk, and costs a percentage of every international order.*
-*Answer for the countries you sell to but are not registered in today.*
+*Bitte für die Länder antworten, in die Sie verkaufen, in denen Sie heute aber nicht registriert sind.*
 
 *(tick one)*
 - [ ] Own registrations
@@ -701,9 +701,9 @@
 
 ### 3.5 Festlandchina
 
-**Q3.5.1** — Do you want to sell to mainland China cross-border (from outside China) or onshore, behind the Great Firewall? *(required)*
+**Q3.5.1** — Möchten Sie grenzüberschreitend (von außerhalb Chinas) oder onshore, hinter der Großen Firewall, an das chinesische Festland verkaufen? *(required)*
 *Only if the launch markets include mainland China (CN).*
-*Onshore selling needs a PRC entity, an ICP filing or licence and hosting in China.*
+*Der Onshore-Verkauf setzt eine Gesellschaft in der VR China, eine ICP-Registrierung oder -Lizenz und Hosting in China voraus.*
 
 *(tick one)*
 - [ ] Cross-border, from outside China
@@ -711,9 +711,9 @@
 - [ ] Both
 - [ ] Not sure yet
 
-**Q3.5.2** — Which channels for mainland China? *(required)*
+**Q3.5.2** — Welche Kanäle für das chinesische Festland? *(required)*
 *Only if the launch markets include mainland China (CN).*
-*Cross-border marketplaces (Tmall Global, JD Worldwide, Douyin Global, RED), a WeChat mini-program, your own site, or a Hong Kong store shipping to the mainland.*
+*Grenzüberschreitende Marktplätze (Tmall Global, JD Worldwide, Douyin Global, RED), ein WeChat-Mini-Programm, die eigene Website oder ein Hongkong-Store, der auf das Festland versendet.*
 
 *(tick all that apply)*
 - [ ] Tmall Global
@@ -726,9 +726,9 @@
 - [ ] Hong Kong store shipping to the mainland
 - [ ] Not sure yet
 
-**Q3.5.3** — Do you have a legal entity in mainland China? *(required)*
+**Q3.5.3** — Haben Sie eine juristische Person auf dem chinesischen Festland? *(required)*
 *Only if the launch markets include mainland China (CN).*
-*Needed for an ICP filing or licence and for onshore hosting.*
+*Erforderlich für eine ICP-Registrierung oder -Lizenz und für Onshore-Hosting.*
 
 *(tick one)*
 - [ ] None
@@ -737,16 +737,16 @@
 - [ ] Representative office
 - [ ] Planned
 
-**Q3.5.4** — Do you have a Hong Kong or other overseas entity that can sell cross-border, and are your trademarks registered in China? *(optional)*
+**Q3.5.4** — Haben Sie eine Gesellschaft in Hongkong oder anderswo im Ausland, die grenzüberschreitend verkaufen kann, und sind Ihre Marken in China eingetragen? *(optional)*
 *Only if the launch markets include mainland China (CN).*
-*Cross-border marketplaces require both.*
+*Grenzüberschreitende Marktplätze verlangen beides.*
 
 - Overseas entity:
 - Trademarks registered in china:
 
-**Q3.5.5** — ICP status for a China website? *(optional)*
+**Q3.5.5** — ICP-Status für eine China-Website? *(optional)*
 *Only if the launch markets include mainland China (CN).*
-*Your PRC counsel confirms whether a filing is enough or a commercial ICP licence is needed.*
+*Ihre Rechtsberatung in der VR China bestätigt, ob eine Registrierung genügt oder eine kommerzielle ICP-Lizenz nötig ist.*
 
 *(tick one)*
 - [ ] None
@@ -756,9 +756,9 @@
 - [ ] Not needed
 - [ ] Not sure yet
 
-**Q3.5.6** — What is Shopify's role for mainland China? *(optional · consultant)*
+**Q3.5.6** — Welche Rolle spielt Shopify für das chinesische Festland? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
-*Shopify can stay the global master for products, inventory and orders while China sells through local channels.*
+*Shopify kann global führend für Produkte, Bestände und Bestellungen bleiben, während China über lokale Kanäle verkauft.*
 
 *(tick one)*
 - [ ] Global master for products, inventory and orders
@@ -766,9 +766,9 @@
 - [ ] Not involved
 - [ ] Not sure yet
 
-**Q3.5.7** — How will goods enter China: bonded warehouse (1210), direct mail (9610), general trade, or personal parcels? *(optional)*
+**Q3.5.7** — Wie gelangen die Waren nach China: Zolllager (1210), Direktversand (9610), allgemeiner Handel oder Privatsendungen? *(optional)*
 *Only if the launch markets include mainland China (CN).*
-*Cross-border channels have per-order and yearly limits per consumer.*
+*Grenzüberschreitende Kanäle haben Grenzen je Bestellung und je Jahr und Verbraucher.*
 
 *(tick all that apply)*
 - [ ] Bonded warehouse (1210)
@@ -777,7 +777,7 @@
 - [ ] Personal parcels
 - [ ] Not sure yet
 
-**Q3.5.8** — Are your products on China's cross-border e-commerce positive list? *(optional)*
+**Q3.5.8** — Stehen Ihre Produkte auf Chinas Positivliste für den grenzüberschreitenden E-Commerce? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 *(tick one)*
@@ -786,9 +786,9 @@
 - [ ] None on the list
 - [ ] Not sure yet
 
-**Q3.5.9** — How are your products classified in China? *(optional)*
+**Q3.5.9** — Wie sind Ihre Produkte in China eingestuft? *(optional)*
 *Only if the launch markets include mainland China (CN).*
-*Whitening, sunscreen and anti-hair-loss products are special cosmetics; medicines are not cross-border goods.*
+*Aufhellende Produkte, Sonnenschutz und Mittel gegen Haarausfall gelten als besondere Kosmetika; Arzneimittel sind keine grenzüberschreitenden Waren.*
 
 *(tick all that apply)*
 - [ ] Ordinary cosmetics
@@ -799,9 +799,9 @@
 - [ ] General goods
 - [ ] Not sure yet
 
-**Q3.5.10** — Registration or filing status with China's medical products administration (NMPA)? *(optional)*
+**Q3.5.10** — Status der Registrierung oder Anmeldung bei Chinas Arzneimittelbehörde (NMPA)? *(optional)*
 *Only if the launch markets include mainland China (CN).*
-*General trade needs registration or filing; cross-border channels are exempt for goods on the positive list.*
+*Der allgemeine Handel verlangt Registrierung oder Anmeldung; grenzüberschreitende Kanäle sind für Waren auf der Positivliste befreit.*
 
 *(tick one)*
 - [ ] Registered
@@ -811,16 +811,16 @@
 - [ ] Not needed (cross-border e-commerce)
 - [ ] Not sure yet
 
-**Q3.5.11** — Do product claims need a review for China (medical, cosmeceutical or treatment claims)? *(optional · consultant)*
+**Q3.5.11** — Müssen Produktaussagen für China geprüft werden (medizinische, kosmezeutische oder Behandlungsaussagen)? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
-*China does not allow cosmeceutical or medical claims for cosmetics.*
+*China lässt kosmezeutische oder medizinische Aussagen für Kosmetika nicht zu.*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.5.12** — How will mainland customers pay? *(optional)*
+**Q3.5.12** — Wie werden Kundinnen und Kunden auf dem Festland bezahlen? *(optional)*
 *Only if the launch markets include mainland China (CN).*
-*Inside the marketplace, Alipay and WeChat Pay through a Hong Kong Shopify Payments account (early access), a cross-border wallet provider, or domestic merchant accounts (PRC entity).*
+*Innerhalb des Marktplatzes, mit Alipay und WeChat Pay über ein Shopify-Payments-Konto in Hongkong (Early Access), über einen grenzüberschreitenden Wallet-Anbieter oder über inländische Händlerkonten (Gesellschaft in der VR China).*
 
 *(tick all that apply)*
 - [ ] Inside the marketplace
@@ -829,9 +829,9 @@
 - [ ] Domestic merchant accounts (PRC entity)
 - [ ] Not sure yet
 
-**Q3.5.13** — How many mainland China customers do you expect per year? *(optional)*
+**Q3.5.13** — Wie viele Kundinnen und Kunden vom chinesischen Festland erwarten Sie pro Jahr? *(optional)*
 *Only if the launch markets include mainland China (CN).*
-*China's personal information law sets different data-export obligations by volume.*
+*Chinas Gesetz zum Schutz personenbezogener Daten sieht je nach Volumen unterschiedliche Pflichten beim Datenexport vor.*
 
 *(tick one)*
 - [ ] Under 100,000
@@ -839,14 +839,14 @@
 - [ ] Over 1 million
 - [ ] Not sure yet
 
-**Q3.5.14** — Do you have a representative in China for personal information protection (PIPL)? *(optional)*
+**Q3.5.14** — Haben Sie in China eine vertretungsberechtigte Person für den Schutz personenbezogener Daten (PIPL)? *(optional)*
 *Only if the launch markets include mainland China (CN).*
-*Required when an offshore business targets consumers in China.*
+*Erforderlich, wenn ein ausländisches Unternehmen Verbraucherinnen und Verbraucher in China anspricht.*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.5.15** — Where will China customer data (CRM, email, analytics) be stored? *(optional)*
+**Q3.5.15** — Wo werden die China-Kundendaten (CRM, E-Mail, Analytics) gespeichert? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 *(tick one)*
@@ -855,13 +855,13 @@
 - [ ] Both
 - [ ] Not sure yet
 
-**Q3.5.16** — Must scripts blocked in China (Google Fonts, Google Analytics, reCAPTCHA, Meta pixels, YouTube) be replaced? *(optional · consultant)*
+**Q3.5.16** — Müssen in China blockierte Skripte (Google Fonts, Google Analytics, reCAPTCHA, Meta-Pixel, YouTube) ersetzt werden? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
 
 - [ ] Yes
 - [ ] No
 
-**Q3.5.17** — Which marketing channels for China? *(optional)*
+**Q3.5.17** — Welche Marketingkanäle für China? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 *(tick all that apply)*
@@ -874,7 +874,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q3.5.18** — Who provides Chinese-language customer service? *(optional)*
+**Q3.5.18** — Wer leistet den Kundenservice auf Chinesisch? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 *(tick one)*
@@ -883,19 +883,19 @@
 - [ ] Platform
 - [ ] Not sure yet
 
-**Q3.5.19** — Do you work with a local partner or trade partner for China? Name it. *(optional)*
+**Q3.5.19** — Arbeiten Sie für China mit einem lokalen Partner oder Handelspartner? Bitte nennen. *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 > Answer:
 
-**Q3.5.20** — Target launch date for mainland China. *(optional)*
+**Q3.5.20** — Ziel-Launchdatum für das chinesische Festland. *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 > Answer:
 
-**Q3.5.21** — Who provides PRC legal, tax and customs advice? *(required)*
+**Q3.5.21** — Wer berät rechtlich, steuerlich und zollrechtlich zur VR China? *(required)*
 *Only if the launch markets include mainland China (CN).*
-*Merkle does not provide PRC legal advice.*
+*Merkle erbringt keine Rechtsberatung zur VR China.*
 
 *(tick one)*
 - [ ] Client's PRC counsel

@@ -1,6 +1,7 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader } from '../components/question.jsx';
+import { ServiceError } from '../../../discovery/service/index.js';
+import { Blockers, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Handover', params.client) }];
@@ -14,9 +15,15 @@ export const meta = ({ params }) => [{ title: pageTitle('Handover', params.clien
 export async function loader({ request, params }) {
   const user = await requireUser(request);
   try {
-    return await discovery().getHandover(user, params.client);
+    return { ...(await discovery().getHandover(user, params.client)), blocked: null };
   } catch (err) {
-    throw serviceFailure(err);
+    // Handover is a permanent step on a discovery and a view on a bid, so an
+    // incomplete record reaches it by clicking the nav. Rethrowing dropped the
+    // consultant on a bare "Cannot do that yet" with the record, the steps and
+    // every fix-link gone, while three sibling pages named the blockers.
+    if (!(err instanceof ServiceError)) throw serviceFailure(err);
+    const { engagement } = await discovery().getSummary(user, params.client);
+    return { engagement, handover: null, blocked: { error: err.message, errors: err.errors ?? [], blockers: err.blockers ?? [] } };
   }
 }
 
@@ -27,9 +34,47 @@ const OWNER = {
   client: 'Client',
 };
 
+/**
+ * What the backlog was built from, said plainly where it is downloaded. An
+ * unfinished interview still produces a complete-looking CSV, and the page said
+ * "ready" with nothing to the contrary — so delivery could open 64 stories
+ * resting on two dozen questions nobody asked.
+ */
+function RestsOn({ on }) {
+  if (!on) return null;
+  const short = Math.max(0, (on.required_total ?? 0) - (on.required_answered ?? 0));
+  const gaps = [
+    short ? `${short} required question${short === 1 ? '' : 's'} still unanswered` : null,
+    on.to_review ? `${on.to_review} answer${on.to_review === 1 ? '' : 's'} nobody has confirmed` : null,
+    on.closing_document_at ? null : 'no closing document agreed with the client',
+    on.assumptions ? `${on.assumptions} stated assumption${on.assumptions === 1 ? '' : 's'}` : null,
+  ].filter(Boolean);
+  if (!gaps.length) return null;
+  return (
+    <div className="card blocked">
+      <p className="question">What this backlog does not rest on</p>
+      <p className="muted">It is built from the answers that exist today. Before delivery works from it, they need to know it carries:</p>
+      <ul>{gaps.map((g) => <li key={g}>{g}</li>)}</ul>
+      <p className="muted">Finishing the earlier steps changes the backlog. Hand it over now only if delivery is told this with it.</p>
+    </div>
+  );
+}
+
 export default function Handover({ loaderData }) {
-  const { engagement, handover } = loaderData;
+  const { engagement, handover, blocked } = loaderData;
   const client = engagement.client;
+  if (blocked) {
+    return (
+      <main id="main">
+        <EngagementHeader engagement={engagement} eyebrow="Handover" />
+        <section className="card start blocked">
+          <p className="question">{blocked.error}</p>
+          <p className="muted">Delivery gets nothing from this record until the answers behind it exist.</p>
+          <Blockers items={blocked.blockers} errors={blocked.errors} client={client} />
+        </section>
+      </main>
+    );
+  }
   const { backlog, workbook } = handover;
 
   return (
@@ -39,6 +84,8 @@ export default function Handover({ loaderData }) {
         eyebrow="Handover"
         meta={backlog.available ? `${backlog.stories} stories · ${backlog.points} points · ${backlog.epics.length} epics` : null}
       />
+
+      <RestsOn on={handover.rests_on} />
 
       {/* 1 — the build backlog */}
       <section className={`card start ${backlog.available ? 'current' : 'blocked'}`}>

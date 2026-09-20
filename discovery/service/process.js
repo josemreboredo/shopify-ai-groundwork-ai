@@ -106,13 +106,24 @@ const STEPS = {
       // the step marked itself done on a bid nobody had read. It follows the
       // page's own gates now: nothing read is nothing to assess, and an
       // extraction nobody has checked is not something to stand behind.
-      done: (e.documents ?? 0) > 0 && (e.to_review ?? 0) === 0 && Boolean(e.go || e.route),
-      hint: !(e.documents ?? 0)
+      done: ((e.documents ?? 0) > 0 || (e.coverage?.required_answered ?? 0) > 0) && (e.to_review ?? 0) === 0 && Boolean(e.go || e.route),
+      // The step used to state the engine's commercial position — "Within the
+      // offers · S" — while the page it links to applies its own gates and could
+      // read "ASK FIRST — part of this cannot be costed at all". Two verdicts,
+      // one step. The page owns the position; the step says whether there is one
+      // to read.
+      // A route beyond the offers is the engine's own classification and the page
+      // says the same thing, so it stays. "Within the offers · S" did not: the
+      // page applies its own gates and can read "ASK FIRST — part of this cannot
+      // be costed at all" beside it. The page owns the position; the step says
+      // whether there is one worth reading.
+      hint: !(e.documents ?? 0) && !(e.coverage?.required_answered ?? 0)
         ? 'Nothing to assess yet'
         : e.to_review
           ? `${e.to_review} to confirm first`
-          : e.go ? `Within the offers · ${e.offer?.code ?? ''}`.trim()
-            : e.route ? ROUTE_LABEL[e.route] ?? e.route : 'Evidence for the decision',
+          : e.route
+            ? ROUTE_LABEL[e.route] ?? e.route
+            : 'The position, and what it rests on',
     },
     {
       path: 'clarifications',

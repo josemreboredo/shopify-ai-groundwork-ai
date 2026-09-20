@@ -668,6 +668,454 @@
    "teach": {
     "why": "Bons de commande, transferts et ajustements de stock sont natifs dans l'interface d'administration Shopify. La réponse indique donc quelle part de l'exploitation des stocks du client bascule dans Shopify, ce qui pilote la formation, les rôles et les permissions plutôt que l'effort de construction."
    }
+  },
+  "Q3.1.1": {
+   "text": "Dans quels pays vendez-vous au lancement ? Pour chacun : le pays, la devise dans laquelle les clients paient, les langues, l'adresse web utilisée là-bas aujourd'hui, la façon dont les prix sont fixés, laquelle de vos sociétés facture le client, si la gamme est la même que dans votre pays principal, et qui pilote ce pays au quotidien.",
+   "help": "Une ligne par pays. Laissez une cellule vide si vous ne savez pas — nous y reviendrons.",
+   "teach": {
+    "why": "Fixe tout le périmètre international : marchés, devises, langues, domaines et stratégie de prix. Les colonnes société, gamme et responsable sont ce que le moteur lit pour décider entre une boutique unique avec Markets, des boutiques d'expansion ou une solution hybride — on ne demande jamais au client de choisir la topologie.",
+    "limits": "Shopify ne documente aucune limite au nombre de marchés pays ou région. Les langues publiées sont plafonnées à 20 en dessous de Plus et à 30 sur Plus. Facturer dans une devise locale (et pas seulement l'afficher) exige Shopify Payments ou Adyen ; avec tout autre prestataire, le client est débité dans la devise par défaut de la boutique. La Chine continentale est exclue de cet engagement et orientée vers une discovery Chine distincte."
+   }
+  },
+  "Q3.1.2": {
+   "text": "Quels sont les marchés principaux (un ou plusieurs codes pays ou marché) ?",
+   "help": "Les marchés qui portent le chiffre d'affaires et la priorité de lancement, par exemple les États-Unis et l'UE pour une marque mondiale.",
+   "teach": {
+    "why": "Les marchés principaux décident quelle devise, quel domaine, quels moyens de paiement et quelle configuration fiscale reçoivent l'effort de conception et sont testés en premier. Tous les autres marchés se rangent derrière eux, et les vagues de déploiement se construisent à partir de cette réponse."
+   }
+  },
+  "Q3.1.3": {
+   "text": "Quels pays sont prévus dans les 12 prochains mois ?",
+   "teach": {
+    "why": "Un marché ajouté plus tard coûte peu si la structure de domaines, de catalogue et de prix l'avait anticipé, et cher s'il impose un redécoupage. La réponse montre aussi si le plan choisi aujourd'hui tient les douze prochains mois.",
+    "limits": "La stratégie de domaines est la chose la plus difficile à changer ensuite : les sous-dossiers héritent du référencement du domaine principal, tandis qu'un ccTLD construit son autorité depuis zéro. Supprimer un marché plus tard exige des redirections, sinon les clients tombent sur des 404."
+   }
+  },
+  "Q3.1.4": {
+   "text": "Préférence exprimée uniquement — le client a-t-il déjà une opinion sur le fait de piloter tous les pays depuis une seule boutique ou de donner à certains pays leur propre boutique ? Consignez-la comme son opinion, pas comme la réponse.",
+   "help": "Consignée comme une préférence exprimée. Elle ne décide jamais de la recommandation ; en cas d'écart, le document de clôture argumente la différence.",
+   "teach": {
+    "why": "C'est la seule question du référentiel qui demande une opinion plutôt qu'un fait, et elle n'est conservée que pour que le document de clôture puisse répondre à l'opinion du client. La topologie, elle, se déduit des faits métier recueillis en Q3.1.1, Q1.1.6, Q3.4.2, Q3.4.13, Q5.1.3 et Q6.2.14.",
+    "limits": "Ne laissez jamais cette réponse tenir lieu d'analyse. Les boutiques d'expansion exigent Shopify Plus et dupliquent chaque changement de catalogue, de thème et d'application ; une boutique unique avec Markets les garde ensemble mais partage un thème, un parc d'applications et une interface d'administration.",
+    "options": [
+     {
+      "option": "Une boutique unique avec Shopify Markets",
+      "pros": "Une administration, un catalogue, un thème ; devise, domaine, langue, catalogue et fiscalité surchargeables par marché ; disponible dès Basic ; pas de factures d'applications dupliquées",
+      "cons": "Structure de catalogue et parc d'applications partagés ; le contenu de thème par marché exige Advanced ou supérieur ; une seule entité juridique sauf si le client est sur Plus"
+     },
+     {
+      "option": "Boutiques d'expansion (Plus)",
+      "pros": "Chaque région pilote son catalogue, ses applications, son équipe et ses réglages — adapté à des activités régionales pilotées séparément ou à des entités juridiques différentes",
+      "cons": "Plus uniquement ; produits, collections, stocks et réglages ne sont pas synchronisés ; applications facturées par boutique, licences de thème non partagées ; chaque changement est fait plusieurs fois"
+     }
+    ]
+   }
+  },
+  "Q3.1.5": {
+   "text": "Comment les visiteurs doivent-ils rejoindre leur marché local ?",
+   "help": "La redirection automatique est native ; les visiteurs de l'UE arrivant sur un domaine pays de l'UE ne sont pas redirigés automatiquement.",
+   "teach": {
+    "why": "Les clients supposent que les visiteurs atterrissent toujours dans le bon marché. La redirection automatique est native et gratuite, mais elle a des trous documentés qui se manifestent en production par une mauvaise devise : mettez-vous d'accord sur le comportement maintenant.",
+    "limits": "Les clients de l'UE arrivant sur un domaine national de l'UE (ccTLD) ne sont pas redirigés automatiquement. La redirection linguistique ne fonctionne que là où la langue est ajoutée, affectée, traduite et publiée. Le contenu des marchés utilisant des domaines partagés n'est pas indexé par les moteurs de recherche. L'ancienne application Geolocation est retirée ; elle n'a jamais fait que recommander un marché, sans y basculer.",
+    "options": [
+     {
+      "option": "Rediriger les visiteurs automatiquement",
+      "pros": "Bonne devise, bonne langue et bons prix dès le premier affichage ; natif, sans application ni développement",
+      "cons": "Ne s'applique pas aux visiteurs de l'UE déjà sur un ccTLD européen ; irrite les clients qui veulent délibérément un autre marché si aucun sélecteur n'est proposé"
+     },
+     {
+      "option": "N'afficher qu'un sélecteur de pays et de langue",
+      "pros": "Le client choisit et conserve son choix ; un sélecteur est de toute façon nécessaire dès qu'on vend en devises locales",
+      "cons": "Certains ne l'utilisent jamais et achètent dans la mauvaise devise ; taux de rebond plus élevé sur le trafic payant venu d'un autre pays"
+     }
+    ]
+   }
+  },
+  "Q3.1.7": {
+   "text": "Un marché doit-il avoir son propre contenu de thème, son ordre de sections, son paiement ou ses réglages de compte client ?",
+   "teach": {
+    "why": "Un contenu de thème par marché exige le plan Advanced ou supérieur. Sur Basic ou Grow, tous les marchés partagent une seule personnalisation de thème : un oui ici peut donc déplacer le plan — et le coût mensuel du client — avant même que le travail de conception ne commence.",
+    "limits": "Les champs d'adaptation peuvent apparaître dans Translate & Adapt sur les plans inférieurs mais ne s'afficheront pas. Modifier les étapes information, livraison ou paiement du paiement, ou restyler le paiement via la Checkout Branding API, est réservé à Plus ; les extensions sur les pages de remerciement et de statut de commande fonctionnent dès Basic. Une entité juridique distincte par marché est réservée à Plus."
+   }
+  },
+  "Q3.1.8": {
+   "text": "Certains produits ne peuvent-ils pas être vendus sur certains marchés (réglementation, enregistrement, licence ou accords de distribution) ?",
+   "help": "Listez-les dans une note. Dans Shopify, les produits sont exclus du catalogue de ce marché.",
+   "teach": {
+    "why": "Les catalogues de marché incluent ou excluent des produits marché par marché : une restriction de licence, d'enregistrement ou de distribution relève donc de la configuration et non du développement sur mesure. Mais elle doit être connue avant que la structure de catalogue et les listes de prix ne soient conçues.",
+    "limits": "Shopify ne contrôle pas ce point — l'exclusion est un réglage de catalogue que le client entretient à mesure que la gamme évolue. Quand un marché parent et un sous-marché fixent tous deux un prix, c'est le plus spécifique qui s'applique. La personnalisation de catalogue pour les marchés de détail exige Shopify POS Pro ou Plus."
+   }
+  },
+  "Q3.2.1": {
+   "text": "Comment la traduction sera-t-elle gérée ?",
+   "help": "Translate & Adapt (l'application gratuite de Shopify) traduit automatiquement jusqu'à 2 langues ; au-delà, il faut du travail manuel ou une application de traduction. Le paiement est pré-traduit.",
+   "teach": {
+    "why": "Translate & Adapt est gratuit mais traduit automatiquement deux langues au maximum, et une fois une langue utilisée ce choix ne peut plus être changé. Au-delà de deux, la traduction devient un coût humain ou applicatif récurrent, et non une tâche de construction ponctuelle.",
+    "limits": "Translate & Adapt couvre produits, collections, articles de blog, politiques et pages, mais ne traduit automatiquement ni les politiques ni les identifiants d'URL. Le paiement est pré-traduit par Shopify. Les langues publiées sont plafonnées à 20 en dessous de Plus et à 30 sur Plus. Six langues ou plus déclenchent une règle d'arrêt — la traduction et les opérations de contenu passent en phase de discovery.",
+    "options": [
+     {
+      "option": "Translate & Adapt seul",
+      "pros": "Gratuit, natif, aucune application supplémentaire ; traduction automatique jusqu'à deux langues ; adaptation du même contenu par marché",
+      "cons": "Deux langues traduites automatiquement au maximum et le choix est verrouillé ; politiques et identifiants d'URL restent manuels ; aucun flux de traducteur, aucune relecture, aucune mémoire"
+     },
+     {
+      "option": "Une application de traduction (par exemple Weglot, Langify, Transcy)",
+      "pros": "Davantage de langues, mémoire de traduction, glossaires et flux de relecture ; couvre en général les textes d'applications et de thème que Translate & Adapt laisse de côté",
+      "cons": "Un coût mensuel qui croît avec les mots et les langues ; une dépendance de plus dans le thème et dans les contenus proches du paiement ; la qualité demande quand même une relecture"
+     },
+     {
+      "option": "Traduction humaine ou par agence, chargée dans Shopify",
+      "pros": "Des textes à la hauteur de la marque, une transcréation par marché, un contrôle total du ton et des formulations juridiques",
+      "cons": "Le plus lent et le plus coûteux ; chaque changement de contenu exige un responsable ; sans application, le chargement et les rechargements restent un travail manuel permanent"
+     }
+    ]
+   }
+  },
+  "Q3.2.2": {
+   "text": "Une langue nécessite-t-elle une mise en page de droite à gauche ?",
+   "teach": {
+    "why": "Le droite-à-gauche est une question d'ingénierie du thème et non de traduction — mise en page, navigation, icônes, formulaires et modèles d'e-mail sont tous mis en miroir. Cela change l'effort de thème et la matrice de tests, et ne peut donc pas surgir après la validation du design."
+   }
+  },
+  "Q3.2.3": {
+   "text": "Le référencement par langue est-il une priorité ?",
+   "teach": {
+    "why": "Chaque langue publiée reçoit sa propre URL et les balises hreflang sont ajoutées automatiquement : la base native est donc correcte. Le vrai travail porte sur les métadonnées, les identifiants et le contenu traduits, et c'est lui qui décide s'il faut une application ou un traducteur humain.",
+    "limits": "Les langues publiées apparaissent dans les sitemaps et hreflang est automatique pour les URL spécifiques à une langue. Translate & Adapt ne traduit pas automatiquement les identifiants d'URL. Les marchés qui utilisent des domaines partagés ne sont pas indexés par les moteurs de recherche : vérifiez donc la stratégie de domaines avant de promettre un référencement local."
+   }
+  },
+  "Q3.2.4": {
+   "text": "Que faut-il traduire ?",
+   "help": "Translate & Adapt ne traduit automatiquement ni les politiques ni les identifiants d'URL.",
+   "teach": {
+    "why": "Le périmètre décide du coût. Les textes de produits et de collections sont un chantier ; les politiques, les identifiants d'URL, les métachamps, les e-mails, les textes de thème et les contenus d'applications en sont un autre. Translate & Adapt ne traduit automatiquement ni les politiques ni les identifiants d'URL : ceux-là restent manuels ou passent par une application.",
+    "limits": "Translate & Adapt couvre produits, collections, articles de blog, politiques et pages — mais sa traduction automatique est limitée à deux langues et exclut les politiques et les identifiants d'URL. Le paiement lui-même est déjà traduit par Shopify."
+   }
+  },
+  "Q3.4.1": {
+   "text": "Les droits de douane et taxes à l'importation doivent-ils être perçus au paiement (DDP) ?",
+   "help": "Les droits et taxes à l'importation peuvent être facturés au paiement (DDP) ou payés par le client à la livraison (DAP), au choix par pays. Exige des codes SH (et le pays d'origine) sur les produits ; non combinable avec les surcharges fiscales, les taux manuels ou les exonérations client ; étiquettes DDP avec certains transporteurs seulement.",
+   "teach": {
+    "why": "Le DDP signifie que le client paie les frais d'importation au paiement et plus rien à la livraison ; le DAP signifie une facture du transporteur sur le pas de la porte et des colis refusés. C'est une décision commerciale et de service, avec de vrais prérequis techniques derrière.",
+    "limits": "Le DDP exige des codes SH (et le pays d'origine) sur les produits et un transporteur qui prend en charge les étiquettes DDP. Il est incompatible avec les surcharges fiscales, les taux de taxe manuels et les exonérations client. Vous ne pouvez pas proposer à la fois DDP et DAP dans le même pays. Pas de droits dans la zone d'expédition « Reste du monde », et douze pays et régions ne sont pas pris en charge, dont l'Irlande du Nord. Les montants sont des estimations au moment de la commande. Droits et taxes sont perçus ensemble — les taxes seules ne sont pas possibles. Frais : 0,85 % avec Shopify Payments, 1,5 % avec d'autres prestataires, sur les commandes dont les droits sont calculés. Sans étiquette DDP, le client est quand même débité à la livraison.",
+    "options": [
+     {
+      "option": "Percevoir droits et taxes à l'importation au paiement (DDP)",
+      "pros": "Pas de facture surprise à la livraison, donc moins de colis refusés et de tickets de support ; le prix total au paiement est honnête ; une meilleure expérience transfrontalière",
+      "cons": "Exige codes SH et pays d'origine sur chaque produit et un transporteur gérant les étiquettes DDP ; des frais par commande ; exclut surcharges fiscales, taux manuels et exonérations ; le prix plus élevé affiché au paiement pèse sur la conversion"
+     },
+     {
+      "option": "Laisser les droits au client à la livraison (DAP)",
+      "pros": "Rien à configurer, aucune donnée douanière produit nécessaire, aucun frais de droits par commande, prix le plus bas affiché au paiement",
+      "cons": "Les clients reçoivent une facture inattendue du transporteur ; livraisons refusées, retours et rétrofacturations ; la marque porte la faute d'un coût qu'elle n'a jamais annoncé"
+     }
+    ]
+   }
+  },
+  "Q3.4.2": {
+   "text": "Dans quels pays êtes-vous immatriculé à la TVA ?",
+   "teach": {
+    "why": "Les immatriculations se saisissent par région dans Shopify et décident quelle TVA est facturée où. Sans l'immatriculation, Shopify ne peut pas percevoir la TVA de ce pays au paiement — aucune configuration ne contourne une immatriculation que le client ne détient pas.",
+    "limits": "Shopify Tax couvre les États-Unis, l'Union européenne, le Royaume-Uni et le Canada. En dehors, Basic Tax couvre la Norvège, la Suisse, l'Australie, la Nouvelle-Zélande et Singapour, et exige un numéro d'immatriculation fiscale. Shopify calcule mais ne déclare ni ne reverse jamais — cela reste au client et à son conseil fiscal."
+   }
+  },
+  "Q3.4.3": {
+   "text": "Vendez-vous aux États-Unis avec des obligations de taxe de vente au niveau des États ?",
+   "teach": {
+    "why": "Les obligations de taxe de vente américaines se décident État par État à partir des ventes du client lui-même, pas de Shopify. La réponse dit si les immatriculations et taux américains entrent dans le périmètre et s'il faut un conseil fiscal avant le lancement.",
+    "limits": "Shopify Tax couvre les États-Unis et calcule les taux, mais le client reste responsable de l'immatriculation, de la déclaration et du reversement. Shopify ne déclare ni ne reverse nulle part."
+   }
+  },
+  "Q3.4.4": {
+   "text": "Les produits ont-ils des codes SH et un pays d'origine, et d'où viennent-ils ?",
+   "teach": {
+    "why": "Pas de codes SH, pas de droits au paiement. La réponse dit si la donnée existe, où elle fait référence — ERP, PIM ou fournisseur — et si un chantier de données se trouve sur le chemin critique d'un lancement en DDP.",
+    "limits": "Shopify exige que des codes SH soient appliqués aux produits (avec le pays d'origine) avant de pouvoir calculer droits et taxes à l'importation au paiement. Sous Managed Markets, Global-e attribue les codes SH automatiquement à la place."
+   }
+  },
+  "Q3.4.5": {
+   "text": "Les prix doivent-ils inclure la taxe (TVA) sur certains marchés et l'exclure sur d'autres ?",
+   "help": "Shopify peut afficher des prix TVA incluse par marché (affichage fiscal dynamique).",
+   "teach": {
+    "why": "Les acheteurs européens attendent un prix TVA incluse ; les acheteurs américains attendent une taxe ajoutée au paiement. Shopify gère les deux à partir d'un seul prix grâce à l'affichage dynamique TVA incluse : c'est donc une réponse de configuration, pas un second jeu de listes de prix.",
+    "limits": "L'affichage dynamique TVA incluse se règle par marché et est documenté dès le plan Basic. Il change le prix affiché : validez avec le client les montants arrondis qui en résultent sur chaque marché — les règles d'arrondi sont celles de Shopify et ne sont pas personnalisables."
+   }
+  },
+  "Q3.4.6": {
+   "text": "Quel service fiscal ?",
+   "help": "Shopify Tax couvre les États-Unis, l'UE, le Royaume-Uni et le Canada ; depuis le 13/05/2026, les nouvelles boutiques vendant dans l'UE, au Royaume-Uni ou au Canada ne peuvent plus utiliser Basic Tax.",
+   "teach": {
+    "why": "Pour la plupart des clients européens, ce n'est pas vraiment un choix : depuis le 13 mai 2026, les nouvelles boutiques vendant dans l'UE, au Royaume-Uni ou au Canada ne peuvent plus utiliser Basic Tax. Shopify Tax calcule, mais ne déclare ni ne reverse jamais.",
+    "limits": "Shopify Tax couvre les États-Unis, l'Union européenne, le Royaume-Uni et le Canada. En dehors, Basic Tax couvre la Norvège, la Suisse, l'Australie, la Nouvelle-Zélande et Singapour et exige un numéro d'immatriculation fiscale. Shopify Tax est gratuit jusqu'à un seuil de chiffre d'affaires, puis facturé par commande avec un plafond. Déclaration et reversement restent toujours au client.",
+    "options": [
+     {
+      "option": "Shopify Tax",
+      "pros": "Natif, aucune intégration à construire ni à maintenir ; taux pour les États-Unis, l'UE, le Royaume-Uni et le Canada ; les catégories de produits donnent les taux réduits et les exonérations ; gratuit jusqu'à un seuil de chiffre d'affaires",
+      "cons": "Frais par commande au-delà du seuil ; quatre régions seulement ; ni déclaration ni reversement ; rien en dehors de ces régions sauf si Basic Tax s'applique"
+     },
+     {
+      "option": "Un service fiscal tiers (par exemple TaxJar)",
+      "pros": "Couvre des régions et des cas limites que Shopify Tax ignore ; ajoute en général des flux de déclaration et de reversement que le client utilise peut-être déjà avec son comptable",
+      "cons": "Un abonnement de plus et une intégration de plus à tester et maintenir ; duplique dans ses quatre régions le travail que Shopify Tax fait déjà ; la logique fiscale vit désormais à deux endroits"
+     }
+    ]
+   }
+  },
+  "Q3.4.7": {
+   "text": "Les clients professionnels achètent-ils hors taxes (validation du numéro de TVA, autoliquidation) ?",
+   "help": "La validation du numéro de TVA au paiement est native.",
+   "teach": {
+    "why": "La validation du numéro de TVA au paiement est native : l'autoliquidation relève donc de la configuration et non du développement. Mais la réponse décide si les acheteurs B2B ont besoin de leur propre marché, de leur groupe de clients et de leur catalogue — ce qui refaçonne la tarification et la configuration fiscale.",
+    "limits": "Managed Markets ne prend pas en charge les commandes B2B : un client qui a besoin à la fois d'un commerce B2B hors taxes et d'un marchand de référence externalisé ne peut pas avoir les deux. Vendre en B2B dans plus d'une devise exige Shopify Payments."
+   }
+  },
+  "Q3.4.8": {
+   "text": "Dans quels pays droits et taxes à l'importation doivent-ils être perçus au paiement (DDP) ? Dans les autres, le client paie à la livraison (DAP).",
+   "help": "Des pays, par exemple États-Unis, Royaume-Uni, Suisse. Un choix par pays : DDP et DAP ne peuvent pas coexister dans le même pays. Si vous n'expédiez pas au-delà des frontières, indiquez-le en commentaire.",
+   "teach": {
+    "why": "Le DDP se choisit par pays et vous ne pouvez pas proposer à la fois DDP et DAP dans le même pays. La liste pilote les profils d'expédition, le choix du transporteur et les frais de droits par commande : elle appartient donc au périmètre et non à la semaine de mise en ligne.",
+    "limits": "Douze pays et régions ne sont pas pris en charge, dont l'Irlande du Nord, la Russie et Porto Rico, et les droits ne peuvent pas être facturés dans la zone d'expédition « Reste du monde ». Droits et taxes sont perçus ensemble — les taxes seules ne sont pas une option. Les étiquettes DDP achetées via les comptes transporteurs de Shopify se limitent à Canada Post (destinations américaines uniquement) et DHL Express (États-Unis et Canada) ; DHL eCommerce est en DAP uniquement. Les autres transporteurs doivent être confirmés directement."
+   }
+  },
+  "Q3.4.9": {
+   "text": "Lorsque vous expédiez des colis de faible valeur vers ces territoires depuis l'extérieur, êtes-vous immatriculé pour percevoir la TVA ou la GST à l'importation dès le paiement ?",
+   "help": "Colis de faible valeur vers l'UE (IOSS), le Royaume-Uni, la Suisse, la Norvège (VOEC), l'Australie et la Nouvelle-Zélande. Cochez les régimes pour lesquels vous êtes immatriculé.",
+   "teach": {
+    "why": "C'est la sur-promesse classique. Shopify ne peut percevoir la TVA à l'importation de l'UE au paiement sur les commandes de faible valeur que si le client détient une immatriculation IOSS. Il en va de même pour les régimes britannique, suisse, norvégien VOEC, australien et néo-zélandais.",
+    "limits": "L'IOSS s'adresse aux marchands hors UE vendant à des clients de l'UE et leur permet de percevoir la TVA au paiement sur les commandes de 150 € ou moins. L'immatriculation est facultative en principe mais nécessaire si la TVA doit être facturée pendant le paiement. Les immatriculations OSS ne s'appliquent pas lorsque le lieu d'expédition est hors de l'UE. Shopify recommande le DDP en complément de ces régimes pour que les commandes au-dessus du seuil obtiennent quand même un calcul des droits. Shopify documente également qu'à partir du 1er juillet 2026 l'UE commence à supprimer l'exonération de droits de douane de 150 € — vérifiez la situation en vigueur pour les marchandises du client."
+   }
+  },
+  "Q3.4.10": {
+   "text": "Certains produits bénéficient-ils de taux réduits, de taux zéro ou d'exonérations sur un marché (par exemple médicaments, livres, alimentation, vêtements pour enfants) ?",
+   "help": "La direction financière confirme les taux ; Merkle ne donne pas de conseil fiscal.",
+   "teach": {
+    "why": "Les taux réduits et nuls sont pilotés par la catégorie de produit dans Shopify Tax, ou par des surcharges fiscales manuelles. La réponse décide si les données produit ont besoin d'un champ de catégorie fiscale — et c'est à la direction financière de trancher, jamais à nous.",
+    "limits": "Les catégories de produits pour taux réduits et exonérations s'appliquent à Shopify Tax aux États-Unis, dans l'UE et au Royaume-Uni. Les surcharges fiscales manuelles par produit se règlent par pays ou par État, mais sont ignorées là où les droits sont perçus au paiement, et sont tout simplement incompatibles avec le DDP. Merkle ne donne pas de conseil fiscal : l'équipe financière du client ou son conseil confirme chaque taux."
+   }
+  },
+  "Q3.4.11": {
+   "text": "Qui émet les factures aux clients ?",
+   "help": "Shopify peut générer des factures de TVA pour les commandes de l'UE et du Royaume-Uni (affichées sur la page de statut de commande, non envoyées par e-mail, pas pour les commandes avec droits). L'application gratuite Order Printer imprime des factures à partir de modèles. Les factures peuvent aussi venir de l'ERP ou d'une application de facturation.",
+   "teach": {
+    "why": "Les factures de TVA de Shopify ne couvrent que les commandes de l'UE et du Royaume-Uni, apparaissent sur la page de statut de commande plutôt que par e-mail, et ne sont pas produites pour les commandes avec droits. La plupart des clients transfrontaliers ont donc besoin d'une application ou de leur ERP.",
+    "limits": "Les factures de TVA natives exigent Shopify Tax, ne sont pas envoyées par e-mail, ne sont pas générées pour les commandes incluant des droits, et le Portugal n'est pas pris en charge. L'application gratuite Shopify Order Printer imprime factures et bons de livraison à partir de modèles, mais c'est un outil documentaire et non un outil de conformité.",
+    "options": [
+     {
+      "option": "Factures de TVA natives de Shopify plus Order Printer",
+      "pros": "Gratuit et natif ; aucun coût d'application supplémentaire ; suffisant pour une activité simple dans l'UE ou au Royaume-Uni sans droits au paiement",
+      "cons": "Commandes de l'UE et du Royaume-Uni seulement ; non envoyées par e-mail au client ; rien pour les commandes avec droits ; Portugal non pris en charge ; aucun format de facturation électronique"
+     },
+     {
+      "option": "Une application de facturation (par exemple Sufio, Order Printer Pro)",
+      "pros": "Factures envoyées automatiquement par e-mail, avoirs, personnalisation, numérotation par pays, et dans certaines applications les formats de facturation électronique européens",
+      "cons": "Un coût mensuel et une application de plus détenant des données de commande et de client ; les règles de numérotation doivent quand même être validées avec la direction financière"
+     },
+     {
+      "option": "L'ERP ou le système financier du client émet les factures",
+      "pros": "Une source de vérité unique pour la comptabilité, la numérotation et les avoirs ; déjà auditée ; gère les obligations de facturation électronique auxquelles le client est soumis ailleurs",
+      "cons": "Exige une intégration des commandes et une règle de timing définie ; si l'intégration prend du retard, les factures arrivent en retard ; le service client doit savoir où les trouver"
+     }
+    ]
+   }
+  },
+  "Q3.4.12": {
+   "text": "Quelles obligations de facturation électronique s'appliquent à vos ventes ?",
+   "help": "Par exemple Peppol, XRechnung ou ZUGFeRD (Allemagne), Factur-X (France), SdI (Italie), KSeF (Pologne) ou VeriFactu (Espagne). Shopify n'a pas de facturation électronique intégrée : elle vient de l'ERP ou d'une application de facturation.",
+   "teach": {
+    "why": "Shopify n'a pas de facturation électronique intégrée. Peppol, XRechnung, ZUGFeRD, Factur-X, SdI, KSeF et VeriFactu relèvent tous de l'ERP ou d'une application : une obligation sur un marché devient donc une intégration nommée, assortie d'une échéance légale.",
+    "limits": "Les factures de TVA natives de Shopify pour les commandes de l'UE et du Royaume-Uni sont des documents, pas des factures électroniques, et ne satisfont aucun de ces régimes. Confirmez chaque obligation avec la direction financière du client ou son conseil fiscal — Merkle ne donne pas de conseil fiscal."
+   }
+  },
+  "Q3.4.13": {
+   "text": "Si vendre dans un pays impliquait de s'y immatriculer fiscalement et d'y déposer des déclarations, le prendriez-vous en charge vous-même, ou préféreriez-vous qu'un partenaire soit le vendeur légal pour ces commandes ?",
+   "help": "Répondez pour les pays où vous vendez mais où vous n'êtes pas immatriculé aujourd'hui.",
+   "teach": {
+    "why": "Avec la liste des marchés et les immatriculations actuelles (Q3.4.2), cette réponse décide du modèle transfrontalier : droits autogérés sur Shopify Markets, ou marchand de référence. Elle remplace la Q3.1.6 retirée, qui demandait au client de nommer un modèle dont il n'avait jamais entendu parler.",
+    "limits": "Managed Markets est la seule voie de marchand de référence à l'intérieur de Shopify, et elle n'est ouverte qu'aux entreprises des États-Unis continentaux et à certaines boutiques au Canada et au Royaume-Uni, sur Shopify Payments, et elle ne prend pas en charge le B2B. Pour tous les autres, les options honnêtes sont des immatriculations autogérées ou une application tierce de marchand de référence."
+   }
+  },
+  "Q3.5.1": {
+   "text": "Souhaitez-vous vendre en Chine continentale en transfrontalier (depuis l'extérieur de la Chine) ou sur place, derrière la Grande Muraille numérique ?",
+   "help": "La vente sur place exige une entité en RPC, un enregistrement ou une licence ICP et un hébergement en Chine.",
+   "teach": {
+    "why": "Les serveurs de Shopify ne sont pas situés en Chine continentale, et vendre sur place exige une entité en RPC, un enregistrement ou une licence ICP et un hébergement local. Cette réponse oriente la Chine vers une discovery distincte — elle est hors du périmètre de cet engagement.",
+    "limits": "La Chine continentale ne fait pas partie de l'offre Merkle. Nommer la Chine comme marché de lancement signale l'engagement pour une discovery Chine distincte et retire la Chine des marchés, langues, offre, plan et périmètre de construction de cet engagement. Si la Chine continentale est le seul marché de lancement, cet engagement s'arrête et devient une discovery Chine.",
+    "options": [
+     {
+      "option": "Transfrontalier vers la Chine (depuis l'extérieur du continent)",
+      "pros": "Aucune entité en RPC, aucun enregistrement ICP ni hébergement sur place nécessaires ; démarrage possible par des places de marché ou une boutique à Hong Kong ; les canaux douaniers sont conçus pour cela",
+      "cons": "Plafonds par commande et par an et par consommateur ; les marchandises doivent figurer sur la liste positive transfrontalière ; frais de place de marché et partenaire local ; Shopify est rarement la vitrine que voit le client"
+     },
+     {
+      "option": "Sur place, derrière la Grande Muraille numérique",
+      "pros": "Une expérience d'achat chinoise normale, paiement et logistique domestiques, aucun plafond douanier par acheteur, intégration complète au marketing local",
+      "cons": "Exige une entité juridique en RPC, un enregistrement ou une licence commerciale ICP et un hébergement en Chine — Shopify n'a pas d'infrastructure en Chine continentale et ne peut donc pas y être la plateforme ; des mois de délai et un conseil juridique en RPC"
+     }
+    ]
+   }
+  },
+  "Q3.5.2": {
+   "text": "Quels canaux pour la Chine continentale ?",
+   "help": "Places de marché transfrontalières (Tmall Global, JD Worldwide, Douyin Global, RED), un mini-programme WeChat, votre propre site, ou une boutique à Hong Kong expédiant vers le continent.",
+   "teach": {
+    "why": "Chaque canal chinois est une construction différente : une place de marché transfrontalière, un mini-programme WeChat, une boutique à Hong Kong. Dans la plupart, Shopify n'est pas la vitrine : cette réponse dimensionne donc la discovery Chine distincte, pas cet engagement.",
+    "limits": "Shopify n'a pas de canal natif vers les places de marché chinoises ni vers WeChat ; des connecteurs comme les applications WalkTheChat s'intercalent entre Shopify et ces canaux. La Chine continentale est exclue du périmètre de cet engagement quel que soit le canal retenu."
+   }
+  },
+  "Q3.5.3": {
+   "text": "Avez-vous une entité juridique en Chine continentale ?",
+   "help": "Nécessaire pour un enregistrement ou une licence ICP et pour l'hébergement sur place.",
+   "teach": {
+    "why": "Sans entité en RPC, pas d'enregistrement ICP ni d'hébergement sur place : la vente sur place est donc écartée avant même que la discussion technique ne commence. C'est le premier fait dont la discovery Chine distincte a besoin de la part du client.",
+    "limits": "Shopify ne peut de toute façon pas héberger un site en Chine continentale — ses serveurs n'y sont pas. Une entité seule ne fait donc pas de Shopify la plateforme sur place."
+   }
+  },
+  "Q3.5.4": {
+   "text": "Avez-vous une entité à Hong Kong ou une autre entité à l'étranger capable de vendre en transfrontalier, et vos marques sont-elles enregistrées en Chine ?",
+   "help": "Les places de marché transfrontalières exigent les deux.",
+   "teach": {
+    "why": "Les places de marché transfrontalières exigent à la fois une entité de vente à l'étranger et des marques enregistrées en Chine. Sans cela, la voie transfrontalière est bloquée par des formalités à longs délais, ce que la discovery Chine distincte doit anticiper.",
+    "limits": "C'est une question juridique et de protection de marque, pas une question Shopify. Merkle ne donne pas de conseil juridique en RPC ; le conseil du client confirme le statut de l'entité et des marques."
+   }
+  },
+  "Q3.5.5": {
+   "text": "Statut ICP pour un site web chinois ?",
+   "help": "Votre conseil en RPC confirme si un enregistrement suffit ou s'il faut une licence ICP commerciale.",
+   "teach": {
+    "why": "Un enregistrement ICP ou une licence ICP commerciale décide si un site hébergé en Chine est juridiquement possible et combien de temps cela prend. Shopify ne peut pas l'héberger : la réponse appartient donc à la discovery Chine distincte.",
+    "limits": "Les serveurs de Shopify ne sont pas situés en Chine continentale : un enregistrement ICP ne transforme donc pas une boutique Shopify en site chinois sur place. Le conseil du client en RPC confirme si un enregistrement suffit ou s'il faut une licence commerciale."
+   }
+  },
+  "Q3.5.6": {
+   "text": "Quel est le rôle de Shopify pour la Chine continentale ?",
+   "help": "Shopify peut rester la référence mondiale pour les produits, les stocks et les commandes pendant que la Chine vend par des canaux locaux.",
+   "teach": {
+    "why": "Même lorsque la Chine vend par des canaux locaux, Shopify peut rester la référence mondiale pour les produits, les stocks et les commandes. Cette réponse définit la surface d'intégration entre cet engagement et le chantier Chine distinct.",
+    "limits": "Shopify n'a pas d'infrastructure en Chine continentale et ne peut donc pas y être la vitrine sur place. Le garder comme système de référence est une décision de données et d'intégration, pas une décision de vente.",
+    "options": [
+     {
+      "option": "Shopify reste la référence mondiale pour les produits, les stocks et les commandes",
+      "pros": "Un catalogue et une vision du stock ; les canaux chinois sont alimentés par les mêmes données ; le reporting reste consolidé",
+      "cons": "Exige des connecteurs et une correspondance de données propre à la Chine ; les canaux chinois imposent leurs attributs, leurs règles sur les allégations et leurs exigences d'images"
+     },
+     {
+      "option": "La Chine fonctionne entièrement en dehors de Shopify",
+      "pros": "Aucun travail d'intégration dans cet engagement ; le partenaire local possède la pile que le marché local attend",
+      "cons": "Deux catalogues, deux visions du stock et aucun reporting consolidé ; la marque perd la vue directe sur les clients et la demande en Chine"
+     }
+    ]
+   }
+  },
+  "Q3.5.7": {
+   "text": "Comment les marchandises entreront-elles en Chine : entrepôt sous douane (1210), envoi direct (9610), commerce général ou colis personnels ?",
+   "help": "Les canaux transfrontaliers ont des plafonds par commande et par an et par consommateur.",
+   "teach": {
+    "why": "Entrepôt sous douane, envoi direct, commerce général et colis personnels portent des droits, des formalités et des plafonds par commande et par an et par consommateur différents. Rien de cela n'est de la configuration Shopify ; cela dimensionne la discovery Chine distincte.",
+    "limits": "Les canaux transfrontaliers ont des plafonds par commande et par an et par consommateur. C'est un travail de douane et de logistique porté par le partenaire commercial et les conseils du client en RPC, pas par la construction Shopify."
+   }
+  },
+  "Q3.5.8": {
+   "text": "Vos produits figurent-ils sur la liste positive du commerce électronique transfrontalier chinois ?",
+   "teach": {
+    "why": "Les marchandises absentes de la liste positive du commerce électronique transfrontalier chinois ne peuvent emprunter ni le canal sous douane ni l'envoi direct, ce qui peut supprimer toute la voie transfrontalière pour un catalogue. C'est un fait produit, pas un fait de plateforme.",
+    "limits": "La liste positive est fixée par les autorités chinoises et évolue. Le partenaire commercial ou le conseil du client en RPC la confirme — pas Merkle."
+   }
+  },
+  "Q3.5.9": {
+   "text": "Comment vos produits sont-ils classés en Chine ?",
+   "help": "Les produits éclaircissants, les protections solaires et les produits antichute de cheveux sont des cosmétiques spéciaux ; les médicaments ne sont pas des marchandises transfrontalières.",
+   "teach": {
+    "why": "La Chine traite les produits éclaircissants, les protections solaires et les produits antichute de cheveux comme des cosmétiques spéciaux, et les médicaments ne sont pas du tout des marchandises transfrontalières. La classification décide quel canal est seulement légal : elle précède donc toute planification technique chinoise.",
+    "limits": "La classification est une appréciation réglementaire chinoise confirmée par le conseil ou le partenaire commercial du client en RPC, et elle peut différer de la classification du même produit dans l'UE ou aux États-Unis."
+   }
+  },
+  "Q3.5.10": {
+   "text": "Statut d'enregistrement ou de déclaration auprès de l'administration chinoise des produits médicaux (NMPA) ?",
+   "help": "Le commerce général exige un enregistrement ou une déclaration ; les canaux transfrontaliers en sont exemptés pour les marchandises de la liste positive.",
+   "teach": {
+    "why": "Le commerce général exige un enregistrement ou une déclaration NMPA ; les canaux transfrontaliers en sont exemptés pour les marchandises de la liste positive. La réponse fixe le délai jusqu'à un lancement chinois et appartient à la discovery Chine distincte.",
+    "limits": "Les délais d'enregistrement et de déclaration sont fixés par les autorités chinoises et peuvent s'étendre sur des mois. Merkle ne fournit pas de conseil réglementaire en RPC."
+   }
+  },
+  "Q3.5.11": {
+   "text": "Les allégations produit doivent-elles faire l'objet d'une revue pour la Chine (allégations médicales, cosméceutiques ou de traitement) ?",
+   "help": "La Chine n'autorise pas les allégations cosméceutiques ou médicales pour les cosmétiques.",
+   "teach": {
+    "why": "La Chine n'autorise pas les allégations cosméceutiques ou médicales pour les cosmétiques : des textes traduits directement du site mondial peuvent donc être non conformes. C'est un chantier de contenu que la discovery Chine distincte doit porter et doter.",
+    "limits": "Il s'agit d'une revue juridique des allégations produit, pas d'une tâche de traduction. La validation revient au conseil ou au partenaire commercial du client en RPC."
+   }
+  },
+  "Q3.5.12": {
+   "text": "Comment les clients du continent paieront-ils ?",
+   "help": "Au sein de la place de marché, par Alipay et WeChat Pay via un compte Shopify Payments à Hong Kong (accès anticipé), via un fournisseur de portefeuille transfrontalier, ou via des comptes marchands domestiques (entité en RPC).",
+   "teach": {
+    "why": "Alipay et WeChat Pay sont disponibles via un compte Shopify Payments à Hong Kong en accès anticipé ; les comptes marchands domestiques exigent une entité en RPC. Cette réponse décide si un paiement chinois hébergé par Shopify est seulement possible.",
+    "limits": "Les deux moyens exigent un compte Shopify Payments dans la RAS de Hong Kong et sont en accès anticipé. Les clients paient en CNY. WeChat Pay n'a pas de rétrofacturation. Au sein d'une place de marché, le paiement appartient à la place de marché, pas à Shopify."
+   }
+  },
+  "Q3.5.13": {
+   "text": "Combien de clients de Chine continentale attendez-vous par an ?",
+   "help": "La loi chinoise sur les informations personnelles fixe des obligations d'export de données différentes selon le volume.",
+   "teach": {
+    "why": "La loi chinoise sur les informations personnelles fixe des obligations d'export de données différentes selon le volume : le nombre de clients attendu décide donc du régime de conformité applicable. Rien là-dedans n'est un réglage Shopify ; cela alimente la discovery Chine distincte.",
+    "limits": "Les serveurs de Shopify ne sont pas situés en Chine continentale : chaque enregistrement client chinois est donc par défaut un transfert transfrontalier. Le conseil du client en RPC confirme les obligations."
+   }
+  },
+  "Q3.5.14": {
+   "text": "Avez-vous un représentant en Chine pour la protection des informations personnelles (PIPL) ?",
+   "help": "Requis lorsqu'une entreprise établie hors de Chine cible des consommateurs en Chine.",
+   "teach": {
+    "why": "La PIPL exige un représentant en Chine lorsqu'une entreprise établie à l'étranger cible des consommateurs chinois. C'est une désignation juridique nominative que le client doit effectuer, pas un réglage de plateforme, et elle conditionne un lancement chinois conforme.",
+    "limits": "Merkle ne fournit pas de conseil juridique en RPC ; la désignation et ses termes viennent du conseil du client."
+   }
+  },
+  "Q3.5.15": {
+   "text": "Où seront stockées les données des clients chinois (CRM, e-mail, analytique) ?",
+   "teach": {
+    "why": "L'endroit où se trouvent les données des clients chinois décide s'il faut un mécanisme de transfert transfrontalier et quels outils de CRM, d'e-mail et d'analytique peuvent seulement être utilisés. Les serveurs de Shopify ne sont pas en Chine continentale.",
+    "limits": "Plusieurs outils martech courants sont inaccessibles ou illicites pour des données chinoises : la réponse peut donc changer toute la pile pour ce marché. Le conseil du client en RPC confirme le mécanisme de transfert."
+   }
+  },
+  "Q3.5.16": {
+   "text": "Les scripts bloqués en Chine (Google Fonts, Google Analytics, reCAPTCHA, pixels Meta, YouTube) doivent-ils être remplacés ?",
+   "teach": {
+    "why": "Google Fonts, Google Analytics, reCAPTCHA, les pixels Meta et YouTube sont couramment bloqués en Chine — Shopify note lui-même que les pare-feux y bloquent fréquemment Google Fonts. Chaque remplacement est un vrai travail de thème et de mesure.",
+    "limits": "Les scripts bloqués n'échouent pas en silence : ils peuvent bloquer l'affichage des pages pour les visiteurs chinois, même sur un site qui fonctionne partout ailleurs. Shopify documente le cas de Google Fonts ; le reste doit être testé depuis la Chine."
+   }
+  },
+  "Q3.5.17": {
+   "text": "Quels canaux marketing pour la Chine ?",
+   "teach": {
+    "why": "La pile marketing chinoise est entièrement locale — d'autres plateformes, une autre mesure, d'autres formats de contenu. La réponse dimensionne la discovery Chine distincte et montre quelle part de l'investissement martech mondial se reporte. En général très peu.",
+    "limits": "Les intégrations marketing de Shopify sont conçues pour les canaux occidentaux ; les canaux chinois se rejoignent par des connecteurs ou par les outils du partenaire local."
+   }
+  },
+  "Q3.5.18": {
+   "text": "Qui assure le service client en chinois ?",
+   "teach": {
+    "why": "Un service en chinois, aux horaires chinois, sur les canaux que les clients chinois utilisent réellement, est un engagement opérationnel que le client doit doter en personnel. C'est un contrôle de maturité pour la voie chinoise, pas une configuration Shopify."
+   }
+  },
+  "Q3.5.19": {
+   "text": "Travaillez-vous avec un partenaire local ou commercial pour la Chine ? Nommez-le.",
+   "teach": {
+    "why": "La plupart des entrées réussies en Chine passent par un partenaire commercial ou une agence locale. Savoir de qui il s'agit indique à qui appartiennent la vitrine, les données et le client — et ce que Merkle est réellement censé livrer."
+   }
+  },
+  "Q3.5.20": {
+   "text": "Date de lancement visée pour la Chine continentale.",
+   "teach": {
+    "why": "Les enregistrements ICP, les dépôts de marque et les déclarations NMPA prennent des mois. Une date cible montre si la Chine est un plan financé ou une intention, et si elle peut être séquencée sans risque après le lancement de cet engagement.",
+    "limits": "La Chine continentale est exclue du périmètre et de l'offre de cet engagement : cette date appartient donc au plan de la discovery Chine distincte, pas à ce calendrier de livraison."
+   }
+  },
+  "Q3.5.21": {
+   "text": "Qui fournit le conseil juridique, fiscal et douanier pour la RPC ?",
+   "help": "Merkle ne fournit pas de conseil juridique en RPC.",
+   "teach": {
+    "why": "Merkle ne fournit pas de conseil juridique, fiscal ou douanier en RPC. Si personne n'est nommé ici, la voie chinoise n'a de responsable pour aucune de ses décisions les plus risquées, et la discovery Chine distincte ne peut pas démarrer de façon responsable.",
+    "limits": "Création d'entité, statut ICP, régime douanier, classification produit, revue des allégations et obligations PIPL exigent tous un conseil nommé en RPC. La documentation de Shopify n'en couvre aucun."
+   }
   }
  },
  "document": {

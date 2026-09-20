@@ -33,12 +33,17 @@ export async function action({ request, params }) {
   }
 }
 
-/** Filters on the review table: four of 157 rows are usually the ones that matter. */
-const FILTERS = [['all', 'All'], ['open', 'Open'], ['to_confirm', 'To confirm'], ['answered', 'Answered']];
+/** Filters on the review table: a handful of 157 rows are usually the ones that matter. */
+const FILTERS = [['all', 'All'], ['open', 'Open'], ['to_confirm', 'To confirm'], ['with_client', 'With the client'], ['answered', 'Answered']];
+/* "To confirm" meant two different things — an answer a document produced that
+   no human has accepted, and a question the client still owes us — so the filter
+   counted 92 where the same page's banner counted 90. They are separate states
+   and separate work, so they are separate filters. */
 const MATCH = {
   all: () => true,
   open: (q) => q.state === 'open',
-  to_confirm: (q) => q.to_confirm || q.state === 'tbc',
+  to_confirm: (q) => Boolean(q.to_confirm),
+  with_client: (q) => q.state === 'tbc',
   answered: (q) => q.state === 'answered' || q.state === 'commented',
 };
 
@@ -129,7 +134,7 @@ export default function Review({ loaderData, actionData }) {
         <section key={section.title}>
           <h2>{section.title}</h2>
           <div className="table-scroll" role="region" tabIndex={0} aria-label="Answers, scrollable table">
-          <table>
+          <table className="answers-table">
             <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col">Answer</th><th scope="col">Status</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
             <tbody>
               {shown(section.questions).map((q) => (

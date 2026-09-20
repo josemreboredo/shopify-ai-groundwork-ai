@@ -668,6 +668,454 @@
    "teach": {
     "why": "Einkaufsbestellungen, Transfers und Bestandskorrekturen sind im Shopify Admin nativ. Die Antwort zeigt deshalb, wie viel vom Bestandsbetrieb des Kunden nach Shopify wandert — und das treibt Schulung, Rollen und Berechtigungen, nicht den Build-Aufwand."
    }
+  },
+  "Q3.1.1": {
+   "text": "In welche Länder verkaufen Sie zum Launch? Je Land: das Land, die Währung, in der Kundinnen und Kunden zahlen, die Sprachen, die Internetadresse, die dort heute genutzt wird, wie die Preise gebildet werden, welche Ihrer Gesellschaften die Kundschaft fakturiert, ob das Sortiment dem Ihres Hauptmarkts entspricht, und wer dieses Land operativ verantwortet.",
+   "help": "Eine Zeile je Land. Lassen Sie ein Feld leer, wenn Sie es nicht wissen — wir kommen darauf zurück.",
+   "teach": {
+    "why": "Legt den gesamten internationalen Rahmen fest: Märkte, Währungen, Sprachen, Domains und Preisstrategie. Die Spalten Gesellschaft, Sortiment und Verantwortung sind das, woraus die Engine ableitet, ob ein Store mit Markets, Expansion Stores oder eine Mischform entsteht — der Kunde wird nie gebeten, die Topologie selbst zu wählen.",
+    "limits": "Shopify dokumentiert keine Obergrenze für die Zahl der Länder- oder Regionenmärkte. Veröffentlichte Sprachen sind unterhalb von Plus auf 20 und auf Plus auf 30 begrenzt. Die Abrechnung in lokaler Währung (statt sie nur anzuzeigen) setzt Shopify Payments oder Adyen voraus; bei jedem anderen Anbieter wird in der Standardwährung des Stores abgerechnet. Das chinesische Festland ist aus diesem Engagement ausgenommen und wird in eine eigene China-Discovery geleitet."
+   }
+  },
+  "Q3.1.2": {
+   "text": "Welches sind die Primärmärkte (ein oder mehrere Länder- oder Marktcodes)?",
+   "help": "Die Märkte, die Umsatz und Launch-Priorität anführen, z. B. USA und EU bei einer globalen Marke.",
+   "teach": {
+    "why": "Die Primärmärkte entscheiden, welche Währung, Domain, Zahlungsarten und Steuer-Einrichtung den Designaufwand bekommen und zuerst getestet werden. Alle übrigen Märkte reihen sich dahinter ein, und die Rollout-Wellen entstehen aus dieser Antwort."
+   }
+  },
+  "Q3.1.3": {
+   "text": "Welche Länder sind in den nächsten 12 Monaten geplant?",
+   "teach": {
+    "why": "Ein später ergänzter Markt ist günstig, wenn Domain-, Katalog- und Preisstruktur ihn vorgesehen haben, und teuer, wenn er einen Neuzuschnitt erzwingt. Die Antwort zeigt außerdem, ob der heute gewählte Plan die nächsten zwölf Monate übersteht.",
+    "limits": "Die Domain-Strategie ist im Nachhinein am schwersten zu ändern: Unterverzeichnisse erben das Suchmaschinen-Ranking der Hauptdomain, während eine ccTLD ihre Autorität von null aufbaut. Wird ein Markt später gelöscht, braucht es Weiterleitungen, sonst laufen Kundinnen und Kunden in 404-Fehler."
+   }
+  },
+  "Q3.1.4": {
+   "text": "Nur als geäußerte Präferenz — hat der Kunde bereits eine Meinung dazu, ob alle Länder aus einem Store laufen oder einzelne Länder einen eigenen Store bekommen? Erfassen Sie sie als seine Sicht, nicht als die Antwort.",
+   "help": "Wird als geäußerte Präferenz erfasst. Sie entscheidet nie über die Empfehlung; weicht sie ab, begründet das Abschlussdokument den Unterschied.",
+   "teach": {
+    "why": "Dies ist die einzige Frage im Fragenkatalog, die nach einer Meinung statt nach einer Tatsache fragt. Sie wird nur erfasst, damit das Abschlussdokument die Sicht des Kunden adressieren kann. Die Topologie selbst wird aus den geschäftlichen Fakten in Q3.1.1, Q1.1.6, Q3.4.2, Q3.4.13, Q5.1.3 und Q6.2.14 abgeleitet.",
+    "limits": "Lassen Sie diese Antwort niemals die Analyse ersetzen. Expansion Stores setzen Shopify Plus voraus und verdoppeln jede Änderung an Katalog, Theme und Apps; ein Store mit Markets hält alles zusammen, teilt aber ein Theme, einen App-Bestand und einen Admin.",
+    "options": [
+     {
+      "option": "Ein Store mit Shopify Markets",
+      "pros": "Ein Admin, ein Katalog, ein Theme; Währung, Domain, Sprache, Katalog und Steuern je Markt überschreibbar; ab Basic verfügbar; keine doppelten App-Rechnungen",
+      "cons": "Gemeinsame Katalogstruktur und gemeinsamer App-Stack; Theme-Inhalte je Markt brauchen Advanced oder höher; eine juristische Person, sofern der Kunde nicht auf Plus ist"
+     },
+     {
+      "option": "Expansion Stores (Plus)",
+      "pros": "Jede Region führt eigenen Katalog, eigene Apps, eigenes Team und eigene Einstellungen — passend zu getrennt geführten Regionalgeschäften oder verschiedenen juristischen Personen",
+      "cons": "Nur Plus; Produkte, Kategorien, Bestände und Einstellungen werden nicht synchronisiert; Apps je Store abgerechnet, Theme-Lizenzen nicht geteilt; jede Änderung wird mehrfach gemacht"
+     }
+    ]
+   }
+  },
+  "Q3.1.5": {
+   "text": "Wie sollen Besucherinnen und Besucher in ihren lokalen Markt gelangen?",
+   "help": "Die automatische Weiterleitung ist nativ; EU-Besucher auf EU-Länderdomains werden nicht automatisch weitergeleitet.",
+   "teach": {
+    "why": "Kunden gehen davon aus, dass Besucher immer im richtigen Markt landen. Die automatische Weiterleitung ist nativ und kostenlos, hat aber dokumentierte Lücken, die sich auf einer Live-Seite als falsche Währung zeigen — das Verhalten wird deshalb jetzt vereinbart.",
+    "limits": "Kundinnen und Kunden aus der EU, die auf einer EU-Länderdomain (ccTLD) ankommen, werden nicht automatisch weitergeleitet. Die Sprachweiterleitung funktioniert nur dort, wo die Sprache hinzugefügt, zugeordnet, übersetzt und veröffentlicht wurde. Inhalte in Märkten mit geteilten Domains werden von Suchmaschinen nicht indexiert. Die alte Geolocation App ist eingestellt; sie hat einen Markt ohnehin nur empfohlen, nie umgeschaltet.",
+    "options": [
+     {
+      "option": "Besucher automatisch weiterleiten",
+      "pros": "Richtige Währung, Sprache und Preise schon beim ersten Aufruf; nativ, keine App, kein Build",
+      "cons": "Gilt nicht für EU-Besucher, die bereits auf einer EU-ccTLD sind; verärgert Kundinnen und Kunden, die bewusst einen anderen Markt wollen, sofern kein Selector angeboten wird"
+     },
+     {
+      "option": "Nur einen Länder- und Sprachselector anzeigen",
+      "pros": "Die Kundschaft wählt selbst und behält ihre Wahl; ein Selector wird beim Verkauf in lokalen Währungen ohnehin gebraucht",
+      "cons": "Manche nutzen ihn nie und kaufen in der falschen Währung ein; höhere Absprungrate bei bezahltem Traffic aus einem anderen Land"
+     }
+    ]
+   }
+  },
+  "Q3.1.7": {
+   "text": "Soll ein Markt eigene Theme-Inhalte, eine eigene Abschnittsreihenfolge, einen eigenen Checkout oder eigene Einstellungen für Kundenkonten haben?",
+   "teach": {
+    "why": "Theme-Inhalte je Markt setzen mindestens den Advanced-Plan voraus. Auf Basic oder Grow teilen sich alle Märkte eine Theme-Anpassung — ein Ja kann hier also den Plan und damit die monatlichen Kosten des Kunden bewegen, bevor überhaupt Designarbeit beginnt.",
+    "limits": "Anpassungsfelder erscheinen auf niedrigeren Plänen unter Umständen in Translate & Adapt, werden aber nicht ausgespielt. Die Schritte Information, Versand oder Zahlung im Checkout zu verändern oder den Checkout über die Checkout Branding API umzugestalten, ist nur auf Plus möglich; Erweiterungen auf der Dankes- und der Bestellstatusseite funktionieren ab Basic. Eine eigene juristische Person je Markt gibt es nur auf Plus."
+   }
+  },
+  "Q3.1.8": {
+   "text": "Gibt es Produkte, die in bestimmten Märkten nicht verkauft werden dürfen (Regulierung, Registrierung, Lizenzen oder Vertriebsvereinbarungen)?",
+   "help": "Bitte in einer Notiz auflisten. In Shopify werden die Produkte aus dem Katalog dieses Markts ausgeschlossen.",
+   "teach": {
+    "why": "Marktkataloge schließen Produkte je Markt ein oder aus, eine Lizenz-, Registrierungs- oder Vertriebsbeschränkung ist also Konfiguration und kein eigener Code. Sie muss aber bekannt sein, bevor Katalogstruktur und Preislisten entworfen werden.",
+    "limits": "Shopify überwacht das nicht — der Ausschluss ist eine Katalogeinstellung, die der Kunde pflegt, während sich das Sortiment ändert. Bepreisen ein übergeordneter Markt und ein Teilmarkt dasselbe Produkt, gilt der spezifischere Preis. Katalog-Anpassungen für Retail-Märkte brauchen Shopify POS Pro oder Plus."
+   }
+  },
+  "Q3.2.1": {
+   "text": "Wie wird die Übersetzung gehandhabt?",
+   "help": "Translate & Adapt (Shopifys kostenlose App) übersetzt bis zu 2 Sprachen automatisch; mehr Sprachen brauchen Handarbeit oder eine Übersetzungs-App. Der Checkout ist vorübersetzt.",
+   "teach": {
+    "why": "Translate & Adapt ist kostenlos, übersetzt aber höchstens zwei Sprachen automatisch, und sobald eine Sprache genutzt wird, lässt sich diese Wahl nicht mehr tauschen. Ab der dritten Sprache wird Übersetzung zu einem laufenden Personal- oder App-Kostenblock, nicht zu einer einmaligen Build-Aufgabe.",
+    "limits": "Translate & Adapt deckt Produkte, Kategorien, Blogbeiträge, Richtlinien und Seiten ab, übersetzt Richtlinien und URL-Handles jedoch nicht automatisch. Der Checkout ist von Shopify vorübersetzt. Veröffentlichte Sprachen sind unterhalb von Plus auf 20 und auf Plus auf 30 begrenzt. Ab sechs Sprachen greift eine Stopp-Regel — Übersetzung und Content-Betrieb wandern in eine Discovery-Phase.",
+    "options": [
+     {
+      "option": "Nur Translate & Adapt",
+      "pros": "Kostenlos, nativ, keine zusätzliche App im Stack; maschinelle Übersetzung für bis zu zwei Sprachen; Anpassung desselben Inhalts je Markt",
+      "cons": "Maximal zwei automatisch übersetzte Sprachen, und die Wahl ist danach fixiert; Richtlinien und URL-Handles bleiben Handarbeit; kein Übersetzer-Workflow, keine Prüfung, kein Translation Memory"
+     },
+     {
+      "option": "Eine Übersetzungs-App (zum Beispiel Weglot, Langify, Transcy)",
+      "pros": "Mehr Sprachen, Translation Memory, Glossare und Review-Workflows; deckt meist auch App- und Theme-Texte ab, die Translate & Adapt auslässt",
+      "cons": "Monatliche Kosten, die mit Wörtern und Sprachen wachsen; eine weitere Abhängigkeit im Theme und in checkout-nahen Inhalten; die Qualität muss trotzdem geprüft werden"
+     },
+     {
+      "option": "Übersetzung durch Menschen oder Agentur, in Shopify eingespielt",
+      "pros": "Texte in Markenqualität, Transkreation je Markt, volle Kontrolle über Tonalität und Rechtstexte",
+      "cons": "Am langsamsten und teuersten; jede Inhaltsänderung braucht eine verantwortliche Person; ohne App bleiben Einspielen und Nachpflegen dauerhaft Handarbeit"
+     }
+    ]
+   }
+  },
+  "Q3.2.2": {
+   "text": "Braucht eine der Sprachen ein Layout von rechts nach links?",
+   "teach": {
+    "why": "Rechts-nach-links ist eine Frage der Theme-Entwicklung, nicht der Übersetzung — Layout, Navigation, Icons, Formulare und E-Mail-Vorlagen werden alle gespiegelt. Das verändert den Theme-Aufwand und die Testmatrix und darf deshalb nicht erst nach der Designfreigabe auftauchen."
+   }
+  },
+  "Q3.2.3": {
+   "text": "Ist SEO je Sprache eine Priorität?",
+   "teach": {
+    "why": "Jede veröffentlichte Sprache bekommt eine eigene URL, und hreflang-Tags werden automatisch ergänzt — die native Grundlage ist also ordentlich. Die eigentliche Arbeit sind übersetzte Metadaten, Handles und Inhalte, und die entscheidet, ob eine App oder ein menschlicher Übersetzer nötig ist.",
+    "limits": "Veröffentlichte Sprachen erscheinen in Sitemaps, und hreflang wird für sprachspezifische URLs automatisch gesetzt. Translate & Adapt übersetzt URL-Handles nicht automatisch. Märkte mit geteilten Domains werden von Suchmaschinen nicht indexiert — prüfen Sie deshalb die Domain-Strategie, bevor Sie lokales SEO zusagen."
+   }
+  },
+  "Q3.2.4": {
+   "text": "Was muss übersetzt werden?",
+   "help": "Translate & Adapt übersetzt Richtlinien und URL-Handles nicht automatisch.",
+   "teach": {
+    "why": "Der Umfang bestimmt die Kosten. Produkt- und Kategorietexte sind das eine; Richtlinien, URL-Handles, Metafelder, E-Mails, Theme-Texte und App-Inhalte sind das andere. Translate & Adapt übersetzt Richtlinien und URL-Handles nicht automatisch, diese bleiben also Hand- oder App-Arbeit.",
+    "limits": "Translate & Adapt deckt Produkte, Kategorien, Blogbeiträge, Richtlinien und Seiten ab — die maschinelle Übersetzung ist jedoch auf zwei Sprachen begrenzt und schließt Richtlinien und URL-Handles aus. Der Checkout selbst ist von Shopify bereits übersetzt."
+   }
+  },
+  "Q3.4.1": {
+   "text": "Sollen Zölle und Einfuhrsteuern im Checkout erhoben werden (DDP)?",
+   "help": "Zölle und Einfuhrsteuern können im Checkout erhoben (DDP) oder von der Kundschaft bei Zustellung bezahlt werden (DAP) — wählbar je Land. Erfordert HS-Codes (und Ursprungsland) an den Produkten; nicht kombinierbar mit Steuerüberschreibungen, manuellen Steuersätzen oder Steuerbefreiungen von Kunden; DDP-Labels nur bei bestimmten Carriern.",
+   "teach": {
+    "why": "DDP heißt, die Kundschaft zahlt die Einfuhrkosten im Checkout und bei Zustellung nichts mehr; DAP heißt eine Rechnung des Zustellers an der Haustür und verweigerte Pakete. Das ist eine kommerzielle und serviceseitige Entscheidung mit harten technischen Voraussetzungen dahinter.",
+    "limits": "DDP setzt HS-Codes (und Ursprungsland) an den Produkten sowie einen Carrier voraus, der DDP-Labels unterstützt. Es ist nicht kompatibel mit Steuerüberschreibungen, manuellen Steuersätzen oder Steuerbefreiungen von Kunden. DDP und DAP lassen sich im selben Land nicht parallel anbieten. In der Versandzone „Rest der Welt“ gibt es keine Zölle, und zwölf Länder und Regionen werden nicht unterstützt, darunter Nordirland. Die Beträge sind Schätzungen zum Bestellzeitpunkt. Zölle und Steuern werden gemeinsam erhoben — Steuern allein sind nicht möglich. Gebühr: 0,85 % mit Shopify Payments, 1,5 % mit anderen Anbietern, auf Bestellungen mit berechneten Zöllen. Ohne DDP-Label zahlt die Kundschaft trotzdem bei Zustellung.",
+    "options": [
+     {
+      "option": "Zölle und Einfuhrsteuern im Checkout erheben (DDP)",
+      "pros": "Keine Überraschungsrechnung bei Zustellung, also weniger verweigerte Pakete und Support-Tickets; der Gesamtpreis im Checkout ist ehrlich; besseres grenzüberschreitendes Erlebnis",
+      "cons": "Braucht HS-Codes und Ursprungsland an jedem Produkt sowie einen Carrier mit DDP-Labels; Gebühr je Bestellung; schließt Steuerüberschreibungen, manuelle Sätze und Befreiungen aus; der höhere Preis im Checkout kostet Conversion"
+     },
+     {
+      "option": "Zölle der Kundschaft bei Zustellung überlassen (DAP)",
+      "pros": "Nichts zu konfigurieren, keine Zolldaten an Produkten nötig, keine Zollgebühr je Bestellung, niedrigster Preis im Checkout",
+      "cons": "Kundinnen und Kunden erhalten eine unerwartete Rechnung des Zustellers; verweigerte Zustellungen, Retouren und Rückbuchungen; die Marke trägt die Schuld für Kosten, die sie nie genannt hat"
+     }
+    ]
+   }
+  },
+  "Q3.4.2": {
+   "text": "In welchen Ländern sind Sie umsatzsteuerlich registriert?",
+   "teach": {
+    "why": "Registrierungen werden in Shopify je Region hinterlegt und entscheiden, welche Umsatzsteuer wo berechnet wird. Ohne die Registrierung kann Shopify die Umsatzsteuer dieses Landes im Checkout nicht erheben — keine Konfiguration ersetzt eine Registrierung, die der Kunde nicht hat.",
+    "limits": "Shopify Tax deckt die Vereinigten Staaten, die Europäische Union, das Vereinigte Königreich und Kanada ab. Außerhalb davon deckt Basic Tax Norwegen, die Schweiz, Australien, Neuseeland und Singapur ab und verlangt eine Steuernummer. Shopify berechnet, meldet und führt aber niemals ab — das bleibt beim Kunden und seinem Steuerberater."
+   }
+  },
+  "Q3.4.3": {
+   "text": "Verkaufen Sie in die USA mit Pflichten zur State Sales Tax?",
+   "teach": {
+    "why": "US-Sales-Tax-Pflichten entstehen Bundesstaat für Bundesstaat aus den Umsätzen des Kunden selbst, nicht aus Shopify. Die Antwort zeigt, ob US-Registrierungen und -Sätze im Umfang liegen und ob vor dem Launch ein Steuerberater nötig ist.",
+    "limits": "Shopify Tax deckt die Vereinigten Staaten ab und berechnet die Sätze, aber Registrierung, Meldung und Abführung liegen beim Kunden. Shopify meldet und führt nirgendwo ab."
+   }
+  },
+  "Q3.4.4": {
+   "text": "Haben die Produkte HS-Codes und ein Ursprungsland, und woher stammen diese Angaben?",
+   "teach": {
+    "why": "Keine HS-Codes, keine Zölle im Checkout. Die Antwort zeigt, ob die Daten überhaupt existieren, wo sie führend gepflegt werden — ERP, PIM oder Lieferant — und ob ein Datenstrang auf dem kritischen Pfad zu einem DDP-Launch liegt.",
+    "limits": "Shopify verlangt HS-Codes an den Produkten (mit Ursprungsland), bevor Zölle und Einfuhrsteuern im Checkout berechnet werden können. Unter Managed Markets vergibt Global-e die HS-Codes stattdessen automatisch."
+   }
+  },
+  "Q3.4.5": {
+   "text": "Sollen die Preise in manchen Märkten inklusive Steuer (MwSt.) und in anderen exklusive Steuer angezeigt werden?",
+   "help": "Shopify kann Preise je Markt inklusive Steuer anzeigen (dynamische Steueranzeige).",
+   "teach": {
+    "why": "Europäische Kundinnen und Kunden erwarten einen Preis inklusive Mehrwertsteuer; in den USA erwartet man die Steuer erst im Checkout. Shopify bedient beides aus einem Preis über die dynamische Brutto-Preisanzeige — das ist also eine Konfigurationsantwort und kein zweites Set Preislisten.",
+    "limits": "Die dynamische Brutto-Preisanzeige wird je Markt gesetzt und ist ab dem Basic-Plan dokumentiert. Sie verändert den angezeigten Preis — stimmen Sie die daraus entstehenden runden Beträge je Markt mit dem Kunden ab, denn die Rundungsregeln sind Shopify-Standards und nicht anpassbar."
+   }
+  },
+  "Q3.4.6": {
+   "text": "Welcher Steuerdienst?",
+   "help": "Shopify Tax deckt USA, EU, UK und Kanada ab; seit dem 13.05.2026 können neue Stores, die in der EU, in UK oder Kanada verkaufen, Basic Tax nicht mehr nutzen.",
+   "teach": {
+    "why": "Für die meisten europäischen Kunden ist das keine echte Wahl: Seit dem 13. Mai 2026 können neue Stores, die in der EU, in UK oder Kanada verkaufen, Basic Tax nicht mehr nutzen. Shopify Tax berechnet, meldet und führt aber nie ab.",
+    "limits": "Shopify Tax deckt die Vereinigten Staaten, die Europäische Union, das Vereinigte Königreich und Kanada ab. Außerhalb davon deckt Basic Tax Norwegen, die Schweiz, Australien, Neuseeland und Singapur ab und verlangt eine Steuernummer. Shopify Tax ist bis zu einer Umsatzschwelle kostenlos, danach wird je Bestellung mit Obergrenze abgerechnet. Meldung und Abführung bleiben immer beim Kunden.",
+    "options": [
+     {
+      "option": "Shopify Tax",
+      "pros": "Nativ, keine Integration zu bauen oder zu pflegen; Sätze für USA, EU, UK und Kanada; Produktkategorien liefern ermäßigte Sätze und Befreiungen; bis zu einer Umsatzschwelle kostenlos",
+      "cons": "Gebühr je Bestellung oberhalb der Schwelle; nur vier Regionen abgedeckt; keine Meldung, keine Abführung; nichts außerhalb dieser Regionen, sofern nicht Basic Tax greift"
+     },
+     {
+      "option": "Ein Steuerdienst eines Drittanbieters (zum Beispiel TaxJar)",
+      "pros": "Deckt Regionen und Sonderfälle ab, die Shopify Tax nicht kennt; bringt meist Melde- und Abführungs-Workflows mit, die der Kunde mit seiner Buchhaltung vielleicht schon nutzt",
+      "cons": "Ein weiteres Abonnement und eine weitere Integration zum Testen und Pflegen; dupliziert in den vier Regionen die Arbeit, die Shopify Tax ohnehin macht; die Steuerlogik liegt nun an zwei Orten"
+     }
+    ]
+   }
+  },
+  "Q3.4.7": {
+   "text": "Kaufen Geschäftskunden steuerbefreit ein (Prüfung der USt-IdNr., Reverse Charge)?",
+   "help": "Die Prüfung der USt-IdNr. im Checkout ist nativ.",
+   "teach": {
+    "why": "Die Prüfung der USt-IdNr. im Checkout ist nativ, Reverse Charge ist also Konfiguration und kein Build. Die Antwort entscheidet aber, ob B2B-Käufer einen eigenen Markt, eine eigene Kundengruppe und einen eigenen Katalog brauchen — und das formt Preisgestaltung und Steuer-Setup neu.",
+    "limits": "Managed Markets unterstützt keine B2B-Bestellungen. Ein Kunde, der zugleich steuerbefreiten B2B-Handel und einen ausgelagerten Merchant of Record braucht, kann also nicht beides haben. B2B-Verkauf in mehr als einer Währung setzt Shopify Payments voraus."
+   }
+  },
+  "Q3.4.8": {
+   "text": "In welchen Ländern sollen Zölle und Einfuhrsteuern im Checkout erhoben werden (DDP)? In den übrigen zahlt die Kundschaft bei Zustellung (DAP).",
+   "help": "Länder, z. B. Vereinigte Staaten, Vereinigtes Königreich, Schweiz. Eine Wahl je Land: DDP und DAP lassen sich im selben Land nicht parallel anbieten. Falls Sie nicht grenzüberschreitend versenden, halten Sie das bitte in einem Kommentar fest.",
+   "teach": {
+    "why": "DDP wird je Land gewählt, und DDP und DAP lassen sich im selben Land nicht parallel anbieten. Die Liste steuert Versandprofile, Carrier-Wahl und die Zollgebühr je Bestellung — sie gehört damit in den Umfang und nicht in die Go-live-Woche.",
+    "limits": "Zwölf Länder und Regionen werden nicht unterstützt, darunter Nordirland, Russland und Puerto Rico, und in der Versandzone „Rest der Welt“ können keine Zölle erhoben werden. Zölle und Steuern werden gemeinsam erhoben — Steuern allein sind keine Option. Über Shopifys eigene Carrier-Konten gekaufte DDP-Labels sind auf Canada Post (nur US-Ziele) und DHL Express (USA und Kanada) begrenzt; DHL eCommerce ist ausschließlich DAP. Andere Carrier müssen direkt bestätigt werden."
+   }
+  },
+  "Q3.4.9": {
+   "text": "Wenn Sie geringwertige Sendungen von außerhalb in diese Gebiete versenden: Sind Sie registriert, um die Einfuhrumsatzsteuer oder GST bereits im Checkout zu erheben?",
+   "help": "Geringwertige Sendungen in die EU (IOSS), nach UK, in die Schweiz, nach Norwegen (VOEC), Australien und Neuseeland. Bitte die Verfahren ankreuzen, für die Sie registriert sind.",
+   "teach": {
+    "why": "Das ist das klassische Zuviel-Versprechen. Shopify kann die EU-Einfuhrumsatzsteuer bei geringwertigen Bestellungen nur dann im Checkout erheben, wenn der Kunde eine IOSS-Registrierung hält. Dasselbe gilt für die Verfahren in UK, der Schweiz, dem norwegischen VOEC sowie in Australien und Neuseeland.",
+    "limits": "IOSS gilt für Händler außerhalb der EU, die an EU-Kunden verkaufen, und erlaubt die Erhebung der Mehrwertsteuer im Checkout bei Bestellungen bis 150 €. Die Registrierung ist im Grundsatz freiwillig, aber erforderlich, wenn die Steuer im Checkout berechnet werden soll. OSS-Registrierungen greifen nicht, wenn der Fulfillment-Standort außerhalb der EU liegt. Shopify empfiehlt DDP ergänzend zu diesen Verfahren, damit auch Bestellungen oberhalb der Schwelle Zölle berechnet bekommen. Shopify dokumentiert außerdem, dass die EU ab dem 1. Juli 2026 beginnt, die Zollbefreiung bis 150 € aufzuheben — prüfen Sie den aktuellen Stand für die Waren des Kunden."
+   }
+  },
+  "Q3.4.10": {
+   "text": "Gibt es Produkte mit ermäßigten oder Nullsteuersätzen oder mit Steuerbefreiungen in einem Markt (z. B. Arzneimittel, Bücher, Lebensmittel, Kinderbekleidung)?",
+   "help": "Die Sätze bestätigt die Finanzabteilung; Merkle erteilt keine Steuerberatung.",
+   "teach": {
+    "why": "Ermäßigte und Nullsätze werden in Shopify Tax über die Produktkategorie gesteuert oder über manuelle Steuerüberschreibungen. Die Antwort entscheidet, ob die Produktdaten ein Feld für die Steuerkategorie brauchen — und sie ist Sache der Finanzabteilung, nie unsere.",
+    "limits": "Produktkategorien für ermäßigte Sätze und Befreiungen gelten in Shopify Tax für die USA, die EU und UK. Manuelle Steuerüberschreibungen je Produkt werden je Land oder Bundesstaat gesetzt, werden aber ignoriert, wo Zölle im Checkout erhoben werden, und sind mit DDP gar nicht kompatibel. Merkle erteilt keine Steuerberatung: Jeden Satz bestätigt die Finanzabteilung des Kunden oder dessen Berater."
+   }
+  },
+  "Q3.4.11": {
+   "text": "Wer stellt die Rechnungen an die Kundschaft aus?",
+   "help": "Shopify kann MwSt.-Rechnungen für EU- und UK-Bestellungen erzeugen (auf der Bestellstatusseite sichtbar, nicht per E-Mail, nicht für Bestellungen mit Zöllen). Die kostenlose App Order Printer druckt Rechnungen aus Vorlagen. Rechnungen können auch aus dem ERP oder einer Rechnungs-App kommen.",
+   "teach": {
+    "why": "Shopifys MwSt.-Rechnungen decken nur EU- und UK-Bestellungen ab, erscheinen auf der Bestellstatusseite statt per E-Mail und werden für Bestellungen mit Zöllen gar nicht erzeugt. Die meisten grenzüberschreitenden Kunden brauchen deshalb eine App oder ihr ERP.",
+    "limits": "Native MwSt.-Rechnungen setzen Shopify Tax voraus, werden nicht per E-Mail versandt, werden für Bestellungen mit Zöllen nicht erzeugt, und Portugal wird nicht unterstützt. Die kostenlose App Shopify Order Printer druckt Rechnungen und Lieferscheine aus Vorlagen, ist aber ein Dokumentenwerkzeug und kein Compliance-Werkzeug.",
+    "options": [
+     {
+      "option": "Native MwSt.-Rechnungen von Shopify plus Order Printer",
+      "pros": "Kostenlos und nativ; keine zusätzlichen App-Kosten; genug für ein einfaches EU- oder UK-Geschäft ohne Zölle im Checkout",
+      "cons": "Nur EU- und UK-Bestellungen; nicht per E-Mail an die Kundschaft; nichts für Bestellungen mit Zöllen; Portugal nicht unterstützt; keine E-Rechnungsformate"
+     },
+     {
+      "option": "Eine Rechnungs-App (zum Beispiel Sufio, Order Printer Pro)",
+      "pros": "Automatisch per E-Mail versandte Rechnungen, Gutschriften, Branding, Nummernkreise je Land und in manchen Apps die EU-E-Rechnungsformate",
+      "cons": "Monatliche Kosten und eine weitere App, die Bestell- und Kundendaten hält; die Regeln für die Rechnungsnummerierung müssen trotzdem mit der Finanzabteilung des Kunden abgestimmt werden"
+     },
+     {
+      "option": "Das ERP oder Finanzsystem des Kunden stellt die Rechnungen aus",
+      "pros": "Eine führende Quelle für Buchhaltung, Nummernkreise und Gutschriften; bereits geprüft; bedient E-Rechnungspflichten, denen der Kunde anderswo ohnehin unterliegt",
+      "cons": "Braucht eine Bestellintegration und eine definierte Zeitregel; hinkt die Integration, kommen die Rechnungen zu spät; der Kundenservice muss wissen, wo sie zu finden sind"
+     }
+    ]
+   }
+  },
+  "Q3.4.12": {
+   "text": "Welche Pflichten zur elektronischen Rechnungsstellung (E-Invoicing) gelten für Ihre Umsätze?",
+   "help": "Zum Beispiel Peppol, XRechnung oder ZUGFeRD (Deutschland), Factur-X (Frankreich), SdI (Italien), KSeF (Polen) oder VeriFactu (Spanien). Shopify hat kein eingebautes E-Invoicing: Es kommt aus dem ERP oder einer Rechnungs-App.",
+   "teach": {
+    "why": "Shopify hat kein eingebautes E-Invoicing. Peppol, XRechnung, ZUGFeRD, Factur-X, SdI, KSeF und VeriFactu sind allesamt ERP- oder App-Arbeit — eine Pflicht in irgendeinem Markt wird damit zu einer benannten Integration mit gesetzlicher Frist.",
+    "limits": "Shopifys native MwSt.-Rechnungen für EU- und UK-Bestellungen sind Dokumente, keine E-Rechnungen, und erfüllen keines dieser Verfahren. Bestätigen Sie jede Pflicht mit der Finanzabteilung des Kunden oder dessen Steuerberater — Merkle erteilt keine Steuerberatung."
+   }
+  },
+  "Q3.4.13": {
+   "text": "Wenn der Verkauf in einem Land bedeutete, sich dort steuerlich registrieren und Erklärungen abgeben zu müssen: Würden Sie das selbst übernehmen, oder wäre Ihnen lieber, ein Partner wäre für diese Bestellungen der rechtliche Verkäufer?",
+   "help": "Bitte für die Länder antworten, in die Sie verkaufen, in denen Sie heute aber nicht registriert sind.",
+   "teach": {
+    "why": "Zusammen mit der Marktliste und den bestehenden Registrierungen (Q3.4.2) entscheidet das über das grenzüberschreitende Modell: selbst verwaltete Zölle auf Shopify Markets oder ein Merchant of Record. Die Frage ersetzt die eingestellte Q3.1.6, die den Kunden ein Modell benennen ließ, von dem er noch nie gehört hatte.",
+    "limits": "Managed Markets ist der einzige Merchant-of-Record-Weg innerhalb von Shopify und steht nur Unternehmen in den kontinentalen Vereinigten Staaten sowie bestimmten Stores in Kanada und im Vereinigten Königreich offen, mit Shopify Payments, und unterstützt kein B2B. Für alle anderen sind die ehrlichen Optionen selbst verwaltete Registrierungen oder eine Merchant-of-Record-App eines Drittanbieters."
+   }
+  },
+  "Q3.5.1": {
+   "text": "Möchten Sie grenzüberschreitend (von außerhalb Chinas) oder onshore, hinter der Großen Firewall, an das chinesische Festland verkaufen?",
+   "help": "Der Onshore-Verkauf setzt eine Gesellschaft in der VR China, eine ICP-Registrierung oder -Lizenz und Hosting in China voraus.",
+   "teach": {
+    "why": "Shopifys Server stehen nicht auf dem chinesischen Festland, und der Onshore-Verkauf verlangt eine Gesellschaft in der VR China, eine ICP-Registrierung oder -Lizenz sowie lokales Hosting. Diese Antwort leitet China in eine eigene Discovery — es liegt außerhalb des Umfangs dieses Engagements.",
+    "limits": "Das chinesische Festland ist nicht Teil des Merkle-Angebots. Wird China als Launch-Markt genannt, markiert das dieses Engagement für eine eigene China-Discovery und nimmt China aus Märkten, Sprachen, Angebot, Plan und Build-Umfang dieses Engagements heraus. Ist das chinesische Festland der einzige Launch-Markt, endet dieses Engagement und wird zu einer China-Discovery.",
+    "options": [
+     {
+      "option": "Grenzüberschreitend nach China (von außerhalb des Festlands)",
+      "pros": "Keine Gesellschaft in der VR China, keine ICP-Registrierung, kein Onshore-Hosting nötig; Start über Marktplätze oder einen Hongkong-Store möglich; die Zollkanäle sind dafür gemacht",
+      "cons": "Grenzen je Bestellung und je Jahr und Verbraucher; die Waren müssen auf der grenzüberschreitenden Positivliste stehen; Marktplatzgebühren und ein lokaler Partner; Shopify ist selten der Shop, den die Kundschaft sieht"
+     },
+     {
+      "option": "Onshore, hinter der Großen Firewall",
+      "pros": "Ein normales chinesisches Einkaufserlebnis, inländische Zahlung und Logistik, keine Zollgrenzen je Käufer, vollständige Anbindung an lokales Marketing",
+      "cons": "Braucht eine juristische Person in der VR China, eine ICP-Registrierung oder Gewerbelizenz und Hosting innerhalb Chinas — Shopify hat keine Infrastruktur auf dem chinesischen Festland und kann dort also nicht die Plattform sein; Monate Vorlauf und Rechtsberatung in der VR China"
+     }
+    ]
+   }
+  },
+  "Q3.5.2": {
+   "text": "Welche Kanäle für das chinesische Festland?",
+   "help": "Grenzüberschreitende Marktplätze (Tmall Global, JD Worldwide, Douyin Global, RED), ein WeChat-Mini-Programm, die eigene Website oder ein Hongkong-Store, der auf das Festland versendet.",
+   "teach": {
+    "why": "Jeder China-Kanal ist ein anderer Build: ein grenzüberschreitender Marktplatz, ein WeChat-Mini-Programm, ein Hongkong-Store. In den meisten davon ist Shopify nicht der Shop — diese Antwort bemisst also die eigene China-Discovery und nicht dieses Engagement.",
+    "limits": "Shopify hat keinen nativen China-Marktplatz- oder WeChat-Kanal; Konnektoren wie die Apps von WalkTheChat sitzen zwischen Shopify und diesen Kanälen. Das chinesische Festland ist unabhängig vom gewählten Kanal aus dem Umfang dieses Engagements ausgenommen."
+   }
+  },
+  "Q3.5.3": {
+   "text": "Haben Sie eine juristische Person auf dem chinesischen Festland?",
+   "help": "Erforderlich für eine ICP-Registrierung oder -Lizenz und für Onshore-Hosting.",
+   "teach": {
+    "why": "Ohne Gesellschaft in der VR China gibt es keine ICP-Registrierung und kein Onshore-Hosting — der Onshore-Verkauf ist damit vom Tisch, bevor die technische Diskussion überhaupt beginnt. Es ist die erste Tatsache, die die eigene China-Discovery vom Kunden braucht.",
+    "limits": "Shopify kann eine Website ohnehin nicht auf dem chinesischen Festland hosten — seine Server stehen nicht dort. Eine Gesellschaft allein macht Shopify also nicht zur Onshore-Plattform."
+   }
+  },
+  "Q3.5.4": {
+   "text": "Haben Sie eine Gesellschaft in Hongkong oder anderswo im Ausland, die grenzüberschreitend verkaufen kann, und sind Ihre Marken in China eingetragen?",
+   "help": "Grenzüberschreitende Marktplätze verlangen beides.",
+   "teach": {
+    "why": "Grenzüberschreitende Marktplätze verlangen sowohl eine ausländische Verkaufsgesellschaft als auch in China eingetragene Marken. Ohne beides ist der grenzüberschreitende Weg durch Formalitäten mit langen Vorlaufzeiten blockiert — die eigene China-Discovery muss das einplanen.",
+    "limits": "Das ist eine rechtliche und markenschutzrechtliche Frage, keine Shopify-Frage. Merkle erteilt keine Rechtsberatung zur VR China; Gesellschafts- und Markenstatus bestätigt die Rechtsberatung des Kunden."
+   }
+  },
+  "Q3.5.5": {
+   "text": "ICP-Status für eine China-Website?",
+   "help": "Ihre Rechtsberatung in der VR China bestätigt, ob eine Registrierung genügt oder eine kommerzielle ICP-Lizenz nötig ist.",
+   "teach": {
+    "why": "Eine ICP-Registrierung oder eine kommerzielle ICP-Lizenz entscheidet, ob eine in China gehostete Website rechtlich überhaupt möglich ist und wie lange es dauert. Shopify kann sie nicht hosten, die Antwort gehört also in die eigene China-Discovery.",
+    "limits": "Shopifys Server stehen nicht auf dem chinesischen Festland, eine ICP-Registrierung macht aus einem Shopify-Store also keine Onshore-China-Seite. Die Rechtsberatung des Kunden in der VR China bestätigt, ob eine Registrierung genügt oder eine kommerzielle Lizenz nötig ist."
+   }
+  },
+  "Q3.5.6": {
+   "text": "Welche Rolle spielt Shopify für das chinesische Festland?",
+   "help": "Shopify kann global führend für Produkte, Bestände und Bestellungen bleiben, während China über lokale Kanäle verkauft.",
+   "teach": {
+    "why": "Selbst wenn China über lokale Kanäle verkauft, kann Shopify global führend für Produkte, Bestände und Bestellungen bleiben. Diese Antwort definiert die Integrationsfläche zwischen diesem Engagement und dem separaten China-Strang.",
+    "limits": "Shopify hat keine Infrastruktur auf dem chinesischen Festland und kann dort also nicht der Onshore-Shop sein. Es als führendes System zu behalten, ist eine Daten- und Integrationsentscheidung, keine Verkaufsentscheidung.",
+    "options": [
+     {
+      "option": "Shopify bleibt global führend für Produkte, Bestände und Bestellungen",
+      "pros": "Ein Katalog und ein Bestandsbild; die China-Kanäle werden aus denselben Daten versorgt; das Reporting bleibt konsolidiert",
+      "cons": "Braucht Konnektoren und ein China-spezifisches Daten-Mapping; die China-Kanäle geben eigene Attribute, Claim-Regeln und Bildanforderungen vor"
+     },
+     {
+      "option": "China läuft vollständig getrennt von Shopify",
+      "pros": "Keine Integrationsarbeit in diesem Engagement; der lokale Partner verantwortet den Stack, den der lokale Markt erwartet",
+      "cons": "Zwei Kataloge, zwei Bestandsbilder und kein konsolidiertes Reporting; die Marke verliert den direkten Blick auf chinesische Kundschaft und Nachfrage"
+     }
+    ]
+   }
+  },
+  "Q3.5.7": {
+   "text": "Wie gelangen die Waren nach China: Zolllager (1210), Direktversand (9610), allgemeiner Handel oder Privatsendungen?",
+   "help": "Grenzüberschreitende Kanäle haben Grenzen je Bestellung und je Jahr und Verbraucher.",
+   "teach": {
+    "why": "Zolllager, Direktversand, allgemeiner Handel und Privatsendungen bringen unterschiedliche Abgaben, Formalitäten und Grenzen je Bestellung und je Jahr und Verbraucher mit. Nichts davon ist Shopify-Konfiguration; es bemisst die eigene China-Discovery.",
+    "limits": "Grenzüberschreitende Kanäle haben Grenzen je Bestellung und je Jahr und Verbraucher. Das ist Zoll- und Logistikarbeit in der Verantwortung des Handelspartners und der Berater des Kunden in der VR China, nicht des Shopify-Builds."
+   }
+  },
+  "Q3.5.8": {
+   "text": "Stehen Ihre Produkte auf Chinas Positivliste für den grenzüberschreitenden E-Commerce?",
+   "teach": {
+    "why": "Waren, die nicht auf Chinas Positivliste für den grenzüberschreitenden E-Commerce stehen, können weder über den Zolllager- noch über den Direktversandkanal laufen — das kann den gesamten grenzüberschreitenden Weg für einen Katalog ausschließen. Es ist eine Produkttatsache, keine Plattformfrage.",
+    "limits": "Die Positivliste wird von den chinesischen Behörden festgelegt und ändert sich. Bestätigt wird sie vom Handelspartner oder der Rechtsberatung des Kunden in der VR China — nicht von Merkle."
+   }
+  },
+  "Q3.5.9": {
+   "text": "Wie sind Ihre Produkte in China eingestuft?",
+   "help": "Aufhellende Produkte, Sonnenschutz und Mittel gegen Haarausfall gelten als besondere Kosmetika; Arzneimittel sind keine grenzüberschreitenden Waren.",
+   "teach": {
+    "why": "China behandelt aufhellende Produkte, Sonnenschutz und Mittel gegen Haarausfall als besondere Kosmetika, und Arzneimittel sind überhaupt keine grenzüberschreitenden Waren. Die Einstufung entscheidet, welcher Kanal rechtlich überhaupt möglich ist, und steht deshalb vor jeder technischen China-Planung.",
+    "limits": "Die Einstufung ist eine chinesische regulatorische Bewertung, die von der Rechtsberatung oder dem Handelspartner des Kunden in der VR China bestätigt wird, und sie kann von der Einstufung desselben Produkts in der EU oder den USA abweichen."
+   }
+  },
+  "Q3.5.10": {
+   "text": "Status der Registrierung oder Anmeldung bei Chinas Arzneimittelbehörde (NMPA)?",
+   "help": "Der allgemeine Handel verlangt Registrierung oder Anmeldung; grenzüberschreitende Kanäle sind für Waren auf der Positivliste befreit.",
+   "teach": {
+    "why": "Der allgemeine Handel verlangt eine NMPA-Registrierung oder -Anmeldung; grenzüberschreitende Kanäle sind für Waren auf der Positivliste befreit. Die Antwort bestimmt die Vorlaufzeit bis zu einem China-Launch und gehört in die eigene China-Discovery.",
+    "limits": "Fristen für Registrierung und Anmeldung setzen die chinesischen Behörden, sie können sich über Monate ziehen. Merkle erbringt keine regulatorische Beratung für die VR China."
+   }
+  },
+  "Q3.5.11": {
+   "text": "Müssen Produktaussagen für China geprüft werden (medizinische, kosmezeutische oder Behandlungsaussagen)?",
+   "help": "China lässt kosmezeutische oder medizinische Aussagen für Kosmetika nicht zu.",
+   "teach": {
+    "why": "China lässt kosmezeutische oder medizinische Aussagen für Kosmetika nicht zu — direkt von der globalen Seite übersetzte Texte können deshalb unzulässig sein. Das ist ein Content-Strang, den die eigene China-Discovery verantworten und einplanen muss.",
+    "limits": "Das ist eine rechtliche Prüfung von Produktaussagen, keine Übersetzungsaufgabe. Die Freigabe liegt bei der Rechtsberatung oder dem Handelspartner des Kunden in der VR China."
+   }
+  },
+  "Q3.5.12": {
+   "text": "Wie werden Kundinnen und Kunden auf dem Festland bezahlen?",
+   "help": "Innerhalb des Marktplatzes, mit Alipay und WeChat Pay über ein Shopify-Payments-Konto in Hongkong (Early Access), über einen grenzüberschreitenden Wallet-Anbieter oder über inländische Händlerkonten (Gesellschaft in der VR China).",
+   "teach": {
+    "why": "Alipay und WeChat Pay sind im Early Access über ein Shopify-Payments-Konto in Hongkong verfügbar; inländische Händlerkonten setzen eine Gesellschaft in der VR China voraus. Diese Antwort entscheidet, ob ein von Shopify gehosteter China-Checkout überhaupt möglich ist.",
+    "limits": "Beide Methoden setzen ein Shopify-Payments-Konto in der SVZ Hongkong voraus und befinden sich im Early Access. Kundinnen und Kunden zahlen in CNY. Bei WeChat Pay gibt es keine Rückbuchungen. Innerhalb eines Marktplatzes gehört die Zahlung dem Marktplatz, nicht Shopify."
+   }
+  },
+  "Q3.5.13": {
+   "text": "Wie viele Kundinnen und Kunden vom chinesischen Festland erwarten Sie pro Jahr?",
+   "help": "Chinas Gesetz zum Schutz personenbezogener Daten sieht je nach Volumen unterschiedliche Pflichten beim Datenexport vor.",
+   "teach": {
+    "why": "Chinas Gesetz zum Schutz personenbezogener Daten sieht je nach Volumen unterschiedliche Pflichten beim Datenexport vor — die erwartete Kundenzahl entscheidet also, welches Compliance-Regime gilt. Nichts daran ist eine Shopify-Einstellung; es fließt in die eigene China-Discovery.",
+    "limits": "Shopifys Server stehen nicht auf dem chinesischen Festland, jeder China-Kundendatensatz ist damit von vornherein eine grenzüberschreitende Übermittlung. Die Pflichten bestätigt die Rechtsberatung des Kunden in der VR China."
+   }
+  },
+  "Q3.5.14": {
+   "text": "Haben Sie in China eine vertretungsberechtigte Person für den Schutz personenbezogener Daten (PIPL)?",
+   "help": "Erforderlich, wenn ein ausländisches Unternehmen Verbraucherinnen und Verbraucher in China anspricht.",
+   "teach": {
+    "why": "Das PIPL verlangt eine vertretungsberechtigte Person in China, wenn ein ausländisches Unternehmen chinesische Verbraucher anspricht. Das ist eine namentliche rechtliche Bestellung, die der Kunde vornehmen muss, keine Plattformeinstellung — und sie ist Voraussetzung für einen rechtskonformen China-Launch.",
+    "limits": "Merkle erbringt keine Rechtsberatung für die VR China; Bestellung und Bedingungen kommen von der Rechtsberatung des Kunden."
+   }
+  },
+  "Q3.5.15": {
+   "text": "Wo werden die China-Kundendaten (CRM, E-Mail, Analytics) gespeichert?",
+   "teach": {
+    "why": "Wo die China-Kundendaten liegen, entscheidet, ob ein Mechanismus für die grenzüberschreitende Übermittlung nötig ist und welche CRM-, E-Mail- und Analytics-Werkzeuge überhaupt eingesetzt werden dürfen. Shopifys Server stehen nicht auf dem chinesischen Festland.",
+    "limits": "Mehrere verbreitete Martech-Werkzeuge sind für China-Daten nicht erreichbar oder nicht zulässig — die Antwort kann den gesamten Stack für diesen Markt verändern. Den Übermittlungsmechanismus bestätigt die Rechtsberatung des Kunden in der VR China."
+   }
+  },
+  "Q3.5.16": {
+   "text": "Müssen in China blockierte Skripte (Google Fonts, Google Analytics, reCAPTCHA, Meta-Pixel, YouTube) ersetzt werden?",
+   "teach": {
+    "why": "Google Fonts, Google Analytics, reCAPTCHA, Meta-Pixel und YouTube sind in China häufig blockiert — Shopify selbst weist darauf hin, dass Firewalls dort Google Fonts regelmäßig sperren. Jeder Ersatz ist echte Theme- und Tracking-Arbeit.",
+    "limits": "Blockierte Skripte scheitern nicht leise: Sie können den Seitenaufbau für chinesische Besucher anhalten, selbst auf einer Seite, die überall sonst funktioniert. Shopify dokumentiert den Fall Google Fonts; alles Übrige muss aus China heraus getestet werden."
+   }
+  },
+  "Q3.5.17": {
+   "text": "Welche Marketingkanäle für China?",
+   "teach": {
+    "why": "Chinas Marketing-Stack ist vollständig lokal — andere Plattformen, anderes Tracking, andere Content-Formate. Die Antwort bemisst die eigene China-Discovery und zeigt, wie viel der globalen Martech-Investition übertragbar ist. Meist sehr wenig.",
+    "limits": "Shopifys Marketing-Integrationen sind für westliche Kanäle gebaut; chinesische Kanäle werden über Konnektoren oder die eigenen Werkzeuge des lokalen Partners erreicht."
+   }
+  },
+  "Q3.5.18": {
+   "text": "Wer leistet den Kundenservice auf Chinesisch?",
+   "teach": {
+    "why": "Service auf Chinesisch, zu chinesischen Zeiten, auf den Kanälen, die chinesische Kundinnen und Kunden tatsächlich nutzen, ist eine betriebliche Zusage, die der Kunde personell hinterlegen muss. Das ist eine Reifeprüfung für den China-Weg, keine Shopify-Konfiguration."
+   }
+  },
+  "Q3.5.19": {
+   "text": "Arbeiten Sie für China mit einem lokalen Partner oder Handelspartner? Bitte nennen.",
+   "teach": {
+    "why": "Die meisten erfolgreichen China-Eintritte laufen über einen Handelspartner oder eine lokale Agentur. Zu wissen, wer das ist, zeigt, wem Shop, Daten und Kundschaft gehören — und was Merkle tatsächlich liefern soll."
+   }
+  },
+  "Q3.5.20": {
+   "text": "Ziel-Launchdatum für das chinesische Festland.",
+   "teach": {
+    "why": "ICP-Registrierungen, Markeneintragungen und NMPA-Anmeldungen dauern Monate. Ein Zieldatum zeigt, ob China ein finanzierter Plan oder eine Absichtserklärung ist und ob es sich sicher hinter den Launch dieses Engagements einreihen lässt.",
+    "limits": "Das chinesische Festland ist aus Umfang und Angebot dieses Engagements ausgenommen — dieses Datum gehört damit in den Plan der eigenen China-Discovery und nicht in diesen Lieferzeitplan."
+   }
+  },
+  "Q3.5.21": {
+   "text": "Wer berät rechtlich, steuerlich und zollrechtlich zur VR China?",
+   "help": "Merkle erbringt keine Rechtsberatung zur VR China.",
+   "teach": {
+    "why": "Merkle erbringt keine rechtliche, steuerliche oder zollrechtliche Beratung zur VR China. Wird hier niemand genannt, hat der China-Weg für seine risikoreichsten Entscheidungen keine verantwortliche Stelle, und die eigene China-Discovery kann nicht verantwortbar starten.",
+    "limits": "Gesellschaftsgründung, ICP-Status, Zollverfahren, Produkteinstufung, Prüfung der Produktaussagen und PIPL-Pflichten brauchen alle eine benannte Beratung in der VR China. Shopifys Dokumentation deckt nichts davon ab."
+   }
   }
  },
  "document": {

@@ -220,9 +220,18 @@ export default function Engagement({ loaderData, actionData }) {
       />
       <div className="layout">
         <div>
-          {next.consent_required ? <p className="error">Record the client's consent for AI processing before any other answer.</p> : null}
+          {next.consent_required ? (
+            <p className="error">Record the client’s consent for AI processing before any other answer.</p>
+          ) : null}
           {!next.consent_required ? <PrefillCard client={engagement.client} documents={documents} toConfirm={toConfirm} process={engagement.process} /> : null}
-          {bid ? (
+          {/* A bid shows documents where a discovery shows questions — but until
+              consent is recorded there are no documents to show and nothing on the
+              page could record it, so a new bid opened on an error with no control
+              anywhere. Consent is a question, and the question card already works:
+              it is the one card a bid renders too. */}
+          {next.consent_required && next.questions.length ? (
+            next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} language={engagement.language} />)
+          ) : bid ? (
             <DocumentsRead client={engagement.client} documents={documentYield} toConfirm={toConfirm} />
           ) : (
             <>

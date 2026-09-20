@@ -122,7 +122,14 @@ function blockersFromErrors(errors) {
     const key = q?.id ?? error;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push(q ? { question_id: q.id, what: q.text, why: error } : { what: error });
+    // The schema's own sentence — "/meta/client must have required property
+    // 'name'" — is where the validator stopped, not where the consultant has to
+    // go. Where the pointer resolves to a question, the question is the whole
+    // message; where it does not, the raw text is all we have, so it is shown
+    // under a sentence a reader can act on rather than as the message itself.
+    out.push(q
+      ? { question_id: q.id, what: q.text, why: null }
+      : { what: 'Something the engine needs has not been recorded', why: error });
   }
   return out;
 }
@@ -202,10 +209,12 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       go: p.go,
       route: p.route ?? null,
       coverage: p.coverage,
-      // Questions, not pointers. The spine said "3 to confirm" where Review said
-      // "1 answer waiting" and confirming it reported "3 answers confirmed" —
-      // three counts of two different units, none of them wrong on its own.
-      to_review: new Set(Object.values(session.provenance).filter((p) => p.status === 'tbc').map((p) => p.question_id).filter(Boolean)).size,
+      // Questions, not pointers — and the same questions Review lists, not a
+      // second walk over the provenance. Counting the provenance said 91 where
+      // Review's own rows said 90: an entry marked tbc whose question no longer
+      // reads as answered counts in one and not the other. Review is where the
+      // work is done, so Review's rows are the unit everything else reports.
+      to_review: awaitingConfirmation(session),
       // What the step spine reads. It renders on every page, so the counts travel
       // with the engagement rather than costing each page another call.
       documents: (session.documents ?? []).length,
@@ -236,6 +245,20 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       // Channel and author stay in the session only (the engagement contract keeps source, status and note).
       draft.provenance[pointer] = { ...draft.provenance[pointer], via, by: user.login, at: today() };
     }
+  }
+
+  /**
+   * Questions waiting on a human to accept what was extracted — the rows Review
+   * shows under "to confirm", counted once here so the spine, the status and the
+   * page cannot disagree.
+   *
+   * @param {object} session
+   * @returns {number}
+   */
+  function awaitingConfirmation(session) {
+    let n = 0;
+    for (const q of questionBank.questions) if (questionState(session, q).to_confirm) n += 1;
+    return n;
   }
 
   /** State of a question in a session. @param {object} session @param {object} q */
@@ -839,6 +862,23 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     },
 
     /**
+     * The consultant has just sent the drafting instruction to Claude. Drafting
+     * happens in another application and can take three quarters of an hour, and
+     * the page said "Not generated yet" throughout — identical to never having
+     * pressed the button. Recording the moment is what lets it say which of the
+     * two a reader is looking at.
+     *
+     * @param {User} user @param {string} client
+     */
+    async noteDraftRequested(user, client) {
+      const session = await load(user, client);
+      session.closing = { ...session.closing, requested: { at: new Date().toISOString(), by: user.login } };
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, requested_at: session.closing.requested.at };
+    },
+
+    /**
      * Save the implementation approach Claude drafted (validated against the
      * approach schema and the engagement); returns the deck data and prompt.
      *
@@ -1060,7 +1100,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         // extracted, so the confirmation count from Review goes in with it.
         go_no_go: goNoGoView(
           decided.doc,
-          { coverage: p.coverage, to_review: summary(session).to_review, documents: (session.documents ?? []).length },
+          { coverage: p.coverage, to_review: summary(session).to_review, documents: (session.documents ?? []).length, record: processMeta(session.process).record.toLowerCase() },
           session.closing?.clarifications ?? null,
           { pricing: user.role === 'owner' },
         ),
@@ -1082,7 +1122,19 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
       const final = finaliseEngagement(decided.doc, session.closing?.approach?.payload ?? null);
       const doc = final.ok ? final.engagement : decided.doc;
-      return { engagement: summary(session), handover: handoverView(doc) };
+      // What the backlog does not rest on. It is built from the answers that
+      // exist, so on an unfinished discovery it is a complete-looking artefact
+      // resting on questions nobody asked — and the page said "ready" with
+      // nothing to the contrary. Delivery opens this on day one.
+      const e = summary(session);
+      const rests_on = {
+        required_answered: e.coverage?.required_answered ?? 0,
+        required_total: e.coverage?.required_total ?? 0,
+        to_review: e.to_review ?? 0,
+        closing_document_at: e.closing_document_at ?? null,
+        assumptions: statedFor(session, decided.doc).length,
+      };
+      return { engagement: e, handover: { ...handoverView(doc), rests_on } };
     },
 
     /**
