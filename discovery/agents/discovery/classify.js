@@ -114,15 +114,32 @@ const GATE_EVALUATORS = {
     return { active: currencies.length > 1, evidence: `Checkout currencies: ${currencies.join(', ') || 'none recorded'}` };
   },
 
+  /*
+   * A wholesale-only engagement is not a consumer store plus an extra.
+   *
+   * B2B was always a modifier on a DTC base, which charges a wholesale-only
+   * client for consumer promotion and checkout work they never receive, and then
+   * charges them again for the company accounts that replace it. The base is the
+   * same size; the weeks are spent differently, and each offer now says so per
+   * channel. What the gate is actually for is the second channel — a client
+   * selling both ways builds both storefronts and tests both.
+   */
   b2b: (doc) => {
     const b2b = doc.b2b ?? {};
     const model = doc.meta?.client?.business_model;
-    const active = b2b.enabled === true || (b2b.enabled === undefined && (model === 'b2b' || model === 'hybrid'));
+    const selling = b2b.enabled === true || (b2b.enabled === undefined && (model === 'b2b' || model === 'hybrid'));
+    const wholesaleOnly = model === 'b2b';
     const features = ['company_accounts', 'price_lists', 'volume_discounts'].filter((k) => b2b[k] === true);
+    if (selling && wholesaleOnly) {
+      return {
+        active: false,
+        evidence: `Wholesale only${features.length ? ` with ${features.join(', ').replace(/_/g, ' ')}` : ''} — B2B is this engagement's base, not an addition to a consumer store`,
+      };
+    }
     return {
-      active,
-      evidence: active
-        ? `B2B selling${features.length ? ` with ${features.join(', ').replace(/_/g, ' ')}` : ''}`
+      active: selling,
+      evidence: selling
+        ? `Both channels in one store: consumer and B2B${features.length ? `, with ${features.join(', ').replace(/_/g, ' ')}` : ''}`
         : 'No B2B selling',
     };
   },

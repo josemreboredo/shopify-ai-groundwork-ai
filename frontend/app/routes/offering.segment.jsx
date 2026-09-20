@@ -4,7 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { OfferScale } from '../components/diagram.jsx';
+import { Channels, OfferScale, PhasePlan } from '../components/diagram.jsx';
 
 /**
  * One offer, on its own page.
@@ -87,6 +87,24 @@ export default function OfferingSegment({ loaderData }) {
       <section>
         <h2>What it covers</h2>
         <ul className="ticks big">{offer.base_scope.map((line) => <li key={line}>{line}</li>)}</ul>
+      </section>
+
+      <section>
+        <h2>Where the weeks go</h2>
+        <p className="lede">
+          The phases, in the order they run. Set-up, template selection, app selection and template
+          customisation are the four a client asks about by name, so they are named.
+        </p>
+        <PhasePlan phases={offer.phases} weeks={offer.duration_weeks} />
+      </section>
+
+      <section>
+        <h2>Who it sells to</h2>
+        <p className="lede">
+          Wholesale is not this offer plus an extra. Selling both ways is — that is the one case the
+          B2B gate is for.
+        </p>
+        <Channels channels={offer.channels} />
       </section>
 
       <section className="band">

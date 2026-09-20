@@ -1331,3 +1331,38 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
   .tiers > li { grid-template-columns: minmax(0, 1fr); }
   .tiers .tier-cost { justify-self: start; }
 }
+
+/* ── Where the weeks go: the phases of one offer ───────────────────────────── */
+/* A numbered spine, with a bar proportional to the longest phase. The shape is
+   the argument: on Growth the storefront build is four to six of thirteen to
+   twenty weeks, and that is visible before a word is read. */
+.phases { list-style: none; padding: 0; margin: 20px 0 0; counter-reset: phase; }
+.phases > li { counter-increment: phase; border-top: 1px solid var(--line); padding: 18px 0; }
+.phases > li:last-child { border-bottom: 1px solid var(--line); }
+.phase-head { display: grid; grid-template-columns: 1fr 13rem; gap: 8px 24px; align-items: baseline; }
+.phases h3 { margin: 0; font-size: 1.05rem; }
+.phases h3::before {
+  content: counter(phase, decimal-leading-zero) '  '; color: var(--red);
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; font-variant-numeric: tabular-nums;
+}
+.phase-weeks { margin: 0; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+/* Square, one colour, sized off the longest phase — never a gradient and never
+   a second accent. It reads as a measurement, which is what it is. */
+.phase-bar { display: block; block-size: 10px; background: var(--ink); flex: 0 0 auto; }
+.phases-total .phase-bar { display: none; }
+.phases-total { border-top: 2px solid var(--red); }
+.phases-total h3::before { content: none; }
+.phase-covers { margin: 8px 0 0; color: var(--muted); font-size: 0.93rem; max-width: 74ch; }
+
+/* ── Who it sells to ──────────────────────────────────────────────────────── */
+.channels { margin: 20px 0 0; display: grid; gap: 0; }
+.channels > div { display: grid; grid-template-columns: 11rem 1fr; gap: 6px 24px; border-top: 1px solid var(--line); padding: 16px 0; }
+.channels > div:last-child { border-bottom: 1px solid var(--line); }
+.channels dt { margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.channels dd { margin: 0; color: var(--ink); font-size: 0.97rem; max-width: 70ch; }
+
+@media (max-width: 720px) {
+  .phase-head { grid-template-columns: minmax(0, 1fr); }
+  .phase-weeks { margin-top: 4px; }
+  .channels > div { grid-template-columns: minmax(0, 1fr); }
+}

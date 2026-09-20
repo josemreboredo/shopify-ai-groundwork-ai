@@ -77,6 +77,14 @@ export function offeringView({ pricing = false } = {}) {
     duration_weeks: o.duration_weeks,
     ...(pricing ? { price_band: money(o.price_band), currency: offering.currency } : {}),
     approach: APPROACH[code],
+    /* Where the weeks go. "Four to five weeks" is a number a consultant has to
+       defend in a room, and the only defence is the phases — which is also the
+       answer to "what does set-up actually include". They sum to the offer's
+       duration exactly, and a test holds them to it. */
+    phases: o.phases ?? [],
+    /* And who is being sold to. B2B used to be a modifier on a consumer base,
+       which charged a wholesale-only client for consumer work they never got. */
+    channels: o.channels ?? null,
   }));
 
   // A gate can have more than one modifier now: a migration is priced by where

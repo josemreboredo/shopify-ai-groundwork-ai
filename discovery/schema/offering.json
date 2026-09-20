@@ -1,5 +1,5 @@
 {
-  "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus.",
+  "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
   "version": "1.3.0",
   "currency": "CHF",
   "offers": {
@@ -7,7 +7,7 @@
       "name": "Ecommerce Foundation",
       "delivery_track": "liquid",
       "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
-      "base_scope": "New Shopify store on the plan the requirements need (Shopify plan benchmark) · Horizon theme · core catalogue · payments · standard checkout",
+      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · Accessibility and Core Web Vitals measured, not promised",
       "price_band": {
         "min": 40000,
         "max": 65000,
@@ -16,13 +16,83 @@
       "duration_weeks": {
         "min": 4,
         "max": 5
+      },
+      "phases": [
+        {
+          "id": "setup",
+          "name": "Store set-up",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "Store created on the plan the answers need, users and permissions, domain, currency, tax and the payment providers live in test"
+        },
+        {
+          "id": "template",
+          "name": "Template selection",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "One Shopify theme chosen against the templates the catalogue actually needs — Horizon unless an answer rules it out — and the choice written down with what it rules out"
+        },
+        {
+          "id": "apps",
+          "name": "App selection",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "The shortlist from the app registry: native Shopify first, an App Store app only where nothing native covers it, each one installed, configured and left with a named owner"
+        },
+        {
+          "id": "design",
+          "name": "Template customisation",
+          "weeks": {
+            "min": 1,
+            "max": 1.5
+          },
+          "covers": "Brand tokens, typography and imagery in theme settings, the standard sections arranged per template, no bespoke section unless the design gate fired"
+        },
+        {
+          "id": "data",
+          "name": "Catalogue and content",
+          "weeks": {
+            "min": 0.5,
+            "max": 1
+          },
+          "covers": "Product model, collections, navigation, search and filters, the legal and policy pages"
+        },
+        {
+          "id": "quality",
+          "name": "Quality and performance",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "Accessibility to the agreed target, Core Web Vitals measured on the real catalogue, cross-device and cross-browser pass"
+        },
+        {
+          "id": "launch",
+          "name": "Launch and handover",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "Cut-over, payment providers live, training on the day-to-day, and the store handed over with what to watch"
+        }
+      ],
+      "channels": {
+        "b2c": "The whole offer, as written: one consumer storefront with the standard checkout.",
+        "b2b": "Not an extra on top of the consumer store — the same weeks spent differently. Company accounts, a price list and quantity rules take the place of the consumer promotion and checkout work, because a wholesale buyer needs neither.",
+        "both": "Two channels in one store, and the second one is a scope gate rather than a base: see Scale."
       }
     },
     "M": {
       "name": "Ecommerce Scale",
       "delivery_track": "liquid",
       "triggered_by": "2 or more scope gates",
-      "base_scope": "Everything in S plus the qualifying gates (markets / B2B / integrations / migration)",
+      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A migration where there is one to run, priced by where the data comes from",
       "price_band": {
         "min": 65000,
         "max": 135000,
@@ -31,13 +101,92 @@
       "duration_weeks": {
         "min": 6,
         "max": 13
+      },
+      "phases": [
+        {
+          "id": "setup",
+          "name": "Store set-up and topology",
+          "weeks": {
+            "min": 0.5,
+            "max": 1
+          },
+          "covers": "Everything in Foundation, plus the store topology the markets decide — one store with Shopify Markets by default, expansion stores only where the markets genuinely diverge"
+        },
+        {
+          "id": "template",
+          "name": "Template selection",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "The same choice, taken against a wider template set: market-specific pages, B2B templates and the catalogue depth the gates brought"
+        },
+        {
+          "id": "apps",
+          "name": "App selection",
+          "weeks": {
+            "min": 0.5,
+            "max": 1
+          },
+          "covers": "A longer shortlist, and the one decision Foundation never has to take: which app is allowed per market, and what it costs per market"
+        },
+        {
+          "id": "design",
+          "name": "Template customisation",
+          "weeks": {
+            "min": 1.5,
+            "max": 3
+          },
+          "covers": "Brand tokens and the standard sections, plus the sections the gated requirements need — market switchers, B2B price display, the catalogue patterns a deep range needs"
+        },
+        {
+          "id": "data",
+          "name": "Catalogue, markets and data",
+          "weeks": {
+            "min": 1,
+            "max": 2.5
+          },
+          "covers": "The product model at scale, market catalogues and prices, languages and domains, duties and tax per market, and the migration where one fired"
+        },
+        {
+          "id": "integrations",
+          "name": "Integrations",
+          "weeks": {
+            "min": 1,
+            "max": 2.5
+          },
+          "covers": "Each connection in the register: the flow, the connector, the reconciliation job every connection needs because webhook delivery is not guaranteed, and the test environment it is built against"
+        },
+        {
+          "id": "quality",
+          "name": "Quality, accessibility and performance",
+          "weeks": {
+            "min": 0.5,
+            "max": 1.5
+          },
+          "covers": "The Foundation pass, run per market and per channel, plus UAT with the client on the flows the gates brought"
+        },
+        {
+          "id": "launch",
+          "name": "Launch and handover",
+          "weeks": {
+            "min": 0.5,
+            "max": 1
+          },
+          "covers": "Cut-over per market where the launch is phased, redirects from the old estate, training per role, written SOPs where they were asked for"
+        }
+      ],
+      "channels": {
+        "b2c": "The consumer storefront, at the scale the gates describe: markets, languages, catalogue depth and the systems behind them.",
+        "b2b": "The same, wholesale: company accounts and locations, price lists per company, quantity rules, payment terms and the B2B templates. The consumer-only work is not in it.",
+        "both": "Where +B2B is actually earned. Both storefronts are built, both are tested, and a decision has to be taken per market about which channel sells there."
       }
     },
     "L": {
       "name": "Ecommerce Growth",
       "delivery_track": "hydrogen",
       "triggered_by": "Any L trigger (luxury / enterprise brand, headless requirement, full Figma design system) — scope gates do not apply",
-      "base_scope": "Headless Hydrogen storefront · full Figma design system · custom motion + interactions · Storefront API · Oxygen · advanced personalisation",
+      "base_scope": "The storefront becomes the thing being built, not the thing being configured · Headless Hydrogen on the Storefront API, hosted on Oxygen · A design system built as components, with motion and interaction as specified · Commerce engine stays on Shopify; the front end is owned, deployed and measured by us · Experimentation and personalisation set up at launch, because that is what it is for",
       "price_band": {
         "min": 140000,
         "max": 220000,
@@ -46,6 +195,85 @@
       "duration_weeks": {
         "min": 13,
         "max": 20
+      },
+      "phases": [
+        {
+          "id": "setup",
+          "name": "Store and platform set-up",
+          "weeks": {
+            "min": 1.5,
+            "max": 1.5
+          },
+          "covers": "The commerce engine on Shopify set up as in Scale, plus the headless platform: Oxygen environments, the Storefront API tokens and the deployment pipeline"
+        },
+        {
+          "id": "template",
+          "name": "Front-end architecture",
+          "weeks": {
+            "min": 1,
+            "max": 2
+          },
+          "covers": "There is no theme to select. The route structure, the rendering strategy and the caching model are chosen instead, and that choice is the one this offer is bought for"
+        },
+        {
+          "id": "apps",
+          "name": "App and service selection",
+          "weeks": {
+            "min": 1,
+            "max": 1.5
+          },
+          "covers": "App Store apps that assume a Liquid storefront stop being an option, so each one is decided twice: what it does in the Admin, and what replaces its storefront half"
+        },
+        {
+          "id": "design",
+          "name": "Storefront build",
+          "weeks": {
+            "min": 4,
+            "max": 6
+          },
+          "covers": "The design system built as components with one token layer, motion and interaction as specified, and every template against it — the largest phase in this offer, and the reason it is this offer"
+        },
+        {
+          "id": "data",
+          "name": "Catalogue, content and data",
+          "weeks": {
+            "min": 2,
+            "max": 3
+          },
+          "covers": "The product model, metaobjects for the content the storefront renders, markets and languages, and the migration where one fired"
+        },
+        {
+          "id": "integrations",
+          "name": "Integrations",
+          "weeks": {
+            "min": 1.5,
+            "max": 3
+          },
+          "covers": "As in Scale, plus the ones a headless front end adds: search, personalisation and the content source the storefront reads from"
+        },
+        {
+          "id": "quality",
+          "name": "Quality, accessibility and performance",
+          "weeks": {
+            "min": 1,
+            "max": 2
+          },
+          "covers": "Owned front end means owned Core Web Vitals: measured per route on a preview deployment, with accessibility and experimentation set up rather than promised"
+        },
+        {
+          "id": "launch",
+          "name": "Launch and handover",
+          "weeks": {
+            "min": 1,
+            "max": 1
+          },
+          "covers": "Cut-over with the front end under load, redirects, training on the Admin and on the deployment pipeline, and who owns a release after handover"
+        }
+      ],
+      "channels": {
+        "b2c": "A consumer storefront the client owns the front end of, which is what this offer is for.",
+        "b2b": "Rare, and worth checking before it is quoted: a headless build is bought for the consumer experience, and a wholesale buyer values a fast ordering path over a designed one. If the answer is wholesale only, ask whether Scale is the honest recommendation.",
+        "both": "One front end serving both, with the buyer context deciding what renders. It is the case this offer handles best and the one it is most often bought for."
       }
     }
   },

@@ -245,3 +245,76 @@ export function OfferScale({ offers, pricing, currency, here }) {
     </div>
   );
 }
+
+/**
+ * Where the weeks go.
+ *
+ * "Four to five weeks" is a number a consultant has to defend in a room, and
+ * the only defence is the phases. They were not in the offering at all: the
+ * offer said what it covered and how long it took, and nothing joined the two —
+ * so "what does set-up actually include" had no answer, and the largest phase
+ * of an L was invisible.
+ *
+ * Bars rather than a table, because the shape is the argument. On Growth the
+ * storefront build is four to six of the thirteen to twenty weeks and you see
+ * that before reading a word, which is exactly why that offer exists. Widths are
+ * a percentage of the longest phase, in CSS, so the numbers stay selectable and
+ * the whole thing reflows on a phone.
+ *
+ * @param {{ phases: object[], weeks: {min: number, max: number} }} props
+ */
+export function PhasePlan({ phases, weeks }) {
+  if (!phases?.length) return null;
+  const longest = Math.max(...phases.map((p) => p.weeks.max));
+  const span = (w) => (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`);
+
+  return (
+    <ol className="phases" aria-label={`The ${phases.length} phases of this offer, ${span(weeks)} weeks end to end`}>
+      {phases.map((p) => (
+        <li key={p.id}>
+          <div className="phase-head">
+            <h3>{p.name}</h3>
+            <p className="phase-weeks">
+              <span className="phase-bar" style={{ inlineSize: `${Math.max((p.weeks.max / longest) * 100, 6)}%` }} aria-hidden="true" />
+              <b>{span(p.weeks)}</b> <span className="muted small">week{p.weeks.max === 1 ? '' : 's'}</span>
+            </p>
+          </div>
+          <p className="phase-covers">{p.covers}</p>
+        </li>
+      ))}
+      <li className="phases-total">
+        <div className="phase-head">
+          <h3>End to end</h3>
+          <p className="phase-weeks"><b>{span(weeks)}</b> <span className="muted small">weeks</span></p>
+        </div>
+        <p className="phase-covers">The phases add up to the offer. They are held to it by a test, so a phase cannot quietly grow.</p>
+      </li>
+    </ol>
+  );
+}
+
+/**
+ * Who is being sold to.
+ *
+ * B2B was a modifier on a consumer base, which charged a wholesale-only client
+ * for promotion and checkout work they never received and then charged them
+ * again for the company accounts that replaced it. Each offer now says what it
+ * covers per channel, and the wholesale-only row is the one that changed.
+ *
+ * @param {{ channels: {b2c: string, b2b: string, both: string} }} props
+ */
+export function Channels({ channels }) {
+  if (!channels) return null;
+  const rows = [
+    ['Consumer only', channels.b2c],
+    ['Wholesale only', channels.b2b],
+    ['Both channels', channels.both],
+  ];
+  return (
+    <dl className="channels">
+      {rows.map(([label, body]) => (
+        <div key={label}><dt>{label}</dt><dd>{body}</dd></div>
+      ))}
+    </dl>
+  );
+}

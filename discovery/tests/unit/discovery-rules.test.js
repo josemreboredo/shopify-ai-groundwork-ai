@@ -344,6 +344,45 @@ describe('the offer follows the effort, not the gate count', () => {
       '11.3 reads the total, not the market count');
   });
 
+  test('the phases add up to the offer, so a phase cannot quietly grow', () => {
+    // "Four to five weeks" is a number a consultant defends in a room, and the
+    // only defence is the phases. Published for the first time here, which is
+    // worth nothing unless they sum to the duration the offer is sold at.
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      assert.ok(offer.phases?.length >= 7, `${code}: an offer with no phase plan says nothing about where its weeks go`);
+      const sum = (k) => offer.phases.reduce((a, p) => a + p.weeks[k], 0);
+      assert.equal(sum('min'), offer.duration_weeks.min, `${code}: the phase minimums do not add up to the offer`);
+      assert.equal(sum('max'), offer.duration_weeks.max, `${code}: the phase maximums do not add up to the offer`);
+
+      // The four a client asks about by name.
+      const ids = offer.phases.map((p) => p.id);
+      for (const id of ['setup', 'template', 'apps', 'design']) assert.ok(ids.includes(id), `${code}: no ${id} phase`);
+      assert.equal(new Set(ids).size, ids.length, `${code}: a phase id appears twice`);
+      for (const phase of offer.phases) assert.ok(phase.covers?.length > 40, `${code}/${phase.id}: covers has to say something`);
+    }
+  });
+
+  test('every offer says what it covers per channel, and wholesale is not an extra', () => {
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      for (const channel of ['b2c', 'b2b', 'both']) {
+        assert.ok(offer.channels?.[channel]?.length > 40, `${code}: nothing said about ${channel}`);
+      }
+    }
+
+    // The engine has to agree with what the pages say. A wholesale-only client
+    // is not a consumer store plus a modifier; a client selling both ways is.
+    const model = (m) => classifyOffer({ ...base(), meta: { ...base().meta, client: { name: 'X', slug: 'x', business_model: m } } });
+    assert.equal(model('b2b').scope_gates.b2b.active, false, 'wholesale only is the base, not a gate');
+    assert.deepEqual(model('b2b').modifiers, [], 'and it is not charged as an addition');
+    assert.equal(model('hybrid').scope_gates.b2b.active, true, 'both channels is what the gate is for');
+    assert.deepEqual(model('hybrid').modifiers, ['+B2B']);
+    assert.equal(model('dtc').scope_gates.b2b.active, false);
+
+    // The same base, whichever single channel it is.
+    assert.deepEqual(model('b2b').duration_weeks, model('dtc').duration_weeks);
+    assert.deepEqual(model('b2b').price_band, model('dtc').price_band);
+  });
+
   test('every offer band is in Swiss francs', () => {
     assert.equal(offering.currency, 'CHF');
     for (const doc of [base(), { ...base(), brand: { positioning: 'luxury' } }]) {
