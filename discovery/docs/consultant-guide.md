@@ -2,7 +2,7 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 2.5.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 2.6.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
@@ -370,12 +370,12 @@ Drives: gate Storefront design
 ### 2.1 Catalogue size & variants
 
 **Q2.1.1** — How many active SKUs are in the catalogue (approximate)? *(required · client)*
-Drives: gate SKU complexity
+Drives: gate Catalogue size and complexity
 
 **Why it matters.** Catalogue size sets the build and migration effort and feeds the SKU complexity scope gate: 500 SKUs or more, combined with multiple variant options, custom attributes or bundles, adds the +SKU modifier to the offer.
 
 **Q2.1.2** — What is the maximum number of variant options on a product (e.g. size, colour, material = 3)? *(required · client)*
-Drives: rule 11.5 (FLAG) · gate SKU complexity
+Drives: rule 11.5 (FLAG) · gate Catalogue size and complexity
 
 **Why it matters.** Shopify models a product with at most three options (for example size, colour, material). A fourth option means the product model has to change, so this answer decides the data model before anything is priced or migrated.
 
@@ -427,7 +427,7 @@ Sources: https://help.shopify.com/en/manual/products/combined-listings-app
 ### 2.2 Product types
 
 **Q2.2.1** — Which product types exist in the catalogue? *(required · client)*
-Drives: gate SKU complexity · app signal Bundles beyond Shopify Bundles · app signal Pre-orders · gate Subscriptions
+Drives: gate Catalogue size and complexity · app signal Bundles beyond Shopify Bundles · app signal Pre-orders · gate Subscriptions
 
 **Why it matters.** Product types decide what is native and what needs an app. Fixed bundles, multipacks, subscriptions and gift cards are native from Basic; mix-and-match bundles and pre-orders need apps. It also feeds the SKU complexity gate.
 
@@ -550,7 +550,7 @@ If native is not enough: [Custom products](https://apps.shopify.com/categories/s
 | Manual collections | Full merchandising control and exact ordering, with no dependency on data quality. | Every new product has to be placed by hand, which does not scale with a large catalogue. |
 
 **Q2.3.3** — Which product attributes go beyond Shopify's standard fields (technical specs, certifications, fit guides, ingredients)? *(required · client)*
-Drives: gate SKU complexity
+Drives: gate Catalogue size and complexity
 
 **Why it matters.** Anything beyond Shopify's standard product fields becomes metafields and metaobjects, and category attributes come from the Standard Product Taxonomy. This list drives the data model, the storefront filters, the Google and Meta feeds, and the SKU complexity gate.
 

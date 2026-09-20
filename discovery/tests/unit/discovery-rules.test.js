@@ -336,6 +336,40 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(at(5000).duration_weeks.max > at(600).duration_weeks.max);
   });
 
+  test('a flat catalogue of any size is not a Foundation', () => {
+    // The condition read "500 SKUs AND complexity", so size on its own never
+    // fired anything: fifty thousand flat SKUs came out of the engine as a
+    // four-week Foundation at CHF 40-65k. Tiering the modifier by size had
+    // fixed the half that already worked.
+    const flat = (sku_count) => classifyOffer({ ...base(), catalogue: { sku_count, variant_options_max: 1 } });
+
+    assert.equal(flat(800).scope_gates.sku_complexity.active, false,
+      'a small flat catalogue is what a Foundation is for');
+    assert.equal(flat(4999).scope_gates.sku_complexity.active, false);
+
+    // Five thousand is the other arm, and it is Shopify's own number: past it a
+    // collection shows no filters at all.
+    const big = flat(5000);
+    assert.equal(big.scope_gates.sku_complexity.tier, 'large');
+    assert.match(big.scope_gates.sku_complexity.evidence, /size alone/);
+    assert.ok(big.price_band.max > classifyOffer({ ...base(), catalogue: { sku_count: 800 } }).price_band.max,
+      'and it reaches the quote');
+    assert.equal(flat(50000).scope_gates.sku_complexity.tier, 'very_large');
+
+    // Complexity still fires on its own arm, well below five thousand.
+    assert.equal(classifyOffer({ ...base(), catalogue: { sku_count: 800, variant_options_max: 3 } })
+      .scope_gates.sku_complexity.tier, 'standard');
+  });
+
+  test('the Foundation page names the catalogue it stops at', () => {
+    // The limit existed in the engine and on no page: base_scope said "core
+    // catalogue" with no number, and the exclusions said nothing at all.
+    const line = (offering.offers.S.not_included ?? []).find((l) => /catalogue of/i.test(l));
+    assert.ok(line, 'Foundation says where the catalogue stops');
+    assert.match(line, /5,000/);
+    assert.match(line, /not in the base/i, 'and says it is priced, not refused');
+  });
+
   test('search stops being configuration where Shopify says it does', () => {
     // Configuring Search & Discovery is in every offer, and the backlog has
     // always built the collection and search pages. What was not priced is the

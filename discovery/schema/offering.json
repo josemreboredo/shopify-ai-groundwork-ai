@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -131,6 +131,7 @@
         "A migration from another platform — not in the base: it is a scope gate with its own weeks and its own price",
         "A connection to a client system (ERP, PIM, CRM, OMS, 3PL or POS) — not in the base either. One is a gate with its own price; two or more make this an Ecommerce Scale",
         "A second market, a second checkout currency or a fourth language — each is a gate, priced per unit rather than absorbed",
+        "A catalogue of 5,000 SKUs or more, or 500 with complex variants, metafields or bundles — not in the base: that is the catalogue gate, priced by size",
         "Bespoke sections or a full template set designed in Figma — the base configures the theme; designing beyond it is the storefront design gate",
         "Content production: copy, photography and video are the client’s, or a separate engagement. Nothing here writes them",
         "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate"
@@ -561,8 +562,8 @@
     },
     {
       "id": "sku_complexity",
-      "label": "SKU complexity",
-      "condition": "sku_count >= 500 AND at least one of: variant_options_max >= 2, custom attributes (metafields) needed, product types include bundle or product_set. Tiered by catalogue size, because the product model is built once but the data is handled per thousand SKUs",
+      "label": "Catalogue size and complexity",
+      "condition": "Either arm fires it: 500 or more SKUs with complexity (two or more variant options, custom attributes, bundles or product sets), or 5,000 SKUs on their own whatever their shape — the point where Shopify stops showing filters on a collection and where the published benchmark moves from days of data work to weeks. Tiered by catalogue size, because the product model is built once and the data is handled per thousand",
       "inputs": [
         "/catalogue/sku_count",
         "/catalogue/variant_options_max",

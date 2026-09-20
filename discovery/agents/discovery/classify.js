@@ -182,7 +182,18 @@ const GATE_EVALUATORS = {
     if ((c.variant_options_max ?? 0) >= 2) reasons.push(`${c.variant_options_max} variant options`);
     if ((c.custom_attributes ?? []).length > 0) reasons.push('custom attributes');
     if ((c.product_types ?? []).some((t) => ['bundle', 'fixed_bundle', 'multipack', 'mix_and_match_bundle', 'product_set'].includes(t))) reasons.push('bundles / product sets');
-    const active = skus >= 500 && reasons.length > 0;
+    /*
+     * Either arm, not both.
+     *
+     * The condition used to read "500 SKUs AND complexity", so size on its own
+     * never fired anything: fifty thousand flat SKUs came out of the engine as a
+     * four-week Foundation at CHF 40-65k. Tiering the modifier by size fixed the
+     * half that already worked. Five thousand is the other arm's threshold
+     * because it is where Shopify's own behaviour changes — a collection past it
+     * shows no filters at all — and where the published benchmark stops counting
+     * days and starts counting weeks.
+     */
+    const active = (skus >= 500 && reasons.length > 0) || skus >= 5000;
     /*
      * The product model is designed once. The data is handled per thousand.
      *
@@ -194,7 +205,8 @@ const GATE_EVALUATORS = {
      * need a person before they will load at all.
      */
     const tier = !active ? null : skus >= 50000 ? 'very_large' : skus >= 5000 ? 'large' : 'standard';
-    return { active, ...(tier ? { tier } : {}), evidence: `${skus} SKUs${reasons.length ? `; ${reasons.join(', ')}` : ''}` };
+    const why = reasons.length ? `; ${reasons.join(', ')}` : (active ? '; size alone, whatever the shape' : '');
+    return { active, ...(tier ? { tier } : {}), evidence: `${skus} SKUs${why}` };
   },
 
   /*
