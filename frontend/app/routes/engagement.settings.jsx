@@ -83,6 +83,11 @@ const MODES = [
 export default function Settings({ loaderData, actionData }) {
   const { engagement, written } = loaderData;
   const stale = written.filter((w) => !w.matches);
+  // The app used to offer five languages and the session took any two-letter
+  // code, so engagements exist that are recorded as Italian. The tool has no
+  // words for them, so nothing on the page would otherwise say so — the select
+  // would simply show English and look settled.
+  const unsupported = engagement.language && !LANGUAGES.includes(engagement.language);
   const busy = useNavigation().state !== 'idle';
   const rfp = engagement.process === 'rfp';
   const words = processMeta(engagement.process);
@@ -147,6 +152,7 @@ export default function Settings({ loaderData, actionData }) {
           <span className="prefill-title">Language</span>
           <span className="muted prefill-status">
             {LANGUAGE_NAMES[engagement.language] ?? engagement.language}
+            {unsupported ? <span className="badge flag">no longer offered</span> : null}
             {stale.length ? ` · ${stale.length} document${stale.length === 1 ? '' : 's'} in another language` : ''}
           </span>
         </summary>
@@ -156,6 +162,13 @@ export default function Settings({ loaderData, actionData }) {
           English whatever language the questions were asked in, and a quotation from the client's own
           documents stays exactly as they wrote it.
         </p>
+        {unsupported ? (
+          <p className="error">
+            This {words.record.toLowerCase()} is recorded as <strong>{engagement.language}</strong>, which the tool no
+            longer runs an engagement in — it has no questions and no documents in it. Everything has been asked and
+            written in English. Set one of the three below, and nothing recorded changes.
+          </p>
+        ) : null}
         {written.length ? (
           <>
             <p className="muted">Already written, and in which language:</p>
@@ -179,7 +192,7 @@ export default function Settings({ loaderData, actionData }) {
           <input type="hidden" name="intent" value="language" />
           <div className="field">
             <label htmlFor="language">Run this {words.record.toLowerCase()} in</label>
-            <select id="language" name="language" defaultValue={engagement.language}>
+            <select id="language" name="language" defaultValue={unsupported ? 'en' : engagement.language}>
               {LANGUAGES.map((code) => <option key={code} value={code}>{LANGUAGE_NAMES[code]}</option>)}
             </select>
           </div>

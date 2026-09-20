@@ -17,8 +17,9 @@ import { clarificationsPrompt, CLARIFICATIONS_PROMPT } from '../../agents/discov
 import { deckBrief, deckGuide } from '../../service/closing.js';
 import { createSession } from '../../agents/interview/session.js';
 import { TRANSLATIONS, coverage, translateQuestion, writtenIn } from '../../service/i18n.js';
- import { questionBank } from '../../schema/index.js';
+ import { questionBank, validateEngagement } from '../../schema/index.js';
  import { describeQuestion } from '../../agents/interview/next.js';
+import { assemble } from '../../agents/discovery/engine.js';
 import { createDiscoveryService } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 
@@ -291,5 +292,38 @@ describe('the answer choices a consultant picks from', () => {
       const orphans = Object.keys(TRANSLATIONS[language].options ?? {}).filter((v) => !offered.has(v));
       assert.deepEqual(orphans, [], `${language}: translated values no question offers`);
     }
+  });
+});
+
+describe('an engagement recorded in a language the tool no longer offers', () => {
+  // This is the bucherer regression. The app used to offer five languages and
+  // the session accepted any two-letter code. Closing the list to en/de/fr and
+  // stamping the session's language onto the contract at the same time meant a
+  // record created as Italian no longer validated — and an engagement that had
+  // been fine for months could not agree its own scope.
+  const answers = { meta: { client: { slug: 'bucherer', name: 'Bucherer' } } };
+  const decided = (language) => assemble(answers, { today: '2026-09-20', language });
+
+  test('still assembles, because the contract is never given a value it cannot hold', () => {
+    for (const language of ['it', 'es', 'pt', 'zz']) {
+      const { valid, errors } = validateEngagement(decided(language));
+      assert.equal(valid, true, `${language}: ${errors?.[0] ?? ''}`);
+      assert.equal('language' in decided(language).meta, false,
+        `${language}: an unsupported language is no language, not a bad one`);
+    }
+  });
+
+  test('and the supported ones are still stamped', () => {
+    for (const language of LANGUAGES) {
+      assert.equal(decided(language).meta.language, language);
+      assert.equal(validateEngagement(decided(language)).valid, true, language);
+    }
+  });
+
+  test('the contract accepts exactly the languages the tool runs in', () => {
+    // If the two ever drift, one of them is lying to the other.
+    const schema = JSON.parse(fs.readFileSync(
+      path.join(import.meta.dirname, '..', '..', '..', 'contracts', 'engagement.schema.json'), 'utf8'));
+    assert.deepEqual(schema.properties.meta.properties.language.enum, [...LANGUAGES]);
   });
 });

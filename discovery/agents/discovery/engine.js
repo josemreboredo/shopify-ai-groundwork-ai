@@ -9,6 +9,7 @@
  */
 
 import { validateEngagement, offering } from '../../schema/index.js';
+import { supported as supportedLanguage } from '../language.js';
 import { hasConsent, redactQuestionnaire, InputRejectedError } from './input.js';
 import { extractAnswers, flattenAnswers } from './extract.js';
 import { isNotSure } from './values.js';
@@ -69,7 +70,16 @@ export function assemble(answers, { today, clientSlug, source = 'questionnaire',
       // The language the engagement is run in. Everything generated downstream
       // from engagement.json — the configuration workbook above all — otherwise
       // has no way to know what language to write the client's copy in.
-      ...(language ? { language } : {}),
+      //
+      // Only when the tool still supports it. The app used to offer five
+      // languages and the session accepted any two-letter code, so engagements
+      // exist that are recorded as Italian. Stamping that onto the contract
+      // failed its enum and took the whole engagement down with it — an
+      // engagement that had been valid for months stopped being able to agree
+      // its own scope. An unsupported language means we have no language for
+      // this engagement, which is what an engagement predating the field means
+      // too; the Lead Consultant sets a real one in Settings.
+      ...(supportedLanguage(language) ? { language } : {}),
       created_at: meta.created_at ?? today,
       updated_at: today,
     },
