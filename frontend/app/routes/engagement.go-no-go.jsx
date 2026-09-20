@@ -81,7 +81,7 @@ export default function GoNoGo({ loaderData }) {
             <strong>?</strong> is one the documents never mentioned — not one we know does not apply.
           </p>
           <div className="profile">
-            <Radar axes={g.profile.filter((a) => a.level > 0).length ? g.profile : g.profile} />
+            <Radar axes={g.profile} />
             <div className="table-scroll">
               <table>
                 <thead><tr><th>Dimension</th><th>Standing</th><th>What they asked for</th></tr></thead>

@@ -25,11 +25,33 @@ const point = (cx, cy, radius, i, n, value, max) => {
 const path = (pts) => `${pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`).join(' ')}Z`;
 
 /**
+ * Labels onto at most two lines.
+ *
+ * The axes at three and nine o'clock carry the longest names and run straight
+ * out of the viewBox — "B2B / Wholesale" and "Multi-currency" were arriving as
+ * "B2B / WHO" and "MULTI-CURRENC". Padding alone would push the chart into a
+ * stamp, so the long ones break instead, on a space where there is one and on
+ * the hyphen where there is not.
+ */
+function wrap(label) {
+  if (label.length <= 12) return [label];
+  const bySpace = label.split(' ');
+  if (bySpace.length > 1) {
+    const half = Math.ceil(bySpace.length / 2);
+    return [bySpace.slice(0, half).join(' '), bySpace.slice(half).join(' ')];
+  }
+  const cut = label.lastIndexOf('-');
+  return cut > 2 ? [label.slice(0, cut + 1), label.slice(cut + 1)] : [label];
+}
+
+/**
  * @param {{ axes: Array<{ label: string, level: number, standing: string }>, max?: number, size?: number }} props
  */
 export function Radar({ axes, max = 2, size = 320 }) {
   if (!axes?.length) return null;
-  const pad = 74;
+  // Room for the labels, not for the chart: the widest sit left and right.
+  const padX = 132;
+  const padY = 58;
   const cx = size / 2;
   const cy = size / 2;
   const radius = size / 2 - 12;
@@ -40,7 +62,7 @@ export function Radar({ axes, max = 2, size = 320 }) {
 
   return (
     <figure className="radar">
-      <svg viewBox={`${-pad} ${-pad} ${size + pad * 2} ${size + pad * 2}`} role="img" aria-label="Where the complexity sits, by dimension">
+      <svg viewBox={`${-padX} ${-padY} ${size + padX * 2} ${size + padY * 2}`} role="img" aria-label="Where the complexity sits, by dimension">
         {RINGS.map((ring) => (
           <polygon
             key={ring.at}
@@ -66,11 +88,24 @@ export function Radar({ axes, max = 2, size = 320 }) {
         <path className="radar-shape" d={path(shape)} />
 
         {axes.map((a, i) => {
-          const [x, y] = point(cx, cy, radius + 26, i, n, max, max);
+          const [x, y] = point(cx, cy, radius + 22, i, n, max, max);
           const anchor = Math.abs(x - cx) < 6 ? 'middle' : x > cx ? 'start' : 'end';
+          const lines = wrap(a.label);
+          const top = y - ((lines.length - 1) * 13) / 2;
           return (
-            <text key={a.label} className={`radar-label ${a.level === 2 ? 'beyond' : a.known === false ? 'unknown' : a.level === 0 ? 'idle' : ''}`} x={x} y={y} textAnchor={anchor} dominantBaseline="middle">
-              {a.label}{a.known === false ? ' ?' : ''}
+            <text
+              key={a.label}
+              className={`radar-label ${a.level === 2 ? 'beyond' : a.known === false ? 'unknown' : a.level === 0 ? 'idle' : ''}`}
+              x={x}
+              y={top}
+              textAnchor={anchor}
+              dominantBaseline="middle"
+            >
+              {lines.map((line, k) => (
+                <tspan key={line} x={x} dy={k ? 13 : 0}>
+                  {line}{k === lines.length - 1 && a.known === false ? ' ?' : ''}
+                </tspan>
+              ))}
             </text>
           );
         })}
