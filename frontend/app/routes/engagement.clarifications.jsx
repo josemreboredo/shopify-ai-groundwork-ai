@@ -236,21 +236,31 @@ Write every question we need answered to price this properly — the Lead Consul
           <ol className="clarifications">
             {questions.map((q) => (
               <li key={q.id} className={`q-${q.status ?? 'proposed'}`}>
-                <h3>{q.question}</h3>
-                {q.status === 'accepted' && replies.rows.find((r) => r.id === q.id)?.answered
-                  ? <p className="muted small">Answered — recorded against {(q.covers ?? []).join(', ')}</p>
-                  : null}
-                <p className="why"><strong>Why we ask.</strong> {q.why_we_ask}</p>
-                <div className="for-us">
-                  <p className="eyebrow">For us — not sent</p>
-                  {q.shape_changing ? (
-                    <p className="shape-note">Changes the shape of the solution, not a detail inside it — assuming it is assuming the size of the engagement.</p>
-                  ) : null}
-                  {(q.covers ?? []).length ? (
-                    <p className="muted">Covers <WithQuestionLinks text={(q.covers ?? []).join(', ')} client={client} /></p>
-                  ) : null}
-                  <p className="muted">If we don’t ask it, the proposal assumes: {q.assume_if_unanswered}</p>
-                </div>
+                {/* The question is what you scan; the reasoning is what you open.
+                    Ten lines of "Why we ask" on every one of eleven made the page
+                    a wall you had to read to triage. Still to decide opens by
+                    itself — that is the one waiting on you. */}
+                <details open={(q.status ?? 'proposed') === 'proposed'}>
+                  <summary>
+                    <span className="q-text">{q.question}</span>
+                    {q.status === 'accepted' && replies.rows.find((r) => r.id === q.id)?.answered
+                      ? <span className="badge go">answered</span>
+                      : null}
+                    {q.shape_changing ? <span className="badge flag">changes the shape</span> : null}
+                  </summary>
+                  <p className="why"><strong>Why we ask.</strong> {q.why_we_ask}</p>
+                  <div className="for-us">
+                    <p className="eyebrow">For us — not sent</p>
+                    {q.shape_changing ? (
+                      <p className="shape-note">Changes the shape of the solution, not a detail inside it — assuming it is assuming the size of the engagement.</p>
+                    ) : null}
+                    {(q.covers ?? []).length ? (
+                      <p className="muted">Covers <WithQuestionLinks text={(q.covers ?? []).join(', ')} client={client} /></p>
+                    ) : null}
+                    <p className="muted">If we don’t ask it, the proposal assumes: {q.assume_if_unanswered}</p>
+                  </div>
+                </details>
+                {/* Outside the fold: you can decide without opening it. */}
                 <Decide id={q.id} status={q.status ?? 'proposed'} busy={busy} />
               </li>
             ))}
