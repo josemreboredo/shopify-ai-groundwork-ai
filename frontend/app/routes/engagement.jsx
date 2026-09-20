@@ -224,7 +224,7 @@ export default function Engagement({ loaderData, actionData }) {
           ? `${documents.length} document${documents.length === 1 ? '' : 's'} read · ${toConfirm} answer${toConfirm === 1 ? '' : 's'} to confirm · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at}`
           : `${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${engagement.coverage?.required_answered ?? 0} of ${engagement.coverage?.required_total ?? 0} required answered${next.remaining ? ` · ${next.remaining} questions left in this depth` : ''}`}
       />
-      <div className="layout">
+      <div className={bid ? 'layout alone' : 'layout'}>
         <div>
           {next.consent_required ? (
             <p className="error">Record the client’s consent for AI processing before any other answer.</p>

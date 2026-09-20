@@ -135,6 +135,11 @@ li::marker { color: var(--red); }
 
 /* Surfaces */
 .layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 28px; align-items: start; }
+/* The engine panel is a discovery's; a bid reads its documents on Go/No-Go. With
+   nothing in the second column the grid still held it open, so the one page
+   that shows what a document produced ran at 60% of the width of every other
+   page in the same record. */
+.layout.alone { grid-template-columns: minmax(0, 1fr); }
 .card { border: 1px solid var(--line); border-radius: 0; padding: 26px 28px; margin-bottom: 20px; background: #fff; }
 .card > * + * { margin-top: 14px; }
 .card > p + p { margin-top: 8px; }
