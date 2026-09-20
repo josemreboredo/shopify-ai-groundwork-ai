@@ -61,7 +61,10 @@ export default function Review({ loaderData, actionData }) {
   const all = sections.flatMap((s) => s.questions);
   const count = (state) => all.filter((q) => q.state === state).length;
   const waiting = all.filter((q) => q.to_confirm).length;
-  const [filter, setFilter] = useState('all');
+  // Opening the step for confirming three things on a list of 173 unanswered
+  // questions is the default doing the opposite of the job.
+  const [filter, setFilter] = useState(() => (all.some((q) => q.to_confirm) ? 'to_confirm' : 'all'));
+  const [armed, setArmed] = useState(false);
   const shown = (questions) => questions.filter((q) => MATCH[filter](q));
   return (
     <main id="main">
@@ -95,9 +98,17 @@ export default function Review({ loaderData, actionData }) {
           </div>
           <div className="actions">
             <button type="button" className="secondary" onClick={() => setFilter('to_confirm')}>Show only these</button>
-            <Form method="post">
-              <button type="submit" className="secondary" disabled={busy}>Confirm all {waiting}</button>
-            </Form>
+            {/* Accepting ninety extractions as checked by a human is the act the
+                whole governance story rests on, and it was one plain click with
+                no way back. It asks once. */}
+            {armed ? (
+              <Form method="post" onSubmit={() => setArmed(false)}>
+                <button type="submit" disabled={busy}>Yes — record all {waiting} as checked by me</button>
+              </Form>
+            ) : (
+              <button type="button" className="secondary" onClick={() => setArmed(true)} disabled={busy}>Confirm all {waiting}</button>
+            )}
+            {armed ? <button type="button" className="link" onClick={() => setArmed(false)}>Cancel</button> : null}
           </div>
           <p className="muted small">
             Confirming in bulk is recorded as such, so the engagement stays honest about how its answers were checked.

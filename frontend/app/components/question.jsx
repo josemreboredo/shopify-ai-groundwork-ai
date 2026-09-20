@@ -416,12 +416,12 @@ export function PreviewPanel({ preview }) {
       </p>
       <p>{preview.go ? <span className="badge go">GO</span> : <span className="badge stop">STOP · route: {words(preview.route ?? 'not decided')}</span>}</p>
 
-      <h3>Scope gates</h3>
+      <h3>What grows the build</h3>
       <ul>{Object.entries(preview.scope_gates).map(([id, state]) => <li key={id}>{words(id)}: {state}</li>)}</ul>
-      <h3>L triggers</h3>
+      <h3>What would make it an L</h3>
       <ul>{Object.entries(preview.l_triggers).map(([id, state]) => <li key={id}>{words(id)}: {state}</li>)}</ul>
 
-      <h3>Exit rules</h3>
+      <h3>What the answers have triggered</h3>
       {preview.exit_rules.length ? (
         <ul>{preview.exit_rules.map((r) => <li key={r.rule}><span className={`badge ${resultClass(r.result)}`}>{r.rule} {r.result}</span> {r.evidence}</li>)}</ul>
       ) : <p className="muted">None fired.</p>}
@@ -434,12 +434,12 @@ export function PreviewPanel({ preview }) {
         </>
       ) : null}
 
-      <h3>Coverage</h3>
+      <h3>How far through</h3>
       <p>{preview.coverage.required_answered} of {preview.coverage.required_total} required answered · {preview.coverage.required_tbc} TBC · {preview.coverage.required_commented ?? 0} by comment · {preview.coverage.required_open} open</p>
 
       {signals.length ? (
         <>
-          <h3>App signals</h3>
+          <h3>Apps these answers point to</h3>
           <ul>{signals.map(([area, reasons]) => <li key={area}>{words(area)}: {reasons.join('; ')}</li>)}</ul>
         </>
       ) : null}

@@ -29,6 +29,7 @@ const BID_STEPS = [
   ['Confirm what it says', 'An extraction nobody has checked is not evidence. The review table confirms one answer or all of them, and until they are confirmed the tool will not let anyone stand behind a price.'],
   ['Go/No-Go support', 'Not the decision — that is taken in a room, by people who know the relationship, the competition and the pipeline. This is what the Solution Architect brings to that room: whether Merkle can put a number on this work and stand behind it, what it would cost to be wrong, and the facts underneath, in the order he would read them.'],
   ['RFP Q&A', 'Every RFP has a window for questions, and it is the first thing the client reads from us. The engine keeps only the unknowns that would change the offer, the plan, the store topology, the cost or the risk, and drops what it can safely assume — then it becomes a document you can send.'],
+  ['Check where it stands', 'The last thing you look at before committing to a price: what was confirmed, what the engine concluded, what is being asked and what the proposal will assume — the one page that shows them together.'],
   ['Write the proposal', 'The same drafting as a closing document, aimed at being chosen. Whatever came back unanswered is stated as the assumption it is, so the bid stays comparable and nothing is quietly guessed.'],
   ['Did we win it?', 'A bid that wins becomes the engagement, in the same record: nothing is re-entered and no answer moves.'],
 ];

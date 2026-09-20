@@ -16,10 +16,10 @@ export default function Claude({ loaderData }) {
     <main id="main">
       <header className="page-head">
         <p className="eyebrow">Claude Project</p>
-        <h1>Work on an engagement from Claude</h1>
+        <h1>Work on a bid or an engagement from Claude</h1>
       </header>
-      <p>Your private Claude Project and this web app share the same engagement: upload RFPs and other documents to the Project, and Claude records what it finds here — as answers <strong>to confirm</strong> that you review on the engagement page.</p>
-      <p className="error">Pilot: demo or anonymised documents and engagements only.</p>
+      <p>Your private Claude Project and this web app share the same record: upload the RFP, briefs and requirement lists to the Project, and Claude records what it finds here — as answers <strong>to confirm</strong> that you review in the app. On a bid the client document Claude drafts is the <strong>Proposal</strong>; on an engagement it is the <strong>Discovery Closing Document</strong>. Same drafting, different audience.</p>
+      <p className="error">Pilot: demo or anonymised documents and records only.</p>
 
       <h2>1. Add the connector (once)</h2>
       <ol>
@@ -29,7 +29,7 @@ export default function Claude({ loaderData }) {
         <li>Claude opens this web app: sign in with GitHub and click <strong>Allow</strong>.</li>
       </ol>
 
-      <h2>2. Create a private Project per engagement</h2>
+      <h2>2. Create a private Project per client</h2>
       <ol>
         <li>In Claude, create a <strong>Project</strong> named <code>{projectName}</code>. Keep it private — connectors only work in private Projects on Team and Enterprise plans.</li>
         <li>Paste the instructions below into the Project instructions and replace <code>&lt;client slug&gt;</code>.</li>

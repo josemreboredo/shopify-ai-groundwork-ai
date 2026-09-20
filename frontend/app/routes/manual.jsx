@@ -65,7 +65,7 @@ export default function Manual({ loaderData }) {
         <section className="door rfp">
           <p className="door-n" aria-hidden="true">01</p>
           <h2>Answer an RFP</h2>
-          <p>A document arrived with a deadline. Information is scarce, the clock is running, and the job is to be chosen. Five steps: read it in, confirm what it says, take a Go/No-Go position, send the questions that change the answer, write the proposal.</p>
+          <p>A document arrived with a deadline. Information is scarce, the clock is running, and the job is to be chosen. Six steps: read it in, confirm what it says, take a Go/No-Go position, send the questions that change the answer, check where it stands, write the proposal.</p>
           <p><Link className="button" to="/manual/bid">The bid manual →</Link></p>
         </section>
         <section className="door discovery">

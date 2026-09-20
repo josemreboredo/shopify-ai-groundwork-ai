@@ -85,12 +85,12 @@ export default function HowItWorks() {
       <section className="band">
         <div className="band-inner">
           <p className="eyebrow">Two ways in</p>
-          <h2 className="plain">The same four steps, whether the client is answering us or we are answering them</h2>
+          <h2 className="plain">The same engine, whether the client is answering us or we are answering them</h2>
           <div className="grid-2">
             <article className="card">
               <h3>A bid — an RFP arrives</h3>
               <p>
-                Read the RFP · confirm what it says · Go/No-Go support · RFP Q&amp;A · write the proposal.
+                Read the RFP · confirm what it says · Go/No-Go support · RFP Q&amp;A · check where it stands · write the proposal.
               </p>
               <p>
                 The document is read in and every answer it already contains is recorded with the section and

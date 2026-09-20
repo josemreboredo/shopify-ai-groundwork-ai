@@ -13,9 +13,10 @@ const CONTENTS = [
   ['confirm', '3. Confirm what it says'],
   ['go-no-go', '4. Go/No-Go support'],
   ['qa', '5. RFP Q&A — the questions we send'],
-  ['proposal', '6. Write the proposal'],
-  ['send', '7. Review and send it'],
-  ['won', '8. Did we win it?'],
+  ['stands', '6. Check where it stands'],
+  ['proposal', '7. Write the proposal'],
+  ['send', '8. Review and send it'],
+  ['won', '9. Did we win it?'],
 ];
 
 export default function ManualBid() {
@@ -96,7 +97,11 @@ export default function ManualBid() {
       </ol>
       <p className="muted">A handful of questions says we have read their document. Sixty says we have not. Whatever comes back unanswered is stated in the proposal as the assumption it is.</p>
 
-      <h2 id="proposal">6. Write the proposal</h2>
+      <h2 id="stands">6. Check where it stands</h2>
+      <p>The last thing you look at before a price is committed. One page carries what was confirmed, what the engine concluded, which questions are being asked and what the proposal will assume if they come back unanswered — and it says plainly whether the work can be priced yet.</p>
+      <p className="muted">It is an internal page: it carries the offer and the price band. Never send it, or its download, to the client.</p>
+
+      <h2 id="proposal">7. Write the proposal</h2>
       <ol>
         <li>Open the <strong>Proposal</strong> step. It says <strong>Ready</strong>, or what must be fixed first.</li>
         <li>Press <strong>Open Claude and generate</strong>. The instruction is already written; you only press Enter.
@@ -107,7 +112,7 @@ export default function ManualBid() {
         <li>Reload the step and download the deck and the annex as PowerPoint or Markdown, plus a version that keeps the consultant notes for your own preparation. Every file carries its version (v1.0, v1.1 …) and previous versions are kept.</li>
       </ol>
 
-      <h2 id="send">7. Review and send it</h2>
+      <h2 id="send">8. Review and send it</h2>
       <ol>
         <li><strong>Check what is marked “to validate”</strong> and the assumptions — on a bid those are what you are betting on.</li>
         <li><strong>Spot-check the sources</strong>: open the references behind the plan decision, the architecture decisions and anything the client will challenge. The engine proves a source is official and present, not that the page says what the document claims.</li>
@@ -116,7 +121,7 @@ export default function ManualBid() {
       </ol>
       <p className="muted">Answers changed after the draft? The step says <strong>N answers changed since</strong> and lists exactly which ones, old answer and new. Copy the prepared line into Claude: it redrafts the approach and the document, not just the slides, and keeps the previous version.</p>
 
-      <h2 id="won">8. Did we win it?</h2>
+      <h2 id="won">9. Did we win it?</h2>
       <p>Weeks later, the answer arrives. Once there is a proposal, the record gains a last step: <strong>Did we win it?</strong> — and <strong>Change</strong> turns the bid into the engagement in the same record. Nothing is re-entered, no answer moves, and the steps become the discovery path.</p>
       <div className="actions">
         <Link className="button" to="/manual/discovery">Continue on the discovery path</Link>
