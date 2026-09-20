@@ -107,6 +107,7 @@ export default function Home({ loaderData, actionData }) {
 
       <h2>Open now</h2>
       {engagements.length === 0 ? <p className="muted">Nothing open yet.</p> : (
+        <div className="table-scroll">
         <table>
           <thead>
             <tr><th>Client</th><th>What</th><th>Offer</th><th>Status</th><th>Required answered</th><th>To confirm</th><th>Mode</th><th>Owner</th><th>Updated</th></tr>
@@ -127,6 +128,7 @@ export default function Home({ loaderData, actionData }) {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </main>
   );

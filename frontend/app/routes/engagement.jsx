@@ -175,7 +175,7 @@ function AnswersReview({ answers, documents, busy }) {
       {toConfirm.length ? (
         <>
           <p className="muted">Recorded from documents (e.g. by Claude) or marked to confirm. Check the citation, then confirm — or record a corrected answer to the question.</p>
-          <table>{head}<tbody>{toConfirm.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table>
+          <div className="table-scroll"><table>{head}<tbody>{toConfirm.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table></div>
         </>
       ) : <p className="muted">Nothing to confirm.</p>}
 
@@ -186,7 +186,7 @@ function AnswersReview({ answers, documents, busy }) {
 
       <details>
         <summary>All confirmed answers ({confirmed.length})</summary>
-        <table>{head}<tbody>{confirmed.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table>
+        <div className="table-scroll"><table>{head}<tbody>{confirmed.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table></div>
       </details>
     </>
   );

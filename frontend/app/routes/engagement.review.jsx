@@ -128,6 +128,7 @@ export default function Review({ loaderData, actionData }) {
       {sections.filter((section) => shown(section.questions).length).map((section) => (
         <section key={section.title}>
           <h2>{section.title}</h2>
+          <div className="table-scroll">
           <table>
             <thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Status</th><th /></tr></thead>
             <tbody>
@@ -156,6 +157,7 @@ export default function Review({ loaderData, actionData }) {
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       ))}
 

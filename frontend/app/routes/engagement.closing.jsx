@@ -122,6 +122,7 @@ export default function Closing({ loaderData }) {
       {freshness.changes.length ? (
         <details className="card">
           <summary>{freshness.changes.length} answer{freshness.changes.length > 1 ? 's' : ''} changed since version {version}</summary>
+          <div className="table-scroll">
           <table>
             <thead><tr><th>Question</th><th>Was</th><th>Now</th></tr></thead>
             <tbody>{freshness.changes.map((c) => (
@@ -132,6 +133,7 @@ export default function Closing({ loaderData }) {
               </tr>
             ))}</tbody>
           </table>
+          </div>
         </details>
       ) : null}
 
