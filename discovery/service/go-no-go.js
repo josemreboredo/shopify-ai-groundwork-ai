@@ -81,23 +81,24 @@ export function complexityProfile(doc) {
 }
 
 /**
- * What Merkle would not be bidding for.
+ * Requirements the client asked for that are answered outside this build.
  *
- * An exclusion is not a complexity — it is a piece of the client's request that
- * leaves the deal — and the page had nowhere to say it. Mainland China arrived as
- * a rule id among others under Markets, while rule 11.20's own words are "CN is
- * excluded from this engagement's markets, languages, offer, plan and build
- * scope". A bid meeting weighing 37 markets is weighing the wrong number if one
- * of them is being carved out and routed elsewhere.
+ * Nothing the client asked for is excluded. That framing was wrong and it is
+ * commercially expensive: a requirement listed as an exclusion reads as
+ * non-compliance and scores as a gap, while the same requirement answered with a
+ * route reads as the one bidder who understood it. Merkle is not refusing
+ * mainland China — it is saying what can be done there, what cannot, and where
+ * the part that cannot sits instead.
  *
- * Only what the offering genuinely excludes appears here. Merkle sells no
- * mainland China build — Shopify has no infrastructure there, selling onshore
- * needs a PRC entity, an ICP licence and onshore hosting — so it goes to its own
- * discovery rather than being priced badly in this one.
+ * What is true is narrower than "excluded": Shopify has no infrastructure in
+ * mainland China, so it cannot be the shop customers buy from inside the
+ * country. Everything else — brand presence, feeding partner channels — it can
+ * do. So the answer is an answer, and only the onshore build is scoped
+ * separately.
  *
  * @param {object} doc  decided engagement
  */
-export function exclusions(doc) {
+export function answeredElsewhere(doc) {
   const out = [];
   const markets = doc.markets?.list ?? [];
   if (markets.some((m) => m.code === 'CN')) {
@@ -105,18 +106,19 @@ export function exclusions(doc) {
     out.push({
       what: 'Mainland China',
       rule_id: '11.20',
-      why: 'Shopify has no infrastructure in mainland China. Selling onshore needs a PRC entity, an ICP filing or licence and onshore hosting; the cross-border routes carry their own customs and product rules.',
-      where_it_goes: 'A separate China discovery',
-      removes: 'Out of this engagement’s markets, languages, offer, Shopify plan and build scope',
-      evidence: rule?.evidence ?? 'Mainland China is a launch market',
-      // What the bid is actually for, once it is taken out.
-      leaves: `${markets.length - 1} of ${markets.length} markets`,
+      asked_for: rule?.evidence ?? 'Mainland China is a launch market',
+      // What Merkle can do, said first.
+      answer: 'Shopify can carry the brand in mainland China and feed the partner and marketplace channels that sell there.',
+      what_it_cannot: 'It cannot be the shop customers buy from inside the country: Shopify has no infrastructure in mainland China, and selling onshore needs a PRC entity, an ICP filing or licence and onshore hosting.',
+      where_it_goes: 'Onshore selling is scoped as its own workstream, with its own discovery',
+      // The build this bid prices, once the part that cannot sit in it is out.
+      leaves: `${markets.length - 1} of ${markets.length} markets are built on Shopify in this engagement`,
     });
   }
   return out;
 }
 
-/** Scope gates and L triggers read as capabilities the RFP is asking us for. */
+/** Scope gates and L triggers read as capabilities the RFP is asking us for. *//** Scope gates and L triggers read as capabilities the RFP is asking us for. */
 const CAPABILITY = {
   markets: 'Selling into several markets',
   multi_currency: 'Multiple transactional currencies',
@@ -319,8 +321,9 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
     // The same gates as a shape, so where the complexity sits is visible before
     // it is read.
     profile: complexityProfile(doc),
-    // And what leaves the deal entirely, which is not a complexity at all.
-    exclusions: exclusions(doc),
+    // And what the client asked for that is answered outside this build — not a
+    // complexity, and not an exclusion either.
+    answered_elsewhere: answeredElsewhere(doc),
     scope: {
       applies: offer.applies,
       offer: offer.code,

@@ -94,8 +94,8 @@ export default function GoNoGo({ loaderData }) {
                         {a.rules.length ? <div className="muted small">{a.rules.map((r) => r.rule_id).join(', ')}</div> : null}
                       </td>
                       <td>
-                        {a.id === 'markets' && g.exclusions?.length ? (
-                          <span className="muted small">{g.exclusions[0].leaves} once {g.exclusions[0].what} is taken out. </span>
+                        {a.id === 'markets' && g.answered_elsewhere?.length ? (
+                          <span className="muted small">{g.answered_elsewhere[0].leaves}. </span>
                         ) : null}
                         {a.evidence ?? (a.known === false
                           ? <span className="muted">Nothing in the documents either way — <a href={`/engagements/${client}/clarifications`}>it is in the Q&amp;A</a> ({a.settled_by.join(', ')})</span>
@@ -110,22 +110,23 @@ export default function GoNoGo({ loaderData }) {
         </section>
       ) : null}
 
-      {/* What leaves the deal. Not a complexity — a piece of the request that
-          is not ours to bid for. */}
-      {g.exclusions?.length ? (
+      {/* Asked for, answered, and answered outside this build. Not an exclusion:
+          a requirement listed as one reads as non-compliance and scores as a gap. */}
+      {g.answered_elsewhere?.length ? (
         <section>
-          <h2>What we would not be bidding for</h2>
+          <h2>Answered outside this build</h2>
           <p className="muted">
-            Part of what they asked for is outside Merkle’s offering entirely. It does not make the bid harder;
-            it makes it smaller, and a meeting weighing the wrong number is weighing the wrong bid.
+            Nothing they asked for is dropped. Part of it is answered with a route rather than with a Shopify
+            build, and that part is scoped on its own — which is a smaller build here, not a smaller response.
           </p>
           <ul className="exclusions">
-            {g.exclusions.map((x) => (
+            {g.answered_elsewhere.map((x) => (
               <li key={x.rule_id}>
                 <p className="excl-what">{x.what} <span className="rule-id flag">{x.rule_id}</span></p>
-                <p><strong>{x.removes}.</strong> {x.where_it_goes}.</p>
-                <p className="muted">{x.why}</p>
-                <p className="muted small">Leaves {x.leaves} in this bid.</p>
+                <p className="muted small">They asked for it: {x.asked_for}</p>
+                <p><strong>What we can do.</strong> {x.answer}</p>
+                <p><strong>What Shopify cannot.</strong> {x.what_it_cannot}</p>
+                <p className="muted">{x.where_it_goes}. {x.leaves}.</p>
               </li>
             ))}
           </ul>

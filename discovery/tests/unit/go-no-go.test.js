@@ -11,7 +11,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-import { goNoGoView, complexityProfile, exclusions } from '../../service/go-no-go.js';
+import { goNoGoView, complexityProfile, answeredElsewhere } from '../../service/go-no-go.js';
 import { clarificationTopics } from '../../agents/discovery/clarifications.js';
 
 const fixture = (name) => JSON.parse(fs.readFileSync(new URL(`../fixtures/engagements/${name}.json`, import.meta.url), 'utf8'));
@@ -172,7 +172,7 @@ describe('where the complexity sits', () => {
   });
 });
 
-describe('what leaves the deal', () => {
+describe('a requirement the client asked for is answered, never excluded', () => {
   const withChina = () => {
     const doc = fixture('acme-watches');
     doc.markets.list.push({ code: 'CN', name: 'China' });
@@ -180,30 +180,32 @@ describe('what leaves the deal', () => {
     return doc;
   };
 
-  test('an engagement without mainland China excludes nothing', () => {
-    assert.deepEqual(exclusions(fixture('acme-watches')), []);
+  test('an engagement without mainland China has nothing to answer elsewhere', () => {
+    assert.deepEqual(answeredElsewhere(fixture('acme-watches')), []);
   });
 
-  test('mainland China is named as leaving the deal, not as a complexity', () => {
-    // It arrived as a rule id among others under Markets, while 11.20's own
-    // words are that CN is excluded from the markets, languages, offer, plan and
-    // build scope. A meeting weighing 37 markets weighs the wrong bid.
-    const [cn] = exclusions(withChina());
+  test('it leads with what Merkle can do, then with what Shopify cannot', () => {
+    // Listing a requirement the client asked for as an exclusion reads as
+    // non-compliance and scores as a gap. The same requirement with a route
+    // reads as the one bidder who understood it.
+    const [cn] = answeredElsewhere(withChina());
     assert.equal(cn.what, 'Mainland China');
-    assert.equal(cn.rule_id, '11.20');
-    assert.match(cn.removes, /offer/);
-    assert.match(cn.where_it_goes, /separate China discovery/i);
+    assert.match(cn.asked_for, /launch market/, 'it says they asked for it');
+    assert.match(cn.answer, /carry the brand|feed the partner/i, 'and what we can do comes first');
+    assert.match(cn.what_it_cannot, /no infrastructure in mainland China/);
+    assert.ok(!/exclud/i.test(JSON.stringify(cn)), 'nothing they asked for is called an exclusion');
   });
 
-  test('and it says what the bid is actually for once it is out', () => {
+  test('what is scoped separately is the onshore build, not the requirement', () => {
+    const [cn] = answeredElsewhere(withChina());
+    assert.match(cn.where_it_goes, /own workstream/);
     const doc = withChina();
-    const [cn] = exclusions(doc);
-    assert.equal(cn.leaves, `${doc.markets.list.length - 1} of ${doc.markets.list.length} markets`);
+    assert.match(cn.leaves, new RegExp(`${doc.markets.list.length - 1} of ${doc.markets.list.length} markets`), 'and the build this bid prices is named');
   });
 
-  test('the exclusion travels with the view, beside the shape rather than inside it', () => {
+  test('it travels beside the shape rather than inside it', () => {
     const v = goNoGoView(withChina(), state(), null);
-    assert.equal(v.exclusions.length, 1);
-    assert.ok(!v.profile.some((a) => /china/i.test(a.label)), 'it is not an axis — it is a carve-out');
+    assert.equal(v.answered_elsewhere.length, 1);
+    assert.ok(!v.profile.some((a) => /china/i.test(a.label)), 'it is not a complexity axis');
   });
 });

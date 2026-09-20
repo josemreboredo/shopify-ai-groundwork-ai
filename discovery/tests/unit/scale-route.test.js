@@ -169,15 +169,27 @@ describe('mainland China', () => {
     assert.equal(exits.triggered, true);
   });
 
-  test('China answers reach the deck consultant notes and out-of-scope list', () => {
+  test('China reaches the client document as an answer, never as an exclusion', () => {
     const doc = withMarkets(['CH', 'DE', 'CN']);
     doc.china = { selling_model: 'cross_border_offshore', channels: ['tmall_global'], legal_advice: 'client_prc_counsel' };
     doc.offer = classifyOffer(doc);
     doc.exits = evaluateExits(doc);
     const { xml } = buildDeckXml(doc);
-    assert.match(xml, /<mainland-china discovery=/);
+    assert.match(xml, /<mainland-china discovery=/, 'the consultant notes still carry every China answer');
     assert.match(xml, /topic="selling model">cross_border_offshore</);
-    assert.match(clientPart(xml), /Mainland China — a separate China discovery/);
+
+    // It used to sit in out-of-scope beside the boilerplate — "no content
+    // translation unless stated" and the rest. A requirement the client asked
+    // for, filed next to standard exclusions, reads as non-compliance and
+    // scores as a gap.
+    const client = clientPart(xml);
+    const outOfScope = client.slice(client.indexOf('id="out-of-scope"'), client.indexOf('id="out-of-scope"') + 400);
+    assert.ok(!/China/i.test(outOfScope), 'not among the exclusions');
+
+    assert.match(client, /<answered-elsewhere>/, 'answered in its own right');
+    assert.match(client, /what-we-can-do>Shopify carries the brand/, 'and what Merkle can do is said first');
+    assert.match(client, /what-shopify-cannot>Shopify has no infrastructure/);
+    assert.match(client, /scoped-separately>Onshore selling is its own workstream/);
     assert.equal(validateEngagement(doc).valid, true, JSON.stringify(validateEngagement(doc).errors));
   });
 
