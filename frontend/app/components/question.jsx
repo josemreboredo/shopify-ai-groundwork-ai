@@ -240,10 +240,12 @@ function WhyItMatters({ teach, drives }) {
       {teach?.why ? <p>{teach.why}</p> : null}
       {drives?.length ? <p className="muted">Your answer changes: {drives.join(' · ')}.</p> : null}
       {teach?.options?.length ? (
-        <table>
-          <thead><tr><th>Option</th><th>Pros</th><th>Cons</th></tr></thead>
-          <tbody>{teach.options.map((o) => <tr key={o.option}><td>{o.option}</td><td>{o.pros}</td><td>{o.cons}</td></tr>)}</tbody>
-        </table>
+        <div className="table-scroll">
+          <table>
+            <thead><tr><th>Option</th><th>Pros</th><th>Cons</th></tr></thead>
+            <tbody>{teach.options.map((o) => <tr key={o.option}><td>{o.option}</td><td>{o.pros}</td><td>{o.cons}</td></tr>)}</tbody>
+          </table>
+        </div>
       ) : null}
       {teach?.limits ? <p><strong>Limits.</strong> {teach.limits}</p> : null}
       {teach?.sources?.length ? (

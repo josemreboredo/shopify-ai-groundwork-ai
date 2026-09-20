@@ -107,7 +107,32 @@ export default function Home({ loaderData, actionData }) {
 
       <h2>Open now</h2>
       {engagements.length === 0 ? <p className="muted">Nothing open yet.</p> : (
-        <div className="table-scroll">
+        <>
+        {/* A phone is not scanning a portfolio, it is finding one record and
+            opening it: who, where it stands, what is waiting on me. Nine columns
+            are a desk instrument, so below 760px this list replaces them. */}
+        <ul className="record-cards">
+          {engagements.map((e) => (
+            <li key={e.client}>
+              <p className="record-top">
+                <Link to={`/engagements/${e.client}`}>{e.client}</Link>
+                <Status e={e} />
+              </p>
+              <p className="record-what">
+                <span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span>
+                {' '}{e.offer.code} · {e.offer.name}
+                {e.offer.provisional ? <> <span className="badge provisional">provisional</span></> : null}
+              </p>
+              <p className="record-progress">
+                {e.coverage.required_answered} of {e.coverage.required_total} required
+                {e.coverage.required_tbc ? ` · ${e.coverage.required_tbc} TBC` : ''}
+                {e.to_review ? <> · <span className="badge flag">{e.to_review} to confirm</span></> : null}
+              </p>
+              <p className="record-meta">{e.mode} · {e.owner ?? '—'} · {e.updated_at}</p>
+            </li>
+          ))}
+        </ul>
+        <div className="table-scroll record-table">
         <table>
           <thead>
             <tr><th>Client</th><th>What</th><th>Offer</th><th>Status</th><th>Required answered</th><th>To confirm</th><th>Mode</th><th>Owner</th><th>Updated</th></tr>
@@ -129,6 +154,7 @@ export default function Home({ loaderData, actionData }) {
           </tbody>
         </table>
         </div>
+        </>
       )}
     </main>
   );
