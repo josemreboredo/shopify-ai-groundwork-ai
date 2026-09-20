@@ -138,3 +138,52 @@ export function Ladder({ paths }) {
     </ol>
   );
 }
+
+/**
+ * The sourcing rule: two gates, and a claim that fails either does not ship.
+ *
+ * This is the whole subject of "How it works" and it existed only as prose. A
+ * claim needs an official Shopify page under it and a client answer behind it;
+ * missing either, the engine rejects the draft rather than softening it. Drawn,
+ * because "or it does not ship" is a shape — a path with a way out of it.
+ */
+export function SourcingRule() {
+  return (
+    <svg className="dgm sourcing" viewBox="0 0 640 196" role="img"
+      aria-label="A claim must pass two checks: an official Shopify source, and a client answer it rests on. Failing either, it is rejected and never saved.">
+      <defs>
+        <marker id="sr-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="currentColor" />
+        </marker>
+      </defs>
+      {/* the claim enters */}
+      <rect className="dgm-box" x="4" y="42" width="128" height="44" />
+      <text className="dgm-label" x="68" y="62" textAnchor="middle">A CLAIM</text>
+      <text className="dgm-sub" x="68" y="78" textAnchor="middle">the model wrote it</text>
+
+      {/* gate one */}
+      <path className="dgm-line" d="M132 64 H176" markerEnd="url(#sr-head)" />
+      <rect className="dgm-box" x="180" y="38" width="130" height="52" />
+      <text className="dgm-label" x="245" y="60" textAnchor="middle">OFFICIAL</text>
+      <text className="dgm-label" x="245" y="76" textAnchor="middle">SOURCE?</text>
+
+      {/* gate two */}
+      <path className="dgm-line" d="M310 64 H354" markerEnd="url(#sr-head)" />
+      <rect className="dgm-box" x="358" y="38" width="130" height="52" />
+      <text className="dgm-label" x="423" y="60" textAnchor="middle">CLIENT</text>
+      <text className="dgm-label" x="423" y="76" textAnchor="middle">ANSWER?</text>
+
+      {/* both yes: it ships */}
+      <path className="dgm-line" d="M488 64 H540" markerEnd="url(#sr-head)" />
+      <rect className="dgm-solid" x="544" y="42" width="92" height="44" />
+      <text className="dgm-on-solid" x="590" y="69" textAnchor="middle">IT SHIPS</text>
+
+      {/* either no: it never gets saved */}
+      <path className="dgm-fail" d="M245 90 V148 H400" markerEnd="url(#sr-head)" />
+      <path className="dgm-fail" d="M423 90 V148" />
+      <rect className="dgm-fail-box" x="404" y="126" width="180" height="44" />
+      <text className="dgm-fail-label" x="494" y="146" textAnchor="middle">REJECTED</text>
+      <text className="dgm-sub" x="494" y="162" textAnchor="middle">sent back with the gap named</text>
+    </svg>
+  );
+}

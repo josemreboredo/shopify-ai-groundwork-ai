@@ -1230,3 +1230,8 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
   .segments a { grid-template-columns: 3.2rem minmax(0, 1fr); padding-right: 1.6rem; }
   .seg-when, .seg-meta { grid-column: 2; }
 }
+
+/* The one path out of the sourcing rule is a failure, and it is drawn as one. */
+.dgm-fail { fill: none; stroke: var(--red); stroke-width: 1.5; stroke-dasharray: 5 4; color: var(--red); }
+.dgm-fail-box { fill: none; stroke: var(--red); stroke-width: 1.5; }
+.dgm-fail-label { fill: var(--red-ink); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
