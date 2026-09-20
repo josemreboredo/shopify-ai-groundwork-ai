@@ -1,7 +1,7 @@
 /**
  * @file exits.js
  * @description Deterministic exit-rule evaluation (ADR 0003) for rules
- * 11.1–11.22 in discovery/schema/offering.json, plus merging of LLM-detected candidates.
+ * 11.1–11.25 in discovery/schema/offering.json, plus merging of LLM-detected candidates.
  * LLM candidates are added, never allowed to remove or overwrite rule results.
  *
  * @module discovery/exits
@@ -179,6 +179,41 @@ const EVALUATORS = {
     if (!(doc.markets?.vat_countries ?? []).length) reasons.push('the tax-registration footprint is unknown');
     if (!reasons.length) return null;
     return `Topology recommended as ${topology.recommendation} at confidence to_validate — ${reasons.join('; ')}`;
+  },
+
+  /*
+   * The only environment risk on a Shopify build sits on the client side.
+   *
+   * Shopify needs no instance ladder: a theme stages as an unpublished theme in
+   * the production store, development themes do not count against the limit,
+   * and checkout is managed, so there is nothing to promote between instances.
+   * What does bite is a client system with no sandbox — integration testing then
+   * serialises against their live ERP, and the schedule stretches for a reason
+   * nobody wrote down. It was not asked before this rule existed.
+   */
+  '11.24': (doc) => {
+    const toConnect = (doc.integrations ?? []).filter((i) => i.status !== 'existing');
+    const without = toConnect.filter((i) => i.test_environment === 'none');
+    if (!without.length) return null;
+    const name = (i) => `${i.system ?? i.category ?? 'a system'}${i.owner && i.owner !== 'not_sure' ? ` (${i.owner})` : ''}`;
+    return `No non-production environment to integrate against: ${without.map(name).join(', ')}`;
+  },
+
+  /*
+   * Hydrogen below Plus: one public preview, and the rest need a store login.
+   *
+   * Verified 2026-09-20 against shopify.dev/docs/storefronts/headless/hydrogen/
+   * environments: production and preview always exist and custom environments
+   * are unlimited, but the public limit is 1 on Starter, Basic, Grow and
+   * Advanced against 25 on Plus. It does not block anything — a stakeholder with
+   * a store login sees a private deployment — but it decides who reviews where,
+   * and that is a conversation to have before the build, not during it.
+   */
+  '11.25': (doc) => {
+    if (doc.design?.headless_required !== true) return null;
+    const plan = doc.shopify?.target_plan;
+    if (!plan || plan === 'plus') return null;
+    return `Headless storefront on the ${plan} plan: one public environment (25 on Plus), so every other preview needs a store login`;
   },
 
 };

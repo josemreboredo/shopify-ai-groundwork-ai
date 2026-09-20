@@ -272,7 +272,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplaces/m
 **Why it matters.** The current plan and theme set the baseline: which features the client already has, whether the theme is a supported Online Store 2.0 theme or a customised legacy one, and how much of the existing build can be carried forward.
 
 **Q1.2.3** — Which Shopify plan will the new store run on (if already decided)? *(required · client)*
-Drives: rule 11.1 (STOP)
+Drives: rule 11.1 (STOP) · rule 11.25 (FLAG)
 
 **Why it matters.** The plan is the hardest constraint in a Shopify project — several features are plan-gated, not build-gated. Recommend it from the requirements, then check the client's assumption against it; a mismatch is a STOP, not a detail.
 
@@ -2762,8 +2762,8 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 
 ### 8.1 Connected systems
 
-**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required · client)*
-Drives: gate Integration · rule 11.7 (STOP) · rule 11.12 (FLAG)
+**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status, and whether it has a test environment we can connect to before go-live. *(required · client)*
+Drives: gate Integration · rule 11.7 (STOP) · rule 11.12 (FLAG) · rule 11.24 (FLAG)
 
 **Why it matters.** This table decides the integration architecture - native connector, iPaaS or custom app - and the API surface each flow needs. It is also the count behind the STOP: more than three integrations at launch is a Discovery Phase, not a build sprint.
 
@@ -2894,7 +2894,7 @@ Drives: gate Storefront design
 ### 9.2 Storefront
 
 **Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required · client)*
-Drives: L trigger Headless requirement
+Drives: L trigger Headless requirement · rule 11.25 (FLAG)
 
 **Why it matters.** The largest architectural decision in the questionnaire. The commerce engine is identical either way; what changes is who owns the presentation layer. Headless removes the theme editor, so marketing can no longer restructure pages without a release.
 
@@ -3248,3 +3248,5 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.21 | STOP | Mainland China is the only launch market — not part of the Merkle offering | A separate China discovery — see the China note | Q3.1.1 |
 | 11.22 | WARN | More than 5 retail stores in scope | Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team | Q5.6.1 |
 | 11.23 | FLAG | More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision — the engine still recommends a topology. | Market topology and legal-entity mapping workshop before the solution architecture is baselined. | Q1.1.6, Q3.1.1 |
+| 11.24 | FLAG | A system Merkle has to build a connector for has no non-production environment to integrate against (test_environment none). Shopify itself needs no instance ladder — a theme stages as an unpublished theme in the production store and checkout is managed — so the only environment risk on a Shopify build sits on the client side. Without a sandbox, integration testing serialises against the client’s live system and the schedule stretches | A named owner on the client side and a decision before the build starts: provide a sandbox, or agree the testing window against production | Q8.1.1 |
+| 11.25 | FLAG | A headless storefront on a plan below Shopify Plus. Hydrogen storefronts always have a production and a preview environment and unlimited custom ones, but only one environment can be public: on Starter, Basic, Grow and Advanced the limit is 1, on Plus it is 25. Every other preview needs a login to the store, which constrains how many review links can run in parallel with client stakeholders | A named owner before the build starts: agree who reviews where, or price the Plus plan | Q1.2.3, Q9.2.1 |

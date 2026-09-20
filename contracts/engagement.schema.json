@@ -2659,6 +2659,14 @@
           "latency_minutes": {
             "type": "integer",
             "minimum": 0
+          },
+          "test_environment": {
+            "enum": [
+              "available",
+              "none",
+              "not_sure"
+            ],
+            "description": "Whether this system has a non-production environment Merkle can integrate against before go-live."
           }
         }
       }

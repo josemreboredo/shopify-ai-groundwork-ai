@@ -148,6 +148,36 @@ describe('exit rule edge cases', () => {
     assert.match(offering.exit_rules.find((r) => r.id === '11.22').internal_note, /[Nn]ever quote a per-store price/);
   });
 
+  test('11.24 flags a system with no sandbox, and only one we have to build against', () => {
+    // Shopify needs no instance ladder — a theme stages as an unpublished theme
+    // in the production store — so the only environment risk on a Shopify build
+    // is the client's. It was not asked at all before this rule.
+    const erp = (over) => ({ ...base, integrations: [{ system: 'Navision', category: 'erp', connector: 'custom', ...over }] });
+    assert.ok(ids(erp({ status: 'to_build', test_environment: 'none' })).includes('11.24'));
+    assert.ok(!ids(erp({ status: 'to_build', test_environment: 'available' })).includes('11.24'));
+    // Not known yet is not the same as not there: it stays an open item, not a flag.
+    assert.ok(!ids(erp({ status: 'to_build', test_environment: 'not_sure' })).includes('11.24'));
+    // A connection that already runs is not ours to test into existence.
+    assert.ok(!ids(erp({ status: 'existing', test_environment: 'none' })).includes('11.24'));
+
+    const [item] = evaluateExits(withOffer(erp({ status: 'to_build', test_environment: 'none', owner: 'client' })))
+      .items.filter((i) => i.rule_id === '11.24');
+    assert.match(item.evidence, /Navision \(client\)/, 'the flag names the system and whose it is');
+  });
+
+  test('11.25 flags a headless storefront below Plus, where one preview can be public', () => {
+    // shopify.dev, verified 2026-09-20: production and preview always exist and
+    // custom environments are unlimited, but the public limit is 1 below Plus
+    // against 25 on Plus. It decides who reviews where.
+    const headless = (plan) => ({ ...base, design: { headless_required: true }, shopify: { target_plan: plan } });
+    assert.ok(ids(headless('advanced')).includes('11.25'));
+    assert.ok(!ids(headless('plus')).includes('11.25'));
+    // Not a headless build: the limit is not a fact about this engagement.
+    assert.ok(!ids({ ...base, design: { headless_required: false }, shopify: { target_plan: 'advanced' } }).includes('11.25'));
+    // And no plan recorded is not an excuse to invent one.
+    assert.ok(!ids({ ...base, design: { headless_required: true } }).includes('11.25'));
+  });
+
   test('LLM candidates are added once, for known rules only, and never replace rule results', () => {
     const doc = { ...base, checkout: { customisation: ['fully_custom_checkout_ui'] } };
     const exits = evaluateExits(withOffer(doc), [

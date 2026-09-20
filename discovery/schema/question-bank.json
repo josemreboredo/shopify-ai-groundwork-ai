@@ -911,7 +911,8 @@
         "/shopify/target_plan"
       ],
       "feeds": [
-        "exit:11.1"
+        "exit:11.1",
+        "exit:11.25"
       ],
       "shopify": {
         "native": [
@@ -8153,15 +8154,16 @@
       "priority": "required",
       "audience": "client",
       "answer_type": "table",
-      "text": "List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status.",
-      "help": "Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status.",
+      "text": "List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status, and whether it has a test environment we can connect to before go-live.",
+      "help": "Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status. Shopify needs no separate instance for staging, so the only environment that has to be arranged is yours: a system with no test environment means integration testing runs against your live one.",
       "maps_to": [
         "/integrations"
       ],
       "feeds": [
         "gate:integration",
         "exit:11.7",
-        "exit:11.12"
+        "exit:11.12",
+        "exit:11.24"
       ],
       "shopify": {
         "native": [
@@ -8523,7 +8525,8 @@
         "/design/headless_required"
       ],
       "feeds": [
-        "l_trigger:headless"
+        "l_trigger:headless",
+        "exit:11.25"
       ],
       "shopify": {
         "native": [

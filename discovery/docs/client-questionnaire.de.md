@@ -2027,9 +2027,9 @@
 **Q8.1.1** — Listen Sie jedes System auf, das Produkt-, Bestands-, Bestell-, Kunden- oder Finanzdaten mit dem Store austauscht. Je System: System, Kategorie, Richtung, Datenobjekte, Frequenz, Konnektor (native App / iPaaS / eigen / keiner), verantwortliche Stelle, Status. *(required)*
 *Typische Zuständigkeiten: Das PIM liefert Produkte, Attribute und Übersetzungen; das ERP liefert Preise (auch B2B-Kataloge), Bestände je Standort und Bestellstatus.*
 
-| System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes |
-|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | | |
+| System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes | Test environment |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | | | |
 
 **Q8.1.2** — Gibt es eine Middleware-/iPaaS-Ebene oder eigene Konnektoren? *(optional)*
 

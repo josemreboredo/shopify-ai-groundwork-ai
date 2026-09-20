@@ -2027,9 +2027,9 @@
 **Q8.1.1** — Énumérez chaque système qui échange des données de produit, de stock, de commande, de client ou de finance avec la boutique. Pour chacun : système, catégorie, sens, objets de données, fréquence, connecteur (application native / iPaaS / sur mesure / aucun), responsable, statut. *(required)*
 *Répartition courante : le PIM fournit produits, attributs et traductions ; l'ERP fournit les prix (y compris les catalogues B2B), le stock par emplacement et le statut des commandes.*
 
-| System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes |
-|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | | |
+| System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes | Test environment |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | | | |
 
 **Q8.1.2** — Existe-t-il une couche de middleware / iPaaS, ou des connecteurs sur mesure ? *(optional)*
 

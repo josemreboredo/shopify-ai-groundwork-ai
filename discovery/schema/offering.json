@@ -686,6 +686,31 @@
         "/markets/topology/confidence"
       ],
       "label": "Several markets, with the legal entities and pricing still unresolved"
+    },
+    {
+      "id": "11.24",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "A system Merkle has to build a connector for has no non-production environment to integrate against (test_environment none). Shopify itself needs no instance ladder — a theme stages as an unpublished theme in the production store and checkout is managed — so the only environment risk on a Shopify build sits on the client side. Without a sandbox, integration testing serialises against the client’s live system and the schedule stretches",
+      "destination": "A named owner on the client side and a decision before the build starts: provide a sandbox, or agree the testing window against production",
+      "inputs": [
+        "/integrations/*/test_environment",
+        "/integrations/*/status",
+        "/integrations/*/owner"
+      ],
+      "label": "A system to be connected has no test environment to build against"
+    },
+    {
+      "id": "11.25",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "A headless storefront on a plan below Shopify Plus. Hydrogen storefronts always have a production and a preview environment and unlimited custom ones, but only one environment can be public: on Starter, Basic, Grow and Advanced the limit is 1, on Plus it is 25. Every other preview needs a login to the store, which constrains how many review links can run in parallel with client stakeholders",
+      "destination": "A named owner before the build starts: agree who reviews where, or price the Plus plan",
+      "inputs": [
+        "/design/headless_required",
+        "/shopify/target_plan"
+      ],
+      "label": "A headless storefront below Plus, where only one preview can be public"
     }
   ],
   "routes": [

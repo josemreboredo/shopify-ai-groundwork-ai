@@ -2024,12 +2024,12 @@
 
 ### 8.1 Connected systems
 
-**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required)*
-*Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status.*
+**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status, and whether it has a test environment we can connect to before go-live. *(required)*
+*Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status. Shopify needs no separate instance for staging, so the only environment that has to be arranged is yours: a system with no test environment means integration testing runs against your live one.*
 
-| System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes |
-|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | | |
+| System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes | Test environment |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | | | |
 
 **Q8.1.2** — Is there a middleware / iPaaS layer, or custom connectors? *(optional)*
 

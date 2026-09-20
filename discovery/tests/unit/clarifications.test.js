@@ -510,7 +510,7 @@ describe('assuming the shape of the solution is not assuming a detail', () => {
     // separate content platform" is not a detail: Q9.2.1 feeds
     // l_trigger:headless, and an L trigger decides the offer outright.
     const byId = new Map(questionBank.questions.map((x) => [x.id, x]));
-    assert.deepEqual(byId.get('Q9.2.1').feeds, ['l_trigger:headless']);
+    assert.deepEqual(byId.get('Q9.2.1').feeds, ['l_trigger:headless', 'exit:11.25']);
     assert.deepEqual(byId.get('Q9.1.3').feeds, ['l_trigger:figma_design_system', 'gate:storefront_design']);
   });
 
