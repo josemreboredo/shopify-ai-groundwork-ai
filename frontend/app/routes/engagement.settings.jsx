@@ -6,7 +6,7 @@ import { EngagementHeader } from '../components/question.jsx';
 import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
 import { OUTCOMES, outcomesFor } from '../../../discovery/service/outcome.js';
 import { pageTitle } from '../brand.js';
-import { LANGUAGES, LANGUAGE_NAMES, writtenIn } from '../../../discovery/service/i18n.js';
+import { LANGUAGES, LANGUAGE_NAMES } from '../../../discovery/agents/language.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Change', params.client) }];
 

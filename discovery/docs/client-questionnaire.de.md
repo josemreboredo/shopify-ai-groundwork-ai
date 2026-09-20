@@ -52,11 +52,11 @@
 **Q0.2.4** — Liegt der Engpass vor allem bei der Akquise (Traffic), der Conversion (Traffic kauft nicht) oder der Bindung (Kundinnen und Kunden kommen nicht zurück)? *(required)*
 
 *(tick one)*
-- [ ] Acquisition
+- [ ] Neukundengewinnung
 - [ ] Conversion
-- [ ] Retention
-- [ ] Mixed
-- [ ] Not sure yet
+- [ ] Kundenbindung
+- [ ] Gemischt
+- [ ] Noch unklar
 
 **Q0.2.5** — Welchen Umsatzanteil hat heute jeder Kanal (Onlineshop, Filialen, Marktplätze, Social Commerce, Großhandel / B2B, sonstige)? *(recommended)*
 *Zeigt uns, ob Retail-, B2B- und Marktplatz-Umfang im Spiel sind.*
@@ -110,15 +110,15 @@
 *Shopifys Store-Migration-App importiert Produkte und Kundinnen und Kunden von einigen Plattformen (z. B. WooCommerce, Wix, Square); andere Plattformen benötigen eine Migrations-App oder die API.*
 
 *(tick one)*
-- [ ] None
+- [ ] Keine
 - [ ] Shopify
 - [ ] WooCommerce
 - [ ] Magento / Adobe Commerce
 - [ ] Shopware
 - [ ] Salesforce Commerce Cloud
 - [ ] BigCommerce
-- [ ] Custom
-- [ ] Other
+- [ ] Individuell
+- [ ] Anderes
 
 ### 0.6 Budget
 
@@ -131,9 +131,9 @@
 **Q0.6.2** — Liegt die Priorität darauf, die Anfangskosten gering zu halten (Apps und Konfiguration), die Lösung zu besitzen (Individualentwicklung), oder auf einer Balance? *(required)*
 
 *(tick one)*
-- [ ] Minimise upfront
-- [ ] Own solution
-- [ ] Balanced
+- [ ] Anfangsinvestition gering halten
+- [ ] Eigene Lösung
+- [ ] Ausgewogen
 
 **Q0.6.3** — Gibt es eine monatliche Obergrenze für App-Abos? *(optional)*
 *Viele Anforderungen decken Shopifys eigene Apps ab (z. B. Subscriptions, Bundles, Search & Discovery, Translate & Adapt, Flow, Messaging). Diese prüfen wir zuerst.*
@@ -165,9 +165,9 @@
 *B2B oder hybrid bringt die Fragen zu B2B und Großhandel mit sich (§ 6.2).*
 
 *(tick one)*
-- [ ] Direct to consumer (DTC)
-- [ ] Business to business (B2B)
-- [ ] Hybrid (DTC and B2B)
+- [ ] Direkt an Endkunden (DTC)
+- [ ] Geschäftskunden (B2B)
+- [ ] Hybrid (DTC und B2B)
 
 **Q1.1.5** — Aktuelle Website-URL. *(optional)*
 
@@ -182,18 +182,18 @@
 *Onlineshop, Shopify POS, Shop-App, Marktplätze, Social-Kanäle, B2B, Headless- oder App-Frontends, KI-Shopping-Agenten.*
 
 *(tick all that apply)*
-- [ ] Online store
+- [ ] Onlineshop
 - [ ] Shopify POS
 - [ ] Shop app
-- [ ] Marketplaces
+- [ ] Marktplätze
 - [ ] Facebook & Instagram
 - [ ] Google & YouTube
 - [ ] TikTok
 - [ ] B2B online
-- [ ] Headless or mobile app
-- [ ] AI shopping agents
-- [ ] None
-- [ ] Not sure yet
+- [ ] Headless oder mobile App
+- [ ] KI-Einkaufsassistenten
+- [ ] Keine
+- [ ] Noch unklar
 
 ### 1.2 Shopify-Konto
 
@@ -213,15 +213,15 @@
 *Wir empfehlen den Plan, sobald die Anforderungen bekannt sind.*
 
 *(tick one)*
-- [ ] None
+- [ ] Keine
 - [ ] Starter
 - [ ] Basic
 - [ ] Grow
 - [ ] Advanced
 - [ ] Shopify Plus
 - [ ] Enterprise
-- [ ] Retail
-- [ ] Not sure yet
+- [ ] Filialgeschäft
+- [ ] Noch unklar
 
 **Q1.2.4** — Welche Apps sind heute installiert, was leisten sie, und welche müssen bleiben? *(recommended)*
 *Skip if Q1.2.1 = no.*
@@ -236,13 +236,13 @@
 
 *(tick all that apply)*
 - [ ] Shopify Scripts
-- [ ] checkout.liquid or additional scripts
-- [ ] Online store script tags
-- [ ] Legacy customer accounts
+- [ ] checkout.liquid oder zusätzliche Skripte
+- [ ] Script-Tags im Onlineshop
+- [ ] Alte Kundenkonten
 - [ ] Stocky
-- [ ] Geolocation app
-- [ ] None
-- [ ] Not sure yet
+- [ ] Geolocation-App
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q1.2.6** — Wie viele Personen benötigen nach dem Go-live einen eigenen Shopify-Admin-Zugang? *(required)*
 *Mitarbeit über Collaborator-Konten und reines POS-Personal zählen nicht mit.*
@@ -255,10 +255,10 @@
 *Die Positionierung prägt Designtiefe und Lösungsansatz.*
 
 *(tick one)*
-- [ ] Value
-- [ ] Mid market
+- [ ] Wert
+- [ ] Mittelstand
 - [ ] Premium
-- [ ] Luxury
+- [ ] Luxus
 - [ ] Enterprise
 
 **Q1.3.2** — Ist die Markenidentität final (Logo, Farbpalette, Typografie)? *(recommended)*
@@ -324,22 +324,22 @@
 *Shopify Bundles erstellt feste Bundles und Multipacks; Mix-and-Match-Bundles brauchen eine App.*
 
 *(tick all that apply)*
-- [ ] Simple
-- [ ] Variant
-- [ ] Fixed bundle
+- [ ] Einfach
+- [ ] Variante
+- [ ] Festes Bundle
 - [ ] Multipack
-- [ ] Mix and match bundle
+- [ ] Mix-and-Match-Bundle
 - [ ] Bundle
-- [ ] Product set
-- [ ] Gift card
+- [ ] Produktset
+- [ ] Geschenkkarte
 - [ ] Digital
-- [ ] Subscription
-- [ ] Pre order
-- [ ] Made to order
-- [ ] Virtual
-- [ ] Try before you buy
-- [ ] None
-- [ ] Not sure yet
+- [ ] Abo
+- [ ] Vorbestellung
+- [ ] Auf Bestellung gefertigt
+- [ ] Virtuell
+- [ ] Erst anprobieren, dann zahlen
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q2.2.2** — Laufen Abos über Shopify Subscriptions (Shopifys eigene App) oder über eine Drittanbieter-App? Bitte die App nennen, falls bekannt. *(recommended)*
 *Ask if Q2.2.1 includes Subscription.*
@@ -353,51 +353,51 @@
 *Shopify Bundles: bis zu 30 Komponenten; nicht mit Abos oder Vorbestellungen; keine verschachtelten Bundles.*
 
 *(tick all that apply)*
-- [ ] Fixed price bundle
+- [ ] Bundle zum Festpreis
 - [ ] Multipack
-- [ ] Customer builds bundle
-- [ ] Bundle with subscription
-- [ ] Bundle discount tiers
-- [ ] Sell bundles on POS
-- [ ] Bundles on marketplaces
-- [ ] None
-- [ ] Not sure yet
+- [ ] Die Kundschaft stellt das Bundle zusammen
+- [ ] Bundle mit Abo
+- [ ] Bundle-Rabattstufen
+- [ ] Bundles am Kassensystem verkaufen
+- [ ] Bundles auf Marktplätzen
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q2.2.4** — Welche Abo-Funktionen werden benötigt? *(recommended)*
 *Ask if Q2.2.1 includes Subscription.*
 
 *(tick all that apply)*
-- [ ] Pay per delivery
-- [ ] Prepaid multi delivery
-- [ ] Build a box
-- [ ] Subscribe and save discount
-- [ ] Subscription bundles
-- [ ] Subscriptions on POS
-- [ ] B2B subscriptions
-- [ ] International subscriptions
-- [ ] Migrate existing contracts
-- [ ] Not sure yet
+- [ ] Zahlung je Lieferung
+- [ ] Vorausbezahlte Mehrfachlieferung
+- [ ] Box selbst zusammenstellen
+- [ ] Abo-Rabatt
+- [ ] Abo-Bundles
+- [ ] Abos am Kassensystem
+- [ ] B2B-Abos
+- [ ] Internationale Abos
+- [ ] Bestehende Verträge migrieren
+- [ ] Noch unklar
 
 **Q2.2.5** — Wann wird bei Vorbestellungen abgerechnet? *(recommended)*
 *Ask if Q2.2.1 includes Pre order.*
 *Vorbestellungen brauchen eine Pre-Order-App; Express-Checkouts (Shop Pay, Apple Pay, Google Pay) stehen für Vorbestellungen nicht zur Verfügung.*
 
 *(tick one)*
-- [ ] Full at order
-- [ ] Deposit then balance
-- [ ] Charged at fulfilment
+- [ ] Voller Betrag bei Bestellung
+- [ ] Anzahlung, dann Restbetrag
+- [ ] Abrechnung bei Versand
 
 **Q2.2.6** — Personalisieren Kundinnen und Kunden Produkte mit Angaben, die keine Lagervarianten sind (Gravur, Datei-Upload, kostenpflichtige Zusatzoptionen, Konfiguratoren)? *(recommended)*
 *Ask if Q2.1.2 is 3 or more, or Q2.2.1 includes Made to order.*
 
 *(tick all that apply)*
-- [ ] Text engraving
-- [ ] File upload
-- [ ] Paid add ons
-- [ ] Conditional options
-- [ ] 3D configurator
-- [ ] None
-- [ ] Not sure yet
+- [ ] Textgravur
+- [ ] Datei-Upload
+- [ ] Kostenpflichtige Zusatzoptionen
+- [ ] Bedingte Optionen
+- [ ] 3D-Konfigurator
+- [ ] Keine
+- [ ] Noch unklar
 
 ### 2.3 Katalogdaten
 
@@ -408,9 +408,9 @@
 **Q2.3.2** — Sind die Kategorien manuell, regelbasiert (automatisiert) oder gemischt? *(optional)*
 
 *(tick one)*
-- [ ] Manual
-- [ ] Automated
-- [ ] Mixed
+- [ ] Manuell
+- [ ] Automatisiert
+- [ ] Gemischt
 
 **Q2.3.3** — Welche Produktattribute gehen über Shopifys Standardfelder hinaus (technische Daten, Zertifikate, Passform-Hinweise, Inhaltsstoffe)? *(required)*
 *Shopify speichert zusätzliche Attribute als Metafelder und Metaobjekte und nutzt die Standard-Produkttaxonomie für Kategorieattribute (Filter, Google- und Meta-Feeds). Mit einem PIM kommen die Attribute aus dem PIM.*
@@ -421,11 +421,11 @@
 *Typisch: Produkte und Inhalte aus dem PIM; Preise und Bestände aus dem ERP.*
 
 *(tick one)*
-- [ ] Shopify admin
-- [ ] Spreadsheet
+- [ ] Shopify Admin
+- [ ] Tabellenkalkulation
 - [ ] ERP
 - [ ] PIM
-- [ ] Mixed
+- [ ] Gemischt
 
 **Q2.3.5** — Nach welchen Attributen sollen Kundinnen und Kunden auf Kategorie- und Suchseiten filtern können? *(recommended)*
 *Shopify Search & Discovery: bis zu 25 Filter; keine Filter auf Kategorien mit mehr als 5.000 Produkten.*
@@ -463,7 +463,7 @@
 - [ ] WMS
 - [ ] OMS
 - [ ] POS
-- [ ] Other
+- [ ] Anderes
 
 **Q2.5.2** — Werden Benachrichtigungen bei niedrigem Bestand benötigt? *(optional)*
 *Shopify hat keine eingebaute Benachrichtigung bei niedrigem Bestand; wir richten sie mit Shopify Flow ein.*
@@ -476,23 +476,23 @@
 *Weiterverkaufen (Nachbestellung) ist nativ; Benachrichtigungen bei Wiederverfügbarkeit und Vorbestellungen brauchen Apps.*
 
 *(tick all that apply)*
-- [ ] Hide
-- [ ] Show sold out
-- [ ] Continue selling (backorder)
-- [ ] Back in stock alert
-- [ ] Pre order
-- [ ] Not sure yet
+- [ ] Ausblenden
+- [ ] Als ausverkauft anzeigen
+- [ ] Weiterverkaufen (Nachbestellung)
+- [ ] Benachrichtigung bei Wiederverfügbarkeit
+- [ ] Vorbestellung
+- [ ] Noch unklar
 
 **Q2.5.4** — Welche Bestandsaufgaben wird Ihr Team in Shopify erledigen? *(optional)*
 *Einkaufsbestellungen, Transfers und Bestandskorrekturen sind im Shopify Admin nativ (Stocky ist eingestellt).*
 
 *(tick all that apply)*
-- [ ] Purchase orders
-- [ ] Stock transfers
-- [ ] Stock counts POS
-- [ ] Damaged, quality control and safety stock
-- [ ] None
-- [ ] Not sure yet
+- [ ] Einkaufsbestellungen
+- [ ] Bestandstransfers
+- [ ] Bestandszählungen am Kassensystem
+- [ ] Beschädigt, Qualitätskontrolle und Sicherheitsbestand
+- [ ] Keine
+- [ ] Noch unklar
 
 ---
 
@@ -525,17 +525,17 @@
 
 *(tick one)*
 - [ ] Shopify markets
-- [ ] Expansion stores
-- [ ] Hybrid (DTC and B2B)
+- [ ] Expansion Stores
+- [ ] Hybrid (DTC und B2B)
 
 **Q3.1.5** — Wie sollen Besucherinnen und Besucher in ihren lokalen Markt gelangen? *(optional)*
 *Die automatische Weiterleitung ist nativ; EU-Besucher auf EU-Länderdomains werden nicht automatisch weitergeleitet.*
 
 *(tick one)*
-- [ ] Automatic redirect
-- [ ] Country selector only
-- [ ] Suggest banner
-- [ ] None
+- [ ] Automatische Weiterleitung
+- [ ] Nur ein Länderselector
+- [ ] Hinweisbanner
+- [ ] Keine
 
 **Q3.1.7** — Soll ein Markt eigene Theme-Inhalte, eine eigene Abschnittsreihenfolge, einen eigenen Checkout oder eigene Einstellungen für Kundenkonten haben? *(required)*
 
@@ -555,12 +555,12 @@
 *Translate & Adapt (Shopifys kostenlose App) übersetzt bis zu 2 Sprachen automatisch; mehr Sprachen brauchen Handarbeit oder eine Übersetzungs-App. Der Checkout ist vorübersetzt.*
 
 *(tick one)*
-- [ ] In house
-- [ ] Agency
+- [ ] Im eigenen Haus
+- [ ] Agentur
 - [ ] Translate & Adapt
-- [ ] Third party app
-- [ ] Supplied by the PIM
-- [ ] Not sure yet
+- [ ] App eines Drittanbieters
+- [ ] Vom PIM geliefert
+- [ ] Noch unklar
 
 **Q3.2.2** — Braucht eine der Sprachen ein Layout von rechts nach links? *(optional)*
 
@@ -577,15 +577,15 @@
 *Translate & Adapt übersetzt Richtlinien und URL-Handles nicht automatisch.*
 
 *(tick all that apply)*
-- [ ] Product data from the PIM
-- [ ] Theme texts
-- [ ] Metaobject content
-- [ ] Policies
-- [ ] Notifications
-- [ ] URL handles
-- [ ] App content
-- [ ] None
-- [ ] Not sure yet
+- [ ] Produktdaten aus dem PIM
+- [ ] Theme-Texte
+- [ ] Inhalte in Metaobjekten
+- [ ] Richtlinien
+- [ ] Benachrichtigungen
+- [ ] URL-Handles
+- [ ] App-Inhalte
+- [ ] Keine
+- [ ] Noch unklar
 
 ### 3.4 Steuern & Zölle
 
@@ -608,27 +608,27 @@
 *Skip if Q3.4.1 = no.*
 
 *(tick one)*
-- [ ] In the PIM
-- [ ] In the ERP
-- [ ] To be created
-- [ ] Not needed
+- [ ] Im PIM
+- [ ] Im ERP
+- [ ] Noch zu erstellen
+- [ ] Nicht erforderlich
 
 **Q3.4.5** — Sollen die Preise in manchen Märkten inklusive Steuer (MwSt.) und in anderen exklusive Steuer angezeigt werden? *(required)*
 *Shopify kann Preise je Markt inklusive Steuer anzeigen (dynamische Steueranzeige).*
 
 *(tick one)*
-- [ ] Include everywhere
-- [ ] Exclude everywhere
-- [ ] Dynamic by market
+- [ ] Überall inklusive Steuer
+- [ ] Überall exklusive Steuer
+- [ ] Dynamisch je Markt
 
 **Q3.4.6** — Welcher Steuerdienst? *(recommended · consultant)*
 *Shopify Tax deckt USA, EU, UK und Kanada ab; seit dem 13.05.2026 können neue Stores, die in der EU, in UK oder Kanada verkaufen, Basic Tax nicht mehr nutzen.*
 
 *(tick one)*
 - [ ] Shopify Tax
-- [ ] Tax app
-- [ ] Manual rates
-- [ ] Not sure yet
+- [ ] Steuer-App
+- [ ] Manuelle Tarife
+- [ ] Noch unklar
 
 **Q3.4.7** — Kaufen Geschäftskunden steuerbefreit ein (Prüfung der USt-IdNr., Reverse Charge)? *(optional)*
 *Die Prüfung der USt-IdNr. im Checkout ist nativ.*
@@ -647,14 +647,14 @@
 *Geringwertige Sendungen in die EU (IOSS), nach UK, in die Schweiz, nach Norwegen (VOEC), Australien und Neuseeland. Bitte die Verfahren ankreuzen, für die Sie registriert sind.*
 
 *(tick all that apply)*
-- [ ] EU Import One-Stop Shop (IOSS)
-- [ ] UK low-value VAT
-- [ ] Switzerland low-value VAT
+- [ ] EU Import-One-Stop-Shop (IOSS)
+- [ ] Britische MwSt. auf geringwertige Einfuhren
+- [ ] Schweizer MwSt. auf geringwertige Einfuhren
 - [ ] Norway VOEC
-- [ ] Australia GST on low-value imports
-- [ ] New Zealand GST on low-value imports
-- [ ] None
-- [ ] Not sure yet
+- [ ] Australische GST auf geringwertige Einfuhren
+- [ ] Neuseeländische GST auf geringwertige Einfuhren
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q3.4.10** — Gibt es Produkte mit ermäßigten oder Nullsteuersätzen oder mit Steuerbefreiungen in einem Markt (z. B. Arzneimittel, Bücher, Lebensmittel, Kinderbekleidung)? *(recommended)*
 *Die Sätze bestätigt die Finanzabteilung; Merkle erteilt keine Steuerberatung.*
@@ -667,12 +667,12 @@
 *Shopify kann MwSt.-Rechnungen für EU- und UK-Bestellungen erzeugen (auf der Bestellstatusseite sichtbar, nicht per E-Mail, nicht für Bestellungen mit Zöllen). Die kostenlose App Order Printer druckt Rechnungen aus Vorlagen. Rechnungen können auch aus dem ERP oder einer Rechnungs-App kommen.*
 
 *(tick one)*
-- [ ] Shopify VAT invoices (EU and UK)
+- [ ] MwSt.-Rechnungen von Shopify (EU und UK)
 - [ ] Shopify Order Printer
-- [ ] Invoicing app
+- [ ] Rechnungs-App
 - [ ] ERP
-- [ ] Billing or tax service
-- [ ] Not sure yet
+- [ ] Abrechnungs- oder Steuerdienst
+- [ ] Noch unklar
 
 **Q3.4.12** — Welche Pflichten zur elektronischen Rechnungsstellung (E-Invoicing) gelten für Ihre Umsätze? *(recommended)*
 *Ask if Q1.1.4 is Business to business (B2B) or Hybrid (DTC and B2B), or the launch markets include DE / FR / IT / PL / BE / ES / EU.*
@@ -680,24 +680,24 @@
 
 *(tick all that apply)*
 - [ ] Peppol
-- [ ] Germany: XRechnung or ZUGFeRD
-- [ ] France: Factur-X
-- [ ] Italy: SdI
-- [ ] Poland: KSeF
-- [ ] Spain: VeriFactu
-- [ ] Other
-- [ ] None
-- [ ] Not sure yet
+- [ ] Deutschland: XRechnung oder ZUGFeRD
+- [ ] Frankreich: Factur-X
+- [ ] Italien: SdI
+- [ ] Polen: KSeF
+- [ ] Spanien: VeriFactu
+- [ ] Anderes
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q3.4.13** — Wenn der Verkauf in einem Land bedeutete, sich dort steuerlich registrieren und Erklärungen abgeben zu müssen: Würden Sie das selbst übernehmen, oder wäre Ihnen lieber, ein Partner wäre für diese Bestellungen der rechtliche Verkäufer? *(recommended)*
 *Why we ask: This decides who carries the tax and customs liability on cross-border orders. Keeping it yourself means registering, filing and remitting in each country; handing it to a partner removes that work and that risk, and costs a percentage of every international order.*
 *Bitte für die Länder antworten, in die Sie verkaufen, in denen Sie heute aber nicht registriert sind.*
 
 *(tick one)*
-- [ ] Own registrations
-- [ ] Prefer partner
-- [ ] Mixed
-- [ ] Not sure yet
+- [ ] Eigene Registrierungen
+- [ ] Partner bevorzugt
+- [ ] Gemischt
+- [ ] Noch unklar
 
 ### 3.5 Festlandchina
 
@@ -706,10 +706,10 @@
 *Der Onshore-Verkauf setzt eine Gesellschaft in der VR China, eine ICP-Registrierung oder -Lizenz und Hosting in China voraus.*
 
 *(tick one)*
-- [ ] Cross-border, from outside China
-- [ ] Onshore, behind the Great Firewall
-- [ ] Both
-- [ ] Not sure yet
+- [ ] Grenzüberschreitend, von außerhalb Chinas
+- [ ] Onshore, hinter der Großen Firewall
+- [ ] Beides
+- [ ] Noch unklar
 
 **Q3.5.2** — Welche Kanäle für das chinesische Festland? *(required)*
 *Only if the launch markets include mainland China (CN).*
@@ -720,22 +720,22 @@
 - [ ] JD Worldwide
 - [ ] Douyin Global
 - [ ] RED (Xiaohongshu)
-- [ ] WeChat mini-program
-- [ ] Own site outside China
-- [ ] Own site inside China
-- [ ] Hong Kong store shipping to the mainland
-- [ ] Not sure yet
+- [ ] WeChat-Mini-Programm
+- [ ] Eigene Seite außerhalb Chinas
+- [ ] Eigene Seite innerhalb Chinas
+- [ ] Hongkong-Store mit Versand auf das Festland
+- [ ] Noch unklar
 
 **Q3.5.3** — Haben Sie eine juristische Person auf dem chinesischen Festland? *(required)*
 *Only if the launch markets include mainland China (CN).*
 *Erforderlich für eine ICP-Registrierung oder -Lizenz und für Onshore-Hosting.*
 
 *(tick one)*
-- [ ] None
-- [ ] Wholly foreign-owned enterprise (WFOE)
-- [ ] Joint venture
-- [ ] Representative office
-- [ ] Planned
+- [ ] Keine
+- [ ] Unternehmen in ausländischem Alleinbesitz (WFOE)
+- [ ] Joint Venture
+- [ ] Repräsentanz
+- [ ] Geplant
 
 **Q3.5.4** — Haben Sie eine Gesellschaft in Hongkong oder anderswo im Ausland, die grenzüberschreitend verkaufen kann, und sind Ihre Marken in China eingetragen? *(optional)*
 *Only if the launch markets include mainland China (CN).*
@@ -749,67 +749,67 @@
 *Ihre Rechtsberatung in der VR China bestätigt, ob eine Registrierung genügt oder eine kommerzielle ICP-Lizenz nötig ist.*
 
 *(tick one)*
-- [ ] None
-- [ ] ICP filing
-- [ ] Commercial ICP licence
-- [ ] Via a partner
-- [ ] Not needed
-- [ ] Not sure yet
+- [ ] Keine
+- [ ] ICP-Registrierung
+- [ ] Kommerzielle ICP-Lizenz
+- [ ] Über einen Partner
+- [ ] Nicht erforderlich
+- [ ] Noch unklar
 
 **Q3.5.6** — Welche Rolle spielt Shopify für das chinesische Festland? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
 *Shopify kann global führend für Produkte, Bestände und Bestellungen bleiben, während China über lokale Kanäle verkauft.*
 
 *(tick one)*
-- [ ] Global master for products, inventory and orders
-- [ ] China channel or storefront
-- [ ] Not involved
-- [ ] Not sure yet
+- [ ] Global führend für Produkte, Bestände und Bestellungen
+- [ ] China-Kanal oder -Storefront
+- [ ] Nicht beteiligt
+- [ ] Noch unklar
 
 **Q3.5.7** — Wie gelangen die Waren nach China: Zolllager (1210), Direktversand (9610), allgemeiner Handel oder Privatsendungen? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Grenzüberschreitende Kanäle haben Grenzen je Bestellung und je Jahr und Verbraucher.*
 
 *(tick all that apply)*
-- [ ] Bonded warehouse (1210)
-- [ ] Direct mail (9610)
-- [ ] General trade
-- [ ] Personal parcels
-- [ ] Not sure yet
+- [ ] Zolllager (1210)
+- [ ] Direktversand (9610)
+- [ ] Allgemeiner Handel
+- [ ] Privatsendungen
+- [ ] Noch unklar
 
 **Q3.5.8** — Stehen Ihre Produkte auf Chinas Positivliste für den grenzüberschreitenden E-Commerce? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 *(tick one)*
-- [ ] All on the list
-- [ ] Some on the list
-- [ ] None on the list
-- [ ] Not sure yet
+- [ ] Alle auf der Liste
+- [ ] Manche auf der Liste
+- [ ] Keine auf der Liste
+- [ ] Noch unklar
 
 **Q3.5.9** — Wie sind Ihre Produkte in China eingestuft? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Aufhellende Produkte, Sonnenschutz und Mittel gegen Haarausfall gelten als besondere Kosmetika; Arzneimittel sind keine grenzüberschreitenden Waren.*
 
 *(tick all that apply)*
-- [ ] Ordinary cosmetics
-- [ ] Special cosmetics (e.g. whitening, sunscreen)
-- [ ] Drugs
-- [ ] Medical devices
-- [ ] Food supplements
-- [ ] General goods
-- [ ] Not sure yet
+- [ ] Gewöhnliche Kosmetika
+- [ ] Besondere Kosmetika (z. B. aufhellend, Sonnenschutz)
+- [ ] Arzneimittel
+- [ ] Medizinprodukte
+- [ ] Nahrungsergänzungsmittel
+- [ ] Allgemeine Waren
+- [ ] Noch unklar
 
 **Q3.5.10** — Status der Registrierung oder Anmeldung bei Chinas Arzneimittelbehörde (NMPA)? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Der allgemeine Handel verlangt Registrierung oder Anmeldung; grenzüberschreitende Kanäle sind für Waren auf der Positivliste befreit.*
 
 *(tick one)*
-- [ ] Registered
-- [ ] Filed
-- [ ] In progress
-- [ ] Not started
-- [ ] Not needed (cross-border e-commerce)
-- [ ] Not sure yet
+- [ ] Registriert
+- [ ] Eingereicht
+- [ ] In Arbeit
+- [ ] Noch nicht begonnen
+- [ ] Nicht erforderlich (grenzüberschreitender E-Commerce)
+- [ ] Noch unklar
 
 **Q3.5.11** — Müssen Produktaussagen für China geprüft werden (medizinische, kosmezeutische oder Behandlungsaussagen)? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
@@ -823,21 +823,21 @@
 *Innerhalb des Marktplatzes, mit Alipay und WeChat Pay über ein Shopify-Payments-Konto in Hongkong (Early Access), über einen grenzüberschreitenden Wallet-Anbieter oder über inländische Händlerkonten (Gesellschaft in der VR China).*
 
 *(tick all that apply)*
-- [ ] Inside the marketplace
-- [ ] Alipay / WeChat Pay via Shopify Payments (Hong Kong)
-- [ ] Cross-border wallet provider
-- [ ] Domestic merchant accounts (PRC entity)
-- [ ] Not sure yet
+- [ ] Innerhalb des Marktplatzes
+- [ ] Alipay / WeChat Pay über Shopify Payments (Hongkong)
+- [ ] Grenzüberschreitender Wallet-Anbieter
+- [ ] Inländische Händlerkonten (Gesellschaft in der VR China)
+- [ ] Noch unklar
 
 **Q3.5.13** — Wie viele Kundinnen und Kunden vom chinesischen Festland erwarten Sie pro Jahr? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 *Chinas Gesetz zum Schutz personenbezogener Daten sieht je nach Volumen unterschiedliche Pflichten beim Datenexport vor.*
 
 *(tick one)*
-- [ ] Under 100,000
-- [ ] 100,000 to 1 million
-- [ ] Over 1 million
-- [ ] Not sure yet
+- [ ] Unter 100.000
+- [ ] 100.000 bis 1 Million
+- [ ] Über 1 Million
+- [ ] Noch unklar
 
 **Q3.5.14** — Haben Sie in China eine vertretungsberechtigte Person für den Schutz personenbezogener Daten (PIPL)? *(optional)*
 *Only if the launch markets include mainland China (CN).*
@@ -850,10 +850,10 @@
 *Only if the launch markets include mainland China (CN).*
 
 *(tick one)*
-- [ ] Inside China
-- [ ] Outside China
-- [ ] Both
-- [ ] Not sure yet
+- [ ] Innerhalb Chinas
+- [ ] Außerhalb Chinas
+- [ ] Beides
+- [ ] Noch unklar
 
 **Q3.5.16** — Müssen in China blockierte Skripte (Google Fonts, Google Analytics, reCAPTCHA, Meta-Pixel, YouTube) ersetzt werden? *(optional · consultant)*
 *Only if the launch markets include mainland China (CN).*
@@ -865,23 +865,23 @@
 *Only if the launch markets include mainland China (CN).*
 
 *(tick all that apply)*
-- [ ] KOL / KOC influencers
+- [ ] KOL-/KOC-Influencer
 - [ ] RED (Xiaohongshu)
 - [ ] Douyin
 - [ ] WeChat
 - [ ] Baidu
-- [ ] Tmall advertising
-- [ ] None
-- [ ] Not sure yet
+- [ ] Tmall-Werbung
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q3.5.18** — Wer leistet den Kundenservice auf Chinesisch? *(optional)*
 *Only if the launch markets include mainland China (CN).*
 
 *(tick one)*
-- [ ] In house
+- [ ] Im eigenen Haus
 - [ ] Partner
-- [ ] Platform
-- [ ] Not sure yet
+- [ ] Plattform
+- [ ] Noch unklar
 
 **Q3.5.19** — Arbeiten Sie für China mit einem lokalen Partner oder Handelspartner? Bitte nennen. *(optional)*
 *Only if the launch markets include mainland China (CN).*
@@ -898,9 +898,9 @@
 *Merkle erbringt keine Rechtsberatung zur VR China.*
 
 *(tick one)*
-- [ ] Client's PRC counsel
+- [ ] Rechtsberatung des Kunden in der VR China
 - [ ] Partner
-- [ ] Not yet
+- [ ] Noch nicht
 
 ---
 
@@ -931,20 +931,20 @@
 - [ ] TWINT
 - [ ] Alipay
 - [ ] WeChat Pay
-- [ ] SEPA direct debit or invoice via a gateway
-- [ ] Other
-- [ ] None
-- [ ] Not sure yet
+- [ ] SEPA-Lastschrift oder Rechnung über ein Gateway
+- [ ] Anderes
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q4.1.3** — Welche Buy-now-pay-later-Optionen, falls überhaupt? *(optional)*
 *Shop Pay Installments steht Stores in den USA, Kanada und dem Vereinigten Königreich zur Verfügung.*
 
 *(tick all that apply)*
 - [ ] Shop Pay Installments
-- [ ] Klarna via Shopify Payments
-- [ ] Buy now, pay later via another gateway
-- [ ] None
-- [ ] Not sure yet
+- [ ] Klarna über Shopify Payments
+- [ ] Jetzt kaufen, später zahlen über ein anderes Gateway
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q4.1.4** — Brauchen Sie Auszahlungen in mehr als einer Währung? *(required)*
 
@@ -955,9 +955,9 @@
 *Kartendaten außerhalb des Shopify-gehosteten Checkouts erfordern eine eigene Sicherheitsprüfung.*
 
 *(tick one)*
-- [ ] Shopify-hosted checkout
-- [ ] Third-party hosted payment page
-- [ ] Custom card handling
+- [ ] Von Shopify gehosteter Checkout
+- [ ] Gehostete Zahlungsseite eines Drittanbieters
+- [ ] Eigene Kartenverarbeitung
 
 **Q4.1.6** — Welche Express-Checkouts werden benötigt? *(recommended)*
 *B2B-Checkout und Vorbestellungen unterstützen keine Express-Checkouts.*
@@ -968,8 +968,8 @@
 - [ ] Google Pay
 - [ ] PayPal
 - [ ] Amazon Pay
-- [ ] None
-- [ ] Not sure yet
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q4.1.7** — Müssen Zahlungsarten je Markt, Kundentyp oder Warenkorb ausgeblendet, umbenannt oder umsortiert werden? *(recommended)*
 *Erfordert eine App zur Zahlungsanpassung (Shopify Function).*
@@ -983,31 +983,31 @@
 *Der Shopify-Checkout wird über den Checkout-Editor und Checkout Extensibility angepasst (Blöcke, Felder, Logik über Functions). Eine vollständig eigene Checkout-Oberfläche ist auf Shopify nicht möglich.*
 
 *(tick all that apply)*
-- [ ] Branding in the checkout editor
-- [ ] Thank you / Order status page blocks
-- [ ] Blocks or fields on checkout steps
-- [ ] Checkout Branding API styling
-- [ ] Back-end logic (Shopify Functions)
-- [ ] Fully custom checkout UI
-- [ ] None
-- [ ] Not sure yet
+- [ ] Branding im Checkout-Editor
+- [ ] Blöcke auf der Dankes- und Bestellstatusseite
+- [ ] Blöcke oder Felder in den Checkout-Schritten
+- [ ] Gestaltung über die Checkout Branding API
+- [ ] Backend-Logik (Shopify Functions)
+- [ ] Vollständig eigene Checkout-Oberfläche
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q4.2.2** — Welche Checkout-Erweiterungen werden benötigt? *(optional · consultant)*
 *Skip if Q4.2.1 = None.*
 
 *(tick all that apply)*
-- [ ] Custom fields
-- [ ] Upsell block
-- [ ] Gift message
-- [ ] Trust badges
-- [ ] Loyalty redemption
-- [ ] Delivery customization
-- [ ] Payment customization
-- [ ] Cart checkout validation
-- [ ] Address validation
-- [ ] Pickup point generator
-- [ ] None
-- [ ] Not sure yet
+- [ ] Eigene Felder
+- [ ] Upsell-Block
+- [ ] Geschenknachricht
+- [ ] Vertrauenssiegel
+- [ ] Einlösen von Prämien
+- [ ] Anpassung der Zustellung
+- [ ] Anpassung der Zahlungsarten
+- [ ] Warenkorb- und Checkout-Validierung
+- [ ] Adressprüfung
+- [ ] Generator für Paketshops
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q4.2.3** — Welche zusätzlichen Checkout-Felder werden benötigt (Firma, USt-IdNr., Bestellnummer des Kunden, Lieferhinweise)? *(optional)*
 
@@ -1037,13 +1037,13 @@
 *Länder zu sperren ist nativ (Märkte und Versandzonen); andere Regeln brauchen eine App zur Warenkorb- und Checkout-Validierung (Shopify Function).*
 
 *(tick all that apply)*
-- [ ] Block countries
-- [ ] Order value min max
-- [ ] Quantity limits
-- [ ] Customer type restrictions
-- [ ] Product combination rules
-- [ ] None
-- [ ] Not sure yet
+- [ ] Länder sperren
+- [ ] Bestellwert min./max.
+- [ ] Mengenbegrenzungen
+- [ ] Beschränkungen nach Kundentyp
+- [ ] Regeln zur Produktkombination
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q4.3.3** — Möchten Sie eine Garantie, dass betrugsbedingte Rückbuchungen erstattet werden? *(optional)*
 *Ask if Q1.3.1 is Premium, Luxury or Enterprise.*
@@ -1063,9 +1063,9 @@
 **Q5.1.1** — Wickeln Sie den Versand selbst ab, über einen 3PL-Dienstleister oder beides? *(required)*
 
 *(tick one)*
-- [ ] In house
-- [ ] Third-party logistics (3PL)
-- [ ] Hybrid (DTC and B2B)
+- [ ] Im eigenen Haus
+- [ ] Logistikdienstleister (3PL)
+- [ ] Hybrid (DTC und B2B)
 
 **Q5.1.2** — Welcher 3PL-Dienstleister? *(recommended)*
 *Skip if Q5.1.1 = In house.*
@@ -1083,14 +1083,14 @@
 *Shopifys Routing-Regeln für Bestellungen: Teillieferungen minimieren, im Markt bleiben, nächstgelegener Standort, priorisierte Standorte, Standort-Metafelder. Alles andere braucht eine eigene Routing-Function oder das ERP bzw. OMS.*
 
 *(tick all that apply)*
-- [ ] Minimise split shipments
-- [ ] Stay within the market
-- [ ] Closest location
-- [ ] Ranked locations
-- [ ] Location metafields
-- [ ] Custom routing function
-- [ ] The ERP or OMS decides
-- [ ] Not sure yet
+- [ ] Teillieferungen minimieren
+- [ ] Im Markt bleiben
+- [ ] Nächstgelegener Standort
+- [ ] Priorisierte Standorte
+- [ ] Standort-Metafelder
+- [ ] Eigene Routing-Function
+- [ ] Das ERP oder OMS entscheidet
+- [ ] Noch unklar
 
 **Q5.1.5** — Welche Carrier nutzen Sie? *(recommended)*
 
@@ -1100,12 +1100,12 @@
 *Pauschal, nach Gewicht oder Warenwert, kostenlos ab einer Schwelle, Live-Carrier-Tarife oder Tarife aus einer App.*
 
 *(tick all that apply)*
-- [ ] Flat
-- [ ] Weight or price based
-- [ ] Free above a threshold
-- [ ] Live carrier rates
-- [ ] Rates from an app
-- [ ] Not sure yet
+- [ ] Pauschal
+- [ ] Nach Gewicht oder Wert
+- [ ] Kostenlos ab einer Schwelle
+- [ ] Live-Carrier-Tarife
+- [ ] Tarife aus einer App
+- [ ] Noch unklar
 
 **Q5.1.7** — Gibt es produktspezifische Versandregeln (schwer, gefährlich, temperaturgeführt)? *(optional)*
 
@@ -1126,46 +1126,46 @@
 *Lokale Lieferung und Abholung in der Filiale sind nativ. Paketshops sind nur für Stores in Frankreich, Italien, Spanien und dem Vereinigten Königreich nativ (mit bestimmten Carriern); anderswo brauchen sie eine Liefer-App oder eine eigene Lösung. Lieferzeitfenster brauchen eine App; Versand aus der Filiale braucht Shopify POS.*
 
 *(tick all that apply)*
-- [ ] Standard shipping
+- [ ] Standardversand
 - [ ] Express
-- [ ] Local delivery
-- [ ] Pickup in store
-- [ ] Pickup points
-- [ ] Scheduled delivery slots
-- [ ] Ship from store
-- [ ] None
-- [ ] Not sure yet
+- [ ] Lokale Lieferung
+- [ ] Abholung in der Filiale
+- [ ] Paketshops
+- [ ] Geplante Lieferzeitfenster
+- [ ] Versand aus der Filiale
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q5.1.12** — Wie werden Versandlabels erstellt? *(optional)*
 
 *(tick one)*
 - [ ] Shopify Shipping
-- [ ] 3PL system
-- [ ] Carrier software
-- [ ] Shipping app
+- [ ] System des 3PL
+- [ ] Carrier-Software
+- [ ] Versand-App
 
 **Q5.1.13** — Haben alle Produkte korrekte Gewichte (und Packmaße), und woher stammen diese Daten? *(recommended)*
 *Ask if Q5.1.6 includes Weight or price based, Live carrier rates or Rates from an app.*
 *Gewichtsbasierte und live berechnete Tarife, Versandlabels und manche Zollberechnungen brauchen Produktgewichte.*
 
 *(tick one)*
-- [ ] From the PIM or ERP
-- [ ] Maintained in Shopify
-- [ ] Only for some products
-- [ ] Not available yet
-- [ ] Not sure yet
+- [ ] Aus dem PIM oder ERP
+- [ ] In Shopify gepflegt
+- [ ] Nur für manche Produkte
+- [ ] Noch nicht verfügbar
+- [ ] Noch unklar
 
 **Q5.1.14** — Gelten einzelne Produkte als Gefahrgut im Versand? *(recommended)*
 *Z. B. Aerosole (Sprays, manche Sonnenschutzmittel), entzündbare Flüssigkeiten (Parfüms, alkoholhaltige Produkte), Lithiumbatterien, Trockeneis. Sie brauchen in der Regel ein eigenes Versandprofil und eigene Carrier-Vereinbarungen.*
 
 *(tick all that apply)*
-- [ ] Aerosols
-- [ ] Flammable liquids
-- [ ] Lithium batteries
-- [ ] Dry ice
-- [ ] Other hazardous materials
-- [ ] None
-- [ ] Not sure yet
+- [ ] Aerosole
+- [ ] Entzündbare Flüssigkeiten
+- [ ] Lithiumbatterien
+- [ ] Trockeneis
+- [ ] Andere Gefahrstoffe
+- [ ] Keine
+- [ ] Noch unklar
 
 ### 5.2 Retouren & Umtausch
 
@@ -1176,10 +1176,10 @@
 **Q5.2.2** — Shopify bietet Retourenanfragen im Kundenkonto, gesteuert über Retourenregeln (Frist, Retourengebühr, Wiedereinlagerungsgebühr, endgültiger Verkauf). Reicht das? *(recommended)*
 
 *(tick one)*
-- [ ] Shopify self-serve returns are enough
-- [ ] A returns app is needed
-- [ ] Staff create returns only
-- [ ] Not sure yet
+- [ ] Shopifys Selbstbedienungsretouren genügen
+- [ ] Eine Retouren-App ist nötig
+- [ ] Retouren nur durch Mitarbeitende
+- [ ] Noch unklar
 
 **Q5.2.3** — Wickeln Sie Umtausch ab (nicht nur Erstattungen)? *(optional)*
 
@@ -1206,17 +1206,17 @@
 *Shopify erstellt Retourenlabels nur für Fulfillment-Standorte in den USA; andere Länder oder die QR-Abgabe brauchen eine Retouren-App.*
 
 *(tick one)*
-- [ ] Prepaid label
-- [ ] QR code drop-off
-- [ ] Customer arranged
-- [ ] Mixed
+- [ ] Vorfrankiertes Label
+- [ ] Abgabe per QR-Code
+- [ ] Von der Kundschaft organisiert
+- [ ] Gemischt
 
 **Q5.2.8** — Wer trägt das Rücksendeporto: Sie, die Kundschaft, oder hängt es vom Markt ab? *(recommended)*
 
 *(tick one)*
-- [ ] Merchant
-- [ ] Customer
-- [ ] Depends on market
+- [ ] Händler
+- [ ] Kundschaft
+- [ ] Hängt vom Markt ab
 
 **Q5.2.9** — Welchen Umtausch bieten Sie an: dasselbe Produkt in einer anderen Variante, ein beliebiges anderes Produkt, oder zuerst Guthaben? *(optional)*
 *Skip if Q5.2.3 = no.*
@@ -1224,11 +1224,11 @@
 *Im Retourenformular von Shopify kann die Kundschaft keinen Umtausch wählen; Mitarbeitende fügen Umtauschartikel beim Genehmigen hinzu. Vom Kunden gewählter Umtausch braucht eine App.*
 
 *(tick all that apply)*
-- [ ] Same product variant
-- [ ] Any product
-- [ ] Store credit first
-- [ ] None
-- [ ] Not sure yet
+- [ ] Dieselbe Produktvariante
+- [ ] Beliebiges Produkt
+- [ ] Zuerst Shop-Guthaben
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q5.2.10** — Akzeptieren Sie internationale Retouren (einschließlich Erstattung der Zölle)? *(optional)*
 *Ask if Q3.1.1 has 2+ markets.*
@@ -1271,7 +1271,7 @@
 *(tick one)*
 - [ ] Shopify
 - [ ] ESP
-- [ ] Mixed
+- [ ] Gemischt
 
 ### 5.4 Stornierungen & Erstattungen
 
@@ -1285,12 +1285,12 @@
 **Q5.4.3** — Bis wann kann eine Bestellung storniert werden? *(recommended)*
 
 *(tick one)*
-- [ ] No cancellations
-- [ ] Until fulfilled
-- [ ] Within 15 minutes
-- [ ] Within 1 hour
-- [ ] Within 24 hours
-- [ ] Staff only
+- [ ] Keine Stornierungen
+- [ ] Bis zum Versand
+- [ ] Innerhalb von 15 Minuten
+- [ ] Innerhalb von 1 Stunde
+- [ ] Innerhalb von 24 Stunden
+- [ ] Nur Mitarbeitende
 
 **Q5.4.4** — Erlauben Sie Teilstornierungen (einzelne Positionen einer Bestellung)? *(optional)*
 
@@ -1307,27 +1307,27 @@
 **Q5.4.6** — Wie werden Erstattungen ausgezahlt: auf das ursprüngliche Zahlungsmittel, als Shop-Guthaben oder als Geschenkkarte? *(recommended)*
 
 *(tick all that apply)*
-- [ ] Original payment
-- [ ] Store credit
-- [ ] Gift card
-- [ ] Not sure yet
+- [ ] Ursprüngliches Zahlungsmittel
+- [ ] Shop-Guthaben
+- [ ] Geschenkkarte
+- [ ] Noch unklar
 
 **Q5.4.7** — Wann wird erstattet: auf Antrag, beim Scan des Carriers, bei Eingang oder nach Prüfung? *(recommended)*
 *Ask if Q0.2.6 is 500 or more.*
 *Erstattungen beim Scan des Carriers brauchen eine Retourenplattform, die an die Sendungsverfolgung angebunden ist.*
 
 *(tick one)*
-- [ ] On request
-- [ ] On carrier scan
-- [ ] On receipt
-- [ ] After inspection
+- [ ] Auf Anfrage
+- [ ] Beim Scan des Carriers
+- [ ] Bei Eingang
+- [ ] Nach Prüfung
 
 **Q5.4.8** — Werden die ursprünglichen Versandkosten erstattet: immer, nur bei eigenem Verschulden, oder nie? *(optional)*
 
 *(tick one)*
-- [ ] Always
-- [ ] On fault only
-- [ ] Never
+- [ ] Immer
+- [ ] Nur bei eigenem Verschulden
+- [ ] Nie
 
 **Q5.4.9** — Erheben Sie eine Wiedereinlagerungsgebühr? *(optional)*
 *Eine Wiedereinlagerungsgebühr ist eine native Retourenregel (Prozentsatz der Retoure).*
@@ -1370,12 +1370,12 @@
 *Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
 
 *(tick all that apply)*
-- [ ] Email
+- [ ] E-Mail
 - [ ] SMS
 - [ ] WhatsApp
 - [ ] Push
-- [ ] None
-- [ ] Not sure yet
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q5.5.3** — Sollen Produktseiten oder der Checkout voraussichtliche Liefertermine zeigen? *(optional)*
 *Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
@@ -1402,25 +1402,25 @@
 
 *(tick one)*
 - [ ] Shopify POS
-- [ ] Another POS, integrated
-- [ ] Another POS, not integrated
-- [ ] Not sure yet
+- [ ] Ein anderes Kassensystem, angebunden
+- [ ] Ein anderes Kassensystem, nicht angebunden
+- [ ] Noch unklar
 
 **Q5.6.3** — Welche Omnichannel-Services werden in der Filiale gebraucht? *(required)*
 *Skip if Q5.6.1 = 0.*
 *Abholung in der Filiale, Versand aus der Filiale, Retouren von Online-Bestellungen in der Filiale, Endless Aisle, Bestandstransfers, Filialpreise.*
 
 *(tick all that apply)*
-- [ ] Buy online, pick up in store
-- [ ] Ship to customer from store
-- [ ] In-store returns and exchanges of online orders
-- [ ] Endless aisle (order in store)
-- [ ] Store credit and gift cards in store
-- [ ] Stock transfers counts
-- [ ] Retail prices or catalogs
-- [ ] Staff roles permissions
-- [ ] None
-- [ ] Not sure yet
+- [ ] Online kaufen, in der Filiale abholen
+- [ ] Aus der Filiale an die Kundschaft versenden
+- [ ] Retouren und Umtausch von Online-Bestellungen in der Filiale
+- [ ] Endless Aisle (Bestellung in der Filiale)
+- [ ] Shop-Guthaben und Geschenkkarten in der Filiale
+- [ ] Bestandstransfers und -zählungen
+- [ ] Filialpreise oder -kataloge
+- [ ] Rollen und Berechtigungen der Mitarbeitenden
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q5.6.4** — In welchen Ländern liegen die Filialen? *(recommended)*
 *Skip if Q5.6.1 = 0.*
@@ -1438,37 +1438,37 @@
 **Q6.1.1** — Ist der Gastkauf der Standard, sind Konten optional, oder ist eine Registrierung Pflicht? *(recommended)*
 
 *(tick one)*
-- [ ] Guest default
+- [ ] Gastkauf als Standard
 - [ ] Optional
-- [ ] Required
+- [ ] Erforderlich
 
 **Q6.1.3** — Was soll der Kontobereich enthalten (Bestellhistorie, Adressen, Retouren, Merkliste, Abos)? *(required)*
 
 *(tick all that apply)*
-- [ ] Order history
-- [ ] Buy again
-- [ ] Return requests
-- [ ] Cancellation requests
-- [ ] Store credit
-- [ ] Addresses
-- [ ] Subscription management
-- [ ] B2B company locations
-- [ ] Loyalty widget
-- [ ] Wishlist
-- [ ] Extra profile fields
-- [ ] None
-- [ ] Not sure yet
+- [ ] Bestellhistorie
+- [ ] Nachbestellen
+- [ ] Retourenanfragen
+- [ ] Stornierungsanträge
+- [ ] Shop-Guthaben
+- [ ] Adressen
+- [ ] Abo-Verwaltung
+- [ ] B2B-Unternehmensstandorte
+- [ ] Loyalty-Widget
+- [ ] Merkliste
+- [ ] Zusätzliche Profilfelder
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q6.1.4** — Wie sollen sich Kundinnen und Kunden anmelden? *(required)*
 *Einmalcode per E-Mail sowie die Anmeldung über Google oder Facebook sind nativ.*
 
 *(tick all that apply)*
-- [ ] One-time email code
-- [ ] Google or Facebook sign-in
+- [ ] Einmalcode per E-Mail
+- [ ] Anmeldung über Google oder Facebook
 - [ ] Shop (Shop Pay)
-- [ ] Company single sign-on (identity provider)
-- [ ] Sign in from another site
-- [ ] Not sure yet
+- [ ] Unternehmens-Single-Sign-on (Identity Provider)
+- [ ] Anmeldung von einer anderen Seite
+- [ ] Noch unklar
 
 ### 6.2 B2B & Großhandel
 
@@ -1495,16 +1495,16 @@
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 
 *(tick all that apply)*
-- [ ] Net terms
-- [ ] Due on fulfilment
-- [ ] Vaulted card
-- [ ] ACH direct debit (US)
-- [ ] Invoice via draft order
-- [ ] Deposits
-- [ ] Partial payments
-- [ ] Pay per fulfilment
-- [ ] None
-- [ ] Not sure yet
+- [ ] Zahlungsziele
+- [ ] Fällig bei Versand
+- [ ] Hinterlegte Karte
+- [ ] ACH-Lastschrift (USA)
+- [ ] Rechnung über einen Bestellentwurf
+- [ ] Anzahlungen
+- [ ] Teilzahlungen
+- [ ] Zahlung je Versand
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q6.2.6** — Gibt es einen Angebotsanfrage-Prozess, oder werden Preise je Einkäufer verhandelt? *(required)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
@@ -1526,9 +1526,9 @@
 *(tick one)*
 - [ ] Shopify B2B
 - [ ] Shopify B2B plus apps
-- [ ] A B2B app only
-- [ ] Separate B2B expansion store
-- [ ] Not sure yet
+- [ ] Nur eine B2B-App
+- [ ] Eigener B2B-Expansion-Store
+- [ ] Noch unklar
 
 **Q6.2.9** — Wie viele B2B-Konten werden innerhalb von 12 Monaten erwartet? *(optional)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
@@ -1552,26 +1552,26 @@
 *Shopify B2B unterstützt das nicht.*
 
 *(tick all that apply)*
-- [ ] Subscriptions
-- [ ] Local delivery or pickup points
-- [ ] Express checkouts
-- [ ] More than 500 line items
-- [ ] Gift cards
-- [ ] None
-- [ ] Not sure yet
+- [ ] Abos
+- [ ] Lokale Lieferung oder Paketshops
+- [ ] Express-Checkouts
+- [ ] Mehr als 500 Positionen
+- [ ] Geschenkkarten
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q6.2.13** — Welche Versandregeln unterscheiden sich für Geschäftskunden? *(recommended)*
 *Skip if Q1.1.4 = Direct to consumer (DTC).*
 *Standardmäßig sehen B2B- und Endkunden dieselben Versandarten. Abweichende Optionen brauchen Checkout Blocks, eine App oder eine Delivery-Customization-Function; Bestellungen können außerdem als Entwurf eingereicht werden, damit der Versand vor der Zahlung kalkuliert wird.*
 
 *(tick all that apply)*
-- [ ] Separate rates or methods
-- [ ] Free shipping above an order value
-- [ ] Freight or pallet delivery
-- [ ] Buyer's own carrier account
-- [ ] Shipping quoted after the order
-- [ ] None
-- [ ] Not sure yet
+- [ ] Eigene Tarife oder Versandarten
+- [ ] Kostenloser Versand ab einem Bestellwert
+- [ ] Spedition oder Palettenzustellung
+- [ ] Eigenes Carrier-Konto der Kundschaft
+- [ ] Versand wird nach der Bestellung kalkuliert
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q6.2.14** — Wird das Großhandelsgeschäft von einem eigenen Team mit eigenen Zielen oder eigener Ergebnisrechnung geführt? *(recommended)*
 *Ask if Q1.1.4 is Business to business (B2B), or Q1.1.4 is Hybrid (DTC and B2B).*
@@ -1588,22 +1588,22 @@
 *Shopify hat kein natives Punkteprogramm; Shop-Guthaben kann als Prämienwährung dienen. Loyalty braucht eine App.*
 
 *(tick all that apply)*
-- [ ] Points purchase
-- [ ] Points actions
-- [ ] VIP tiers
-- [ ] Referral
-- [ ] VIP early access
-- [ ] Subscription discount
-- [ ] Store credit
-- [ ] None
-- [ ] Not sure yet
+- [ ] Punkte für Käufe
+- [ ] Punkte für Aktionen
+- [ ] VIP-Stufen
+- [ ] Empfehlung
+- [ ] VIP-Vorabzugang
+- [ ] Abo-Rabatt
+- [ ] Shop-Guthaben
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q6.3.2** — Wird Loyalty zum Launch gebraucht oder in einer späteren Phase? *(recommended)*
 
 *(tick one)*
-- [ ] Launch
+- [ ] Zum Launch
 - [ ] Phase 2
-- [ ] None
+- [ ] Keine
 
 **Q6.3.3** — Welche Loyalty-App wird genutzt oder bevorzugt? *(optional)*
 
@@ -1625,8 +1625,8 @@
 - [ ] Shopify
 - [ ] ESP
 - [ ] CDP
-- [ ] Mixed
-- [ ] None
+- [ ] Gemischt
+- [ ] Keine
 
 **Q6.3.7** — Welche Kunden-Tags steuern heute eigene Logik (Preise, Zugriff, Rabatte)? *(optional)*
 
@@ -1637,13 +1637,13 @@
 **Q6.4.1** — Welche Datenschutzgesetze gelten für Ihre Kundschaft (DSGVO, UK GDPR, CCPA, Schweizer revDSG, andere)? *(required)*
 
 *(tick all that apply)*
-- [ ] GDPR (EU)
+- [ ] DSGVO (EU)
 - [ ] UK GDPR
-- [ ] CCPA (US)
-- [ ] Swiss nFADP
-- [ ] Other
-- [ ] None
-- [ ] Not sure yet
+- [ ] CCPA (USA)
+- [ ] Schweizer revDSG
+- [ ] Anderes
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q6.4.2** — Cookie-Einwilligung: Shopifys Cookie-Banner oder eine Consent-Management-Plattform? Bitte das Werkzeug nennen, falls bekannt. *(recommended)*
 *Ask if Q6.4.1 includes GDPR (EU), UK GDPR, Swiss nFADP or CCPA (US).*
@@ -1679,11 +1679,11 @@
 
 *(tick all that apply)*
 - [ ] Checkout
-- [ ] Customer account sign in
-- [ ] Forms popups
+- [ ] Anmeldung über das Kundenkonto
+- [ ] Formulare und Pop-ups
 - [ ] POS
-- [ ] None
-- [ ] Not sure yet
+- [ ] Keine
+- [ ] Noch unklar
 
 ---
 
@@ -1706,9 +1706,9 @@
 **Q7.1.3** — Wer verantwortet SEO? *(optional)*
 
 *(tick one)*
-- [ ] In house
-- [ ] Agency
-- [ ] None
+- [ ] Im eigenen Haus
+- [ ] Agentur
+- [ ] Keine
 
 **Q7.1.4** — Sollen die Produkte in KI-Einkaufsassistenten auffindbar sein? *(optional)*
 *Shopify Catalog und agentische Kanäle (Spring '26).*
@@ -1793,46 +1793,46 @@
 **Q7.4.5** — Werden Affiliate- und Influencer-Umsätze über Rabattcodes, UTM-Parameter oder beides verfolgt? *(optional)*
 
 *(tick one)*
-- [ ] Discount codes
-- [ ] UTM parameters
-- [ ] Both
-- [ ] None
+- [ ] Rabattcodes
+- [ ] UTM-Parameter
+- [ ] Beides
+- [ ] Keine
 
 ### 7.5 Rabatte & Gutscheincodes
 
 **Q7.5.1** — Welche Rabattarten werden genutzt? *(recommended)*
 
 *(tick all that apply)*
-- [ ] Percentage
-- [ ] Fixed amount
-- [ ] Buy one, get one (BOGO)
-- [ ] Free shipping
-- [ ] Volume tiered
-- [ ] Automatic
-- [ ] Code based
-- [ ] Scheduled sale
-- [ ] Stackable
-- [ ] POS only
-- [ ] None
-- [ ] Not sure yet
+- [ ] Prozentsatz
+- [ ] Fester Betrag
+- [ ] Kaufe eins, erhalte eins (BOGO)
+- [ ] Kostenloser Versand
+- [ ] Mengenstaffel
+- [ ] Automatisch
+- [ ] Code-basiert
+- [ ] Geplante Aktion
+- [ ] Kombinierbar
+- [ ] Nur Kassensystem
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q7.5.2** — Welche Rabatte müssen sich auf einer Bestellung kombinieren lassen? *(required)*
 *Shopify kombiniert Produkt-, Bestell- und Versandrabatte nativ (bis zu 5 Codes plus 1 Versandcode und bis zu 25 automatische Rabatte). Eigene Logik braucht eine Discount Function.*
 
 *(tick one)*
-- [ ] None
-- [ ] Shopify's native combinations
-- [ ] Several discounts on the same item
-- [ ] Custom logic (discount function)
+- [ ] Keine
+- [ ] Shopifys native Kombinationen
+- [ ] Mehrere Rabatte auf denselben Artikel
+- [ ] Eigene Logik (Discount Function)
 
 **Q7.5.3** — Sind Gutscheincodes einmalig, mehrfach nutzbar oder in Serie erzeugt? *(optional)*
 
 *(tick all that apply)*
-- [ ] Single use
-- [ ] Multi use
-- [ ] Bulk
-- [ ] None
-- [ ] Not sure yet
+- [ ] Einmalig
+- [ ] Mehrfach nutzbar
+- [ ] In Serie
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q7.5.4** — Müssen Codes markenbezogen sein (z. B. WELCOME20)? *(optional)*
 
@@ -1847,9 +1847,9 @@
 **Q7.5.6** — Laufen Codes zu einem festen Datum ab, nach einem gleitenden Zeitraum, oder nie? *(optional)*
 
 *(tick one)*
-- [ ] None
-- [ ] Fixed
-- [ ] Rolling
+- [ ] Keine
+- [ ] Fest
+- [ ] Gleitend
 
 **Q7.5.7** — Wie werden Codes verteilt (E-Mail, SMS, Print, Influencer)? *(optional)*
 
@@ -1858,12 +1858,12 @@
 **Q7.5.8** — Unterscheiden sich Aktionen je Markt, Kundensegment, Vertriebskanal oder B2B-Unternehmen? *(recommended)*
 
 *(tick all that apply)*
-- [ ] Market
-- [ ] Customer segment
-- [ ] POS only
-- [ ] B2B company
-- [ ] None
-- [ ] Not sure yet
+- [ ] Markt
+- [ ] Kundensegment
+- [ ] Nur Kassensystem
+- [ ] B2B-Unternehmen
+- [ ] Keine
+- [ ] Noch unklar
 
 ### 7.6 Geschenkkarten & Kampagnen
 
@@ -1882,8 +1882,8 @@
 
 *(tick one)*
 - [ ] Digital
-- [ ] Physical
-- [ ] Both
+- [ ] Physisch
+- [ ] Beides
 
 **Q7.6.4** — Müssen Geschenkkarten verfallen? *(optional)*
 
@@ -1924,19 +1924,19 @@
 *Die Standardeinstellung meldet Sie auch in Kanälen an, die es noch gar nicht gibt.*
 
 *(tick one)*
-- [ ] Shopify managed
-- [ ] Per channel
-- [ ] Off
-- [ ] Not sure yet
+- [ ] Von Shopify verwaltet
+- [ ] Je Kanal
+- [ ] Aus
+- [ ] Noch unklar
 
 **Q7.7.3** — Sollen Kundinnen und Kunden im KI-Assistenten bezahlen können, oder sollen sie zum Bezahlen in Ihren Shop kommen? *(recommended)*
 *Im Assistenten zu bezahlen konvertiert besser; sie in Ihren Shop zu schicken erhält die ganze Strecke, die Upsells und die Auswertung.*
 
 *(tick one)*
-- [ ] All channels
-- [ ] Selected channels
-- [ ] Off
-- [ ] Not sure yet
+- [ ] Alle Kanäle
+- [ ] Ausgewählte Kanäle
+- [ ] Aus
+- [ ] Noch unklar
 
 **Q7.7.4** — Verkaufen Sie an Kundinnen und Kunden in den Vereinigten Staaten? *(recommended)*
 *Manche KI-Kanäle stehen nur Händlern offen, die an US-Käufer verkaufen, unabhängig vom Sitz des Unternehmens.*
@@ -1953,17 +1953,17 @@
 *Das ist eine datenschutzrechtliche Entscheidung. Unter der DSGVO braucht sie in der Regel eine dokumentierte Prüfung vor dem Launch.*
 
 *(tick one)*
-- [ ] Approved
-- [ ] Refused
-- [ ] Needs legal review
+- [ ] Genehmigt
+- [ ] Abgelehnt
+- [ ] Braucht eine rechtliche Prüfung
 
 **Q7.7.7** — Wie vollständig sind Ihre Produktdaten — Titel, Bilder, Preise, Beschreibungen und Varianten? *(recommended)*
 *KI-Kanäle listen nur Produkte mit vollständigen Daten. Lücken machen Produkte unsichtbar, nicht bloß schlecht dargestellt.*
 
 *(tick one)*
-- [ ] Complete
-- [ ] Only for some products
-- [ ] Not sure yet
+- [ ] Vollständig
+- [ ] Nur für manche Produkte
+- [ ] Noch unklar
 
 **Q7.7.8** — Stehen wichtige Produktinformationen in eigenen Feldern, getrennten Datensätzen oder im Produkttitel (zum Beispiel „Stahl 40 mm — Automatik“)? *(optional)*
 *Daten in eigenen Feldern oder im Titel brauchen ein Mapping, bevor KI-Kanäle sie lesen können.*
@@ -1975,10 +1975,10 @@
 *Crawler zu blockieren entfernt Ihre Produkte nicht aus KI-Einkaufskanälen; es betrifft nur, was sie von Ihrer öffentlichen Seite lesen.*
 
 *(tick one)*
-- [ ] Allow all
-- [ ] Selective
-- [ ] Block
-- [ ] Not sure yet
+- [ ] Alle erlauben
+- [ ] Selektiv
+- [ ] Blockieren
+- [ ] Noch unklar
 
 **Q7.7.10** — Möchten Sie steuern, welche Antworten KI-Assistenten zu Versand, Retouren und Größen geben? *(optional)*
 *Shopify hat eine kostenlose App, die Ihre FAQ für Assistenten veröffentlicht und protokolliert, wonach gefragt wird.*
@@ -1990,10 +1990,10 @@
 *Teile davon sind bei Shopify noch im Early Access — behandeln Sie es als Erkundung, nicht als festen Umfang.*
 
 *(tick one)*
-- [ ] Now
-- [ ] Later
-- [ ] No
-- [ ] Not sure yet
+- [ ] Jetzt
+- [ ] Später
+- [ ] Nein
+- [ ] Noch unklar
 
 **Q7.7.12** — Welche KI-Werkzeuge von Shopify soll Ihr Team im Tagesgeschäft nutzen? *(optional)*
 *Das sind Backoffice-Werkzeuge für Ihr Team, nicht für die Kundschaft.*
@@ -2001,20 +2001,20 @@
 *(tick all that apply)*
 - [ ] Sidekick
 - [ ] Shopify magic
-- [ ] Semantic search
-- [ ] Knowledge base
-- [ ] None
-- [ ] Not sure yet
+- [ ] Semantische Suche
+- [ ] Wissensdatenbank
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q7.7.13** — Bestehender Shopify-Store: Was zeigen die Einstellungen der agentischen Verkaufskanäle heute (Vertriebskanäle → Agentic)? *(recommended · consultant)*
 *Skip if Q1.2.1 = no.*
 *Sehen Sie gemeinsam mit dem Kunden in den Admin: Anmeldemodus, welche Kanäle an sind, und ob der Checkout innerhalb des Assistenten aktiviert ist.*
 
 *(tick one)*
-- [ ] Shopify managed
-- [ ] Per channel
-- [ ] Off
-- [ ] Not sure yet
+- [ ] Von Shopify verwaltet
+- [ ] Je Kanal
+- [ ] Aus
+- [ ] Noch unklar
 
 ---
 
@@ -2048,20 +2048,20 @@
 *Kundenpasswörter lassen sich nicht migrieren; die Anmeldung erfolgt über einen Einmalcode.*
 
 *(tick all that apply)*
-- [ ] Products
-- [ ] Customers
-- [ ] Orders
-- [ ] Content
-- [ ] Redirects
-- [ ] Reviews
-- [ ] Gift cards
-- [ ] Store credit
-- [ ] Metafields metaobjects
-- [ ] B2B companies
-- [ ] Subscription contracts
-- [ ] Blog posts pages
-- [ ] None
-- [ ] Not sure yet
+- [ ] Produkte
+- [ ] Kundinnen und Kunden
+- [ ] Bestellungen
+- [ ] Inhalte
+- [ ] Weiterleitungen
+- [ ] Bewertungen
+- [ ] Geschenkkarten
+- [ ] Shop-Guthaben
+- [ ] Metafelder und Metaobjekte
+- [ ] B2B-Unternehmen
+- [ ] Abo-Verträge
+- [ ] Blogbeiträge und Seiten
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q8.2.3** — Ungefähre Mengen: Produkte, Kundinnen und Kunden, Bestellungen, URL-Weiterleitungen. *(required)*
 *Skip if Q0.5.4 = None.*
@@ -2081,9 +2081,9 @@
 *Skip if Q0.5.4 = None.*
 
 *(tick one)*
-- [ ] None
-- [ ] Moderate
-- [ ] Significant
+- [ ] Keine
+- [ ] Mittel
+- [ ] Erheblich
 
 **Q8.2.6** — Müssen aktive Abos ohne erneute Karteneingabe der Kundschaft in den neuen Store umziehen? *(required)*
 *Skip if Q0.5.4 = None.*
@@ -2108,10 +2108,10 @@
 *Skip if Q9.1.1 = no.*
 
 *(tick one)*
-- [ ] None
-- [ ] Brand only
-- [ ] Key screens
-- [ ] All templates
+- [ ] Keine
+- [ ] Nur Marke
+- [ ] Schlüsselseiten
+- [ ] Alle Templates
 
 **Q9.1.3** — Enthält die Figma-Datei ein vollständiges Designsystem (Tokens und Komponenten)? *(required)*
 *Skip if Q9.1.1 = no.*
@@ -2150,19 +2150,19 @@
 **Q9.2.4** — Welche interaktiven Muster werden gebraucht (Mega-Menü, Schnellkauf, Farbfelder, vorausschauende Suche, Lookbook, Video-Hero)? *(required)*
 
 *(tick all that apply)*
-- [ ] Mega menu
-- [ ] Predictive search
-- [ ] Variant swatches
-- [ ] Quick add
+- [ ] Mega-Menü
+- [ ] Vorausschauende Suche
+- [ ] Varianten-Farbfelder
+- [ ] Schnellkauf
 - [ ] Combined listings
-- [ ] Filters
-- [ ] Quick order list and volume pricing
-- [ ] Wishlist
-- [ ] Store locator
+- [ ] Filter
+- [ ] Schnellbestellliste und Mengenpreise
+- [ ] Merkliste
+- [ ] Filialfinder
 - [ ] Lookbook
-- [ ] Video hero
-- [ ] None
-- [ ] Not sure yet
+- [ ] Video-Hero
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q9.2.5** — Werden eigene Bewegung oder Animationen benötigt? *(recommended)*
 
@@ -2174,22 +2174,22 @@
 *Hilft zu prüfen, ob Theme Blocks in Horizon genügen würden.*
 
 *(tick all that apply)*
-- [ ] UX not possible in a theme
+- [ ] UX im Theme nicht umsetzbar
 - [ ] Performance
-- [ ] Existing CMS or content platform
-- [ ] Native mobile app
-- [ ] Several front ends, one back end
-- [ ] Control over URL structure
-- [ ] Other
-- [ ] Not sure yet
+- [ ] Bestehendes CMS oder Content-Plattform
+- [ ] Native mobile App
+- [ ] Mehrere Frontends, ein Backend
+- [ ] Kontrolle über die URL-Struktur
+- [ ] Anderes
+- [ ] Noch unklar
 
 **Q9.2.7** — Hosting für Headless? *(recommended · consultant)*
 *Skip if Q9.2.1 = no.*
 
 *(tick one)*
-- [ ] Oxygen (Shopify hosting)
-- [ ] Self-hosted JavaScript runtime
-- [ ] Not sure yet
+- [ ] Oxygen (Hosting von Shopify)
+- [ ] Selbst gehostete JavaScript-Laufzeit
+- [ ] Noch unklar
 
 **Q9.2.8** — Wo werden die redaktionellen Inhalte für den Headless-Storefront gepflegt? *(recommended)*
 *Skip if Q9.2.1 = no.*
@@ -2198,21 +2198,21 @@
 - [ ] Shopify metaobjects
 - [ ] Headless CMS
 - [ ] PIM
-- [ ] Not sure yet
+- [ ] Noch unklar
 
 **Q9.2.9** — Welche Plattformfunktionen werden für Headless benötigt? *(recommended · consultant)*
 *Skip if Q9.2.1 = no.*
 
 *(tick all that apply)*
-- [ ] Customer accounts (Customer Account API)
-- [ ] Markets and language routes
-- [ ] Business to business (B2B)
-- [ ] Subscriptions
-- [ ] Bundles and combined listings
-- [ ] Shopify analytics and consent
-- [ ] Multiple storefronts
-- [ ] None
-- [ ] Not sure yet
+- [ ] Kundenkonten (Customer Account API)
+- [ ] Markets und Sprachrouten
+- [ ] Geschäftskunden (B2B)
+- [ ] Abos
+- [ ] Bundles und Combined Listings
+- [ ] Analytics und Einwilligung von Shopify
+- [ ] Mehrere Storefronts
+- [ ] Keine
+- [ ] Noch unklar
 
 **Q9.2.10** — Möchten Sie Themes oder Checkout-Konfigurationen A/B-testen? *(required)*
 *Nativ über Experimente in Shopify Rollouts.*
@@ -2230,7 +2230,7 @@
 - [ ] WCAG 2.2 AA
 - [ ] EN 301 549
 - [ ] Section 508
-- [ ] None
+- [ ] Keine
 
 **Q9.3.2** — Wurde die aktuelle Seite auf Barrierefreiheit geprüft? *(optional)*
 
@@ -2314,10 +2314,10 @@
 **Q10.3.3** — Welches Supportmodell nach dem Launch wird erwartet? *(recommended)*
 
 *(tick one)*
-- [ ] Hypercare only
+- [ ] Nur Hypercare
 - [ ] Retainer
-- [ ] Self sufficient
-- [ ] Third party
+- [ ] Eigenständig
+- [ ] Drittanbieter
 
 **Q10.3.4** — Ist der Grow-Retainer unterschrieben? *(required · consultant)*
 
@@ -2345,9 +2345,9 @@
 **Q10.4.2** — Sind die Rechtstexte (AGB, Datenschutz, Cookies, Retouren) fertig, aktualisierungsbedürftig oder noch zu erstellen? *(recommended)*
 
 *(tick one)*
-- [ ] Ready
-- [ ] Needs update
-- [ ] Needs drafting
+- [ ] Fertig
+- [ ] Muss aktualisiert werden
+- [ ] Muss erstellt werden
 
 **Q10.4.3** — Gibt es weitere branchenspezifische Compliance-Anforderungen? *(optional)*
 

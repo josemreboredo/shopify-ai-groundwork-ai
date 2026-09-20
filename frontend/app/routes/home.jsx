@@ -5,7 +5,7 @@ import { discovery, serviceFailure } from '../discovery.server.js';
 import { processMeta } from '../../../discovery/service/process.js';
 import { offerStanding, statusOf } from '../../../discovery/service/summary.js';
 import { PRODUCT, pageTitle } from '../brand.js';
-import { LANGUAGES as SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '../../../discovery/service/i18n.js';
+import { LANGUAGES as SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '../../../discovery/agents/language.js';
 
 export const meta = () => [{ title: pageTitle('Bids and engagements') }];
 
@@ -155,7 +155,7 @@ export default function Home({ loaderData, actionData }) {
               <p className="record-what">
                 <span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span>
                 {' '}{offerStanding(e).short}
-                {e.offer.provisional ? <span className="muted small"> · provisional</span> : null}
+                {offerStanding(e).applies && e.offer.provisional ? <span className="muted small"> · provisional</span> : null}
               </p>
               {/* The badge above now states the headline — "91 to confirm",
                   "Interviewing — 61 of 85" — so the card said it twice. This line

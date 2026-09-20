@@ -81,3 +81,47 @@ ${internal ? `${internal} stays in English: that part is read inside Merkle, and
 
 `;
 }
+
+/**
+ * What language each thing the model wrote is actually in, and whether that is
+ * still the engagement's language.
+ *
+ * The engagement's language can be corrected at any time; a document that was
+ * already written cannot re-write itself. Anything from before the stamp existed
+ * reports `unknown` rather than guessing — a document claiming a language it was
+ * never checked against is worse than one admitting it does not know.
+ *
+ * @param {object} session
+ * @returns {{ what: string, language: string|null, matches: boolean, where: string, detail?: string }[]}
+ */
+export function writtenIn(session) {
+  const now = session?.language ?? 'en';
+  const out = [];
+  const add = (what, language, where, detail) => out.push({
+    what,
+    language: language ?? null,
+    matches: language ? language === now : false,
+    where,
+    ...(detail ? { detail } : {}),
+  });
+
+  const clarifications = session?.closing?.clarifications;
+  if (clarifications?.questions?.length) {
+    const sent = clarifications.questions.filter((q) => (q.status ?? 'proposed') === 'accepted').length;
+    add(
+      `${clarifications.questions.length} clarification question${clarifications.questions.length === 1 ? '' : 's'}`,
+      clarifications.language,
+      'clarifications',
+      sent ? `${sent} of them accepted to send` : undefined,
+    );
+  }
+
+  const document = session?.closing?.document;
+  if (document) {
+    add(`the document, version ${document.version ?? '1.0'}`, document.language, 'closing-document');
+  }
+  for (const old of session?.closing?.history ?? []) {
+    add(`the document, version ${old.version ?? '1.0'}`, old.language, 'closing-document');
+  }
+  return out;
+}

@@ -6,8 +6,11 @@
 import { cloneElement, isValidElement, useId, useState } from 'react';
 import { Form, Link, NavLink } from 'react-router';
 
-import { LANGUAGE_NAMES } from '../../../discovery/service/i18n.js';
+// From the language module, not the service: service/i18n.js reads the schema
+// to count answer choices, which drags ajv into the browser bundle.
+import { LANGUAGE_NAMES } from '../../../discovery/agents/language.js';
 import { stepsFor, viewsFor, processMeta, processOf } from '../../../discovery/service/process.js';
+import { offerStanding } from '../../../discovery/service/summary.js';
 
 export const words = (id) => id.replace(/_/g, ' ');
 const leaf = (pointer) => words(pointer.split('/').at(-1));
@@ -149,7 +152,9 @@ export function EngagementHeader({ engagement, eyebrow, title, meta, back, langu
         <p className="page-lang">
           {LANGUAGE_NAMES[language.language] ?? language.language}: the questions, the ones we send the client and the {words.document.toLowerCase()}
           {' · '}English: the recorded answers and everything internal
-          {language.complete ? '' : ` · ${language.questions} of ${language.of} questions translated so far, the rest are asked in English`}
+          {language.complete
+            ? ` · all ${language.of} questions and ${language.answers} of ${language.answers_of} answer choices; the rest are product and brand names, which keep them`
+            : ` · ${language.questions} of ${language.of} questions translated so far, the rest are asked in English`}
         </p>
       ) : null}
       <EngagementNav engagement={engagement} />
@@ -408,14 +413,26 @@ export const resultClass = (result) => RESULT_CLASS[result] ?? '';
 
 export function PreviewPanel({ preview }) {
   const signals = Object.entries(preview.app_signals ?? {}).filter(([, reasons]) => reasons.length);
+  // An empty record classifies as the smallest offer and reads GO, because no
+  // gate has fired. The panel said so beside a questionnaire nobody had started.
+  const standing = offerStanding(preview);
   return (
     <aside className="panel">
       <h2>Offer</h2>
-      <p>
-        <strong>{preview.offer.code} · {preview.offer.name}</strong>{' '}
-        {preview.offer.provisional ? <span className="badge provisional">provisional</span> : null}
-      </p>
-      <p>{preview.go ? <span className="badge go">GO</span> : <span className="badge stop">STOP · route: {words(preview.route ?? 'not decided')}</span>}</p>
+      {standing.unknown ? (
+        <>
+          <p><strong>Not classified yet</strong></p>
+          <p className="muted">Nothing has been recorded, so there is no offer to state.</p>
+        </>
+      ) : (
+        <>
+          <p>
+            <strong>{preview.offer.code} · {preview.offer.name}</strong>{' '}
+            {preview.offer.provisional ? <span className="badge provisional">provisional</span> : null}
+          </p>
+          <p>{preview.go ? <span className="badge go">GO</span> : <span className="badge stop">STOP · route: {words(preview.route ?? 'not decided')}</span>}</p>
+        </>
+      )}
 
       <h3>What grows the build</h3>
       <ul>{Object.entries(preview.scope_gates).map(([id, state]) => <li key={id}>{words(id)}: {state}</li>)}</ul>

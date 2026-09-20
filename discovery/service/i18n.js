@@ -17,19 +17,40 @@
 import de from '../schema/translations/de.json' with { type: 'json' };
 import fr from '../schema/translations/fr.json' with { type: 'json' };
 import { questionBank } from '../schema/index.js';
+import { describeQuestion } from '../agents/interview/next.js';
 // The list of languages and their names belong with the prompts that write in
 // them, and the agents may not import the service — so they live there and are
 // re-exported here, where the rest of the app already looks for them.
-import { LANGUAGES, LANGUAGE_NAMES, supported } from '../agents/language.js';
+import { LANGUAGES, LANGUAGE_NAMES, supported, writtenIn } from '../agents/language.js';
 
 /** Translations by language code. English is the source, so it has no file. */
 export const TRANSLATIONS = { de, fr };
 
-export { LANGUAGES, LANGUAGE_NAMES, supported as supportedLanguage };
+export { LANGUAGES, LANGUAGE_NAMES, supported as supportedLanguage, writtenIn };
 
 /** @param {string} [language] */
 export function translationFor(language) {
   return TRANSLATIONS[String(language ?? '').toLowerCase()] ?? null;
+}
+
+/**
+ * Every answer value a consultant is ever shown a choice for. The allowed values
+ * live in the engagement schema rather than on the question, so this is the only
+ * way to count them — and it is computed once, because `coverage` runs on every
+ * page that shows the language notice.
+ */
+let shownChoices;
+function choices() {
+  if (!shownChoices) {
+    const seen = new Set();
+    for (const q of questionBank.questions) {
+      try {
+        for (const value of Object.keys(describeQuestion(q).option_labels ?? {})) seen.add(value);
+      } catch { /* a question the schema cannot describe shows no choices */ }
+    }
+    shownChoices = [...seen];
+  }
+  return shownChoices;
 }
 
 /**
@@ -42,7 +63,24 @@ export function coverage(language) {
   const t = translationFor(language);
   const of = questionBank.questions.length;
   const questions = t ? questionBank.questions.filter((q) => t.questions?.[q.id]?.text).length : 0;
-  return { language: language ?? 'en', translated: Boolean(t), questions, of, complete: Boolean(t) && questions === of };
+  // A question is not translated when its answers are not. Counting only the
+  // question text said "complete" on a questionnaire whose every choice — Yes,
+  // In house, Not sure yet — was still English, and the notice that would have
+  // admitted it disappeared at the same moment.
+  const shown = choices();
+  const answers = t ? shown.filter((v) => t.options?.[v]).length : 0;
+  return {
+    language: language ?? 'en',
+    translated: Boolean(t),
+    questions,
+    of,
+    // What a consultant picks from. The remainder is deliberate: a payment
+    // method, a platform or a standard keeps its own name in every language,
+    // and the count says so rather than implying an unfinished job.
+    answers,
+    answers_of: shown.length,
+    complete: Boolean(t) && questions === of,
+  };
 }
 
 const text = (value) => (typeof value === 'string' && value.trim() ? value : null);
@@ -116,47 +154,3 @@ export const translateRows = (rows, language) => {
   if (!t) return rows;
   return rows.map((row) => ({ ...row, ...(text(t.questions?.[row.id]?.text) ? { text: t.questions[row.id].text } : {}) }));
 };
-
-/**
- * What language each thing the model wrote is actually in, and whether that is
- * still the engagement's language.
- *
- * The engagement's language can be corrected at any time; a document that was
- * already written cannot re-write itself. Anything from before the stamp existed
- * reports `unknown` rather than guessing — a document claiming a language it was
- * never checked against is worse than one admitting it does not know.
- *
- * @param {object} session
- * @returns {{ what: string, language: string|null, matches: boolean, where: string, detail?: string }[]}
- */
-export function writtenIn(session) {
-  const now = session?.language ?? 'en';
-  const out = [];
-  const add = (what, language, where, detail) => out.push({
-    what,
-    language: language ?? null,
-    matches: language ? language === now : false,
-    where,
-    ...(detail ? { detail } : {}),
-  });
-
-  const clarifications = session?.closing?.clarifications;
-  if (clarifications?.questions?.length) {
-    const sent = clarifications.questions.filter((q) => (q.status ?? 'proposed') === 'accepted').length;
-    add(
-      `${clarifications.questions.length} clarification question${clarifications.questions.length === 1 ? '' : 's'}`,
-      clarifications.language,
-      'clarifications',
-      sent ? `${sent} of them accepted to send` : undefined,
-    );
-  }
-
-  const document = session?.closing?.document;
-  if (document) {
-    add(`the document, version ${document.version ?? '1.0'}`, document.language, 'closing-document');
-  }
-  for (const old of session?.closing?.history ?? []) {
-    add(`the document, version ${old.version ?? '1.0'}`, old.language, 'closing-document');
-  }
-  return out;
-}

@@ -16,7 +16,9 @@ import { LANGUAGES, LANGUAGE_NAMES, LANGUAGE_IN_ENGLISH, supported, writeInLangu
 import { clarificationsPrompt, CLARIFICATIONS_PROMPT } from '../../agents/discovery/clarifications.js';
 import { deckBrief, deckGuide } from '../../service/closing.js';
 import { createSession } from '../../agents/interview/session.js';
-import { TRANSLATIONS, writtenIn } from '../../service/i18n.js';
+import { TRANSLATIONS, coverage, translateQuestion, writtenIn } from '../../service/i18n.js';
+ import { questionBank } from '../../schema/index.js';
+ import { describeQuestion } from '../../agents/interview/next.js';
 import { createDiscoveryService } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 
@@ -244,5 +246,50 @@ describe('correcting the language an engagement is run in', () => {
     const [onEnglish] = writtenIn({ language: 'en', closing: { document: { version: '1.0' } } });
     assert.equal(onEnglish.language, null);
     assert.equal(onEnglish.matches, false, 'an unchecked document does not get the benefit of the doubt');
+  });
+});
+
+describe('the answer choices a consultant picks from', () => {
+  test('are translated, and the count says how many are deliberately not', () => {
+    // Completing the 298 questions made the header notice disappear, while every
+    // choice under them — Yes, In house, Not sure yet — was still English. The
+    // notice is the only thing that would have admitted it.
+    for (const language of ['de', 'fr']) {
+      const c = coverage(language);
+      assert.equal(c.questions, c.of, `${language}: every question`);
+      assert.ok(c.answers_of > 400, 'the bank has answer choices and coverage found them');
+      assert.ok(c.answers / c.answers_of > 0.8, `${language}: ${c.answers} of ${c.answers_of} is not most of them`);
+      assert.ok(c.answers < c.answers_of, 'and it never claims all of them: the rest are product and brand names');
+    }
+  });
+
+  test('a German question shows German choices', () => {
+    const q = questionBank.questions.find((x) => x.id === 'Q3.2.1');
+    const de = translateQuestion(describeQuestion(q), 'de');
+    assert.equal(de.option_labels.in_house, 'Im eigenen Haus');
+    assert.equal(de.option_labels.agency, 'Agentur');
+    // And a Shopify product name is not a word to translate.
+    assert.equal(de.option_labels.translate_and_adapt, 'Translate & Adapt');
+  });
+
+  test('English is untouched, choices included', () => {
+    const q = questionBank.questions.find((x) => x.id === 'Q3.2.1');
+    const described = describeQuestion(q);
+    assert.deepEqual(translateQuestion(described, 'en').option_labels, described.option_labels);
+  });
+
+  test('every translated choice is one the bank actually offers', () => {
+    // A key for a value no question shows is a translation nobody will ever see,
+    // and usually a typo in the value.
+    const offered = new Set();
+    for (const q of questionBank.questions) {
+      try {
+        for (const v of Object.keys(describeQuestion(q).option_labels ?? {})) offered.add(v);
+      } catch { /* not a choice question */ }
+    }
+    for (const language of ['de', 'fr']) {
+      const orphans = Object.keys(TRANSLATIONS[language].options ?? {}).filter((v) => !offered.has(v));
+      assert.deepEqual(orphans, [], `${language}: translated values no question offers`);
+    }
   });
 });
