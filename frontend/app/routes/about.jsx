@@ -187,18 +187,29 @@ export default function About({ loaderData }) {
         </p>
       </section>
 
-      {/* 5 — what comes out, named rather than described. */}
+      {/* 5 — what comes out, split by the thing that matters about it: who
+             reads it. As one list with a badge per row, the split was there and
+             invisible — half of these leave the building and half never do. */}
       <section>
         <h2>What comes out of it</h2>
-        <ul className="outputs">
-          {OUTPUTS.map(([title, who, body]) => (
-            <li key={title}>
-              <span className={`badge ${who === 'client' ? 'go' : ''}`}>{who === 'client' ? 'the client reads it' : 'internal'}</span>
-              <strong>{title}</strong>
-              <span className="muted small">{body}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="outputs-split">
+          {[['client', 'The client reads these'], ['internal', 'These never leave Merkle']].map(([who, heading]) => {
+            const rows = OUTPUTS.filter(([, w]) => w === who);
+            return (
+              <div key={who} className={`output-group ${who}`}>
+                <h3>{heading} <span className="chip">{rows.length}</span></h3>
+                <ul>
+                  {rows.map(([title, , body]) => (
+                    <li key={title}>
+                      <strong>{title}</strong>
+                      <span className="muted small">{body}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
       <section className="band">

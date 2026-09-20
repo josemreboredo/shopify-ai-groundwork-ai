@@ -39,9 +39,12 @@ const SECTIONS = [
     title: 'The offer',
     pages: [
       { to: '/offering', label: 'Offering', signedIn: true, header: true },
-      { to: '/offering/s', label: 'S · Ecommerce Foundation', signedIn: true },
-      { to: '/offering/m', label: 'M · Ecommerce Scale', signedIn: true },
-      { to: '/offering/l', label: 'L · Ecommerce Growth', signedIn: true },
+      /* Short in the menu: the full product name is the page's own title, and
+         at footer column width "S · Ecommerce Foundation" wraps onto three
+         lines and reads as three links. */
+      { to: '/offering/s', label: 'Offer S', signedIn: true },
+      { to: '/offering/m', label: 'Offer M', signedIn: true },
+      { to: '/offering/l', label: 'Offer L', signedIn: true },
       { to: '/offering/larger-engagement', label: 'Beyond the offers', signedIn: true },
     ],
   },

@@ -4,6 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
+import { OfferScale } from '../components/diagram.jsx';
 
 /**
  * One offer, on its own page.
@@ -77,6 +78,11 @@ export default function OfferingSegment({ loaderData }) {
             : <li><strong>{TRACK[offer.delivery_track] ?? offer.delivery_track}</strong><span>how the storefront is built</span></li>}
         </ul>
       </header>
+
+      <section>
+        <h2>Where it sits</h2>
+        <OfferScale offers={view.offers} pricing={view.pricing} currency={currency} here={offer.code} />
+      </section>
 
       <section>
         <h2>What it covers</h2>

@@ -187,3 +187,61 @@ export function SourcingRule() {
     </svg>
   );
 }
+
+/**
+ * The three offers on one scale.
+ *
+ * S, M and L were three paragraphs with their durations written inside them, so
+ * comparing them meant reading three sentences and holding six numbers. They
+ * are ranges on a shared axis: the difference between 4–5 weeks and 10–14 is a
+ * length you see, and where one offer stops and the next begins stops being
+ * something to work out.
+ *
+ * Bars in CSS rather than SVG, so the numbers stay selectable text and the
+ * whole thing reflows on a phone instead of scrolling sideways.
+ *
+ * @param {{ offers: object[], pricing: boolean, currency?: string, here?: string }} props
+ *   here: the offer code this page is about, marked "you are here".
+ */
+export function OfferScale({ offers, pricing, currency, here }) {
+  const max = Math.max(...offers.map((o) => o.duration_weeks?.max ?? 0));
+  const money = pricing && offers.every((o) => o.price_band);
+  const topPrice = money ? Math.max(...offers.map((o) => o.price_band.max)) : 0;
+  const pct = (n, of) => `${Math.max((n / of) * 100, 2)}%`;
+
+  return (
+    <div className="scale" role="table" aria-label="The three offers compared by duration and price band">
+      <div className="scale-head" role="row">
+        <span role="columnheader">Offer</span>
+        <span role="columnheader">Weeks, end to end</span>
+        {money ? <span role="columnheader">Internal price band</span> : null}
+      </div>
+      {offers.map((o) => {
+        const w = o.duration_weeks ?? { min: 0, max: 0 };
+        const p = o.price_band;
+        return (
+          <div className={`scale-row${here === o.code ? ' here' : ''}`} role="row" key={o.code}>
+            <span className="scale-code" role="cell">
+              {o.code}
+              {here === o.code ? <span className="scale-here">you are here</span> : null}
+            </span>
+            <span className="scale-bar" role="cell">
+              <span className="bar" style={{ marginInlineStart: pct(w.min - (w.min ? 1 : 0), max), inlineSize: pct(w.max - w.min + 1, max) }}>
+                <b>{w.min === w.max ? w.min : `${w.min}–${w.max}`}</b>
+              </span>
+            </span>
+            {money ? (
+              <span className="scale-bar money" role="cell">
+                <span className="bar" style={{ marginInlineStart: pct(p.min, topPrice), inlineSize: pct(p.max - p.min, topPrice) }}>
+                  <b>{Math.round(p.min / 1000)}k–{Math.round(p.max / 1000)}k{p.open_ended ? '+' : ''}</b>
+                </span>
+              </span>
+            ) : null}
+          </div>
+        );
+      })}
+      <p className="scale-axis" aria-hidden="true"><span><i>0</i><i>{max} weeks</i></span></p>
+      {money ? <p className="muted small">Price bands are Merkle’s internal commercial position, in {currency}. They never reach a client document.</p> : null}
+    </div>
+  );
+}

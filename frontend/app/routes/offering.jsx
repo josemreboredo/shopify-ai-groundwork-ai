@@ -3,7 +3,8 @@ import { Link } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
 import { pageTitle } from '../brand.js';
-import { band, SEGMENTS, TRACK, weeks } from '../offering.js';
+import { band, TRACK, weeks } from '../offering.js';
+import { OfferScale } from '../components/diagram.jsx';
 
 export const meta = () => [{ title: pageTitle('The offering') }];
 
@@ -51,6 +52,11 @@ export default function Offering({ loaderData }) {
       </header>
 
       {/* 1 — the way in. Each offer is a door, not a column of text. */}
+      <section>
+        <h2>The three offers, on one scale</h2>
+        <OfferScale offers={view.offers} pricing={view.pricing} currency={currency} />
+      </section>
+
       <section>
         <h2>The four segments</h2>
         <ol className="segments">
