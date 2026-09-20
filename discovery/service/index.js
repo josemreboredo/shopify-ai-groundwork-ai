@@ -822,7 +822,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const session = await load(user, client);
       const decided = decideFromSession(session, today());
       if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
-      if (String(section ?? '').startsWith('deck:data')) {
+      // Exactly this section, or its numbered pages. `startsWith` also matched
+      // anything beginning with it, so "deck:dataX" fell into the deck branch.
+      if (/^deck:data(:\d+)?$/.test(String(section ?? ''))) {
         // The deck data is built from the approach as saved, so it needs one first.
         const approach = session.closing?.approach?.payload;
         if (!approach) throw new ServiceError(409, 'Save the approach first — the deck data is built from it', [], [{ what: 'Draft and save the approach with save_approach' }]);

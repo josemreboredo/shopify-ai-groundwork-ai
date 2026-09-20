@@ -32,7 +32,6 @@ import { axesForDecision } from '../discovery/rubric.js';
 import { runCostFor } from '../discovery/economics.js';
 import { challengesFor, topChallenges } from '../discovery/challenge.js';
 import { organisationalProfile } from '../discovery/feasibility.js';
-import { toApproachPayload } from '../discovery/approach.js';
 import { planRequirements, requiredPlan, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
 import { appSignals, appCandidates } from '../discovery/app-signals.js';
 

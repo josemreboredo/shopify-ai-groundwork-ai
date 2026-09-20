@@ -13,7 +13,6 @@
  */
 
 import { challengesFor, topChallenges } from '../agents/discovery/challenge.js';
-import { toApproachPayload } from '../agents/discovery/approach.js';
 
 const str = (description, max) => ({ type: 'string', description, ...(max ? { maxLength: max } : {}) });
 const list = (items, description, max) => ({ type: 'array', description, items, ...(max ? { maxItems: max } : {}) });

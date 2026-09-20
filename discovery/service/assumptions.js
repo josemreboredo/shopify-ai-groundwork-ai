@@ -83,9 +83,12 @@ export function statedAssumptions(doc, clarifications) {
   const claimed = new Set();
   const seen = new Set();
   return out
-    .sort((a, b) => RANK[a.source] - RANK[b.source])
+    // A source outside this map sorted by NaN, which leaves the order to chance.
+    .sort((a, b) => (RANK[a.source] ?? 99) - (RANK[b.source] ?? 99))
     .filter((a) => {
-      const key = `${a.assumed}`.trim().toLowerCase();
+      // Keyed on the wording *and* what it is about: two different assumptions
+      // phrased alike ("One store", say) silently collapsed into one.
+      const key = `${a.about}|${a.assumed}`.trim().toLowerCase();
       if (!key || seen.has(key)) return false;
       const ids = a.covers.length ? a.covers : a.question_id ? [a.question_id] : [];
       if (ids.length && ids.every((id) => claimed.has(id))) return false;

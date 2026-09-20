@@ -20,7 +20,6 @@ import { knowledgeFor } from '../agents/discovery/knowledge.js';
 import { ServiceError } from './errors.js';
 import { runCostFor } from '../agents/discovery/economics.js';
 import { challengesFor, topChallenges } from '../agents/discovery/challenge.js';
-import { toApproachPayload } from '../agents/discovery/approach.js';
 import { DECK_PROMPT } from '../agents/discovery-deck/prompt.js';
 import { selectStories, summariseByEpic } from '../agents/backlog/select.js';
 import { openItems } from '../agents/interview/open-items.js';
