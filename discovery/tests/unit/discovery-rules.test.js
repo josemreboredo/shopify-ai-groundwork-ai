@@ -365,6 +365,37 @@ describe('the offer follows the effort, not the gate count', () => {
       'a rule that maintains itself is not merchandising work');
   });
 
+  test('no offer excludes something the same page prices as one of its gates', () => {
+    // The Foundation page said "no ERP, PIM, CRM or 3PL connection is in this
+    // offer" directly above a gate table pricing one at +1-3 weeks and
+    // CHF 10-30k, and Growth excluded a headless storefront, which is the thing
+    // Growth is bought for. A boundary that contradicts the price list on the
+    // same page is the first thing a client challenges, and rightly.
+    const priced = new Map(offering.scope_gates.map((g) => [g.id, g.label]));
+    const FLAT_DENIAL = /\bis (not )?in this offer\b|\bnot included in this offer\b/i;
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      for (const line of offer.not_included ?? []) {
+        assert.doesNotMatch(line, FLAT_DENIAL,
+          `${code}: "${line}" denies flatly what a gate may price — say it is not in the base instead`);
+      }
+    }
+
+    // And the one that is simply false: Ecommerce Growth builds headless.
+    const growth = (offering.offers.L.not_included ?? []).join(' ');
+    assert.doesNotMatch(growth, /^(?:(?!outside Shopify).)*a headless .{0,40}storefront\b/is,
+      'Growth cannot exclude the track it is triggered by');
+    assert.ok(priced.has('storefront_design'));
+    // The design system is built inside the offers, priced by its gate, since
+    // it stopped being an L trigger.
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      const design = (offer.not_included ?? []).find((l) => /design system|figma/i.test(l));
+      if (design) {
+        assert.match(design, /gate|not in the base/i,
+          `${code}: "${design}" reads as a refusal of work the storefront design gate prices`);
+      }
+    }
+  });
+
   test('the envelope is the offer\u2019s own arithmetic, and gates inside it cost nothing extra', () => {
     // Two light gates are what an M is for. Charging them on top would be the
     // mirror of the bug above.

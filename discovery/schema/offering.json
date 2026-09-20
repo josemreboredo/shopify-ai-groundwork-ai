@@ -128,12 +128,12 @@
         "both": "Two channels in one store, and the second one is a scope gate rather than a base: see Scale."
       },
       "not_included": [
-        "A migration from another platform — that is a scope gate with its own weeks and its own price",
-        "Any integration with the client’s systems: no ERP, PIM, CRM or 3PL connection is in this offer",
-        "A second market, a second currency or a second language beyond what the launch market needs",
-        "Bespoke sections or a design built from Figma — the theme is configured, not rebuilt",
-        "Content production: copy, photography and video are the client’s, or a separate engagement",
-        "Post-launch support beyond the handover, unless a Grow retainer is signed"
+        "A migration from another platform — not in the base: it is a scope gate with its own weeks and its own price",
+        "A connection to a client system (ERP, PIM, CRM, OMS, 3PL or POS) — not in the base either. One is a gate with its own price; two or more make this an Ecommerce Scale",
+        "A second market, a second checkout currency or a fourth language — each is a gate, priced per unit rather than absorbed",
+        "Bespoke sections or a full template set designed in Figma — the base configures the theme; designing beyond it is the storefront design gate",
+        "Content production: copy, photography and video are the client’s, or a separate engagement. Nothing here writes them",
+        "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate"
       ],
       "client_provides": [
         "One decision-maker for scope, approvals and feedback, available inside the week",
@@ -283,11 +283,11 @@
         "both": "Where +B2B is actually earned. Both storefronts are built, both are tested, and a decision has to be taken per market about which channel sells there."
       },
       "not_included": [
-        "A headless storefront — that is an L trigger, not a gate, and it changes the offer rather than extending it",
-        "A full design system built from Figma, for the same reason",
-        "Custom checkout UI: Shopify’s checkout is extended through its own extension points or not at all",
+        "A headless storefront. That is an L trigger: it changes the offer rather than extending this one",
         "Content production and translation copy — the translation route is decided and costed here, the words are not written here",
-        "Ongoing run of the integrations after handover, unless a retainer covers it"
+        "Custom checkout UI: Shopify’s checkout is extended through its own extension points or not at all (exit rule 11.6)",
+        "Running the integrations after handover. Hypercare is in; the operating model past it is a gate, or a retainer",
+        "Anything whose content or front end lives outside Shopify — an external CMS or a front end Shopify does not build is Merkle Arc, and no offer here prices it"
       ],
       "client_provides": [
         "Everything Ecommerce Foundation needs: a decision-maker, brand assets, loadable product data, payment accounts and the legal text",
@@ -433,7 +433,7 @@
       },
       "not_included": [
         "Custom checkout UI. Shopify no longer permits it whatever the rest of the storefront does — Checkout Extensibility is the whole of what is possible",
-        "A headless or custom-framework storefront. That is a composable build, and it belongs with ARC rather than inside a Shopify offer",
+        "A storefront whose content or front end lives outside Shopify: an external CMS or PIM, another framework, a native app, several front ends on one backend. Hydrogen with content in Shopify is this offer; the rest is Merkle Arc",
         "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
         "Content production, photography and video, and the copy that goes on the templates this offer builds"
       ],
