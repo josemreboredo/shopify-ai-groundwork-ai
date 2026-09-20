@@ -582,8 +582,8 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 }
 .step-label { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .step-hint {
-  grid-column: 2; font-size: 0.74rem; font-weight: 400; letter-spacing: 0; text-transform: none;
-  color: rgba(255, 255, 255, 0.55); margin-top: 3px;
+  grid-column: 2; font-size: 0.82rem; font-weight: 400; letter-spacing: 0; text-transform: none;
+  color: rgba(255, 255, 255, 0.7); margin-top: 3px;
 }
 
 /* Two different things, so two different signals.
@@ -975,6 +975,15 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 
 /* Phones, after the 760 block so the narrower rule is the one that survives */
 @media (max-width: 560px) {
+  /* Ten columns of offer comparison in a 358px scroller is a drawing, not a
+     table. One offer per block, each row labelled, reads at any width. */
+  .table-scroll > .compare, .compare tbody, .compare tr, .compare td, .compare th { display: block; }
+  /* The scroller sizes its table to content; a stacked table must not be. */
+  .table-scroll > .compare { width: 100%; min-width: 0; max-width: 100%; }
+  .compare thead { display: none; }
+  .compare tr { border: 1px solid var(--line); padding: 10px 12px; margin-bottom: 10px; }
+  .compare td { border: 0; padding: 4px 0; }
+  .compare td::before { content: attr(data-label) ' '; font-weight: 700; }
   .footer-columns { grid-template-columns: 1fr; }
   /* Two columns of 2.4rem numerals in 152px cells with three-line labels. */
   .stats { grid-template-columns: 1fr; gap: 18px; }

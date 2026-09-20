@@ -81,7 +81,7 @@ export default function Home({ loaderData, actionData }) {
       {/* Creating one is the occasional act; opening one is the daily one. The
           forms took the whole top of the page for the thing you do least, so
           they fold away and the list comes first. */}
-      <details className="card prefill new-record">
+      <details className="card prefill new-record" open={engagements.length === 0}>
         <summary>
           <span className="prefill-title">New — start a bid or a discovery</span>
           <span className="muted prefill-status">{engagements.length} open · start another</span>
@@ -154,7 +154,9 @@ export default function Home({ loaderData, actionData }) {
       ) : null}
 
       <h2>Open now</h2>
-      {engagements.length === 0 ? <p className="muted">Nothing open yet.</p> : (
+      {engagements.length === 0 ? (
+        <p className="muted">Nothing open yet — start a bid or a discovery above.</p>
+      ) : (
         <>
         {/* A phone is not scanning a portfolio, it is finding one record and
             opening it: who, where it stands, what is waiting on me. Nine columns
@@ -182,7 +184,7 @@ export default function Home({ loaderData, actionData }) {
         <div className="table-scroll record-table" role="region" tabIndex={0} aria-label="Bids and engagements, scrollable table">
         <table>
           <thead>
-            <tr><th scope="col">Client</th><th scope="col">What</th><th scope="col">Offer</th><th scope="col">Status</th><th scope="col">Required answered</th><th scope="col">To confirm</th><th scope="col">Depth</th><th scope="col">Owner</th><th scope="col">Updated</th></tr>
+            <tr><th scope="col">Client</th><th scope="col">Type</th><th scope="col">Offer</th><th scope="col">Status</th><th scope="col">Required answered</th><th scope="col">To confirm</th><th scope="col">Depth</th><th scope="col">Owner</th><th scope="col">Updated</th></tr>
           </thead>
           <tbody>
             {engagements.map((e) => (

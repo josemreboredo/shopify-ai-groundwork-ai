@@ -135,10 +135,12 @@ export default function Offering({ loaderData }) {
                 {view.offers.map((o) => (
                   <tr key={o.code}>
                     <th scope="row"><span className="offer-code small">{o.code}</span></th>
-                    <td>{o.approach.storefront}</td>
-                    <td>{o.approach.plan}</td>
-                    <td>{o.approach.build}</td>
-                    <td>{o.approach.topology}</td>
+                    {/* The labels travel with the cells, so the table can stack
+                        on a phone instead of scrolling ten columns sideways. */}
+                    <td data-label="Storefront">{o.approach.storefront}</td>
+                    <td data-label="Shopify plan">{o.approach.plan}</td>
+                    <td data-label="How it is built">{o.approach.build}</td>
+                    <td data-label="Stores">{o.approach.topology}</td>
                   </tr>
                 ))}
               </tbody>

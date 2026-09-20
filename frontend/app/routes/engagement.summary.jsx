@@ -273,10 +273,15 @@ export default function Summary({ loaderData }) {
         </section>
       ) : null}
 
-      <p className="muted small">
+      {/* Navigation, a download and a count in one undifferentiated micro-row.
+          They are three different offers and read as one. */}
+      <h2>Elsewhere</h2>
+      <p>
         <Link to={`/engagements/${client}/review`}>Every answer</Link> ·{' '}
-        <Link to={`/engagements/${client}/go-no-go`}>The architect’s position</Link> ·{' '}
-        <a href={`/engagements/${client}/summary.md`} download>Download as Markdown</a>
+        <Link to={`/engagements/${client}/go-no-go`}>Go/No-Go support</Link>
+      </p>
+      <p className="muted small">
+        <a href={`/engagements/${client}/summary.md`} download>Download as Markdown</a> — internal, carries the offer
         {notes.length ? ` · ${notes.length} consultant note${notes.length === 1 ? '' : 's'}` : ''}
         {p.app_signals && Object.values(p.app_signals).some((x) => x.length) ? ` · app signals in the engine summary` : ''}
       </p>

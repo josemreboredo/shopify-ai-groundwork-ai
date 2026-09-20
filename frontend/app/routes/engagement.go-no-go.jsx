@@ -67,7 +67,7 @@ export default function GoNoGo({ loaderData }) {
 
       {/* The position: the verdict, then one why, then the ground under it */}
       <section className={`card position ${tone}`}>
-        <p className="eyebrow">Solution Architect · {r.verdict}</p>
+        <p className="eyebrow">Solution Architect · {r.verdict.charAt(0).toUpperCase() + r.verdict.slice(1)}</p>
         <h2 className="plain verdict">{r.headline}</h2>
 
         <p className="why-line">{r.why}</p>

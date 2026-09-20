@@ -13,6 +13,10 @@ import { stepsFor, viewsFor, processMeta, processOf } from '../../../discovery/s
 import { offerStanding } from '../../../discovery/service/summary.js';
 
 export const words = (id) => id.replace(/_/g, ' ');
+
+/* A table question asks for the country and headed the column "code". The key is
+   the field's name in the schema, not the question's word for it. */
+const COLUMN_LABEL = { code: 'Country', currency: 'Currency', languages: 'Languages' };
 const leaf = (pointer) => words(pointer.split('/').at(-1));
 
 /** Placeholder examples per vocabulary. */
@@ -257,7 +261,7 @@ function TableInput({ spec, value }) {
       <table>
         <thead>
           <tr>
-            {spec.columns.map((c) => <th key={c.key}>{words(c.key)}{c.required ? ' *' : ''}</th>)}
+            {spec.columns.map((c) => <th key={c.key} scope="col">{COLUMN_LABEL[c.key] ?? words(c.key)}{c.required ? ' *' : ''}</th>)}
             <th scope="col"><span className="sr-only">Actions</span></th>
           </tr>
         </thead>
