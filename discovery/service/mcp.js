@@ -324,7 +324,16 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     description: 'Summary computed by the engine (no AI): offer, GO or STOP, scope gates, exit rules, minimum Shopify plan, app signals, open items, all answers by section in words, documents and notes. Returns Markdown for the Lead Consultant (internal, not a client document).',
     inputSchema: z.object({ client: slug }),
     annotations: read,
-  }, async (user, { client }) => ({ markdown: renderSummaryMarkdown(await service.getSummary(user, client)) }));
+    /*
+     * Without the price band, whatever the consultant's role.
+     *
+     * The band reaches a lead consultant reading a screen; it does not reach a
+     * model that goes on to draft a client document from the same context. The
+     * rule this tool has held from the start is that the engine keeps Merkle's
+     * commercial position out of everything it generates, and a connector
+     * transcript is the one place where "internal" and "generated" meet.
+     */
+  }, async (user, { client }) => ({ markdown: renderSummaryMarkdown(await service.getSummary(user, client, { pricing: false })) }));
 
   tool('list_answers', {
     title: 'Recorded answers',

@@ -136,3 +136,28 @@ describe('an engagement outside the offers', () => {
     assert.doesNotMatch(md, /CHF/);
   });
 });
+
+describe('where the band travels', () => {
+  test('the connector never carries it, whatever the consultant’s role', async () => {
+    // The band reaches a lead consultant reading a screen. It does not reach a
+    // model that goes on to draft a client document from the same context —
+    // "the engine keeps them out of everything it generates" is the rule, and a
+    // connector transcript is where "internal" and "generated" meet.
+    const { createDiscoveryService } = await import('../../service/index.js');
+    const { createMemoryStore } = await import('../../service/stores/memory-store.js');
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => '2026-09-21' });
+    const owner = { login: 'lead', role: 'owner' };
+    await svc.startInterview(owner, { client: 'band-test', language: 'en', mode: 'quick', process: 'rfp' });
+    const ans = (id, values) => svc.answerQuestion(owner, 'band-test', { question_id: id, values });
+    await ans('Q10.5.2', { '/meta/consent/llm_processing': ['true'] });
+    await ans('Q1.1.1', { '/meta/client/name': ['Band Test AG'], '/meta/client/legal_name': ['Band Test AG'] });
+
+    const web = await svc.getSummary(owner, 'band-test');
+    assert.ok(web.quote?.band, 'an engagement lead reading the page sees it');
+
+    const forClaude = await svc.getSummary(owner, 'band-test', { pricing: false });
+    assert.equal(forClaude.quote.band, undefined);
+    assert.equal(forClaude.quote.pricing_withheld, true);
+    assert.doesNotMatch(renderSummaryMarkdown(forClaude), /[A-Z]{3}\s*\d+k–\d+k/, 'no band reaches the markdown either');
+  });
+});

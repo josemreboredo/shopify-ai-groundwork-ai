@@ -644,7 +644,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
      *
      * @param {User} user @param {string} client
      */
-    async getSummary(user, client) {
+    async getSummary(user, client, { pricing = user.role === 'owner' } = {}) {
       const session = await load(user, client);
       const decided = decideFromSession(session, today());
       const saved = session.closing?.clarifications ?? null;
@@ -673,7 +673,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         // What the engine quoted, and the arithmetic behind it. The page has
         // warned that it carries the price band since long before it did.
         quote: decided.ok
-          ? quote(decided.doc, { pricing: user.role === 'owner', provisional: preview(session, today()).offer.provisional === true })
+          ? quote(decided.doc, { pricing, provisional: preview(session, today()).offer.provisional === true })
           : null,
         // What the offer owes the client whatever its commercial shape: what it
         // would be built on, and which plan the requirements force.
