@@ -1693,104 +1693,104 @@
 
 ### 7.1 SEO
 
-**Q7.1.1** — Is organic search a significant traffic channel? *(recommended)*
+**Q7.1.1** — Ist die organische Suche ein wesentlicher Traffic-Kanal? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.1.2** — Are custom URL structures needed? *(optional)*
+**Q7.1.2** — Werden eigene URL-Strukturen benötigt? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.1.3** — Who manages SEO? *(optional)*
+**Q7.1.3** — Wer verantwortet SEO? *(optional)*
 
 *(tick one)*
 - [ ] In house
 - [ ] Agency
 - [ ] None
 
-**Q7.1.4** — Should products be discoverable in AI shopping assistants? *(optional)*
-*Shopify Catalog and agentic channels (Spring '26).*
+**Q7.1.4** — Sollen die Produkte in KI-Einkaufsassistenten auffindbar sein? *(optional)*
+*Shopify Catalog und agentische Kanäle (Spring '26).*
 
 - [ ] Yes
 - [ ] No
 
 ### 7.2 Analytics & Tracking
 
-**Q7.2.1** — Which analytics platforms do you use (GA4, Adobe, other)? *(recommended)*
+**Q7.2.1** — Welche Analytics-Plattformen nutzen Sie (GA4, Adobe, andere)? *(recommended)*
 
 > Answer:
 
-**Q7.2.2** — Is server-side tracking needed? *(recommended)*
+**Q7.2.2** — Wird serverseitiges Tracking benötigt? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition.*
-*Shopify's customer events track storefront and checkout with consent; the Facebook & Instagram and Google & YouTube apps send server-side events. Anything beyond needs a tracking app. Server-side events can share customer data with ad platforms (PII gate).*
+*Shopifys Customer Events erfassen Shop und Checkout mit Einwilligung; die Apps Facebook & Instagram sowie Google & YouTube senden serverseitige Events. Alles darüber hinaus braucht eine Tracking-App. Serverseitige Events können Kundendaten an Werbeplattformen weitergeben (PII-Gate).*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.2.3** — Which advertising pixels are needed (Meta, TikTok, Pinterest, Google Ads)? *(recommended)*
+**Q7.2.3** — Welche Werbe-Pixel werden benötigt (Meta, TikTok, Pinterest, Google Ads)? *(recommended)*
 
 > Answer:
 
-**Q7.2.4** — Is a tag manager already configured? *(recommended)*
-*Tag managers run as a custom pixel in Shopify's sandbox; scripts in checkout are no longer possible.*
+**Q7.2.4** — Ist bereits ein Tag Manager eingerichtet? *(recommended)*
+*Tag Manager laufen in Shopify als Custom Pixel in einer Sandbox; Skripte im Checkout sind nicht mehr möglich.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.2.5** — Which custom events must be tracked beyond standard ecommerce events? *(recommended)*
+**Q7.2.5** — Welche eigenen Events müssen über die Standard-Commerce-Events hinaus erfasst werden? *(recommended)*
 
 > Answer:
 
 ### 7.3 E-Mail & CRM
 
-**Q7.3.1** — Which email / CRM platform do you use or plan to use: Shopify Messaging or another platform (name)? *(recommended)*
-*Shopify Messaging covers email, SMS and WhatsApp campaigns and automations.*
+**Q7.3.1** — Welche E-Mail- oder CRM-Plattform nutzen Sie oder planen Sie: Shopify Messaging oder eine andere Plattform (bitte nennen)? *(recommended)*
+*Shopify Messaging deckt Kampagnen und Automatisierungen per E-Mail, SMS und WhatsApp ab.*
 
 - Type:
 - Platform:
 
-**Q7.3.2** — Which automated flows are needed (welcome, abandoned cart, post-purchase, win-back)? *(recommended)*
+**Q7.3.2** — Welche automatisierten Strecken werden benötigt (Willkommen, abgebrochener Warenkorb, nach dem Kauf, Rückgewinnung)? *(recommended)*
 
 > Answer:
 
-**Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended)*
+**Q7.3.4** — Versenden Sie SMS-Marketing, und in welche Länder? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat.*
 
 - Enabled:
 - Countries:
 
-**Q7.3.5** — Do you send WhatsApp marketing? *(optional)*
-*Native in Shopify Messaging.*
+**Q7.3.5** — Versenden Sie WhatsApp-Marketing? *(optional)*
+*In Shopify Messaging nativ.*
 
 - [ ] Yes
 - [ ] No
 
 ### 7.4 Bewertungen & Affiliates
 
-**Q7.4.1** — Which product reviews app is used or preferred? *(optional)*
+**Q7.4.1** — Welche App für Produktbewertungen wird genutzt oder bevorzugt? *(optional)*
 *Ask if Q1.2.1 is yes, or Q0.5.4 is not None.*
-*Product reviews need an app.*
+*Produktbewertungen brauchen eine App.*
 
 > Answer:
 
-**Q7.4.2** — Is user-generated content important (customer photos, social embeds)? *(optional)*
+**Q7.4.2** — Sind nutzergenerierte Inhalte wichtig (Kundenfotos, Social-Einbettungen)? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.4.3** — Which affiliate platform, if any? *(optional)*
+**Q7.4.3** — Welche Affiliate-Plattform, falls überhaupt? *(optional)*
 
 > Answer:
 
-**Q7.4.4** — Do you use Shopify Collabs for influencers? *(optional)*
-*Shopify Collabs isn't accepting new creator sign-ups; you can still invite creators.*
+**Q7.4.4** — Nutzen Sie Shopify Collabs für Influencer? *(optional)*
+*Shopify Collabs nimmt keine neuen Creator-Anmeldungen an; Sie können Creator weiterhin einladen.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.4.5** — Are affiliate and influencer sales tracked via discount codes, UTM parameters, or both? *(optional)*
+**Q7.4.5** — Werden Affiliate- und Influencer-Umsätze über Rabattcodes, UTM-Parameter oder beides verfolgt? *(optional)*
 
 *(tick one)*
 - [ ] Discount codes
@@ -1800,7 +1800,7 @@
 
 ### 7.5 Rabatte & Gutscheincodes
 
-**Q7.5.1** — Which discount types are used? *(recommended)*
+**Q7.5.1** — Welche Rabattarten werden genutzt? *(recommended)*
 
 *(tick all that apply)*
 - [ ] Percentage
@@ -1816,8 +1816,8 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q7.5.2** — Which discounts must combine on one order? *(required)*
-*Shopify combines product, order and shipping discounts natively (up to 5 codes plus 1 shipping code, and up to 25 automatic discounts). Custom logic needs a discount function.*
+**Q7.5.2** — Welche Rabatte müssen sich auf einer Bestellung kombinieren lassen? *(required)*
+*Shopify kombiniert Produkt-, Bestell- und Versandrabatte nativ (bis zu 5 Codes plus 1 Versandcode und bis zu 25 automatische Rabatte). Eigene Logik braucht eine Discount Function.*
 
 *(tick one)*
 - [ ] None
@@ -1825,7 +1825,7 @@
 - [ ] Several discounts on the same item
 - [ ] Custom logic (discount function)
 
-**Q7.5.3** — Are coupon codes single-use, multi-use, or bulk-generated? *(optional)*
+**Q7.5.3** — Sind Gutscheincodes einmalig, mehrfach nutzbar oder in Serie erzeugt? *(optional)*
 
 *(tick all that apply)*
 - [ ] Single use
@@ -1834,28 +1834,28 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q7.5.4** — Must codes be brand-named (e.g. WELCOME20)? *(optional)*
+**Q7.5.4** — Müssen Codes markenbezogen sein (z. B. WELCOME20)? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.5.5** — Do codes need minimum order values or quantities? *(optional)*
+**Q7.5.5** — Brauchen Codes Mindestbestellwerte oder Mindestmengen? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.5.6** — Do codes expire on a fixed date, a rolling period, or never? *(optional)*
+**Q7.5.6** — Laufen Codes zu einem festen Datum ab, nach einem gleitenden Zeitraum, oder nie? *(optional)*
 
 *(tick one)*
 - [ ] None
 - [ ] Fixed
 - [ ] Rolling
 
-**Q7.5.7** — How are codes distributed (email, SMS, print, influencers)? *(optional)*
+**Q7.5.7** — Wie werden Codes verteilt (E-Mail, SMS, Print, Influencer)? *(optional)*
 
 > Answer:
 
-**Q7.5.8** — Do promotions differ by market, customer segment, sales channel or B2B company? *(recommended)*
+**Q7.5.8** — Unterscheiden sich Aktionen je Markt, Kundensegment, Vertriebskanal oder B2B-Unternehmen? *(recommended)*
 
 *(tick all that apply)*
 - [ ] Market
@@ -1867,61 +1867,61 @@
 
 ### 7.6 Geschenkkarten & Kampagnen
 
-**Q7.6.1** — Are gift cards sold as a product? *(optional)*
-*Gift cards are native: digital cards by email, physical cards on POS; they never expire by default. Also covers gift cards accepted at checkout.*
+**Q7.6.1** — Werden Geschenkkarten als Produkt verkauft? *(optional)*
+*Geschenkkarten sind nativ: digitale Karten per E-Mail, physische Karten über das Kassensystem; sie verfallen standardmäßig nie. Deckt auch im Checkout akzeptierte Geschenkkarten ab.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.6.2** — Are gift cards issued as rewards or compensation? *(optional)*
+**Q7.6.2** — Werden Geschenkkarten als Prämie oder Entschädigung ausgegeben? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.6.3** — Digital gift cards, physical, or both? *(optional)*
+**Q7.6.3** — Digitale Geschenkkarten, physische oder beides? *(optional)*
 
 *(tick one)*
 - [ ] Digital
 - [ ] Physical
 - [ ] Both
 
-**Q7.6.4** — Must gift cards expire? *(optional)*
+**Q7.6.4** — Müssen Geschenkkarten verfallen? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.6.5** — Are promotions triggered from email or SMS campaigns? *(optional)*
+**Q7.6.5** — Werden Aktionen aus E-Mail- oder SMS-Kampagnen ausgelöst? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.6.6** — Does each campaign need its own landing page? *(optional)*
+**Q7.6.6** — Braucht jede Kampagne eine eigene Landingpage? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.6.7** — Are countdown timers or urgency elements needed? *(optional)*
-*Countdown timers need an app or theme work.*
+**Q7.6.7** — Werden Countdown-Timer oder Dringlichkeitselemente benötigt? *(optional)*
+*Countdown-Timer brauchen eine App oder Theme-Arbeit.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.6.9** — Do you run scheduled drops or flash sales with high traffic? *(optional)*
-*Scheduled theme and checkout changes are native (Rollouts).*
+**Q7.6.9** — Fahren Sie geplante Drops oder Flash Sales mit hohem Traffic? *(optional)*
+*Geplante Theme- und Checkout-Änderungen sind nativ (Rollouts).*
 
 - [ ] Yes
 - [ ] No
 
 ### 7.7 KI & agentischer Commerce
 
-**Q7.7.1** — Do you want your products to be found and bought inside AI assistants such as ChatGPT, Google AI or Copilot? *(recommended)*
-*AI assistants are becoming a shopping channel. Shopify already switches eligible stores on by default, so this is a decision to confirm or reverse, not one to postpone.*
+**Q7.7.1** — Möchten Sie, dass Ihre Produkte in KI-Assistenten wie ChatGPT, Google AI oder Copilot gefunden und gekauft werden können? *(recommended)*
+*KI-Assistenten werden zu einem Verkaufskanal. Shopify schaltet geeignete Stores bereits standardmäßig frei — das ist also eine Entscheidung zu bestätigen oder zu widerrufen, keine zu vertagen.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.7.2** — Should Shopify enrol you automatically in new AI channels as they appear, or do you want to approve each one? *(recommended)*
-*The default setting also enrols you in channels that do not exist yet.*
+**Q7.7.2** — Soll Shopify Sie automatisch in neuen KI-Kanälen anmelden, sobald sie erscheinen, oder möchten Sie jeden einzeln freigeben? *(recommended)*
+*Die Standardeinstellung meldet Sie auch in Kanälen an, die es noch gar nicht gibt.*
 
 *(tick one)*
 - [ ] Shopify managed
@@ -1929,8 +1929,8 @@
 - [ ] Off
 - [ ] Not sure yet
 
-**Q7.7.3** — Should shoppers be able to pay inside the AI assistant, or should they come to your store to check out? *(recommended)*
-*Paying in the assistant converts better; sending them to your store keeps the full journey, the upsells and the analytics.*
+**Q7.7.3** — Sollen Kundinnen und Kunden im KI-Assistenten bezahlen können, oder sollen sie zum Bezahlen in Ihren Shop kommen? *(recommended)*
+*Im Assistenten zu bezahlen konvertiert besser; sie in Ihren Shop zu schicken erhält die ganze Strecke, die Upsells und die Auswertung.*
 
 *(tick one)*
 - [ ] All channels
@@ -1938,41 +1938,41 @@
 - [ ] Off
 - [ ] Not sure yet
 
-**Q7.7.4** — Do you sell to customers in the United States? *(recommended)*
-*Some AI channels are only open to merchants selling to US buyers, wherever the business is based.*
+**Q7.7.4** — Verkaufen Sie an Kundinnen und Kunden in den Vereinigten Staaten? *(recommended)*
+*Manche KI-Kanäle stehen nur Händlern offen, die an US-Käufer verkaufen, unabhängig vom Sitz des Unternehmens.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.7.5** — Who can accept Shopify's additional terms for selling through AI channels? *(recommended)*
-*Selling through these channels requires accepting separate terms — usually legal or procurement, not the ecommerce team.*
+**Q7.7.5** — Wer darf Shopifys Zusatzbedingungen für den Verkauf über KI-Kanäle akzeptieren? *(recommended)*
+*Der Verkauf über diese Kanäle erfordert die Annahme gesonderter Bedingungen — üblicherweise durch die Rechts- oder Einkaufsabteilung, nicht durch das E-Commerce-Team.*
 
 > Answer:
 
-**Q7.7.6** — Are you comfortable sharing the customer's name, e-mail, phone and address with an AI channel when they buy inside it? *(recommended)*
-*This is a data-protection decision. Under GDPR it usually needs a documented review before launch.*
+**Q7.7.6** — Sind Sie damit einverstanden, Name, E-Mail, Telefonnummer und Adresse der Kundschaft mit einem KI-Kanal zu teilen, wenn dort gekauft wird? *(recommended)*
+*Das ist eine datenschutzrechtliche Entscheidung. Unter der DSGVO braucht sie in der Regel eine dokumentierte Prüfung vor dem Launch.*
 
 *(tick one)*
 - [ ] Approved
 - [ ] Refused
 - [ ] Needs legal review
 
-**Q7.7.7** — How complete is your product data — titles, images, prices, descriptions and variants? *(recommended)*
-*AI channels only list products whose data is complete. Gaps make products invisible rather than badly presented.*
+**Q7.7.7** — Wie vollständig sind Ihre Produktdaten — Titel, Bilder, Preise, Beschreibungen und Varianten? *(recommended)*
+*KI-Kanäle listen nur Produkte mit vollständigen Daten. Lücken machen Produkte unsichtbar, nicht bloß schlecht dargestellt.*
 
 *(tick one)*
 - [ ] Complete
 - [ ] Only for some products
 - [ ] Not sure yet
 
-**Q7.7.8** — Is important product information kept in custom fields, separate records or inside the product title (for example “Steel 40mm — Automatic”)? *(optional)*
-*Data that lives in custom fields or in the title needs mapping before AI channels can read it.*
+**Q7.7.8** — Stehen wichtige Produktinformationen in eigenen Feldern, getrennten Datensätzen oder im Produkttitel (zum Beispiel „Stahl 40 mm — Automatik“)? *(optional)*
+*Daten in eigenen Feldern oder im Titel brauchen ein Mapping, bevor KI-Kanäle sie lesen können.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.7.9** — Should AI crawlers be allowed, restricted or blocked on your website? *(optional)*
-*Blocking crawlers does not remove your products from AI shopping channels; it only affects what they read from your public site.*
+**Q7.7.9** — Sollen KI-Crawler auf Ihrer Website erlaubt, eingeschränkt oder blockiert werden? *(optional)*
+*Crawler zu blockieren entfernt Ihre Produkte nicht aus KI-Einkaufskanälen; es betrifft nur, was sie von Ihrer öffentlichen Seite lesen.*
 
 *(tick one)*
 - [ ] Allow all
@@ -1980,14 +1980,14 @@
 - [ ] Block
 - [ ] Not sure yet
 
-**Q7.7.10** — Do you want to control the answers AI assistants give about shipping, returns and sizing? *(optional)*
-*Shopify has a free app that publishes your FAQs for assistants and logs what shoppers ask.*
+**Q7.7.10** — Möchten Sie steuern, welche Antworten KI-Assistenten zu Versand, Retouren und Größen geben? *(optional)*
+*Shopify hat eine kostenlose App, die Ihre FAQ für Assistenten veröffentlicht und protokolliert, wonach gefragt wird.*
 
 - [ ] Yes
 - [ ] No
 
-**Q7.7.11** — Do you plan to offer your own AI shopping assistant, or connect the store to agent platforms yourself? *(optional)*
-*Parts of this are still early access at Shopify, so treat it as exploration rather than fixed scope.*
+**Q7.7.11** — Planen Sie einen eigenen KI-Einkaufsassistenten oder die eigenständige Anbindung des Stores an Agentenplattformen? *(optional)*
+*Teile davon sind bei Shopify noch im Early Access — behandeln Sie es als Erkundung, nicht als festen Umfang.*
 
 *(tick one)*
 - [ ] Now
@@ -1995,8 +1995,8 @@
 - [ ] No
 - [ ] Not sure yet
 
-**Q7.7.12** — Which Shopify AI tools do you want your team to use in day-to-day work? *(optional)*
-*These are back-office tools for your team, not customer-facing.*
+**Q7.7.12** — Welche KI-Werkzeuge von Shopify soll Ihr Team im Tagesgeschäft nutzen? *(optional)*
+*Das sind Backoffice-Werkzeuge für Ihr Team, nicht für die Kundschaft.*
 
 *(tick all that apply)*
 - [ ] Sidekick
@@ -2006,9 +2006,9 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q7.7.13** — Existing Shopify store: what do the agentic sales-channel settings show today (Sales channels → Agentic)? *(recommended · consultant)*
+**Q7.7.13** — Bestehender Shopify-Store: Was zeigen die Einstellungen der agentischen Verkaufskanäle heute (Vertriebskanäle → Agentic)? *(recommended · consultant)*
 *Skip if Q1.2.1 = no.*
-*Check the admin with the client: enrolment mode, which channels are on, and whether checkout inside the assistant is enabled.*
+*Sehen Sie gemeinsam mit dem Kunden in den Admin: Anmeldemodus, welche Kanäle an sind, und ob der Checkout innerhalb des Assistenten aktiviert ist.*
 
 *(tick one)*
 - [ ] Shopify managed

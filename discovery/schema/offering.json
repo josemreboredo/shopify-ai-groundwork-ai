@@ -7,7 +7,7 @@
       "name": "Ecommerce Foundation",
       "delivery_track": "liquid",
       "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
-      "base_scope": "New Shopify store on the plan the requirements need (Shopify plan benchmark) · Horizon theme · core catalogue · payments · standard checkout",
+      "base_scope": "New Shopify store on the plan the requirements need (Shopify plan benchmark) \u00b7 Horizon theme \u00b7 core catalogue \u00b7 payments \u00b7 standard checkout",
       "price_band": {
         "min": 40000,
         "max": 65000,
@@ -36,8 +36,8 @@
     "L": {
       "name": "Ecommerce Growth",
       "delivery_track": "hydrogen",
-      "triggered_by": "Any L trigger (luxury / enterprise brand, headless requirement, full Figma design system) — scope gates do not apply",
-      "base_scope": "Headless Hydrogen storefront · full Figma design system · custom motion + interactions · Storefront API · Oxygen · advanced personalisation",
+      "triggered_by": "Any L trigger (luxury / enterprise brand, headless requirement, full Figma design system) \u2014 scope gates do not apply",
+      "base_scope": "Headless Hydrogen storefront \u00b7 full Figma design system \u00b7 custom motion + interactions \u00b7 Storefront API \u00b7 Oxygen \u00b7 advanced personalisation",
       "price_band": {
         "min": 100000,
         "max": 150000,
@@ -178,7 +178,7 @@
     {
       "id": "+Markets",
       "gate": "markets",
-      "description": "2–4 Shopify Markets or multi-currency set-up, Translate & Adapt, geo-routing",
+      "description": "2\u20134 Shopify Markets or multi-currency set-up, Translate & Adapt, geo-routing",
       "effort_weeks": {
         "min": 1,
         "max": 1
@@ -243,7 +243,7 @@
     {
       "id": "+Retail",
       "gate": "retail_pos",
-      "description": "Shopify POS or integrated POS set-up, store locations, pick-up in store, in-store returns — up to 5 stores (more stores: rule 11.22, never a per-store price)",
+      "description": "Shopify POS or integrated POS set-up, store locations, pick-up in store, in-store returns \u2014 up to 5 stores (more stores: rule 11.22, never a per-store price)",
       "effort_weeks": {
         "min": 1,
         "max": 1
@@ -264,7 +264,7 @@
       "custom",
       "pos"
     ],
-    "note": "An integration is a live system-to-system data connection. Shopify App Store apps with native connectors (ESP, reviews, search, loyalty, analytics) are apps, not integrations — unless the connector is custom-built (connector = custom), in which case they count."
+    "note": "An integration is a live system-to-system data connection. Shopify App Store apps with native connectors (ESP, reviews, search, loyalty, analytics) are apps, not integrations \u2014 unless the connector is custom-built (connector = custom), in which case they count."
   },
   "exit_results": {
     "STOP": "Beyond the S/M/L offers. Not a refusal: the engagement continues as a Larger Engagement with a consultant-led Discovery Phase, or Merkle does not bid. Recorded in Q10.5.5 before the closing document.",
@@ -298,7 +298,8 @@
         "/catalogue/combined_listings",
         "/promotions/stacking",
         "/design/ab_testing"
-      ]
+      ],
+      "label": "A requirement needs a higher Shopify plan than the one we are quoting"
     },
     {
       "id": "11.2",
@@ -308,7 +309,8 @@
       "destination": "B2B architecture review: Shopify B2B draft-order review or a quote app (App Store category \"Pricing quotes\"), before build",
       "inputs": [
         "/b2b/rfq_or_negotiated_pricing"
-      ]
+      ],
+      "label": "B2B needs quotes or prices negotiated per buyer, which Shopify has no built-in way to do"
     },
     {
       "id": "11.3",
@@ -318,7 +320,8 @@
       "destination": "Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase",
       "inputs": [
         "/markets/list"
-      ]
+      ],
+      "label": "More than five Shopify markets at launch"
     },
     {
       "id": "11.4",
@@ -328,7 +331,8 @@
       "destination": "Larger Engagement: translation and content operations in the Discovery Phase",
       "inputs": [
         "/markets/list/*/languages"
-      ]
+      ],
+      "label": "More than six languages across the markets"
     },
     {
       "id": "11.5",
@@ -339,17 +343,19 @@
       "inputs": [
         "/catalogue/variant_options_max",
         "/catalogue/variants_per_product_max"
-      ]
+      ],
+      "label": "More product options or variants than Shopify allows on one product"
     },
     {
       "id": "11.6",
       "result": "STOP",
       "status": "canonical",
-      "condition": "Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility)",
+      "condition": "Fully custom checkout UI \u2014 not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility)",
       "destination": "Composable platform",
       "inputs": [
         "/checkout/customisation"
-      ]
+      ],
+      "label": "A fully custom checkout, which Shopify no longer permits"
     },
     {
       "id": "11.7",
@@ -360,7 +366,8 @@
       "inputs": [
         "/integrations/*/category",
         "/integrations/*/connector"
-      ]
+      ],
+      "label": "More than three systems connected at launch"
     },
     {
       "id": "11.8",
@@ -370,7 +377,8 @@
       "destination": "Legal / compliance review",
       "inputs": [
         "/compliance/regulated_industry"
-      ]
+      ],
+      "label": "A regulated industry \u2014 pharma, alcohol, firearms, age-restricted, financial or medical"
     },
     {
       "id": "11.9",
@@ -380,7 +388,8 @@
       "destination": "Security review (threat model mandatory)",
       "inputs": [
         "/payments/pci_scope"
-      ]
+      ],
+      "label": "Card data handled outside Shopify\u2019s own payment pages"
     },
     {
       "id": "11.10",
@@ -390,7 +399,8 @@
       "destination": "Legal sign-off on data-subject request handling",
       "inputs": [
         "/compliance/gdpr_deletion_workflow"
-      ]
+      ],
+      "label": "Customers must be able to export or delete their data on request"
     },
     {
       "id": "11.11",
@@ -402,42 +412,46 @@
       "inputs": [
         "/delivery/grow_retainer/signed",
         "/offer/code"
-      ]
+      ],
+      "label": "An M or L engagement with no Grow retainer signed"
     },
     {
       "id": "11.12",
       "result": "FLAG",
       "status": "canonical",
       "condition": "ERP or PIM with no existing Shopify connector and no iPaaS",
-      "destination": "Separate integration scoping track (T3/T4)",
+      "destination": "Integration scoping as its own track, before the build is quoted",
       "inputs": [
         "/integrations/*/category",
         "/integrations/*/connector"
-      ]
+      ],
+      "label": "An ERP or PIM with no ready-made Shopify connector and no integration platform in place"
     },
     {
       "id": "11.13",
       "result": "FLAG",
       "status": "canonical",
       "condition": "fulfilment_locations > 2 AND routing beyond Shopify's native order routing rules (a custom routing Function or the ERP / OMS decides)",
-      "destination": "Multi-location inventory scoping (T3)",
+      "destination": "Multi-location inventory scoped separately",
       "inputs": [
         "/shipping/fulfilment_locations",
         "/shipping/routing_rules"
-      ]
+      ],
+      "label": "More than two fulfilment locations, with routing Shopify cannot do on its own"
     },
     {
       "id": "11.14",
       "result": "FLAG",
       "status": "canonical",
       "condition": "Migration with significant SEO equity or complex historical data",
-      "destination": "Dedicated migration scoping track — not combined with the store build sprint",
+      "destination": "Dedicated migration scoping track \u2014 not combined with the store build sprint",
       "inputs": [
         "/migration/seo_equity",
         "/migration/historical_orders_required",
         "/migration/volumes",
         "/migration/subscriptions"
-      ]
+      ],
+      "label": "A migration carrying real search traffic or complex history"
     },
     {
       "id": "11.15",
@@ -450,7 +464,8 @@
         "/delivery/kickoff_date",
         "/meta/created_at",
         "/offer/code"
-      ]
+      ],
+      "label": "Less time to go-live than the offer needs"
     },
     {
       "id": "11.16",
@@ -461,7 +476,8 @@
       "inputs": [
         "/delivery/decision_maker_confirmed",
         "/delivery/budget_authority_clear"
-      ]
+      ],
+      "label": "No single decision-maker, or unclear budget authority"
     },
     {
       "id": "11.17",
@@ -471,7 +487,8 @@
       "destination": "Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build",
       "inputs": [
         "/compliance/sensitive_data"
-      ]
+      ],
+      "label": "Sensitive personal data \u2014 health, age, biometric or financial"
     },
     {
       "id": "11.18",
@@ -481,7 +498,8 @@
       "destination": "Deprecation migration scoped as its own workstream (e.g. Scripts to Functions, legacy to customer accounts)",
       "inputs": [
         "/shopify/deprecated_features"
-      ]
+      ],
+      "label": "The existing store runs on Shopify features that are being retired"
     },
     {
       "id": "11.19",
@@ -491,27 +509,30 @@
       "destination": "B2B architecture review: app or process change before build",
       "inputs": [
         "/b2b/unsupported_needs"
-      ]
+      ],
+      "label": "A B2B requirement Shopify\u2019s own B2B does not support"
     },
     {
       "id": "11.20",
       "result": "FLAG",
       "status": "canonical",
       "condition": "Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope",
-      "destination": "Separate China discovery (questions § 3.5, discovery/docs/china-mainland.md); mainland China excluded from this engagement's scope",
+      "destination": "A separate China discovery \u2014 see the China note",
       "inputs": [
         "/markets/list"
-      ]
+      ],
+      "label": "Mainland China is one of the launch markets"
     },
     {
       "id": "11.21",
       "result": "STOP",
       "status": "canonical",
-      "condition": "Mainland China is the only launch market — not part of the Merkle offering",
-      "destination": "China discovery (discovery/docs/china-mainland.md)",
+      "condition": "Mainland China is the only launch market \u2014 not part of the Merkle offering",
+      "destination": "A separate China discovery \u2014 see the China note",
       "inputs": [
         "/markets/list"
-      ]
+      ],
+      "label": "Mainland China is the only launch market"
     },
     {
       "id": "11.22",
@@ -522,20 +543,22 @@
       "internal_note": "Never quote a per-store price: a store with its own line item gets compared to 40 hours. Quote programme and increment, or a rate-carded run team (never shown to the client)",
       "inputs": [
         "/retail/store_count"
-      ]
+      ],
+      "label": "More than five retail stores in scope"
     },
     {
       "id": "11.23",
       "result": "FLAG",
       "status": "canonical",
-      "condition": "More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision — the engine still recommends a topology.",
+      "condition": "More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision \u2014 the engine still recommends a topology.",
       "destination": "Market topology and legal-entity mapping workshop before the solution architecture is baselined.",
       "inputs": [
         "/markets/list",
         "/meta/client/legal_entities",
         "/markets/vat_countries",
         "/markets/topology/confidence"
-      ]
+      ],
+      "label": "Several markets, with the legal entities and pricing still unresolved"
     }
   ],
   "routes": [
@@ -544,7 +567,7 @@
       "label": "Larger Engagement",
       "proposal": "Merkle Enterprise Engagement with a dedicated Discovery Phase",
       "brief": "larger-engagement-brief.md",
-      "description": "The requirements go beyond the S/M/L offers. This is not a refusal and not a pause: Merkle proposes an Enterprise Engagement that opens with a full, consultant-led Discovery Phase — a traditional discovery, run by people rather than by this tool. The approach drafted here is its starting point, and the client deck is produced and shared with the client as it would be for any engagement. What is not produced is the Jira backlog and the Confluence pages: the backlog is defined during that Discovery Phase, and issuing one now would imply a scope nobody has agreed."
+      "description": "The requirements go beyond the S/M/L offers. This is not a refusal and not a pause: Merkle proposes an Enterprise Engagement that opens with a full, consultant-led Discovery Phase \u2014 a traditional discovery, run by people rather than by this tool. The approach drafted here is its starting point, and the client deck is produced and shared with the client as it would be for any engagement. What is not produced is the Jira backlog and the Confluence pages: the backlog is defined during that Discovery Phase, and issuing one now would imply a scope nobody has agreed."
     },
     {
       "id": "no_bid",
@@ -723,12 +746,12 @@
   "resolved_questions": [
     {
       "question": "11.2 destination",
-      "decision": "STOP → architecture review of Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform",
+      "decision": "STOP \u2192 architecture review of Shopify Plus B2B with a quote app or draft-order workflow, or a composable platform",
       "rationale": "strategy.md keeps 11.2 as a STOP; native B2B covers price lists, quantity rules and payment terms but not negotiation workflows, which need an app or a different platform"
     },
     {
-      "question": "Proposed rules 11.12–11.16",
-      "decision": "Accepted. 11.12–11.15 as FLAG; 11.16 changed from STOP to FLAG (resolve before statement of work)",
+      "question": "Proposed rules 11.12\u201311.16",
+      "decision": "Accepted. 11.12\u201311.15 as FLAG; 11.16 changed from STOP to FLAG (resolve before statement of work)",
       "rationale": "Each covers effort beyond what the +Integration / +Migration modifiers and the fixed offer durations assume; governance gaps must not block the discovery deck but must be closed before contract"
     },
     {
@@ -768,7 +791,7 @@
     },
     {
       "question": "What happens after a STOP",
-      "decision": "The lead consultant records delivery.route: larger_engagement drafts the full approach, a brief and the client deck for a Merkle Enterprise Engagement with a dedicated Discovery Phase — no Jira tickets; no_bid produces the STOP report only",
+      "decision": "The lead consultant records delivery.route: larger_engagement drafts the full approach, a brief and the client deck for a Merkle Enterprise Engagement with a dedicated Discovery Phase \u2014 no Jira tickets; no_bid produces the STOP report only",
       "rationale": "A STOP means the standard offers do not fit, not that discovery is wasted. The client still needs the findings and a recommended approach; the backlog belongs to the enterprise Discovery Phase"
     },
     {
@@ -793,7 +816,7 @@
     },
     {
       "question": "Retail & POS modifier",
-      "decision": "No modifier yet — the owner prices +Retail before it is applied to S",
+      "decision": "No modifier yet \u2014 the owner prices +Retail before it is applied to S",
       "rationale": "Internal pricing is set by the owner, never inferred"
     },
     {
@@ -809,7 +832,7 @@
     {
       "question": "Mainland China",
       "decision": "Not part of the offering. When CN is a launch market, 11.20 (FLAG) excludes it from markets, languages, offer, plan and build scope and routes it to a separate China discovery; 11.21 (STOP) when CN is the only market",
-      "rationale": "Owner decision 2026-09-17. Research (discovery/docs/china-mainland.md, checked 2026-09-17): Shopify's servers are not in mainland China, proxy set-ups in front of Shopify are unsupported and no public case of Shopify behind the Great Firewall exists; onshore selling needs a PRC entity, ICP and onshore hosting, cross-border selling needs marketplace, customs and product-registration decisions — a China-specific discovery"
+      "rationale": "Owner decision 2026-09-17. Research (discovery/docs/china-mainland.md, checked 2026-09-17): Shopify's servers are not in mainland China, proxy set-ups in front of Shopify are unsupported and no public case of Shopify behind the Great Firewall exists; onshore selling needs a PRC entity, ICP and onshore hosting, cross-border selling needs marketplace, customs and product-registration decisions \u2014 a China-specific discovery"
     }
   ]
 }

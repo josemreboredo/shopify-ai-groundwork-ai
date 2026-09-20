@@ -271,6 +271,11 @@ details.card[open] > summary { margin-bottom: 12px; }
 .record-progress { margin-top: 6px !important; font-size: 0.92rem; }
 .record-meta { margin-top: 8px !important; color: var(--muted); font-size: 0.8rem; }
 
+/* The engine's own wording, kept and available, but not the first thing read. */
+.rule-exact { margin-top: 6px; }
+.rule-exact > summary { font-size: 0.78rem; color: var(--muted); cursor: pointer; }
+.rule-exact p, .rule-exact span { font-size: 0.86rem; margin: 6px 0 0; display: block; }
+
 /* Deleting an engagement: out of the way, and it asks for the slug back */
 details.danger { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
 details.danger > summary { color: var(--red-ink); font-weight: 700; }

@@ -104,14 +104,17 @@ export default function Offering({ loaderData }) {
                 <h3>{g.label}</h3>
                 {g.effort_weeks ? <span className="chip">+{weeks(g.effort_weeks)} wk{view.pricing && g.price_add ? ` · ${band(g.price_add, currency)}` : ''}</span> : null}
               </header>
-              <p className="gate-when">{g.condition}</p>
+              <details className="rule-exact">
+                <summary>The exact rule</summary>
+                <p className="gate-when">{g.condition}</p>
+              </details>
               {g.adds ? <p className="muted">{g.adds}</p> : null}
             </article>
           ))}
         </div>
         <div className="l-triggers">
           <p className="eyebrow">What makes it an L, whatever the gates say</p>
-          <ul>{view.l_triggers.map((t) => <li key={t.id}><strong>{t.label}</strong><span>{t.condition}</span></li>)}</ul>
+          <ul>{view.l_triggers.map((t) => <li key={t.id}><strong>{t.label}</strong><details className="rule-exact"><summary>The exact rule</summary><span>{t.condition}</span></details></li>)}</ul>
         </div>
       </section>
 
@@ -205,8 +208,18 @@ function RuleList({ rules, pricing }) {
         <li key={r.id}>
           <span className="rule-id">{r.id}</span>
           <div>
-            <p className="rule-when">{r.condition}</p>
+            {/* The condition is the engine's own wording — JSON keys, field
+                comparisons and, in places, a path in this repository. It stays,
+                because a rule you cannot check is a rule you cannot argue with,
+                but it is no longer the sentence the page opens with. */}
+            <p className="rule-when">{r.label ?? r.condition}</p>
             <p className="muted">→ {r.destination}</p>
+            {r.label ? (
+              <details className="rule-exact">
+                <summary>The exact rule</summary>
+                <p className="muted">{r.condition}</p>
+              </details>
+            ) : null}
             {pricing && r.internal_note ? <p className="rule-note">{r.internal_note}</p> : null}
           </div>
         </li>

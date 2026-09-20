@@ -93,6 +93,10 @@ export function offeringView({ pricing = false } = {}) {
     .filter((r) => r.result === result)
     .map((r) => ({
       id: r.id,
+      // What a consultant reads. The condition is the engine's own wording and
+      // travels with it, behind "the exact rule" — a page linked from the main
+      // navigation was publishing repo paths and schema expressions.
+      label: r.label ?? null,
       condition: r.condition,
       destination: r.destination,
       ...(pricing && r.internal_note ? { internal_note: r.internal_note } : {}),

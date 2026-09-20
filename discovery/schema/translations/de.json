@@ -2015,6 +2015,499 @@
    "teach": {
     "why": "Jeder Punkt, an dem eine Einwilligung erfasst wird — Newsletter-Formular, Checkout, Kontoanlage, Pop-up, Filiale —, ist ein Punkt, an dem der Nachweis entstehen und mitgeführt werden muss. Die Liste zeigt, welche Integrationen Einwilligungen zurückschreiben müssen und wo eine Prüfung Lücken finden würde."
    }
+  },
+  "Q7.1.1": {
+   "text": "Ist die organische Suche ein wesentlicher Traffic-Kanal?",
+   "teach": {
+    "why": "Trägt der organische Traffic das Geschäft, werden URL-Struktur, Weiterleitungen, Metadaten und Seitengeschwindigkeit zu Build-Aufgaben mit Budget statt zu guten Vorsätzen. Ist die Suche ein Nebenkanal, ist dieser Aufwand anderswo besser aufgehoben."
+   }
+  },
+  "Q7.1.2": {
+   "text": "Werden eigene URL-Strukturen benötigt?",
+   "teach": {
+    "why": "Sagen Sie früh, wenn die Marke von einem bestimmten URL-Muster abhängt. Was eine Plattform ändern kann und was nicht, muss gegen die Dokumentation geprüft werden, bevor der Content-Plan es voraussetzt — und es bemisst den Weiterleitungsaufwand bei der Migration."
+   }
+  },
+  "Q7.1.3": {
+   "text": "Wer verantwortet SEO?",
+   "teach": {
+    "why": "SEO-Arbeit endet nicht mit dem Launch: Weiterleitungen, Metadaten, strukturierte Daten und Inhalte ändern sich weiter. Diese Antwort entscheidet, wer diese Aufgabe hält — und damit, ob wir ein bearbeitbares Setup übergeben oder die Arbeit selbst tragen.",
+    "options": [
+     {
+      "option": "Der Kunde oder seine SEO-Agentur verantwortet es",
+      "pros": "Hält das Spezialwissen bei den Menschen, denen die Traffic-Ziele gehören; keine laufenden Kosten in unserem Umfang",
+      "cons": "Theme und Admin müssen von Nicht-Entwicklern wirklich bearbeitbar sein, und Übergabe und Schulung werden zu echten Lieferergebnissen"
+     },
+     {
+      "option": "Wir verantworten es als Teil der Lieferung",
+      "pros": "Ein Team ist für Migration, Weiterleitungsplan und die Rückgewinnung der Rankings verantwortlich",
+      "cons": "Bringt Aufwand nach dem Launch, und jemand auf Kundenseite muss Inhalte und Prioritäten trotzdem freigeben"
+     }
+    ]
+   }
+  },
+  "Q7.1.4": {
+   "text": "Sollen die Produkte in KI-Einkaufsassistenten auffindbar sein?",
+   "help": "Shopify Catalog und agentische Kanäle (Spring '26).",
+   "teach": {
+    "why": "Shopify meldet geeignete Stores standardmäßig für agentische Storefront-Kanäle an — nichts zu tun beantwortet diese Frage also bereits. Die Frage bestätigt oder widerruft einen Kanal, der jetzt schon live sein kann. Abschnitt 7.7 zerlegt die Entscheidung im Detail.",
+    "limits": "Über die Eignung entscheidet Shopify: Plan Starter oder höher, Store nicht im privaten Modus, Produkte mit Titel, Bild, einem Preis über null und einer veröffentlichten Produkt-URL. Reine Geschäftskundenprodukte werden automatisch ausgeschlossen."
+   }
+  },
+  "Q7.2.1": {
+   "text": "Welche Analytics-Plattformen nutzen Sie (GA4, Adobe, andere)?",
+   "teach": {
+    "why": "Jede Analytics-Plattform auf Shopify hängt an derselben Event-Ebene, aber jede braucht eigenes Setup, eigene Einwilligungsbehandlung und einen eigenen Testdurchlauf. Die Liste bemisst diese Arbeit und zeigt, an welchen Zahlen der Kunde den Launch messen wird."
+   }
+  },
+  "Q7.2.2": {
+   "text": "Wird serverseitiges Tracking benötigt?",
+   "help": "Shopifys Customer Events erfassen Shop und Checkout mit Einwilligung; die Apps Facebook & Instagram sowie Google & YouTube senden serverseitige Events. Alles darüber hinaus braucht eine Tracking-App. Serverseitige Events können Kundendaten an Werbeplattformen weitergeben (PII-Gate).",
+   "teach": {
+    "why": "Shopifys Customer Events decken Shop und Checkout mit Einwilligung ab, und die Apps Facebook & Instagram sowie Google & YouTube senden bereits serverseitig. Alles darüber hinaus braucht eine Tracking-App oder Entwicklungsarbeit, und die Weitergabe von Kundendaten an Werbeplattformen löst das PII-Gate aus.",
+    "limits": "Nativer serverseitiger Versand ist für die Apps Facebook & Instagram sowie Google & YouTube dokumentiert; alles andere ist eine App oder eine Build-Position.",
+    "options": [
+     {
+      "option": "Bei Shopifys Customer Events und den Kanal-Apps von Meta und Google bleiben",
+      "pros": "Keine zusätzliche Lizenz, keine zusätzliche Integration, die Einwilligung wird von der Plattform behandelt",
+      "cons": "Begrenzt auf das, was diese Apps senden; andere Werbe- oder Analytics-Ziele bekommen nur browserseitige Daten"
+     },
+     {
+      "option": "Eine serverseitige Tracking-App oder einen eigenen Endpunkt ergänzen",
+      "pros": "Bessere Zustellung und Zuordnung von Events für Plattformen, die Shopifys eigene Apps nicht abdecken",
+      "cons": "Lizenzkosten plus Bau und Pflege, und Kundendaten, die den Store verlassen, brauchen eine ausdrückliche Einwilligungs- und PII-Entscheidung"
+     }
+    ]
+   }
+  },
+  "Q7.2.3": {
+   "text": "Welche Werbe-Pixel werden benötigt (Meta, TikTok, Pinterest, Google Ads)?",
+   "teach": {
+    "why": "Jedes Werbe-Pixel ist eine eigene Installation, ein eigener Einwilligungsfall und ein eigener Test. Die Liste entscheidet, wie viel Tracking-Arbeit der Build trägt und welche Conversion-Zahlen das Marketing nach dem Launch abgleichen wird."
+   }
+  },
+  "Q7.2.4": {
+   "text": "Ist bereits ein Tag Manager eingerichtet?",
+   "help": "Tag Manager laufen in Shopify als Custom Pixel in einer Sandbox; Skripte im Checkout sind nicht mehr möglich.",
+   "teach": {
+    "why": "Das wiegt auf Shopify schwerer als anderswo: Ein Tag Manager läuft als Custom Pixel innerhalb von Shopifys Sandbox, und Skripte im Checkout sind nicht mehr möglich. Ein bestehender Container muss auf dieses Modell neu gebaut und nicht hinüberkopiert werden."
+   }
+  },
+  "Q7.2.5": {
+   "text": "Welche eigenen Events müssen über die Standard-Commerce-Events hinaus erfasst werden?",
+   "teach": {
+    "why": "Die Standard-Events für Shop und Checkout kommen aus Shopifys Customer Events. Alles andere — Schritte im Konfigurator, Merkliste, abgeschlossene Quizze, Nutzung des Filialfinders — ist Code, den jemand in einem Pixel schreibt und testet. Sie jetzt zu benennen macht sie bepreisbar."
+   }
+  },
+  "Q7.3.1": {
+   "text": "Welche E-Mail- oder CRM-Plattform nutzen Sie oder planen Sie: Shopify Messaging oder eine andere Plattform (bitte nennen)?",
+   "help": "Shopify Messaging deckt Kampagnen und Automatisierungen per E-Mail, SMS und WhatsApp ab.",
+   "teach": {
+    "why": "Shopify Messaging deckt Kampagnen und Automatisierungen per E-Mail, SMS und WhatsApp nativ ab. Eine Drittanbieter-Plattform muss ihre Lizenz über Segmentierung, tiefere Strecken und Daten außerhalb von Shopify verdienen. Diese Antwort legt die Integrationsarbeit und den Weg der Kundendaten fest.",
+    "options": [
+     {
+      "option": "Shopify Messaging",
+      "pros": "Nativ, keine Integration zu bauen, Kundendaten bleiben in Shopify, ein Ort für E-Mail, SMS und WhatsApp",
+      "cons": "Weniger ausgefeilte Segmentierung und Strecken-Logik als eine spezialisierte Plattform; weniger nützlich, wenn das CRM ohnehin anderswo liegt"
+     },
+     {
+      "option": "Eine E-Mail-/CRM-Plattform eines Drittanbieters",
+      "pros": "Reichere Segmentierung, Lifecycle-Strecken und Auswertungen; passt zu einer Marke, deren Kundendaten über den Store hinausreichen",
+      "cons": "Lizenzkosten, eine Integration, die gebaut und am Laufen gehalten werden muss, und Kundendaten, die Shopify verlassen — eine PII-Entscheidung, nicht nur eine technische"
+     }
+    ]
+   }
+  },
+  "Q7.3.2": {
+   "text": "Welche automatisierten Strecken werden benötigt (Willkommen, abgebrochener Warenkorb, nach dem Kauf, Rückgewinnung)?",
+   "teach": {
+    "why": "Lifecycle-Strecken sind die Quelle zurückgewonnenen Umsatzes — der abgebrochene Warenkorb vor allem. Jede Strecke braucht Auslösedaten, Inhalte und einen Testdurchlauf; die Liste bemisst also den Marketing-Build und sagt dem Tracking, welche Events es tatsächlich liefern muss."
+   }
+  },
+  "Q7.3.4": {
+   "text": "Versenden Sie SMS-Marketing, und in welche Länder?",
+   "teach": {
+    "why": "Shopify Messaging versendet SMS nur in einer dokumentierten Länderliste. SMS-Marketing außerhalb dieser Liste bedeutet eine Drittanbieter-App samt eigener Einwilligungserfassung, Absenderregistrierung und Länderregeln — Kosten und Rechtsarbeit, kein Schalter.",
+    "limits": "SMS über Shopify Messaging sind für AT, CA, DK, FI, IT, LU, PL, PT, SE, UK und US dokumentiert; Spanien ist seit dem 15. September 2026 ausgesetzt.",
+    "options": [
+     {
+      "option": "SMS über Shopify Messaging",
+      "pros": "Nativ, keine zusätzliche App, am selben Ort wie E-Mail- und WhatsApp-Kampagnen",
+      "cons": "Nur die dokumentierten Länder — eine Marke mit vielen Märkten kann mitten im Projekt darüber hinauswachsen"
+     },
+     {
+      "option": "Eine SMS-App eines Drittanbieters",
+      "pros": "Deckt Länder ab, die Shopify Messaging nicht bedient, meist mit tieferer Automatisierung",
+      "cons": "Lizenz- und Versandkosten je Nachricht, eine Integration, und Einwilligungsdaten außerhalb von Shopify"
+     }
+    ]
+   }
+  },
+  "Q7.3.5": {
+   "text": "Versenden Sie WhatsApp-Marketing?",
+   "help": "In Shopify Messaging nativ.",
+   "teach": {
+    "why": "WhatsApp-Marketing ist in Shopify Messaging nativ, ein Ja kostet also womöglich kein zusätzliches Werkzeug — es braucht aber trotzdem Opt-in-Erfassung, Nachrichtenvorlagen und jemanden, der den Kanal betreibt. Ein Nein hält es aus Umfang und Schätzung heraus."
+   }
+  },
+  "Q7.4.1": {
+   "text": "Welche App für Produktbewertungen wird genutzt oder bevorzugt?",
+   "help": "Produktbewertungen brauchen eine App.",
+   "teach": {
+    "why": "Produktbewertungen sind auf Shopify nicht nativ; sie brauchen eine App. Die Wahl entscheidet, wo die Bewertungsinhalte liegen, wie sie vom aktuellen Anbieter migriert werden, wie das Theme die Sterne darstellt und wie viel die Lizenz monatlich kostet."
+   }
+  },
+  "Q7.4.2": {
+   "text": "Sind nutzergenerierte Inhalte wichtig (Kundenfotos, Social-Einbettungen)?",
+   "teach": {
+    "why": "Kundenfotos und Social Walls sind Werkzeug plus Theme-Arbeit: Rechteverwaltung, Moderation, zusätzliche Medien auf der Produktseite und die Seitengeschwindigkeit, die damit einhergeht. Ein Ja bringt eine Lizenz und Template-Änderungen; ein Nein hält die Seite schlank."
+   }
+  },
+  "Q7.4.3": {
+   "text": "Welche Affiliate-Plattform, falls überhaupt?",
+   "teach": {
+    "why": "Eine Affiliate-Plattform liegt außerhalb des Stores und will versorgt werden: Bestellwerte, Codes und Zuordnung im Moment des Kaufs. Sie jetzt zu benennen zeigt, was verdrahtet und abgestimmt werden muss, statt es zu entdecken, wenn die Provisionen nicht zusammenpassen."
+   }
+  },
+  "Q7.4.4": {
+   "text": "Nutzen Sie Shopify Collabs für Influencer?",
+   "help": "Shopify Collabs nimmt keine neuen Creator-Anmeldungen an; Sie können Creator weiterhin einladen.",
+   "teach": {
+    "why": "Shopify Collabs nimmt keine neuen Creator-Anmeldungen mehr an, bestehende Programme können jedoch weiterhin Creator einladen. Ging der Influencer-Plan davon aus, dass Collabs für die Marke rekrutiert, muss das in der Discovery neu geplant werden — nicht nach dem Launch."
+   }
+  },
+  "Q7.4.5": {
+   "text": "Werden Affiliate- und Influencer-Umsätze über Rabattcodes, UTM-Parameter oder beides verfolgt?",
+   "teach": {
+    "why": "Das entscheidet, wie Provisionen berechnet werden und welche Auswertungen übereinstimmen müssen. Codes ordnen die Bestellung zu, rabattieren sie aber und wandern weiter als beabsichtigt; UTMs ordnen die Sitzung zu, brechen aber über Geräte hinweg. Die meisten Marken gleichen am Ende beides ab.",
+    "options": [
+     {
+      "option": "Rabattcodes",
+      "pros": "Die Zuordnung überlebt bis zur Bestellung und ist in der eigenen Auswertung des Stores sichtbar; funktioniert offline und im Video",
+      "cons": "Jeder Verkauf wird rabattiert, Codes werden auf Gutscheinseiten geteilt, und Codes kollidieren mit anderen Aktionen und Kombinationsregeln"
+     },
+     {
+      "option": "UTM-Links",
+      "pros": "Keine Marge verschenkt, und der Klick hängt an einer echten Kampagnenquelle",
+      "cons": "Geht verloren, wenn die Kundschaft das Gerät wechselt oder später kauft; setzt funktionierende Analytics und Einwilligung voraus, um überhaupt zu zählen"
+     }
+    ]
+   }
+  },
+  "Q7.5.1": {
+   "text": "Welche Rabattarten werden genutzt?",
+   "teach": {
+    "why": "Jede Rabattart ist eines von drei Dingen: eine Einstellung im Admin, eine native Kombination, oder eine Discount Function, die jemand schreibt und pflegt. Die Arten aufzulisten ist das, was zeigt, welches davon — und genau darin liegt der ganze Kostenunterschied."
+   }
+  },
+  "Q7.5.2": {
+   "text": "Welche Rabatte müssen sich auf einer Bestellung kombinieren lassen?",
+   "help": "Shopify kombiniert Produkt-, Bestell- und Versandrabatte nativ (bis zu 5 Codes plus 1 Versandcode und bis zu 25 automatische Rabatte). Eigene Logik braucht eine Discount Function.",
+   "teach": {
+    "why": "Beim Stapeln trifft der Aktionsplan auf die Plattformgrenzen. Shopify kombiniert Produkt-, Bestell- und Versandrabatte nativ; mehrere Produktrabatte auf demselben Artikel sind eine Plus-Funktion, und alles außerhalb der nativen Regeln braucht eine Discount Function.",
+    "limits": "Bis zu 5 Rabattcodes plus 1 Versandcode je Bestellung und bis zu 25 automatische Rabatte. Mehrere Produktrabatte auf derselben Position setzen Plus voraus — eine Plananforderung, die nach Spring '26 erneut zu prüfen ist.",
+    "options": [
+     {
+      "option": "Innerhalb von Shopifys nativen Kombinationen bleiben",
+      "pros": "Nur Konfiguration, kein Code zu pflegen, keine Planänderung; das Merchandising kann Aktionen ohne Hilfe fahren",
+      "cons": "Der Aktionskalender muss die dokumentierten Grenzen und Kombinationsregeln einhalten"
+     },
+     {
+      "option": "Eine Discount Function bauen",
+      "pros": "Jede maßgeschneiderte Regel, die das Geschäft will, konsistent in Warenkorb und Checkout angewandt",
+      "cons": "Entwicklung, Tests und langfristige Verantwortung für Code, der den Preis jeder Bestellung berührt"
+     }
+    ]
+   }
+  },
+  "Q7.5.3": {
+   "text": "Sind Gutscheincodes einmalig, mehrfach nutzbar oder in Serie erzeugt?",
+   "teach": {
+    "why": "Eine Handvoll geteilter Codes ist Konfiguration im Admin. Eindeutige Codes je Kundin, Affiliate oder Geschenk sind ein Problem von Erzeugung, Speicherung und Auswertung — meist ein Import oder eine App —, und die Mengen entscheiden, ob das eine kleine oder eine echte Aufgabe ist.",
+    "options": [
+     {
+      "option": "Wenige geteilte, mehrfach nutzbare Codes",
+      "pros": "In Minuten im Admin erstellt, leicht zu kommunizieren und auszuwerten",
+      "cons": "Öffentlich geteilt, sobald eine Person ihn postet; keine Kontrolle je Kundin oder Kunde"
+     },
+     {
+      "option": "Eindeutige, einmalige oder in Serie erzeugte Codes",
+      "pros": "Ein Code je Kundin oder Partner, Missbrauch bleibt begrenzt und die Zuordnung ist exakt",
+      "cons": "Erzeugung, Verteilung und Auswertung müssen gebaut oder lizenziert werden, und die Mengen müssen geplant sein"
+     }
+    ]
+   }
+  },
+  "Q7.5.4": {
+   "text": "Müssen Codes markenbezogen sein (z. B. WELCOME20)?",
+   "teach": {
+    "why": "Markenbezogene Codes sind einprägsam — das ist der Zweck und das Risiko: Sie werden erraten, geteilt und auf Gutscheinseiten gepostet. Die Antwort zeigt, ob die Aktion auf Vertraulichkeit baut und damit stattdessen auf Nutzungsgrenzen und Berechtigungen angewiesen ist."
+   }
+  },
+  "Q7.5.5": {
+   "text": "Brauchen Codes Mindestbestellwerte oder Mindestmengen?",
+   "teach": {
+    "why": "Schwellen sind gewöhnliche Rabattbedingungen, müssen aber je Markt und Währung vom Geschäft festgelegt werden, und der Shop muss der Kundschaft zeigen, wie weit sie von der Schwelle entfernt ist. Das ist Konfiguration plus Theme-Arbeit plus Test."
+   }
+  },
+  "Q7.5.6": {
+   "text": "Laufen Codes zu einem festen Datum ab, nach einem gleitenden Zeitraum, oder nie?",
+   "teach": {
+    "why": "Ein festes Enddatum ist eine Einstellung. Ein gleitender Zeitraum — etwa dreißig Tage ab Anmeldung — bedeutet einen je Kundin erzeugten Code aus einer Strecke oder einer App. Die Antwort trennt Konfiguration von einem kleinen Stück Entwicklung."
+   }
+  },
+  "Q7.5.7": {
+   "text": "Wie werden Codes verteilt (E-Mail, SMS, Print, Influencer)?",
+   "teach": {
+    "why": "Wohin Codes gehen, entscheidet, wer sie in welcher Menge erzeugt, ob die E-Mail- oder SMS-Plattform sie erzeugen muss, und ob der Store Codes einlösen muss, die er nicht selbst ausgegeben hat — Printauflagen und Influencer-Listen vor allem."
+   }
+  },
+  "Q7.5.8": {
+   "text": "Unterscheiden sich Aktionen je Markt, Kundensegment, Vertriebskanal oder B2B-Unternehmen?",
+   "teach": {
+    "why": "Zielgruppensteuerung macht aus einer Aktion statt einer Einstellung ein Regelproblem: Wer ist berechtigt, in welchem Markt, Kanal und welcher Währung, und was sieht der Shop für alle anderen. Hier tauchen außerdem Plananforderungen auf, deshalb wird früh gefragt.",
+    "limits": "Anpassung je Markt ist als Funktion des Advanced-Plans dokumentiert; unternehmensspezifische Kataloge oder mehr als drei B2B-Kataloge setzen Plus voraus (Exit-Regel 11.1)."
+   }
+  },
+  "Q7.6.1": {
+   "text": "Werden Geschenkkarten als Produkt verkauft?",
+   "help": "Geschenkkarten sind nativ: digitale Karten per E-Mail, physische Karten über das Kassensystem; sie verfallen standardmäßig nie. Deckt auch im Checkout akzeptierte Geschenkkarten ab.",
+   "teach": {
+    "why": "Geschenkkarten sind nativ — digitale Karten per E-Mail, physische über das Kassensystem — und sie verfallen standardmäßig nie. Sie zu verkaufen ist also Konfiguration und kein Build; Arbeit brauchen Kartendesign, Versand-E-Mail und der Prozess dahinter."
+   }
+  },
+  "Q7.6.2": {
+   "text": "Werden Geschenkkarten als Prämie oder Entschädigung ausgegeben?",
+   "teach": {
+    "why": "Karten aus Kulanz oder als Entschädigung auszugeben ist ein Serviceprozess, kein Shop-Thema: Wer darf ausgeben, bis zu welchem Wert, mit welcher Freigabe, und wie sieht die Finanzabteilung die offene Verbindlichkeit. Es entscheidet außerdem, wer Admin-Zugang braucht."
+   }
+  },
+  "Q7.6.3": {
+   "text": "Digitale Geschenkkarten, physische oder beides?",
+   "teach": {
+    "why": "Das sind zwei verschiedene Projekte. Digitale Karten werden per E-Mail versandt und kommen der Konfiguration nahe. Physische Karten werden über das Kassensystem verkauft und aktiviert, was Retail-Hardware, Bestand, Filialprozess und Mitarbeiterschulung in den Umfang holt.",
+    "options": [
+     {
+      "option": "Nur digital",
+      "pros": "Nativer Versand per E-Mail, kein Bestand, kein Filialprozess, schnell live",
+      "cons": "Kein Produkt für Regal oder Geschenkbox; der Anlass im Laden und das Last-Minute-Geschenk entfallen"
+     },
+     {
+      "option": "Physisch, oder digital und physisch",
+      "pros": "In der Filiale und als Geschenkobjekt verkäuflich; bedient Retail- und Großhandelsanlässe",
+      "cons": "Kartenproduktion, Bestand, Aktivierung am Kassensystem und Mitarbeiterprozess — ein Retail-Strang, keine Shop-Einstellung"
+     }
+    ]
+   }
+  },
+  "Q7.6.4": {
+   "text": "Müssen Geschenkkarten verfallen?",
+   "teach": {
+    "why": "Geschenkkarten verfallen standardmäßig nie, ein Ja ist also eine bewusste Änderung, die gegen das Recht jedes Markts geprüft werden muss, in dem die Marke verkauft — und dagegen, wie die Finanzabteilung das Guthaben behandelt sehen will. Fragen Sie, bevor Sie eines von beidem annehmen."
+   }
+  },
+  "Q7.6.5": {
+   "text": "Werden Aktionen aus E-Mail- oder SMS-Kampagnen ausgelöst?",
+   "teach": {
+    "why": "Löst eine Kampagnenplattform die Aktion aus, muss jemand die passenden Codes oder automatischen Rabatte in Shopify anlegen und beide im Gleichklang halten. Das ist eine Integration und eine wöchentliche Betriebsroutine, kein einmaliges Setup."
+   }
+  },
+  "Q7.6.6": {
+   "text": "Braucht jede Kampagne eine eigene Landingpage?",
+   "teach": {
+    "why": "Eine Seite je Kampagne ist unproblematisch, wenn das Marketing sie aus vorhandenen Abschnitten bauen kann. Wenn nicht, wird jede Kampagne zum Entwicklerticket. Die Antwort formt, wie flexibel das Theme sein muss und wie viel Schulung die Übergabe braucht."
+   }
+  },
+  "Q7.6.7": {
+   "text": "Werden Countdown-Timer oder Dringlichkeitselemente benötigt?",
+   "help": "Countdown-Timer brauchen eine App oder Theme-Arbeit.",
+   "teach": {
+    "why": "Countdown-Timer und Dringlichkeitshinweise sind keine Einstellung: Sie brauchen eine App oder Theme-Arbeit und berühren Seitengeschwindigkeit, Caching und in manchen Märkten Regeln gegen Kaufdruck. Klein, aber eine echte Build-Position mit einer verantwortlichen Stelle.",
+    "options": [
+     {
+      "option": "Eine App",
+      "pros": "Das Marketing kann Timer ohne Entwickler planen und gestalten",
+      "cons": "Monatliche Lizenz, ein weiteres Skript auf der Seite, und das Erscheinungsbild ist durch die App begrenzt"
+     },
+     {
+      "option": "Theme-Arbeit",
+      "pros": "Genau das Design der Marke, keine Lizenz, kein fremdes Skript",
+      "cons": "Jedes neue Kampagnenformat ist eine Entwickleränderung, und das Caching muss sorgfältig behandelt werden"
+     }
+    ]
+   }
+  },
+  "Q7.6.9": {
+   "text": "Fahren Sie geplante Drops oder Flash Sales mit hohem Traffic?",
+   "help": "Geplante Theme- und Checkout-Änderungen sind nativ (Rollouts).",
+   "teach": {
+    "why": "Drops pressen einen Monat Traffic und Bestandskonkurrenz in Minuten. Theme- und Checkout-Änderungen zu planen ist über Rollouts nativ, im Grow-Plan; der Rest — Bestandsregeln, Warteschlange, Lasttests, eine Generalprobe — ist Planung, die früh beginnen muss.",
+    "limits": "Rollouts (geplante Theme- und Checkout-Änderungen) sind für den Grow-Plan dokumentiert."
+   }
+  },
+  "Q7.7.1": {
+   "text": "Möchten Sie, dass Ihre Produkte in KI-Assistenten wie ChatGPT, Google AI oder Copilot gefunden und gekauft werden können?",
+   "help": "KI-Assistenten werden zu einem Verkaufskanal. Shopify schaltet geeignete Stores bereits standardmäßig frei — das ist also eine Entscheidung zu bestätigen oder zu widerrufen, keine zu vertagen.",
+   "teach": {
+    "why": "Das entscheidet, ob ein neuer Verkaufskanal offen oder geschlossen ist. Shopify meldet geeignete Stores automatisch an — nichts zu tun ist also selbst eine Entscheidung: Der Kanal ist an.",
+    "limits": "Über die Eignung entscheidet Shopify: Plan Starter oder höher, kein privater Store, und manche Kanäle nur für Händler, die an US-Käufer verkaufen. Reine Geschäftskundenprodukte sind automatisch ausgeschlossen.",
+    "options": [
+     {
+      "option": "Über KI-Assistenten verkaufen",
+      "pros": "Erreicht Menschen, die in einem Assistenten statt in einer Suchmaschine beginnen; keine Entwicklungsarbeit — Shopify liefert den Katalog",
+      "cons": "Weniger Kontrolle über die Darstellung; das Gespräch gehört dem Assistenten; Kundendaten werden geteilt, wenn dort gekauft wird"
+     },
+     {
+      "option": "Draußen bleiben",
+      "pros": "Volle Kontrolle über Strecke und Daten",
+      "cons": "Unsichtbar dort, wo ein wachsender Anteil der Produktrecherche beginnt; stattdessen werden Wettbewerber gelistet"
+     }
+    ]
+   }
+  },
+  "Q7.7.2": {
+   "text": "Soll Shopify Sie automatisch in neuen KI-Kanälen anmelden, sobald sie erscheinen, oder möchten Sie jeden einzeln freigeben?",
+   "help": "Die Standardeinstellung meldet Sie auch in Kanälen an, die es noch gar nicht gibt.",
+   "teach": {
+    "why": "KI-Kanäle kommen regelmäßig hinzu. Das entscheidet, ob die Marke automatisch in einem neuen erscheint oder erst nach Ihrer Prüfung.",
+    "limits": "Standard ist die von Shopify verwaltete Anmeldung, mit Katalogzugriff und Checkout innerhalb des Assistenten aktiviert.",
+    "options": [
+     {
+      "option": "Shopify verwalten lassen",
+      "pros": "Kein Verwaltungsaufwand; die Marke ist präsent, sobald neue Kanäle starten",
+      "cons": "Die Marke kann in einem Kanal auftauchen, den niemand geprüft hat, mit im Voraus akzeptierten Bedingungen und Datenweitergabe"
+     },
+     {
+      "option": "Jeden Kanal freigeben",
+      "pros": "Marken-, Rechts- und Datenprüfung vor jedem Start",
+      "cons": "Jemand muss die Prüfung verantworten; die Marke kommt spät in neue Kanäle"
+     }
+    ]
+   }
+  },
+  "Q7.7.3": {
+   "text": "Sollen Kundinnen und Kunden im KI-Assistenten bezahlen können, oder sollen sie zum Bezahlen in Ihren Shop kommen?",
+   "help": "Im Assistenten zu bezahlen konvertiert besser; sie in Ihren Shop zu schicken erhält die ganze Strecke, die Upsells und die Auswertung.",
+   "teach": {
+    "why": "Das ist der kommerzielle Abwägungspunkt des Kanals: Conversion gegen die Hoheit über Kundenstrecke und Daten.",
+    "limits": "ChatGPT schickt Kundinnen und Kunden immer in Ihren Checkout; andere Kanäle lassen sich je Kanal einstellen.",
+    "options": [
+     {
+      "option": "Checkout innerhalb des Assistenten",
+      "pros": "Weniger Schritte, also bessere Conversion aus einem Assistentengespräch",
+      "cons": "Ihr Shop, Ihre Upsells und Ihre Auswertung werden übersprungen; der Kanal erhält Name, E-Mail, Telefonnummer und Adresse der Kundschaft"
+     },
+     {
+      "option": "In Ihren Shop schicken",
+      "pros": "Sie behalten Merchandising, Upsells, Tracking und die Kundenbeziehung",
+      "cons": "Mehr Schritte zwischen Kaufabsicht und Kauf"
+     }
+    ]
+   }
+  },
+  "Q7.7.4": {
+   "text": "Verkaufen Sie an Kundinnen und Kunden in den Vereinigten Staaten?",
+   "help": "Manche KI-Kanäle stehen nur Händlern offen, die an US-Käufer verkaufen, unabhängig vom Sitz des Unternehmens.",
+   "teach": {
+    "why": "Es entscheidet, welche KI-Kanäle überhaupt verfügbar sind — und damit, ob dieser Abschnitt für den Launch überhaupt eine Rolle spielt.",
+    "limits": "ChatGPT und Copilot brauchen US-Käufer; Googles KI-Kanäle sind auf ausgewählte Shops mit Sitz in den USA begrenzt. Ein europäischer Händler, der nur in Europa verkauft, ist heute womöglich nicht geeignet."
+   }
+  },
+  "Q7.7.5": {
+   "text": "Wer darf Shopifys Zusatzbedingungen für den Verkauf über KI-Kanäle akzeptieren?",
+   "help": "Der Verkauf über diese Kanäle erfordert die Annahme gesonderter Bedingungen — üblicherweise durch die Rechts- oder Einkaufsabteilung, nicht durch das E-Commerce-Team.",
+   "teach": {
+    "why": "Der Kanal kann nicht live gehen, bevor eine zeichnungsberechtigte Person gesonderte Bedingungen akzeptiert. Diese Person früh zu benennen verhindert eine Blockade in der Launch-Woche.",
+    "limits": "Die Zusatzbedingungen werden im Shopify Admin akzeptiert, und die Annahme deckt die Kanäle ab, in denen der Store angemeldet ist."
+   }
+  },
+  "Q7.7.6": {
+   "text": "Sind Sie damit einverstanden, Name, E-Mail, Telefonnummer und Adresse der Kundschaft mit einem KI-Kanal zu teilen, wenn dort gekauft wird?",
+   "help": "Das ist eine datenschutzrechtliche Entscheidung. Unter der DSGVO braucht sie in der Regel eine dokumentierte Prüfung vor dem Launch.",
+   "teach": {
+    "why": "Ein Checkout innerhalb des Assistenten bedeutet, dass Bestelldaten zu einem Dritten gelangen. Das ist dieselbe Art Entscheidung wie das Hinzufügen eines neuen Auftragsverarbeiters und gehört zur datenschutzverantwortlichen Stelle.",
+    "limits": "Die Daten werden nur für Bestellungen geteilt, die über den direkten Checkout im Kanal aufgegeben werden.",
+    "options": [
+     {
+      "option": "Weitergabe freigeben",
+      "pros": "Der Checkout im Assistenten bleibt verfügbar, samt seinem Conversion-Vorteil",
+      "cons": "Ein Dritter verarbeitet Kundendaten; braucht eine Dokumentation und wahrscheinlich einen Vertrag"
+     },
+     {
+      "option": "Ablehnen oder vertagen",
+      "pros": "Kein neuer Auftragsverarbeiter; einfachere Datenschutzlage",
+      "cons": "Der Checkout im Assistenten muss abgeschaltet werden; der Kanal wird zum reinen Verweiskanal"
+     }
+    ]
+   }
+  },
+  "Q7.7.7": {
+   "text": "Wie vollständig sind Ihre Produktdaten — Titel, Bilder, Preise, Beschreibungen und Varianten?",
+   "help": "KI-Kanäle listen nur Produkte mit vollständigen Daten. Lücken machen Produkte unsichtbar, nicht bloß schlecht dargestellt.",
+   "teach": {
+    "why": "Die Qualität der Produktdaten entscheidet über die Sichtbarkeit in KI-Kanälen, und sie ist das Günstigste, was sich vor dem Launch beheben lässt.",
+    "limits": "Ein Produkt braucht einen Titel, mindestens ein Bild, einen Preis über null, eine identifizierbare URL und die Veröffentlichung im Onlineshop. Die Eignung wird laufend geprüft, nicht nur einmal."
+   }
+  },
+  "Q7.7.8": {
+   "text": "Stehen wichtige Produktinformationen in eigenen Feldern, getrennten Datensätzen oder im Produkttitel (zum Beispiel „Stahl 40 mm — Automatik“)?",
+   "help": "Daten in eigenen Feldern oder im Titel brauchen ein Mapping, bevor KI-Kanäle sie lesen können.",
+   "teach": {
+    "why": "Es entscheidet, ob es einen Datenstrang gibt. Kommerziell wichtige Attribute — Material, Größe, Uhrwerk — stecken oft in eigenen Feldern oder gepresst in Titeln, wo ein Assistent sie nicht zuverlässig lesen kann.",
+    "limits": "Shopify unterstützt das Mapping eigener Felder und von Titelmustern in den Katalog, der an KI-Kanäle geht; dieses Mapping ist einzuplanende Arbeit."
+   }
+  },
+  "Q7.7.9": {
+   "text": "Sollen KI-Crawler auf Ihrer Website erlaubt, eingeschränkt oder blockiert werden?",
+   "help": "Crawler zu blockieren entfernt Ihre Produkte nicht aus KI-Einkaufskanälen; es betrifft nur, was sie von Ihrer öffentlichen Seite lesen.",
+   "teach": {
+    "why": "Marken wollen oft KI-Crawler blockieren, um Inhalte zu schützen, und stellen dann fest, dass ihre Produkte trotzdem erscheinen — die beiden Wege sind getrennt.",
+    "limits": "Crawler-Regeln sind Empfehlungen und werden im Theme gesetzt; sie halten den Shopify-Produktfeed nicht auf.",
+    "options": [
+     {
+      "option": "Alle erlauben",
+      "pros": "Redaktionelle Inhalte, Ratgeber und die Markengeschichte können von Assistenten zitiert werden",
+      "cons": "Inhalte können zusammengefasst werden, ohne dass jemand die Seite besucht"
+     },
+     {
+      "option": "Selektiv oder blockiert",
+      "pros": "Schützt redaktionelle Inhalte und Bilder vor dem Crawling im offenen Web",
+      "cons": "Keine Wirkung auf die Produktdaten, die Shopify an KI-Kanäle sendet; kann die Sichtbarkeit in KI-Antworten verringern"
+     }
+    ]
+   }
+  },
+  "Q7.7.10": {
+   "text": "Möchten Sie steuern, welche Antworten KI-Assistenten zu Versand, Retouren und Größen geben?",
+   "help": "Shopify hat eine kostenlose App, die Ihre FAQ für Assistenten veröffentlicht und protokolliert, wonach gefragt wird.",
+   "teach": {
+    "why": "Assistenten beantworten Servicefragen, ob Sie die Antworten liefern oder nicht. Sie zu veröffentlichen hält die Antworten richtig und zeigt, was Kundinnen und Kunden tatsächlich fragen.",
+    "limits": "Die FAQ-Inhalte laufen über eine kostenlose Shopify-App; das Abfrageprotokoll zeigt, wonach zum Store gefragt wurde."
+   }
+  },
+  "Q7.7.11": {
+   "text": "Planen Sie einen eigenen KI-Einkaufsassistenten oder die eigenständige Anbindung des Stores an Agentenplattformen?",
+   "help": "Teile davon sind bei Shopify noch im Early Access — behandeln Sie es als Erkundung, nicht als festen Umfang.",
+   "teach": {
+    "why": "Es trennt „dort präsent sein, wo Assistenten ohnehin sind“ von „einen eigenen Assistenten bauen“. Das Zweite ist ein eigenes Projekt und beruht teils auf Vorabtechnologie.",
+    "limits": "Shopify veröffentlicht ein offenes Protokoll und Store-Endpunkte für Agenten; der Warenkorbteil ist Early Access, und Plananforderungen sind noch nicht dokumentiert."
+   }
+  },
+  "Q7.7.12": {
+   "text": "Welche KI-Werkzeuge von Shopify soll Ihr Team im Tagesgeschäft nutzen?",
+   "help": "Das sind Backoffice-Werkzeuge für Ihr Team, nicht für die Kundschaft.",
+   "teach": {
+    "why": "Es trennt KI für die Kundschaft von Produktivität für die Mitarbeitenden und markiert einen Schulungs- und Governance-Bedarf statt eines Builds.",
+    "limits": "Assistent und Content-Werkzeuge sind in den Plänen enthalten, mit je nach Plan unterschiedlichen Grenzen; die bessere Suche im Shop braucht einen bestimmten Plan und einen Katalog unter 200.000 Produkten."
+   }
+  },
+  "Q7.7.13": {
+   "text": "Bestehender Shopify-Store: Was zeigen die Einstellungen der agentischen Verkaufskanäle heute (Vertriebskanäle → Agentic)?",
+   "help": "Sehen Sie gemeinsam mit dem Kunden in den Admin: Anmeldemodus, welche Kanäle an sind, und ob der Checkout innerhalb des Assistenten aktiviert ist.",
+   "teach": {
+    "why": "Bei einem bestehenden Store sind die Einstellungen bereits live — die Beratung liest also den Ist-Zustand, statt den Kunden bitten zu müssen, ihn sich vorzustellen.",
+    "limits": "Die Anmeldung abzuschalten kann in manchen Kanälen bis zu sieben Tage brauchen, bis es wirkt."
+   }
   }
  },
  "document": {
