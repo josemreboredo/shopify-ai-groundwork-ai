@@ -23,7 +23,7 @@ describe('can we price this yet', () => {
   test('the denominator is the engine’s own decisions, and it is a constant of the offering', () => {
     const r = readiness(acme(), state(acme()));
     assert.equal(r.decisions.total, offering.scope_gates.length + offering.l_triggers.length + offering.exit_rules.length);
-    assert.equal(r.decisions.total, 42, 'fourteen gates, three triggers, twenty-five rules');
+    assert.equal(r.decisions.total, 40, 'fourteen gates, no triggers left, twenty-six rules');
     // A ratio of questions is not comparable between bids: only_if moves the
     // question count per client, and one question can drive six rules.
     for (const d of [...offering.scope_gates, ...offering.l_triggers, ...offering.exit_rules]) {
@@ -256,7 +256,7 @@ describe('the offer and the status are two axes', () => {
     assert.equal(offerStanding(beyond).short, 'Larger Engagement');
     assert.equal(offerStanding(beyond).applies, false);
     assert.equal(offerStanding({ offer: { code: 'S', name: 'Ecommerce Foundation' }, go: true, ...answered }).short, 'S');
-    assert.equal(offerStanding({ offer: { code: 'M' }, go: false, route: 'no_bid', ...answered }).short, 'No bid');
+    assert.equal(offerStanding({ offer: { code: 'M' }, go: false, route: 'arc', ...answered }).short, 'Merkle Arc');
   });
 
   test('an empty record has no offer, because it is not an engagement yet', () => {

@@ -1,7 +1,7 @@
 /**
  * @file exits.js
  * @description Deterministic exit-rule evaluation (ADR 0003) for rules
- * 11.1–11.25 in discovery/schema/offering.json, plus merging of LLM-detected candidates.
+ * 11.1–11.27 in discovery/schema/offering.json, plus merging of LLM-detected candidates.
  * LLM candidates are added, never allowed to remove or overwrite rule results.
  *
  * @module discovery/exits
@@ -200,20 +200,37 @@ const EVALUATORS = {
   },
 
   /*
-   * Hydrogen below Plus: one public preview, and the rest need a store login.
+   * The storefront leaves the offers.
    *
-   * Verified 2026-09-20 against shopify.dev/docs/storefronts/headless/hydrogen/
-   * environments: production and preview always exist and custom environments
-   * are unlimited, but the public limit is 1 on Starter, Basic, Grow and
-   * Advanced against 25 on Plus. It does not block anything — a stakeholder with
-   * a store login sees a private deployment — but it decides who reviews where,
-   * and that is a conversation to have before the build, not during it.
+   * A headless front end used to be an L: that offer was Hydrogen on Oxygen, so
+   * the classification read "we want a custom storefront" as a size. It is not
+   * a size, it is a different build — the commerce engine may still be Shopify
+   * while the storefront is not a theme at all — and Merkle scopes and delivers
+   * those through ARC. So it is a STOP with a destination rather than an offer,
+   * and the discovery that produced it goes with it.
+   *
+   * What went with the old offer: rule 11.25, which flagged that a Hydrogen
+   * storefront below Plus can only make one preview public. True, and no longer
+   * anyone's decision here — the build is not quoted from these offers.
    */
-  '11.25': (doc) => {
-    if (doc.design?.headless_required !== true) return null;
-    const plan = doc.shopify?.target_plan;
-    if (!plan || plan === 'plus') return null;
-    return `Headless storefront on the ${plan} plan: one public environment (25 on Plus), so every other preview needs a store login`;
+  '11.26': (doc) => (doc.design?.headless_required === true
+    ? 'A headless or custom-framework storefront is required, so the storefront is not a Shopify theme'
+    : null),
+
+  /*
+   * And the design system, for the same reason rather than a Shopify limit.
+   *
+   * Shopify renders anything a design system describes. What decides this is
+   * where the component layer lives: a system that is the design source for
+   * every template is owned and versioned as components, which is the shape of
+   * a composable engagement. A brand to apply to a theme is not — that is the
+   * storefront design gate, and it stays inside the offers, priced.
+   */
+  '11.27': (doc) => {
+    const f = doc.design?.figma ?? {};
+    return f.design_system === true && f.completeness === 'all_templates'
+      ? 'A complete Figma design system covering every template is the design source, not a brand applied to a theme'
+      : null;
   },
 
 };

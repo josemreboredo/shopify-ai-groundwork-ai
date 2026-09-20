@@ -39,8 +39,8 @@ function Neighbours({ segment }) {
   const next = SEGMENTS[i + 1];
   return (
     <nav className="seg-next" aria-label="The other offers">
-      {prev ? <Link to={`/offering/${prev}`} className="seg-prev">← {prev === 'larger-engagement' ? 'Beyond the offers' : prev.toUpperCase()}</Link> : <span />}
-      {next ? <Link to={`/offering/${next}`}>{next === 'larger-engagement' ? 'What lies beyond the offers' : `${next.toUpperCase()} — the next offer up`} →</Link> : <span />}
+      {prev ? <Link to={`/offering/${prev}`} className="seg-prev">← {prev === 'arc' ? 'Merkle Arc' : prev.toUpperCase()}</Link> : <span />}
+      {next ? <Link to={`/offering/${next}`}>{next === 'arc' ? 'Merkle Arc — where the storefront stops being a theme' : `${next.toUpperCase()} — the next offer up`} →</Link> : <span />}
     </nav>
   );
 }
@@ -49,8 +49,8 @@ export default function OfferingSegment({ loaderData }) {
   const { view, segment } = loaderData;
   const currency = view.offers[0]?.currency;
 
-  // Beyond the offers is not an offer, so it does not pretend to be one.
-  if (segment.slug === 'larger-engagement') return <Beyond view={view} segment={segment} currency={currency} />;
+  // Arc is not an offer, so this page does not pretend it is one.
+  if (segment.slug === 'arc') return <Arc view={view} segment={segment} />;
 
   const { offer } = segment;
   /* Every offer's gates, L included.
@@ -60,7 +60,7 @@ export default function OfferingSegment({ loaderData }) {
      an L page listing only its triggers says the opposite of what the engine
      does. */
   const moves = view.gates;
-  const envelope = view.gate_capacity_weeks;
+  const envelope = segment.offer.gate_capacity_weeks;
 
   return (
     <main id="main" className="story offering">
@@ -68,15 +68,16 @@ export default function OfferingSegment({ loaderData }) {
         <Link to="/offering" className="crumb">← The offering</Link>
         <p className="eyebrow">Offer {offer.code} · {TRACK[offer.delivery_track] ?? offer.delivery_track}</p>
         <h1>{offer.name}</h1>
-        <p className="answer-line">{offer.triggered_by}.</p>
+        <p className="answer-line">{offer.for_whom ?? `${offer.triggered_by}.`}</p>
+        <p className="lede">{offer.triggered_by}.</p>
         {/* Three numbers that each answer something. The middle one used to be
             the length of the scope list, which reads "1 things" on the two
             offers whose scope is written as one line. */}
         <ul className="stats">
           <li><strong>{weeks(offer.duration_weeks)}</strong><span>weeks, end to end</span></li>
           <li>
-            <strong>{segment.slug === 'l' ? view.l_triggers.length : view.gates.length}</strong>
-            <span>{segment.slug === 'l' ? 'triggers land an engagement here' : 'scope gates can move it from here'}</span>
+            <strong>{weeks(offer.gate_capacity_weeks)}</strong>
+            <span>weeks of scope gates this band already holds</span>
           </li>
           {view.pricing && offer.price_band
             ? <li><strong>{band(offer.price_band, currency)}</strong><span>internal price band — never in a client document</span></li>
@@ -144,30 +145,15 @@ export default function OfferingSegment({ loaderData }) {
         <section>
           <h2>What lands an engagement here</h2>
           <p className="lede">
-            One way in: any one of the triggers below, whatever the scope gates say. Scope alone never lands an
-            engagement here — a Liquid build that runs long is still a Liquid build, and this offer is the
-            headless one.
+            The work, in weeks. When the scope gates add up to more than an Ecommerce Scale can hold, this is the
+            same Shopify build one size up — not a different kind of build, and not a different track.
           </p>
           <p className="muted">
-            Which is why the triggers are the whole entry: each is a statement about what is being built, not
-            about how much of it there is. Scope that outgrows every offer is not an L either — that is{' '}
-            <Link to="/offering/larger-engagement">beyond the offers</Link>, and a programme rather than a bigger
-            one.
+            Nothing qualitative puts an engagement here. A luxury brand with one market and a small catalogue is a
+            small engagement; a brand that wants every template designed answers the design questions, and those
+            are priced by the storefront design gate below. A storefront that is not a Shopify theme at all is{' '}
+            <Link to="/offering/arc">Merkle Arc</Link>, which these offers do not quote.
           </p>
-          <h3>The triggers</h3>
-          <ol className="claims">
-            {view.l_triggers.map((t) => (
-              <li key={t.id}>
-                <details>
-                  <summary>
-                    <span className="claim">{t.label}</span>
-                    <span className="claim-line">On its own, enough to make this an L.</span>
-                  </summary>
-                  <p>{t.condition}</p>
-                </details>
-              </li>
-            ))}
-          </ol>
         </section>
       ) : null}
 
@@ -225,23 +211,40 @@ export default function OfferingSegment({ loaderData }) {
   );
 }
 
-/** Not an offer: the decision about how Merkle proceeds when the offers stop. */
-function Beyond({ view, segment, currency }) {
+/**
+ * Not an offer, and deliberately not priced.
+ *
+ * Arc is Merkle's enterprise platform for unifying brand design, content and
+ * commerce in one architecture. This engine prices Shopify theme builds; a
+ * storefront that is not a theme is Arc's, and the honest thing for this page
+ * to do is name it and stop — no band, no weeks, no estimate.
+ */
+function Arc({ view, segment }) {
   return (
     <main id="main" className="story offering">
       <header className="page-head">
         <Link to="/offering" className="crumb">← The offering</Link>
         <p className="eyebrow">Beyond S, M and L</p>
-        <h1>When the offers stop</h1>
-        <p className="answer-line">This is not a refusal. It is a decision about how Merkle proceeds.</p>
+        <h1>Merkle Arc</h1>
+        <p className="answer-line">Unify brand design, content and commerce in one architecture.</p>
         <p className="lede">
-          Recorded in question 10.5.5, before the closing document is written. Two routes, and the engine produces
-          a different thing for each.
+          Where the storefront stops being a Shopify theme, the offers stop too. Arc is the enterprise platform
+          Merkle builds those storefronts on — a tokenised design system, a multi-channel component library,
+          GraphQL middleware and its own console: composable and headless, without the vendor lock-in.
+        </p>
+        <p className="callout">
+          <strong>Nothing here quotes it, and nothing here estimates it.</strong> This engine prices Shopify
+          builds. Arc is a separate engagement, scoped by the Arc practice. What goes across is the discovery —
+          every answer, every requirement, and the rule that named the reason.
         </p>
       </header>
 
       <section>
-        <h2>The two routes</h2>
+        <h2>What the consultant records after a stop</h2>
+        <p className="lede">
+          Recorded in question 10.5.5, before the closing document is written. Two routes, and the engine produces
+          a different thing for each.
+        </p>
         <div className="routes">
           {view.routes.map((r) => (
             <article key={r.id} className={`route route-${r.id}`}>

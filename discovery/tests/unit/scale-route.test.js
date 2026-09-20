@@ -134,14 +134,18 @@ describe('route after a STOP', () => {
     assert.throws(() => buildBacklog({ clientDir: path.join(outDir, 'global-demo') }), /resolve the open hard blockers/);
   });
 
-  test('no bid: STOP report records the decision, no approach and no backlog', () => {
-    const { workDir, outDir } = stopInterview('no_bid');
+  test('Merkle Arc: the discovery goes across, and nothing here prices it', () => {
+    // Arc is a separate engagement scoped by the Arc practice. This engine
+    // prices Shopify builds, so it drafts no approach — mapping requirements to
+    // Shopify capabilities is exactly what does not apply — and no backlog. The
+    // STOP report and the answers behind it are what travel.
+    const { workDir, outDir } = stopInterview('arc');
     const done = finishWork({ workDir, outDir });
     assert.equal(done.ok, true, JSON.stringify(done.errors));
     assert.equal(needsApproach(done.engagement), false);
     assert.deepEqual(done.written.map((f) => path.basename(f)).sort(), ['engagement.json', 'stop-report.md']);
-    assert.match(fs.readFileSync(path.join(outDir, 'global-demo', 'stop-report.md'), 'utf8'), /Decision: \*\*No bid\*\*/);
-    assert.throws(() => buildBacklog({ clientDir: path.join(outDir, 'global-demo') }), /No bid/);
+    assert.match(fs.readFileSync(path.join(outDir, 'global-demo', 'stop-report.md'), 'utf8'), /Decision: \*\*Merkle Arc\*\*/);
+    assert.throws(() => buildBacklog({ clientDir: path.join(outDir, 'global-demo') }), /Merkle Arc/);
   });
 
   test('a route on a GO engagement changes nothing', () => {

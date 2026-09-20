@@ -273,7 +273,7 @@ function main() {
     if (!result.ok) return printErrors(result.errors);
     printDecision(result.doc);
     if (!result.doc.delivery.go && !stopRoute(result.doc)) {
-      console.log('  route: not decided — record delivery.route (Q10.5.5): larger_engagement or no_bid');
+      console.log('  route: not decided — record delivery.route (Q10.5.5): larger_engagement or arc');
     }
     console.log(needsApproach(result.doc)
       ? `  next: follow ${rel}/${WORK_FILES.approachInstructions} → write ${rel}/${WORK_FILES.approach}\n        then npm run discover:finish -- --work ${rel}`

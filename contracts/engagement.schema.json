@@ -432,8 +432,7 @@
         },
         "delivery_track": {
           "enum": [
-            "liquid",
-            "hydrogen"
+            "liquid"
           ]
         },
         "scope_gates": {
@@ -487,17 +486,8 @@
         "l_triggers": {
           "type": "object",
           "additionalProperties": false,
-          "properties": {
-            "luxury": {
-              "$ref": "#/$defs/gate"
-            },
-            "headless": {
-              "$ref": "#/$defs/gate"
-            },
-            "figma_design_system": {
-              "$ref": "#/$defs/gate"
-            }
-          }
+          "description": "Deliberately empty. L used to be reached by three answers about what was being built — luxury positioning, a headless requirement, a complete Figma design system. Two of them leave the offers entirely (exit rules 11.26 and 11.27 route a storefront that is not a Shopify theme to ARC) and the third was never a size. The key stays so the shape of the document does, and so a trigger can earn its way back.",
+          "properties": {}
         },
         "modifiers": {
           "type": "array",
@@ -2956,9 +2946,9 @@
         "route": {
           "enum": [
             "larger_engagement",
-            "no_bid"
+            "arc"
           ],
-          "description": "Consultant decision after a STOP: larger_engagement = Merkle Enterprise Engagement with a dedicated Discovery Phase (outside the S/M/L offers); no_bid = Merkle does not propose. Ignored on GO."
+          "description": "Consultant decision after a STOP: larger_engagement = Merkle Enterprise Engagement with a dedicated Discovery Phase (outside the S/M/L offers); arc = Merkle Arc, a separate engagement scoped by the Arc practice and neither quoted nor estimated here. Deciding not to bid is recorded on the outcome ledger, not as a route. Ignored on GO."
         },
         "kickoff_date": {
           "$ref": "#/$defs/date"

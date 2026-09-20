@@ -40,21 +40,23 @@ const MIGRATION_TIER = {
 /**
  * How many weeks of scope gates an offer's band already contains.
  *
- * M is S plus its gates: the band runs 6–13 against an S of 4–5, so an M holds
- * two to eight weeks of gates. L holds the same, because L is M plus the
- * headless storefront — seven weeks at both ends of the band, which is the
- * offer itself and not gate work.
+ * Every offer is the same build on the same track now, so each band is an S
+ * plus the gate work it was sized for: an M of 6–13 against an S of 4–5 holds
+ * two to eight weeks of them, an L of 13–20 holds nine to fifteen.
  *
- * Gates inside the envelope cost nothing more; that is what the band is for.
- * What was missing was the other side of it, and L showed it worst: its
- * triggers are qualitative — luxury, headless, a Figma system — so a brand with
- * a Magento estate, six markets and four integrations was quoted at the same
- * 13–20 weeks as one with a single market and no migration.
+ * Gates inside that envelope cost nothing more — that is what the band is for.
+ * Past it they are added to the quote, which is the half that was missing: an
+ * L with a Magento estate, six markets and four integrations used to come out
+ * at the same 13–20 weeks as one with a single market and no migration.
+ *
+ * @param {string} code  offer code
+ * @returns {{ min: number, max: number }}
  */
-export const GATE_CAPACITY = {
-  min: offering.offers.M.duration_weeks.min - offering.offers.S.duration_weeks.min,
-  max: offering.offers.M.duration_weeks.max - offering.offers.S.duration_weeks.max,
-};
+export function gateCapacity(code) {
+  const base = offering.offers.S.duration_weeks;
+  const band = offering.offers[code]?.duration_weeks ?? base;
+  return { min: band.min - base.min, max: band.max - base.max };
+}
 
 /**
  * Integrations that count toward the integration gate and exit rule 11.7.
@@ -412,22 +414,24 @@ const GATE_EVALUATORS = {
   },
 };
 
-/** @type {Record<string, (doc: object) => Gate>} */
-const L_TRIGGER_EVALUATORS = {
-  luxury: (doc) => {
-    const p = doc.brand?.positioning;
-    return { active: p === 'luxury' || p === 'enterprise', evidence: `Brand positioning: ${p ?? 'not recorded'}` };
-  },
-  headless: (doc) => {
-    const h = doc.design?.headless_required;
-    return { active: h === true, evidence: `Headless storefront required: ${h === undefined ? 'not recorded' : h ? 'yes' : 'no'}` };
-  },
-  figma_design_system: (doc) => {
-    const f = doc.design?.figma ?? {};
-    const active = f.design_system === true && f.completeness === 'all_templates';
-    return { active, evidence: `Figma: ${f.exists ? `${f.completeness ?? 'completeness unknown'}, design system ${f.design_system ? 'yes' : 'no'}` : 'none'}` };
-  },
-};
+/**
+ * Nothing qualitative decides the offer any more.
+ *
+ * L used to be reached by three answers about what was being built — a luxury
+ * brand, a headless requirement, a complete Figma design system — and none of
+ * them said anything about how much there was. Two of them have left the offers
+ * altogether: a storefront that is not a Shopify theme is a composable build and
+ * goes to ARC (exit rules 11.26 and 11.27). The third, brand positioning, is not
+ * a scope fact — a luxury brand with one market and a small catalogue is a small
+ * engagement, and a luxury brand that wants every template designed answers the
+ * design questions, which is what the storefront design gate reads.
+ *
+ * The map stays because the shape of the engagement document does, and because
+ * a trigger may yet earn its way back. It is empty on purpose.
+ *
+ * @type {Record<string, (doc: object) => Gate>}
+ */
+const L_TRIGGER_EVALUATORS = {};
 
 /**
  * Compute the `offer` block for an engagement document.
@@ -536,20 +540,22 @@ export function classifyOffer(doc) {
   let overflow = null;
 
   /*
-   * Scope no longer promotes an engagement into L.
+   * Scope decides the offer, and nothing else does.
    *
-   * It used to: outgrow the M ceiling and the quote became L's, which is the
-   * headless offer — so a Liquid build that ran half a week long was quoted at
-   * a 13–20 week Hydrogen band, and the architecture, the app shortlist and the
-   * whole approach followed the band rather than the engagement. The offer is
-   * now what the engagement is, and the weeks it outgrew are priced where they
-   * happen. L is reached by what it is actually for: headless, luxury, a Figma
-   * design system. Scope that outgrows every offer is exit rule 11.3's, and it
-   * is a programme rather than a bigger offer.
+   * This rule was removed once and is back, because what made it wrong has
+   * gone: L was the headless offer, so outgrowing the M ceiling by half a week
+   * quoted a Liquid build at a Hydrogen band and dragged the architecture and
+   * the app shortlist after it. All three offers are Liquid now — L is simply
+   * the largest of them — so the offer following the work is exactly right.
+   *
+   * The test is the ceiling the scope has outgrown, not the floor of the next
+   * offer up: a scope of 10–13 weeks fits an M of 6–13 exactly, and quoting it
+   * as an L would over-quote work the engine itself estimated at ten. Scope
+   * that outgrows every offer is exit rule 11.3's, and is a programme.
    */
-  if (activeTriggers.length > 0) {
+  if (total.max > offering.offers.M.duration_weeks.max) {
     code = 'L';
-    rationale = `L trigger(s): ${activeTriggers.map((t) => t.label).join(', ')}`;
+    rationale = `Scope reaches ${total.min}–${total.max} weeks (${activeGates.map((g) => g.label).join(', ')}), beyond the M ceiling of ${offering.offers.M.duration_weeks.max}`;
   } else if (activeGates.length >= 2) {
     code = 'M';
     rationale = `${activeGates.length} scope gates active: ${activeGates.map((g) => g.label).join(', ')}`;
@@ -580,16 +586,17 @@ export function classifyOffer(doc) {
    * S is not in this: it prices its single gate in full, because its band is
    * four to five weeks of base and nothing else.
    */
+  const capacity = gateCapacity(code);
   if (code !== 'S') {
     const over = {
-      min: Math.max(0, gateTotals.weeks.min - GATE_CAPACITY.min),
-      max: Math.max(0, gateTotals.weeks.max - GATE_CAPACITY.max),
+      min: Math.max(0, gateTotals.weeks.min - capacity.min),
+      max: Math.max(0, gateTotals.weeks.max - capacity.max),
     };
     if (over.min > 0 || over.max > 0) {
       overflow = over;
       priced = true;
       modifiers = adds.map((m) => m.id);
-      rationale += `. Scope gates add ${gateTotals.weeks.min}–${gateTotals.weeks.max} weeks against the ${GATE_CAPACITY.min}–${GATE_CAPACITY.max} this offer already carries, so ${over.min}–${over.max} week(s) are quoted on top`;
+      rationale += `. Scope gates add ${gateTotals.weeks.min}–${gateTotals.weeks.max} weeks against the ${capacity.min}–${capacity.max} this offer already carries, so ${over.min}–${over.max} week(s) are quoted on top`;
     }
   }
 
@@ -627,7 +634,7 @@ export function classifyOffer(doc) {
     scope_effort_weeks: total,
     // The gate weeks this offer's band already contains, so a reader can check
     // an overflow rather than take it.
-    gate_capacity_weeks: GATE_CAPACITY,
+    gate_capacity_weeks: capacity,
     rationale,
   };
 }

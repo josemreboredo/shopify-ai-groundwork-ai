@@ -33,8 +33,10 @@ describe('the offer menu', () => {
   });
 
   test('and what lies beyond them is listed too, but not as an offer', () => {
-    assert.equal(labels.get('larger-engagement'), 'Beyond the offers');
-    assert.ok(!Object.keys(offering.offers).includes('larger-engagement'));
+    // Merkle Arc, not a fourth offer: this engine prices Shopify theme builds,
+    // and a storefront that is not a theme is scoped by the Arc practice.
+    assert.equal(labels.get('arc'), 'Merkle Arc');
+    assert.ok(!Object.keys(offering.offers).includes('arc'));
   });
 
   test('no offer is listed twice or under a letter', () => {

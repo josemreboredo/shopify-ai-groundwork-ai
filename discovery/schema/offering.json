@@ -1,10 +1,11 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "1.5.0",
+  "version": "2.0.0",
   "currency": "CHF",
   "offers": {
     "S": {
       "name": "Ecommerce Foundation",
+      "for_whom": "A brand starting ecommerce, or starting it properly. There is no store today, or one nobody has really run — the open question is whether the range sells online at all, and the honest way to answer it is a store that does, quickly.",
       "delivery_track": "liquid",
       "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
       "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · Accessibility and Core Web Vitals measured, not promised",
@@ -144,6 +145,7 @@
     },
     "M": {
       "name": "Ecommerce Scale",
+      "for_whom": "A brand that already sells and cannot scale. The countries, the catalogue and the back office are in place — a PIM, an ERP, an OMS — and what holds the operation back is the storefront in front of them and the wiring behind it.",
       "delivery_track": "liquid",
       "triggered_by": "2 or more scope gates",
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A migration where there is one to run, priced by where the data comes from",
@@ -297,9 +299,10 @@
     },
     "L": {
       "name": "Ecommerce Growth",
-      "delivery_track": "hydrogen",
-      "triggered_by": "Any L trigger (luxury / enterprise brand, headless requirement, full Figma design system) — scope gates do not apply",
-      "base_scope": "The storefront becomes the thing being built, not the thing being configured · Headless Hydrogen on the Storefront API, hosted on Oxygen · A design system built as components, with motion and interaction as specified · Commerce engine stays on Shopify; the front end is owned, deployed and measured by us · Experimentation and personalisation set up at launch, because that is what it is for",
+      "for_whom": "A brand already selling professionally, on an enterprise platform. Salesforce Commerce Cloud, Adobe Commerce or similar, with the traffic and the operation to match — the move to Shopify has to land on a store that performs at least as well, and is measured to prove it.",
+      "delivery_track": "liquid",
+      "triggered_by": "Scope that adds up to more than an M can hold — the largest of the three Shopify offers",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · The enterprise migration: the data, the redirect estate and the integrations the old platform was carrying · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · One Shopify theme, built out: a design system as sections and blocks over one token layer, every template against it · Still Liquid, still the merchant’s to edit — a storefront that is not a theme is Merkle Arc, and a different conversation",
       "price_band": {
         "min": 140000,
         "max": 220000,
@@ -312,29 +315,30 @@
       "phases": [
         {
           "id": "setup",
-          "name": "Store and platform set-up",
+          "name": "Store set-up and topology",
           "weeks": {
             "min": 1.5,
             "max": 1.5
           },
-          "covers": "Shopify as the commerce engine, and the platform the front end is deployed on.",
+          "covers": "Everything Ecommerce Scale sets up, plus what a build this size needs around it: a staging store, the theme release path, and users and permissions per market",
           "deliverables": [
             "The commerce engine on Shopify set up as in Ecommerce Scale: plan, topology, selling entity and tax footprint per market",
-            "Oxygen environments, Storefront API tokens and the deployment pipeline, with who may deploy",
-            "The environment plan: below Shopify Plus only one environment can be public, so who reviews where is decided here"
+            "A staging store and a theme release path, with who may publish and how a change gets back out again",
+            "Users, roles and permissions per market, agreed before anyone needs them rather than after"
           ]
         },
         {
           "id": "template",
-          "name": "Front-end architecture",
+          "name": "Section architecture",
           "weeks": {
             "min": 1,
             "max": 2
           },
-          "covers": "There is no theme to select. The architecture is the decision this offer is bought for.",
+          "covers": "There is no single template to pick. The section architecture for the whole template set is the decision this offer is bought for, and it is written down before a section is built",
           "deliverables": [
-            "The route structure, the rendering strategy and the caching model, each chosen and written down with what it rules out",
-            "The decision record for the front end: why headless, what it costs to keep, and what it would take to go back"
+            "The theme foundation chosen against the template set the catalogue needs — Horizon unless an answer rules it out — with what the choice rules out",
+            "The section and block architecture for every template: what is a section, what is a block, and what the merchant may rearrange",
+            "The decision record behind it — why this foundation, what it costs to keep, and what would force a rebuild"
           ]
         },
         {
@@ -344,39 +348,39 @@
             "min": 1,
             "max": 1.5
           },
-          "covers": "Every app decided twice, because half of what an app does has no storefront here.",
+          "covers": "The longest shortlist of the three offers, decided per market and per channel rather than once for the store",
           "deliverables": [
-            "Every app decided twice: what it does in the Admin, and what replaces its storefront half",
-            "The services a headless front end needs that a theme gets free — search, content, personalisation — chosen and costed",
-            "A running cost per service, so the front end has a total cost of ownership rather than a build price"
+            "The shortlist from the app registry: native Shopify first, an App Store app only where nothing native covers it",
+            "Which app is allowed in which market and on which channel, and what each one costs there",
+            "A running cost per app, so the store has a total cost of ownership and not only a build price"
           ]
         },
         {
           "id": "design",
-          "name": "Storefront build",
+          "name": "Design system and templates",
           "weeks": {
             "min": 4,
             "max": 6
           },
-          "covers": "The largest phase in this offer, and the reason this offer exists at all.",
+          "covers": "The design system built as sections and blocks over one token layer, with every template against it — the largest phase in this offer, and the reason it is this offer",
           "deliverables": [
-            "The design system built as components with one token layer, not traced screen by screen",
-            "Every template against it, with motion and interaction as specified and reduced-motion respected",
-            "A component library the client’s own team can read, extend and test"
+            "One token layer — colour, type, spacing, motion — that every section reads from, so a brand change is a token change",
+            "The design system built as sections and blocks the merchant can still rearrange, not templates traced screen by screen",
+            "Every template against it, with motion and interaction as specified and reduced motion respected"
           ]
         },
         {
           "id": "data",
-          "name": "Catalogue, content and data",
+          "name": "Catalogue, content and markets",
           "weeks": {
             "min": 2,
             "max": 3
           },
-          "covers": "The product model, and the content the storefront renders from metaobjects.",
+          "covers": "The product model at the size a deep range needs, the content the storefront renders from metaobjects, and the markets behind it",
           "deliverables": [
-            "The product model and the metaobjects the storefront renders content from",
-            "Markets, languages and domains as in Ecommerce Scale, but resolved on the front end rather than by the theme",
-            "The migration where one fired, including the redirect estate a new URL structure creates"
+            "The product model at scale: options, metafields, collections, search and filters, on the real catalogue",
+            "Metaobjects for the content the storefront renders, so content changes without a theme release",
+            "Market catalogues and prices, languages and domains, and the migration where one fired — redirect estate included"
           ]
         },
         {
@@ -386,11 +390,11 @@
             "min": 1.5,
             "max": 3
           },
-          "covers": "Everything Scale connects, plus what a headless front end adds on top.",
+          "covers": "Every connection in the register, each with the reconciliation job it needs and the environment it was built against",
           "deliverables": [
-            "Every connection Ecommerce Scale builds: the flow, the connector, the field mapping, the reconciliation job and the monitoring",
-            "The ones a headless front end adds: search, personalisation, and the content source the storefront reads",
-            "Each one with its own failure mode written down, because a front end outage is now ours"
+            "Each connection built: the flow, the connector, the field mapping, and the test environment behind it",
+            "The reconciliation job every connection needs, because webhook delivery is not guaranteed",
+            "A failure mode written down per connection, with the person who is called when it fires"
           ]
         },
         {
@@ -400,11 +404,11 @@
             "min": 1,
             "max": 2
           },
-          "covers": "An owned front end means owned Core Web Vitals, measured route by route.",
+          "covers": "Measured per template on the real catalogue, per market and per channel, and signed off by the client rather than by us",
           "deliverables": [
-            "Core Web Vitals measured per route on a preview deployment, not per site on a guess",
-            "Accessibility to the agreed target, tested on the components rather than on the pages",
-            "Experimentation set up and running at launch, with the first test live"
+            "Accessibility to the agreed target, tested on the sections rather than on a sample of pages",
+            "Core Web Vitals measured per template on the real catalogue, before launch rather than after it",
+            "UAT with the client on the flows the gates brought, and experimentation set up and running at launch"
           ]
         },
         {
@@ -414,37 +418,37 @@
             "min": 1,
             "max": 1
           },
-          "covers": "Live under load, with the owner of the next release agreed in writing.",
+          "covers": "Cut-over, per market where the launch is phased, and the store handed to a team that can actually run it",
           "deliverables": [
-            "Cut-over with the front end under load, and the rollback proven before the day",
-            "Redirects, training on the Admin and on the deployment pipeline",
-            "Who owns a release after handover, agreed in writing — the question a headless build cannot leave open"
+            "Cut-over per market where the launch is phased, with the rollback proven before the day",
+            "Redirects live and watched, payment providers live, and the checks for the first week agreed",
+            "Training on the day-to-day and on the theme release path, with the owner of the next release agreed in writing"
           ]
         }
       ],
       "channels": {
-        "b2c": "A consumer storefront the client owns the front end of, which is what this offer is for.",
-        "b2b": "Rare, and worth checking before it is quoted: a headless build is bought for the consumer experience, and a wholesale buyer values a fast ordering path over a designed one. If the answer is wholesale only, ask whether Scale is the honest recommendation.",
-        "both": "One front end serving both, with the buyer context deciding what renders. It is the case this offer handles best and the one it is most often bought for."
+        "b2c": "The consumer storefront at the size the scope describes: every template built out rather than configured.",
+        "b2b": "The same at that size, wholesale: company accounts and locations, price lists per company, quantity rules, payment terms and the B2B templates. The consumer-only work is not in it.",
+        "both": "Both storefronts built and tested, with a decision taken per market about which channel sells there."
       },
       "not_included": [
-        "Custom checkout UI. The front end is owned; checkout stays Shopify’s, whatever the rest of the storefront does",
-        "The commerce logic Shopify does not support natively and Functions cannot reach — that is a separate conversation, not a line in this offer",
-        "Content production, photography and video",
-        "Running the front end after handover — hosting is Oxygen, but a deployed front end needs an owner and that is agreed, not assumed"
+        "Custom checkout UI. Shopify no longer permits it whatever the rest of the storefront does — Checkout Extensibility is the whole of what is possible",
+        "A headless or custom-framework storefront. That is a composable build, and it belongs with ARC rather than inside a Shopify offer",
+        "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
+        "Content production, photography and video, and the copy that goes on the templates this offer builds"
       ],
       "client_provides": [
         "Everything Ecommerce Scale needs, including a non-production environment per connected system",
-        "The design, complete enough to build from: a design system, not key screens",
-        "A decision on who owns the front end after handover, taken before the build rather than at the end",
-        "Whoever can approve a performance and accessibility target and hold to it"
+        "The design, complete enough to build from: a template set with its states, not a set of key screens",
+        "Whoever can approve a performance and accessibility target and then hold the project to it",
+        "A decision on who owns the store after handover, taken before the build rather than at the end of it"
       ]
     }
   },
   "classification": [
     {
       "order": 1,
-      "when": "any l_trigger active",
+      "when": "base weeks + active gate modifiers > offers.M.duration_weeks.max",
       "offer": "L"
     },
     {
@@ -651,33 +655,7 @@
       ]
     }
   ],
-  "l_triggers": [
-    {
-      "id": "luxury",
-      "label": "Luxury / enterprise brand",
-      "condition": "Brand positioning is luxury or enterprise",
-      "inputs": [
-        "/brand/positioning"
-      ]
-    },
-    {
-      "id": "headless",
-      "label": "Headless requirement",
-      "condition": "Client requires a headless / custom storefront (Hydrogen, other framework, native app front end)",
-      "inputs": [
-        "/design/headless_required"
-      ]
-    },
-    {
-      "id": "figma_design_system",
-      "label": "Full Figma design system",
-      "condition": "A complete Figma design system covering all templates is the design source",
-      "inputs": [
-        "/design/figma/design_system",
-        "/design/figma/completeness"
-      ]
-    }
-  ],
+  "l_triggers": [],
   "modifiers": [
     {
       "id": "+Markets",
@@ -1087,7 +1065,7 @@
       "result": "STOP",
       "status": "canonical",
       "condition": "Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility)",
-      "destination": "Composable platform",
+      "destination": "Merkle Arc — composable commerce, scoped separately",
       "inputs": [
         "/checkout/customisation"
       ],
@@ -1310,16 +1288,27 @@
       "label": "A system to be connected has no test environment to build against"
     },
     {
-      "id": "11.25",
-      "result": "FLAG",
+      "id": "11.26",
+      "result": "STOP",
       "status": "canonical",
-      "condition": "A headless storefront on a plan below Shopify Plus. Hydrogen storefronts always have a production and a preview environment and unlimited custom ones, but only one environment can be public: on Starter, Basic, Grow and Advanced the limit is 1, on Plus it is 25. Every other preview needs a login to the store, which constrains how many review links can run in parallel with client stakeholders",
-      "destination": "A named owner before the build starts: agree who reviews where, or price the Plus plan",
+      "condition": "A headless or custom-framework storefront is required — Hydrogen, another framework, or a native app front end. The commerce engine may stay on Shopify; the storefront is no longer a theme, and no offer here builds one",
+      "destination": "Merkle Arc — not quoted or estimated here; the Arc practice scopes it",
       "inputs": [
-        "/design/headless_required",
-        "/shopify/target_plan"
+        "/design/headless_required"
       ],
-      "label": "A headless storefront below Plus, where only one preview can be public"
+      "label": "A storefront that is not a Shopify theme"
+    },
+    {
+      "id": "11.27",
+      "result": "STOP",
+      "status": "canonical",
+      "condition": "A complete Figma design system covering every template is the design source, rather than a brand to apply to a theme. Building to it means owning the component layer, which is a composable engagement rather than a theme one",
+      "destination": "Merkle Arc — not quoted or estimated here; the Arc practice scopes it",
+      "inputs": [
+        "/design/figma/design_system",
+        "/design/figma/completeness"
+      ],
+      "label": "A design system as the source, not a brand to apply"
     }
   ],
   "routes": [
@@ -1331,9 +1320,10 @@
       "description": "The requirements go beyond the S/M/L offers. This is not a refusal and not a pause: Merkle proposes an Enterprise Engagement that opens with a full, consultant-led Discovery Phase — a traditional discovery, run by people rather than by this tool. The approach drafted here is its starting point, and the client deck is produced and shared with the client as it would be for any engagement. What is not produced is the Jira backlog and the Confluence pages: the backlog is defined during that Discovery Phase, and issuing one now would imply a scope nobody has agreed."
     },
     {
-      "id": "no_bid",
-      "label": "No bid",
-      "description": "Merkle does not propose. Only the STOP report is produced."
+      "id": "arc",
+      "label": "Merkle Arc",
+      "proposal": "Merkle Arc — a separate engagement, scoped by the Arc practice",
+      "description": "Beyond these three offers is Arc: Merkle’s enterprise platform for unifying brand design, content and commerce in one architecture — a tokenised design system, a multi-channel component library, GraphQL middleware and its own console, composable and headless without the vendor lock-in. A storefront that is not a Shopify theme, and a design system that is the design source rather than a brand to apply, are Arc’s shape rather than an offer’s. Nothing here quotes it, estimates it or drafts a Shopify approach for it: this engine prices Shopify builds. What goes across is the discovery — every answer, every requirement and the STOP that named the reason."
     }
   ],
   "app_signals": [
@@ -1552,7 +1542,7 @@
     },
     {
       "question": "What happens after a STOP",
-      "decision": "The lead consultant records delivery.route: larger_engagement drafts the full approach, a brief and the client deck for a Merkle Enterprise Engagement with a dedicated Discovery Phase — no Jira tickets; no_bid produces the STOP report only",
+      "decision": "The lead consultant records delivery.route: larger_engagement drafts the full approach, a brief and the client deck for a Merkle Enterprise Engagement with a dedicated Discovery Phase — no Jira tickets; arc hands the storefront to the Merkle Arc practice, which scopes and prices it, and nothing here quotes or estimates it",
       "rationale": "A STOP means the standard offers do not fit, not that discovery is wasted. The client still needs the findings and a recommended approach; the backlog belongs to the enterprise Discovery Phase"
     },
     {

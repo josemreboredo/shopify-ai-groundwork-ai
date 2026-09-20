@@ -911,8 +911,7 @@
         "/shopify/target_plan"
       ],
       "feeds": [
-        "exit:11.1",
-        "exit:11.25"
+        "exit:11.1"
       ],
       "shopify": {
         "native": [
@@ -1074,7 +1073,7 @@
         "/brand/positioning"
       ],
       "feeds": [
-        "l_trigger:luxury"
+        "gate:storefront_design"
       ],
       "teach": {
         "why": "Positioning sets the design depth and the solution approach. Luxury and enterprise positioning triggers the L offer: bespoke design, more front-end build and a longer review cycle, rather than a configured theme."
@@ -1351,8 +1350,7 @@
       "feeds": [
         "gate:sku_complexity",
         "app:bundle_app",
-        "app:pre_order_app"
-      ,
+        "app:pre_order_app",
         "gate:subscriptions"
       ],
       "shopify": {
@@ -1418,8 +1416,7 @@
         "/catalogue/subscription_app"
       ],
       "feeds": [
-        "app:subscriptions_app"
-      ,
+        "app:subscriptions_app",
         "gate:subscriptions"
       ],
       "shopify": {
@@ -1545,8 +1542,7 @@
         "/catalogue/subscriptions/features"
       ],
       "feeds": [
-        "app:subscriptions_app"
-      ,
+        "app:subscriptions_app",
         "gate:subscriptions"
       ],
       "shopify": {
@@ -3942,8 +3938,7 @@
       ],
       "feeds": [
         "exit:11.1",
-        "exit:11.6"
-      ,
+        "exit:11.6",
         "gate:checkout_extensibility"
       ],
       "shopify": {
@@ -6699,8 +6694,7 @@
         "/compliance/cookie_consent_tool"
       ],
       "feeds": [
-        "app:consent_app"
-      ,
+        "app:consent_app",
         "gate:analytics_consent"
       ],
       "shopify": {
@@ -6968,8 +6962,7 @@
         "/marketing/analytics/server_side"
       ],
       "feeds": [
-        "app:tracking_app"
-      ,
+        "app:tracking_app",
         "gate:analytics_consent"
       ],
       "shopify": {
@@ -8422,8 +8415,7 @@
         "/migration/subscriptions"
       ],
       "feeds": [
-        "exit:11.14"
-      ,
+        "exit:11.14",
         "gate:subscriptions"
       ],
       "skip_if": {
@@ -8446,7 +8438,7 @@
         "/design/figma/exists"
       ],
       "feeds": [
-        "l_trigger:figma_design_system"
+        "exit:11.27"
       ],
       "teach": {
         "why": "Decides whether design is an input or a work package. No Figma means design effort sits inside the engagement; a complete Figma design system covering every template is an L trigger, because implementing someone else's system costs more, not less.",
@@ -8466,7 +8458,7 @@
         "/design/figma/completeness"
       ],
       "feeds": [
-        "l_trigger:figma_design_system",
+        "exit:11.27",
         "gate:storefront_design"
       ],
       "skip_if": {
@@ -8491,7 +8483,7 @@
         "/design/figma/design_system"
       ],
       "feeds": [
-        "l_trigger:figma_design_system",
+        "exit:11.27",
         "gate:storefront_design"
       ],
       "skip_if": {
@@ -8571,8 +8563,7 @@
         "/design/headless_required"
       ],
       "feeds": [
-        "l_trigger:headless",
-        "exit:11.25"
+        "exit:11.26"
       ],
       "shopify": {
         "native": [
@@ -9432,13 +9423,13 @@
       "audience": "consultant",
       "answer_type": "enum",
       "ask_when": "stop",
-      "text": "The requirements go beyond the S, M and L offers. How will Merkle proceed: a Larger Engagement, or no bid?",
-      "help": "Larger Engagement: Merkle proposes an Enterprise Engagement with a dedicated Discovery Phase; the approach, a brief and the client deck are still produced, Jira tickets are not. No bid produces the STOP report only.",
+      "text": "The requirements go beyond the S, M and L offers. How will Merkle proceed: a Larger Engagement, or Merkle Arc?",
+      "help": "Larger Engagement: Merkle proposes an Enterprise Engagement with a dedicated Discovery Phase; the approach, a brief and the client deck are still produced, Jira tickets are not. Merkle Arc: the storefront is not a Shopify theme, so the Arc practice scopes and prices it as a separate engagement — the discovery and the approach go across with it, and nothing here quotes or estimates it. Deciding not to bid is recorded on the outcome ledger instead, once the decision is actually taken.",
       "maps_to": [
         "/delivery/route"
       ],
       "teach": {
-        "why": "After a STOP the engagement cannot continue as a standard offer, and the tool must know which output to produce. Larger Engagement drafts the approach, brief and client deck with no Jira tickets; no bid produces the STOP report only.",
+        "why": "After a STOP the engagement cannot continue as a standard offer, and the tool must know which output to produce. Larger Engagement drafts the approach, brief and client deck with no Jira tickets. Merkle Arc hands the storefront build to the Arc practice with the discovery behind it; this engine prices Shopify builds and does not price Arc.",
         "options": [
           {
             "option": "Larger Engagement",
@@ -9446,9 +9437,9 @@
             "cons": "Longer sales cycle, no Jira tickets and no delivery start now; needs a Merkle Enterprise Engagement to be viable."
           },
           {
-            "option": "No bid",
-            "pros": "Honest and quick, with no effort sunk into an engagement that cannot be delivered as scoped.",
-            "cons": "The opportunity ends here and only the STOP report is produced."
+            "option": "Merkle Arc",
+            "pros": "Keeps the work inside Merkle, where a tokenised design system and a component library already exist. The commerce engine can still be Shopify.",
+            "cons": "A different practice, a different rate card and a different timeline. The S, M and L bands do not apply and nothing here estimates it."
           }
         ]
       }

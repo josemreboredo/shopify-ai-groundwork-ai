@@ -144,20 +144,7 @@
         "evidence": "Q10.3.3: hypercare only, and hypercare is in every offer."
       }
     },
-    "l_triggers": {
-      "luxury": {
-        "active": false,
-        "evidence": "Q1.3.1: mid-market positioning."
-      },
-      "headless": {
-        "active": false,
-        "evidence": "Q9.2.1: no headless requirement."
-      },
-      "figma_design_system": {
-        "active": false,
-        "evidence": "Q9.1.1: no Figma file."
-      }
-    },
+    "l_triggers": {},
     "modifiers": [],
     "price_band": {
       "min": 40000,
@@ -175,8 +162,8 @@
       "max": 5
     },
     "gate_capacity_weeks": {
-      "min": 2,
-      "max": 8
+      "min": 0,
+      "max": 0
     }
   },
   "markets": {

@@ -69,11 +69,27 @@ describe('classification edge cases', () => {
     assert.deepEqual([classifyOffer(retail).code, classifyOffer(retail).modifiers], ['S', ['+Retail']]);
   });
 
-  test('luxury positioning forces L regardless of gates', () => {
-    const doc = { ...base(), brand: { positioning: 'luxury' } };
-    const offer = classifyOffer(doc);
-    assert.equal(offer.code, 'L');
-    assert.equal(offer.delivery_track, 'hydrogen');
+  test('luxury positioning decides nothing on its own — it was never a size', () => {
+    // It used to force an L, which meant a luxury brand with one market and a
+    // small catalogue was quoted as the largest offer on the strength of how it
+    // described itself. A luxury brand that wants every template designed
+    // answers the design questions, and those are what the storefront design
+    // gate reads.
+    const offer = classifyOffer({ ...base(), brand: { positioning: 'luxury' } });
+    assert.equal(offer.code, 'S');
+    assert.deepEqual(offer.l_triggers, {}, 'nothing qualitative decides the offer any more');
+  });
+
+  test('every offer is built the same way, so no offer changes the track', () => {
+    const big = {
+      ...base(),
+      markets: { list: [{ code: 'CH', currency: 'CHF' }, { code: 'DE', currency: 'EUR' }, { code: 'FR', currency: 'EUR' }] },
+      migration: { source_platform: 'magento' },
+      integrations: [{ category: 'erp', connector: 'custom' }],
+    };
+    for (const doc of [base(), { ...base(), brand: { positioning: 'luxury' } }, big]) {
+      assert.equal(classifyOffer(doc).delivery_track, 'liquid');
+    }
   });
 
   test('rebuilding an existing Shopify store is not a migration', () => {
@@ -165,17 +181,21 @@ describe('exit rule edge cases', () => {
     assert.match(item.evidence, /Navision \(client\)/, 'the flag names the system and whose it is');
   });
 
-  test('11.25 flags a headless storefront below Plus, where one preview can be public', () => {
-    // shopify.dev, verified 2026-09-20: production and preview always exist and
-    // custom environments are unlimited, but the public limit is 1 below Plus
-    // against 25 on Plus. It decides who reviews where.
-    const headless = (plan) => ({ ...base, design: { headless_required: true }, shopify: { target_plan: plan } });
-    assert.ok(ids(headless('advanced')).includes('11.25'));
-    assert.ok(!ids(headless('plus')).includes('11.25'));
-    // Not a headless build: the limit is not a fact about this engagement.
-    assert.ok(!ids({ ...base, design: { headless_required: false }, shopify: { target_plan: 'advanced' } }).includes('11.25'));
-    // And no plan recorded is not an excuse to invent one.
-    assert.ok(!ids({ ...base, design: { headless_required: true } }).includes('11.25'));
+  test('a storefront that is not a Shopify theme leaves the offers for ARC', () => {
+    // Headless used to be an L trigger, back when L was the Hydrogen offer. It
+    // is not a size, it is a different build — Merkle delivers those through
+    // ARC — so it stops the offers rather than choosing between them.
+    assert.ok(ids({ ...base, design: { headless_required: true } }).includes('11.26'));
+    assert.ok(!ids({ ...base, design: { headless_required: false } }).includes('11.26'));
+
+    // And the design system, for the same reason rather than a Shopify limit:
+    // owning the component layer is the shape of a composable engagement.
+    const figma = (f) => ids({ ...base, design: { figma: f } });
+    assert.ok(figma({ design_system: true, completeness: 'all_templates' }).includes('11.27'));
+    // A full template set that is not a system is still a theme build, and
+    // stays inside the offers priced by the storefront design gate.
+    assert.ok(!figma({ completeness: 'all_templates' }).includes('11.27'));
+    assert.ok(!figma({ design_system: true, completeness: 'key_screens' }).includes('11.27'));
   });
 
   test('LLM candidates are added once, for known rules only, and never replace rule results', () => {
@@ -241,11 +261,11 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(withHeavy.price_band.max > bare.price_band.max + 30000, 'and so is the price');
   });
 
-  test('scope that outgrows the M ceiling is priced there, not promoted into the headless offer', () => {
-    // It used to become an L. L is the Hydrogen offer, so a Liquid build that
-    // ran half a week past the ceiling was quoted at a 13–20 week headless band
-    // — and the architecture and app shortlist followed the band. The weeks are
-    // now charged where they happen.
+  test('scope that outgrows the M ceiling becomes an L, which is the same build one size up', () => {
+    // This rule was removed and is back. It was wrong while L was the Hydrogen
+    // offer — half a week past the ceiling quoted a Liquid build at a headless
+    // band and dragged the architecture after it. Every offer is Liquid now, so
+    // the offer following the work is exactly right.
     const heavy = classifyOffer({
       ...base(),
       ...markets('CH', 'DE', 'FR'),
@@ -253,133 +273,35 @@ describe('the offer follows the effort, not the gate count', () => {
       b2b: { enabled: true },
       integrations: [{ category: 'erp', connector: 'custom' }],
     });
-    assert.equal(heavy.code, 'M');
-    assert.equal(heavy.delivery_track, 'liquid', 'nothing about this engagement asked for a headless storefront');
-    assert.deepEqual(Object.entries(heavy.l_triggers).filter(([, t]) => t.active), []);
+    assert.equal(heavy.code, 'L');
+    assert.equal(heavy.delivery_track, 'liquid', 'the largest Shopify offer, not a different kind of build');
+    assert.deepEqual(heavy.l_triggers, {});
     assert.ok(heavy.scope_effort_weeks.max > offering.offers.M.duration_weeks.max);
-    assert.ok(heavy.duration_weeks.max > offering.offers.M.duration_weeks.max, 'the overflow reaches the quoted duration');
-    assert.ok(heavy.price_band.max > offering.offers.M.price_band.max, 'and the quoted band');
-    assert.ok(heavy.modifiers.length, 'and it says which gates did it');
   });
 
-  test('a trigger-driven L carries its gates too — the trigger says nothing about size', () => {
-    // The hole this closes: L triggers are qualitative (luxury, headless, a
-    // Figma system), so a luxury brand with a Magento estate, three markets and
-    // an ERP came out of the engine quoted at exactly the same 140–220k as a
-    // luxury brand with one market and no migration.
+  test('an L carries the gates that outgrow its own band, not M\u2019s', () => {
+    // The envelope is each band's own arithmetic: an M of 6-13 over an S of 4-5
+    // holds two to eight weeks of gates, an L of 13-20 holds nine to fifteen.
+    // Charging an L for gates its band was sized for would be the same error as
+    // absorbing the ones it was not.
     const answers = {
       ...base(),
-      ...markets('CH', 'DE', 'FR'),
+      ...markets('CH', 'DE', 'FR', 'IT', 'ES', 'NL'),
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },
-      integrations: [{ category: 'erp', connector: 'custom' }],
+      retail: { store_count: 4, pos: 'shopify_pos' },
+      integrations: [{ category: 'erp', connector: 'custom' }, { category: 'pim', connector: 'custom' }, { category: '3pl_wms', connector: 'custom' }],
     };
-    const bare = classifyOffer({ ...base(), brand: { positioning: 'luxury' } });
-    const loaded = classifyOffer({ ...answers, brand: { positioning: 'luxury' } });
-
-    assert.equal(bare.code, 'L');
-    assert.deepEqual(bare.duration_weeks, offering.offers.L.duration_weeks, 'nothing to add, nothing added');
-    assert.equal(loaded.code, 'L');
-    assert.ok(loaded.duration_weeks.max > bare.duration_weeks.max, 'the estate is quoted, not absorbed');
-    assert.ok(loaded.price_band.max > bare.price_band.max);
-    assert.ok(loaded.price_band.min < loaded.price_band.max, 'and the band never inverts');
-  });
-
-  /*
-   * The four gates that priced work the offers were giving away.
-   *
-   * Each one is pinned from both ends, and the negative case is the one that
-   * matters: a gate firing on what every engagement already has is not a gate,
-   * it is a price rise. The pattern is the languages gate's — three languages
-   * are in every offer and the fourth opens it.
-   */
-  describe('the work the offers used to absorb', () => {
-    test('subscriptions are scope, and carrying live contracts is a different tier', () => {
-      const none = classifyOffer({ ...base(), catalogue: { product_types: ['simple'] } });
-      assert.equal(none.scope_gates.subscriptions.active, false);
-
-      const native = classifyOffer({ ...base(), catalogue: { subscriptions: { approach: 'shopify_subscriptions', features: ['pay_per_delivery'] } } });
-      assert.equal(native.scope_gates.subscriptions.tier, 'standard', 'the free app on the simple plan shape');
-
-      // Re-authorising payment tokens is the part these migrations fail on, and
-      // it costs the same whoever the app is.
-      const carried = classifyOffer({ ...base(), catalogue: { subscriptions: { approach: 'shopify_subscriptions' } }, migration: { source_platform: 'shopify', subscriptions: true } });
-      assert.equal(carried.scope_gates.subscriptions.tier, 'advanced');
-      const paid = classifyOffer({ ...base(), catalogue: { subscriptions: { approach: 'third_party_app' } } });
-      assert.equal(paid.scope_gates.subscriptions.tier, 'advanced');
+    const l = classifyOffer(answers);
+    assert.equal(l.code, 'L');
+    assert.deepEqual(l.gate_capacity_weeks, {
+      min: offering.offers.L.duration_weeks.min - offering.offers.S.duration_weeks.min,
+      max: offering.offers.L.duration_weeks.max - offering.offers.S.duration_weeks.max,
     });
-
-    test('branding the checkout in the editor is in every offer; an extension is an app', () => {
-      const editor = classifyOffer({ ...base(), checkout: { customisation: ['branding_in_editor'] } });
-      assert.equal(editor.scope_gates.checkout_extensibility.active, false,
-        'every plan has the editor, and every offer uses it');
-
-      const ui = classifyOffer({ ...base(), checkout: { extensions: ['trust_badges'], custom_fields: ['PO number'] } });
-      assert.equal(ui.scope_gates.checkout_extensibility.tier, 'standard');
-
-      const fn = classifyOffer({ ...base(), checkout: { extensions: ['cart_checkout_validation'] } });
-      assert.equal(fn.scope_gates.checkout_extensibility.tier, 'functions', 'backend logic is a deployed app with its own release path');
-
-      // Blocking a country is a market setting. Everything else in that list
-      // needs a validation Function.
-      const geo = classifyOffer({ ...base(), checkout: { order_restrictions: ['block_countries'] } });
-      assert.equal(geo.scope_gates.checkout_extensibility.active, false);
-      const rules = classifyOffer({ ...base(), checkout: { order_restrictions: ['quantity_limits'] } });
-      assert.equal(rules.scope_gates.checkout_extensibility.tier, 'functions');
-
-      // A fully custom checkout is exit rule 11.6, not a thing to quote.
-      const impossible = classifyOffer({ ...base(), checkout: { customisation: ['fully_custom_checkout_ui'] } });
-      assert.equal(impossible.scope_gates.checkout_extensibility.active, false);
-    });
-
-    test('GA4 and a pixel are in every offer; carrying consent to them is not', () => {
-      const usual = classifyOffer({ ...base(), marketing: { analytics: { platforms: ['GA4'], pixels: ['Meta'] } } });
-      assert.equal(usual.scope_gates.analytics_consent.active, false,
-        'what every store already has cannot be what makes an engagement bigger');
-
-      const third = classifyOffer({ ...base(), marketing: { analytics: { platforms: ['GA4'], pixels: ['Meta', 'TikTok'] } } });
-      assert.equal(third.scope_gates.analytics_consent.tier, 'standard');
-      const gtm = classifyOffer({ ...base(), marketing: { analytics: { platforms: ['GA4'], tag_manager: true } } });
-      assert.equal(gtm.scope_gates.analytics_consent.tier, 'standard');
-
-      const serverSide = classifyOffer({ ...base(), marketing: { analytics: { platforms: ['GA4'], server_side: true } } });
-      assert.equal(serverSide.scope_gates.analytics_consent.tier, 'advanced');
-      const cmp = classifyOffer({ ...base(), compliance: { consent_approach: 'third_party_cmp' } });
-      assert.equal(cmp.scope_gates.analytics_consent.tier, 'advanced');
-    });
-
-    test('hypercare is in every offer; the operating model past it is not', () => {
-      // The standard exclusions have always said "support beyond the agreed
-      // support model" while the offering priced no support model at all.
-      const hypercare = classifyOffer({ ...base(), delivery: { support_model: 'hypercare_only' } });
-      assert.equal(hypercare.scope_gates.post_launch_support.active, false);
-      const alone = classifyOffer({ ...base(), delivery: { support_model: 'self_sufficient' } });
-      assert.equal(alone.scope_gates.post_launch_support.active, false);
-
-      const sops = classifyOffer({ ...base(), delivery: { support_model: 'self_sufficient', sops_required: true } });
-      assert.equal(sops.scope_gates.post_launch_support.tier, 'standard', 'runbooks written to be handed over');
-      const both = classifyOffer({ ...base(), delivery: { support_model: 'retainer', sops_required: true } });
-      assert.equal(both.scope_gates.post_launch_support.tier, 'extended');
-    });
-
-    test('each of them reaches the quote rather than stopping at the summary', () => {
-      // The whole point: the gate has to move the number. One gate makes an S
-      // priced with its modifier, so the band is where to check.
-      const bare = classifyOffer(base());
-      for (const answers of [
-        { catalogue: { subscriptions: { approach: 'third_party_app' } } },
-        { checkout: { extensions: ['cart_checkout_validation'] } },
-        { marketing: { analytics: { platforms: ['GA4'], server_side: true } } },
-        { delivery: { support_model: 'retainer', sops_required: true } },
-      ]) {
-        const one = classifyOffer({ ...base(), ...answers });
-        const what = Object.keys(answers)[0];
-        assert.equal(one.code, 'S', `${what}: one gate is still an S`);
-        assert.ok(one.price_band.max > bare.price_band.max, `${what}: the band did not move`);
-        assert.ok(one.duration_weeks.max > bare.duration_weeks.max, `${what}: the weeks did not move`);
-        assert.equal(one.modifiers.length, 1);
-      }
-    });
+    assert.ok(l.duration_weeks.max > offering.offers.L.duration_weeks.max, 'the estate is quoted, not absorbed');
+    assert.ok(l.price_band.max > offering.offers.L.price_band.max);
+    assert.ok(l.price_band.min < l.price_band.max, 'and the band never inverts');
+    assert.ok(l.modifiers.length, 'and it says which gates did it');
   });
 
   test('the envelope is the offer\u2019s own arithmetic, and gates inside it cost nothing extra', () => {

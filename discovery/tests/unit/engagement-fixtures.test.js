@@ -69,12 +69,14 @@ for (const { file, doc } of fixtures) {
       const gates    = activeIds(offer.scope_gates);
       const triggers = activeIds(offer.l_triggers);
       // Modelled here rather than imported, so this stays an independent check
-      // and not the engine agreeing with itself. The rule: an L trigger wins,
-      // then the gate count. Scope no longer promotes an engagement into L —
-      // L is the headless offer, and a Liquid build that ran long is still a
-      // Liquid build, so its extra weeks are priced inside its own offer.
-      const expected = triggers.length > 0 ? 'L' : gates.length >= 2 ? 'M' : 'S';
-      assert.equal(offer.code, expected, `active gates [${gates}], L triggers [${triggers}]`);
+      // and not the engine agreeing with itself. The rule is the work, in weeks:
+      // outgrow what an M holds and it is an L, which is the same Liquid build
+      // one size up. Nothing qualitative decides it — a storefront that is not
+      // a Shopify theme leaves the offers entirely (11.26, 11.27).
+      const reach = offer.scope_effort_weeks?.max ?? offering.offers.S.duration_weeks.max;
+      const expected = reach > offering.offers.M.duration_weeks.max ? 'L' : gates.length >= 2 ? 'M' : 'S';
+      assert.equal(offer.code, expected, `active gates [${gates}], reach ${reach}`);
+      assert.deepEqual(triggers, [], 'there are no L triggers left to fire');
 
       const def = offering.offers[offer.code];
       assert.equal(offer.name, def.name);
@@ -82,11 +84,11 @@ for (const { file, doc } of fixtures) {
       assert.equal(offer.price_band.open_ended ?? false, def.price_band.open_ended);
       assert.equal(offer.price_band.currency, offering.currency);
 
-      // Every offer's band already contains as many gate weeks as M holds over
-      // an S. Gates inside that cost nothing more; the excess is quoted.
+      // Each band is an S plus the gate work it was sized for. Gates inside that
+      // envelope cost nothing more; the excess is quoted on top.
       assert.deepEqual(offer.gate_capacity_weeks, {
-        min: offering.offers.M.duration_weeks.min - offering.offers.S.duration_weeks.min,
-        max: offering.offers.M.duration_weeks.max - offering.offers.S.duration_weeks.max,
+        min: def.duration_weeks.min - offering.offers.S.duration_weeks.min,
+        max: def.duration_weeks.max - offering.offers.S.duration_weeks.max,
       });
 
       const quoted = offer.modifiers ?? [];
@@ -143,7 +145,7 @@ test('golden fixtures produce the expected outcomes', () => {
   const byFile = new Map(fixtures.map(({ file, doc }) => [file, doc]));
   const expected = {
     'acme-watches.json': {
-      code: 'M', go: true,
+      code: 'L', go: true,
       gates: ['markets', 'multi_currency', 'b2b', 'integration', 'sku_complexity', 'migration', 'seo_continuity',
         'checkout_extensibility', 'analytics_consent', 'post_launch_support'],
       exits: ['11.10', '11.14', '11.23'],

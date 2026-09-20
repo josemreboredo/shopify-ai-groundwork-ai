@@ -17,7 +17,7 @@
  */
 
 import { offering } from '../schema/index.js';
-import { GATE_CAPACITY } from '../agents/discovery/classify.js';
+import { gateCapacity } from '../agents/discovery/classify.js';
 import { PLAN_RULES, PLAN_LABEL } from '../agents/discovery/plan.js';
 
 const money = (band) => (band ? { min: band.min, max: band.max, ...(band.open_ended ? { open_ended: true } : {}) } : undefined);
@@ -48,11 +48,12 @@ const APPROACH = {
 function plainRule(c) {
   const when = String(c.when);
   if (/l_trigger/.test(when)) return `Any of: ${offering.l_triggers.map((t) => t.label.toLowerCase()).join(', ')}`;
-  // There used to be a rule here that decided M against L by what the work
-  // added up to, and its wording lived in this function. Scope no longer
-  // promotes an engagement into L — the weeks it outgrows are priced inside the
-  // offer it already is — so the rule is gone from the engine and its sentence
-  // with it. offering-view.test.js holds both to the same four.
+  // The rule that decides the offer by what the work adds up to. Left to the
+  // fallback it printed its own expression, which is the engine talking to
+  // itself in front of a consultant.
+  if (/duration_weeks/.test(when)) {
+    return `The scope adds up to more than ${offering.offers.M.duration_weeks.max} weeks — more than an M can hold`;
+  }
   const n = /(>=|==)\s*(\d+)/.exec(when);
   if (n) {
     const count = Number(n[2]);
@@ -71,6 +72,10 @@ export function offeringView({ pricing = false } = {}) {
   const offers = Object.entries(offering.offers).map(([code, o]) => ({
     code,
     name: o.name,
+    /* Who the offer is for, in the client's own situation rather than in
+       gate counts. "Two or more scope gates" is true and tells a consultant
+       nothing about which brand is sitting across the table. */
+    for_whom: o.for_whom ?? null,
     delivery_track: o.delivery_track,
     triggered_by: o.triggered_by,
     base_scope: o.base_scope.split(' · '),
@@ -91,6 +96,11 @@ export function offeringView({ pricing = false } = {}) {
        anybody wins. */
     not_included: o.not_included ?? [],
     client_provides: o.client_provides ?? [],
+    /* How many weeks of scope gates this band already holds. Each offer is an S
+       plus the gate work it was sized for, so the number differs per offer —
+       and a page that prints what a gate costs without it leaves the reader to
+       guess whether the cost is inside the band or on top of it. */
+    gate_capacity_weeks: gateCapacity(code),
   }));
 
   // A gate can have more than one modifier now: a migration is priced by where
@@ -160,11 +170,6 @@ export function offeringView({ pricing = false } = {}) {
     offers,
     classification: offering.classification.map((c) => ({ order: c.order, when: c.when, offer: c.offer, plain: plainRule(c), ...(c.apply_modifier ? { with_modifier: true } : {}) })),
     gates,
-    /* How many weeks of gates every band already holds. The pages quoted the
-       gate costs and never said what the band already covered, so a consultant
-       reading "+5 to 7 weeks" beside a 13-20 week offer could only guess
-       whether it was inside the number or on top of it. */
-    gate_capacity_weeks: GATE_CAPACITY,
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {
       beyond_offers: byResult('STOP'),

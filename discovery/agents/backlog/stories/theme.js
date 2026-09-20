@@ -182,32 +182,5 @@ export default [
     applies: (doc) => isLiquidTrack(doc) && doc.markets?.rtl_required === true,
     agent_prompt: (doc) => `Enable RTL support for ${listOr(languages(doc), 'the RTL languages')} in ${themeName(doc)}: set dir from request.locale on the html element, convert any custom CSS to logical properties, mirror directional icons and slider behaviour, and test every template in an RTL locale. Do not fork templates per direction.`,
   },
-  {
-    /*
-     * The headless counterpart of THM-007.
-     *
-     * Every story above guards on isLiquidTrack, which was invisible until the
-     * storefront_design gate arrived: the gate is paid on both tracks, so a
-     * headless engagement was being charged for a bespoke design with nothing
-     * in the backlog that builds it. The wider Hydrogen story set is still to be
-     * written — this is the one story the gate cannot be sold without.
-     */
-    key: 'LWC-THM-010',
-    epic: 'theme',
-    title: (doc) => `Build the ${storeName(doc)} design as Hydrogen components`,
-    user_story: 'As a shopper, I want the designed storefront on the headless front end, so that the experience is the one that was approved.',
-    acceptance_criteria: [
-      'Given the approved design, when it is built, then every screen is a Hydrogen route or component with design tokens in one place and no hard-coded brand values',
-      'Given the component set, when it is reviewed, then each piece reads its content from the Storefront API or a metaobject rather than from fixtures',
-      'Given Core Web Vitals and the accessibility checks, when a preview deployment is measured, then each screen meets the agreed targets on mobile and desktop',
-    ],
-    gaia_tier: 'T3',
-    points: 13,
-    owner: 'developer',
-    gates: ['storefront_design'],
-    spec_refs: ['/design/custom_design', '/design/figma/completeness', '/design/figma/design_system', '/design/headless/hosting'],
-    applies: (doc) => !isLiquidTrack(doc) && (doc.design?.custom_design === true || ['key_screens', 'all_templates'].includes(doc.design?.figma?.completeness)),
-    agent_prompt: (doc) => `Build the approved design as Hydrogen components on ${doc.design?.headless?.hosting === 'self_hosted_js_runtime' ? 'the client’s own JS runtime' : 'Oxygen'}: one token layer wired to the design system, routes per template, and content from the Storefront API or metaobjects. Figma mapped to components: ${doc.design?.figma?.mapped_to_sections ? 'yes' : 'no — produce the mapping first and get designer approval'}. Measure LCP (target ${doc.design?.performance?.lcp_s ?? 2.5}s) and INP (target ${doc.design?.performance?.inp_ms ?? 200}ms) on a preview deployment before merging, and remember that below Shopify Plus only one environment can be public.`,
-  },
 ];
 

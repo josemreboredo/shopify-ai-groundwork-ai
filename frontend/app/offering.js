@@ -10,9 +10,11 @@
  */
 
 /** In the order an engagement travels: the smallest offer first, then past them. */
-export const SEGMENTS = ['s', 'm', 'l', 'larger-engagement'];
+export const SEGMENTS = ['s', 'm', 'l', 'arc'];
 
-export const TRACK = { liquid: 'Online Store · Horizon', hydrogen: 'Headless · Hydrogen' };
+/* One track. Every offer is the same Shopify theme build, one size apart —
+   a storefront that is not a theme is Merkle Arc, and leaves these offers. */
+export const TRACK = { liquid: 'Online Store · Horizon' };
 
 /** "4" or "6–9". */
 export const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`) : '—');
@@ -25,9 +27,9 @@ export const band = (b, currency) => (b ? `${currency ?? ''} ${k(b.min)}–${k(b
 /**
  * The segment a URL asks for, or null.
  *
- * "larger-engagement" is a segment of this page set without being an offer, so
- * it carries no `offer` — the page checks for that rather than inventing an
- * offer shape that the engine never produced.
+ * "arc" is a segment of this page set without being an offer, so it carries no
+ * `offer` — the page checks for that rather than inventing an offer shape the
+ * engine never produced, and nothing here quotes or estimates Arc.
  *
  * @param {object} view  offeringView()
  * @param {string} slug
@@ -35,8 +37,8 @@ export const band = (b, currency) => (b ? `${currency ?? ''} ${k(b.min)}–${k(b
 export function segmentOf(view, slug) {
   const key = String(slug ?? '').toLowerCase();
   if (!SEGMENTS.includes(key)) return null;
-  if (key === 'larger-engagement') {
-    return { slug: key, code: 'Beyond', name: 'Beyond the offers', offer: null };
+  if (key === 'arc') {
+    return { slug: key, code: 'Arc', name: 'Merkle Arc', offer: null };
   }
   const offer = view.offers.find((o) => o.code.toLowerCase() === key);
   return offer ? { slug: key, code: offer.code, name: offer.name, offer } : null;

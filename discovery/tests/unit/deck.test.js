@@ -84,15 +84,13 @@ describe('client deck XML', () => {
 
   test('investment shows the offer band only; L is open-ended', () => {
     // Golden values: the M band plus the weeks its gates push past the envelope
-    // the band already carries. Before the overflow reached the quote this read
-    // 65000–135000, which was the bare offer on an engagement the engine itself
-    // estimated at 13.5 weeks.
+    // the band already holds, and an L whose gates fit inside its own.
+    const single = recompute({ ...load('foundation-minimal.json'), migration: { source_platform: 'magento' } });
+    assert.match(buildDeckXml(single, backlogFor(single)).xml, /<price-band currency="CHF" from="78000" to="120000"\/>/);
+
     const doc = load('acme-watches.json');
     const { xml } = buildDeckXml(doc, backlogFor(doc));
-    assert.match(xml, /<price-band currency="CHF" from="138000" to="182000"\/>/);
-
-    const luxury = recompute({ ...load('acme-watches.json'), brand: { positioning: 'luxury' } });
-    assert.match(buildDeckXml(luxury).xml, /<price-band currency="CHF" from="213000" open-ended="true"\/>/);
+    assert.match(xml, /<price-band currency="CHF" from="140000" open-ended="true"\/>/);
   });
 
   test('client sections never contain modifiers, price adds, effort, story points or commercial warnings', () => {

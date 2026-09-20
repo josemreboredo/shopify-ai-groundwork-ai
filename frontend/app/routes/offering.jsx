@@ -65,7 +65,10 @@ export default function Offering({ loaderData }) {
               <Link to={`/offering/${o.code.toLowerCase()}`}>
                 <span className="seg-code">{o.code}</span>
                 <span className="seg-name">{o.name}</span>
-                <span className="seg-when">{o.triggered_by}</span>
+                {/* Who is sitting across the table, not how many gates fired.
+                    "Two or more scope gates" is true and tells a consultant
+                    nothing about which brand this is. */}
+                <span className="seg-when">{o.for_whom ?? o.triggered_by}</span>
                 <span className="seg-meta">
                   {weeks(o.duration_weeks)} weeks · {TRACK[o.delivery_track] ?? o.delivery_track}
                   {view.pricing && o.price_band ? ` · ${band(o.price_band, currency)}` : ''}
@@ -73,12 +76,15 @@ export default function Offering({ loaderData }) {
               </Link>
             </li>
           ))}
+          {/* Not a fourth offer. Arc is where the storefront stops being a
+              Shopify theme, and this engine prices Shopify theme builds — so
+              the card names it and gives no number, which is the whole point. */}
           <li className="beyond">
-            <Link to="/offering/larger-engagement">
+            <Link to="/offering/arc">
               <span className="seg-code">—</span>
-              <span className="seg-name">Beyond the offers</span>
-              <span className="seg-when">The requirements go past S, M and L</span>
-              <span className="seg-meta">{view.exits.beyond_offers.length} rules · 2 routes</span>
+              <span className="seg-name">Merkle Arc</span>
+              <span className="seg-when">The storefront is not a Shopify theme, or the requirements go past S, M and L</span>
+              <span className="seg-meta">A separate engagement · not quoted or estimated here · {view.exits.beyond_offers.length} rules</span>
             </Link>
           </li>
         </ol>
@@ -108,10 +114,10 @@ export default function Offering({ loaderData }) {
               consultant could not tell whether "+5 to 7 weeks" was inside the
               number or on top of it. */}
           <p className="decide-note">
-            Then the gates. Every band already holds <strong>{weeks(view.gate_capacity_weeks)} weeks</strong> of
-            them, and inside that they cost nothing more. Past it, each one is added to the weeks and to the band —
-            which is how a luxury brand with a Magento estate and six markets stops being quoted the same as a
-            luxury brand with one market. Scope alone never moves an engagement to a bigger offer.
+            Then the gates. Each band already holds some of them — {view.offers.filter((o) => o.gate_capacity_weeks?.max).map((o) => `${o.code} holds ${weeks(o.gate_capacity_weeks)} weeks`).join(', ')} —
+            and inside that they cost nothing more. Past it, each one is added to the weeks and to the band, which
+            is how an Ecommerce Growth with a Magento estate and six markets stops being quoted the same as one
+            with a single market and no migration.
           </p>
         </div>
       </section>

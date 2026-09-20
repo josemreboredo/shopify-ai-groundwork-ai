@@ -505,13 +505,14 @@ describe('assuming the shape of the solution is not assuming a detail', () => {
   };
   const q = (question, covers) => ({ question, why_we_ask: 'the trade-off', covers, assume_if_unanswered: 'we assume', impact_if_wrong: 'it costs' });
 
-  test('the questions that decide the offer size are the ones that feed an L trigger', () => {
+  test('the questions that decide whether there is an engagement at all are tagged', () => {
     // "Should the whole site run on Shopify, or should the shop sit behind a
-    // separate content platform" is not a detail: Q9.2.1 feeds
-    // l_trigger:headless, and an L trigger decides the offer outright.
+    // separate content platform" is not a detail. It used to feed an L trigger,
+    // which decided the offer outright; it now feeds exit rule 11.26, which
+    // decides whether these offers apply at all.
     const byId = new Map(questionBank.questions.map((x) => [x.id, x]));
-    assert.deepEqual(byId.get('Q9.2.1').feeds, ['l_trigger:headless', 'exit:11.25']);
-    assert.deepEqual(byId.get('Q9.1.3').feeds, ['l_trigger:figma_design_system', 'gate:storefront_design']);
+    assert.deepEqual(byId.get('Q9.2.1').feeds, ['exit:11.26']);
+    assert.deepEqual(byId.get('Q9.1.3').feeds, ['exit:11.27', 'gate:storefront_design']);
   });
 
   test('the rule is a set of question ids, and only the high topics are in it', () => {

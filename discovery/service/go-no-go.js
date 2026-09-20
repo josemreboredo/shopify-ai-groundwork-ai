@@ -158,7 +158,7 @@ const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`)
 
 const ROUTE = {
   larger_engagement: 'a Merkle Enterprise Engagement with a dedicated Discovery Phase',
-  no_bid: 'no bid',
+  arc: 'Merkle Arc',
 };
 
 /**

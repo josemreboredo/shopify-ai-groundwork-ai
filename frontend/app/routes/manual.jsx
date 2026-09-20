@@ -87,7 +87,7 @@ export default function Manual({ loaderData }) {
           <tr><td><strong>To confirm</strong></td><td>An answer Claude read out of a document that no human has accepted yet.</td></tr>
           <tr><td><strong>Offer S / M / L</strong></td><td>The engine’s classification of the work, with a price band. Internal — never in a client document.</td></tr>
           <tr><td><strong>Provisional</strong></td><td>A question that decides a scope gate or the Shopify plan is still open, so the offer can still move. Prioritise those questions.</td></tr>
-          <tr><td><strong>Beyond the offers</strong></td><td>Not a refusal. The requirements go past S/M/L, so Merkle proposes a <strong>Larger Engagement</strong> — an Enterprise Engagement opening with a consultant-led Discovery Phase — or does not bid.</td></tr>
+          <tr><td><strong>Merkle Arc</strong></td><td>Not a refusal. The requirements go past S/M/L — or the storefront is not a Shopify theme at all — so Merkle proposes a <strong>Larger Engagement</strong>, an Enterprise Engagement opening with a consultant-led Discovery Phase, or hands it to <strong>Merkle Arc</strong>, which this tool neither quotes nor estimates.</td></tr>
           <tr><td><strong>Exit rule</strong></td><td>A numbered rule (for example 11.20, mainland China) that the engine applies to the answers: STOP, FLAG or WARN, always with the answer that triggered it.</td></tr>
         </tbody>
       </table>

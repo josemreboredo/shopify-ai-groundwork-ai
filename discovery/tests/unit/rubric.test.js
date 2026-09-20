@@ -109,9 +109,12 @@ describe('every requirement the engine found is answered somewhere', () => {
     assert.deepEqual(holes(withoutB2b, doc), []);
   });
 
-  test('an L trigger counts the same as a scope gate', () => {
+  test('a gate the capability map never mentions is a hole', () => {
+    // This used to be proven with the headless L trigger. There are no triggers
+    // left — a storefront that is not a Shopify theme leaves the offers now —
+    // so it is proven with a gate, which is what the check was always about.
     const doc = structuredClone(fixture);
-    doc.offer.l_triggers.headless.active = true;
-    assert.ok(holes(fixture.approach, doc).some((e) => /headless/.test(e)), 'a headless build the map never mentions is a hole');
+    doc.offer.scope_gates.subscriptions = { active: true, tier: 'advanced', evidence: 'Subscriptions: third party app, existing contracts to carry across' };
+    assert.ok(holes(fixture.approach, doc).some((e) => /subscription/i.test(e)), 'subscriptions the map never mentions is a hole');
   });
 });

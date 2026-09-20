@@ -112,9 +112,16 @@ const REQUIREMENT_WORDS = {
   migration: ['migrat', 'replatform', 'import', 'redirect', 'cut-over', 'cutover'],
   sku_complexity: ['sku', 'catalogue', 'catalog', 'metafield', 'variant', 'product data'],
   retail_pos: ['pos', 'retail', 'store', 'in-store'],
-  luxury: ['luxur', 'premium', 'brand experience'],
-  headless: ['headless', 'hydrogen', 'storefront api'],
-  figma_design_system: ['design system', 'figma', 'component librar'],
+  storefront_design: ['design system', 'figma', 'component librar', 'section', 'template'],
+  languages: ['language', 'translat', 'locale', 'hreflang'],
+  // The five gates that started pricing work the offers used to absorb. Without
+  // words here the coverage check skips them silently, which is how a priced
+  // requirement reaches a client deck with nothing in the map behind it.
+  seo_continuity: ['seo', 'redirect', '301', 'organic', 'ranking'],
+  subscriptions: ['subscription', 'recurring', 'selling plan', 'replenish'],
+  checkout_extensibility: ['checkout', 'extension', 'function', 'validation'],
+  analytics_consent: ['analytic', 'ga4', 'tracking', 'consent', 'tag manager', 'pixel'],
+  post_launch_support: ['hypercare', 'support model', 'sop', 'runbook', 'handover'],
 };
 
 /**

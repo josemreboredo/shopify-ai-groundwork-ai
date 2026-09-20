@@ -197,7 +197,7 @@ const STEPS = {
 /** How a route beyond the offers reads in a step hint. */
 const ROUTE_LABEL = {
   larger_engagement: 'Larger Engagement — a dedicated Discovery Phase',
-  no_bid: 'No bid',
+  arc: 'Merkle Arc',
 };
 
 /**

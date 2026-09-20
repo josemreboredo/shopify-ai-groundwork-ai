@@ -104,16 +104,16 @@ export function offerStanding(p) {
     short: ROUTE_SHORT[route] ?? 'Beyond the offers',
     headline: ROUTE_HEADLINE[route] ?? 'Beyond the standard offers',
     standing: route ? 'Beyond the standard offers' : 'Beyond the standard offers — the route is not recorded yet',
-    tone: route === 'no_bid' ? 'stop' : 'flag',
+    tone: 'flag',
     note: `The scope gates classify it as ${name}, which is not the answer here: an exit rule takes it outside, so it is scoped and priced on its own.`,
   };
 }
 
-const ROUTE_SHORT = { larger_engagement: 'Larger Engagement', no_bid: 'No bid' };
+const ROUTE_SHORT = { larger_engagement: 'Larger Engagement', arc: 'Merkle Arc' };
 
 const ROUTE_HEADLINE = {
   larger_engagement: 'Larger Engagement — an Enterprise Engagement opening with a dedicated Discovery Phase',
-  no_bid: 'No bid',
+  arc: 'Merkle Arc',
 };
 
 export function renderSummaryMarkdown(s) {
