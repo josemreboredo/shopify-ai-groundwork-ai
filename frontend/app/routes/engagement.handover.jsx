@@ -22,7 +22,14 @@ export async function loader({ request, params }) {
     // consultant on a bare "Cannot do that yet" with the record, the steps and
     // every fix-link gone, while three sibling pages named the blockers.
     if (!(err instanceof ServiceError)) throw serviceFailure(err);
-    const { engagement } = await discovery().getSummary(user, params.client);
+    // The graceful path needs the record to exist. When it does not, the
+    // fallback threw too and the page 500'd on the way to explaining itself.
+    let engagement;
+    try {
+      ({ engagement } = await discovery().getSummary(user, params.client));
+    } catch {
+      throw serviceFailure(err);
+    }
     return { engagement, handover: null, blocked: { error: err.message, errors: err.errors ?? [], blockers: err.blockers ?? [] } };
   }
 }

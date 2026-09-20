@@ -26,7 +26,14 @@ export async function loader({ request, params }) {
     if (!(err instanceof ServiceError)) throw serviceFailure(err);
     // The engagement itself still loads, so the page keeps its header and its
     // spine rather than dropping the consultant onto a bare error.
-    const { engagement } = await discovery().getSummary(user, params.client);
+    // The graceful path needs the record to exist. When it does not, the
+    // fallback threw too and the page 500'd on the way to explaining itself.
+    let engagement;
+    try {
+      ({ engagement } = await discovery().getSummary(user, params.client));
+    } catch {
+      throw serviceFailure(err);
+    }
     return { engagement, blocked: { error: err.message, errors: err.errors ?? [], blockers: err.blockers ?? [] } };
   }
 }
