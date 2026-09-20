@@ -136,10 +136,32 @@ const span = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}\u2013${w.max}
 export function quote(doc, { pricing = false, provisional = false } = {}) {
   const o = doc.offer;
   if (!o?.code) return null;
+  /*
+   * An engagement outside the offers has no band, and saying one is the exact
+   * error this tool keeps having to unlearn: a commercial position derived from
+   * nothing. The go/no-go document already withholds it on a STOP; this is the
+   * same rule on the same facts, and the offer code stays because which offer it
+   * would have been is still worth knowing.
+   */
+  const within = doc.delivery?.go !== false;
+  if (!within) {
+    return {
+      code: o.code,
+      name: o.name,
+      track: o.delivery_track,
+      outside_the_offers: true,
+      route: doc.delivery?.route ?? null,
+      scope_effort_weeks: o.scope_effort_weeks ?? null,
+      gate_capacity_weeks: o.gate_capacity_weeks ?? null,
+      modifiers: o.modifiers ?? [],
+      rationale: o.rationale ?? null,
+    };
+  }
   return {
     code: o.code,
     name: o.name,
     track: o.delivery_track,
+    outside_the_offers: false,
     weeks: o.duration_weeks,
     ...(pricing && o.price_band ? { band: o.price_band } : {}),
     pricing_withheld: !pricing,
@@ -180,6 +202,12 @@ export function renderSummaryMarkdown(s) {
     })(),
     ...(s.quote ? (() => {
       const q = s.quote;
+      if (q.outside_the_offers) {
+        return [
+          `- **Quoted:** nothing \u2014 the requirements are outside the standard offers. Route: ${q.route ? q.route.replace(/_/g, ' ') : 'not decided yet'}.`,
+          `- **It would have been:** ${q.code} \u00b7 ${q.name}, with the gates adding up to ${span(q.scope_effort_weeks)} weeks against the ${span(q.gate_capacity_weeks)} that offer\u2019s band holds.`,
+        ];
+      }
       const over = q.modifiers.length > 0;
       return [
         `- **Quoted:** ${q.code} \u00b7 ${q.name} \u00b7 ${span(q.weeks)} weeks${q.band ? ` \u00b7 ${q.band.currency} ${Math.round(q.band.min / 1000)}k\u2013${Math.round(q.band.max / 1000)}k${q.band.open_ended ? '+' : ''}` : ''}${q.provisional ? ' (provisional \u2014 some scope gates are still unknown)' : ''}`,

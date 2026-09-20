@@ -101,3 +101,38 @@ describe('the quote the Summary carries', () => {
     assert.doesNotMatch(withheld, /CHF/);
   });
 });
+
+describe('an engagement outside the offers', () => {
+  test('is quoted at nothing, because the offers do not price it', () => {
+    // The error this tool keeps having to unlearn: a commercial position
+    // derived from nothing. The go/no-go document already withheld the band on
+    // a STOP; this page was about to state one beside a headline saying the
+    // engagement had left the offers.
+    const doc = overflowing();
+    doc.delivery = { go: false, route: 'larger_engagement' };
+    const q = quote(doc, { pricing: true });
+    assert.equal(q.outside_the_offers, true);
+    assert.equal(q.band, undefined, 'no band');
+    assert.equal(q.weeks, undefined, 'and no duration either — both are the offer’s');
+    assert.equal(q.route, 'larger_engagement');
+    // What is still worth knowing: which offer it would have been, and the size.
+    assert.equal(q.code, doc.offer.code);
+    assert.ok(q.scope_effort_weeks.max > q.gate_capacity_weeks.max);
+    assert.doesNotMatch(JSON.stringify(q), /\d{5,}/, 'no price reaches it by another route');
+  });
+
+  test('and the download says the same, not a different thing', () => {
+    const doc = overflowing();
+    doc.delivery = { go: false, route: 'arc' };
+    const md = renderSummaryMarkdown({
+      engagement: { client: 'x', mode: 'quick', language: 'en', updated_at: '2026-09-20' },
+      generated_at: '2026-09-20',
+      preview: { offer: { code: doc.offer.code, name: doc.offer.name }, go: false, route: 'arc', scope_gates: {}, l_triggers: {}, exit_rules: [], app_signals: {}, coverage: { required_answered: 1, required_total: 2, required_tbc: 0, required_open: 1 } },
+      quote: quote(doc, { pricing: true }),
+      open_items: [], sections: [], documents: [], notes: [],
+    });
+    assert.match(md, /\*\*Quoted:\*\* nothing/);
+    assert.match(md, /It would have been/);
+    assert.doesNotMatch(md, /CHF/);
+  });
+});

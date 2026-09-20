@@ -52,6 +52,25 @@ const money = (b) => `${b.currency} ${Math.round(b.min / 1000)}k\u2013${Math.rou
  */
 function Quote({ q }) {
   const over = q.modifiers.length > 0;
+  // Outside the offers there is no band to show, and inventing one is the error
+  // this tool keeps having to unlearn. Which offer it would have been still
+  // helps, and so does what the scope came to.
+  if (q.outside_the_offers) {
+    return (
+      <section className="quote provisional">
+        <h2>What the engine quotes</h2>
+        <p className="lede">
+          Nothing. The requirements are outside the standard offers, so there is no band to state — the route is{' '}
+          <strong>{q.route ? q.route.replace(/_/g, ' ') : 'not decided yet'}</strong>, and it is priced there.
+        </p>
+        <p className="muted small">
+          It would have been {q.code} · {q.name}: the scope gates add up to {span(q.scope_effort_weeks)} weeks
+          against the {span(q.gate_capacity_weeks)} that offer&rsquo;s band holds. See{' '}
+          <Link to="/offering/arc">what lies beyond the offers</Link>.
+        </p>
+      </section>
+    );
+  }
   return (
     <section className={`quote${q.provisional ? ' provisional' : ''}`}>
       <h2>What the engine quotes</h2>
