@@ -44,11 +44,12 @@ export default function Home({ loaderData, actionData }) {
   return (
     <main id="main">
       <header className="page-head">
-        <p className="eyebrow">{PRODUCT}</p>
+        <p className="eyebrow">{PRODUCT} · Shopify</p>
         <h1>What are you working on?</h1>
         <p className="lede">
-          One engine, two ways in. An RFP that has to be answered, or a discovery to run with a client —
-          the same question bank, the same Shopify documentation, the same offer underneath.
+          Shopify bids and discoveries, on one engine. An RFP that has to be answered, or a discovery to
+          run with a client — the same question bank, the same verified Shopify documentation, the same
+          offer and the same scope gates underneath.
         </p>
       </header>
 
@@ -57,7 +58,7 @@ export default function Home({ loaderData, actionData }) {
         <section className="door rfp">
           <p className="door-n" aria-hidden="true">01</p>
           <h2>Answer an RFP</h2>
-          <p>A document arrived with a deadline. Read it in, confirm what it says, send the few questions that change the answer, and write the proposal.</p>
+          <p>A Shopify RFP arrived with a deadline. Read it in, confirm what it says, send the few questions that change the answer, and write the proposal.</p>
           <Form method="post" className="door-form">
             <input type="hidden" name="process" value="rfp" />
             <input type="hidden" name="mode" value="standard" />
@@ -78,7 +79,7 @@ export default function Home({ loaderData, actionData }) {
         <section className="door discovery">
           <p className="door-n" aria-hidden="true">02</p>
           <h2>Run a discovery</h2>
-          <p>A client is engaged and the work needs scoping. Work through the questions with them, then write the closing document and the delivery backlog.</p>
+          <p>A client is engaged and the Shopify build needs scoping. Work through the questions with them, then write the closing document and the delivery backlog.</p>
           <Form method="post" className="door-form">
             <input type="hidden" name="process" value="discovery" />
             <div className="field">
