@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Form, Link, NavLink } from 'react-router';
 
 import { LANGUAGE_NAMES } from '../../../discovery/service/i18n.js';
-import { tabsFor, processMeta } from '../../../discovery/service/process.js';
+import { stepsFor, viewsFor, processMeta } from '../../../discovery/service/process.js';
 
 export const words = (id) => id.replace(/_/g, ' ');
 const leaf = (pointer) => words(pointer.split('/').at(-1));
@@ -24,17 +24,36 @@ export function Vocabularies({ vocabularies }) {
 }
 
 /**
- * The steps in the order this process does them. Same routes for both — what
- * changes is the order and the words, because a bid and a discovery are two
- * different jobs on one engine.
+ * Where you are in the work, and what is next.
+ *
+ * This replaced five equal tabs. Tabs are a filing cabinet: they say what exists,
+ * never what to do, so every visit began by working out where things stood. The
+ * spine numbers the job, marks what is done, points at the one step that is
+ * current, and carries the count that matters under each. Beside it sit the
+ * things that are not steps — the summary, and the one place the settings live.
  */
-export function EngagementNav({ client, process }) {
+export function EngagementNav({ engagement }) {
+  const client = engagement.client;
+  const to = (path) => `/engagements/${client}${path ? `/${path}` : ''}`;
   return (
-    <nav className="tabs">
-      {tabsFor(process).map(({ path, label }) => (
-        <NavLink key={path} to={`/engagements/${client}${path ? `/${path}` : ''}`} end={path === ''}>{label}</NavLink>
-      ))}
-    </nav>
+    <div className="wayfinder">
+      <ol className="steps-spine">
+        {stepsFor(engagement).map((step) => (
+          <li key={step.path || 'start'} className={step.state}>
+            <NavLink to={to(step.path)} end={step.path === ''}>
+              <span className="step-n" aria-hidden="true">{step.state === 'done' ? '✓' : step.n}</span>
+              <span className="step-label">{step.label}</span>
+              {step.hint ? <span className="step-hint">{step.hint}</span> : null}
+            </NavLink>
+          </li>
+        ))}
+      </ol>
+      <nav className="views">
+        {viewsFor(engagement).map((v) => (
+          <NavLink key={v.path} to={to(v.path)}>{v.label}</NavLink>
+        ))}
+      </nav>
+    </div>
   );
 }
 
@@ -59,12 +78,13 @@ export function WithQuestionLinks({ text, client }) {
  * @param {{ client: string, eyebrow?: string, title?: string, meta?: import('react').ReactNode,
  *           back?: { to: string, label: string } }} props
  */
-export function EngagementHeader({ client, eyebrow, title, meta, back, language, process }) {
-  const words = processMeta(process);
+export function EngagementHeader({ engagement, eyebrow, title, meta, back, language }) {
+  const client = engagement.client;
+  const words = processMeta(engagement.process);
   return (
     <header className="page-head">
       <Link className="crumb" to={back?.to ?? '/'}>← {back?.label ?? 'Engagements'}</Link>
-      <p className="eyebrow">{eyebrow ?? `${words.label} · ${words.record}`}</p>
+      <p className="eyebrow">{words.record}{eyebrow ? ` · ${eyebrow}` : ''}</p>
       <h1>{title ?? client}</h1>
       {meta ? <p className="page-meta">{meta}</p> : null}
       {language?.translated ? (
@@ -73,7 +93,7 @@ export function EngagementHeader({ client, eyebrow, title, meta, back, language,
           {language.complete ? '' : ` · ${language.questions} of ${language.of} questions translated so far, the rest stay in English`}
         </p>
       ) : null}
-      <EngagementNav client={client} process={process} />
+      <EngagementNav engagement={engagement} />
     </header>
   );
 }

@@ -53,8 +53,7 @@ export default function Closing({ loaderData }) {
   return (
     <main>
       <EngagementHeader
-        client={client}
-        process={engagement.process}
+        engagement={engagement}
         eyebrow={processMeta(engagement.process).document}
         meta={document ? `Version ${version} · saved ${document.saved_at} by ${document.by}` : null}
       />

@@ -10,7 +10,7 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { createSession } from '../../agents/interview/session.js';
-import { processOf, processMeta, tabsFor, PROCESSES, PROCESS_IDS } from '../../service/process.js';
+import { processOf, processMeta, stepsFor, viewsFor, PROCESSES, PROCESS_IDS } from '../../service/process.js';
 import { createDiscoveryService, ServiceError } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 import { preview } from '../../agents/interview/preview.js';
@@ -47,17 +47,71 @@ describe('one engine, two processes', () => {
     }
   });
 
-  test('both processes reach the same pages — only the order changes', () => {
-    const paths = (p) => tabsFor(p).map((t) => t.path);
-    assert.deepEqual([...paths('rfp')].sort(), [...paths('discovery')].sort(), 'neither process loses a page');
-    assert.notDeepEqual(paths('rfp'), paths('discovery'), 'and they are not done in the same order');
-    // On a bid the window to send questions closes, so they come before the summary.
-    const rfp = paths('rfp');
-    assert.ok(rfp.indexOf('clarifications') < rfp.indexOf('summary'));
-    const disc = paths('discovery');
-    assert.ok(disc.indexOf('summary') < disc.indexOf('clarifications'));
-    assert.equal(rfp[0], '', 'both start where the answers come from');
-    assert.equal(disc.at(-1), 'closing-document', 'and end with what goes out');
+  test('the spine always points at exactly one step: the first that is not done', () => {
+    const bid = { process: 'rfp', documents: 2, to_review: 12, clarifications_at: null, closing_document_at: null };
+    const steps = stepsFor(bid);
+    assert.equal(steps.filter((s) => s.state === 'current').length, 1, 'the consultant is told one thing to do, not four');
+    assert.equal(steps.find((s) => s.state === 'current').label, 'Confirm what it says');
+    assert.equal(steps[0].state, 'done', 'the RFP has been read in');
+    assert.ok(steps.slice(2).every((s) => s.state === 'todo'));
+  });
+
+  test('state is derived from the engagement, so the spine can never disagree with it', () => {
+    const at = (e) => stepsFor({ process: 'rfp', documents: 1, to_review: 0, ...e }).map((s) => s.state);
+    assert.deepEqual(at({}), ['done', 'done', 'current', 'todo'], 'nothing sent, nothing written');
+    assert.deepEqual(at({ clarifications_at: '2026-09-20' }), ['done', 'done', 'done', 'current']);
+    const written = stepsFor({ process: 'rfp', documents: 1, to_review: 0, clarifications_at: '2026-09-20', closing_document_at: '2026-09-21' });
+    assert.ok(written.every((s) => s.state !== 'current') || written.at(-1).state === 'current');
+  });
+
+  test('progress never skips: nothing reads as done ahead of the step you are on', () => {
+    // Nothing is waiting to be confirmed because nothing has been collected yet.
+    // The review step satisfies its own condition, and must still not read as done.
+    const steps = stepsFor({ process: 'discovery', to_review: 0, coverage: { required_answered: 61, required_total: 85 } });
+    assert.equal(steps[0].state, 'current');
+    assert.ok(steps.slice(1).every((s) => s.state === 'todo'), 'you have not finished reviewing answers you have not got');
+
+    for (const process of PROCESS_IDS) {
+      const all = stepsFor({ process, documents: 1, to_review: 4, coverage: { required_answered: 2, required_total: 85 } });
+      const order = { done: 0, current: 1, todo: 2 };
+      for (let i = 1; i < all.length; i += 1) {
+        assert.ok(order[all[i].state] >= order[all[i - 1].state], `${process}: states only ever move forward`);
+      }
+    }
+  });
+
+  test('winning appears only once there is a proposal to have won with', () => {
+    const labels = (e) => stepsFor({ process: 'rfp', documents: 1, to_review: 0, ...e }).map((s) => s.label);
+    assert.ok(!labels({}).includes('Did we win it?'), 'not on the first screen of an empty bid');
+    assert.ok(labels({ closing_document_at: '2026-09-21' }).includes('Did we win it?'));
+    assert.ok(!labels({ closing_document_at: '2026-09-21' }).some((l) => /Did we win/.test(l) && false));
+    // and never on a discovery, which was never a bid
+    assert.ok(!stepsFor({ process: 'discovery', closing_document_at: '2026-09-21' }).map((s) => s.label).includes('Did we win it?'));
+  });
+
+  test('the two processes describe different work, and neither loses a page', () => {
+    const e = { documents: 1, to_review: 0, coverage: { required_answered: 10, required_total: 85 } };
+    const reachable = (process) => [
+      ...stepsFor({ ...e, process }).map((s) => s.path),
+      ...viewsFor({ ...e, process }).map((v) => v.path),
+    ].sort();
+    assert.deepEqual(reachable('rfp'), ['', 'clarifications', 'closing-document', 'review', 'settings', 'summary']);
+    assert.deepEqual(reachable('discovery'), ['', 'clarifications', 'closing-document', 'review', 'settings', 'summary']);
+    assert.notDeepEqual(stepsFor({ ...e, process: 'rfp' }).map((s) => s.label), stepsFor({ ...e, process: 'discovery' }).map((s) => s.label));
+    // On a bid the window to send questions closes, so it is a step. In a
+    // discovery the consultant is already talking to the client, so it is a view.
+    assert.ok(stepsFor({ ...e, process: 'rfp' }).some((s) => s.path === 'clarifications'));
+    assert.ok(viewsFor({ ...e, process: 'discovery' }).some((v) => v.path === 'clarifications'));
+  });
+
+  test('every step carries what to do, and the settings are always one click away', () => {
+    for (const process of PROCESS_IDS) {
+      for (const step of stepsFor({ process, documents: 1, to_review: 3, coverage: { required_answered: 4, required_total: 85 } })) {
+        assert.ok(step.label, 'a step without a label is a dead end');
+        assert.ok(['done', 'current', 'todo'].includes(step.state));
+      }
+      assert.ok(viewsFor({ process }).some((v) => v.path === 'settings'), 'Change is reachable from every page');
+    }
   });
 
   test('the process travels with the engagement, so every page can speak the right words', async () => {

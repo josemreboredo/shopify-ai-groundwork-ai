@@ -152,6 +152,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       route: p.route ?? null,
       coverage: p.coverage,
       to_review: Object.values(session.provenance).filter((p) => p.status === 'tbc').length,
+      // What the step spine reads. It renders on every page, so the counts travel
+      // with the engagement rather than costing each page another call.
+      documents: (session.documents ?? []).length,
+      clarifications_at: session.closing?.clarifications?.saved_at ?? null,
       closing_document_at: session.closing?.document?.saved_at ?? null,
     };
   }

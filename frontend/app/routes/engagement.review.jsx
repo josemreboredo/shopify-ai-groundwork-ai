@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Form, Link, redirect, useNavigation, useSearchParams } from 'react-router';
+import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader } from '../components/question.jsx';
-import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
 
 export const meta = ({ params }) => [{ title: `Review answers · ${params.client} · Merkle Discovery` }];
 
@@ -15,35 +14,6 @@ export async function loader({ request, params }) {
   } catch (err) {
     throw serviceFailure(err);
   }
-}
-
-export async function action({ request, params }) {
-  const user = await requireUser(request);
-  const form = await request.formData();
-  const intent = String(form.get('intent'));
-  if (intent === 'mode') {
-    try {
-      const result = await discovery().setInterviewMode(user, params.client, { mode: String(form.get('mode') ?? '') });
-      return { ok: true, mode: result.mode, was: result.was, remaining: result.remaining };
-    } catch (err) {
-      return serviceFailure(err);
-    }
-  }
-  if (intent === 'process') {
-    try {
-      const result = await discovery().setProcess(user, params.client, { process: String(form.get('process') ?? '') });
-      return { ok: true, process: result.process, wasProcess: result.was };
-    } catch (err) {
-      return serviceFailure(err);
-    }
-  }
-  if (intent !== 'delete') return { error: 'Unknown action' };
-  try {
-    await discovery().deleteEngagement(user, params.client, { confirm: String(form.get('confirm') ?? '') });
-  } catch (err) {
-    return serviceFailure(err);
-  }
-  return redirect('/');
 }
 
 /** Filters on the review table: four of 157 rows are usually the ones that matter. */
@@ -63,9 +33,8 @@ const STATE = {
   open: ['stop', 'Open'],
 };
 
-export default function Review({ loaderData, actionData }) {
+export default function Review({ loaderData }) {
   const { engagement, sections, language } = loaderData;
-  const busy = useNavigation().state !== 'idle';
   const all = sections.flatMap((s) => s.questions);
   const count = (state) => all.filter((q) => q.state === state).length;
   const [filter, setFilter] = useState('all');
@@ -74,8 +43,7 @@ export default function Review({ loaderData, actionData }) {
     <main>
       <EngagementHeader
         language={language}
-        client={engagement.client}
-        process={engagement.process}
+        engagement={engagement}
         eyebrow="Review answers"
         meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} TBC · ${count('skipped')} not applicable · ${count('open')} open`}
       />
@@ -99,31 +67,9 @@ export default function Review({ loaderData, actionData }) {
               </button>
             ))}
           </div>
-          <Form method="post" className="mode-form">
-            <input type="hidden" name="intent" value="mode" />
-            <label htmlFor="mode" className="muted">Mode</label>
-            <select id="mode" name="mode" defaultValue={engagement.mode}>
-              <option value="quick">Quick — required only</option>
-              <option value="standard">Standard — required and recommended</option>
-              <option value="full">Full — everything</option>
-            </select>
-            <button type="submit" className="secondary" disabled={busy}>Change</button>
-          </Form>
-          <Form method="post" className="mode-form">
-            <input type="hidden" name="intent" value="process" />
-            <label htmlFor="process" className="muted">This is</label>
-            <select id="process" name="process" defaultValue={engagement.process}>
-              {Object.values(PROCESSES).map((p) => <option key={p.id} value={p.id}>{p.start}</option>)}
-            </select>
-            <button type="submit" className="secondary" disabled={busy}>Change</button>
-          </Form>
         </div>
-        {actionData?.mode ? <p className="muted">Mode changed from {actionData.was} to {actionData.mode} — {actionData.remaining} questions open.</p> : null}
-        {actionData?.process ? <p className="muted">Now a {processMeta(actionData.process).record.toLowerCase()}, was a {processMeta(actionData.wasProcess).record.toLowerCase()} — the steps and the words follow; nothing recorded has changed.</p> : null}
         <p className="muted">
-          The mode decides which questions are ever asked: a quick interview never reaches a
-          <em> recommended</em> question, however relevant it has become. The process decides the
-          order of the work and what the documents are called — an RFP is answered, a discovery is run.
+          Fewer questions here than you expected? How many are ever asked is set by the depth, in <strong>Change</strong>.
         </p>
       </section>
       {sections.filter((section) => shown(section.questions).length).map((section) => (
@@ -152,22 +98,6 @@ export default function Review({ loaderData, actionData }) {
         </section>
       ))}
 
-      <details className="danger">
-        <summary>Delete this engagement</summary>
-        <p className="muted">
-          Deletes every answer, document, note, the approach and every version of the closing document for{' '}
-          <strong>{engagement.client}</strong>. It cannot be undone, and downloaded files are not affected.
-        </p>
-        {actionData?.error ? <p className="error">{actionData.error}</p> : null}
-        <Form method="post" className="danger-form">
-          <input type="hidden" name="intent" value="delete" />
-          <div className="field">
-            <label htmlFor="confirm">Type <code>{engagement.client}</code> to confirm</label>
-            <input id="confirm" name="confirm" autoComplete="off" placeholder={engagement.client} required />
-          </div>
-          <button type="submit" className="destructive" disabled={busy}>Delete engagement</button>
-        </Form>
-      </details>
     </main>
   );
 }

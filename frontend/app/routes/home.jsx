@@ -28,6 +28,8 @@ export async function action({ request }) {
   return redirect(`/engagements/${client}`);
 }
 
+const LANGUAGES = ['en', 'de', 'fr', 'it', 'es'];
+
 function Status({ e }) {
   if (e.go) return <span className="badge go">GO</span>;
   // Beyond the offers is not a refusal: only "No bid" reads as one.
@@ -42,37 +44,64 @@ export default function Home({ loaderData, actionData }) {
     <main>
       <header className="page-head">
         <p className="eyebrow">Merkle Discovery</p>
-        <h1>Bids and engagements</h1>
-        <p>One engine, two ways in: an RFP to answer, or a discovery to run. Everything in the pilot, shared across consultants.</p>
+        <h1>What are you working on?</h1>
+        <p className="lede">
+          One engine, two ways in. An RFP that has to be answered, or a discovery to run with a client —
+          the same question bank, the same Shopify documentation, the same offer underneath.
+        </p>
       </header>
-      <h2>Start</h2>
-      <Form method="post" className="inline-form">
-        <div className="field">
-          <label htmlFor="process">What is this</label>
-          <select id="process" name="process" defaultValue="discovery">
-            {Object.values(PROCESSES).map((p) => <option key={p.id} value={p.id}>{p.start}</option>)}
-          </select>
-        </div>
-        <div className="field">
-          <label htmlFor="client">Client slug</label>
-          <input id="client" name="client" placeholder="acme-watches" pattern="[a-z0-9][a-z0-9-]*" required />
-        </div>
-        <div className="field">
-          <label htmlFor="language">Conversation language</label>
-          <select id="language" name="language" defaultValue="en">
-            {['en', 'de', 'fr', 'it', 'es'].map((l) => <option key={l} value={l}>{l}</option>)}
-          </select>
-        </div>
-        <div className="field">
-          <label htmlFor="mode">Mode</label>
-          <select id="mode" name="mode" defaultValue="standard">
-            <option value="quick">Quick (required)</option>
-            <option value="standard">Standard</option>
-            <option value="full">Full</option>
-          </select>
-        </div>
-        <button type="submit">Start</button>
-      </Form>
+
+      {/* Two doors. You say what you are doing; nothing asks you to classify a record. */}
+      <div className="doors">
+        <section className="door rfp">
+          <p className="door-n" aria-hidden="true">01</p>
+          <h2>Answer an RFP</h2>
+          <p>A document arrived with a deadline. Read it in, confirm what it says, send the few questions that change the answer, and write the proposal.</p>
+          <Form method="post" className="door-form">
+            <input type="hidden" name="process" value="rfp" />
+            <input type="hidden" name="mode" value="standard" />
+            <div className="field">
+              <label htmlFor="rfp-client">Client</label>
+              <input id="rfp-client" name="client" placeholder="la-prairie" pattern="[a-z0-9][a-z0-9-]*" required />
+            </div>
+            <div className="field">
+              <label htmlFor="rfp-language">Language</label>
+              <select id="rfp-language" name="language" defaultValue="en">
+                {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
+            <button type="submit">Start a bid</button>
+          </Form>
+        </section>
+
+        <section className="door discovery">
+          <p className="door-n" aria-hidden="true">02</p>
+          <h2>Run a discovery</h2>
+          <p>A client is engaged and the work needs scoping. Work through the questions with them, then write the closing document and the delivery backlog.</p>
+          <Form method="post" className="door-form">
+            <input type="hidden" name="process" value="discovery" />
+            <div className="field">
+              <label htmlFor="d-client">Client</label>
+              <input id="d-client" name="client" placeholder="acme-watches" pattern="[a-z0-9][a-z0-9-]*" required />
+            </div>
+            <div className="field">
+              <label htmlFor="d-language">Language</label>
+              <select id="d-language" name="language" defaultValue="en">
+                {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="d-mode">Depth</label>
+              <select id="d-mode" name="mode" defaultValue="standard">
+                <option value="quick">Quick</option>
+                <option value="standard">Standard</option>
+                <option value="full">Full</option>
+              </select>
+            </div>
+            <button type="submit">Start a discovery</button>
+          </Form>
+        </section>
+      </div>
       {actionData?.error ? <p className="error">{actionData.error}</p> : null}
 
       <h2>Open now</h2>

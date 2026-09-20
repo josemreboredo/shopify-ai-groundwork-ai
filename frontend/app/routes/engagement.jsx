@@ -25,71 +25,7 @@ export async function loader({ request, params }) {
 
 export async function action({ request, params }) {
   const user = await requireUser(request);
-  const form = await request.formData();
-  const intent = String(form.get('intent') ?? '');
-  if (intent === 'won' || intent === 'process') {
-    try {
-      const result = intent === 'won'
-        ? await discovery().markBidWon(user, params.client)
-        : await discovery().setProcess(user, params.client, { process: String(form.get('process') ?? '') });
-      return { ok: true, intent, ...result };
-    } catch (err) {
-      return serviceFailure(err, { intent });
-    }
-  }
-  return questionAction(user, params.client, form);
-}
-
-/**
- * What this record is, and the one thing you can do about it.
- *
- * This lived next to the interview mode in Review answers, which is a settings
- * drawer — and a bid being run as a discovery is not a setting, it is the reason
- * the client gets sixty questions instead of three. It belongs on the first
- * screen, where the consultant already is.
- *
- * Winning is kept apart from correcting. "We won it" is a dated milestone and
- * everything stays in place: the RFP, the answers read out of it with their
- * citations, the questions that were sent, every version of the proposal. The
- * quiet link underneath is for a record that was simply created as the wrong
- * kind, and it claims nothing about having won.
- */
-function ProcessCard({ engagement, busy, actionData }) {
-  const rfp = engagement.process === 'rfp';
-  const words = processMeta(engagement.process);
-  return (
-    <section className={`card process-card ${engagement.process}`}>
-      <div className="start-head">
-        <div>
-          <p className="question">This is a {words.record.toLowerCase()}</p>
-          <p className="muted">
-            {rfp
-              ? 'Merkle is answering an RFP. Read the document in, confirm what it says, send the few questions that change the answer, then write the proposal.'
-              : engagement.won
-                ? `Won from a bid on ${engagement.won.at}. The RFP, every answer read out of it, the questions sent to the client and each version of the proposal are still here — the work carries on in this same record.`
-                : 'A consultant-led discovery: work through the questions with the client, then write the closing document and the backlog.'}
-          </p>
-        </div>
-        <span className={`badge process-${engagement.process}`}>{words.record}</span>
-      </div>
-      <div className="actions">
-        {rfp ? (
-          <Form method="post">
-            <button type="submit" name="intent" value="won" className="button" disabled={busy}>We won it — make it an engagement</button>
-          </Form>
-        ) : null}
-        <Form method="post">
-          <input type="hidden" name="process" value={rfp ? 'discovery' : 'rfp'} />
-          <button type="submit" name="intent" value="process" className="link" disabled={busy}>
-            {rfp ? 'Not a bid — this is a discovery' : 'Not an engagement — this is a bid'}
-          </button>
-        </Form>
-      </div>
-      {actionData?.intent === 'won' ? <p className="muted">Now an engagement, won {actionData.won_at}. Nothing was moved or deleted.</p> : null}
-      {actionData?.intent === 'process' ? <p className="muted">Changed to a {processMeta(actionData.process).record.toLowerCase()} — the steps and the words follow; no answer has changed.</p> : null}
-      {actionData?.error && ['won', 'process'].includes(actionData.intent ?? '') ? <p className="error">{actionData.error}</p> : null}
-    </section>
-  );
+  return questionAction(user, params.client, await request.formData());
 }
 
 const VIA_LABEL = { web: 'web app', claude: 'Claude', cli: 'CLI / Claude Code' };
@@ -228,13 +164,11 @@ export default function Engagement({ loaderData, actionData }) {
       <Vocabularies vocabularies={vocabularies} />
       <EngagementHeader
         language={language}
-        client={engagement.client}
-        process={engagement.process}
+        engagement={engagement}
         meta={`${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${next.remaining} questions open${typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}`}
       />
       <div className="layout">
         <div>
-          <ProcessCard engagement={engagement} busy={busy} actionData={actionData} />
           {next.consent_required ? <p className="error">Record the client's consent for AI processing before any other answer.</p> : null}
           {!next.consent_required ? <PrefillCard client={engagement.client} documents={documents} toConfirm={toConfirm} process={engagement.process} /> : null}
           {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} />) : (

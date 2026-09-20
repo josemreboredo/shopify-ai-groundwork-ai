@@ -22,7 +22,7 @@ export default function Summary({ loaderData }) {
   const signals = Object.entries(p.app_signals ?? {}).filter(([, reasons]) => reasons.length);
   return (
     <main>
-      <EngagementHeader client={engagement.client} process={engagement.process} eyebrow="Summary" meta={`Computed by the engine on ${generatedAt}`} />
+      <EngagementHeader engagement={engagement} eyebrow="Summary" meta={`Computed by the engine on ${generatedAt}`} />
       <p className="muted">
         Internal working summary for the Lead Consultant — not a client document.{' '}
         <a href={`/engagements/${engagement.client}/summary.md`} download>Download as Markdown</a>

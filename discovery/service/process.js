@@ -58,32 +58,108 @@ export const processOf = (value) => (value === 'rfp' ? 'rfp' : 'discovery');
 export const processMeta = (value) => PROCESSES[processOf(value)];
 
 /**
- * The steps, in the order the consultant does them. Same routes either way; the
- * first tab is where the answers come from, and the last is what goes out.
+ * The work, as the consultant actually does it.
  *
- * On a bid the questions to the client come straight after the review, because
- * there is a window to send them and it closes. In a discovery they sit behind
- * the summary: the consultant is already talking to the client.
+ * Five equal tabs told nobody where they were: the consultant had to rebuild the
+ * process in their head on every visit, which is what made the tool feel
+ * confusing — not where the controls lived. So the job is a numbered spine with
+ * state, and the things that are not steps (the summary, the settings) sit to
+ * one side. The tool says what to do next; that is what makes it easy.
+ *
+ * Steps are derived from the engagement's own counts, never stored, so they can
+ * never disagree with it.
  */
-const TABS = {
-  rfp: [
-    ['', 'The RFP'],
-    ['review', 'Review answers'],
-    ['clarifications', 'Questions to the client'],
-    ['summary', 'Summary'],
-    ['closing-document', 'Proposal'],
+const STEPS = {
+  rfp: (e) => [
+    {
+      path: '',
+      label: 'Read the RFP',
+      done: e.documents > 0,
+      hint: e.documents ? `${e.documents} document${e.documents > 1 ? 's' : ''} read` : 'Nothing read in yet',
+    },
+    {
+      path: 'review',
+      label: 'Confirm what it says',
+      done: e.documents > 0 && e.to_review === 0,
+      hint: e.to_review ? `${e.to_review} to confirm` : e.documents ? 'All confirmed' : null,
+    },
+    {
+      path: 'clarifications',
+      label: 'Send the questions',
+      done: Boolean(e.clarifications_at),
+      hint: e.clarifications_at ? `Prepared ${e.clarifications_at}` : 'The few that change the answer',
+    },
+    {
+      path: 'closing-document',
+      label: 'Write the proposal',
+      done: Boolean(e.closing_document_at),
+      hint: e.closing_document_at ? `Saved ${e.closing_document_at}` : null,
+    },
+    // Winning happens weeks later. It has no business on the first screen of an
+    // empty bid, so it appears once there is a proposal to have won with.
+    ...(e.closing_document_at ? [{ path: 'settings', label: 'Did we win it?', done: false, hint: 'Turn it into an engagement' }] : []),
   ],
-  discovery: [
-    ['', 'Interview'],
-    ['review', 'Review answers'],
-    ['summary', 'Summary'],
-    ['clarifications', 'Questions to the client'],
-    ['closing-document', 'Closing document'],
+  discovery: (e) => [
+    {
+      path: '',
+      label: 'Ask the questions',
+      done: (e.coverage?.required_total ?? 0) > 0 && e.coverage.required_answered >= e.coverage.required_total,
+      hint: e.coverage ? `${e.coverage.required_answered} of ${e.coverage.required_total} required` : null,
+    },
+    {
+      path: 'review',
+      label: 'Review the answers',
+      done: e.to_review === 0 && (e.coverage?.required_answered ?? 0) > 0,
+      hint: e.to_review ? `${e.to_review} to confirm` : null,
+    },
+    {
+      path: 'closing-document',
+      label: 'Write the closing document',
+      done: Boolean(e.closing_document_at),
+      hint: e.closing_document_at ? `Saved ${e.closing_document_at}` : null,
+    },
   ],
 };
 
 /**
- * @param {string|null|undefined} value
- * @returns {Array<{ path: string, label: string }>}
+ * The steps with their state. Exactly one is "current": the first that is not
+ * done, so the page the consultant should be on is the one the spine points at.
+ *
+ * @param {object} engagement  an engagement summary
+ * @returns {Array<{ path: string, label: string, hint: string|null, state: 'done'|'current'|'todo', n: number }>}
  */
-export const tabsFor = (value) => TABS[processOf(value)].map(([path, label]) => ({ path, label }));
+export function stepsFor(engagement) {
+  const e = engagement ?? {};
+  const steps = STEPS[processOf(e.process)](e);
+  // Progress does not skip. A step can satisfy its own condition while an earlier
+  // one does not — nothing is left to confirm because nothing has been collected
+  // yet — and showing that as "done" ahead of the current step reads as a bug and
+  // is a lie about the work: you have not finished reviewing answers you have not
+  // got. So the first unmet step ends the run, and everything after it is still
+  // to do.
+  const current = steps.findIndex((s) => !s.done);
+  return steps.map((s, i) => ({
+    path: s.path,
+    label: s.label,
+    hint: s.hint ?? null,
+    n: i + 1,
+    state: current === -1 || i < current ? 'done' : i === current ? 'current' : 'todo',
+  }));
+}
+
+/**
+ * Everything that is worth reaching but is not a step: reference views, and the
+ * one place the settings live. On a bid the questions to the client are the
+ * step; in a discovery the consultant is already talking to them, so they are a
+ * view like any other.
+ *
+ * @param {object} engagement
+ */
+export function viewsFor(engagement) {
+  const e = engagement ?? {};
+  return [
+    { path: 'summary', label: 'Summary' },
+    ...(processOf(e.process) === 'rfp' ? [] : [{ path: 'clarifications', label: 'Questions to the client' }]),
+    { path: 'settings', label: 'Change' },
+  ];
+}
