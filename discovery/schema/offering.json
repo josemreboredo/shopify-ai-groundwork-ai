@@ -57,17 +57,22 @@
     },
     {
       "order": 2,
+      "when": "base weeks + active gate modifiers > offers.M.duration_weeks.max",
+      "offer": "L"
+    },
+    {
+      "order": 3,
       "when": "active scope gates >= 2",
       "offer": "M"
     },
     {
-      "order": 3,
+      "order": 4,
       "when": "active scope gates == 1",
       "offer": "S",
       "apply_modifier": true
     },
     {
-      "order": 4,
+      "order": 5,
       "when": "active scope gates == 0",
       "offer": "S"
     }

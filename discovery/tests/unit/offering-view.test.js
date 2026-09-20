@@ -5,6 +5,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
+import { classifyOffer } from '../../agents/discovery/classify.js';
 import { offeringView } from '../../service/offering-view.js';
 import { offering } from '../../schema/index.js';
 
@@ -88,5 +89,66 @@ describe('a gate priced by tier shows every tier', () => {
 
   test('the bands a consultant reads are in Swiss francs', () => {
     for (const o of view.offers) assert.equal(o.currency, 'CHF');
+  });
+});
+
+describe('the page explains the rule the engine actually follows', () => {
+  // The offering was recalibrated and the classification list was not. The page
+  // kept saying "four questions, it stops at the first yes" while the engine
+  // asked five — and the missing one was the one that decides whether an
+  // engagement is an M or an L. A tool whose whole claim is that the
+  // commercials are code cannot describe code it no longer runs.
+  //
+  // Pinned by behaviour rather than by wording: each published rule is given an
+  // engagement that should land on it, and the engine has to agree.
+  const view = offeringView({ pricing: true });
+  const base = () => ({ schema_version: '1.0.0', meta: { client: { name: 'X', slug: 'x' }, source: 'questionnaire' } });
+  const markets = (...codes) => ({ markets: { list: codes.map((code) => ({ code, currency: 'CHF', price_strategy: 'base_currency' })) } });
+
+  /** One engagement per published rule, in the order the page prints them. */
+  const CASES = [
+    ['any l_trigger', { ...base(), brand: { positioning: 'luxury' } }, 'L'],
+    ['scope beyond the M ceiling', {
+      ...base(),
+      ...markets('CH', 'DE', 'FR'),
+      migration: { source_platform: 'magento' },
+      b2b: { enabled: true },
+      integrations: [{ category: 'erp', connector: 'custom' }],
+    }, 'L'],
+    ['two or more gates', {
+      ...base(),
+      ...markets('CH', 'DE'),
+      retail: { store_count: 2, pos: 'shopify_pos' },
+    }, 'M'],
+    ['exactly one gate', { ...base(), retail: { store_count: 2, pos: 'shopify_pos' } }, 'S'],
+    ['no gate at all', base(), 'S'],
+  ];
+
+  test('there is one published rule per branch the engine has', () => {
+    assert.equal(view.classification.length, CASES.length,
+      'a branch with no published rule is a rule a consultant cannot check');
+  });
+
+  test('each published rule, in order, lands where it says it lands', () => {
+    view.classification.forEach((rule, i) => {
+      const [label, doc, expected] = CASES[i];
+      assert.equal(rule.offer, expected, `rule ${rule.order} (${label}) claims ${rule.offer}`);
+      assert.equal(classifyOffer(doc).code, expected, `rule ${rule.order} (${label}): the engine disagrees`);
+    });
+  });
+
+  test('every rule reads as a sentence, not as the expression behind it', () => {
+    for (const c of view.classification) {
+      assert.ok(c.plain?.trim(), `rule ${c.order}: no plain wording`);
+      assert.ok(!/[_{}]|>=|==|\.\w+\./.test(c.plain),
+        `rule ${c.order}: "${c.plain}" is the engine talking to itself`);
+    }
+  });
+
+  test('the effort rule names the ceiling it is testing', () => {
+    // "More than an M can hold" is only checkable if the number is on the page.
+    const effortRule = view.classification.find((c) => /adds up to/.test(c.plain));
+    assert.ok(effortRule, 'the rule that decides M against L is published');
+    assert.match(effortRule.plain, new RegExp(String(offering.offers.M.duration_weeks.max)));
   });
 });

@@ -47,6 +47,12 @@ const APPROACH = {
 function plainRule(c) {
   const when = String(c.when);
   if (/l_trigger/.test(when)) return `Any of: ${offering.l_triggers.map((t) => t.label.toLowerCase()).join(', ')}`;
+  // The rule that decides the offer by what the work adds up to. Left to the
+  // fallback it printed its own expression, which is the engine talking to
+  // itself in front of a consultant.
+  if (/duration_weeks/.test(when)) {
+    return `The scope adds up to more than ${offering.offers.M.duration_weeks.max} weeks — more than an M can hold`;
+  }
   const n = /(>=|==)\s*(\d+)/.exec(when);
   if (n) {
     const count = Number(n[2]);

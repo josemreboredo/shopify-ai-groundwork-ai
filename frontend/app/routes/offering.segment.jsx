@@ -106,7 +106,17 @@ export default function OfferingSegment({ loaderData }) {
         <h2>{segment.slug === 'l' ? 'What lands an engagement here' : 'What moves an engagement out of here'}</h2>
         {segment.slug === 'l' ? (
           <>
-            <p className="lede">Any one of these makes it an L, whatever the scope gates say.</p>
+            <p className="lede">
+              Two ways in. Any one of the triggers below lands an engagement here whatever the scope gates say —
+              and so does scope that adds up to more than an M can hold, with no trigger at all.
+            </p>
+            <p className="muted">
+              The second route is the one that catches a heavy migration with B2B and two integrations: four gates
+              that come to more than {view.offers.find((o) => o.code === 'M')?.duration_weeks.max} weeks. The engine
+              adds up what the gates cost and compares it with the M ceiling, so the offer follows the work rather
+              than the number of boxes ticked.
+            </p>
+            <h3>The triggers</h3>
             <ol className="claims">
               {view.l_triggers.map((t) => (
                 <li key={t.id}>
@@ -125,8 +135,8 @@ export default function OfferingSegment({ loaderData }) {
           <>
             <p className="lede">
               {segment.slug === 's'
-                ? 'One gate keeps it in S with a modifier. Two or more make it an M.'
-                : 'The gates below are already priced into M. What takes it past M is an L trigger.'}
+                ? 'One gate keeps it in S with a modifier, and the modifier is added to the weeks and the band — an S with a heavy migration quotes what a heavy migration costs. Two gates or more make it an M.'
+                : 'The gates below are already priced into M. What takes it past M is an L trigger, or scope that adds up to more than an M can hold.'}
             </p>
             <ol className="claims">
               {moves.map((g) => (
