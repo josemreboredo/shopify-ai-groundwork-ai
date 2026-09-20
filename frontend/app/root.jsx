@@ -20,20 +20,29 @@ export const links = () => [
  * of them, grouped — it is where you look when you know the thing exists and
  * cannot remember where it lives.
  */
+/*
+ * Ordered the way a consultant meets the tool, not the way the pages were
+ * written: the work first, then where the work is done, then what we are
+ * selling, then how to use it, and last what it is. The old order put the
+ * offering between the two places you actually work, and left the two
+ * explanatory pages sitting in the middle of the bar.
+ */
 const SECTIONS = [
   {
     title: 'Work',
     pages: [
       { to: '/', label: 'Bids and engagements', end: true, signedIn: true, header: true },
-      { to: '/offering', label: 'Offering', signedIn: true, header: true },
       { to: '/claude', label: 'Claude Project', signedIn: true, header: true },
     ],
   },
   {
-    title: 'The tool',
+    title: 'The offer',
     pages: [
-      { to: '/about', label: 'What this is', header: true },
-      { to: '/how-it-works', label: 'How it works', header: true },
+      { to: '/offering', label: 'Offering', signedIn: true, header: true },
+      { to: '/offering/s', label: 'S · Ecommerce Foundation', signedIn: true },
+      { to: '/offering/m', label: 'M · Ecommerce Scale', signedIn: true },
+      { to: '/offering/l', label: 'L · Ecommerce Growth', signedIn: true },
+      { to: '/offering/larger-engagement', label: 'Beyond the offers', signedIn: true },
     ],
   },
   {
@@ -42,6 +51,13 @@ const SECTIONS = [
       { to: '/manual', label: 'Manual', header: true },
       { to: '/manual/bid', label: 'Answer an RFP' },
       { to: '/manual/discovery', label: 'Run a discovery' },
+    ],
+  },
+  {
+    title: 'The tool',
+    pages: [
+      { to: '/about', label: 'What this is', header: true },
+      { to: '/how-it-works', label: 'How it works', header: true },
     ],
   },
 ];

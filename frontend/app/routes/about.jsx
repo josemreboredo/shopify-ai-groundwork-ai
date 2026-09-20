@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 
 import { PRODUCT, pageTitle } from '../brand.js';
 import { stats } from '../facts.server.js';
+import { HandOff, Ladder, WaysIn } from '../components/diagram.jsx';
 
 export const meta = () => [
   { title: pageTitle('What this is') },
@@ -12,204 +13,192 @@ export function loader() {
   return { stats: stats() };
 }
 
+/**
+ * Four problems, one line each.
+ *
+ * They were four cards of fifty words. Four paragraphs of the same length and
+ * the same shape read as one paragraph of two hundred: nothing stood out, so
+ * nothing was remembered. The claim is the line; the evidence folds.
+ */
 const PROBLEMS = [
-  ['Shopify depth is scarce, commerce depth is not',
-    'The practice has senior commerce consultants. It has far fewer people who know what Shopify Payments can do per country, when Markets needs a second store, or what B2B costs on each plan. Today the quality of a Shopify bid depends on who happens to write it.'],
-  ['The expensive work happens before anything is signed',
-    'Answering an RFP and running a pre-sales discovery are both senior time spent on a maybe. Every one restarts the same research, rebuilds the same deck and rewrites the same platform explanations.'],
-  ['Scoping errors surface in delivery',
-    'What gets missed up front — a market that needs its own entity, a tax rule Shopify cannot handle, a return flow that only works in the US — becomes a change request, a margin loss or a difficult conversation months later.'],
-  ['Nothing compounds',
-    'The research from one engagement stays in one deck on one consultant’s laptop. The next one starts at zero, and the platform has changed again in the meantime.'],
+  ['Shopify depth is scarce', 'Commerce depth is not.',
+    'The practice has senior commerce consultants. It has far fewer who know what Shopify Payments does per country, when Markets needs a second store, or what B2B costs on each plan. Today a Shopify bid is as good as whoever happens to write it.'],
+  ['The expensive work is unpaid', 'It all happens before anything is signed.',
+    'Answering an RFP and running a pre-sales discovery are senior time spent on a maybe. Each one restarts the same research, rebuilds the same deck and rewrites the same platform explanations.'],
+  ['Scoping errors surface late', 'In delivery, where they cost the most.',
+    'A market that needs its own entity. A tax rule Shopify cannot handle. A return flow that only works in the US. Missed up front, each becomes a change request, a margin loss, or a difficult conversation months later.'],
+  ['Nothing compounds', 'Every engagement starts at zero.',
+    'The research from one engagement stays in one deck on one laptop. The next one begins again — and the platform has changed since.'],
 ];
 
-/** A bid and a discovery are two jobs, so the tool runs two flows. These are the steps it actually shows. */
-const BID_STEPS = [
-  ['Read the RFP', 'The documents go into your Claude Project and Claude records what they already answer — each one with the document, the section and the sentence it came from. The intake screen says how much each document actually produced, so one that gave nothing says so instead of looking successful.'],
-  ['Confirm what it says', 'An extraction nobody has checked is not evidence. The review table confirms one answer or all of them, and until they are confirmed the tool will not let anyone stand behind a price.'],
-  ['Go/No-Go support', 'Not the decision — that is taken in a room, by people who know the relationship, the competition and the pipeline. This is what the Solution Architect brings to that room: whether Merkle can put a number on this work and stand behind it, what it would cost to be wrong, and the facts underneath, in the order he would read them.'],
-  ['RFP Q&A', 'Every RFP has a window for questions, and it is the first thing the client reads from us. The engine keeps only the unknowns that would change the offer, the plan, the store topology, the cost or the risk, and drops what it can safely assume — then it becomes a document you can send.'],
-  ['Check where it stands', 'The last thing you look at before committing to a price: what was confirmed, what the engine concluded, what is being asked and what the proposal will assume — the one page that shows them together.'],
-  ['Write the proposal', 'The same drafting as a closing document, aimed at being chosen. Whatever came back unanswered is stated as the assumption it is, so the bid stays comparable and nothing is quietly guessed.'],
-  ['Did we win it?', 'A bid that wins becomes the engagement, in the same record: nothing is re-entered and no answer moves.'],
-];
-
-const DISCOVERY_STEPS = [
-  ['Interview the client', 'Each question carries a short briefing — why it matters for Shopify, the realistic options, the platform limits and the official source — so a commerce consultant runs a credible Shopify conversation without being a Shopify specialist. Answers can be pre-filled from documents here too, when there are any.'],
-  ['Review and confirm', 'Everything recorded from a document stays “to confirm” until a human accepts it, with the quote next to it.'],
-  ['Agree the scope', 'The Discovery Closing Document: the decision taken per requirement with its options weighed, the architecture, what is standard versus configuration versus app versus custom, the risks, what is out of scope and the roadmap — plus an annex with the full analysis and the sources.'],
-  ['Hand over to delivery', 'A Jira-ready backlog and the configuration workbook for tax, shipping and store set-up, so the build team starts from the discovery instead of re-interviewing the client.'],
-];
-
+/**
+ * The spine of the whole tool, and the one thing a reader must leave with. It
+ * used to be three paragraphs in a row; it is a flow now, because it is one:
+ * each hand takes the work the one before it finished.
+ */
 const DIVISION = [
-  ['Code decides — always', 'Offer and scope classification · scope gates · exit rules and routes · which questions are worth sending back · whether the work can be priced at all · app signals · what is missing · whether a document is out of date'],
-  ['AI drafts — never decides', 'Reading client documents · proposing answers with the evidence · the architecture and the position behind it · pros and cons per decision · the proposal, the deck and the annex'],
-  ['The consultant owns', 'The client relationship · confirming every AI-proposed answer · the bid decision · the final scope · what is shared with the client'],
+  {
+    who: 'Code decides',
+    crosses: 'the offer, the gates, the rules',
+    line: 'Anything with a commercial consequence.',
+    items: ['Which offer this is', 'Whether it can be priced at all', 'Scope gates and exit rules', 'Which questions are worth sending back', 'What is missing, and what is out of date'],
+  },
+  {
+    who: 'AI drafts',
+    crosses: 'a draft, with its sources',
+    line: 'Never decides. It reads and it writes.',
+    items: ['Reads the client’s documents', 'Proposes answers, with the evidence', 'Explains the trade-off in each decision', 'Writes the proposal, the deck and the annex'],
+  },
+  {
+    who: 'The consultant owns',
+    crosses: 'what the client sees',
+    line: 'The client, and every word they see.',
+    items: ['The relationship', 'Confirming every answer the AI proposed', 'The bid decision', 'The final scope', 'What is shared with the client'],
+  },
+];
+
+/**
+ * The two paths, aligned.
+ *
+ * They were two independent numbered lists of eighty-word steps, side by side
+ * but lining up with nothing. The engine is the same underneath, so the useful
+ * shape is a comparison: same row, same stage of the work, and the difference
+ * is what you read across.
+ */
+const PATHS = [
+  ['Read it in', 'Read the RFP', 'Claude reads the documents and records what they answer, with the sentence each came from.',
+    'Interview the client', 'Each question carries a briefing — why it matters, the options, the platform limit, the source.'],
+  ['Confirm it', 'Confirm what it says', 'An extraction nobody has checked is not evidence. Nothing is priced on unconfirmed answers.',
+    'Review and confirm', 'Everything read from a document stays “to confirm” until a human accepts it.'],
+  ['Take a position', 'Go/No-Go support', 'Not the decision. What the architect brings to the room: can we price this and stand behind it.',
+    null, null],
+  ['Close the gaps', 'RFP Q&A', 'Only the unknowns that change the answer. A handful says we read their document. Sixty says we did not.',
+    null, null],
+  ['Check it holds', 'Check where it stands', 'What was confirmed, what the engine concluded, and what the proposal will assume. One page.',
+    null, null],
+  ['Write it', 'Write the proposal', 'Aimed at being chosen. Anything unanswered is stated as the assumption it is.',
+    'Agree the scope', 'The closing document: a decision per requirement, the architecture, the risks, the roadmap.'],
+  ['Hand it on', 'Did we win it?', 'A bid that wins becomes the engagement, in the same record. Nothing is re-entered.',
+    'Hand over to delivery', 'A Jira-ready backlog and the configuration workbook, so the build team starts here.'],
+];
+
+/** What the tool produces. Six documents, named — the detail belongs in the manual. */
+const OUTPUTS = [
+  ['The Go/No-Go position', 'internal', 'Whether the work can be priced and stood behind, and what that rests on.'],
+  ['The questions we send back', 'client', 'Only the unknowns that change the answer, each showing the trade-off it turns on.'],
+  ['The proposal, or the closing document', 'client', 'A decision per requirement, the architecture, the risks, what is out of scope, the roadmap.'],
+  ['The annex', 'client', 'The reasoning behind each decision, and Merkle’s verified Shopify chapters with their sources.'],
+  ['The delivery handover', 'internal', 'A Jira-ready backlog and a configuration workbook for tax, shipping and store set-up.'],
+  ['The internal summary', 'internal', 'Offer size, gates, exit rules with their evidence, and every open item.'],
 ];
 
 const GUARDRAILS = [
-  ['Consent before anything', 'The client’s agreement to AI processing is question one; nothing else can be recorded until it is given.'],
-  ['No personal data', 'The tool records roles, never names, e-mail addresses or phone numbers, and refuses them on input.'],
-  ['Sourced or rejected', 'Shopify statements carry an official source and a verification date. Unsourced content does not pass the engine — the draft is sent back with the gaps named.'],
-  ['Confirmed before committed', 'Answers read out of a document stay “to confirm”. The Go/No-Go position will not read “go” on evidence nobody has checked.'],
+  ['Consent before anything', 'The client’s agreement to AI processing is question one. Nothing is recorded until it is given.'],
+  ['No personal data', 'The tool records roles. It refuses names, e-mail addresses and phone numbers on input.'],
+  ['Sourced or rejected', 'Every Shopify statement carries an official source and a date. Unsourced drafts are sent back with the gaps named.'],
+  ['Confirmed before committed', 'The Go/No-Go will not read “go” on evidence nobody has checked.'],
   ['Internal pricing stays internal', 'Offer logic and price bands never reach a client-facing document.'],
-  ['Versioned and traceable', 'Every document is versioned, and when answers change afterwards the tool names exactly which ones moved, with the old and the new answer, and redrafts the approach — not only the slides.'],
+  ['Versioned and traceable', 'When an answer changes after a document is written, the tool names which one moved, and redrafts the reasoning — not only the slides.'],
 ];
 
 const OUTCOMES = [
   ['Any commerce consultant can answer a Shopify RFP', 'The platform knowledge sits in the questionnaire and the reference chapters, not only in the few people who have it.'],
-  ['The same rigour every time', 'The same question bank, the same exit rules, the same document structure — whoever runs it, wherever they are, bid or discovery.'],
-  ['The cheapest decision taken first', 'Whether to bid at all is the decision that saves the most money, and it is now a step with the evidence under it rather than a question buried in a questionnaire.'],
+  ['The same rigour every time', 'The same question bank, the same exit rules, the same document structure — whoever runs it, bid or discovery.'],
+  ['The cheapest decision taken first', 'Whether to bid at all saves the most money. It is now a step with evidence under it.'],
   ['A defensible scope, earlier', 'Requirements the platform cannot meet surface before the price is committed, with the source that proves it.'],
-  ['Knowledge that compounds', 'Every verified Shopify fact is written once into the shared reference and is used by every engagement after it.'],
-  ['A pattern other practices can reuse', 'Nothing about the governed-AI method is Shopify-specific: the engine, the connector and the sourcing rule transfer to any platform we sell.'],
+  ['Knowledge that compounds', 'Every verified Shopify fact is written once and used by every engagement after it.'],
+  ['A pattern other practices can reuse', 'The engine, the connector and the sourcing rule are not Shopify-specific.'],
 ];
 
 export default function About({ loaderData }) {
   return (
     <main id="main" className="story">
+      {/* 1 — the answer, in one breath. The lede was forty-four words and three
+             clauses, which is a paragraph pretending to be a summary. */}
       <header className="page-head">
         <p className="eyebrow">Merkle commerce practice · {PRODUCT}</p>
         <h1>One engine, two ways in</h1>
+        <p className="answer-line">
+          Any Merkle commerce consultant can answer a Shopify RFP, or run a discovery, with the depth of a
+          specialist.
+        </p>
         <p className="lede">
-          A tool that lets any Merkle commerce consultant work with the depth of a Shopify specialist — answering
-          an RFP, or running a discovery — and close it with a sourced, client-ready document, with the AI kept
-          firmly on the side of drafting, never deciding.
+          The commercials are computed by code. The AI reads and writes, and never decides. The consultant owns
+          the client.
         </p>
         <ul className="stats">
           {loaderData.stats.map(([n, label]) => <li key={label}><strong>{n}</strong><span>{label}</span></li>)}
         </ul>
       </header>
 
+      {/* 2 — why it exists. A claim per line; the evidence folds. */}
       <section>
-        <h2>The problem in the practice</h2>
-        <div className="grid-2">
-          {PROBLEMS.map(([title, body]) => (
-            <article className="card" key={title}>
-              <h3>{title}</h3>
-              <p>{body}</p>
-            </article>
+        <h2>Why it exists</h2>
+        <ol className="claims">
+          {PROBLEMS.map(([title, line, body]) => (
+            <li key={title}>
+              <details>
+                <summary>
+                  <span className="claim">{title}</span>
+                  <span className="claim-line">{line}</span>
+                </summary>
+                <p>{body}</p>
+              </details>
+            </li>
           ))}
-        </div>
+        </ol>
       </section>
 
+      {/* 3 — the spine, as the flow it actually is. */}
       <section className="band dark">
         <div className="band-inner">
           <p className="eyebrow">The principle</p>
           <h2 className="plain">Code decides. AI drafts. The consultant owns the client.</h2>
           <p className="lede">
-            The risk with AI in pre-sales is not that it writes badly — it is that it invents a commitment. So the
-            commercial logic is ordinary, testable code that behaves the same way every time, and the AI is used
-            where it is genuinely strong: reading documents, explaining trade-offs and writing well.
+            The risk with AI in pre-sales is not bad writing. It is an invented commitment. So the commercial
+            logic is ordinary, testable code, and the AI is used where it is genuinely strong.
           </p>
-          <div className="grid-3">
-            {DIVISION.map(([title, body]) => (
-              <div key={title}>
-                <h3>{title}</h3>
-                <p>{body}</p>
-              </div>
+          <HandOff hands={DIVISION} />
+          <ol className="hands">
+            {DIVISION.map(({ who, line, items }, i) => (
+              <li key={who}>
+                <p className="hand-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+                <h3>{who}</h3>
+                <p className="hand-line">{line}</p>
+                <ul>{items.map((x) => <li key={x}>{x}</li>)}</ul>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* Two jobs, so two flows. The steps here are the steps the tool shows. */}
+      {/* 4 — the two paths, aligned stage by stage, because the engine is one. */}
       <section>
         <h2>Two processes, one engine</h2>
         <p className="lede">
-          Merkle reaches this tool from two directions. An RFP arrives and has to be answered, or a client is
-          engaged and the work has to be scoped. A bid is pre-sale: information is scarce, the clock is running
-          and the goal is to be chosen. A discovery is won and paid: nothing has to be persuaded, everything has
-          to be exact, because what comes out of it is what the build team executes.
+          A bid is pre-sale: information is scarce, the clock is running, the goal is to be chosen. A discovery is
+          won and paid: nothing has to be persuaded and everything has to be exact.
         </p>
-        <div className="grid-2">
-          <div>
-            <h3>Answer an RFP</h3>
-            <ol className="steps">
-              {BID_STEPS.map(([title, body]) => (
-                <li key={title}><h4>{title}</h4><p>{body}</p></li>
-              ))}
-            </ol>
-          </div>
-          <div>
-            <h3>Run a discovery</h3>
-            <ol className="steps">
-              {DISCOVERY_STEPS.map(([title, body]) => (
-                <li key={title}><h4>{title}</h4><p>{body}</p></li>
-              ))}
-            </ol>
-          </div>
-        </div>
+        <WaysIn />
+        <Ladder paths={PATHS} />
         <p className="muted">
-          The engine is blind to which one you are running: the same question bank, the same scope gates, the same
-          verified Shopify documentation and the same offer, and a test pins that the same answers give the same
-          result either way. What differs is the order of the steps and what comes out at the end.
+          The engine cannot tell which one you are running. Same question bank, same scope gates, same
+          documentation, same offer — and a test pins that the same answers give the same result either way.
         </p>
       </section>
 
-      <section className="band">
-        <div className="band-inner">
-          <p className="eyebrow">Before the price is committed</p>
-          <h2 className="plain">The architect takes a position, instead of filling in a grid</h2>
-          <p className="lede">
-            The bid meeting does not want a Solution Architect’s answers to commercial questions he has no business
-            answering. It wants to know whether Merkle can put a number on this work and stand behind it, and why.
-          </p>
-          <div className="grid-2">
-            <article className="card">
-              <h3>The first thing that stops him is the answer</h3>
-              <p>
-                Nothing read in, nothing to assess. Nothing confirmed, “I cannot stand behind this yet”. Outside the
-                offers, a different conversation rather than a worse price. Something that cannot be costed, ask —
-                no assumption covers it. Much still open, we can price it, on more assumptions than it should carry.
-                Otherwise: we can price it and stand behind it.
-              </p>
-            </article>
-            <article className="card">
-              <h3>And the facts it rests on</h3>
-              <p>
-                What the RFP asks for, what it would take to build, what could move the margin, and what we would be
-                betting on — each line carrying the answer it came from. The commercial questions this desk does not
-                answer are listed with their owners rather than guessed at, because “that one is the Client lead’s”
-                is a useful answer where a guess would be a liability.
-              </p>
-            </article>
-          </div>
-          <p className="muted">
-            No percentages. A coverage ratio wearing a claim it cannot support gets argued with; counts of real
-            things get acted on.
-          </p>
-        </div>
-      </section>
-
+      {/* 5 — what comes out, named rather than described. */}
       <section>
         <h2>What comes out of it</h2>
-        <div className="grid-2">
-          <article className="card">
-            <h3>The Go/No-Go position</h3>
-            <p>Whether the work can be priced and stood behind, with what that rests on and what has to be true before the price is committed. A recommendation for the meeting, not the decision.</p>
-          </article>
-          <article className="card">
-            <h3>The questions we send back</h3>
-            <p>A short client-facing document: only the unknowns that change the answer, each showing the trade-off it turns on. A handful of questions says we have read their document. Sixty says we have not.</p>
-          </article>
-          <article className="card">
-            <h3>The proposal or the closing document</h3>
-            <p>A consulting document, not a questionnaire summary: the problem and what it costs today, the decision taken per requirement with its options weighed, the architecture, the integrations, the risks, what is out of scope and the roadmap.</p>
-          </article>
-          <article className="card">
-            <h3>The annex</h3>
-            <p>The reasoning behind each decision, the capability analysis, and Merkle’s verified Shopify reference chapters — plans, Markets, Managed Markets, Payments, B2B, migration, Liquid versus Hydrogen and agentic commerce — each with its sources and verification date, plus the full bibliography.</p>
-          </article>
-          <article className="card">
-            <h3>The delivery handover</h3>
-            <p>A Jira-ready backlog and a configuration workbook for tax, shipping and store set-up, downloadable from the engagement itself.</p>
-          </article>
-          <article className="card">
-            <h3>The internal summary</h3>
-            <p>Offer size, scope gates, exit rules with their evidence, app signals and every open item — the Lead Consultant’s working view, never shared with the client.</p>
-          </article>
-        </div>
+        <ul className="outputs">
+          {OUTPUTS.map(([title, who, body]) => (
+            <li key={title}>
+              <span className={`badge ${who === 'client' ? 'go' : ''}`}>{who === 'client' ? 'the client reads it' : 'internal'}</span>
+              <strong>{title}</strong>
+              <span className="muted small">{body}</span>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="band">
@@ -238,38 +227,44 @@ export default function About({ loaderData }) {
           ))}
         </div>
         <p className="muted">
-          The pilot measures the claims rather than asserting them: senior hours per bid, elapsed time from RFP to
-          client document, how many requirements change scope after the sale, and how many bids are answered by
-          consultants without Shopify specialism.
+          The pilot measures these rather than asserting them: senior hours per bid, elapsed time from RFP to
+          client document, requirements that change scope after the sale, and bids answered by consultants with no
+          Shopify specialism.
         </p>
       </section>
 
+      {/* 6 — the coda. Interesting, not load-bearing, so it folds. */}
       <section className="band dark">
         <div className="band-inner">
           <p className="eyebrow">How it was built</p>
           <h2 className="plain">A method, not a prototype</h2>
           <p className="lede">
-            The Shopify content is one instance of a pattern the practice can reuse: a deterministic engine for
-            anything commercial, an AI connector so consultants work where they already work, a shared verified
-            knowledge base with sources and dates, and safety rails — consent, no personal data, sourced claims —
-            wired in rather than promised.
+            The Shopify content is one instance of a pattern the practice can reuse. Replace the question bank and
+            the rules, and the same skeleton takes another platform.
           </p>
-          <p>
-            It is built as a governed delivery workspace: architecture decisions recorded, security gates defined
-            before the code, an automated test suite, and every platform fact checked against official Shopify
-            documentation with the date it was verified. The same skeleton takes another platform, another
-            practice or another offer by replacing the question bank and the rules.
-          </p>
+          <details>
+            <summary>What that means in practice</summary>
+            <p>
+              A deterministic engine for anything commercial. An AI connector, so consultants work where they
+              already work. A shared knowledge base with sources and dates. Safety rails wired in rather than
+              promised.
+            </p>
+            <p>
+              It is built as a governed delivery workspace: architecture decisions recorded, security gates
+              defined before the code, an automated test suite, and every platform fact checked against official
+              Shopify documentation with the date it was verified.
+            </p>
+          </details>
           <p className="byline">Built by Jose Reboredo · Principal Commerce Consultant, CE</p>
         </div>
       </section>
 
       <section>
         <h2>Where it goes next</h2>
-        <ul>
+        <ul className="ticks">
           <li><strong>Build tool.</strong> The same handover drives agents that configure the store and the theme from the agreed scope.</li>
-          <li><strong>Beyond Shopify.</strong> The engine, the connector and the sourcing rule are platform-agnostic; the question bank is what makes it Shopify.</li>
-          <li><strong>Enterprise footing.</strong> The pilot runs on demo and anonymised engagements; real client work moves to dentsu’s enterprise AI platform first.</li>
+          <li><strong>Beyond Shopify.</strong> The question bank is what makes it Shopify. The rest is not.</li>
+          <li><strong>Enterprise footing.</strong> The pilot runs on demo and anonymised engagements. Real client work moves to dentsu’s enterprise AI platform first.</li>
         </ul>
         <div className="actions">
           <Link className="button" to="/manual">Read the manual</Link>
