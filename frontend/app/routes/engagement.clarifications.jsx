@@ -242,11 +242,13 @@ Write every question we need answered to price this properly — the Lead Consul
                     itself — that is the one waiting on you. */}
                 <details open={(q.status ?? 'proposed') === 'proposed'}>
                   <summary>
-                    <span className="q-text">{q.question}</span>
-                    {q.status === 'accepted' && replies.rows.find((r) => r.id === q.id)?.answered
-                      ? <span className="badge go">answered</span>
-                      : null}
-                    {q.shape_changing ? <span className="badge flag">changes the shape</span> : null}
+                    <h3 className="q-text">{q.question}</h3>
+                    <span className="q-badges">
+                      {q.status === 'accepted' && replies.rows.find((r) => r.id === q.id)?.answered
+                        ? <span className="badge go">answered</span>
+                        : null}
+                      {q.shape_changing ? <span className="badge flag">changes the shape</span> : null}
+                    </span>
                   </summary>
                   <p className="why"><strong>Why we ask.</strong> {q.why_we_ask}</p>
                   <div className="for-us">

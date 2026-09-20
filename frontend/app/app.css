@@ -796,7 +796,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
    the paragraph above ran the full width while the questions wrapped at half of
    it, which read as two different pages. */
 .clarifications > li > details > summary {
-  display: grid; grid-template-columns: 2.2rem 1fr; gap: 4px 0; align-items: baseline;
+  display: grid; grid-template-columns: 2.2rem 1fr 1.4rem; gap: 6px 0; align-items: baseline;
   cursor: pointer; list-style: none; margin: 0 0 10px;
 }
 .clarifications > li > details > summary::-webkit-details-marker { display: none; }
@@ -804,8 +804,17 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
   content: counter(clarification); color: var(--red); font-variant-numeric: tabular-nums;
   font-weight: 700; font-size: 1.12rem;
 }
-.clarifications .q-text { font-size: 1.12rem; line-height: 1.35; font-weight: 700; max-width: 88ch; }
-.clarifications > li > details > summary .badge { grid-column: 2; justify-self: start; margin-top: 6px; }
+/* The one thing a hidden marker owes you: something that says it opens. */
+.clarifications > li > details > summary::after {
+  content: '+'; grid-column: 3; justify-self: end; color: var(--muted);
+  font-size: 1.25rem; line-height: 1; font-weight: 400;
+}
+.clarifications > li > details[open] > summary::after { content: '−'; }
+.clarifications > li > details > summary:hover::after,
+.clarifications > li > details > summary:focus-visible::after { color: var(--red); }
+.clarifications .q-text { grid-column: 2; margin: 0; font-size: 1.12rem; line-height: 1.35; }
+.clarifications .q-badges { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; }
+.clarifications .q-badges:empty { display: none; }
 .clarifications > li > details[open] > summary { margin-bottom: 14px; }
 .clarifications .why { margin: 0 0 14px 2.2rem; max-width: 92ch; overflow-wrap: anywhere; }
 .clarifications .why strong { color: var(--ink); }
