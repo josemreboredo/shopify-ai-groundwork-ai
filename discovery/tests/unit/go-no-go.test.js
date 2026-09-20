@@ -30,10 +30,25 @@ describe('go/no-go support', () => {
     assert.equal(r.verdict, 'not yet');
     assert.match(r.headline, /cannot stand behind/i);
     // One sentence answers "why"; the rest is the ground it stands on.
-    assert.match(r.why, /46 of those are still unconfirmed/);
+    assert.match(r.why, /46 answers still marked to confirm/);
+    // Not always a model's doing: a consultant's own "to confirm with the client"
+    // lands in the same state, and telling them nobody had checked their own note
+    // was simply wrong.
+    assert.match(r.why, /flagged by a consultant/);
     assert.ok(r.before_you_go.some((b) => /Confirm what it says/.test(b)));
     assert.ok(!/topics are still open/.test(r.why), 'it does not argue about topics before the answers are checked');
-    assert.ok(r.because.every((b) => !/unconfirmed/.test(b)), 'the deciding fact is not repeated underneath itself');
+    assert.ok(r.because.every((b) => !/marked to confirm/.test(b)), 'the deciding fact is not repeated underneath itself');
+  });
+
+  test('the documents are credited with what they gave, not with every answer recorded', () => {
+    // `answered` counts every required answer from any channel, so one document
+    // beside forty hand-typed answers read as forty taken from the RFP.
+    const r = goNoGoView(fixture('acme-watches'), state({ documents: 1, fromDocuments: 4 }), null).recommendation;
+    assert.ok(r.because.some((b) => /1 document read, 4 answers taken from it/.test(b)));
+    assert.ok(r.because.some((b) => /recorded in all/.test(b)), 'and the total is still said, as a different thing');
+
+    const unknown = goNoGoView(fixture('acme-watches'), state({ documents: 1 }), null).recommendation;
+    assert.ok(unknown.because.every((b) => !/taken from it/.test(b)), 'with no per-document count it claims none');
   });
 
   test('once confirmed, it says so and moves on to what is still unknown', () => {

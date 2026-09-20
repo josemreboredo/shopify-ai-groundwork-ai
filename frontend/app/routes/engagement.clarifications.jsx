@@ -181,23 +181,21 @@ Write every question we need answered to price this properly — the Lead Consul
       {/* 2 — and back again. The questions left the building and nothing used to
           bring the answers home. */}
       {triage.accepted.length ? (
-        <section className={`card start ${replies.back === replies.asked ? 'current' : 'none'}`}>
+        <section className={`card start ${replies.all_back ? 'current' : 'none'}`}>
           <div className="start-head">
             <div>
               <p className="question">
-                {replies.back === replies.asked
-                  ? `All ${replies.asked} answered`
-                  : `${replies.back} of ${replies.asked} answered`}
+                {replies.all_back ? `All ${replies.asked} answered` : `${replies.back} of ${replies.asked} answered`}
               </p>
               <p className="muted">
-                {replies.back === replies.asked
+                {replies.all_back
                   ? 'Everything Merkle asked has come back and is recorded against the questions it fills.'
                   : 'When the client replies, read it in here. Each question names the discovery questions it fills, so the answers land where they belong instead of being typed in from memory — and anything the reply does not cover stays a stated assumption.'}
               </p>
             </div>
-            <span className={`badge ${replies.back === replies.asked ? 'go' : 'flag'}`}>{replies.back}/{replies.asked}</span>
+            <span className={`badge ${replies.all_back ? 'go' : 'flag'}`}>{replies.back}/{replies.asked}</span>
           </div>
-          {replies.back < replies.asked ? (
+          {!replies.all_back && replies.asked ? (
             <div className="actions">
               <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(replyPrompt)}`} target="_blank" rel="noreferrer">Read the client’s reply in Claude</a>
               <button type="button" className="secondary" onClick={() => navigator.clipboard?.writeText(replyPrompt)}>Copy the instruction</button>

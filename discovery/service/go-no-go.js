@@ -196,7 +196,7 @@ function offerOf(doc) {
  *
  * @param {object} doc @param {object} counts
  */
-function recommend({ documents, answered, unconfirmed, openTopics, stops, cannotPrice, assumptions }) {
+function recommend({ documents, answered, fromDocuments, unconfirmed, openTopics, stops, cannotPrice, assumptions }) {
   // Two different things were being read as one list. The fact that decides the
   // position, and the facts it rests on. Printed together they read as a wall,
   // and the sentence that actually answers "why" sat third with nothing marking
@@ -213,14 +213,21 @@ function recommend({ documents, answered, unconfirmed, openTopics, stops, cannot
     );
   }
 
-  ground.push(`${documents} document${documents === 1 ? '' : 's'} read, ${answered} answer${answered === 1 ? '' : 's'} taken from ${documents === 1 ? 'it' : 'them'}.`);
+  // `answered` is every required answer from any channel — the web form and the
+  // consultant's own included — so one document beside forty hand-typed answers
+  // read as forty answers taken from the RFP.
+  ground.push(fromDocuments === null || fromDocuments === undefined
+    ? `${documents} document${documents === 1 ? '' : 's'} read; ${answered} required answer${answered === 1 ? '' : 's'} recorded in all.`
+    : `${documents} document${documents === 1 ? '' : 's'} read, ${fromDocuments} answer${fromDocuments === 1 ? '' : 's'} taken from ${documents === 1 ? 'it' : 'them'}; ${answered} required answer${answered === 1 ? '' : 's'} recorded in all.`);
 
   // 1 — nothing else matters until a human has checked what the model read.
   if (unconfirmed) {
     return said(
       'not yet',
       'I cannot stand behind this until what was read has been confirmed.',
-      `${unconfirmed} of those ${unconfirmed === 1 ? 'is' : 'are'} still unconfirmed: a model read ${unconfirmed === 1 ? 'it' : 'them'} out of the document and nobody has checked ${unconfirmed === 1 ? 'it' : 'them'} yet.`,
+      // Not always a model: a consultant's own "to confirm with the client" lands
+      // here too, and telling them nobody had checked their own note was wrong.
+      `${unconfirmed} answer${unconfirmed === 1 ? '' : 's'} still marked to confirm — read out of a document, or flagged by a consultant as needing the client's word.`,
       [`Confirm what it says — ${unconfirmed} answer${unconfirmed === 1 ? '' : 's'} waiting.`],
     );
   }
@@ -311,6 +318,7 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
   const recommendation = recommend({
     documents: state.documents ?? 0,
     answered: state.coverage?.required_answered ?? 0,
+    fromDocuments: state.fromDocuments ?? null,
     unconfirmed: state.to_review ?? 0,
     openTopics: brief.topics,
     stops,

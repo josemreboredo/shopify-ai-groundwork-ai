@@ -201,8 +201,8 @@ export default function Summary({ loaderData }) {
       <section>
         <h2>What the engine still cannot decide</h2>
         <p className="muted">
-          Thirty-three rules decide which offer this is, which Shopify plan the requirements force and which risks
-          get priced. A decision is settled when it fired on the answers, or when every answer it reads is
+          {r.decisions.total} rules decide which offer this is, which Shopify plan the requirements force and which
+          risks get priced. A decision is settled when it fired on the answers, or when every answer it reads is
           recorded <em>and confirmed</em>. It is not a completeness score: the one still open may be the only one
           that matters.
         </p>
@@ -216,7 +216,7 @@ export default function Summary({ loaderData }) {
               </li>
             ))}
           </ul>
-        ) : <p className="muted">All thirty-three have an answer behind them.</p>}
+        ) : <p className="muted">All {r.decisions.total} have an answer behind them.</p>}
       </section>
 
       {/* 4 — what it costs to stay ignorant */}
