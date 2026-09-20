@@ -91,7 +91,14 @@ a:hover { color: var(--red-ink); text-decoration-color: var(--red-ink); }
 /* Page shell */
 main { padding: 36px var(--gutter) 64px; max-width: var(--page); margin: 0 auto; }
 main.narrow { --page: 520px; }
-main > p, main > ol li, main > ul li { max-width: 92ch; }
+/* The measure. 92ch rendered at about 101 characters a line, which is half
+   again the width a reader tracks comfortably — and it is why the same vertical
+   rhythm reads loose here and tight on a page set to 68. */
+main p, main ol li, main ul li { max-width: 72ch; }
+/* Measured, not assumed: paragraphs nested in a section escaped the direct-child
+   selector and ran the full 1216px — 96 characters a line against the 74 of the
+   pages that read well. Cells and rows set their own width. */
+main td p, main th p, main .table-scroll p, main .record-cards p { max-width: none; }
 li::marker { color: var(--red); }
 
 /* Black band for the page statement, full bleed as on merkle.com */
@@ -153,7 +160,7 @@ li::marker { color: var(--red); }
 .card > p + p { margin-top: 8px; }
 .card > *:first-child { margin-top: 0; }
 .card > *:last-child { margin-bottom: 0; }
-.card p, .card li { max-width: 92ch; }
+.card p, .card li { max-width: 72ch; }
 .card .meta { font-size: 0.74rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
 .card h2 { margin-top: 0; }
 .card .errors { margin: 10px 0; }
@@ -495,7 +502,7 @@ main.signin + .site-footer { margin-top: 0; }
 /* Lead Consultant manual */
 /* Same grid and left edge as every other page; only the reading measure is
    narrower, and it stays aligned left rather than centred. */
-main.manual > *:not(.page-head) { max-width: 860px; }
+main.manual > *:not(.page-head) { max-width: 72ch; }
 main.manual li { margin: 5px 0; }
 main.manual code { background: var(--panel); padding: 1px 5px; font-size: 0.9em; overflow-wrap: anywhere; }
 main.manual h2 { scroll-margin-top: 12px; }
@@ -905,11 +912,11 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 .clarifications .q-badges { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; }
 .clarifications .q-badges:empty { display: none; }
 .clarifications > li > details[open] > summary { margin-bottom: 14px; }
-.clarifications .why { margin: 0 0 14px 2.2rem; max-width: 92ch; overflow-wrap: anywhere; }
+.clarifications .why { margin: 0 0 14px 2.2rem; max-width: 72ch; overflow-wrap: anywhere; }
 .clarifications .why strong { color: var(--ink); }
 /* What we would assume is ours: it is set apart so it is never read as part of
    the question, and it is not in the download a consultant sends. */
-.for-us { margin-left: 2.2rem; padding: 12px 16px; background: var(--panel); border-left: 2px solid var(--line); max-width: 92ch; overflow-wrap: anywhere; }
+.for-us { margin-left: 2.2rem; padding: 12px 16px; background: var(--panel); border-left: 2px solid var(--line); max-width: 72ch; overflow-wrap: anywhere; }
 .for-us .eyebrow { margin: 0 0 6px; }
 .for-us p { margin: 0; font-size: 0.88rem; }
 .for-us p + p { margin-top: 4px; }
@@ -1094,7 +1101,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 .page-head .lede { max-width: 62ch; }
 
 /* ── Claims: the line is the point, the evidence folds ────────────────────── */
-.claims { list-style: none; counter-reset: claim; padding: 0; margin: 28px 0 0; max-width: 92ch; }
+.claims { list-style: none; counter-reset: claim; padding: 0; margin: 28px 0 0; max-width: 72ch; }
 .claims > li { counter-increment: claim; border-top: 1px solid var(--line); }
 .claims > li:last-child { border-bottom: 1px solid var(--line); }
 .claims > li > details > summary { display: grid; grid-template-columns: 3rem 1fr; padding: 20px 1.9rem 20px 0; margin: 0; }
@@ -1166,7 +1173,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 .paths-rungs > li.bid-only .rung-stage { color: var(--red-ink); }
 
 /* ── Outputs: named, with who reads them ──────────────────────────────────── */
-.outputs { list-style: none; padding: 0; margin: 28px 0 0; max-width: 92ch; }
+.outputs { list-style: none; padding: 0; margin: 28px 0 0; max-width: 72ch; }
 .outputs > li {
   display: grid; grid-template-columns: 11rem 1fr; gap: 4px 20px; align-items: baseline;
   padding: 16px 0; border-top: 1px solid var(--line);
