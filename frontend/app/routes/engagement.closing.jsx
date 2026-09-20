@@ -4,7 +4,7 @@ import { Link, useFetcher, useRevalidator } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';
-import { Blockers, EngagementHeader } from '../components/question.jsx';
+import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 import { processMeta } from '../../../discovery/service/process.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
@@ -232,3 +232,6 @@ export default function Closing({ loaderData }) {
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

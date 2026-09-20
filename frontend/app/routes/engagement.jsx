@@ -5,7 +5,7 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
-import { EngagementHeader, PreviewPanel, QuestionCard, Vocabularies } from '../components/question.jsx';
+import { EngagementErrorBoundary, EngagementHeader, PreviewPanel, QuestionCard, Vocabularies } from '../components/question.jsx';
 import { processMeta } from '../../../discovery/service/process.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
 
@@ -319,3 +319,6 @@ export default function Engagement({ loaderData, actionData }) {
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

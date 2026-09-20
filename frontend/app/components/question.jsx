@@ -4,7 +4,7 @@
  * current answer, plus the engine preview panel and engagement navigation.
  */
 import { cloneElement, isValidElement, useId, useState } from 'react';
-import { Form, Link, NavLink } from 'react-router';
+import { Form, Link, NavLink, isRouteErrorResponse, useParams, useRouteError } from 'react-router';
 
 // From the language module, not the service: service/i18n.js reads the schema
 // to count answer choices, which drags ajv into the browser bundle.
@@ -132,6 +132,46 @@ export function WithQuestionLinks({ text, client }) {
  * @param {{ client: string, eyebrow?: string, title?: string, meta?: import('react').ReactNode,
  *           back?: { to: string, label: string } }} props
  */
+/**
+ * When a page of a record fails, the record does not.
+ *
+ * A route that threw handed the whole window to the global boundary: the client
+ * gone, the steps gone, every other page of that record one guess away. The
+ * failure belongs to one page, so it is shown inside the record — with the
+ * always-reachable pages beside it, which is what a consultant needs at exactly
+ * that moment.
+ */
+export function EngagementErrorBoundary() {
+  const error = useRouteError();
+  const { client } = useParams();
+  const STATUS = { 400: 'Cannot do that yet', 401: 'Sign in again', 403: 'No access to this record', 404: 'Not found', 409: 'Something is missing first' };
+  const title = isRouteErrorResponse(error) ? STATUS[error.status] ?? `Something went wrong (${error.status})` : 'This page could not be built';
+  const detail = isRouteErrorResponse(error)
+    ? (typeof error.data === 'string' ? error.data : error.data?.error)
+    : error instanceof Error ? error.message : '';
+  const to = (path) => `/engagements/${client}${path ? `/${path}` : ''}`;
+  return (
+    <main id="main">
+      <header className="page-head">
+        <Link className="crumb" to="/">← Bids and engagements</Link>
+        <p className="eyebrow">{title}</p>
+        <h1>{client}</h1>
+        {detail ? <p className="page-meta">{detail}</p> : null}
+        <nav className="views" aria-label="The rest of this record">
+          <Link to={to('')}>Start</Link>
+          <Link to={to('review')}>Review answers</Link>
+          <Link to={to('summary')}>Where it stands</Link>
+          <Link to={to('settings')}>Settings</Link>
+        </nav>
+      </header>
+      <p className="muted">
+        The rest of this record is fine — this page is the one that failed. If it keeps failing, tell the tool
+        owner what you clicked and which record you were on.
+      </p>
+    </main>
+  );
+}
+
 export function EngagementHeader({ engagement, eyebrow, title, meta, back, language }) {
   const client = engagement.client;
   const words = processMeta(engagement.process);

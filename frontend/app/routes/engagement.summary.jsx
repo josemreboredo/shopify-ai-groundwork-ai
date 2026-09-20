@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { Blockers, EngagementHeader } from '../components/question.jsx';
+import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 import { offerStanding } from '../../../discovery/service/summary.js';
 import { processOf } from '../../../discovery/service/process.js';
@@ -283,3 +283,6 @@ export default function Summary({ loaderData }) {
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

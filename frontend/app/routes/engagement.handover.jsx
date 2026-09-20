@@ -1,7 +1,7 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { ServiceError } from '../../../discovery/service/index.js';
-import { Blockers, EngagementHeader } from '../components/question.jsx';
+import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Handover', params.client) }];
@@ -155,3 +155,6 @@ export default function Handover({ loaderData }) {
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

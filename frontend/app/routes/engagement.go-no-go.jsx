@@ -1,6 +1,6 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { Blockers, EngagementHeader } from '../components/question.jsx';
+import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 import { Radar } from '../components/radar.jsx';
 import { pageTitle } from '../brand.js';
@@ -206,3 +206,6 @@ export default function GoNoGo({ loaderData }) {
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

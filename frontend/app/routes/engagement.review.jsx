@@ -3,7 +3,7 @@ import { Form, Link, useNavigation, useSearchParams } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader } from '../components/question.jsx';
+import { EngagementErrorBoundary, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Review answers', params.client) }];
@@ -187,3 +187,6 @@ export default function Review({ loaderData, actionData }) {
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

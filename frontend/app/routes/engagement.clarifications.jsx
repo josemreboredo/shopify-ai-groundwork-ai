@@ -3,7 +3,7 @@ import { Form, useNavigation, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { Blockers, EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
+import { EngagementErrorBoundary, Blockers, EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 import { processMeta, processOf } from '../../../discovery/service/process.js';
 import { pageTitle } from '../brand.js';
@@ -298,3 +298,6 @@ Write every question we need answered to price this properly — the Lead Consul
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;
