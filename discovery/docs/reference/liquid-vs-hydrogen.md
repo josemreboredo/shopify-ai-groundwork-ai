@@ -1,8 +1,8 @@
 ---
 title: Online Store (Liquid) or headless (Hydrogen and custom storefronts)
-verified: 2026-09-17
+verified: 2026-09-21
 topics: storefront
-summary: Compares Shopify's Online Store themes with headless storefronts and sets out when each architecture is the right choice.
+summary: Compares Shopify's Online Store themes with headless storefronts, sets out when each architecture is the right choice, and prices what owning a front end costs after launch.
 ---
 
 ## Why this decision matters
@@ -118,6 +118,43 @@ A mixed answer is legitimate: keep the Online Store and take the theme-blocks
 architecture (Horizon or another current-generation theme) as the default, and treat
 headless as a decision to be justified against the list above.
 
+## What owning the front end costs after launch
+
+The decision above is usually argued on the build. The cost that decides whether it
+was right arrives afterwards, and three parts of it are specific enough to price.
+
+**Environments, and the one that can be public.** An Oxygen storefront always has a
+production environment linked to the default branch and a preview environment for
+every other branch, and custom environments can be created besides [16]. But only one
+environment can be public, and the limit is set by the plan: 1 on Starter, Basic,
+Grow and Advanced, against 25 on Shopify Plus [16]. Every other deployment needs a
+login to the store to open, and "page load speed on private deployment URLs is slower
+because authentication must be verified on each route" [16].
+
+For a project that means review links. On Plus, each workstream or stakeholder group
+can have its own public URL. Below Plus there is one, and everything else is a
+store login handed to people who may not have one — which is a way of working to
+agree before the build, not a surprise during UAT. Exit rule 11.25 raises exactly
+this, and it is a flag rather than a blocker: it decides who reviews where.
+
+**A release path that is now the team's.** On the Online Store a theme release is a
+Shopify operation. Headless, deployment is a pipeline somebody owns: who may deploy,
+what gets checked before they do, and what happens at 2am when a route breaks. The
+commerce engine keeps running either way — orders still take — but the storefront is
+no longer Shopify's to restore.
+
+**The editing experience, which is now a product.** A theme gives merchants the
+editor described in the theme autonomy chapter. Headless gives them whatever is
+built for them. That is not an argument against headless; it is a line item, and it
+is the one most often left out. If content stays in Shopify metaobjects the admin
+does some of the work; if it does not, the content platform and its integration are
+their own engagement — and at that point the storefront has left these offers
+entirely and is Merkle Arc.
+
+Priced honestly, headless is a build plus a standing capability. Where the client has
+that capability, or is buying it, the decision holds. Where the conversation is only
+about the build, the answer is usually the Online Store.
+
 ## Sources
 
 1. Headless commerce on Shopify — https://shopify.dev/docs/storefronts/headless — "Get all the power of Shopify under the hood, with complete control over the frontend." — checked 2026-09-17
@@ -135,3 +172,4 @@ headless as a decision to be justified against the list above.
 13. Markets with the Storefront API — https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets — "Query international prices for products and orders, and explicitly set the context of a cart and checkout" — checked 2026-09-17
 14. Hydrogen and Oxygen fundamentals — https://shopify.dev/docs/storefronts/headless/hydrogen/fundamentals — "Shopify's global serverless hosting platform, built for deploying Hydrogen storefronts at the edge." — checked 2026-09-17
 15. Web performance reports — https://help.shopify.com/en/manual/online-store/web-performance/web-performance-reports — "Web performance data is available for only the last 90 days." — checked 2026-09-17
+16. Oxygen environments — https://shopify.dev/docs/storefronts/headless/hydrogen/environments — a storefront has a production environment linked to the default branch and a preview environment for all other unlinked branches, with custom environments besides; the number of environments that can be public is 1 on Starter, Basic, Grow and Advanced and 25 on Shopify Plus; on a private deployment "page load speed on private deployment URLs is slower because authentication must be verified on each route" — checked 2026-09-21

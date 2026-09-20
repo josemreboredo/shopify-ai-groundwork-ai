@@ -200,6 +200,28 @@ const EVALUATORS = {
   },
 
   /*
+   * Hydrogen below Plus: one public deployment, and the rest need a store login.
+   *
+   * This rule was removed for one commit, on the reasoning that a headless
+   * storefront had left the offers altogether. It had not — Hydrogen with
+   * content in Shopify is Ecommerce Growth on the headless track — so the
+   * condition came straight back into scope while the flag that covered it did
+   * not. Verified 2026-09-21: production and preview always exist and custom
+   * environments besides, but the public limit is 1 on Starter, Basic, Grow and
+   * Advanced against 25 on Plus, and a private deployment URL is slower because
+   * authentication is verified on every route.
+   *
+   * It blocks nothing. It decides who reviews where, and that is a conversation
+   * to have before the build rather than during it.
+   */
+  '11.25': (doc) => {
+    if (doc.design?.headless_required !== true) return null;
+    const plan = doc.shopify?.target_plan;
+    if (!plan || plan === 'plus') return null;
+    return `Headless storefront on the ${plan} plan: one public environment (25 on Plus), so every other deployment needs a store login`;
+  },
+
+  /*
    * Where Shopify stops holding the storefront.
    *
    * Not headless: Hydrogen is Shopify's own framework on the Storefront API,

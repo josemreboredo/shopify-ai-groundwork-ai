@@ -911,7 +911,8 @@
         "/shopify/target_plan"
       ],
       "feeds": [
-        "exit:11.1"
+        "exit:11.1",
+        "exit:11.25"
       ],
       "shopify": {
         "native": [
@@ -8562,7 +8563,8 @@
         "/design/headless_required"
       ],
       "feeds": [
-        "l_trigger:headless"
+        "l_trigger:headless",
+        "exit:11.25"
       ],
       "shopify": {
         "native": [

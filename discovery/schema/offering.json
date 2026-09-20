@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -1384,6 +1384,18 @@
         "/integrations/*/owner"
       ],
       "label": "A system to be connected has no test environment to build against"
+    },
+    {
+      "id": "11.25",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "A headless storefront on a plan below Shopify Plus. Oxygen storefronts always have a production and a preview environment and custom ones besides, but only one environment can be public: the limit is 1 on Starter, Basic, Grow and Advanced against 25 on Plus. Every other deployment needs a login to the store, which constrains how many review links can run in parallel with client stakeholders",
+      "destination": "A named owner before the build starts: agree who reviews where, or price the Plus plan",
+      "inputs": [
+        "/design/headless_required",
+        "/shopify/target_plan"
+      ],
+      "label": "A headless storefront below Plus, where only one deployment can be public"
     },
     {
       "id": "11.26",
