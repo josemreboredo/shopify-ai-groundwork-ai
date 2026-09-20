@@ -833,7 +833,8 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const p = preview(session, today());
       return {
         engagement: summary(session),
-        go_no_go: goNoGoView(decided.doc, p.coverage, session.closing?.clarifications ?? null),
+        // Merkle's commercial bands travel only to owners, as everywhere else.
+        go_no_go: goNoGoView(decided.doc, p.coverage, session.closing?.clarifications ?? null, { pricing: user.role === 'owner' }),
         documents: (session.documents ?? []).map(({ name, type, date }) => ({ name, type, date })),
       };
     },

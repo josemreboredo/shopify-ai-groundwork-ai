@@ -508,6 +508,24 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 /* end wayfinder — the design test reads everything above back to its opening
    comment, so anything added below belongs to a different surface. */
 
+/* The Go/No-Go scorecard, numbered as the meeting numbers it */
+.scorecard { list-style: none; padding: 0; margin: 18px 0 0; counter-reset: none; }
+.scorecard > li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 0 14px; padding: 20px 0; border-top: 1px solid var(--line); }
+.scorecard > li:last-child { border-bottom: 1px solid var(--line); }
+.sc-n { margin: 2px 0 0; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.scorecard h3 { margin: 0 0 8px; font-size: 1rem; max-width: 72ch; }
+.sc-says { margin: 0; max-width: 78ch; }
+.sc-detail { list-style: none; padding: 0; margin: 12px 0 0; }
+.sc-detail > li { position: relative; padding: 0 0 7px 20px; font-size: 0.88rem; max-width: 84ch; }
+.sc-detail > li::before {
+  content: ''; position: absolute; left: 0; top: 7px; width: 8px; height: 8px;
+  background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+.sc-detail strong { display: block; }
+.sc-detail span { color: var(--muted); }
+/* What the number does not say on its own */
+.sc-watch { margin: 12px 0 0; padding-left: 14px; border-left: 2px solid var(--warn); color: var(--muted); font-size: 0.88rem; max-width: 78ch; }
+
 /* RFP Q&A: every question is asked or assumed, and the list shows which */
 .clarifications > li.q-accepted { border-left: 3px solid var(--ok); padding-left: 18px; }
 .clarifications > li.q-rejected { border-left: 3px solid var(--line); padding-left: 18px; opacity: 0.72; }

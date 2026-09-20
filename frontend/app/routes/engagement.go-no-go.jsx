@@ -5,12 +5,12 @@ import { EngagementHeader } from '../components/question.jsx';
 export const meta = ({ params }) => [{ title: `Go/No-Go support · ${params.client} · Merkle Discovery` }];
 
 /**
- * The evidence for the bid decision, not the decision.
+ * What the Solution Architect brings to the Go/No-Go meeting.
  *
- * The decision is taken in a room by people weighing things this tool knows
- * nothing about — the relationship, the pipeline, who else is pitching. What it
- * can do is assemble what the architect is always asked for and usually puts
- * together by hand the night before.
+ * Laid out in the order the scorecard asks its questions, so it can be read
+ * straight into the room. The architect owns seven of the twenty-eight; the rest
+ * are named with whoever does own them, because a page that quietly skips
+ * nineteen questions looks like a page that forgot them.
  */
 export async function loader({ request, params }) {
   const user = await requireUser(request);
@@ -22,104 +22,90 @@ export async function loader({ request, params }) {
 }
 
 const VERDICT = {
-  'enough to price': { tone: 'go', line: 'The document answers what the price depends on.' },
-  'priceable with stated assumptions': { tone: 'flag', line: 'Priceable, but part of it rests on what we assume rather than what they told us.' },
-  'not enough to price without asking': { tone: 'stop', line: 'Too much of what sets the price is missing. Pricing this without using the Q&A window is guessing.' },
-};
-
-const TOPOLOGY = {
-  single_store_markets: 'One store with Shopify Markets',
-  expansion_stores: 'Expansion stores',
-  hybrid: 'Hybrid',
-  single_store_managed_markets: 'One store with Managed Markets',
+  'enough to price': { tone: 'go', line: 'The RFP answers what the price depends on. A comparable offer can be built from it.' },
+  'priceable with stated assumptions': { tone: 'flag', line: 'A comparable offer can be built, but part of it rests on what we assume rather than what they told us.' },
+  'not enough to price without asking': { tone: 'stop', line: 'Too much of what sets the price is missing. Pricing this without spending the Q&A window is guessing.' },
 };
 
 export default function GoNoGo({ loaderData }) {
   const { engagement, go_no_go: g, documents } = loaderData;
   const client = engagement.client;
-  const verdict = VERDICT[g.evidence.verdict] ?? { tone: 'flag', line: '' };
+  const verdict = VERDICT[g.headline.verdict] ?? { tone: 'flag', line: '' };
+  // The headline is question 20 and is answered here too, just not in a section.
+  const answered = g.sections.reduce((n, s) => n + s.questions.length, 0) + 1;
 
   return (
     <main>
-      <EngagementHeader engagement={engagement} eyebrow="Go/No-Go support" meta={`${documents.length} document${documents.length === 1 ? '' : 's'} read`} />
+      <EngagementHeader
+        engagement={engagement}
+        eyebrow="Go/No-Go support"
+        meta={`${answered} of ${answered + g.not_ours.length} scorecard questions · ${documents.length} document${documents.length === 1 ? '' : 's'} read`}
+      />
 
       <p className="muted">
-        Everything here is computed from the RFP and Merkle’s offering — nothing is estimated for this page.
-        It is the evidence for the decision; the decision is taken in the meeting.
+        The architect’s side of the Go/No-Go scorecard. Everything below is computed from the RFP and Merkle’s
+        offering — nothing is estimated for this page, and nothing here is a recommendation to bid or not.
       </p>
 
-      {/* 1 — can we price it at all */}
+      {/* The question this page exists for */}
       <section className={`card start ${verdict.tone === 'go' ? 'current' : 'blocked'}`}>
         <div className="start-head">
           <div>
-            <p className="question">Can we price it from what they sent?</p>
+            <p className="eyebrow">Question {g.headline.n}</p>
+            <p className="question">{g.headline.ask}</p>
             <p className="muted">{verdict.line}</p>
           </div>
-          <span className={`badge ${verdict.tone}`}>{g.evidence.verdict}</span>
+          <span className={`badge ${verdict.tone}`}>{g.headline.verdict}</span>
         </div>
         <ul className="stats">
-          <li><strong>{g.evidence.pct}%</strong><span>of what the price depends on is answered ({g.evidence.answered} of {g.evidence.total})</span></li>
-          <li><strong>{g.evidence.open_topics}</strong><span>topic{g.evidence.open_topics === 1 ? '' : 's'} still open that move the offer, the plan, the topology or the cost</span></li>
-          <li><strong>{g.assumptions_total}</strong><span>assumption{g.assumptions_total === 1 ? '' : 's'} the proposal would rest on</span></li>
+          <li><strong>{g.headline.pct}%</strong><span>of what sets the price is answered ({g.headline.answered} of {g.headline.total})</span></li>
+          <li><strong>{g.headline.open_topics}</strong><span>topic{g.headline.open_topics === 1 ? '' : 's'} still open that move the offer, the plan, the topology or the cost</span></li>
+          <li><strong>{g.headline.assumptions_total}</strong><span>assumption{g.headline.assumptions_total === 1 ? '' : 's'} the proposal would rest on</span></li>
         </ul>
-        {g.evidence.cannot_price.length ? (
+        {g.headline.cannot_price.length ? (
           <>
             <p className="muted"><strong>Cannot be costed at all until answered:</strong></p>
-            <ul className="ticks">{g.evidence.cannot_price.map((i) => <li key={i}>{i}</li>)}</ul>
+            <ul className="ticks">{g.headline.cannot_price.map((i) => <li key={i}>{i}</li>)}</ul>
           </>
         ) : null}
       </section>
 
-      {/* 2 — where it lands */}
-      <section>
-        <h2>Where it lands</h2>
-        <div className="table-scroll">
-          <table>
-            <tbody>
-              <tr><th scope="row">Offer</th><td>{g.fit.offer ? `${g.fit.offer} · ${g.fit.name}` : '—'}</td></tr>
-              <tr><th scope="row">Within the standard offers</th><td>{g.fit.within_offers ? 'Yes' : `No${g.fit.route ? ` — ${g.fit.route.replace(/_/g, ' ')}` : ' — a route has to be recorded'}`}</td></tr>
-              <tr><th scope="row">Shopify plan the requirements force</th><td>{g.fit.plan ?? 'not yet determined'}</td></tr>
-              <tr><th scope="row">Markets</th><td>{g.fit.markets}</td></tr>
-              <tr><th scope="row">Store topology</th><td>{g.fit.topology ? `${TOPOLOGY[g.fit.topology.recommendation] ?? g.fit.topology.recommendation} · ${g.fit.topology.confidence.replace(/_/g, ' ')}` : '—'}</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* 3 — the risk matrix */}
-      <section>
-        <div className="section-head">
-          <h2>What the document commits us to</h2>
-          <p className="muted">
-            {g.risk_counts.stop} outside the offers · {g.risk_counts.flag} needing an owner · {g.risk_counts.warn} commercial
-          </p>
-        </div>
-        {g.risks.length ? (
-          <ul className="rules">
-            {g.risks.map((r) => (
-              <li key={r.rule_id}>
-                <span className={`rule-id ${r.result.toLowerCase()}`}>{r.rule_id}</span>
+      {/* The scorecard, in its own order */}
+      {g.sections.map((section) => (
+        <section key={section.id}>
+          <h2>{section.title}</h2>
+          <ol className="scorecard">
+            {section.questions.map((q) => (
+              <li key={q.n}>
+                <p className="sc-n" aria-hidden="true">{q.n}</p>
                 <div>
-                  <p className="rule-when">{r.evidence}</p>
-                  <p className="muted">{r.severity}{r.destination ? ` → ${r.destination}` : ''}</p>
+                  <h3>{q.ask}</h3>
+                  <p className="sc-says">{q.says}</p>
+                  {q.detail.length ? (
+                    <ul className="sc-detail">
+                      {q.detail.map((d) => (
+                        <li key={d.capability}><strong>{d.capability}</strong><span>{d.evidence}</span></li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {q.watch ? <p className="sc-watch">{q.watch}</p> : null}
                 </div>
               </li>
             ))}
-          </ul>
-        ) : <p className="muted">No rule fired: nothing in this RFP takes it outside the standard offers or needs an owner before build.</p>}
-      </section>
+          </ol>
+        </section>
+      ))}
 
-      {/* 4 — what we would be betting on */}
-      {g.betting_on.length ? (
+      {/* What we are betting on */}
+      {g.assumptions.length ? (
         <section>
           <h2>What we would be betting on</h2>
           <p className="muted">
-            A proposal resting on {g.assumptions_total} assumption{g.assumptions_total === 1 ? '' : 's'} is a different
-            commercial object from one resting on two, whatever the price says. The full list, and the choice of
-            which to settle, is in <a href={`/engagements/${client}/clarifications`}>RFP Q&amp;A</a>.
+            {g.assumptions_total} stated assumption{g.assumptions_total === 1 ? '' : 's'}. Which of them to settle
+            before the price is committed is decided in <a href={`/engagements/${client}/clarifications`}>RFP Q&amp;A</a>.
           </p>
           <ul className="assumptions">
-            {g.betting_on.map((a, i) => (
+            {g.assumptions.map((a, i) => (
               <li key={`${a.assumed}-${i}`} className={a.source}>
                 <p className="assumed">{a.assumed}</p>
                 <p className="muted">{a.about}</p>
@@ -130,20 +116,25 @@ export default function GoNoGo({ loaderData }) {
         </section>
       ) : null}
 
-      {/* 5 — what would settle it */}
-      {g.would_settle_it.length ? (
-        <section>
-          <h2>What the Q&amp;A window could settle</h2>
-          <p className="muted">
-            Spending the window on these turns assumptions into answers before the price is committed.
-          </p>
-          <ul className="ticks">
-            {g.would_settle_it.map((t) => (
-              <li key={t.title}><strong>{t.title}</strong> — settles {t.settles} unknown{t.settles === 1 ? '' : 's'}; changes {t.changes.join(', ')}</li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+      {/* The boundary, said out loud */}
+      <section>
+        <h2>Not from this tool ({g.not_ours.length})</h2>
+        <p className="muted">
+          The rest of the scorecard is commercial and relationship ground — the opportunity value in Salesforce,
+          the NPS, who sits in the buying centre, whether a pitch team is confirmed. An RFP cannot tell us any of
+          it, and a guess written into a scorecard gets read as a fact.
+        </p>
+        <div className="table-scroll">
+          <table>
+            <thead><tr><th>#</th><th>Question</th><th>Who answers it</th></tr></thead>
+            <tbody>
+              {g.not_ours.map((q) => (
+                <tr key={q.n}><td>{q.n}</td><td>{q.ask}</td><td>{q.owner}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </main>
   );
 }
