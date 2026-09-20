@@ -35,6 +35,9 @@ const MOVES = {
   risk: 'a risk we would otherwise have to price for',
 };
 
+/** Below this many shape-changing topics, the next best ones are worth asking anyway. */
+const FLOOR = 3;
+
 /** An unknown worth money: it feeds a gate, a rule, a plan requirement or the topology. */
 function movesWhat(question, doc) {
   const feeds = question?.feeds ?? [];
@@ -78,7 +81,7 @@ function unknowns(doc) {
  * @param {{ max?: number }} [options]
  * @returns {object[]}
  */
-export function clarificationTopics(doc, { max = 8 } = {}) {
+export function clarificationTopics(doc, { max = 6 } = {}) {
   // Straight from the question bank, not from the verified knowledge for this
   // engagement: that only covers questions the client has already answered, and
   // every question here is unanswered by definition.
@@ -131,18 +134,33 @@ export function clarificationTopics(doc, { max = 8 } = {}) {
   const scored = [...groups.values()].map((g) => {
     const moves = [...g.moves];
     const swing = g.covers.map((c) => c.swing).filter(Boolean).sort((a, b) => rank[a] - rank[b])[0];
+    // High is for what changes the *shape* of the solution: how many stores the
+    // markets run on, or how big the engagement is. The Shopify plan, the run
+    // cost and the risks move a number inside a shape that is already settled.
+    // Grading those high as well was the first rule here, and on a real
+    // engagement it made six of seven topics high — a ranking that does not rank.
+    const shape = moves.includes('topology') || moves.includes('offer');
     return {
       ...g,
       moves,
       changes: moves.map((m) => MOVES[m]),
-      impact: swing === 'high' || moves.includes('topology') || moves.includes('plan') || moves.includes('offer') ? 'high' : 'medium',
+      impact: shape || swing === 'high' ? 'high' : 'medium',
     };
   });
 
-  return scored
-    .sort((a, b) => (a.impact === b.impact ? b.moves.length - a.moves.length : a.impact === 'high' ? -1 : 1))
-    .slice(0, max)
-    .map(({ moves, ...topic }) => topic);
+  // One question that settles six unknowns is worth more than one that settles
+  // one, whatever else it happens to touch.
+  const ordered = [...scored].sort((a, b) => (a.impact === b.impact
+    ? (b.covers.length - a.covers.length) || (b.moves.length - a.moves.length)
+    : a.impact === 'high' ? -1 : 1));
+
+  // A bid asks about what changes the shape of the solution, and only reaches for
+  // a number when nothing bigger is open. Send a client seven questions and the
+  // three that mattered are read with the same weight as the four that did not —
+  // which is the opposite of what a short, considered list is for.
+  const high = ordered.filter((t) => t.impact === 'high');
+  const chosen = high.length >= FLOOR ? high : ordered.slice(0, Math.max(FLOOR, high.length));
+  return chosen.slice(0, max).map(({ moves, ...topic }) => topic);
 }
 
 /**
@@ -152,7 +170,7 @@ export function clarificationTopics(doc, { max = 8 } = {}) {
  *
  * @param {object} doc @param {{ max?: number }} [options]
  */
-export function clarificationBrief(doc, { max = 8 } = {}) {
+export function clarificationBrief(doc, { max = 6 } = {}) {
   const topics = clarificationTopics(doc, { max });
   const cost = runCostFor(doc);
   return {

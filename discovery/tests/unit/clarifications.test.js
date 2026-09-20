@@ -32,7 +32,7 @@ describe('clarification questions (RFP)', () => {
   test('the engine asks only about unknowns that move the proposal, grouped by subject', () => {
     const topics = clarificationTopics(acme());
     assert.ok(topics.length > 0, 'an engagement with open items has something worth asking');
-    assert.ok(topics.length <= 8, 'a bid gets a handful of questions, not a questionnaire');
+    assert.ok(topics.length <= 6, 'a bid gets a handful of questions, not a questionnaire');
     for (const topic of topics) {
       assert.ok(topic.covers.length >= 1, `${topic.topic} covers at least one discovery question`);
       assert.ok(topic.changes.length >= 1, `${topic.topic} says what the answer changes — that is the whole entry condition`);
@@ -53,6 +53,33 @@ describe('clarification questions (RFP)', () => {
       if (topic.changes.includes('the Shopify plan')) {
         assert.ok(feeds.includes('exit:11.1'), `${topic.topic} claims the plan, so one of its questions must feed the plan rule`);
       }
+    }
+  });
+
+  test('"high" is kept for what changes the shape of the solution, not for everything that matters', () => {
+    for (const topic of clarificationTopics(acme())) {
+      if (topic.impact !== 'high') continue;
+      const shape = topic.changes.includes('how many stores the markets run on') || topic.changes.includes('the size of the engagement');
+      const swing = topic.covers.some((c) => c.swing === 'high');
+      assert.ok(shape || swing, `${topic.title} is graded high, so it must change the store topology or the size of the engagement`);
+    }
+  });
+
+  test('a topic that only moves a number waits until nothing bigger is open', () => {
+    const doc = acme();
+    const topics = clarificationTopics(doc);
+    const high = topics.filter((t) => t.impact === 'high');
+    if (high.length >= 3) {
+      assert.equal(topics.length, high.length, 'with three shape-changing topics open, a bid does not also ask about the plan or the run cost');
+    } else {
+      assert.ok(topics.length >= Math.min(3, high.length), 'with little open, the next best topics are still worth asking');
+    }
+  });
+
+  test('the questions are ordered by how much of the proposal each one unlocks', () => {
+    const topics = clarificationTopics(acme()).filter((t) => t.impact === 'high');
+    for (let i = 1; i < topics.length; i += 1) {
+      assert.ok(topics[i - 1].covers.length >= topics[i].covers.length, 'a question that settles more unknowns comes first');
     }
   });
 
