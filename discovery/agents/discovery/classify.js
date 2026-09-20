@@ -183,7 +183,58 @@ const GATE_EVALUATORS = {
     if ((c.custom_attributes ?? []).length > 0) reasons.push('custom attributes');
     if ((c.product_types ?? []).some((t) => ['bundle', 'fixed_bundle', 'multipack', 'mix_and_match_bundle', 'product_set'].includes(t))) reasons.push('bundles / product sets');
     const active = skus >= 500 && reasons.length > 0;
-    return { active, evidence: `${skus} SKUs${reasons.length ? `; ${reasons.join(', ')}` : ''}` };
+    /*
+     * The product model is designed once. The data is handled per thousand.
+     *
+     * One flat half-week charged a 600-SKU catalogue what it charged a 50,000-SKU
+     * one, which is the same mistake the migration gate made before it was tiered
+     * by source platform. The published benchmark separates them by an order of
+     * magnitude — two to four days under a thousand SKUs against two to four
+     * weeks between ten and a hundred thousand — and a known share of products
+     * need a person before they will load at all.
+     */
+    const tier = !active ? null : skus >= 50000 ? 'very_large' : skus >= 5000 ? 'large' : 'standard';
+    return { active, ...(tier ? { tier } : {}), evidence: `${skus} SKUs${reasons.length ? `; ${reasons.join(', ')}` : ''}` };
+  },
+
+  /*
+   * Where Search & Discovery stops.
+   *
+   * Configuring it is in every offer — filters, predictive search, boosts — and
+   * the backlog has always built the collection and search pages. What was not
+   * priced is the point where Shopify's own documented limits run out: more
+   * than 25 filters, or a catalogue whose collections cross 5,000 products, at
+   * which filters stop showing to a shopper at all. Past either, the answer is
+   * a third-party search app with an index to keep true.
+   *
+   * A hand-curated collection estate at scale is the other half: merchandising
+   * that somebody maintains after launch, rather than a rule that maintains
+   * itself.
+   *
+   * Limits verified 2026-09-21 against
+   * help.shopify.com/en/manual/online-store/search-and-discovery/filters.
+   */
+  search_merchandising: (doc) => {
+    const c = doc.catalogue ?? {};
+    const filters = (c.storefront_filters ?? []).length;
+    const skus = c.sku_count ?? 0;
+    const collections = c.collections_estimate ?? 0;
+    const curated = c.collection_mode === 'manual' || c.collection_mode === 'mixed';
+
+    const pastFilterCap = filters > 25;
+    const pastCollectionCeiling = skus >= 5000 && filters > 0;
+    const curatedAtScale = curated && collections >= 100;
+
+    const active = pastFilterCap || pastCollectionCeiling || curatedAtScale;
+    const tier = active ? (pastFilterCap || pastCollectionCeiling ? 'app' : 'native') : null;
+    const why = [
+      filters ? `${filters} storefront filter(s)` : 'no storefront filters recorded',
+      `${skus} SKUs`,
+      collections ? `${collections} collections, ${c.collection_mode ?? 'mode not recorded'}` : null,
+      pastFilterCap ? 'past the 25-filter cap' : null,
+      pastCollectionCeiling ? 'collections will cross the 5,000-product ceiling where filters stop showing' : null,
+    ].filter(Boolean).join('; ');
+    return { active, ...(tier ? { tier } : {}), evidence: why };
   },
 
   retail_pos: (doc) => {

@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.1.0",
+  "version": "2.3.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -538,14 +538,35 @@
     {
       "id": "sku_complexity",
       "label": "SKU complexity",
-      "condition": "sku_count >= 500 AND at least one of: variant_options_max >= 2, custom attributes (metafields) needed, product types include bundle or product_set",
+      "condition": "sku_count >= 500 AND at least one of: variant_options_max >= 2, custom attributes (metafields) needed, product types include bundle or product_set. Tiered by catalogue size, because the product model is built once but the data is handled per thousand SKUs",
       "inputs": [
         "/catalogue/sku_count",
         "/catalogue/variant_options_max",
         "/catalogue/custom_attributes",
         "/catalogue/product_types"
       ],
-      "modifier": "+SKU"
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "large",
+        "very_large"
+      ]
+    },
+    {
+      "id": "search_merchandising",
+      "label": "Search and merchandising",
+      "condition": "Filtering and merchandising go past what Search & Discovery covers: more than 25 filters (the documented cap), a catalogue large enough that collections cross the 5,000-product ceiling above which filters stop showing at all, or a collection estate curated by hand at scale. Configuring Search & Discovery is in every offer",
+      "inputs": [
+        "/catalogue/storefront_filters",
+        "/catalogue/sku_count",
+        "/catalogue/collections_estimate",
+        "/catalogue/collection_mode"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "native",
+        "app"
+      ]
     },
     {
       "id": "migration",
@@ -749,9 +770,10 @@
       "per_integration_price": 10000
     },
     {
-      "id": "+SKU",
+      "id": "+SKU (standard)",
       "gate": "sku_complexity",
-      "description": "500+ SKUs, complex variants or bundles",
+      "tier": "standard",
+      "description": "500 to 4,999 SKUs with complex variants, metafields or bundles: the product model designed once and applied",
       "effort_weeks": {
         "min": 0.5,
         "max": 0.5
@@ -759,6 +781,62 @@
       "price_add": {
         "min": 5000,
         "max": 8000
+      }
+    },
+    {
+      "id": "+SKU (large)",
+      "gate": "sku_complexity",
+      "tier": "large",
+      "description": "5,000 to 49,999 SKUs: the model is the same, the data is not — import batching, reconciliation per object, and the share of products that need a human before they load",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 15000,
+        "max": 25000
+      }
+    },
+    {
+      "id": "+SKU (very large)",
+      "gate": "sku_complexity",
+      "tier": "very_large",
+      "description": "50,000 SKUs and above: catalogue operations in their own right — staged loads, a rehearsal run, and a data owner on the client side",
+      "effort_weeks": {
+        "min": 3,
+        "max": 5
+      },
+      "price_add": {
+        "min": 30000,
+        "max": 50000
+      }
+    },
+    {
+      "id": "+Search (native)",
+      "gate": "search_merchandising",
+      "tier": "native",
+      "description": "Search & Discovery taken to its limits: the filter set designed against the product data that backs it, boosts and synonyms per collection, and a merchandiser who can change them afterwards",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 1
+      },
+      "price_add": {
+        "min": 6000,
+        "max": 11000
+      }
+    },
+    {
+      "id": "+Search (app)",
+      "gate": "search_merchandising",
+      "tier": "app",
+      "description": "Past a documented Shopify limit, so a third-party search app: indexing and re-indexing, the sync that keeps it true, and the merchandising rules moved into it with an owner",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 16000,
+        "max": 28000
       }
     },
     {

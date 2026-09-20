@@ -317,6 +317,54 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(l.modifiers.length, 'and it says which gates did it');
   });
 
+  test('a catalogue is priced by its size, not by crossing five hundred once', () => {
+    // One flat half-week charged a 600-SKU catalogue what it charged a 50,000-SKU
+    // one. The published benchmark separates them by an order of magnitude — two
+    // to four days under a thousand SKUs against two to four weeks between ten
+    // and a hundred thousand — and the migration gate had already learned this
+    // lesson from source platforms.
+    const at = (sku_count) => classifyOffer({ ...base(), catalogue: { sku_count, variant_options_max: 3 } });
+    assert.equal(at(400).scope_gates.sku_complexity.active, false, 'complexity alone is not a catalogue');
+    assert.equal(at(600).scope_gates.sku_complexity.tier, 'standard');
+    assert.equal(at(4999).scope_gates.sku_complexity.tier, 'standard');
+    assert.equal(at(5000).scope_gates.sku_complexity.tier, 'large');
+    assert.equal(at(50000).scope_gates.sku_complexity.tier, 'very_large');
+
+    // And the tiers have to reach the quote, or none of this was worth doing.
+    assert.ok(at(50000).price_band.max > at(600).price_band.max * 1.4, 'an order of magnitude of catalogue is not a rounding difference');
+    assert.ok(at(50000).duration_weeks.max > at(5000).duration_weeks.max);
+    assert.ok(at(5000).duration_weeks.max > at(600).duration_weeks.max);
+  });
+
+  test('search stops being configuration where Shopify says it does', () => {
+    // Configuring Search & Discovery is in every offer, and the backlog has
+    // always built the collection and search pages. What was not priced is the
+    // point where Shopify's own documented limits run out. Both thresholds are
+    // the published ones, verified 2026-09-21:
+    // help.shopify.com/en/manual/online-store/search-and-discovery/filters
+    const at = (catalogue) => classifyOffer({ ...base(), catalogue }).scope_gates.search_merchandising;
+    const filters = (n) => Array.from({ length: n }, (_, i) => `filter-${i}`);
+
+    assert.equal(at({ sku_count: 800, storefront_filters: filters(6) }).active, false,
+      'six filters on a small catalogue is what the app is for');
+
+    // 25 filters per store is the cap. Past it, native cannot do it at all.
+    assert.equal(at({ sku_count: 800, storefront_filters: filters(25) }).active, false);
+    assert.equal(at({ sku_count: 800, storefront_filters: filters(26) }).tier, 'app');
+
+    // And a collection over 5,000 products shows no filters whatsoever.
+    assert.equal(at({ sku_count: 4999, storefront_filters: filters(2) }).active, false);
+    assert.equal(at({ sku_count: 5000, storefront_filters: filters(2) }).tier, 'app');
+    // No filters asked for is no filter problem, whatever the catalogue.
+    assert.equal(at({ sku_count: 80000 }).active, false);
+
+    // Hand-curated merchandising at scale is somebody's job after launch, but
+    // native still does it.
+    assert.equal(at({ sku_count: 1000, collections_estimate: 200, collection_mode: 'manual' }).tier, 'native');
+    assert.equal(at({ sku_count: 1000, collections_estimate: 200, collection_mode: 'automated' }).active, false,
+      'a rule that maintains itself is not merchandising work');
+  });
+
   test('the envelope is the offer\u2019s own arithmetic, and gates inside it cost nothing extra', () => {
     // Two light gates are what an M is for. Charging them on top would be the
     // mirror of the bug above.

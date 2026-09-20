@@ -86,6 +86,7 @@ export default [
     points: 5,
     owner: 'developer',
     depends_on: ['LWC-THM-001', 'LWC-CAT-002', 'LWC-CAT-003'],
+    gates: ['search_merchandising'],
     spec_refs: ['/catalogue/custom_attributes', '/catalogue/collection_mode', '/design/interactive_patterns'],
     applies: (doc) => isLiquidTrack(doc),
     agent_prompt: (doc) => `Configure the collection (main-collection) and search templates in ${themeName(doc)}. Enable storefront filtering with the Shopify Search & Discovery app: availability, price, product type, vendor${doc.catalogue?.custom_attributes?.length ? ` and metafield filters for ${list(doc.catalogue.custom_attributes)}` : ''}. Configure sort options, pagination or load-more, product card content${hasPattern(doc, /quick/i) ? ' and quick-add' : ''}. Enable predictive search in the header and set up synonyms and boosts in Search & Discovery. Test filters with keyboard and screen reader and check CLS stays below 0.1 when filtering.`,

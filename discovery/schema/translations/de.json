@@ -57,7 +57,7 @@
     "Q2.3.2": "231b41f973b1",
     "Q2.3.3": "df95d99e9106",
     "Q2.3.4": "e698d7579fed",
-    "Q2.3.5": "e04829484b34",
+    "Q2.3.5": "cc797d5445f6",
     "Q2.4.1": "ed21b18fae8e",
     "Q2.4.2": "704f5a9aaa12",
     "Q2.4.3": "ab93e8aef492",
@@ -1290,7 +1290,7 @@
       "help": "Shopify Search & Discovery: bis zu 25 Filter; keine Filter auf Kategorien mit mehr als 5.000 Produkten.",
       "teach": {
         "why": "Filter werden aus Produktdaten gebaut — Optionen, Metafelder und Taxonomieattribute —, die Filterliste ist also in Wahrheit eine Datenanforderung. Sie entscheidet außerdem, ob das native Search & Discovery reicht oder eine Such-App ins Kostenmodell kommt.",
-        "limits": "Shopify Search & Discovery unterstützt bis zu 25 Filter, und Filter funktionieren nicht auf Kategorien mit mehr als 5.000 Produkten.",
+        "limits": "Search & Discovery zeigt höchstens 25 Filter pro Shop und 100 Werte je Filter, und jede Quelle lässt sich nur einmal verwenden. Zwei Obergrenzen entscheiden, ob das überhaupt reicht: Eine Kollektion mit mehr als 5.000 Produkten zeigt gar keine Filter, und Suchergebnisse über 100.000 ebenfalls nicht. Filter stammen aus Produktoptionen, Metafeldern und der Standard-Attributtaxonomie — die Filterauswahl ist also eine Entscheidung über Produktdaten, bevor sie eine über die Storefront ist.",
         "options": [
           {
             "option": "Natives Search & Discovery",

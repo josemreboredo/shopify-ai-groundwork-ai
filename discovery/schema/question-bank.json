@@ -1803,20 +1803,18 @@
       "shopify": {
         "native": [
           {
-            "feature": "Search & Discovery filters",
+            "feature": "Search & Discovery: storefront filters, up to 25 per store",
             "plan": "basic",
-            "plan_note": "Up to 25 filters; no filters on collections over 5,000 products",
             "docs": "https://help.shopify.com/en/manual/online-store/search-and-discovery/filters"
+          },
+          {
+            "feature": "Predictive search, product boosts and synonyms",
+            "plan": "basic",
+            "docs": "https://help.shopify.com/en/manual/online-store/search-and-discovery"
           }
         ],
-        "apps": [
-          "algolia-search",
-          "product-filter-search",
-          "searchanise",
-          "klevu-smart-search"
-        ],
         "verified": {
-          "on": "2026-09-17",
+          "on": "2026-09-21",
           "source": "help.shopify.com",
           "edition": "Spring '26"
         }
@@ -1835,11 +1833,14 @@
             "cons": "Monthly licence, a catalogue index to keep in sync, and theme integration work."
           }
         ],
-        "limits": "Shopify Search & Discovery supports up to 25 filters, and filters do not work on collections of more than 5,000 products.",
+        "limits": "Search & Discovery shows at most 25 filters per store and 100 values per filter, and each source can be used once. Two ceilings decide whether it is enough at all: a collection over 5,000 products shows no filters, and search results over 100,000 show none either. Filters come from product options, metafields and the standard attributes taxonomy, so the filter set is a product-data decision before it is a storefront one.",
         "sources": [
           "https://help.shopify.com/en/manual/online-store/search-and-discovery/filters"
         ]
-      }
+      },
+      "feeds": [
+        "gate:search_merchandising"
+      ]
     },
     {
       "id": "Q2.4.1",

@@ -2,7 +2,7 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 2.1.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 2.3.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
@@ -569,6 +569,7 @@ Sources: https://shopify.dev/docs/apps/build/metaobjects/metaobject-limits · ht
 **Why it matters.** Where product data is mastered decides the integration work: a PIM or ERP as the source means Shopify is a target system and needs a sync for products, prices and stock, rather than merchants editing in the admin.
 
 **Q2.3.5** — Which attributes should shoppers filter by on collection and search pages? *(recommended · client)*
+Drives: gate Search and merchandising
 
 **Why it matters.** Filters are built from product data — options, metafields and taxonomy attributes — so the filter list is really a data requirement. It also decides whether native Search & Discovery is enough or a search app enters the cost model.
 
@@ -577,16 +578,15 @@ Sources: https://shopify.dev/docs/apps/build/metaobjects/metaobject-limits · ht
 | Native Search & Discovery | First-party, no licence fee, configured in the admin. | Capped at 25 filters and unavailable on collections over 5,000 products. |
 | Search and filter app | Handles large collections, more filters and merchandising rules on search results. | Monthly licence, a catalogue index to keep in sync, and theme integration work. |
 
-**Limits.** Shopify Search & Discovery supports up to 25 filters, and filters do not work on collections of more than 5,000 products.
+**Limits.** Search & Discovery shows at most 25 filters per store and 100 values per filter, and each source can be used once. Two ceilings decide whether it is enough at all: a collection over 5,000 products shows no filters, and search results over 100,000 show none either. Filters come from product options, metafields and the standard attributes taxonomy, so the filter set is a product-data decision before it is a storefront one.
 
 Sources: https://help.shopify.com/en/manual/online-store/search-and-discovery/filters
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Search & Discovery filters | Basic | Up to 25 filters; no filters on collections over 5,000 products | https://help.shopify.com/en/manual/online-store/search-and-discovery/filters |
-
-If native is not enough: App Store — [Algolia AI Search & Discovery](https://apps.shopify.com/algolia-search), [Boost AI Search & Filter](https://apps.shopify.com/product-filter-search), [Searchanise Search & Filter](https://apps.shopify.com/searchanise), [Klevu ‑ AI Search & Discovery](https://apps.shopify.com/klevu-smart-search)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+| Search & Discovery: storefront filters, up to 25 per store | Basic |  | https://help.shopify.com/en/manual/online-store/search-and-discovery/filters |
+| Predictive search, product boosts and synonyms | Basic |  | https://help.shopify.com/en/manual/online-store/search-and-discovery |
+*Verified 2026-09-21 against help.shopify.com (Spring '26).*
 
 ### 2.4 Pricing
 

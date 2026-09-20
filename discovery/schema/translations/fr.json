@@ -57,7 +57,7 @@
     "Q2.3.2": "231b41f973b1",
     "Q2.3.3": "df95d99e9106",
     "Q2.3.4": "e698d7579fed",
-    "Q2.3.5": "e04829484b34",
+    "Q2.3.5": "cc797d5445f6",
     "Q2.4.1": "ed21b18fae8e",
     "Q2.4.2": "704f5a9aaa12",
     "Q2.4.3": "ab93e8aef492",
@@ -1290,7 +1290,7 @@
       "help": "Shopify Search & Discovery : jusqu'à 25 filtres ; pas de filtres sur les collections de plus de 5 000 produits.",
       "teach": {
         "why": "Les filtres se construisent à partir des données produit — options, métachamps et attributs de taxonomie : la liste des filtres est donc en réalité une exigence de données. Elle décide aussi si Search & Discovery natif suffit ou si une application de recherche entre dans le modèle de coûts.",
-        "limits": "Shopify Search & Discovery prend en charge jusqu'à 25 filtres, et les filtres ne fonctionnent pas sur les collections de plus de 5 000 produits.",
+        "limits": "Search & Discovery affiche au maximum 25 filtres par boutique et 100 valeurs par filtre, et chaque source ne peut servir qu'une fois. Deux plafonds décident si cela suffit : une collection de plus de 5 000 produits n'affiche aucun filtre, et des résultats de recherche au-delà de 100 000 non plus. Les filtres proviennent des options produit, des métachamps et de la taxonomie d'attributs standard : le jeu de filtres est donc une décision sur les données produit avant d'être une décision de vitrine.",
         "options": [
           {
             "option": "Search & Discovery natif",

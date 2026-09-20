@@ -458,6 +458,9 @@
             "sku_complexity": {
               "$ref": "#/$defs/gate"
             },
+            "search_merchandising": {
+              "$ref": "#/$defs/gate"
+            },
             "migration": {
               "$ref": "#/$defs/gate"
             },
@@ -515,7 +518,11 @@
             "+Checkout (standard)",
             "+SEO (large)",
             "+SEO (standard)",
-            "+SKU",
+            "+Search (app)",
+            "+Search (native)",
+            "+SKU (large)",
+            "+SKU (standard)",
+            "+SKU (very large)",
             "+Subscriptions (advanced)",
             "+Subscriptions (standard)",
             "+Support (extended)",
@@ -4010,7 +4017,10 @@
             "large",
             "light",
             "medium",
-            "standard"
+            "app",
+            "native",
+            "standard",
+            "very_large"
           ],
           "description": "How much of a project this gate is. Set for migration, from the source platform: WooCommerce is light, Shopware medium, Magento or a custom platform heavy — the published DACH durations differ by a factor of two. Set for SEO continuity from the size of the redirect estate: standard is a map authored and imported, large is one built from a crawl."
         }
