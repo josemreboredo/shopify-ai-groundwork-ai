@@ -27,7 +27,7 @@ import { deckErrors } from './deck-template.js';
 import { clarificationBrief, clarificationTopics, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
-import { statedAssumptions, triage, clarificationsFreshness } from './assumptions.js';
+import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
@@ -699,6 +699,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         triage: triage(saved),
         // The questions are a snapshot and the engagement moves under them.
         freshness: clarificationsFreshness(topics, saved),
+        // And the ones we sent have to come home. Each carries the discovery
+        // questions it covers, so a reply is checkable rather than remembered.
+        replies: decided.ok ? repliesReceived(decided.doc, saved) : { asked: 0, back: 0, waiting: [], rows: [] },
+        reply_prompt: decided.ok ? replyPrompt(client, repliesReceived(decided.doc, saved).rows) : null,
         // What the proposal will state because nobody told us otherwise — from the
         // engine, and from every question the consultant decided not to ask.
         assumptions: statedAssumptions(decided.ok ? decided.doc : null, saved),

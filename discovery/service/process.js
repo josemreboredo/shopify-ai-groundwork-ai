@@ -110,6 +110,17 @@ const STEPS = {
       hint: e.clarifications_at ? `Prepared ${e.clarifications_at}` : 'What we must ask to price it',
     },
     {
+      // The last thing you check before committing to a price. Everything the
+      // proposal will rest on is settled by now — what was confirmed, what the
+      // engine concluded, what is asked and what is assumed — and this is the one
+      // page that shows it together. It was a side view, which is where a
+      // consultant never looks at the moment it matters.
+      path: 'summary',
+      label: 'Check where it stands',
+      done: Boolean(e.closing_document_at),
+      hint: 'Everything the proposal will rest on, in one page',
+    },
+    {
       path: 'closing-document',
       label: 'Write the proposal',
       done: Boolean(e.closing_document_at),
@@ -194,8 +205,9 @@ export function viewsFor(engagement) {
   const e = engagement ?? {};
   const rfp = processOf(e.process) === 'rfp';
   return [
-    // The engine's own working summary is reference in both, never a step.
-    { path: 'summary', label: 'Summary' },
+    // On a bid the summary is the check before the price is committed, so it is a
+    // step. In a discovery it stays what it always was: reference.
+    ...(rfp ? [] : [{ path: 'summary', label: 'Summary' }]),
     // The questions are a step on a bid, where the window closes; in a discovery
     // the consultant is already talking to the client, so they are a view. The
     // handover is the mirror of that: a discovery's last step, a bid's side note.

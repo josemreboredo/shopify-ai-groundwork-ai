@@ -13,7 +13,7 @@ import fs from 'node:fs';
 
 import { clarificationTopics, clarificationBrief } from '../../agents/discovery/clarifications.js';
 import { renderClarificationsMarkdown } from '../../service/clarifications-view.js';
-import { clarificationsFreshness } from '../../service/assumptions.js';
+import { clarificationsFreshness, repliesReceived, replyPrompt, statedAssumptions } from '../../service/assumptions.js';
 import { createDiscoveryService, ServiceError } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 import { questionBank } from '../../schema/index.js';
@@ -342,5 +342,55 @@ describe('the questions are a snapshot, and the engagement moves under them', ()
     await svc.saveClarifications(consultant, 'a-bid', { questions: [q('One catalogue?', ['Q3.4.13', 'Q6.2.14'])] });
     const { clarifications } = await svc.getClarifications(consultant, 'a-bid');
     assert.equal(clarifications.questions[0].status, 'proposed', 'it covers something nobody ruled on');
+  });
+});
+
+describe('the questions come home', () => {
+  const asked = (covers) => ({ id: 'q1', status: 'accepted', question: 'One catalogue?', covers, assume_if_unanswered: 'one store', impact_if_wrong: 'a second store' });
+
+  test('a question is answered when every discovery question it covers is', () => {
+    const doc = acme();
+    // Q3.1.1 is answered in the fixture; Q10.5.9 is not.
+    const r = repliesReceived(doc, { questions: [asked(['Q3.1.1']), { ...asked(['Q10.5.9']), id: 'q2' }] });
+    assert.equal(r.asked, 2);
+    assert.equal(r.back, 1);
+    assert.deepEqual(r.waiting.map((w) => w.id), ['q2']);
+    assert.deepEqual(r.rows.find((x) => x.id === 'q2').outstanding, ['Q10.5.9']);
+  });
+
+  test('half an answer is not an answer', () => {
+    const r = repliesReceived(acme(), { questions: [asked(['Q3.1.1', 'Q10.5.9'])] });
+    assert.equal(r.back, 0);
+    assert.equal(r.rows[0].partial, true, 'and it says so rather than rounding either way');
+  });
+
+  test('only what was accepted is waited on — a rejected question was never sent', () => {
+    const r = repliesReceived(acme(), { questions: [{ ...asked(['Q10.5.9']), status: 'rejected' }] });
+    assert.equal(r.asked, 0);
+  });
+
+  test('the instruction names each outstanding question and what it fills', () => {
+    const r = repliesReceived(acme(), { questions: [{ ...asked(['Q10.5.9']), question: 'Who invoices?' }] });
+    const prompt = replyPrompt('ricola', r.rows);
+    assert.match(prompt, /Who invoices\?/);
+    assert.match(prompt, /fills Q10\.5\.9/);
+    assert.match(prompt, /register_document/);
+    assert.match(prompt, /a guess recorded here becomes a number in the proposal/);
+  });
+
+  test('with nothing outstanding it says so instead of asking for a reply', () => {
+    const r = repliesReceived(acme(), { questions: [asked(['Q3.1.1'])] });
+    assert.match(replyPrompt('ricola', r.rows), /has been answered/);
+  });
+
+  test('an assumption retires when the client answers it anyway', () => {
+    const doc = acme();
+    const rejected = { id: 'q1', status: 'rejected', question: 'Who invoices?', assume_if_unanswered: 'one entity', impact_if_wrong: 'expansion stores' };
+    // Clients volunteer things, and an assumption nobody needs to make any more
+    // must not be stated to them as though we still did.
+    const stillOpen = statedAssumptions(doc, { questions: [{ ...rejected, covers: ['Q10.5.9'] }] });
+    assert.ok(stillOpen.some((a) => a.assumed === 'one entity'));
+    const nowAnswered = statedAssumptions(doc, { questions: [{ ...rejected, covers: ['Q3.1.1'] }] });
+    assert.ok(!nowAnswered.some((a) => a.assumed === 'one entity'));
   });
 });

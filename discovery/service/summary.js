@@ -45,6 +45,47 @@ const cell = (s) => String(s ?? '').replace(/\|/g, '/').replace(/\n/g, '<br>');
  *
  * @param {ReturnType<import('./index.js').createDiscoveryService>['getSummary'] extends (...a: any) => Promise<infer R> ? R : never} s
  */
+/**
+ * How the offer and the route read together.
+ *
+ * The classification is real — it is what the scope gates say — but an exit rule
+ * can take the engagement outside the offers, and at that point the
+ * classification stops being the answer. Printed as two flat lines it read
+ * "Offer: M · Ecommerce Scale" above "STOP — route: larger engagement", which is
+ * the tool appearing to contradict itself on its own summary page.
+ *
+ * And nothing is stopping. A Larger Engagement is the largest deal shape in this
+ * workspace; the word STOP is the engine's internal name for an exit rule and has
+ * no business on a page a consultant reads.
+ *
+ * @param {{ offer: object, go: boolean, route?: string|null }} p  engine preview
+ */
+export function offerStanding(p) {
+  const name = `${p.offer.code} · ${p.offer.name}`;
+  if (p.go) {
+    return {
+      applies: true,
+      headline: name,
+      standing: 'Within the standard offers',
+      tone: 'go',
+      note: p.offer.provisional ? 'Provisional — some scope gates are still unknown' : null,
+    };
+  }
+  const route = String(p.route ?? '').trim();
+  return {
+    applies: false,
+    headline: ROUTE_HEADLINE[route] ?? 'Beyond the standard offers',
+    standing: route ? 'Beyond the standard offers' : 'Beyond the standard offers — the route is not recorded yet',
+    tone: route === 'no_bid' ? 'stop' : 'flag',
+    note: `The scope gates classify it as ${name}, which is not the answer here: an exit rule takes it outside, so it is scoped and priced on its own.`,
+  };
+}
+
+const ROUTE_HEADLINE = {
+  larger_engagement: 'Larger Engagement — an Enterprise Engagement opening with a dedicated Discovery Phase',
+  no_bid: 'No bid',
+};
+
 export function renderSummaryMarkdown(s) {
   const p = s.preview;
   const lines = [
@@ -54,8 +95,14 @@ export function renderSummaryMarkdown(s) {
     '',
     '## Status',
     '',
-    `- **Offer:** ${p.offer.code} · ${p.offer.name}${p.offer.provisional ? ' (provisional — some scope gates are still unknown)' : ''}`,
-    `- **Decision:** ${p.go ? 'GO' : `STOP — route: ${String(p.route ?? 'not decided').replace(/_/g, ' ')}`}`,
+    ...(() => {
+      const st = offerStanding(p);
+      return [
+        `- **Where it lands:** ${st.headline}`,
+        `- **Standing:** ${st.standing}`,
+        ...(st.note ? [`- **Note:** ${st.note}`] : []),
+      ];
+    })(),
     `- **Coverage:** ${p.coverage.required_answered} of ${p.coverage.required_total} required questions answered · ${p.coverage.required_tbc} TBC · ${p.coverage.required_commented ?? 0} clarified by comment · ${p.coverage.required_open} open`,
     `- **Interview:** ${s.engagement.mode} mode · ${s.engagement.language} · updated ${s.engagement.updated_at}`,
     ...(p.plan_suggestion ? [`- **Minimum Shopify plan for these answers:** ${p.plan_suggestion.value} — ${p.plan_suggestion.reasons.join('; ')}`] : []),

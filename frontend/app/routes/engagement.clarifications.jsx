@@ -72,7 +72,7 @@ function Decide({ id, status, busy }) {
 }
 
 export default function Clarifications({ loaderData, actionData }) {
-  const { engagement, clarifications, triage, assumptions, documents, readiness, freshness } = loaderData;
+  const { engagement, clarifications, triage, assumptions, documents, readiness, freshness, replies, reply_prompt: replyPrompt } = loaderData;
   const client = engagement.client;
   const busy = useNavigation().state !== 'idle';
   const questions = clarifications?.questions ?? [];
@@ -171,7 +171,35 @@ Write every question we need answered to price this properly — the Lead Consul
         </section>
       ) : null}
 
-      {/* 2 — the triage */}
+      {/* 2 — and back again. The questions left the building and nothing used to
+          bring the answers home. */}
+      {triage.accepted.length ? (
+        <section className={`card start ${replies.back === replies.asked ? 'current' : 'none'}`}>
+          <div className="start-head">
+            <div>
+              <p className="question">
+                {replies.back === replies.asked
+                  ? `All ${replies.asked} answered`
+                  : `${replies.back} of ${replies.asked} answered`}
+              </p>
+              <p className="muted">
+                {replies.back === replies.asked
+                  ? 'Everything Merkle asked has come back and is recorded against the questions it fills.'
+                  : 'When the client replies, read it in here. Each question names the discovery questions it fills, so the answers land where they belong instead of being typed in from memory — and anything the reply does not cover stays a stated assumption.'}
+              </p>
+            </div>
+            <span className={`badge ${replies.back === replies.asked ? 'go' : 'flag'}`}>{replies.back}/{replies.asked}</span>
+          </div>
+          {replies.back < replies.asked ? (
+            <div className="actions">
+              <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(replyPrompt)}`} target="_blank" rel="noreferrer">Read the client’s reply in Claude</a>
+              <button type="button" className="secondary" onClick={() => navigator.clipboard?.writeText(replyPrompt)}>Copy the instruction</button>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
+      {/* 3 — the triage */}
       {saved ? (
         <section>
           <div className="section-head">
@@ -204,6 +232,9 @@ Write every question we need answered to price this properly — the Lead Consul
             {questions.map((q) => (
               <li key={q.id} className={`q-${q.status ?? 'proposed'}`}>
                 <h3>{q.question}</h3>
+                {q.status === 'accepted' && replies.rows.find((r) => r.id === q.id)?.answered
+                  ? <p className="muted small">Answered — recorded against {(q.covers ?? []).join(', ')}</p>
+                  : null}
                 <p className="why"><strong>Why we ask.</strong> {q.why_we_ask}</p>
                 <div className="for-us">
                   <p className="eyebrow">For us — not sent</p>

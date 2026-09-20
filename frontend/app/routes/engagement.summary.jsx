@@ -4,6 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader, resultClass, words } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
+import { offerStanding } from '../../../discovery/service/summary.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Summary', params.client) }];
 
@@ -21,6 +22,7 @@ const STATE_LABEL = { answered: 'Answered', tbc: 'TBC', skipped: 'Not applicable
 export default function Summary({ loaderData }) {
   const { engagement, preview: p, open_items: openItems, sections, documents, notes, generated_at: generatedAt } = loaderData;
   const signals = Object.entries(p.app_signals ?? {}).filter(([, reasons]) => reasons.length);
+  const standing = offerStanding(p);
   return (
     <main>
       <EngagementHeader engagement={engagement} eyebrow="Summary" meta={`Computed by the engine on ${generatedAt}`} />

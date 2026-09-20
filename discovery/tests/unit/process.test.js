@@ -62,10 +62,11 @@ describe('one engine, two processes', () => {
     const at = (e) => stepsFor({ process: 'rfp', documents: 1, to_review: 0, ...e }).map((s) => s.state);
     // The RFP is read and confirmed; whether Merkle bids at all is still open, and
     // nothing past that decision can be done.
-    assert.deepEqual(at({}), ['done', 'done', 'current', 'todo', 'todo']);
-    assert.deepEqual(at({ go: true }), ['done', 'done', 'done', 'current', 'todo'], 'within the offers, the questions are next');
-    assert.deepEqual(at({ route: 'no_bid' }), ['done', 'done', 'done', 'current', 'todo'], 'a recorded no-bid is still a decision taken');
-    assert.deepEqual(at({ go: true, clarifications_at: '2026-09-20' }), ['done', 'done', 'done', 'done', 'current']);
+    assert.deepEqual(at({}), ['done', 'done', 'current', 'todo', 'todo', 'todo']);
+    assert.deepEqual(at({ go: true }), ['done', 'done', 'done', 'current', 'todo', 'todo'], 'within the offers, the questions are next');
+    assert.deepEqual(at({ route: 'no_bid' }), ['done', 'done', 'done', 'current', 'todo', 'todo'], 'a recorded no-bid is still a decision taken');
+    // Checking where it stands comes between the questions and the price.
+    assert.deepEqual(at({ go: true, clarifications_at: '2026-09-20' }), ['done', 'done', 'done', 'done', 'current', 'todo']);
   });
 
   test('a bid carries the evidence for the go/no-go, and a discovery does not', () => {
@@ -120,8 +121,11 @@ describe('one engine, two processes', () => {
     const shared = ['', 'clarifications', 'closing-document', 'handover', 'review', 'settings', 'summary'];
     // Everything shared is reachable from both. The one page that is not shared is
     // the go/no-go: a discovery has already been won, so there is nothing to weigh.
+    // The summary is reachable from both — a step on a bid, a view in a discovery.
     assert.deepEqual(reachable('rfp'), [...shared, 'go-no-go'].sort());
     assert.deepEqual(reachable('discovery'), shared);
+    assert.ok(stepsFor({ ...e, process: 'rfp' }).some((s) => s.path === 'summary'), 'on a bid it is the check before the price');
+    assert.ok(viewsFor({ ...e, process: 'discovery' }).some((v) => v.path === 'summary'), 'in a discovery it stays reference');
     assert.notDeepEqual(stepsFor({ ...e, process: 'rfp' }).map((s) => s.label), stepsFor({ ...e, process: 'discovery' }).map((s) => s.label));
     // On a bid the window to send questions closes, so it is a step. In a
     // discovery the consultant is already talking to the client, so it is a view.

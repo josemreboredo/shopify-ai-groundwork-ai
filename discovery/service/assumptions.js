@@ -18,6 +18,8 @@
  * @module discovery/service/assumptions
  */
 
+import { answeredQuestions } from '../agents/discovery/knowledge.js';
+
 /** Where an assumption came from, in the order a reader should meet them. */
 const RANK = { rejected: 0, topology: 1 };
 
@@ -30,10 +32,15 @@ const RANK = { rejected: 0, topology: 1 };
  */
 export function statedAssumptions(doc, clarifications) {
   const out = [];
+  const answered = new Set(answeredQuestions(doc ?? {}).map((q) => q.id));
 
   // 1 — chosen: a question the Lead Consultant decided not to ask.
   for (const q of clarifications?.questions ?? []) {
     if (q.status !== 'rejected') continue;
+    // Unless the client answered it anyway. Clients volunteer things, and an
+    // assumption nobody needs to make any more should not be stated to them as
+    // though we still did.
+    if ((q.covers ?? []).length && (q.covers ?? []).every((c) => answered.has(c))) continue;
     out.push({
       about: q.question,
       assumed: q.assume_if_unanswered,
@@ -130,4 +137,57 @@ export function clarificationsFreshness(topics, clarifications) {
     up_to_date: uncovered.length === 0,
     uncovered: uncovered.map((t) => ({ title: t.title, impact: t.impact, settles: (t.covers ?? []).length })),
   };
+}
+
+/**
+ * Which of the questions we sent have come back.
+ *
+ * The questions leave the building and nothing brought the answers home. A
+ * client replies by e-mail or a document, and the Lead Consultant was left to
+ * remember which of seven had been covered and to go and type them in one by
+ * one. Each accepted question already names the discovery questions it covers,
+ * so the tool knows exactly what a reply is supposed to fill.
+ *
+ * @param {object} doc  decided engagement
+ * @param {{ questions?: object[] }|null} clarifications
+ */
+export function repliesReceived(doc, clarifications) {
+  const answered = new Set(answeredQuestions(doc ?? {}).map((q) => q.id));
+  const asked = (clarifications?.questions ?? []).filter((q) => q.status === 'accepted');
+  const rows = asked.map((q) => {
+    const covers = q.covers ?? [];
+    const back = covers.filter((c) => answered.has(c));
+    return {
+      id: q.id,
+      question: q.question,
+      covers,
+      answered: covers.length > 0 && back.length === covers.length,
+      partial: back.length > 0 && back.length < covers.length,
+      outstanding: covers.filter((c) => !answered.has(c)),
+    };
+  });
+  return {
+    asked: rows.length,
+    back: rows.filter((r) => r.answered).length,
+    waiting: rows.filter((r) => !r.answered),
+    rows,
+  };
+}
+
+/** The instruction that reads a client's reply back into the engagement. */
+export function replyPrompt(client, rows) {
+  const waiting = rows.filter((r) => !r.answered);
+  if (!waiting.length) return `Every question Merkle sent on the ${client} RFP has been answered.`;
+  const list = waiting.map((r, i) => `${i + 1}. ${r.question}\n   → fills ${r.outstanding.join(', ')}`).join('\n');
+  return `Read the client's reply to Merkle's questions on the ${client} RFP into the engagement.
+
+These are the questions still waiting, and the discovery questions each one fills:
+
+${list}
+
+Register the reply with register_document, then record what it says with record_answers — one call per discovery question above, each with its evidence (the document, where in it, and a short quote). Where the reply is unclear or only half answers, mark the question to confirm with a note rather than deciding for them: it is their answer, and a guess recorded here becomes a number in the proposal.
+
+If the reply does not cover one of them, say so and leave it — it stays a stated assumption, which is what it already was.
+
+Then tell me which questions came back, which are still open, and whether any answer changes what we had assumed.`;
 }
