@@ -52,7 +52,7 @@ export default function GoNoGo({ loaderData }) {
         <section className="card start blocked">
           <p className="question">{blocked.error}</p>
           <p className="muted">There is nothing for this desk to weigh until these are recorded.</p>
-          <Blockers from={`/engagements/${client}/go-no-go`} items={blocked.blockers} errors={blocked.errors} client={engagement.client} />
+          <Blockers from={`/engagements/${engagement.client}/go-no-go`} items={blocked.blockers} errors={blocked.errors} client={engagement.client} />
         </section>
       </main>
     );

@@ -66,8 +66,15 @@ export function offerStanding(p) {
   // gate has fired — so the list stated a commercial position on a bid nobody
   // had opened. Nothing recorded is not a small engagement; it is not an
   // engagement yet.
+  // Nothing known is not the same as nothing answered: recording consent makes
+  // the count 1 while every gate and trigger is still unknown, and the panel
+  // went on stating "S · Ecommerce Foundation · GO" on the strength of it. The
+  // engine already counts what it does not know; when that is all of them,
+  // there is no classification to report.
   const c = p.coverage ?? {};
-  if (!(c.required_answered ?? 0)) {
+  const gates = { ...(p.scope_gates ?? {}), ...(p.l_triggers ?? {}) };
+  const known = Object.values(gates).filter((v) => v !== 'unknown').length;
+  if (!(c.required_answered ?? 0) || (Object.keys(gates).length > 0 && known === 0)) {
     return {
       applies: false,
       unknown: true,
