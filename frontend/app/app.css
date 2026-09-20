@@ -614,7 +614,9 @@ button.link:disabled { color: var(--muted); cursor: default; }
 .footer-main { display: flex; flex-direction: column; align-items: flex-start; gap: 34px; }
 .footer-mark img { display: block; height: 26px; width: auto; }
 .footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
-.footer-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(172px, max-content)); column-gap: 76px; row-gap: 34px; }
+/* One row of equal columns, as merkle.com lays them out — three when signed out,
+   four when the Work group appears, each taking the same share of the width. */
+.footer-columns { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 40px; width: 100%; }
 .footer-col-title { margin: 0 0 16px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); }
 .footer-links a { color: #fff; text-decoration: none; font-size: 1.05rem; position: relative; padding-bottom: 4px; }
 .footer-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
@@ -642,9 +644,12 @@ button.link:disabled { color: var(--muted); cursor: default; }
   .signin-panel { padding: 36px 20px 48px; }
   .site-footer { padding: 44px 16px 24px; }
   .footer-main { gap: 26px; }
-  .footer-columns { grid-template-columns: 1fr; }
+  .footer-columns { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px; }
   .footer-watermark { display: none; }
   .footer-base { margin-top: 28px; }
+}
+@media (max-width: 560px) {
+  .footer-columns { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
   .toc { columns: 1; }
