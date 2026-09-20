@@ -43,7 +43,9 @@ describe('one engine, two processes', () => {
     assert.notEqual(processMeta('rfp').document, processMeta('discovery').document);
     for (const id of PROCESS_IDS) {
       const m = PROCESSES[id];
-      for (const key of ['label', 'record', 'start', 'document', 'lede']) assert.ok(m[key], `${id} needs ${key}`);
+      for (const key of ['label', 'record', 'start', 'document', 'lede', 'a']) assert.ok(m[key], `${id} needs ${key}`);
+      assert.match(m.a, /^an? /, `${id} carries its own article — "a engagement" is how that breaks`);
+      assert.equal(m.a.split(' ')[1], m.record.toLowerCase(), `${id}: the article and the noun must agree`);
     }
   });
 
@@ -58,10 +60,27 @@ describe('one engine, two processes', () => {
 
   test('state is derived from the engagement, so the spine can never disagree with it', () => {
     const at = (e) => stepsFor({ process: 'rfp', documents: 1, to_review: 0, ...e }).map((s) => s.state);
-    assert.deepEqual(at({}), ['done', 'done', 'current', 'todo'], 'nothing sent, nothing written');
-    assert.deepEqual(at({ clarifications_at: '2026-09-20' }), ['done', 'done', 'done', 'current']);
-    const written = stepsFor({ process: 'rfp', documents: 1, to_review: 0, clarifications_at: '2026-09-20', closing_document_at: '2026-09-21' });
-    assert.ok(written.every((s) => s.state !== 'current') || written.at(-1).state === 'current');
+    // The RFP is read and confirmed; whether Merkle bids at all is still open, and
+    // nothing past that decision can be done.
+    assert.deepEqual(at({}), ['done', 'done', 'current', 'todo', 'todo']);
+    assert.deepEqual(at({ go: true }), ['done', 'done', 'done', 'current', 'todo'], 'within the offers, the questions are next');
+    assert.deepEqual(at({ route: 'no_bid' }), ['done', 'done', 'done', 'current', 'todo'], 'a recorded no-bid is still a decision taken');
+    assert.deepEqual(at({ go: true, clarifications_at: '2026-09-20' }), ['done', 'done', 'done', 'done', 'current']);
+  });
+
+  test('whether to bid at all is a step on a bid, and does not exist on a discovery', () => {
+    const labels = (process) => stepsFor({ process, documents: 1, to_review: 0, coverage: { required_answered: 85, required_total: 85 } }).map((s) => s.label);
+    assert.ok(labels('rfp').includes('Do we bid?'), 'the decision that saves the most money is not buried in Q10.5.5');
+    assert.ok(!labels('discovery').includes('Do we bid?'), 'a discovery is already won');
+    const beyond = stepsFor({ process: 'rfp', documents: 1, to_review: 0, go: false, route: 'larger_engagement' });
+    assert.match(beyond[2].hint, /Larger Engagement/, 'the route is shown, not just that there is one');
+  });
+
+  test('a discovery ends at the handover, not at the client document', () => {
+    const steps = stepsFor({ process: 'discovery', to_review: 0, coverage: { required_answered: 85, required_total: 85 }, closing_document_at: '2026-09-19' });
+    assert.equal(steps.at(-1).path, 'handover');
+    assert.equal(steps.at(-1).state, 'current', 'signing off the scope is not the end of the work');
+    assert.match(steps.at(-1).hint, /backlog/);
   });
 
   test('progress never skips: nothing reads as done ahead of the step you are on', () => {
@@ -95,13 +114,17 @@ describe('one engine, two processes', () => {
       ...stepsFor({ ...e, process }).map((s) => s.path),
       ...viewsFor({ ...e, process }).map((v) => v.path),
     ].sort();
-    assert.deepEqual(reachable('rfp'), ['', 'clarifications', 'closing-document', 'review', 'settings', 'summary']);
-    assert.deepEqual(reachable('discovery'), ['', 'clarifications', 'closing-document', 'review', 'settings', 'summary']);
+    const every = ['', 'clarifications', 'closing-document', 'handover', 'review', 'settings', 'summary'];
+    assert.deepEqual(reachable('rfp'), every);
+    assert.deepEqual(reachable('discovery'), every, 'neither process loses a page — they order them differently');
     assert.notDeepEqual(stepsFor({ ...e, process: 'rfp' }).map((s) => s.label), stepsFor({ ...e, process: 'discovery' }).map((s) => s.label));
     // On a bid the window to send questions closes, so it is a step. In a
     // discovery the consultant is already talking to the client, so it is a view.
     assert.ok(stepsFor({ ...e, process: 'rfp' }).some((s) => s.path === 'clarifications'));
     assert.ok(viewsFor({ ...e, process: 'discovery' }).some((v) => v.path === 'clarifications'));
+    // And the handover the other way: a discovery's last step, a bid's side note.
+    assert.ok(stepsFor({ ...e, process: 'discovery' }).some((s) => s.path === 'handover'));
+    assert.ok(viewsFor({ ...e, process: 'rfp' }).some((v) => v.path === 'handover'));
   });
 
   test('every step carries what to do, and the settings are always one click away', () => {

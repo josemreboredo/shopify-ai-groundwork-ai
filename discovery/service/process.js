@@ -20,12 +20,18 @@
 
 /** @typedef {'rfp'|'discovery'} Process */
 
+/**
+ * Answering an RFP comes first wherever the two are listed: it is the step that
+ * wins the engagement, so it is the one a consultant reaches for more often.
+ */
 export const PROCESSES = {
   rfp: {
     id: 'rfp',
     label: 'RFP response',
     /** What one record is called while it is this process. */
     record: 'Bid',
+    /** With its article, for sentences: "This is a bid", "make it an engagement". */
+    a: 'a bid',
     /** What starting one is called. */
     start: 'Respond to an RFP',
     /** The client-facing document this process produces. */
@@ -36,6 +42,7 @@ export const PROCESSES = {
     id: 'discovery',
     label: 'Discovery',
     record: 'Engagement',
+    a: 'an engagement',
     start: 'Run a discovery',
     document: 'Discovery Closing Document',
     lede: 'A consultant-led discovery: work through the questions with the client, then write the closing document and the backlog.',
@@ -70,6 +77,10 @@ export const processMeta = (value) => PROCESSES[processOf(value)];
  * never disagree with it.
  */
 const STEPS = {
+  // A bid is pre-sale. Information is scarce, the clock is running, and the first
+  // commercial decision is not how to build it but whether to bid at all — the
+  // engine computes that and it was buried in Q10.5.5 halfway down a
+  // questionnaire. On a bid it is the step that saves the most money.
   rfp: (e) => [
     {
       path: '',
@@ -82,6 +93,12 @@ const STEPS = {
       label: 'Confirm what it says',
       done: e.documents > 0 && e.to_review === 0,
       hint: e.to_review ? `${e.to_review} to confirm` : e.documents ? 'All confirmed' : null,
+    },
+    {
+      path: 'summary',
+      label: 'Do we bid?',
+      done: Boolean(e.go || e.route),
+      hint: e.go ? `Within the offers · ${e.offer?.code ?? ''}`.trim() : e.route ? ROUTE_LABEL[e.route] ?? e.route : 'Beyond the offers — a decision is needed',
     },
     {
       path: 'clarifications',
@@ -99,26 +116,41 @@ const STEPS = {
     // empty bid, so it appears once there is a proposal to have won with.
     ...(e.closing_document_at ? [{ path: 'settings', label: 'Did we win it?', done: false, hint: 'Turn it into an engagement' }] : []),
   ],
+  // A discovery is won and paid. Nothing has to be persuaded; everything has to be
+  // exact, because what comes out of it is what the build team executes. So it
+  // does not end at the client document — it ends at the handover.
   discovery: (e) => [
     {
       path: '',
-      label: 'Ask the questions',
+      label: 'Interview the client',
       done: (e.coverage?.required_total ?? 0) > 0 && e.coverage.required_answered >= e.coverage.required_total,
       hint: e.coverage ? `${e.coverage.required_answered} of ${e.coverage.required_total} required` : null,
     },
     {
       path: 'review',
-      label: 'Review the answers',
+      label: 'Review and confirm',
       done: e.to_review === 0 && (e.coverage?.required_answered ?? 0) > 0,
       hint: e.to_review ? `${e.to_review} to confirm` : null,
     },
     {
       path: 'closing-document',
-      label: 'Write the closing document',
+      label: 'Agree the scope',
       done: Boolean(e.closing_document_at),
-      hint: e.closing_document_at ? `Saved ${e.closing_document_at}` : null,
+      hint: e.closing_document_at ? `Saved ${e.closing_document_at}` : 'The closing document, for sign-off',
+    },
+    {
+      path: 'handover',
+      label: 'Hand over to delivery',
+      done: false,
+      hint: 'Jira backlog and the configuration workbook',
     },
   ],
+};
+
+/** How a route beyond the offers reads in a step hint. */
+const ROUTE_LABEL = {
+  larger_engagement: 'Larger Engagement — a dedicated Discovery Phase',
+  no_bid: 'No bid',
 };
 
 /**
@@ -157,9 +189,15 @@ export function stepsFor(engagement) {
  */
 export function viewsFor(engagement) {
   const e = engagement ?? {};
+  const rfp = processOf(e.process) === 'rfp';
   return [
-    { path: 'summary', label: 'Summary' },
-    ...(processOf(e.process) === 'rfp' ? [] : [{ path: 'clarifications', label: 'Questions to the client' }]),
+    // On a bid the summary is a step ("Do we bid?"), so it is not repeated here.
+    ...(rfp ? [] : [{ path: 'summary', label: 'Summary' }]),
+    // And the other way round for the questions: on a bid the window closes, so
+    // they are a step; in a discovery the consultant is already talking to the
+    // client, so they are a view like any other.
+    ...(rfp ? [] : [{ path: 'clarifications', label: 'Questions to the client' }]),
+    ...(rfp ? [{ path: 'handover', label: 'Handover' }] : []),
     { path: 'settings', label: 'Change' },
   ];
 }

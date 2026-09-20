@@ -26,6 +26,7 @@ import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
 import { clarificationBrief, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
+import { handoverView, handoverFile, backlogBlocked } from './handover.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
@@ -803,6 +804,42 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.updated_at = today();
       await store.save(session);
       return { ok: true, process: 'discovery', won_at: session.won.at };
+    },
+
+    /**
+     * What delivery receives: the Jira backlog and the configuration workbook.
+     * Both existed only as CLI commands against an engagement.json the web app
+     * never writes, so the engagement path looked as if it ended at the closing
+     * document. It ends here.
+     *
+     * @param {User} user @param {string} client
+     */
+    async getHandover(user, client) {
+      const session = await load(user, client);
+      const decided = decideFromSession(session, today());
+      if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
+      const final = finaliseEngagement(decided.doc, session.closing?.approach?.payload ?? null);
+      const doc = final.ok ? final.engagement : decided.doc;
+      return { engagement: summary(session), handover: handoverView(doc) };
+    },
+
+    /**
+     * One handover file, built the same way the CLI builds it.
+     *
+     * @param {User} user @param {string} client
+     * @param {'backlog.csv'|'backlog.md'|'workbook.md'} which
+     */
+    async getHandoverFile(user, client, which) {
+      const session = await load(user, client);
+      const decided = decideFromSession(session, today());
+      if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
+      const final = finaliseEngagement(decided.doc, session.closing?.approach?.payload ?? null);
+      const content = handoverFile(final.ok ? final.engagement : decided.doc, which);
+      if (content === null) {
+        const blocked = backlogBlocked(final.ok ? final.engagement : decided.doc);
+        throw new ServiceError(409, 'No backlog for this engagement', [], blocked ? [{ what: blocked.label ?? 'Beyond the standard offers', why: blocked.why }] : []);
+      }
+      return content;
     },
 
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */

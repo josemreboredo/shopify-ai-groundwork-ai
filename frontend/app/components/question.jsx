@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Form, Link, NavLink } from 'react-router';
 
 import { LANGUAGE_NAMES } from '../../../discovery/service/i18n.js';
-import { stepsFor, viewsFor, processMeta } from '../../../discovery/service/process.js';
+import { stepsFor, viewsFor, processMeta, processOf } from '../../../discovery/service/process.js';
 
 export const words = (id) => id.replace(/_/g, ' ');
 const leaf = (pointer) => words(pointer.split('/').at(-1));
@@ -84,7 +84,9 @@ export function EngagementHeader({ engagement, eyebrow, title, meta, back, langu
   return (
     <header className="page-head">
       <Link className="crumb" to={back?.to ?? '/'}>← {back?.label ?? 'Engagements'}</Link>
-      <p className="eyebrow">{words.record}{eyebrow ? ` · ${eyebrow}` : ''}</p>
+      {/* A bid is the unusual state and worth naming on every page. An engagement
+          is the default: saying so on top of the page name is noise. */}
+      <p className="eyebrow">{[processOf(engagement.process) === 'rfp' ? words.record : null, eyebrow].filter(Boolean).join(' · ') || words.record}</p>
       <h1>{title ?? client}</h1>
       {meta ? <p className="page-meta">{meta}</p> : null}
       {language?.translated ? (

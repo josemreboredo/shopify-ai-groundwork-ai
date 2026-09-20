@@ -95,10 +95,12 @@ export default function Settings({ loaderData, actionData }) {
         </section>
       ) : null}
 
-      {/* 2 — what this record is */}
-      <section className="card">
-        <h2>What this is</h2>
-        <p className="question">A {words.record.toLowerCase()} — {words.label}</p>
+      {/* 2 — what this record is: needed once, if ever, so it stays closed */}
+      <details className="card prefill">
+        <summary>
+          <span className="prefill-title">What this is</span>
+          <span className="muted prefill-status">{words.a.replace(/^./, (c) => c.toUpperCase())} — {words.label}</span>
+        </summary>
         <p className="muted">{words.lede}</p>
         {engagement.won ? (
           <p className="muted">Won from a bid on {engagement.won.at}, recorded by {engagement.won.by}.</p>
@@ -110,11 +112,11 @@ export default function Settings({ loaderData, actionData }) {
         <Form method="post" className="actions">
           <input type="hidden" name="intent" value="process" />
           <input type="hidden" name="process" value={other.id} />
-          <button type="submit" className="secondary" disabled={busy}>This is not a {words.record.toLowerCase()} — make it {other.record === 'Bid' ? 'a bid' : 'an engagement'}</button>
+          <button type="submit" className="secondary" disabled={busy}>This is not {words.a} — make it {other.a}</button>
         </Form>
-        {said('process') ? <p className="muted">Changed to {processMeta(actionData.process).record.toLowerCase()} — no answer has changed.</p> : null}
+        {said('process') ? <p className="muted">Changed to {processMeta(actionData.process).a} — no answer has changed.</p> : null}
         {failed('process') ? <p className="error">{actionData.error}</p> : null}
-      </section>
+      </details>
 
       {/* 3 — how deep the questions go */}
       <section className="card">
