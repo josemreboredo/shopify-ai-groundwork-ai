@@ -365,6 +365,27 @@ describe('the offer follows the effort, not the gate count', () => {
       'a rule that maintains itself is not merchandising work');
   });
 
+  test('every offer says what its price assumes, in quantities somebody can be held to', () => {
+    // What an offer includes and what it excludes both assume a quantity, and an
+    // unwritten quantity is where a fixed price becomes time and materials
+    // without anybody deciding to change it. The third round of feedback, the
+    // second data load, the training session nobody counted.
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      const assumes = offer.assumes ?? [];
+      assert.ok(assumes.length >= 5, `${code}: fewer than five assumptions is not a boundary on a fixed price`);
+      assert.equal(new Set(assumes).size, assumes.length, `${code}: the same assumption twice`);
+      for (const line of assumes) {
+        assert.ok(line.length > 40, `${code}: "${line}" is too thin to be held to`);
+      }
+      // At least one has to carry an actual number, or the list is prose.
+      assert.ok(assumes.filter((l) => /\b(one|two|three|30|first|per role|per market|daily|once)\b/i.test(l)).length >= 4,
+        `${code}: an assumption without a quantity settles nothing`);
+      // The two that start every scope argument.
+      assert.ok(assumes.some((l) => /round/i.test(l)), `${code}: rounds of feedback are unstated`);
+      assert.ok(assumes.some((l) => /hypercare/i.test(l)), `${code}: the hypercare window is unstated`);
+    }
+  });
+
   test('no offer excludes something the same page prices as one of its gates', () => {
     // The Foundation page said "no ERP, PIM, CRM or 3PL connection is in this
     // offer" directly above a gate table pricing one at +1-3 weeks and

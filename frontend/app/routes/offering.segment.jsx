@@ -116,7 +116,7 @@ export default function OfferingSegment({ loaderData }) {
           Everything below is deliberate. An offer that only lists what it includes is the one
           argued about in week six.
         </p>
-        <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} />
+        <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} assumes={offer.assumes} />
       </section>
 
       {offer.tracks ? (

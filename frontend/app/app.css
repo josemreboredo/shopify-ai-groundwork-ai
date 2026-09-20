@@ -1390,6 +1390,10 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 .boundary h3 { margin: 0 0 12px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
 .boundary.out h3 { color: var(--red-ink); }
 .boundary ul { margin: 0; padding-left: 18px; display: grid; gap: 9px; }
+/* The quantities, across the full measure rather than in a column: they read as
+   a list somebody will be held to, not as a footnote beside the exclusions. */
+.boundary.assumes { margin-top: 28px; border-top-color: var(--line-strong); }
+.boundary.assumes ul { max-width: 86ch; }
 .boundary li { color: var(--ink); font-size: 0.95rem; line-height: 1.45; max-width: 56ch; }
 
 @media (max-width: 900px) {

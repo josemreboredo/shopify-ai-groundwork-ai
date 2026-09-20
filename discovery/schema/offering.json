@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -134,6 +134,14 @@
         "Bespoke sections or a full template set designed in Figma — the base configures the theme; designing beyond it is the storefront design gate",
         "Content production: copy, photography and video are the client’s, or a separate engagement. Nothing here writes them",
         "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate"
+      ],
+      "assumes": [
+        "Two rounds of feedback on the template set, then sign-off. A third round is a change request, not a revision",
+        "One launch market, one selling entity and one checkout currency. Swiss DE/FR/IT is in every offer; a fourth language is a gate",
+        "The catalogue loaded once, from one source file the client supplies in an agreed shape. Re-loads after a data change are a change request",
+        "One training session per role, recorded, in the week before launch",
+        "Hypercare for 30 days after go-live: a named channel, a response within one working day, and defects triaged with the client",
+        "One development store and one theme release path. Staging beyond that is a gate"
       ],
       "client_provides": [
         "One decision-maker for scope, approvals and feedback, available inside the week",
@@ -289,6 +297,14 @@
         "Running the integrations after handover. Hypercare is in; the operating model past it is a gate, or a retainer",
         "Anything whose content or front end lives outside Shopify — an external CMS or a front end Shopify does not build is Merkle Arc, and no offer here prices it"
       ],
+      "assumes": [
+        "Everything Ecommerce Foundation assumes, at this size",
+        "Three rounds of feedback on the template set, then sign-off — one more than Foundation, because there are more templates to see",
+        "Each integration built against one non-production environment the client provides, and tested with data the client recognises",
+        "Reconciliation runs daily per connection unless the data says otherwise, and its output goes to a named owner on the client side",
+        "One training session per role per market that has its own day-to-day owner",
+        "Hypercare for 30 days after go-live, per market where the launch is phased"
+      ],
       "client_provides": [
         "Everything Ecommerce Foundation needs: a decision-maker, brand assets, loadable product data, payment accounts and the legal text",
         "System access and, for each system we connect, a non-production environment to build against — without one, integration testing runs against the live system and the schedule stretches",
@@ -436,6 +452,14 @@
         "A storefront whose content or front end lives outside Shopify: an external CMS or PIM, another framework, a native app, several front ends on one backend. Hydrogen with content in Shopify is this offer; the rest is Merkle Arc",
         "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
         "Content production, photography and video, and the copy that goes on the templates this offer builds"
+      ],
+      "assumes": [
+        "Everything Ecommerce Scale assumes, at this size",
+        "Three rounds of feedback on the design system and the template set, then sign-off. Motion and interaction are reviewed once, against the spec",
+        "The design system is delivered as one token layer and the template set built against it — not as per-page designs traced one by one",
+        "Experimentation is set up and one test is live at launch; the roadmap of tests after that is the client’s or a retainer’s",
+        "Training per role, plus one session on the release path for whoever will own it",
+        "Hypercare for 30 days after go-live, with the rollback proven before the day rather than described"
       ],
       "client_provides": [
         "Everything Ecommerce Scale needs, including a non-production environment per connected system",

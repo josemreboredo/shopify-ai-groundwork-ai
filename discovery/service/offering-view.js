@@ -99,6 +99,11 @@ export function offeringView({ pricing = false } = {}) {
        in week six — and "we assumed you had a sandbox" is not an argument
        anybody wins. */
     not_included: o.not_included ?? [],
+    /* The quantities a fixed price rests on. Not a boundary and not an
+       obligation: the third round of feedback, the second data load and the
+       training session nobody counted are where a fixed price quietly becomes
+       time and materials, and none of them was written down anywhere. */
+    assumes: o.assumes ?? [],
     client_provides: o.client_provides ?? [],
     /* How many weeks of scope gates this band already holds. Each offer is an S
        plus the gate work it was sized for, so the number differs per offer —

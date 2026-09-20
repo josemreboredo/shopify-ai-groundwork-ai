@@ -361,18 +361,30 @@ export function Tracks({ tracks }) {
  *
  * @param {{ notIncluded: string[], clientProvides: string[] }} props
  */
-export function Boundaries({ notIncluded, clientProvides }) {
-  if (!notIncluded?.length && !clientProvides?.length) return null;
+export function Boundaries({ notIncluded, clientProvides, assumes }) {
+  if (!notIncluded?.length && !clientProvides?.length && !assumes?.length) return null;
   return (
-    <div className="boundaries">
-      <section className="boundary out">
-        <h3>Not in this offer</h3>
-        <ul>{notIncluded.map((line) => <li key={line}>{line}</li>)}</ul>
-      </section>
-      <section className="boundary theirs">
-        <h3>What we need from the client</h3>
-        <ul>{clientProvides.map((line) => <li key={line}>{line}</li>)}</ul>
-      </section>
-    </div>
+    <>
+      <div className="boundaries">
+        <section className="boundary out">
+          <h3>Not in this offer</h3>
+          <ul>{notIncluded.map((line) => <li key={line}>{line}</li>)}</ul>
+        </section>
+        <section className="boundary theirs">
+          <h3>What we need from the client</h3>
+          <ul>{clientProvides.map((line) => <li key={line}>{line}</li>)}</ul>
+        </section>
+      </div>
+      {/* The third column of the same conversation, and the one that was
+          missing: what it includes and what it excludes both assume a quantity,
+          and an unwritten quantity is where a fixed price becomes time and
+          materials without anybody deciding to change it. */}
+      {assumes?.length ? (
+        <section className="boundary assumes">
+          <h3>What this price assumes</h3>
+          <ul>{assumes.map((line) => <li key={line}>{line}</li>)}</ul>
+        </section>
+      ) : null}
+    </>
   );
 }
