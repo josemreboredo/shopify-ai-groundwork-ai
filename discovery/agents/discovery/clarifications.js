@@ -23,7 +23,7 @@
 import { questionBank } from '../../schema/index.js';
 import { answeredQuestions } from './knowledge.js';
 import { questionApplies } from '../interview/next.js';
-import { runCostFor } from './economics.js';
+import { runCostFor, basis } from './economics.js';
 
 const BY_ID = new Map(questionBank.questions.map((q) => [q.id, q]));
 const SECTION_TITLE = new Map(questionBank.sections.map((s) => [String(s.id), s.title]));
@@ -87,6 +87,7 @@ function unknowns(doc) {
     if (a.question_id) add(a.question_id, a.impact_if_wrong, { assumed: a.assumed });
   }
 
+
   // Everything the document simply never covered.
   //
   // The three sources above are the engine's own notes, and on a bid two of them
@@ -106,6 +107,16 @@ function unknowns(doc) {
   // questions for a client whose RFP nobody has opened.
   const answered = new Set(answeredQuestions(doc).map((q) => q.id));
   if (answered.size) {
+    // Anything the engine says it cannot cost at all.
+    //
+    // The readiness page blocks a price on these, and the questions that fill
+    // them fed nothing — so the tool said "we cannot price this" and then never
+    // asked the one thing that would unblock it. Nothing reported as uncostable
+    // can sit outside the questions.
+    for (const need of basis(doc).needs ?? []) {
+      add(need.question_id, `Without it the run cost cannot be computed at all — no assumption covers ${need.item}`, { blocks_price: true });
+    }
+
     for (const q of questionBank.questions) {
       if (answered.has(q.id) || out.has(q.id)) continue;
       // And only where the subject exists for this client. `only_if` is how the
@@ -143,7 +154,7 @@ export function clarificationTopics(doc, { max = Infinity } = {}) {
     // bid — whose Jira the backlog lives on is a kick-off question, and asking it
     // here says we have not understood what we were sent. It becomes an
     // assumption, or it waits for kick-off.
-    if (!moves.length && unknown.swing !== 'high') continue;
+    if (!moves.length && unknown.swing !== 'high' && !unknown.blocks_price) continue;
     const section = subjectOf(question);
     const group = groups.get(section) ?? {
       topic: section,
@@ -161,6 +172,7 @@ export function clarificationTopics(doc, { max = Infinity } = {}) {
       ...(unknown.swing ? { swing: unknown.swing } : {}),
     });
     for (const m of moves) group.moves.add(m);
+    if (unknown.blocks_price) group.moves.add('cost');
     const assumed = unknown.assumed ?? question.unknown_path?.assumption;
     if (assumed && !group.assume_if_unanswered.includes(assumed)) group.assume_if_unanswered.push(assumed);
     const teach = teachOf(question.id);

@@ -93,3 +93,17 @@ describe('the step spine follows the Merkle system it is drawn in', () => {
   });
 
 });
+
+describe('a component built for the black band is restated when it is reused on white', () => {
+  test('the KPI strip states its own colours', () => {
+    // .stats was written for the statement band: .stats span is white text. Reused
+    // on the readiness page it rendered white on white, and all a reader saw was a
+    // column of numbers over red rules with no labels at all.
+    const base = css.slice(css.indexOf('.stats {'), css.indexOf('.stats {') + 600);
+    assert.match(base, /\.stats span \{[^}]*color: rgba\(255, 255, 255/, 'the base is for the dark band');
+
+    const kpis = css.slice(css.indexOf('.stats.kpis {'), css.indexOf('.stats.kpis {') + 900);
+    assert.match(kpis, /\.stats\.kpis span \{[^}]*color: var\(--muted\)/, 'and the white-surface variant restates it');
+    assert.match(kpis, /\.stats\.kpis strong \{[^}]*color: var\(--ink\)/);
+  });
+});

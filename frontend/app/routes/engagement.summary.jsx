@@ -92,32 +92,52 @@ export default function Summary({ loaderData }) {
     <main>
       <EngagementHeader engagement={engagement} eyebrow="Where it stands" meta={`Recomputed on every document and every confirmation · ${generatedAt}`} />
 
-      {/* 1 — can we respond or not */}
-      <section className={`card position ${r.ready ? 'go' : 'flag'}`}>
+      {/* 1 — the slide. One answer, the shape of the gap, and what blocks it. */}
+      <section className={`standfirst ${r.ready ? 'go' : 'flag'}`}>
         <p className="eyebrow">{standing.headline}</p>
-        <h2 className="plain verdict">
+        <h2 className="plain headline-answer">
           {r.ready
             ? `Ready to price${r.counts.assumptions ? `, on ${r.counts.assumptions} stated assumption${r.counts.assumptions === 1 ? '' : 's'}` : ''}`
             : `Not ready to price — ${r.blockers.length} thing${r.blockers.length === 1 ? '' : 's'} block${r.blockers.length === 1 ? 's' : ''} it`}
         </h2>
-        {r.blockers.length ? (
-          <ul className="grounds">
-            {r.blockers.map((b) => (
-              <li key={b.what}><Link to={`/engagements/${client}/${b.where}`}>{b.what}</Link> — {b.why}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="muted">Nothing is waiting on a person, nothing is outside the offers, and everything still open can be priced on an assumption that is written down.</p>
-        )}
+
+        <div className="standfirst-body">
+          <div className="dial">
+            <Bar settled={r.decisions.settled} total={r.decisions.total} />
+            <p className="dial-n">
+              <strong>{r.decisions.settled}</strong><span>of {r.decisions.total}</span>
+            </p>
+            <p className="dial-what">
+              decisions the engine makes — which offer this is, which Shopify plan the requirements force,
+              which risks get priced — with a confirmed answer behind them
+            </p>
+          </div>
+
+          {r.blockers.length ? (
+            <ol className="blocks">
+              {r.blockers.map((b) => (
+                <li key={b.what}>
+                  <Link to={`/engagements/${client}/${b.where}`}>{b.what}</Link>
+                  <span className="muted">{b.why}</span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="muted">
+              Nothing is waiting on a person, nothing is outside the offers, and everything still open can be
+              priced on an assumption that is written down.
+            </p>
+          )}
+        </div>
       </section>
 
       {/* 2 — the numbers, each one countable */}
       <ul className="stats kpis">
-        <li><strong>{r.decisions.settled}<span className="of">/{r.decisions.total}</span></strong><span>engine decisions settled</span></li>
-        <li><strong>{r.counts.to_confirm}</strong><span>answers to confirm</span></li>
-        <li><strong>{r.counts.undecided}</strong><span>questions not yet asked or assumed</span></li>
+        <li><strong>{r.counts.to_confirm}</strong><span>answers read from a document and still waiting on you</span></li>
+        <li><strong>{r.counts.undecided}</strong><span>questions not yet asked or turned into an assumption</span></li>
         <li><strong>{r.counts.assumptions}</strong><span>assumptions the proposal will state</span></li>
-        <li><strong>{r.counts.stops}<span className="of"> · {r.counts.flags} · {r.counts.warns}</span></strong><span>rules fired: outside the offers · needs an owner · commercial</span></li>
+        <li><strong>{r.counts.assumptions_without_consequence}</strong><span>of those with no consequence written down</span></li>
+        <li><strong>{r.counts.stops}<span className="of"> · {r.counts.flags} · {r.counts.warns}</span></strong><span>rules fired — outside the offers · needs an owner · commercial</span></li>
       </ul>
 
       {/* 3 — what the engine still cannot decide */}
@@ -129,7 +149,6 @@ export default function Summary({ loaderData }) {
           recorded <em>and confirmed</em>. It is not a completeness score: the one still open may be the only one
           that matters.
         </p>
-        <Bar settled={r.decisions.settled} total={r.decisions.total} />
         {r.decisions.open.length ? (
           <ul className="ticks">
             {r.decisions.open.map((d) => (

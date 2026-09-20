@@ -111,3 +111,48 @@ describe('open points are grouped by what they cost', () => {
     }
   });
 });
+
+describe('nothing that blocks a price sits outside the questions', () => {
+  const noCostData = () => {
+    const doc = acme();
+    delete doc.post_purchase.orders_per_month;
+    delete doc.business.revenue_monthly;
+    return doc;
+  };
+
+  test('what the engine says it cannot cost is asked, not only reported', async () => {
+    const { clarificationBrief } = await import('../../agents/discovery/clarifications.js');
+    const brief = clarificationBrief(noCostData());
+    // The page blocked a price on these, and the questions that fill them fed
+    // nothing — so it said "we cannot price this" and never asked the one thing
+    // that would unblock it.
+    assert.deepEqual(brief.cannot_price_until_answered, ['orders per month', 'monthly revenue']);
+    const asked = new Set(brief.topics.flatMap((t) => t.covers.map((c) => c.question_id)));
+    assert.ok(asked.has('Q0.2.6'), 'orders per month');
+    assert.ok(asked.has('Q0.2.1'), 'monthly revenue');
+  });
+
+  test('every blocker on the dashboard has somewhere to be answered', () => {
+    const doc = noCostData();
+    const r = readiness(doc, state(doc, {
+      toReview: 2,
+      cannotPrice: ['orders per month'],
+      openTopics: [{ title: 'Markets', impact: 'high', changes: [] }],
+      triage: { proposed: [{}] },
+    }));
+    for (const b of r.blockers) {
+      assert.ok(['review', 'clarifications', 'go-no-go'].includes(b.where), `${b.what} says where to go`);
+    }
+    // A blocker pointing at the Q&A has to be something the Q&A actually raises.
+    assert.ok(r.blockers.some((b) => b.where === 'clarifications'));
+  });
+
+  test('the cost question carries what its absence costs, not a bare id', async () => {
+    const { clarificationTopics } = await import('../../agents/discovery/clarifications.js');
+    const topic = clarificationTopics(noCostData()).find((t) => t.covers.some((c) => c.question_id === 'Q0.2.6'));
+    assert.ok(topic, 'it reaches a topic');
+    assert.ok(topic.changes.includes('what the solution costs to run'));
+    const cover = topic.covers.find((c) => c.question_id === 'Q0.2.6');
+    assert.ok(cover.why_it_matters, 'and says why it is being asked');
+  });
+});

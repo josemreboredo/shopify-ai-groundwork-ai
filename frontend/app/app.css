@@ -25,6 +25,7 @@
   background: #fff;
 }
 * { box-sizing: border-box; }
+html { overflow-x: clip; }
 body { margin: 0; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: clip; }
 
 /* Type */
@@ -148,11 +149,6 @@ button.secondary, a.button.secondary { background: transparent; color: #000; fon
 button.secondary:hover, a.button.secondary:hover { background: #000; border-color: #000; color: #fff; }
 button:disabled { opacity: 0.4; cursor: default; }
 button:disabled:hover { background: #000; border-color: #000; }
-button.link {
-  border: none; background: none; color: var(--ink); padding: 0; font-size: 0.9rem; font-weight: 500;
-  letter-spacing: 0; text-transform: none; text-decoration: underline; text-underline-offset: 3px;
-}
-button.link:hover { background: none; color: var(--red); }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 18px 0; }
 input, select, textarea { font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 0; width: 100%; background: #fff; color: var(--ink); }
 input:focus, select:focus, textarea:focus { border-color: #000; outline: none; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08); }
@@ -166,6 +162,7 @@ textarea { min-height: 70px; }
 
 /* Data */
 table { border-collapse: collapse; width: 100%; }
+td, .muted, .pre { overflow-wrap: anywhere; }
 th, td { text-align: left; padding: 11px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
 th { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #000; }
 tbody tr:hover { background: rgba(0, 0, 0, 0.015); }
@@ -241,7 +238,8 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
 .card .small { font-size: 0.8rem; }
 
 /* The offering page */
-.table-scroll { overflow-x: auto; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.table-scroll > table { min-width: max-content; }
 .chip { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
 .offering .small { font-size: 0.8rem; }
 
@@ -543,9 +541,55 @@ h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; tex
 .before { border-top: 1px solid var(--line); padding-top: 16px; }
 .before .eyebrow { margin-bottom: 8px; }
 
+/* The standfirst: one answer, the shape of the gap and what blocks it, read in
+   three seconds. Below it the page goes into detail; this part does not. */
+.standfirst { border-top: 3px solid var(--muted); padding: 26px 0 30px; margin-bottom: 8px; }
+.standfirst.go { border-top-color: var(--ok); }
+.standfirst.flag { border-top-color: var(--warn); }
+.standfirst.stop { border-top-color: var(--red); }
+h2.headline-answer {
+  font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.15; letter-spacing: -0.015em;
+  text-transform: none; margin: 0 0 26px; max-width: 24ch;
+}
+.standfirst-body { display: grid; grid-template-columns: minmax(240px, 1fr) 1.4fr; gap: 42px; align-items: start; }
+.dial-n { display: flex; align-items: baseline; gap: 8px; margin: 12px 0 6px; }
+.dial-n strong { font-size: 2.8rem; line-height: 1; letter-spacing: -0.02em; }
+.dial-n span { color: var(--muted); font-size: 1rem; }
+.dial-what { margin: 0; color: var(--muted); font-size: 0.84rem; line-height: 1.45; }
+
+/* What stops it, numbered, each one a place to go */
+.blocks { list-style: none; counter-reset: block; padding: 0; margin: 0; }
+.blocks > li {
+  counter-increment: block; display: grid; grid-template-columns: 2rem 1fr; gap: 4px 10px;
+  padding: 0 0 14px; align-items: baseline;
+}
+.blocks > li::before {
+  content: counter(block); grid-row: 1 / 3; font-size: 0.82rem; font-weight: 700;
+  color: var(--red); font-variant-numeric: tabular-nums;
+}
+.blocks > li > a { font-weight: 600; text-decoration-color: var(--line); }
+.blocks > li > span { grid-column: 2; font-size: 0.86rem; }
+@media (max-width: 900px) { .standfirst-body { grid-template-columns: 1fr; gap: 26px; } }
+
 /* Readiness: countable things, no invented scale */
-.stats.kpis { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 18px 0; margin: 0 0 8px; }
+/* The same .stats component, on a white surface.
+   It was written for the black statement band — .stats span is white text — so
+   on this page the labels rendered white on white and all a reader saw was a
+   column of numbers over red rules. Every colour it inherits is restated here. */
+.stats.kpis {
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  padding: 20px 0; margin: 0 0 8px;
+}
+.stats.kpis li { gap: 8px; }
+.stats.kpis strong { font-size: 2rem; color: var(--ink); }
+.stats.kpis span {
+  color: var(--muted); font-size: 0.78rem; line-height: 1.35;
+  border-top: 2px solid var(--line); padding-top: 8px;
+}
 .stats.kpis .of { font-size: 0.55em; font-weight: 400; color: var(--muted); }
+@media (max-width: 1000px) { .stats.kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .stats.kpis { grid-template-columns: 1fr; } }
 
 /* The 33 decisions as one bar. Part of a fixed whole, so a bar and not a donut:
    a donut hides the very segment sizes it exists to compare. */
@@ -634,9 +678,10 @@ table.open-points td:first-child { max-width: 34ch; }
 .row-actions form { display: inline; }
 button.link {
   background: none; border: 0; padding: 0; cursor: pointer; font: inherit;
+  font-size: 0.9rem; font-weight: 500; letter-spacing: 0; text-transform: none;
   color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px;
 }
-button.link:hover { color: var(--red); text-decoration-color: var(--red); }
+button.link:hover { background: none; color: var(--red); text-decoration-color: var(--red); }
 button.link:disabled { color: var(--muted); cursor: default; }
 
 /* RFP Q&A: every question is asked or assumed, and the list shows which */
@@ -734,14 +779,42 @@ button.link:disabled { color: var(--muted); cursor: default; }
   .footer-watermark { display: none; }
   .footer-base { margin-top: 28px; }
 }
-@media (max-width: 560px) {
-  .footer-columns { grid-template-columns: 1fr; }
-}
 @media (max-width: 760px) {
   .toc { columns: 1; }
   .topbar { flex-wrap: wrap; gap: 16px 20px; padding: 14px 16px; }
-  .topnav { gap: 16px; order: 3; width: 100%; }
+  /* Six uppercase links on one non-wrapping line were what dragged the whole
+     document wider than the phone and cut every heading in half. */
+  .topnav { flex-wrap: wrap; gap: 10px 16px; order: 3; width: 100%; }
+  /* `flex: 0 0 auto` froze these at max-content, so "Change" — the only way to
+     the settings — sat in the clipped region. */
+  .views { flex: 1 1 100%; margin-left: 0; flex-wrap: wrap; gap: 12px 18px; padding-bottom: 8px; }
+  .doors { grid-template-columns: 1fr; gap: 20px; }
+  .door { padding: 22px 18px; }
+  .row-actions { white-space: normal; }
+  /* State is carried by these, and 10.9px uppercase is not state anyone reads. */
+  .badge, .chip { font-size: 0.78rem; }
+  th, .card .meta, .field > label { font-size: 0.8rem; }
   .user { margin-left: auto; }
   .pilot { padding: 7px 16px; }
   .tabs { gap: 18px; overflow-x: auto; }
+}
+
+/* Phones, after the 760 block so the narrower rule is the one that survives */
+@media (max-width: 560px) {
+  .footer-columns { grid-template-columns: 1fr; }
+  /* Two columns of 2.4rem numerals in 152px cells with three-line labels. */
+  .stats { grid-template-columns: 1fr; gap: 18px; }
+  .stats strong { font-size: 2rem; }
+}
+
+/* Touch: nothing in the file set a minimum target, so every size was whatever
+   the text happened to be — "Confirm" was a 22px tap target. */
+@media (pointer: coarse) {
+  button.link, .page-head .crumb, .muted-link,
+  .footer-links a, .views a, .steps-spine a {
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .filter button { padding: 12px 18px; }
+  /* Under 16px, iOS zooms on focus and does not zoom back. */
+  .card.start textarea, .card.prefill textarea { font-size: 1rem; }
 }

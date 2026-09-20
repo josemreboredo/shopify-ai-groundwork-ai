@@ -59,8 +59,12 @@ export function basis(doc) {
   const revenue = doc.business?.revenue_monthly;
   const from = [];
   const missing = [];
-  if (orders) from.push('Q0.2.6 orders per month'); else missing.push('Q0.2.6 — orders per month');
-  if (revenue) from.push('Q0.2.1 monthly revenue'); else missing.push('Q0.2.1 — monthly revenue');
+  // The question id travels as a field, not inside the sentence. Whatever the
+  // engine says it cannot cost has to become a question to the client, and a
+  // link that reads itself out of prose breaks the first time the prose changes.
+  const needs = [];
+  if (orders) from.push('Q0.2.6 orders per month'); else { missing.push('Q0.2.6 — orders per month'); needs.push({ question_id: 'Q0.2.6', item: 'orders per month' }); }
+  if (revenue) from.push('Q0.2.1 monthly revenue'); else { missing.push('Q0.2.1 — monthly revenue'); needs.push({ question_id: 'Q0.2.1', item: 'monthly revenue' }); }
   const midpoint = revenue && (revenue.min ?? revenue.max) !== undefined
     ? ((revenue.min ?? revenue.max) + (revenue.max ?? revenue.min)) / 2
     : undefined;
@@ -71,6 +75,7 @@ export function basis(doc) {
     ...(revenue?.currency ? { currency: revenue.currency } : {}),
     from,
     missing,
+    needs,
   };
 }
 
