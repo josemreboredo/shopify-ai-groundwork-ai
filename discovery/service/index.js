@@ -170,6 +170,19 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
    */
   const statedFor = (session, doc) => statedAssumptions(doc, session.closing?.clarifications ?? null);
 
+  /** The outcome record for a session, with the engine's position frozen into it. */
+  function outcomeFor(session, input, meta) {
+    const decided = decideFromSession(session, today());
+    const p = decided.ok ? preview(session, today()) : null;
+    return recordOutcomeEntry(session, input, {
+      ...meta,
+      offer: p ? { code: p.offer?.code, go: p.go, route: p.route } : null,
+      position: decided.ok
+        ? { assumptions: statedFor(session, decided.doc).length, decisions_settled: readiness(decided.doc, { provenance: session.provenance }).decisions.settled }
+        : null,
+    });
+  }
+
   function summary(session) {
     const p = preview(session, today());
     return {
@@ -191,6 +204,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       // with the engagement rather than costing each page another call.
       documents: (session.documents ?? []).length,
       clarifications_at: session.closing?.clarifications?.saved_at ?? null,
+      // Saved is not decided. The ribbon marked the step done when Claude saved,
+      // while the proposal refused to run until every question was triaged — the
+      // spine said finished and the next step said blocked.
+      clarifications_undecided: (session.closing?.clarifications?.questions ?? []).filter((q) => (q.status ?? 'proposed') === 'proposed').length,
       closing_document_at: session.closing?.document?.saved_at ?? null,
     };
   }
@@ -659,11 +676,19 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const decided = decideFromSession(session, today());
       if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
       const brief = clarificationBrief(decided.doc);
+      // No topics means one of two opposite things, and treating both as "read
+      // the RFP in first" left a well-answered bid unable to finish its own
+      // step: nothing to ask, and a page telling you to go and read documents
+      // you had already read.
       if (!brief.topics.length) {
-        throw new ServiceError(409, 'Nothing worth asking the client yet', [], [{
-          what: 'Pre-fill the engagement from the RFP first',
-          why: 'The engine only asks about unknowns that move the offer, the plan, the store topology, the cost or the risk. With nothing recorded yet it has nothing to weigh — read the documents in, then come back.',
-        }]);
+        const read = (session.documents ?? []).length > 0 || Object.keys(session.provenance ?? {}).length > 0;
+        if (!read) {
+          throw new ServiceError(409, 'Nothing worth asking the client yet', [], [{
+            what: 'Pre-fill the engagement from the RFP first',
+            why: 'The engine only asks about unknowns that move the offer, the plan, the store topology, the cost or the risk. With nothing recorded yet it has nothing to weigh — read the documents in, then come back.',
+          }]);
+        }
+        return { instructions: CLARIFICATIONS_PROMPT, ...brief, settled: true };
       }
       return { instructions: CLARIFICATIONS_PROMPT, ...brief };
     },
@@ -966,6 +991,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       }
       session.process = 'discovery';
       session.won = { at: today(), from: 'rfp', by: user.login };
+      // One event, one record. Winning by this button and recording the outcome
+      // "won" were two separate writes that never met, so the ledger — whose
+      // entire purpose is counting wins — missed every bid won this way.
+      session.outcome = outcomeFor(session, { outcome: 'won' }, { by: user.login, at: today() });
       session.updated_at = today();
       await store.save(session);
       return { ok: true, process: 'discovery', won_at: session.won.at };
@@ -1058,7 +1087,12 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const decided = decideFromSession(session, today());
       const shaping = shapeChangingIds(decided.ok ? clarificationTopics(decided.doc) : []);
 
-      saved.questions = saved.questions.map((q) => (all || q.id === id
+      // "All" means all the undecided ones. It used to mean every question, so
+      // deciding the rest in one click silently reversed a rejection already
+      // taken and deleted the assumption it had created — with its consequence,
+      // its owner and its date — and said nothing.
+      const touches = (q) => (all ? (q.status ?? 'proposed') === 'proposed' : q.id === id);
+      saved.questions = saved.questions.map((q) => (touches(q)
         ? { ...q, status, decided_at: today(), decided_by: user.login, ...(changesShape(q, shaping) ? { shape_changing: true } : {}) }
         : q));
       session.closing = { ...session.closing, clarifications: saved };
@@ -1101,6 +1135,12 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const decided = decideFromSession(session, today());
       const p = decided.ok ? preview(session, today()) : null;
       const saved = session.closing?.clarifications ?? null;
+      // Recording a win on a bid is the same event as pressing "we won it": the
+      // record becomes an engagement, whichever door it came through.
+      if (outcome === 'won' && processOf(session.process) === 'rfp') {
+        session.process = 'discovery';
+        session.won = { at: today(), from: 'rfp', by: user.login };
+      }
       session.outcome = recordOutcomeEntry(session, { outcome, submitted_price, currency, note }, {
         by: user.login,
         at: today(),

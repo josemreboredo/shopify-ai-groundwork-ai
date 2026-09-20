@@ -106,8 +106,13 @@ const STEPS = {
     {
       path: 'clarifications',
       label: 'RFP Q&A',
-      done: Boolean(e.clarifications_at),
-      hint: e.clarifications_at ? `Prepared ${e.clarifications_at}` : 'What we must ask to price it',
+      // Saved is not decided: the proposal refuses to run while anything is
+      // undecided, so marking this done on the save alone had the spine say
+      // finished while the next step said blocked.
+      done: Boolean(e.clarifications_at) && !e.clarifications_undecided,
+      hint: e.clarifications_undecided
+        ? `${e.clarifications_undecided} still to decide`
+        : e.clarifications_at ? `Prepared ${e.clarifications_at}` : 'What we must ask to price it',
     },
     {
       // The last thing you check before committing to a price. Everything the

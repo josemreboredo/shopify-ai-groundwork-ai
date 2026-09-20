@@ -65,6 +65,7 @@ export function offerStanding(p) {
   if (p.go) {
     return {
       applies: true,
+      short: p.offer.code,
       headline: name,
       standing: 'Within the standard offers',
       tone: 'go',
@@ -74,12 +75,18 @@ export function offerStanding(p) {
   const route = String(p.route ?? '').trim();
   return {
     applies: false,
+    // What the offer column says. It said "M · Ecommerce Scale" beside a status
+    // of "Larger Engagement", which is the classification the exit rules have
+    // already superseded — the same contradiction fixed on the other pages.
+    short: ROUTE_SHORT[route] ?? 'Beyond the offers',
     headline: ROUTE_HEADLINE[route] ?? 'Beyond the standard offers',
     standing: route ? 'Beyond the standard offers' : 'Beyond the standard offers — the route is not recorded yet',
     tone: route === 'no_bid' ? 'stop' : 'flag',
     note: `The scope gates classify it as ${name}, which is not the answer here: an exit rule takes it outside, so it is scoped and priced on its own.`,
   };
 }
+
+const ROUTE_SHORT = { larger_engagement: 'Larger Engagement', no_bid: 'No bid' };
 
 const ROUTE_HEADLINE = {
   larger_engagement: 'Larger Engagement — an Enterprise Engagement opening with a dedicated Discovery Phase',
@@ -146,3 +153,41 @@ export function renderSummaryMarkdown(s) {
 }
 
 export { STATE_LABEL };
+
+/**
+ * Where a record is in its own process.
+ *
+ * The offer and the status are two different axes and the list had them fighting:
+ * "M · Ecommerce Scale" under Offer and "Larger Engagement" under Status, which
+ * are an answer and its own supersession sitting side by side. The offer says
+ * what commercial shape this is. This says how far along it is — and a bid and
+ * an engagement are not far along the same thing.
+ *
+ * @param {object} e  an engagement summary
+ */
+export function statusOf(e) {
+  const bid = e.process !== 'discovery';
+
+  // A recorded outcome is the end of the story, whichever process it was.
+  if (e.outcome && e.outcome !== 'submitted') {
+    return { id: e.outcome, label: OUTCOME_LABEL[e.outcome] ?? e.outcome, tone: e.outcome === 'won' ? 'go' : e.outcome === 'lost' ? 'stop' : 'flag' };
+  }
+  if (e.outcome === 'submitted') return { id: 'bidded', label: 'Bidded', tone: 'go' };
+
+  if (bid) {
+    if (e.closing_document_at) return { id: 'proposal_written', label: 'Proposal written', tone: 'go' };
+    if (e.clarifications_undecided) return { id: 'questions_to_decide', label: `${e.clarifications_undecided} questions to decide`, tone: 'flag' };
+    if (e.clarifications_at) return { id: 'pending_questions', label: 'Questions with the client', tone: 'flag' };
+    if (!e.documents) return { id: 'open', label: 'Open — nothing read yet', tone: '' };
+    if (e.to_review) return { id: 'to_confirm', label: `${e.to_review} to confirm`, tone: 'flag' };
+    return { id: 'reading', label: 'Read, not yet asked', tone: '' };
+  }
+
+  if (e.closing_document_at) return { id: 'scope_agreed', label: 'Scope agreed', tone: 'go' };
+  if (e.to_review) return { id: 'reviewing', label: `${e.to_review} to confirm`, tone: 'flag' };
+  const c = e.coverage ?? {};
+  if ((c.required_total ?? 0) && c.required_answered >= c.required_total) return { id: 'ready_to_close', label: 'Ready to close', tone: 'go' };
+  return { id: 'interviewing', label: `Interviewing — ${c.required_answered ?? 0} of ${c.required_total ?? 0}`, tone: '' };
+}
+
+const OUTCOME_LABEL = { won: 'Won', lost: 'Lost', no_bid: 'No bid', withdrawn: 'Withdrawn' };
