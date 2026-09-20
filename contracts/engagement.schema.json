@@ -466,6 +466,21 @@
             },
             "languages": {
               "$ref": "#/$defs/gate"
+            },
+            "seo_continuity": {
+              "$ref": "#/$defs/gate"
+            },
+            "subscriptions": {
+              "$ref": "#/$defs/gate"
+            },
+            "checkout_extensibility": {
+              "$ref": "#/$defs/gate"
+            },
+            "analytics_consent": {
+              "$ref": "#/$defs/gate"
+            },
+            "post_launch_support": {
+              "$ref": "#/$defs/gate"
             }
           }
         },
@@ -499,7 +514,17 @@
               "+Migration (medium)",
               "+MultiCurrency",
               "+Retail",
-              "+SKU"
+              "+Analytics (advanced)",
+            "+Analytics (standard)",
+            "+Checkout (functions)",
+            "+Checkout (standard)",
+            "+SEO (large)",
+            "+SEO (standard)",
+            "+SKU",
+            "+Subscriptions (advanced)",
+            "+Subscriptions (standard)",
+            "+Support (extended)",
+            "+Support (standard)"
             ]
           },
           "uniqueItems": true
@@ -532,6 +557,16 @@
         },
         "rationale": {
           "type": "string"
+        },
+        "gate_capacity_weeks": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Weeks of scope gates this offer's band already contains. L is the last offer: when the gates exceed this there is nothing to promote to, so the excess is added to the quoted band and duration.",
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          },
+          "required": ["min", "max"]
         },
         "scope_effort_weeks": {
           "type": "object",
@@ -3964,13 +3999,17 @@
         "tier": {
           "type": "string",
           "enum": [
+            "advanced",
             "bespoke",
             "extended",
+            "functions",
             "heavy",
+            "large",
             "light",
-            "medium"
+            "medium",
+            "standard"
           ],
-          "description": "How much of a project this gate is. Set for migration, from the source platform: WooCommerce is light, Shopware medium, Magento or a custom platform heavy — the published DACH durations differ by a factor of two."
+          "description": "How much of a project this gate is. Set for migration, from the source platform: WooCommerce is light, Shopware medium, Magento or a custom platform heavy — the published DACH durations differ by a factor of two. Set for SEO continuity from the size of the redirect estate: standard is a map authored and imported, large is one built from a crawl."
         }
       }
     }

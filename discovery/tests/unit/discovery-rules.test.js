@@ -241,7 +241,11 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(withHeavy.price_band.max > bare.price_band.max + 30000, 'and so is the price');
   });
 
-  test('scope that outgrows the M ceiling becomes an L, with no L trigger', () => {
+  test('scope that outgrows the M ceiling is priced there, not promoted into the headless offer', () => {
+    // It used to become an L. L is the Hydrogen offer, so a Liquid build that
+    // ran half a week past the ceiling was quoted at a 13–20 week headless band
+    // — and the architecture and app shortlist followed the band. The weeks are
+    // now charged where they happen.
     const heavy = classifyOffer({
       ...base(),
       ...markets('CH', 'DE', 'FR'),
@@ -249,10 +253,150 @@ describe('the offer follows the effort, not the gate count', () => {
       b2b: { enabled: true },
       integrations: [{ category: 'erp', connector: 'custom' }],
     });
-    assert.equal(heavy.code, 'L');
-    assert.deepEqual(Object.entries(heavy.l_triggers).filter(([, t]) => t.active), [],
-      'it is an L on effort alone, with no qualitative trigger');
+    assert.equal(heavy.code, 'M');
+    assert.equal(heavy.delivery_track, 'liquid', 'nothing about this engagement asked for a headless storefront');
+    assert.deepEqual(Object.entries(heavy.l_triggers).filter(([, t]) => t.active), []);
     assert.ok(heavy.scope_effort_weeks.max > offering.offers.M.duration_weeks.max);
+    assert.ok(heavy.duration_weeks.max > offering.offers.M.duration_weeks.max, 'the overflow reaches the quoted duration');
+    assert.ok(heavy.price_band.max > offering.offers.M.price_band.max, 'and the quoted band');
+    assert.ok(heavy.modifiers.length, 'and it says which gates did it');
+  });
+
+  test('a trigger-driven L carries its gates too — the trigger says nothing about size', () => {
+    // The hole this closes: L triggers are qualitative (luxury, headless, a
+    // Figma system), so a luxury brand with a Magento estate, three markets and
+    // an ERP came out of the engine quoted at exactly the same 140–220k as a
+    // luxury brand with one market and no migration.
+    const answers = {
+      ...base(),
+      ...markets('CH', 'DE', 'FR'),
+      migration: { source_platform: 'magento' },
+      b2b: { enabled: true },
+      integrations: [{ category: 'erp', connector: 'custom' }],
+    };
+    const bare = classifyOffer({ ...base(), brand: { positioning: 'luxury' } });
+    const loaded = classifyOffer({ ...answers, brand: { positioning: 'luxury' } });
+
+    assert.equal(bare.code, 'L');
+    assert.deepEqual(bare.duration_weeks, offering.offers.L.duration_weeks, 'nothing to add, nothing added');
+    assert.equal(loaded.code, 'L');
+    assert.ok(loaded.duration_weeks.max > bare.duration_weeks.max, 'the estate is quoted, not absorbed');
+    assert.ok(loaded.price_band.max > bare.price_band.max);
+    assert.ok(loaded.price_band.min < loaded.price_band.max, 'and the band never inverts');
+  });
+
+  /*
+   * The four gates that priced work the offers were giving away.
+   *
+   * Each one is pinned from both ends, and the negative case is the one that
+   * matters: a gate firing on what every engagement already has is not a gate,
+   * it is a price rise. The pattern is the languages gate's — three languages
+   * are in every offer and the fourth opens it.
+   */
+  describe('the work the offers used to absorb', () => {
+    test('subscriptions are scope, and carrying live contracts is a different tier', () => {
+      const none = classifyOffer({ ...base(), catalogue: { product_types: ['simple'] } });
+      assert.equal(none.scope_gates.subscriptions.active, false);
+
+      const native = classifyOffer({ ...base(), catalogue: { subscriptions: { approach: 'shopify_subscriptions', features: ['pay_per_delivery'] } } });
+      assert.equal(native.scope_gates.subscriptions.tier, 'standard', 'the free app on the simple plan shape');
+
+      // Re-authorising payment tokens is the part these migrations fail on, and
+      // it costs the same whoever the app is.
+      const carried = classifyOffer({ ...base(), catalogue: { subscriptions: { approach: 'shopify_subscriptions' } }, migration: { source_platform: 'shopify', subscriptions: true } });
+      assert.equal(carried.scope_gates.subscriptions.tier, 'advanced');
+      const paid = classifyOffer({ ...base(), catalogue: { subscriptions: { approach: 'third_party_app' } } });
+      assert.equal(paid.scope_gates.subscriptions.tier, 'advanced');
+    });
+
+    test('branding the checkout in the editor is in every offer; an extension is an app', () => {
+      const editor = classifyOffer({ ...base(), checkout: { customisation: ['branding_in_editor'] } });
+      assert.equal(editor.scope_gates.checkout_extensibility.active, false,
+        'every plan has the editor, and every offer uses it');
+
+      const ui = classifyOffer({ ...base(), checkout: { extensions: ['trust_badges'], custom_fields: ['PO number'] } });
+      assert.equal(ui.scope_gates.checkout_extensibility.tier, 'standard');
+
+      const fn = classifyOffer({ ...base(), checkout: { extensions: ['cart_checkout_validation'] } });
+      assert.equal(fn.scope_gates.checkout_extensibility.tier, 'functions', 'backend logic is a deployed app with its own release path');
+
+      // Blocking a country is a market setting. Everything else in that list
+      // needs a validation Function.
+      const geo = classifyOffer({ ...base(), checkout: { order_restrictions: ['block_countries'] } });
+      assert.equal(geo.scope_gates.checkout_extensibility.active, false);
+      const rules = classifyOffer({ ...base(), checkout: { order_restrictions: ['quantity_limits'] } });
+      assert.equal(rules.scope_gates.checkout_extensibility.tier, 'functions');
+
+      // A fully custom checkout is exit rule 11.6, not a thing to quote.
+      const impossible = classifyOffer({ ...base(), checkout: { customisation: ['fully_custom_checkout_ui'] } });
+      assert.equal(impossible.scope_gates.checkout_extensibility.active, false);
+    });
+
+    test('GA4 and a pixel are in every offer; carrying consent to them is not', () => {
+      const usual = classifyOffer({ ...base(), marketing: { analytics: { platforms: ['GA4'], pixels: ['Meta'] } } });
+      assert.equal(usual.scope_gates.analytics_consent.active, false,
+        'what every store already has cannot be what makes an engagement bigger');
+
+      const third = classifyOffer({ ...base(), marketing: { analytics: { platforms: ['GA4'], pixels: ['Meta', 'TikTok'] } } });
+      assert.equal(third.scope_gates.analytics_consent.tier, 'standard');
+      const gtm = classifyOffer({ ...base(), marketing: { analytics: { platforms: ['GA4'], tag_manager: true } } });
+      assert.equal(gtm.scope_gates.analytics_consent.tier, 'standard');
+
+      const serverSide = classifyOffer({ ...base(), marketing: { analytics: { platforms: ['GA4'], server_side: true } } });
+      assert.equal(serverSide.scope_gates.analytics_consent.tier, 'advanced');
+      const cmp = classifyOffer({ ...base(), compliance: { consent_approach: 'third_party_cmp' } });
+      assert.equal(cmp.scope_gates.analytics_consent.tier, 'advanced');
+    });
+
+    test('hypercare is in every offer; the operating model past it is not', () => {
+      // The standard exclusions have always said "support beyond the agreed
+      // support model" while the offering priced no support model at all.
+      const hypercare = classifyOffer({ ...base(), delivery: { support_model: 'hypercare_only' } });
+      assert.equal(hypercare.scope_gates.post_launch_support.active, false);
+      const alone = classifyOffer({ ...base(), delivery: { support_model: 'self_sufficient' } });
+      assert.equal(alone.scope_gates.post_launch_support.active, false);
+
+      const sops = classifyOffer({ ...base(), delivery: { support_model: 'self_sufficient', sops_required: true } });
+      assert.equal(sops.scope_gates.post_launch_support.tier, 'standard', 'runbooks written to be handed over');
+      const both = classifyOffer({ ...base(), delivery: { support_model: 'retainer', sops_required: true } });
+      assert.equal(both.scope_gates.post_launch_support.tier, 'extended');
+    });
+
+    test('each of them reaches the quote rather than stopping at the summary', () => {
+      // The whole point: the gate has to move the number. One gate makes an S
+      // priced with its modifier, so the band is where to check.
+      const bare = classifyOffer(base());
+      for (const answers of [
+        { catalogue: { subscriptions: { approach: 'third_party_app' } } },
+        { checkout: { extensions: ['cart_checkout_validation'] } },
+        { marketing: { analytics: { platforms: ['GA4'], server_side: true } } },
+        { delivery: { support_model: 'retainer', sops_required: true } },
+      ]) {
+        const one = classifyOffer({ ...base(), ...answers });
+        const what = Object.keys(answers)[0];
+        assert.equal(one.code, 'S', `${what}: one gate is still an S`);
+        assert.ok(one.price_band.max > bare.price_band.max, `${what}: the band did not move`);
+        assert.ok(one.duration_weeks.max > bare.duration_weeks.max, `${what}: the weeks did not move`);
+        assert.equal(one.modifiers.length, 1);
+      }
+    });
+  });
+
+  test('the envelope is the offer\u2019s own arithmetic, and gates inside it cost nothing extra', () => {
+    // Two light gates are what an M is for. Charging them on top would be the
+    // mirror of the bug above.
+    const light = classifyOffer({
+      ...base(),
+      ...markets('CH', 'DE'),
+      catalogue: { sku_count: 900, variant_options_max: 3 },
+    });
+    assert.equal(light.code, 'M');
+    assert.deepEqual(light.duration_weeks, offering.offers.M.duration_weeks);
+    assert.deepEqual(light.modifiers, []);
+    assert.deepEqual(light.gate_capacity_weeks, {
+      min: offering.offers.M.duration_weeks.min - offering.offers.S.duration_weeks.min,
+      max: offering.offers.M.duration_weeks.max - offering.offers.S.duration_weeks.max,
+    });
   });
 
   test('and scope that still fits an M stays an M', () => {
@@ -360,6 +504,44 @@ describe('the offer follows the effort, not the gate count', () => {
       assert.equal(new Set(ids).size, ids.length, `${code}: a phase id appears twice`);
       for (const phase of offer.phases) assert.ok(phase.covers?.length > 40, `${code}/${phase.id}: covers has to say something`);
     }
+  });
+
+  test('every phase says what is handed over, and no phase just restates its own summary', () => {
+    // "What do I actually get" had no answer on the offer pages: four lines of
+    // scope and a duration, with the middle invented in the room. Each phase now
+    // carries the things handed over at the end of it.
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      for (const phase of offer.phases) {
+        const got = phase.deliverables ?? [];
+        assert.ok(got.length >= 2, `${code}/${phase.id}: a phase with fewer than two deliverables is a heading`);
+        assert.equal(new Set(got).size, got.length, `${code}/${phase.id}: the same deliverable twice`);
+        for (const line of got) {
+          assert.ok(line.length > 25, `${code}/${phase.id}: "${line}" is too thin to be a deliverable`);
+          // The summary line and the first deliverable said the same thing on
+          // four phases, which reads as padding and costs the reader trust.
+          assert.notEqual(line.replace(/[.,—]/g, '').trim().toLowerCase(),
+            phase.covers.replace(/[.,—]/g, '').trim().toLowerCase(),
+            `${code}/${phase.id}: a deliverable restates the phase summary`);
+        }
+      }
+    }
+  });
+
+  test('every offer says where it stops and what it needs from the client', () => {
+    // An offer that only lists what it includes is the one argued about in week
+    // six, and "we assumed you had a sandbox" is not an argument anybody wins.
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      assert.ok(offer.not_included?.length >= 4, `${code}: fewer than four exclusions is not a boundary`);
+      assert.ok(offer.client_provides?.length >= 4, `${code}: the client has to bring more than three things`);
+      for (const line of [...offer.not_included, ...offer.client_provides]) {
+        assert.ok(line.length > 30, `${code}: "${line}" says too little to be held to`);
+      }
+    }
+
+    // The one the engine has a rule about: a system with no test environment is
+    // flagged by 11.24, so Scale has to ask the client for one.
+    assert.ok(offering.offers.M.client_provides.some((l) => /non-production environment/.test(l)),
+      'Scale connects systems, so it has to ask for somewhere to connect to');
   });
 
   test('every offer says what it covers per channel, and wholesale is not an extra', () => {

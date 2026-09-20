@@ -2,7 +2,7 @@
  * @file migration.js — epic "Data migration" (LWC-MIG-*)
  */
 
-import { isMigration, exitFired, count, listOr, languages } from './helpers.js';
+import { isMigration, exitFired, count, listOr, languages, gate } from './helpers.js';
 
 const data = (doc) => doc.migration?.data ?? [];
 const migrates = (doc, what) => isMigration(doc) && data(doc).includes(what);
@@ -154,9 +154,16 @@ export default [
     points: 5,
     owner: 'agent',
     depends_on: ['LWC-MIG-002'],
-    spec_refs: ['/migration/volumes/redirects', '/migration/seo_equity', '/marketing/seo/owner'],
-    gates: ['migration'],
-    applies: (doc) => isMigration(doc) && (data(doc).includes('redirects') || ['moderate', 'significant'].includes(doc.migration?.seo_equity)),
+    spec_refs: ['/migration/volumes/redirects', '/migration/seo_equity', '/marketing/seo/owner', '/marketing/seo/priority_channel'],
+    gates: ['migration', 'seo_continuity'],
+    /*
+     * The redirect map is not migration work that happens to touch SEO — it is
+     * the search traffic, and it moves whenever the URLs do. A brand rebuilding
+     * on Shopify changes every URL without changing platform, so this fires on
+     * the SEO continuity gate as well as on a migration carrying equity.
+     */
+    applies: (doc) => gate(doc, 'seo_continuity')
+      || (isMigration(doc) && (data(doc).includes('redirects') || ['moderate', 'significant'].includes(doc.migration?.seo_equity))),
     agent_prompt: (doc) => `SEO equity: ${doc.migration?.seo_equity ?? 'to confirm'}. Build the redirect map for about ${count(doc.migration?.volumes?.redirects, 'the known number of')} URLs from ${source(doc)}: crawl the live site, merge sitemap and analytics landing pages, map products, categories, content and paginated or filtered URLs to their best Shopify equivalent (Shopify URLs are /products/, /collections/, /pages/, /blogs/). ${languages(doc).length > 1 ? 'Include language and market prefixes. ' : ''}Import with URL redirects CSV or the migration tool, then verify every URL with a crawler (single 301 hop). Share the map with the SEO owner (${doc.marketing?.seo?.owner ?? 'to confirm'}) for approval.`,
   },
 ];

@@ -122,6 +122,26 @@
       "languages": {
         "active": false,
         "evidence": "1 distinct language(s): de"
+      },
+      "seo_continuity": {
+        "active": false,
+        "evidence": "Q0.5.4: greenfield — no URLs to carry across."
+      },
+      "subscriptions": {
+        "active": false,
+        "evidence": "Q2.2.1: simple products only."
+      },
+      "checkout_extensibility": {
+        "active": false,
+        "evidence": "Q4.2.1: checkout settings and editor branding only."
+      },
+      "analytics_consent": {
+        "active": false,
+        "evidence": "Q7.2.1 / Q7.2.3: GA4 and a Meta pixel — what every offer carries."
+      },
+      "post_launch_support": {
+        "active": false,
+        "evidence": "Q10.3.3: hypercare only, and hypercare is in every offer."
       }
     },
     "l_triggers": {
@@ -153,6 +173,10 @@
     "scope_effort_weeks": {
       "min": 4,
       "max": 5
+    },
+    "gate_capacity_weeks": {
+      "min": 2,
+      "max": 8
     }
   },
   "markets": {

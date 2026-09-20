@@ -127,6 +127,7 @@ export default [
     points: 5,
     owner: 'agent',
     depends_on: ['LWC-CAT-001', 'LWC-PAY-001'],
+    gates: ['subscriptions'],
     spec_refs: ['/catalogue/product_types', '/catalogue/subscription_app'],
     security_flags: ['payments', 'pii'],
     applies: (doc) => hasProductType(doc, 'subscription'),

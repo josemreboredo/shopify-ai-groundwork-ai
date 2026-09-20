@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.2.0 · offering 1.3.0
+> **Version:** question bank 1.2.0 · offering 1.5.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -2024,8 +2024,8 @@
 
 ### 8.1 Angebundene Systeme
 
-**Q8.1.1** — Listen Sie jedes System auf, das Produkt-, Bestands-, Bestell-, Kunden- oder Finanzdaten mit dem Store austauscht. Je System: System, Kategorie, Richtung, Datenobjekte, Frequenz, Konnektor (native App / iPaaS / eigen / keiner), verantwortliche Stelle, Status. *(required)*
-*Typische Zuständigkeiten: Das PIM liefert Produkte, Attribute und Übersetzungen; das ERP liefert Preise (auch B2B-Kataloge), Bestände je Standort und Bestellstatus.*
+**Q8.1.1** — Listen Sie jedes System auf, das Produkt-, Bestands-, Bestell-, Kunden- oder Finanzdaten mit dem Store austauscht. Je System: System, Kategorie, Richtung, Datenobjekte, Frequenz, Konnektor (native App / iPaaS / eigen / keiner), verantwortliche Stelle, Status und ob es eine Testumgebung gibt, mit der wir uns vor dem Go-live verbinden können. *(required)*
+*Typische Zuständigkeiten: Das PIM liefert Produkte, Attribute und Übersetzungen; das ERP liefert Preise (auch B2B-Kataloge), Bestände je Standort und Bestellstatus. Shopify braucht für Staging keine eigene Instanz, zu organisieren ist also nur Ihre Seite: Ein System ohne Testumgebung bedeutet, dass die Integration gegen Ihr Live-System getestet wird.*
 
 | System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes | Test environment |
 |---|---|---|---|---|---|---|---|---|---|---|---|

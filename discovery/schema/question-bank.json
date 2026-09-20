@@ -1352,6 +1352,8 @@
         "gate:sku_complexity",
         "app:bundle_app",
         "app:pre_order_app"
+      ,
+        "gate:subscriptions"
       ],
       "shopify": {
         "native": [
@@ -1417,6 +1419,8 @@
       ],
       "feeds": [
         "app:subscriptions_app"
+      ,
+        "gate:subscriptions"
       ],
       "shopify": {
         "native": [
@@ -1542,6 +1546,8 @@
       ],
       "feeds": [
         "app:subscriptions_app"
+      ,
+        "gate:subscriptions"
       ],
       "shopify": {
         "native": [
@@ -3937,6 +3943,8 @@
       "feeds": [
         "exit:11.1",
         "exit:11.6"
+      ,
+        "gate:checkout_extensibility"
       ],
       "shopify": {
         "native": [
@@ -3986,6 +3994,9 @@
       "text": "Which checkout extensions are needed?",
       "maps_to": [
         "/checkout/extensions"
+      ],
+      "feeds": [
+        "gate:checkout_extensibility"
       ],
       "skip_if": {
         "question": "Q4.2.1",
@@ -4037,6 +4048,9 @@
       "text": "Which custom checkout fields are needed (company, VAT number, PO number, delivery instructions)?",
       "maps_to": [
         "/checkout/custom_fields"
+      ],
+      "feeds": [
+        "gate:checkout_extensibility"
       ],
       "teach": {
         "why": "Extra fields - company, VAT number, PO number, delivery instructions - are checkout UI extensions, so where they sit decides the plan: on the information, shipping or payment steps they are Plus, on the thank-you page they are not.",
@@ -4144,6 +4158,9 @@
       "help": "Blocking countries is native (markets and shipping zones); other rules need a cart and checkout validation app (Shopify Function).",
       "maps_to": [
         "/checkout/order_restrictions"
+      ],
+      "feeds": [
+        "gate:checkout_extensibility"
       ],
       "shopify": {
         "native": [],
@@ -6683,6 +6700,8 @@
       ],
       "feeds": [
         "app:consent_app"
+      ,
+        "gate:analytics_consent"
       ],
       "shopify": {
         "native": [
@@ -6823,6 +6842,9 @@
       "maps_to": [
         "/compliance/consent_capture_points"
       ],
+      "feeds": [
+        "gate:analytics_consent"
+      ],
       "teach": {
         "why": "Every point where consent is captured — newsletter form, checkout, account creation, pop-up, in store — is a point where the record must be created and carried. The list shows which integrations must write consent back, and where an audit would find gaps."
       }
@@ -6837,6 +6859,9 @@
       "maps_to": [
         "/marketing/seo/priority_channel"
       ],
+      "feeds": [
+        "gate:seo_continuity"
+      ],
       "teach": {
         "why": "If organic traffic carries the business, URL structure, redirects, metadata and page speed become build tasks with a budget rather than good intentions. If search is a minor channel, that effort is better spent elsewhere."
       }
@@ -6850,6 +6875,9 @@
       "text": "Are custom URL structures needed?",
       "maps_to": [
         "/marketing/seo/custom_urls"
+      ],
+      "feeds": [
+        "gate:seo_continuity"
       ],
       "teach": {
         "why": "Tell us early if the brand depends on a particular URL pattern. What a platform can and cannot change has to be checked against the documentation before the content plan assumes it, and it sizes the redirect work on migration."
@@ -6911,6 +6939,9 @@
       "maps_to": [
         "/marketing/analytics/platforms"
       ],
+      "feeds": [
+        "gate:analytics_consent"
+      ],
       "teach": {
         "why": "Every analytics platform on Shopify is wired through the same event layer, but each needs its own setup, consent handling and test pass. The list sizes that work and tells us which numbers the client will judge the launch by."
       }
@@ -6938,6 +6969,8 @@
       ],
       "feeds": [
         "app:tracking_app"
+      ,
+        "gate:analytics_consent"
       ],
       "shopify": {
         "native": [
@@ -6987,6 +7020,9 @@
       "maps_to": [
         "/marketing/analytics/pixels"
       ],
+      "feeds": [
+        "gate:analytics_consent"
+      ],
       "teach": {
         "why": "Each advertising pixel is a separate install, a separate consent case and a separate test. The list decides how much tracking work the build carries and which conversion numbers marketing will reconcile after launch."
       }
@@ -7002,6 +7038,9 @@
       "maps_to": [
         "/marketing/analytics/tag_manager"
       ],
+      "feeds": [
+        "gate:analytics_consent"
+      ],
       "teach": {
         "why": "This matters more on Shopify than elsewhere: a tag manager runs as a custom pixel inside Shopify's sandbox, and scripts in checkout are no longer possible. An existing container has to be rebuilt to that model, not pasted across."
       }
@@ -7015,6 +7054,9 @@
       "text": "Which custom events must be tracked beyond standard ecommerce events?",
       "maps_to": [
         "/marketing/analytics/custom_events"
+      ],
+      "feeds": [
+        "gate:analytics_consent"
       ],
       "teach": {
         "why": "Standard storefront and checkout events come from Shopify's customer events. Anything else — configurator steps, wishlist adds, quiz completions, store locator use — is code someone writes and tests in a pixel. Listing them now puts a price on them."
@@ -8284,7 +8326,8 @@
         "/migration/volumes/redirects"
       ],
       "feeds": [
-        "exit:11.14"
+        "exit:11.14",
+        "gate:seo_continuity"
       ],
       "skip_if": {
         "question": "Q0.5.4",
@@ -8351,7 +8394,8 @@
         "/migration/seo_equity"
       ],
       "feeds": [
-        "exit:11.14"
+        "exit:11.14",
+        "gate:seo_continuity"
       ],
       "skip_if": {
         "question": "Q0.5.4",
@@ -8379,6 +8423,8 @@
       ],
       "feeds": [
         "exit:11.14"
+      ,
+        "gate:subscriptions"
       ],
       "skip_if": {
         "question": "Q0.5.4",
@@ -9115,6 +9161,9 @@
       "maps_to": [
         "/delivery/sops_required"
       ],
+      "feeds": [
+        "gate:post_launch_support"
+      ],
       "teach": {
         "why": "Written standard operating procedures are a deliverable in their own right: someone drafts, reviews and maintains them. Asking now stops them appearing as an unplanned request in the final sprint.",
         "options": [
@@ -9140,6 +9189,9 @@
       "text": "What post-launch support model is expected?",
       "maps_to": [
         "/delivery/support_model"
+      ],
+      "feeds": [
+        "gate:post_launch_support"
       ],
       "teach": {
         "why": "This shapes everything after go-live: who fixes a broken checkout at the weekend, who loads next season's collection. The expected model drives the retainer conversation and decides what team stays in place after launch.",

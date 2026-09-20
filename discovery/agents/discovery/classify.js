@@ -38,6 +38,25 @@ const MIGRATION_TIER = {
 };
 
 /**
+ * How many weeks of scope gates an offer's band already contains.
+ *
+ * M is S plus its gates: the band runs 6–13 against an S of 4–5, so an M holds
+ * two to eight weeks of gates. L holds the same, because L is M plus the
+ * headless storefront — seven weeks at both ends of the band, which is the
+ * offer itself and not gate work.
+ *
+ * Gates inside the envelope cost nothing more; that is what the band is for.
+ * What was missing was the other side of it, and L showed it worst: its
+ * triggers are qualitative — luxury, headless, a Figma system — so a brand with
+ * a Magento estate, six markets and four integrations was quoted at the same
+ * 13–20 weeks as one with a single market and no migration.
+ */
+const GATE_CAPACITY = {
+  min: offering.offers.M.duration_weeks.min - offering.offers.S.duration_weeks.min,
+  max: offering.offers.M.duration_weeks.max - offering.offers.S.duration_weeks.max,
+};
+
+/**
  * Integrations that count toward the integration gate and exit rule 11.7.
  *
  * @param {object} doc  Engagement document
@@ -219,6 +238,178 @@ const GATE_EVALUATORS = {
       evidence: `Source platform: ${source ?? 'not recorded'}${tier ? ` (${tier} migration)` : ''}`,
     };
   },
+
+  /*
+   * Carrying the search traffic across, priced.
+   *
+   * This work only ever rode along inside the migration gate, which is tiered by
+   * source platform and never reads `seo_equity` at all — so the answer to "how
+   * much ranking must survive" changed nothing about what was quoted. Worse, the
+   * gate is keyed on the platform changing, and the case that loses the most
+   * traffic is a brand already on Shopify rebuilding its storefront: every URL
+   * moves, no platform does, and the redirect estate was quoted at nothing.
+   *
+   * So this gate reads the search answers directly and does not care where the
+   * data is coming from. Greenfield still costs nothing: with no equity, no
+   * redirects and no custom URLs there is nothing to carry.
+   */
+  seo_continuity: (doc) => {
+    const equity    = doc.migration?.seo_equity;
+    const redirects = doc.migration?.volumes?.redirects ?? 0;
+    const organic   = doc.marketing?.seo?.priority_channel === true;
+    const customUrls = doc.marketing?.seo?.custom_urls === true;
+
+    const active = equity === 'significant' || redirects >= 1000 || (organic && customUrls);
+    // Large is the estate a pattern cannot map. Equity alone does not buy it:
+    // every brand that cares about search answers "significant", and the work
+    // is set by how many URLs have to be carried, not by how much it matters.
+    const tier = active
+      ? (redirects >= 10000 || (equity === 'significant' && redirects >= 5000) ? 'large' : 'standard')
+      : null;
+
+    const why = [
+      equity ? `SEO equity to preserve: ${equity}` : 'SEO equity not recorded',
+      `${redirects} redirect(s)`,
+      organic ? 'organic is a priority channel' : 'organic not a priority channel',
+      ...(customUrls ? ['custom URL structures'] : []),
+    ].join(', ');
+    return { active, ...(tier ? { tier } : {}), evidence: why };
+  },
+
+  /*
+   * Recurring revenue is a different store, not a product type.
+   *
+   * The question bank has a whole block on it — which app, which plan shapes,
+   * whether live contracts move — and none of it reached the offer. Shopify's
+   * own app is free and covers the simple case; everything past it is a paid
+   * app, and carrying existing contracts across without the customer
+   * re-entering a card is the part that fails on the day.
+   */
+  subscriptions: (doc) => {
+    const s = doc.catalogue?.subscriptions ?? {};
+    const features = (s.features ?? []).filter((f) => f !== 'not_sure');
+    const approach = s.approach;
+    const sells = (approach && approach !== 'not_sure')
+      || features.length > 0
+      || (doc.catalogue?.product_types ?? []).includes('subscription');
+    const migrating = doc.migration?.subscriptions === true || features.includes('migrate_existing_contracts');
+
+    // What Shopify Subscriptions does not do. Each of these is a paid app, a
+    // different data model, or both.
+    const BEYOND_NATIVE = new Set([
+      'prepaid_multi_delivery', 'build_a_box', 'subscription_bundles',
+      'subscriptions_on_pos', 'b2b_subscriptions', 'international_subscriptions',
+    ]);
+    const active = sells || migrating;
+    const tier = active
+      ? (migrating || approach === 'third_party_app' || features.some((f) => BEYOND_NATIVE.has(f)) ? 'advanced' : 'standard')
+      : null;
+    return {
+      active,
+      ...(tier ? { tier } : {}),
+      evidence: active
+        ? `Subscriptions: ${approach ? approach.replace(/_/g, ' ') : 'approach not recorded'}${features.length ? `, ${features.length} feature(s)` : ''}${migrating ? ', existing contracts to carry across' : ''}`
+        : 'No subscription selling recorded',
+    };
+  },
+
+  /*
+   * A checkout extension is an app, not a setting.
+   *
+   * Branding in the editor is on every plan and is part of every offer, so it
+   * does not fire this. Everything past it — a block, a field, a Function —
+   * is scaffolded, built, tested and deployed with the CLI, and lives on a
+   * release path of its own. A fully custom checkout UI is not in here at all:
+   * Shopify no longer permits it, which is exit rule 11.6's job.
+   */
+  checkout_extensibility: (doc) => {
+    const c = doc.checkout ?? {};
+    const real = (list) => (list ?? []).filter((x) => x !== 'none' && x !== 'not_sure');
+    const customisation = real(c.customisation).filter((x) => x !== 'branding_in_editor' && x !== 'fully_custom_checkout_ui');
+    const extensions = real(c.extensions);
+    const fields = (c.custom_fields ?? []).length > 0;
+    // Blocking countries is a market setting; the rest need a validation Function.
+    const restrictions = real(c.order_restrictions).filter((r) => r !== 'block_countries');
+
+    const active = customisation.length > 0 || extensions.length > 0 || fields || restrictions.length > 0;
+    const FUNCTIONS = new Set(['cart_checkout_validation', 'delivery_customization', 'payment_customization']);
+    const backend = customisation.includes('backend_logic_functions')
+      || extensions.some((e) => FUNCTIONS.has(e))
+      || restrictions.length > 0;
+    const tier = active ? (backend ? 'functions' : 'standard') : null;
+    return {
+      active,
+      ...(tier ? { tier } : {}),
+      evidence: active
+        ? `Checkout: ${[...customisation, ...extensions].join(', ') || 'custom fields'}${restrictions.length ? `; order rules: ${restrictions.join(', ')}` : ''}`
+        : 'Checkout settings and editor branding only — in every offer',
+    };
+  },
+
+  /*
+   * The measurement, which this agency of all agencies was giving away.
+   *
+   * Shopify's own analytics and its cookie banner are in every offer. What is
+   * not is the plumbing between them and everywhere else: customer events per
+   * destination, consent carried to each of them, and — once tagging moves
+   * server-side or a consent platform arrives — the reconciliation that proves
+   * the numbers still agree with Shopify's.
+   */
+  analytics_consent: (doc) => {
+    const a = doc.marketing?.analytics ?? {};
+    const platforms = a.platforms ?? [];
+    const pixels = a.pixels ?? [];
+    const events = a.custom_events ?? [];
+    const destinations = platforms.length + pixels.length;
+    const cmp = doc.compliance?.consent_approach === 'third_party_cmp';
+    const capture = (doc.compliance?.consent_capture_points ?? []).filter((p) => p !== 'none' && p !== 'not_sure');
+
+    // GA4 and a Meta pixel are what every store already has, so they are in
+    // every offer — the same way three languages are. The gate opens where
+    // measurement stops being an integration someone switches on: a third
+    // destination to keep consistent, a tag manager, custom events. Advanced is
+    // where consent state itself has to be carried, which is a different job.
+    const active = a.server_side === true || a.tag_manager === true || cmp
+      || events.length > 0 || destinations >= 3;
+    const tier = active
+      ? (a.server_side === true || cmp || capture.length >= 2 ? 'advanced' : 'standard')
+      : null;
+    return {
+      active,
+      ...(tier ? { tier } : {}),
+      evidence: active
+        ? `${destinations} destination(s)${a.server_side ? ', server-side' : ''}${a.tag_manager ? ', tag manager' : ''}${events.length ? `, ${events.length} custom event(s)` : ''}${cmp ? ', third-party consent platform' : ''}`
+        : 'Shopify analytics and the Shopify cookie banner — in every offer',
+    };
+  },
+
+  /*
+   * What happens after go-live, which the offers ended one week before.
+   *
+   * The backlog has always carried a hypercare story and a training-and-SOPs
+   * story; the offer had no weeks for either, and its standard exclusions
+   * pointed at an "agreed support model" the offering never priced. Launch-day
+   * training and handover stay in every offer — this is the commitment past it.
+   */
+  post_launch_support: (doc) => {
+    const d = doc.delivery ?? {};
+    const model = d.support_model;
+    const sops = d.sops_required === true;
+    // A hypercare window is in every offer: the launch phase carries it and the
+    // backlog has always had the story. What is not carried is the operating
+    // model past it — runbooks written to be handed over, or a retainer that
+    // has to receive something.
+    const retainer = model === 'retainer';
+    const active = retainer || sops;
+    const tier = active ? (retainer && sops ? 'extended' : 'standard') : null;
+    return {
+      active,
+      ...(tier ? { tier } : {}),
+      evidence: active
+        ? `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'}${sops ? ', written SOPs required' : ''}`
+        : `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'} — hypercare and handover are in every offer`,
+    };
+  },
 };
 
 /** @type {Record<string, (doc: object) => Gate>} */
@@ -341,17 +532,24 @@ export function classifyOffer(doc) {
   // returned were the bare offer's — invisible while a modifier was one week,
   // and a five-week lie once a Magento migration is priced properly.
   let priced = false;
+  // Weeks the gates push past this offer's envelope. Null while they fit.
+  let overflow = null;
 
+  /*
+   * Scope no longer promotes an engagement into L.
+   *
+   * It used to: outgrow the M ceiling and the quote became L's, which is the
+   * headless offer — so a Liquid build that ran half a week long was quoted at
+   * a 13–20 week Hydrogen band, and the architecture, the app shortlist and the
+   * whole approach followed the band rather than the engagement. The offer is
+   * now what the engagement is, and the weeks it outgrew are priced where they
+   * happen. L is reached by what it is actually for: headless, luxury, a Figma
+   * design system. Scope that outgrows every offer is exit rule 11.3's, and it
+   * is a programme rather than a bigger offer.
+   */
   if (activeTriggers.length > 0) {
     code = 'L';
     rationale = `L trigger(s): ${activeTriggers.map((t) => t.label).join(', ')}`;
-  } else if (total.max > offering.offers.M.duration_weeks.max) {
-    // The scope no longer fits inside an M. The test is the ceiling it has
-    // outgrown, not the floor of the next offer up: a scope of 10–13 weeks
-    // fits an M of 6–13 exactly, and quoting it as a 13–20 week L would
-    // over-quote work the engine itself estimated at ten.
-    code = 'L';
-    rationale = `Scope reaches ${total.min}–${total.max} weeks (${activeGates.map((g) => g.label).join(', ')}), beyond the M ceiling of ${offering.offers.M.duration_weeks.max}`;
   } else if (activeGates.length >= 2) {
     code = 'M';
     rationale = `${activeGates.length} scope gates active: ${activeGates.map((g) => g.label).join(', ')}`;
@@ -366,12 +564,49 @@ export function classifyOffer(doc) {
   }
 
   const offer = offering.offers[code];
-  const add = priced
-    ? adds.reduce((a, m) => ({
-      weeks: { min: a.weeks.min + (m.effort_weeks?.min ?? 0), max: a.weeks.max + (m.effort_weeks?.max ?? 0) },
-      price: { min: a.price.min + (m.price_add?.min ?? 0), max: a.price.max + (m.price_add?.max ?? 0) },
-    }), { weeks: { min: 0, max: 0 }, price: { min: 0, max: 0 } })
-    : { weeks: { min: 0, max: 0 }, price: { min: 0, max: 0 } };
+
+  const gateTotals = adds.reduce((a, m) => ({
+    weeks: { min: a.weeks.min + (m.effort_weeks?.min ?? 0), max: a.weeks.max + (m.effort_weeks?.max ?? 0) },
+    price: { min: a.price.min + (m.price_add?.min ?? 0), max: a.price.max + (m.price_add?.max ?? 0) },
+  }), { weeks: { min: 0, max: 0 }, price: { min: 0, max: 0 } });
+
+  /*
+   * When the envelope bursts, the excess has to reach the quote.
+   *
+   * Only the excess: the band already contains the gate work it was sized for,
+   * and charging those gates twice would be the same error in the other
+   * direction.
+   *
+   * S is not in this: it prices its single gate in full, because its band is
+   * four to five weeks of base and nothing else.
+   */
+  if (code !== 'S') {
+    const over = {
+      min: Math.max(0, gateTotals.weeks.min - GATE_CAPACITY.min),
+      max: Math.max(0, gateTotals.weeks.max - GATE_CAPACITY.max),
+    };
+    if (over.min > 0 || over.max > 0) {
+      overflow = over;
+      priced = true;
+      modifiers = adds.map((m) => m.id);
+      rationale += `. Scope gates add ${gateTotals.weeks.min}–${gateTotals.weeks.max} weeks against the ${GATE_CAPACITY.min}–${GATE_CAPACITY.max} this offer already carries, so ${over.min}–${over.max} week(s) are quoted on top`;
+    }
+  }
+
+  /*
+   * What an overflow week costs is not a rate written down somewhere else: it
+   * is the rate the gates that caused it are already priced at, blended across
+   * the band. The overflow is more of exactly that work.
+   */
+  const weeksTotal = gateTotals.weeks.min + gateTotals.weeks.max;
+  const perWeek = weeksTotal > 0 ? (gateTotals.price.min + gateTotals.price.max) / weeksTotal : 0;
+  const toThousand = (n) => Math.round(n / 1000) * 1000;
+
+  const add = !priced
+    ? { weeks: { min: 0, max: 0 }, price: { min: 0, max: 0 } }
+    : overflow
+      ? { weeks: overflow, price: { min: toThousand(overflow.min * perWeek), max: toThousand(overflow.max * perWeek) } }
+      : gateTotals;
 
   return {
     code,
@@ -390,6 +625,9 @@ export function classifyOffer(doc) {
     // What the gates add on their own, kept so the proposal can show its work
     // and so a reader can check the offer against the scope rather than take it.
     scope_effort_weeks: total,
+    // The gate weeks this offer's band already contains, so a reader can check
+    // an overflow rather than take it.
+    gate_capacity_weeks: GATE_CAPACITY,
     rationale,
   };
 }

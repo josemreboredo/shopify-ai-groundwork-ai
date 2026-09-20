@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.2.0 · offering 1.3.0
+> **Version:** question bank 1.2.0 · offering 1.5.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -2024,8 +2024,8 @@
 
 ### 8.1 Systèmes connectés
 
-**Q8.1.1** — Énumérez chaque système qui échange des données de produit, de stock, de commande, de client ou de finance avec la boutique. Pour chacun : système, catégorie, sens, objets de données, fréquence, connecteur (application native / iPaaS / sur mesure / aucun), responsable, statut. *(required)*
-*Répartition courante : le PIM fournit produits, attributs et traductions ; l'ERP fournit les prix (y compris les catalogues B2B), le stock par emplacement et le statut des commandes.*
+**Q8.1.1** — Énumérez chaque système qui échange des données de produit, de stock, de commande, de client ou de finance avec la boutique. Pour chacun : système, catégorie, sens, objets de données, fréquence, connecteur (application native / iPaaS / sur mesure / aucun), responsable, statut, et s'il dispose d'un environnement de test auquel nous pouvons nous connecter avant la mise en ligne. *(required)*
+*Répartition courante : le PIM fournit produits, attributs et traductions ; l'ERP fournit les prix (y compris les catalogues B2B), le stock par emplacement et le statut des commandes. Shopify n'a besoin d'aucune instance séparée pour la préproduction : la seule chose à organiser est de votre côté — un système sans environnement de test signifie que l'intégration est testée contre votre système en production.*
 
 | System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes | Test environment |
 |---|---|---|---|---|---|---|---|---|---|---|---|

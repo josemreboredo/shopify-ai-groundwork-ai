@@ -108,13 +108,6 @@ describe('the page explains the rule the engine actually follows', () => {
   /** One engagement per published rule, in the order the page prints them. */
   const CASES = [
     ['any l_trigger', { ...base(), brand: { positioning: 'luxury' } }, 'L'],
-    ['scope beyond the M ceiling', {
-      ...base(),
-      ...markets('CH', 'DE', 'FR'),
-      migration: { source_platform: 'magento' },
-      b2b: { enabled: true },
-      integrations: [{ category: 'erp', connector: 'custom' }],
-    }, 'L'],
     ['two or more gates', {
       ...base(),
       ...markets('CH', 'DE'),
@@ -145,10 +138,16 @@ describe('the page explains the rule the engine actually follows', () => {
     }
   });
 
-  test('the effort rule names the ceiling it is testing', () => {
-    // "More than an M can hold" is only checkable if the number is on the page.
-    const effortRule = view.classification.find((c) => /adds up to/.test(c.plain));
-    assert.ok(effortRule, 'the rule that decides M against L is published');
-    assert.match(effortRule.plain, new RegExp(String(offering.offers.M.duration_weeks.max)));
+  test('no published rule promotes an engagement by effort any more', () => {
+    // Scope used to decide M against L, which quoted a Liquid build that ran
+    // long at the headless band. The weeks are now charged inside the offer the
+    // engagement actually is, so the rule is gone from the engine and must be
+    // gone from the page — a consultant reading a rule the engine no longer
+    // runs is the failure this whole test file exists to catch.
+    assert.equal(view.classification.find((c) => /adds up to/.test(c.plain)), undefined);
+    for (const c of view.classification) {
+      assert.doesNotMatch(c.plain, new RegExp(`more than an M|${offering.offers.M.duration_weeks.max} weeks`, 'i'),
+        `rule ${c.order}: "${c.plain}" still describes the effort promotion`);
+    }
   });
 });

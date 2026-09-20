@@ -2,7 +2,7 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 1.3.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 1.5.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
@@ -427,7 +427,7 @@ Sources: https://help.shopify.com/en/manual/products/combined-listings-app
 ### 2.2 Product types
 
 **Q2.2.1** — Which product types exist in the catalogue? *(required · client)*
-Drives: gate SKU complexity · app signal Bundles beyond Shopify Bundles · app signal Pre-orders
+Drives: gate SKU complexity · app signal Bundles beyond Shopify Bundles · app signal Pre-orders · gate Subscriptions
 
 **Why it matters.** Product types decide what is native and what needs an app. Fixed bundles, multipacks, subscriptions and gift cards are native from Basic; mix-and-match bundles and pre-orders need apps. It also feeds the SKU complexity gate.
 
@@ -445,7 +445,7 @@ If native is not enough: [Product bundles](https://apps.shopify.com/categories/m
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q2.2.2** — Will subscriptions run on Shopify Subscriptions (Shopify's app) or a third-party subscription app? Name the app if known. *(recommended · client)*
-Drives: app signal Subscriptions beyond Shopify Subscriptions
+Drives: app signal Subscriptions beyond Shopify Subscriptions · gate Subscriptions
 Quick interview: ask if Q2.2.1 includes Subscription
 
 **Why it matters.** Shopify's own Subscriptions app is free and lets customers skip, pause and cancel from their account, but it does not work with bundles, B2B or draft orders and supports a limited set of gateways. Those exclusions decide whether a paid app enters the cost model.
@@ -485,7 +485,7 @@ Build with: Cart Transform Function
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q2.2.4** — Which subscription features are needed? *(recommended · client)*
-Drives: app signal Subscriptions beyond Shopify Subscriptions
+Drives: app signal Subscriptions beyond Shopify Subscriptions · gate Subscriptions
 Quick interview: ask if Q2.2.1 includes Subscription
 
 **Why it matters.** Feature by feature is how you test whether Shopify Subscriptions is enough. Anything it does not cover raises the subscriptions_app signal and adds an app licence, a data migration of existing subscribers and integration work to the backlog.
@@ -1325,7 +1325,7 @@ Build with: Payment Customization Function (public apps: all plans; custom apps:
 ### 4.2 Checkout
 
 **Q4.2.1** — Which checkout changes are needed? *(required · client)*
-Drives: rule 11.1 (STOP) · rule 11.6 (STOP)
+Drives: rule 11.1 (STOP) · rule 11.6 (STOP) · gate Checkout extensibility
 
 **Why it matters.** This is the plan question in disguise. Thank-you and order-status extensions run on every plan; anything touching the information, shipping or payment steps, or restyling through the Checkout Branding API, is Plus. A fully custom checkout UI is not possible at all.
 
@@ -1343,6 +1343,7 @@ Build with: Checkout UI extensions · Shopify Functions (public apps: all plans;
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q4.2.2** — Which checkout extensions are needed? *(optional · consultant)*
+Drives: gate Checkout extensibility
 
 **Why it matters.** Names the actual extension points so the work is estimable: UI extensions for what the buyer sees, and Functions for delivery options, payment rules, cart and checkout validation and pickup points. Each Function is an app to build, review and maintain.
 
@@ -1359,6 +1360,7 @@ Build with: Delivery Customization Function · Payment Customization Function ·
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q4.2.3** — Which custom checkout fields are needed (company, VAT number, PO number, delivery instructions)? *(optional · client)*
+Drives: gate Checkout extensibility
 
 **Why it matters.** Extra fields - company, VAT number, PO number, delivery instructions - are checkout UI extensions, so where they sit decides the plan: on the information, shipping or payment steps they are Plus, on the thank-you page they are not.
 
@@ -1403,6 +1405,7 @@ Sources: https://help.shopify.com/en/manual/payments/fraud-prevention/fraud-cont
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q4.3.2** — Which order restrictions are needed? *(optional · client)*
+Drives: gate Checkout extensibility
 
 **Why it matters.** Splits the answer into free and paid. Blocking whole countries is native through markets and shipping zones; anything conditional - order value, quantity, product mix, customer type - is a Cart and Checkout Validation Function, which means an app.
 
@@ -2232,7 +2235,7 @@ If native is not enough: [Loyalty and rewards](https://apps.shopify.com/categori
 **Why it matters.** The regimes set the compliance baseline for everything else in this section: consent before tracking, opt-out pages, how data-subject requests are handled, and what legal must sign off. Ask it before the consent and data questions, not after.
 
 **Q6.4.2** — Cookie consent: Shopify's cookie banner or a consent management platform? Name the tool if known. *(recommended · client)*
-Drives: app signal Consent management platform
+Drives: app signal Consent management platform · gate Analytics and consent
 Quick interview: ask if Q6.4.1 includes GDPR (EU), UK GDPR, Swiss nFADP or CCPA (US)
 
 **Why it matters.** Whichever banner is used, the consent decision must reach Shopify through the Customer Privacy API — otherwise Shopify's own tracking and the installed apps never learn it. Shopify's native cookie banner does that already; a third-party platform has to be integrated.
@@ -2280,6 +2283,7 @@ Sources: https://help.shopify.com/en/manual/privacy-and-security/privacy/process
 **Why it matters.** US state privacy laws can require a "Do not sell or share my personal information" page. Shopify's native opt-out page honours Global Privacy Control signals, so this is usually configuration rather than build — but it must be asked, decided and evidenced.
 
 **Q6.4.7** — Where do you collect marketing consent? *(optional · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** Every point where consent is captured — newsletter form, checkout, account creation, pop-up, in store — is a point where the record must be created and carried. The list shows which integrations must write consent back, and where an audit would find gaps.
 
@@ -2290,10 +2294,12 @@ Sources: https://help.shopify.com/en/manual/privacy-and-security/privacy/process
 ### 7.1 SEO
 
 **Q7.1.1** — Is organic search a significant traffic channel? *(recommended · client)*
+Drives: gate SEO continuity
 
 **Why it matters.** If organic traffic carries the business, URL structure, redirects, metadata and page speed become build tasks with a budget rather than good intentions. If search is a minor channel, that effort is better spent elsewhere.
 
 **Q7.1.2** — Are custom URL structures needed? *(optional · client)*
+Drives: gate SEO continuity
 
 **Why it matters.** Tell us early if the brand depends on a particular URL pattern. What a platform can and cannot change has to be checked against the documentation before the content plan assumes it, and it sizes the redirect work on migration.
 
@@ -2317,11 +2323,12 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 ### 7.2 Analytics & tracking
 
 **Q7.2.1** — Which analytics platforms do you use (GA4, Adobe, other)? *(recommended · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** Every analytics platform on Shopify is wired through the same event layer, but each needs its own setup, consent handling and test pass. The list sizes that work and tells us which numbers the client will judge the launch by.
 
 **Q7.2.2** — Is server-side tracking needed? *(recommended · client)*
-Drives: app signal Server-side tracking beyond Shopify
+Drives: app signal Server-side tracking beyond Shopify · gate Analytics and consent
 Quick interview: ask if Q0.2.6 is 500 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition
 
 **Why it matters.** Shopify's customer events cover storefront and checkout with consent, and the Facebook & Instagram and Google & YouTube apps already send events server-side. Anything beyond that needs a tracking app or build work, and sharing customer data with ad platforms triggers the PII gate.
@@ -2343,14 +2350,17 @@ If native is not enough: App Store — [Elevar Conversion Tracking](https://apps
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q7.2.3** — Which advertising pixels are needed (Meta, TikTok, Pinterest, Google Ads)? *(recommended · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** Each advertising pixel is a separate install, a separate consent case and a separate test. The list decides how much tracking work the build carries and which conversion numbers marketing will reconcile after launch.
 
 **Q7.2.4** — Is a tag manager already configured? *(recommended · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** This matters more on Shopify than elsewhere: a tag manager runs as a custom pixel inside Shopify's sandbox, and scripts in checkout are no longer possible. An existing container has to be rebuilt to that model, not pasted across.
 
 **Q7.2.5** — Which custom events must be tracked beyond standard ecommerce events? *(recommended · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** Standard storefront and checkout events come from Shopify's customer events. Anything else — configurator steps, wishlist adds, quiz completions, store locator use — is code someone writes and tests in a pixel. Listing them now puts a price on them.
 
@@ -2807,7 +2817,7 @@ Sources: https://shopify.dev/docs/apps/build/apis/graphql-admin/bulk-operations/
 Sources: https://help.shopify.com/en/manual/migrating-to-shopify · https://help.shopify.com/en/manual/customers/import-export-customers · https://help.shopify.com/en/manual/customers/customer-accounts/new-customer-accounts/customer-experience · https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-woocommerce
 
 **Q8.2.3** — Approximate volumes: products, customers, orders, URL redirects. *(required · client)*
-Drives: rule 11.14 (FLAG)
+Drives: rule 11.14 (FLAG) · gate SEO continuity
 
 **Why it matters.** Volumes decide the route: CSV, a migration app, or scripted bulk imports. Redirect count matters most, because redirects are what carry the client's search traffic across - and Shopify caps them at 100,000, or 20,000,000 on Plus.
 
@@ -2830,7 +2840,7 @@ Drives: rule 11.14 (FLAG)
 Sources: https://shopify.dev/docs/api/admin-graphql/latest/mutations/ordercreate · https://help.shopify.com/en/manual/migrating-to-shopify/csv-migration · https://help.shopify.com/en/partners/manage-clients-stores/migrating-clients
 
 **Q8.2.5** — How much SEO equity (rankings, backlinks) must be preserved? *(required · consultant)*
-Drives: rule 11.14 (FLAG)
+Drives: rule 11.14 (FLAG) · gate SEO continuity
 
 **Why it matters.** Sets whether migration rides along with the build sprint or needs its own track. Shopify generates sitemap.xml automatically, but rankings survive on the redirects you author - and reindexing takes 48 to 72 hours, sometimes a few weeks.
 
@@ -2839,7 +2849,7 @@ Drives: rule 11.14 (FLAG)
 Sources: https://help.shopify.com/en/manual/migrating-to-shopify/considerations · https://help.shopify.com/en/manual/intro-to-shopify/initial-setup/new-to-shopify-checklists/migrating-to-shopify-checklist · https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect
 
 **Q8.2.6** — Must active subscriptions move to the new store without customers re-entering cards? *(required · client)*
-Drives: rule 11.14 (FLAG)
+Drives: rule 11.14 (FLAG) · gate Subscriptions
 
 **Why it matters.** Active subscriptions are the hardest thing to move: the contract, the stored payment credential and the billing schedule all have to survive together. If they cannot, every subscriber re-enters a card, which is a churn event rather than a task.
 
@@ -3118,6 +3128,7 @@ Drives: rule 11.16 (FLAG)
 **Why it matters.** This decides how much handover you build and price. Training on products, orders, discounts and reports is real delivery work — sessions, materials, recordings. Anything not listed here is outside scope and returns later as support tickets.
 
 **Q10.3.2** — Are written SOPs required? *(optional · client)*
+Drives: gate Post-launch support
 
 **Why it matters.** Written standard operating procedures are a deliverable in their own right: someone drafts, reviews and maintains them. Asking now stops them appearing as an unplanned request in the final sprint.
 
@@ -3127,6 +3138,7 @@ Drives: rule 11.16 (FLAG)
 | No written SOPs | Lighter handover; live training and recordings may be enough for a small team. | Knowledge stays with individuals, and every change becomes a question for the retainer. |
 
 **Q10.3.3** — What post-launch support model is expected? *(recommended · client)*
+Drives: gate Post-launch support
 
 **Why it matters.** This shapes everything after go-live: who fixes a broken checkout at the weekend, who loads next season's collection. The expected model drives the retainer conversation and decides what team stays in place after launch.
 

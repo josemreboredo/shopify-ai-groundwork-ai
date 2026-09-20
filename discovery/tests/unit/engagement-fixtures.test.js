@@ -70,30 +70,45 @@ for (const { file, doc } of fixtures) {
       const triggers = activeIds(offer.l_triggers);
       // Modelled here rather than imported, so this stays an independent check
       // and not the engine agreeing with itself. The rule: an L trigger wins,
-      // then scope that outgrew the M ceiling, then the gate count. The effort
-      // is read from the fixture — a golden value — rather than recomputed,
-      // because two gates are now priced by tier and by count.
-      const reach = offer.scope_effort_weeks?.max ?? offering.offers.S.duration_weeks.max;
-      const expected = triggers.length > 0 ? 'L'
-        : reach > offering.offers.M.duration_weeks.max ? 'L'
-          : gates.length >= 2 ? 'M' : 'S';
+      // then the gate count. Scope no longer promotes an engagement into L —
+      // L is the headless offer, and a Liquid build that ran long is still a
+      // Liquid build, so its extra weeks are priced inside its own offer.
+      const expected = triggers.length > 0 ? 'L' : gates.length >= 2 ? 'M' : 'S';
       assert.equal(offer.code, expected, `active gates [${gates}], L triggers [${triggers}]`);
 
       const def = offering.offers[offer.code];
       assert.equal(offer.name, def.name);
       assert.equal(offer.delivery_track, def.delivery_track);
-      assert.deepEqual(offer.duration_weeks, def.duration_weeks);
-      assert.equal(offer.price_band.min, def.price_band.min);
-      assert.equal(offer.price_band.max, def.price_band.max);
       assert.equal(offer.price_band.open_ended ?? false, def.price_band.open_ended);
       assert.equal(offer.price_band.currency, offering.currency);
 
-      let expectedModifiers = [];
-      if (offer.code === 'S' && gates.length === 1) {
-        const modifier = offering.scope_gates.find((g) => g.id === gates[0]).modifier;
-        if (modifier) expectedModifiers = [modifier];
+      // Every offer's band already contains as many gate weeks as M holds over
+      // an S. Gates inside that cost nothing more; the excess is quoted.
+      assert.deepEqual(offer.gate_capacity_weeks, {
+        min: offering.offers.M.duration_weeks.min - offering.offers.S.duration_weeks.min,
+        max: offering.offers.M.duration_weeks.max - offering.offers.S.duration_weeks.max,
+      });
+
+      const quoted = offer.modifiers ?? [];
+      const gateOfModifier = new Map(offering.modifiers.map((m) => [m.id, m.gate]));
+      for (const id of quoted) {
+        assert.ok(gates.includes(gateOfModifier.get(id)), `${id} is quoted but its gate is not active`);
       }
-      assert.deepEqual(offer.modifiers ?? [], expectedModifiers);
+      if (offer.code === 'S') {
+        // An S prices its single gate in full: its band is base and nothing else.
+        assert.equal(quoted.length, gates.length, 'an S quotes every gate it has');
+      }
+      if (quoted.length === 0) {
+        assert.deepEqual(offer.duration_weeks, def.duration_weeks);
+        assert.equal(offer.price_band.min, def.price_band.min);
+        assert.equal(offer.price_band.max, def.price_band.max);
+      } else {
+        assert.ok(offer.duration_weeks.min >= def.duration_weeks.min, 'a quoted gate never shortens the offer');
+        assert.ok(offer.duration_weeks.max >= def.duration_weeks.max);
+        assert.ok(offer.price_band.min >= def.price_band.min);
+        assert.ok(offer.price_band.max >= def.price_band.max);
+        assert.ok(offer.price_band.min < offer.price_band.max, 'and the band never inverts');
+      }
     });
 
     test('exit items reference known rules with matching results', () => {
@@ -129,7 +144,8 @@ test('golden fixtures produce the expected outcomes', () => {
   const expected = {
     'acme-watches.json': {
       code: 'M', go: true,
-      gates: ['markets', 'multi_currency', 'b2b', 'integration', 'sku_complexity', 'migration'],
+      gates: ['markets', 'multi_currency', 'b2b', 'integration', 'sku_complexity', 'migration', 'seo_continuity',
+        'checkout_extensibility', 'analytics_consent', 'post_launch_support'],
       exits: ['11.10', '11.14', '11.23'],
     },
     'foundation-minimal.json': { code: 'S', go: true, gates: [], exits: [] },

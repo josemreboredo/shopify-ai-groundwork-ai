@@ -59,7 +59,10 @@ function maximalEngagement() {
     { system: 'ShipBob', category: '3pl_wms', direction: 'bidirectional', objects: ['orders', 'inventory'], frequency: 'webhook', connector: 'native_app', status: 'to_build' },
   ];
   doc.migration.data = ['products', 'customers', 'orders', 'content', 'redirects', 'reviews', 'gift_cards'];
-  doc.design = { ...doc.design, motion: true, custom_design: true };
+  // Every feature switched on includes the storefront itself: without a headless
+  // requirement this reaches L by scope alone, and a build that ran long is
+  // still Liquid — which left the Hydrogen stories with no engagement to fire on.
+  doc.design = { ...doc.design, motion: true, custom_design: true, headless_required: true };
   doc.compliance = { ...doc.compliance, legal_pages_status: 'needs_drafting', sensitive_data: false, industry_requirements: ['EU General Product Safety Regulation product safety information'] };
   doc.delivery = { ...doc.delivery, support_model: 'hypercare_only', sops_required: true, phased_launch: true };
   doc.offer = classifyOffer(doc);
