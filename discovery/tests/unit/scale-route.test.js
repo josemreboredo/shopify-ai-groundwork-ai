@@ -26,7 +26,13 @@ const load = (name) => JSON.parse(fs.readFileSync(path.join(FIXTURES, name), 'ut
 const tmp = (prefix) => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
 
 /**
- * Interview a global client that hits STOP 11.3 (8 markets), optionally record a route, and finish.
+ * Interview a global client that hits STOP 11.4, optionally record a route, and finish.
+ *
+ * It used to STOP on eight markets. Markets no longer carry a ceiling of their
+ * own — they are priced per market and the effort total decides — so the STOP
+ * this fixture needs comes from the answer that still has one: more than six
+ * distinct languages, where translation and content operations stop being a
+ * build task.
  *
  * @param {string|null} route
  */
@@ -42,8 +48,13 @@ function stopInterview(route) {
   run('start', { client, mode: 'quick' }, env);
   answer('Q10.5.2', '/meta/consent/llm_processing', true, 'consultant');
   answer('Q1.1.1', '/meta/client/name', 'Global Demo');
-  const codes = ['CH', 'DE', 'GB', 'US', 'HK', 'JP', 'AU', 'SG'];
-  const stop = answer('Q3.1.1', '/markets/list', codes.map((code) => ({ code, currency: 'EUR', languages: ['en'] })));
+  const rows = [
+    { code: 'CH', languages: ['de', 'fr'] }, { code: 'DE', languages: ['de'] },
+    { code: 'GB', languages: ['en'] },       { code: 'US', languages: ['en', 'es'] },
+    { code: 'HK', languages: ['zh'] },       { code: 'JP', languages: ['ja'] },
+    { code: 'AU', languages: ['en'] },       { code: 'SG', languages: ['en', 'ms', 'ta'] },
+  ];
+  const stop = answer('Q3.1.1', '/markets/list', rows.map((r) => ({ ...r, currency: 'EUR' })));
   assert.equal(stop.go, false);
   assert.equal(stop.route, 'not decided');
   answer('Q3.1.2', '/markets/primary_markets', ['US', 'DE']);
@@ -84,7 +95,7 @@ describe('route after a STOP', () => {
     const files = done.written.map((f) => path.basename(f)).sort();
     assert.deepEqual(files, ['app-shortlist.md', 'architecture.md', 'capability-map.md', 'delivery-plan.md', 'engagement.json', 'larger-engagement-brief.md', 'risks.md']);
     const brief = fs.readFileSync(path.join(clientDir, 'larger-engagement-brief.md'), 'utf8');
-    for (const text of ['Status: **Larger Engagement**', 'Merkle Enterprise Engagement with a dedicated Discovery Phase', '8 markets at launch', 'Integration landscape', 'Offer a Larger Engagement', 'US, DE', 'minimum plus: company-specific B2B catalogs', 'No Jira tickets']) {
+    for (const text of ['Status: **Larger Engagement**', 'Merkle Enterprise Engagement with a dedicated Discovery Phase', 'distinct language', 'Integration landscape', 'Offer a Larger Engagement', 'US, DE', 'minimum plus: company-specific B2B catalogs', 'No Jira tickets']) {
       assert.ok(brief.includes(text), `brief should include "${text}"`);
     }
     assert.doesNotMatch(brief, /€|price band|\+25%|WARN/);

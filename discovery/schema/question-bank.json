@@ -2090,6 +2090,7 @@
       "feeds": [
         "gate:markets",
         "gate:multi_currency",
+        "gate:languages",
         "exit:11.3",
         "exit:11.4",
         "exit:11.1",
@@ -2409,7 +2410,7 @@
             "cons": "Slowest and most expensive; needs an owner for every content change; without an app the loading and re-loading is manual work forever"
           }
         ],
-        "limits": "Translate & Adapt covers products, collections, blog posts, policies and pages, but does not auto-translate policies or URL handles. Checkout is pre-translated by Shopify. Published languages are capped at 20 below Plus and 30 on Plus. Six or more languages is a stop rule — translation and content operations move to a Discovery Phase.",
+        "limits": "Translate & Adapt covers products, collections, blog posts, policies and pages, but does not auto-translate policies or URL handles. Checkout is pre-translated by Shopify. Published languages are capped at 20 below Plus and 30 on Plus. The fourth language and beyond is priced as scope — the first three are in every offer, because a Swiss engagement is DE/FR/IT. More than six is a stop rule: translation and content operations move to a Discovery Phase.",
         "sources": [
           "https://help.shopify.com/en/manual/international/translate-adapt-app",
           "https://help.shopify.com/en/manual/international/localization-and-translation",

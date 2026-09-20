@@ -135,7 +135,7 @@ export function answeredElsewhere(doc) {
   return out;
 }
 
-/** Scope gates and L triggers read as capabilities the RFP is asking us for. *//** Scope gates and L triggers read as capabilities the RFP is asking us for. */
+/** Scope gates and L triggers read as capabilities the RFP is asking us for. */
 const CAPABILITY = {
   markets: 'Selling into several markets',
   multi_currency: 'Multiple transactional currencies',
@@ -144,6 +144,7 @@ const CAPABILITY = {
   migration: 'Migration from another platform',
   sku_complexity: 'A complex catalogue',
   retail_pos: 'Retail / point of sale',
+  languages: 'Storefront in several languages',
   luxury: 'Luxury-grade experience',
   headless: 'Headless storefront',
   figma_design_system: 'A full design system',

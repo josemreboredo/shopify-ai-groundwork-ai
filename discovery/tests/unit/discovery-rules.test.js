@@ -239,6 +239,54 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(light.scope_effort_weeks.max <= offering.offers.M.duration_weeks.max);
   });
 
+  test('Swiss trilingual is free; the fourth language is charged', () => {
+    // Every Swiss engagement is DE/FR/IT, so charging from the second language
+    // would have put a surcharge on the home market. The offering absorbs three
+    // and prices the fourth, which is where a translation workflow starts.
+    const langs = (...list) => ({ markets: { list: [{ code: 'CH', currency: 'CHF', price_strategy: 'base_currency', languages: list }] } });
+    const trilingual = classifyOffer({ ...base(), ...langs('de', 'fr', 'it') });
+    assert.equal(trilingual.scope_gates.languages.active, false, 'DE/FR/IT costs nothing extra');
+    assert.deepEqual(trilingual.modifiers, []);
+
+    const four = classifyOffer({ ...base(), ...langs('de', 'fr', 'it', 'en') });
+    assert.equal(four.scope_gates.languages.active, true);
+    assert.deepEqual(four.modifiers, ['+Languages']);
+    // Exactly one language's worth, not four. Asserting only "more than three"
+    // let a version through that charged for all four and read as plausible.
+    const perLanguage = offering.modifiers.find((m) => m.id === '+Languages').per_language_price;
+    assert.equal(four.price_band.max - classifyOffer(base()).price_band.max, perLanguage,
+      'the fourth language is charged once — the first three are in the offer');
+
+    // Priced per language beyond the three, not as one flat surcharge.
+    const six = classifyOffer({ ...base(), ...langs('de', 'fr', 'it', 'en', 'es', 'pt') });
+    assert.ok(six.price_band.max > four.price_band.max,
+      `six languages (${six.price_band.max}) must cost more than four (${four.price_band.max})`);
+  });
+
+  test('integrations are priced per integration and retail per location', () => {
+    // One ERP connector and four are not the same job. A flat modifier quoted
+    // them identically, which is the single largest way an M overran.
+    const one = classifyOffer({ ...base(), integrations: [{ category: 'erp', connector: 'custom' }] });
+    const three = classifyOffer({ ...base(), integrations: ['erp', 'pim', 'crm'].map((category) => ({ category, connector: 'custom' })) });
+    assert.ok(three.duration_weeks.max > one.duration_weeks.max + 1, 'three connectors take longer than one');
+    assert.ok(three.price_band.max > one.price_band.max);
+
+    const store = (n) => classifyOffer({ ...base(), retail: { store_count: n, pos: 'shopify_pos' } });
+    assert.ok(store(5).duration_weeks.max > store(1).duration_weeks.max + 2, 'five locations are not one location');
+    assert.ok(store(5).price_band.max > store(1).price_band.max);
+  });
+
+  test('markets have no ceiling of their own — the effort total is the ceiling', () => {
+    // "More than five markets" used to be a STOP. It was a third of what an L
+    // can hold, and the segment Merkle sells to is Swiss exporters running five
+    // or more. Twelve markets on their own are a priced modifier, not an exit.
+    const twelve = classifyOffer({ ...base(), ...markets('CH', 'DE', 'AT', 'FR', 'IT', 'ES', 'NL', 'BE', 'PL', 'SE', 'DK', 'NO') });
+    assert.ok(twelve.scope_effort_weeks.max <= offering.offers.L.duration_weeks.max,
+      'markets alone do not exceed the L ceiling');
+    assert.deepEqual(offering.exit_rules.find((r) => r.id === '11.3').inputs, ['/offer/scope_effort_weeks'],
+      '11.3 reads the total, not the market count');
+  });
+
   test('every offer band is in Swiss francs', () => {
     assert.equal(offering.currency, 'CHF');
     for (const doc of [base(), { ...base(), brand: { positioning: 'luxury' } }]) {

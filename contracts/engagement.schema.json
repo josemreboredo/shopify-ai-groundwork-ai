@@ -460,6 +460,9 @@
             },
             "retail_pos": {
               "$ref": "#/$defs/gate"
+            },
+            "languages": {
+              "$ref": "#/$defs/gate"
             }
           }
         },
@@ -484,6 +487,7 @@
             "enum": [
               "+B2B",
               "+Integration",
+              "+Languages",
               "+Markets",
               "+Migration (heavy)",
               "+Migration (light)",

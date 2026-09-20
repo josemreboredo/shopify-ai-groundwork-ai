@@ -67,6 +67,26 @@ function maximalEngagement() {
   return doc;
 }
 
+/**
+ * The same design ambition on the Liquid track.
+ *
+ * maximalEngagement() switches everything on, which since the effort ceiling
+ * landed makes it an L on Hydrogen — so the theme stories, which all guard on
+ * isLiquidTrack(), could no longer fire from it. A bespoke design, motion and a
+ * right-to-left language are not the preserve of large engagements: a small
+ * store with one market buys exactly that. So they are proven on a small Liquid
+ * engagement, which is where they are actually built.
+ */
+function maximalLiquidEngagement() {
+  const doc = load('foundation-minimal.json');
+  doc.design = { ...doc.design, motion: true, custom_design: true, figma: { ...doc.design?.figma, exists: true, completeness: 'all_templates', mapped_to_sections: true } };
+  doc.markets = { ...doc.markets, rtl_required: true };
+  doc.offer = classifyOffer(doc);
+  doc.exits = evaluateExits(doc);
+  assert.notEqual(doc.offer.delivery_track, 'hydrogen', 'the point of this fixture is the Liquid track');
+  return doc;
+}
+
 describe('story definitions', () => {
   test('keys are unique, stable-format and match their epic prefix', () => {
     const keys = STORY_DEFINITIONS.map((d) => d.key);
@@ -95,7 +115,7 @@ describe('story definitions', () => {
   });
 
   test('every story fires for at least one engagement and materialises cleanly', () => {
-    const docs = [...GO_FIXTURES, maximalEngagement()];
+    const docs = [...GO_FIXTURES, maximalEngagement(), maximalLiquidEngagement()];
     const fired = new Set(docs.flatMap((doc) => selectStories(doc).map((s) => s.key)));
     const never = STORY_DEFINITIONS.map((d) => d.key).filter((k) => !fired.has(k));
     assert.deepEqual(never, [], 'stories whose guard never fires — extend maximalEngagement() or fix the guard');

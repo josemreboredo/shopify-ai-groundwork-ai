@@ -13,6 +13,7 @@ import fs from 'node:fs';
 
 import { goNoGoView, complexityProfile, answeredElsewhere } from '../../service/go-no-go.js';
 import { clarificationTopics } from '../../agents/discovery/clarifications.js';
+import { offering } from '../../schema/index.js';
 
 const fixture = (name) => JSON.parse(fs.readFileSync(new URL(`../fixtures/engagements/${name}.json`, import.meta.url), 'utf8'));
 const state = (over = {}) => ({ documents: 1, coverage: { required_answered: 62, required_total: 85 }, to_review: 0, ...over });
@@ -129,17 +130,22 @@ describe('go/no-go support', () => {
 describe('where the complexity sits', () => {
   const beyond = () => {
     const doc = fixture('acme-watches');
-    // 11.3 reads /markets/list, which is the markets gate's own input; 11.7 reads
-    // the integration gate's. The link is the pointers both declare, not a guess
+    // 11.21 reads /markets/list and nothing else, which is the markets gate's own
+    // input, so it isolates the pointer link; 11.7 reads the integration gate's. The link is the pointers both declare, not a guess
     // at which rule belongs to which subject.
-    doc.exits.items.push({ rule_id: '11.3', result: 'STOP', evidence: '37 markets at launch' });
+    //
+    // 11.3 is deliberately not used here. It reads the computed effort total, and
+    // an effort overrun is not one dimension's fault — it is the sum. It reaches
+    // the reader through `risks`, where every fired rule is listed, rather than
+    // by being pinned to whichever gate happens to share a pointer with it.
+    doc.exits.items.push({ rule_id: '11.21', result: 'STOP', evidence: 'CN is the only launch market' });
     doc.exits.items.push({ rule_id: '11.7', result: 'STOP', evidence: '6 counted integrations' });
     return doc;
   };
 
   test('three levels and no invented scale', () => {
     const axes = complexityProfile(fixture('acme-watches'));
-    assert.equal(axes.length, 7, 'one per scope gate');
+    assert.equal(axes.length, offering.scope_gates.length, 'one per scope gate');
     for (const a of axes) {
       assert.ok([0, 1, 2].includes(a.level), 'a chart that draws ten gradations off three real ones invents nine');
       assert.ok(['not known', 'not in play', 'within the offers', 'beyond the offers'].includes(a.standing));
@@ -173,7 +179,7 @@ describe('where the complexity sits', () => {
     const axes = complexityProfile(beyond());
     const at = (id) => axes.find((a) => a.id === id);
     assert.equal(at('markets').level, 2);
-    assert.deepEqual(at('markets').rules.filter((r) => r.result === 'STOP').map((r) => r.rule_id), ['11.3']);
+    assert.deepEqual(at('markets').rules.filter((r) => r.result === 'STOP').map((r) => r.rule_id), ['11.21']);
     assert.equal(at('integration').level, 2);
     assert.equal(at('b2b').level, 1, 'a gate nothing fired on stays inside');
     assert.equal(at('retail_pos').level, 0, 'and one that never fired at all is not in play');

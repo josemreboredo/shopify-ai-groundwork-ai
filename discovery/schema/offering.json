@@ -155,6 +155,15 @@
         "/retail/omnichannel"
       ],
       "modifier": "+Retail"
+    },
+    {
+      "id": "languages",
+      "label": "Languages",
+      "condition": "4 or more distinct languages across the markets — Translate & Adapt auto-translates two, and Swiss DE/FR/IT is included in every offer",
+      "inputs": [
+        "/markets/list/*/languages"
+      ],
+      "modifier": "+Languages"
     }
   ],
   "l_triggers": [
@@ -216,15 +225,17 @@
     {
       "id": "+Integration",
       "gate": "integration",
-      "description": "One ERP / PIM / CRM / 3PL live connection",
+      "description": "Each live connection to a counted system — ERP, PIM, CRM, OMS or 3PL",
       "effort_weeks": {
         "min": 1,
-        "max": 2
+        "max": 3
       },
       "price_add": {
         "min": 10000,
-        "max": 18000
-      }
+        "max": 30000
+      },
+      "per_integration_weeks": 1,
+      "per_integration_price": 10000
     },
     {
       "id": "+SKU",
@@ -242,15 +253,17 @@
     {
       "id": "+Retail",
       "gate": "retail_pos",
-      "description": "Shopify POS or integrated POS set-up, store locations, pick-up in store, in-store returns — up to 5 stores (more stores: rule 11.22, never a per-store price)",
+      "description": "Each location selling with Shopify POS: hardware, inventory, staff and the in-store test pass",
       "effort_weeks": {
         "min": 1,
-        "max": 1
+        "max": 5
       },
       "price_add": {
         "min": 8000,
-        "max": 12000
-      }
+        "max": 40000
+      },
+      "per_location_weeks": 1,
+      "per_location_price": 8000
     },
     {
       "id": "+Migration (light)",
@@ -306,6 +319,22 @@
         "min": 4000,
         "max": 7000
       }
+    },
+    {
+      "id": "+Languages",
+      "gate": "languages",
+      "description": "Each language beyond the third: translation of products, collections, policies, URL handles, theme and app strings — and again on every release",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 6000,
+        "max": 30000
+      },
+      "per_language_weeks": 0.5,
+      "per_language_price": 6000,
+      "free_languages": 3
     }
   ],
   "integration_definition": {
@@ -370,12 +399,12 @@
       "id": "11.3",
       "result": "STOP",
       "status": "canonical",
-      "condition": "More than 5 Shopify Markets at launch — two through five are covered inside the offers",
-      "destination": "Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase",
+      "condition": "Base weeks plus the active scope gates exceed the L duration — the work is a programme, not an offer",
+      "destination": "Larger Engagement: delivered as a programme with a template, plus an increment per market or brand",
       "inputs": [
-        "/markets/list"
+        "/offer/scope_effort_weeks"
       ],
-      "label": "More than five Shopify markets at launch"
+      "label": "The scope is beyond what the largest offer holds"
     },
     {
       "id": "11.4",

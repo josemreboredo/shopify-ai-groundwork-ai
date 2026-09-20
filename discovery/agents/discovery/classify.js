@@ -55,6 +55,9 @@ export function countedIntegrations(doc) {
  */
 const CHINA_MAINLAND = 'CN';
 
+/** Locations selling with Shopify POS or an integrated one. @param {object} doc */
+export const retailLocations = (doc) => doc.retail?.store_count ?? 0;
+
 /** Launch markets in the offering's scope (mainland China excluded). @param {object} doc */
 export const marketsOf = (doc) => (doc.markets?.list ?? []).filter((m) => m.code !== CHINA_MAINLAND);
 
@@ -92,6 +95,18 @@ const GATE_EVALUATORS = {
   markets: (doc) => {
     const codes = marketsOf(doc).map((m) => m.code);
     return { active: codes.length >= 2, evidence: `${codes.length} market(s) at launch${codes.length ? `: ${codes.join(', ')}` : ''}` };
+  },
+
+  languages: (doc) => {
+    // Translate & Adapt auto-translates two, and a Swiss engagement is DE/FR/IT
+    // as a matter of course — so three are included and the gate opens at the
+    // fourth, where translation stops being a setting and becomes a licence or
+    // a translator, on every release, for ever.
+    const langs = distinctLanguages(doc);
+    return {
+      active: langs.length >= 4,
+      evidence: `${langs.length} distinct language(s)${langs.length ? `: ${langs.join(', ')}` : ''}`,
+    };
   },
 
   multi_currency: (doc) => {
@@ -203,25 +218,34 @@ function modifierFor(gate, evaluated, doc) {
       ?? null;
   }
   const modifier = all.find((m) => m.gate === gate.id) ?? null;
-  if (!modifier || gate.id !== 'markets') return modifier;
+  if (!modifier) return null;
 
-  // Half a week per market beyond the first, within the modifier's own band.
-  // Above five markets exit rule 11.3 takes it out of the offers entirely, so
-  // the band never has to stretch further than that.
-  const count = marketsOf(doc).length;
-  const weeks = Math.min(
-    Math.max((count - 1) * (modifier.per_market_weeks ?? 0.5), modifier.effort_weeks.min),
-    modifier.effort_weeks.max,
-  );
-  const price = Math.min(
-    Math.max((count - 1) * (modifier.per_market_price ?? 0), modifier.price_add.min),
-    modifier.price_add.max,
-  );
+  /*
+   * What scales, and from which unit it starts counting.
+   *
+   * A flat modifier charges one integration what it charges three, and two
+   * markets what it charges five. The published component costs are per unit —
+   * 40 hours per further store, three to twelve person-days per ERP connection
+   * — so the modifier is too, within its own band.
+   */
+  const SCALES = {
+    markets: { count: marketsOf(doc).length, free: 1, weeks: 'per_market_weeks', price: 'per_market_price' },
+    languages: { count: distinctLanguages(doc).length, free: modifier.free_languages ?? 3, weeks: 'per_language_weeks', price: 'per_language_price' },
+    integration: { count: countedIntegrations(doc).length, free: 0, weeks: 'per_integration_weeks', price: 'per_integration_price' },
+    retail_pos: { count: retailLocations(doc), free: 0, weeks: 'per_location_weeks', price: 'per_location_price' },
+  };
+  const scale = SCALES[gate.id];
+  if (!scale) return modifier;
+
+  const units = Math.max(scale.count - scale.free, 0);
+  const clamp = (n, band) => Math.min(Math.max(n, band.min), band.max);
+  const weeks = clamp(units * (modifier[scale.weeks] ?? 0), modifier.effort_weeks);
+  const price = clamp(units * (modifier[scale.price] ?? 0), modifier.price_add);
   return {
     ...modifier,
     effort_weeks: { min: weeks, max: weeks },
     price_add: { min: price, max: price },
-    markets: count,
+    units: scale.count,
   };
 }
 

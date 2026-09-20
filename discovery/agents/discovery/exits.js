@@ -44,9 +44,24 @@ const EVALUATORS = {
 
   '11.2': (doc) => (doc.b2b?.rfq_or_negotiated_pricing === true ? 'B2B requires RFQ / negotiated pricing' : null),
 
+  /*
+   * Was "more than five markets at launch". Five markets are twenty-five
+   * person-days against the fifty-eight to a hundred an L has free above a base
+   * build, so the ceiling sat at a third of what the offer could hold — and the
+   * Swiss exporter running five or more markets, which the go-to-market names
+   * as a target segment, was routed out of the offers by the very rule meant to
+   * protect them.
+   *
+   * Markets are priced per market now, so the count is no longer the question.
+   * What is left is the real one: whether the work has stopped being an offer
+   * and become a programme, which is what the published benchmark says happens
+   * once a template carries the repetition.
+   */
   '11.3': (doc) => {
-    const n = marketsOf(doc).length;
-    return n > 5 ? `${n} markets at launch` : null;
+    const scope = doc.offer?.scope_effort_weeks;
+    const ceiling = offering.offers.L.duration_weeks.max;
+    if (!scope || scope.max <= ceiling) return null;
+    return `Scope reaches ${scope.min}–${scope.max} weeks, beyond the ${ceiling} an L holds`;
   },
 
   '11.4': (doc) => {
