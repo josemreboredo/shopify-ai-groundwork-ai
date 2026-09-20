@@ -95,7 +95,8 @@ li::marker { color: var(--red); }
 .page-head > p { margin: 14px 0 0; color: rgba(255, 255, 255, 0.72); font-size: 0.95rem; max-width: 78ch; }
 .page-head .page-lang { margin: 10px 0 0; color: rgba(255, 255, 255, 0.72); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 .page-head .page-meta { margin: 16px 0 0; color: rgba(255, 255, 255, 0.55); font-size: 0.8rem; letter-spacing: 0.02em; }
-.page-head:has(.tabs) { padding-bottom: 0; }
+.page-head:has(.tabs), .page-head:has(.wayfinder) { padding-bottom: 0; }
+.page-head .wayfinder { border-bottom: 1px solid rgba(255, 255, 255, 0.22); }
 
 /* Tabs */
 .tabs { display: flex; gap: 30px; margin: 28px 0 0; border-bottom: 1px solid var(--line); }
@@ -449,38 +450,46 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .door-form .field { margin: 0; }
 .door-form button { justify-self: start; margin-top: 4px; }
 
-/* Where you are in the work. Tabs said what exists; this says what to do next. */
+/* Where you are in the work. Tabs said what exists; this says what to do next.
+   It lives inside the black statement band, so it is written for a dark ground:
+   the first version inherited --ink and --muted and rendered the two steps that
+   matter most — the one just done and the one you are on — as dark text on
+   black. */
 .wayfinder { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; margin-top: 26px; }
 .steps-spine { display: flex; list-style: none; padding: 0; margin: 0; gap: 0; flex-wrap: wrap; }
 .steps-spine li { position: relative; }
 .steps-spine li + li { margin-left: 26px; }
 /* the line that makes it one piece of work rather than five destinations */
 .steps-spine li + li::before {
-  content: ''; position: absolute; left: -22px; top: 15px; width: 18px; height: 1px; background: var(--line);
+  content: ''; position: absolute; left: -22px; top: 15px; width: 18px; height: 1px; background: rgba(255, 255, 255, 0.28);
 }
 .steps-spine a {
   display: grid; grid-template-columns: 26px 1fr; grid-template-rows: auto auto;
-  column-gap: 9px; align-items: center; padding: 4px 0; text-decoration: none; color: var(--muted);
+  column-gap: 9px; align-items: center; padding: 4px 0 15px; text-decoration: none;
 }
 .step-n {
   grid-row: 1 / 3; width: 26px; height: 26px; border-radius: 50%;
   display: grid; place-items: center; font-size: 0.8rem; font-variant-numeric: tabular-nums;
-  border: 1px solid var(--line); background: #fff; color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.32); background: transparent; color: rgba(255, 255, 255, 0.6);
 }
-.step-label { font-size: 0.92rem; line-height: 1.25; }
-.step-hint { font-size: 0.74rem; color: var(--muted); line-height: 1.25; }
+.step-label { font-size: 0.92rem; line-height: 1.25; color: rgba(255, 255, 255, 0.62); }
+.step-hint { font-size: 0.74rem; line-height: 1.25; color: rgba(255, 255, 255, 0.52); }
+
+/* Done recedes, current leads. A step still to do is an outline, never a filled
+   disc — filled white read as more important than the step you are on. */
 .steps-spine .done .step-n { background: var(--ok); border-color: var(--ok); color: #fff; }
-.steps-spine .done .step-label { color: var(--muted); }
+.steps-spine .done .step-label { color: rgba(255, 255, 255, 0.55); }
 .steps-spine .current .step-n { background: var(--red); border-color: var(--red); color: #fff; }
-.steps-spine .current .step-label { color: var(--ink); font-weight: 600; }
-.steps-spine a:hover .step-label { color: var(--ink); }
-.steps-spine a.active .step-label { color: var(--ink); }
-.steps-spine a.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -9px; height: 2px; background: var(--ink); }
+.steps-spine .current .step-label { color: #fff; font-weight: 600; }
+.steps-spine .current .step-hint { color: rgba(255, 255, 255, 0.72); }
+.steps-spine a:hover .step-label, .steps-spine a:focus-visible .step-label { color: #fff; }
+.steps-spine a.active .step-label { color: #fff; }
+.steps-spine a.active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px; background: var(--red); }
 
 /* Not steps: reference, and the one place the settings live */
-.views { display: flex; gap: 18px; padding-bottom: 6px; }
-.views a { font-size: 0.85rem; color: var(--muted); text-decoration: none; }
-.views a:hover, .views a.active { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.views { display: flex; gap: 18px; padding-bottom: 19px; }
+.views a { font-size: 0.85rem; color: rgba(255, 255, 255, 0.62); text-decoration: none; }
+.views a:hover, .views a.active { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
 
 /* Which of the two processes a record is in */
 .badge.process-rfp { background: var(--navy); color: #fff; }
