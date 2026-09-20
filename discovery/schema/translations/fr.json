@@ -1273,6 +1273,467 @@
     "why": "Une garantie de remboursement est rarement native. Shopify Protect exige un marchand établi aux États-Unis avec un compte Shopify Payments américain et ne couvre que les commandes Shop Pay de biens physiques : en Europe, c'est donc toujours une application payante de lutte contre la fraude.",
     "limits": "Shopify Protect exige en outre une expédition avec un suivi valide sous 7 jours et la commande en transit sous 10 jours. Traitez-le comme un avantage réservé aux États-Unis dans un cadrage européen."
    }
+  },
+  "Q5.1.1": {
+   "text": "Assurez-vous la préparation des commandes en interne, via un prestataire 3PL, ou les deux ?",
+   "teach": {
+    "why": "Décide qui porte la préparation des commandes dans le projet : des emplacements Shopify travaillés depuis l'interface d'administration, ou un connecteur 3PL avec sa propre synchronisation des commandes, des stocks et du suivi. Cela fixe l'effort d'intégration, la bascule à la mise en ligne et qui traite les exceptions."
+   }
+  },
+  "Q5.1.2": {
+   "text": "Quel prestataire 3PL ?",
+   "teach": {
+    "why": "Le prestataire nommé décide s'il existe un connecteur Shopify prêt à l'emploi ou si l'intégration doit être construite et testée. Il fixe aussi ce qui revient — niveaux de stock, numéros de suivi, retours — et la gestion d'erreurs à cadrer."
+   }
+  },
+  "Q5.1.3": {
+   "text": "Combien d'emplacements préparent les commandes en ligne (entrepôts, emplacements 3PL et magasins qui expédient), et dans quels pays se trouvent-ils ?",
+   "help": "Les magasins physiques qui vendent en personne sont comptés séparément au § 5.6.",
+   "teach": {
+    "why": "Le nombre d'emplacements fixe à la fois le plan et le périmètre de routage. Shopify autorise 10 emplacements en dessous de Plus et 200 sur Plus. Plus de deux emplacements préparant les commandes avec un routage au-delà des règles natives déclenche un cadrage des stocks multi-emplacements.",
+    "limits": "10 emplacements de stock sur Basic, Grow et Advanced ; 200 sur Plus. Les emplacements créés par des applications ne sont pas comptés."
+   }
+  },
+  "Q5.1.4": {
+   "text": "Comment Shopify doit-il choisir l'emplacement qui prépare la commande ?",
+   "help": "Les règles de routage de Shopify : limiter les expéditions fractionnées, rester dans le marché, emplacement le plus proche, emplacements classés, métachamps d'emplacement. Tout le reste exige une Function de routage sur mesure ou l'ERP / OMS.",
+   "teach": {
+    "why": "Shopify choisit un emplacement via des règles de routage natives : limiter les expéditions fractionnées, rester dans le marché, emplacement le plus proche, emplacements classés, métachamps d'emplacement. Tout le reste implique une Function de routage sur mesure ou une décision prise par l'ERP — un projet différent et plus lourd.",
+    "options": [
+     {
+      "option": "Règles de routage natives",
+      "pros": "Disponibles dès Basic, configurées dans l'interface d'administration, sans code, modifiables ensuite par le client.",
+      "cons": "Uniquement les stratégies documentées ; aucune logique sur mesure du type capacité, coût ou heure limite des transporteurs."
+     },
+     {
+      "option": "Function Order Routing Location Rule sur mesure, ou décision prise par l'ERP/OMS",
+      "pros": "N'importe quelle logique de routage réellement utilisée par l'entreprise ; convient aux clients dont l'OMS fait déjà référence.",
+      "cons": "Développement et maintenance continue, et cela déclenche le signal de cadrage des stocks multi-emplacements (T3)."
+     }
+    ]
+   }
+  },
+  "Q5.1.5": {
+   "text": "Quels transporteurs utilisez-vous ?",
+   "teach": {
+    "why": "La liste des transporteurs indique quels tarifs, étiquettes et suivis peuvent vivre dans Shopify et lesquels restent dans le système du transporteur ou exigent une application. C'est aussi la première donnée d'entrée des décisions sur les tarifs d'expédition et les étiquettes ci-dessous."
+   }
+  },
+  "Q5.1.6": {
+   "text": "Comment les frais de port sont-ils calculés ?",
+   "help": "Forfaitaires, selon le poids ou le montant, gratuits au-delà d'un seuil, tarifs transporteur en temps réel, ou tarifs venant d'une application.",
+   "teach": {
+    "why": "Les tarifs forfaitaires, au poids et au montant sont natifs dès Basic. Les tarifs calculés en temps réel par un transporteur tiers exigent Advanced ou Plus, et sur Grow seulement en option payante ou avec une facturation annuelle. Cette réponse peut déplacer le plan et le prix.",
+    "limits": "L'expédition calculée en temps réel par un transporteur tiers est disponible sur Advanced et Plus ; les boutiques Grow peuvent l'ajouter contre un supplément mensuel ou en passant à la facturation annuelle.",
+    "options": [
+     {
+      "option": "Grilles tarifaires natives (forfait, poids, conditions de montant)",
+      "pros": "Fonctionne dès Basic, sans coût supplémentaire, entièrement configurable par le client.",
+      "cons": "Les tarifs sont vos propres estimations : la marge dérive dès que le transporteur change ses prix."
+     },
+     {
+      "option": "Tarifs transporteur calculés en temps réel",
+      "pros": "Le paiement affiche le prix réel du transporteur pour ce panier et cette destination.",
+      "cons": "Exige Advanced ou Plus (supplément ou facturation annuelle sur Grow), un compte transporteur, et des poids et dimensions de colis exacts."
+     }
+    ]
+   }
+  },
+  "Q5.1.7": {
+   "text": "Existe-t-il des règles d'expédition propres à certains produits (lourds, dangereux, sous température dirigée) ?",
+   "teach": {
+    "why": "Les produits lourds, dangereux ou sous température dirigée exigent normalement leur propre profil de livraison, leurs propres tarifs et un accord transporteur distinct. Oubliés en discovery, ils réapparaissent après le lancement sous forme de tarifs qui promettent des livraisons impossibles."
+   }
+  },
+  "Q5.1.9": {
+   "text": "Vers quels pays n'expédiez-vous pas ?",
+   "teach": {
+    "why": "Les zones d'expédition et la configuration des marchés se construisent à partir de ce que vous ne livrez pas. Si c'est faux, des clients atteignent le paiement pour des destinations que vous ne pouvez pas servir, ce qui revient en annulations, remboursements et charge de support."
+   }
+  },
+  "Q5.1.10": {
+   "text": "Seuils de livraison offerte par marché (marché, seuil, devise, quels tarifs).",
+   "help": "Natif : une condition de tarif fondée sur le montant de la commande, ou une réduction automatique de livraison offerte.",
+   "teach": {
+    "why": "La livraison offerte est native, soit comme condition de montant sur un tarif d'expédition, soit comme réduction automatique. Des seuils qui diffèrent par marché et par devise multiplient les tarifs et réductions à configurer et à tester — de l'effort, pas du développement.",
+    "limits": "Les deux mécanismes sont natifs dès Basic ; le coût réside dans la configuration et les tests par marché."
+   }
+  },
+  "Q5.1.11": {
+   "text": "Quels modes de livraison proposez-vous ?",
+   "help": "La livraison locale et le retrait en magasin sont natifs. Les points relais ne sont natifs que pour les boutiques en France, en Italie, en Espagne et au Royaume-Uni (avec certains transporteurs) ; ailleurs, ils exigent une application de livraison ou une solution sur mesure. Les créneaux de livraison exigent une application ; l'expédition depuis le magasin exige Shopify POS.",
+   "teach": {
+    "why": "La livraison locale et le retrait en magasin sont natifs. Les points relais ne sont natifs que pour les boutiques en France, en Italie, en Espagne et au Royaume-Uni, avec certains transporteurs. Les créneaux de livraison exigent une application ; l'expédition depuis le magasin exige Shopify POS.",
+    "limits": "Hors de France, d'Italie, d'Espagne et du Royaume-Uni, les points relais exigent une application personnalisée utilisant la Function Pickup Point Delivery Option Generator sur Plus, et ne sont disponibles ni pour le B2B ni pour les portefeuilles express."
+   }
+  },
+  "Q5.1.12": {
+   "text": "Comment les étiquettes d'expédition sont-elles créées ?",
+   "teach": {
+    "why": "L'endroit où les étiquettes sont créées décide d'où viennent les numéros de suivi, et donc si les clients reçoivent automatiquement les notifications d'expédition ou si quelqu'un doit ressaisir ces numéros dans Shopify. Cela décide aussi quelle équipe travaille chaque jour dans l'interface d'administration.",
+    "options": [
+     {
+      "option": "Étiquettes achetées dans Shopify",
+      "pros": "Le suivi et le statut de préparation se mettent à jour automatiquement ; un seul endroit de travail pour l'équipe logistique.",
+      "cons": "Exige des poids exacts et un colis par défaut, et la prise en charge des étiquettes dépend du transporteur et du pays."
+     },
+     {
+      "option": "Étiquettes issues du système du transporteur ou du 3PL",
+      "pros": "Laisse intacts les contrats transporteurs, les tarifs et les processus d'entrepôt existants.",
+      "cons": "Les numéros de suivi doivent être réécrits dans Shopify par intégration, sinon les notifications et la page de statut de commande se périment."
+     }
+    ]
+   }
+  },
+  "Q5.1.13": {
+   "text": "Tous les produits ont-ils des poids exacts (et des dimensions de colis), et d'où viennent ces données ?",
+   "help": "Les tarifs au poids et calculés par le transporteur, les étiquettes d'expédition et certains calculs de droits exigent le poids des produits.",
+   "teach": {
+    "why": "Les tarifs au poids, les tarifs calculés par le transporteur, les étiquettes d'expédition et certains calculs de droits lisent tous les poids et colis des produits. Des poids manquants ou hérités de l'ancienne plateforme constituent une tâche de migration, et cassent les tarifs en silence après le lancement.",
+    "limits": "Les étiquettes exigent des poids exacts et un colis par défaut configuré."
+   }
+  },
+  "Q5.1.14": {
+   "text": "Certains produits comptent-ils comme marchandises dangereuses à l'expédition ?",
+   "help": "Par exemple aérosols (sprays, certaines protections solaires), liquides inflammables (parfums, produits à base d'alcool), batteries au lithium, glace carbonique. Ils exigent en général leur propre profil de livraison et des accords transporteurs dédiés.",
+   "teach": {
+    "why": "Les marchandises dangereuses restent la responsabilité du marchand et limitent ce que Shopify peut faire : les étiquettes USPS et FedEx achetées dans Shopify ne prennent pas en charge les matières dangereuses. Ces produits exigent leur propre profil de livraison et un accord direct avec le transporteur.",
+    "limits": "Les étiquettes USPS et FedEx achetées via Shopify ne prennent pas en charge les matières dangereuses."
+   }
+  },
+  "Q5.2.1": {
+   "text": "Résumez la politique de retours (délai, conditions, qui paie le retour).",
+   "teach": {
+    "why": "La politique écrite est exactement ce que vous configurez en règles de retour — délai, frais de retour, frais de remise en stock, vente ferme — ou ce qu'une application de retours doit reproduire. La recueillir tôt montre si les règles natives peuvent seulement l'exprimer."
+   }
+  },
+  "Q5.2.2": {
+   "text": "Shopify inclut les demandes de retour dans les comptes clients, pilotées par des règles de retour (délai, frais de retour, frais de remise en stock, vente ferme). Est-ce suffisant ?",
+   "teach": {
+    "why": "C'est la question qui tranche la ligne « retours » de la proposition : retours en autonomie natifs avec règles de retour, ou plateforme de retours payante. Tout le reste de cette sous-section n'est que la matière qui alimente cette seule décision.",
+    "limits": "Les règles de retour natives couvrent délai, frais de retour, frais de remise en stock et vente ferme. Les étiquettes de retour ne sont achetées que pour des emplacements de préparation aux États-Unis, et les clients ne peuvent pas choisir un échange dans le formulaire de retour.",
+    "options": [
+     {
+      "option": "Retours en autonomie natifs et règles de retour",
+      "pros": "Inclus dès Basic, aucune licence, un seul système pour les équipes, fonctionne aussi pour les commandes B2B.",
+      "cons": "Les équipes valident et traitent les échanges à la main ; pas de dépôt par QR code ; étiquettes réservées aux emplacements américains."
+     },
+     {
+      "option": "Plateforme de retours (application)",
+      "pros": "Échanges et avoirs choisis par le client, étiquettes et dépôt par QR code hors des États-Unis, motifs de retour et reporting, automatisation à volume.",
+      "cons": "Coût de licence récurrent, un système de plus pour les équipes et le support, et une intégration à tenir à jour."
+     }
+    ]
+   }
+  },
+  "Q5.2.3": {
+   "text": "Traitez-vous des échanges (et pas seulement des remboursements) ?",
+   "teach": {
+    "why": "L'échange n'existe nativement que sous forme d'articles ajoutés par les équipes au moment de valider un retour — le client ne choisit jamais le remplacement. Un oui ici est en général le premier signal net qu'une plateforme de retours a sa place dans la recommandation."
+   }
+  },
+  "Q5.2.4": {
+   "text": "Quelles applications de retours, de suivi ou d'après-achat utilisez-vous ou préférez-vous ?",
+   "teach": {
+    "why": "Une plateforme de retours ou de suivi déjà en place transforme la recommandation : il ne s'agit plus de choisir un outil mais d'en intégrer un, avec son contrat, ses données et sa migration. Posez la question avant de rédiger la sélection d'applications, pas après que le client l'a vue."
+   }
+  },
+  "Q5.2.5": {
+   "text": "De combien de jours les clients disposent-ils pour retourner une commande ?",
+   "teach": {
+    "why": "Le délai est une règle de retour native : le nombre lui-même relève donc de la configuration. Il compte ici parce que des délais inhabituels, ou qui changent selon le marché ou le produit, sont ce qui pousse le client au-delà de ce qu'un seul jeu de règles natives peut exprimer."
+   }
+  },
+  "Q5.2.6": {
+   "text": "Quelle part des commandes est retournée aujourd'hui (%) ?",
+   "help": "Des taux ou des volumes de retour élevés justifient en général une plateforme de retours plutôt que les retours en autonomie natifs de Shopify.",
+   "teach": {
+    "why": "Le volume de retours est le test commercial d'une plateforme de retours : à taux élevé, valider chaque retour à la main dans l'interface d'administration devient un coût de personnel. C'est ce chiffre qui justifie — ou écarte — la licence dans le document final."
+   }
+  },
+  "Q5.2.7": {
+   "text": "Comment les clients renvoient-ils les articles : étiquette prépayée, dépôt par QR code, leur propre envoi, ou un mélange ?",
+   "help": "Shopify ne crée des étiquettes de retour que pour des emplacements de préparation aux États-Unis ; les autres pays, ou le dépôt par QR code, exigent une application de retours.",
+   "teach": {
+    "why": "Shopify n'achète d'étiquettes de retour que pour des emplacements de préparation aux États-Unis, et le dépôt par QR code n'est pas natif du tout. Pour un client européen ou transfrontalier, étiquettes prépayées et dépôt par QR code signifient une application de retours — cette question existe pour le détecter.",
+    "limits": "Les étiquettes de retour natives sont limitées aux emplacements de préparation aux États-Unis.",
+    "options": [
+     {
+      "option": "Le client organise et paie son propre envoi",
+      "pros": "Aucune infrastructure d'étiquettes ; les retours natifs suffisent ; aucune licence d'application.",
+      "cons": "Expérience client dégradée, davantage de contacts au support, et aucun suivi des colis entrants."
+     },
+     {
+      "option": "Étiquette prépayée ou dépôt par QR code",
+      "pros": "Attendu par les consommateurs, donne le suivi des retours et permet de déclencher le remboursement au scan du transporteur.",
+      "cons": "Hors emplacements de préparation américains, cela exige une application de retours plus un compte transporteur, deux coûts récurrents."
+     }
+    ]
+   }
+  },
+  "Q5.2.8": {
+   "text": "Qui paie le retour : vous, le client, ou cela dépend du marché ?",
+   "teach": {
+    "why": "Qui paie décide si des frais de retour appartiennent aux règles et s'il faut même acheter des étiquettes. Une réponse « cela dépend du marché » est le point où un seul jeu de règles natives cesse de suffire."
+   }
+  },
+  "Q5.2.9": {
+   "text": "Quels échanges proposez-vous : le même produit dans une autre variante, n'importe quel autre produit, ou un avoir en priorité ?",
+   "help": "Les clients ne peuvent pas choisir un échange dans le formulaire de retour de Shopify ; les équipes ajoutent les articles d'échange à la validation. Les échanges choisis par le client exigent une application.",
+   "teach": {
+    "why": "Les clients ne peuvent pas choisir un échange dans le formulaire de retour de Shopify ; les équipes ajoutent les articles d'échange à la validation. Changement de variante, échange contre n'importe quel produit et parcours avoir-d'abord sont des fonctionnalités d'application : toute réponse autre que « aucun » est donc un signal d'application."
+   }
+  },
+  "Q5.2.10": {
+   "text": "Acceptez-vous les retours internationaux (y compris le remboursement des droits) ?",
+   "teach": {
+    "why": "Les retours et les remboursements de droits pour les commandes internationales sont gérés nativement, mais pas l'étiquette de retour — Shopify ne les achète que pour des emplacements de préparation aux États-Unis. Les retours transfrontaliers ajoutent donc en général une application de retours et des formalités douanières.",
+    "limits": "Étiquettes de retour natives réservées aux emplacements de préparation aux États-Unis."
+   }
+  },
+  "Q5.2.11": {
+   "text": "Les articles retournés doivent-ils être contrôlés avant l'émission du remboursement ou de l'échange ?",
+   "teach": {
+    "why": "Le contrôle insère une étape manuelle entre l'arrivée du colis et le mouvement d'argent. Il fixe le déclencheur du remboursement, qui effectue la vérification, où le résultat est consigné et combien de temps le client attend — autant du processus et du personnel que du système."
+   }
+  },
+  "Q5.2.12": {
+   "text": "Avez-vous besoin de recueillir et d'analyser les motifs de retour ?",
+   "teach": {
+    "why": "Le recueil des motifs est ce qui transforme les retours en données de merchandising et de qualité. Demandez où l'analyse doit vivre — l'interface d'administration Shopify, une application de retours ou la pile décisionnelle du client — car c'est cela qui décide s'il faut une plateforme."
+   }
+  },
+  "Q5.2.13": {
+   "text": "Les clients professionnels doivent-ils demander leurs retours en ligne (si vous vendez en B2B) ?",
+   "help": "Les demandes de retour de Shopify fonctionnent aussi pour les commandes B2B.",
+   "teach": {
+    "why": "Les demandes de retour de Shopify fonctionnent aussi pour les commandes B2B : c'est donc en général de la configuration et non du développement. Cela compte parce que la validation des retours B2B et la gestion des avoirs se trouvent souvent dans l'ERP, et cette partie-là est un travail d'intégration."
+   }
+  },
+  "Q5.2.14": {
+   "text": "Les délais ou conditions de retour diffèrent-ils selon le marché ou le produit (par exemple les articles en vente ferme) ?",
+   "help": "La vente ferme par produit ou par collection est native.",
+   "teach": {
+    "why": "La vente ferme est native par produit ou par collection. Des délais ou conditions qui varient selon le marché sont l'endroit où un seul jeu de règles natives s'épuise et où une plateforme de retours entre dans le périmètre. C'est une question détecteur assumée."
+   }
+  },
+  "Q5.3.1": {
+   "text": "Les notifications de commande, d'expédition et de livraison ont-elles besoin d'un design ou d'un contenu sur mesure ?",
+   "help": "Les notifications Shopify sont modifiables ; les notifications d'expédition par SMS sont natives.",
+   "teach": {
+    "why": "Les modèles de notification de Shopify sont modifiables et les notifications d'expédition par SMS sont natives. La réponse décide s'il s'agit d'un travail de modèles dans l'interface d'administration, ou d'une raison d'envoyer plutôt depuis la plateforme e-mail du client."
+   }
+  },
+  "Q5.3.2": {
+   "text": "Les notifications sont-elles envoyées par Shopify, par la plateforme e-mail, ou par les deux ?",
+   "teach": {
+    "why": "Qui envoie décide de l'intégration et de qui possède le contenu après la mise en ligne. Répartir entre Shopify et la plateforme e-mail crée aussi le risque de messages en double : convenez donc du partage notification par notification, et non sur le principe.",
+    "options": [
+     {
+      "option": "Shopify envoie toutes les notifications transactionnelles",
+      "pros": "Aucune intégration, les données de commande sont toujours à jour, notifications d'expédition par SMS incluses.",
+      "cons": "Le contrôle des modèles et du design se limite à ce que permet l'éditeur de notifications, et le reporting reste à l'écart de la pile marketing."
+     },
+     {
+      "option": "La plateforme e-mail les envoie",
+      "pros": "Un seul jeu de modèles de marque et une seule vue de reporting sur le marketing et le transactionnel.",
+      "cons": "Exige que les événements de commande soient poussés vers la plateforme, que les modèles Shopify soient désactivés avec soin, et que la délivrabilité soit portée ailleurs."
+     }
+    ]
+   }
+  },
+  "Q5.4.2": {
+   "text": "Les clients doivent-ils pouvoir annuler leurs commandes eux-mêmes ?",
+   "help": "Les clients peuvent demander l'annulation de commandes non expédiées depuis leur compte ; vous validez. L'annulation immédiate sans validation exige une application.",
+   "teach": {
+    "why": "Les clients peuvent demander l'annulation d'une commande non expédiée depuis leur compte, mais le marchand doit valider chaque demande. Si le client attend que la commande disparaisse immédiatement, c'est une application, pas de la configuration.",
+    "limits": "Les demandes d'annulation natives exigent toujours la validation du marchand.",
+    "options": [
+     {
+      "option": "Demandes d'annulation natives avec validation",
+      "pros": "Incluses dès Basic, conservent un contrôle humain avant que la marchandise et l'argent ne bougent.",
+      "cons": "Pas immédiat ; quelqu'un doit traiter chaque demande, ce qui devient un coût de support à volume."
+     },
+     {
+      "option": "Application de modification et d'annulation de commande",
+      "pros": "Annulation et modification immédiates en autonomie, moins de contacts au support.",
+      "cons": "Licence récurrente, et elle doit être alignée sur les heures limites de préparation pour que les commandes annulées ne soient pas déjà préparées."
+     }
+    ]
+   }
+  },
+  "Q5.4.3": {
+   "text": "Jusqu'à quand une commande peut-elle être annulée ?",
+   "teach": {
+    "why": "L'heure limite doit correspondre à la vitesse à laquelle la préparation traite les commandes, ce qui avec un 3PL peut se compter en minutes. Elle décide de la règle que vous posez, de ce que fait le support des demandes tardives, et de savoir si « annuler » signifie en réalité « refuser la livraison »."
+   }
+  },
+  "Q5.4.4": {
+   "text": "Autorisez-vous les annulations partielles (certains articles d'une commande) ?",
+   "teach": {
+    "why": "Annuler une partie de commande touche le calcul du remboursement, la remise en stock et le message envoyé à l'entrepôt ou au 3PL. La réponse dit si l'annulation est une règle simple ou un processus au cas par cas dans l'interface d'administration, avec une intégration derrière."
+   }
+  },
+  "Q5.4.5": {
+   "text": "Les clients doivent-ils pouvoir modifier une commande après l'avoir passée (adresse, articles) ?",
+   "help": "Les équipes peuvent modifier les commandes nativement ; que les clients modifient les leurs exige une application.",
+   "teach": {
+    "why": "Les équipes peuvent modifier les commandes nativement ; les clients ne peuvent pas modifier la leur après le paiement. Un oui ici implique une application de modification de commande : traitez-la comme un détecteur d'application et non comme une question de configuration.",
+    "limits": "La modification native de commande est une action réservée aux équipes, dans l'interface d'administration."
+   }
+  },
+  "Q5.4.6": {
+   "text": "Comment les remboursements sont-ils versés : sur le moyen de paiement d'origine, en avoir, ou en carte cadeau ?",
+   "teach": {
+    "why": "Le mode de remboursement décide de la piste comptable : moyen de paiement d'origine, avoir et carte cadeau atterrissent différemment dans le rapprochement et dans le flux vers l'ERP. L'avoir change aussi ce que les comptes clients doivent afficher."
+   }
+  },
+  "Q5.4.7": {
+   "text": "Quand le remboursement est-il émis : à la demande, au scan du transporteur, à réception, ou après contrôle ?",
+   "help": "Les remboursements au scan du transporteur exigent une plateforme de retours connectée au suivi transporteur.",
+   "teach": {
+    "why": "Rembourser à la demande, à la validation ou à réception est natif. Rembourser au moment où le transporteur scanne le colis exige une plateforme de retours reliée au suivi transporteur — un signal d'application net, issu d'une seule réponse, et que les clients demandent sans en connaître le coût.",
+    "options": [
+     {
+      "option": "Remboursement à la validation ou à réception (natif)",
+      "pros": "Aucune application, et l'argent ne bouge qu'une fois la marchandise en votre possession.",
+      "cons": "Le client attend le transport plus le traitement, ce qui génère des contacts « où est mon remboursement »."
+     },
+     {
+      "option": "Remboursement au scan du transporteur",
+      "pros": "Remboursement rapide, expérience de retour nettement meilleure.",
+      "cons": "Exige une plateforme de retours connectée au suivi transporteur, et le client porte le risque sur les colis qui n'arrivent jamais."
+     }
+    ]
+   }
+  },
+  "Q5.4.8": {
+   "text": "Les frais de port initiaux sont-ils remboursés : toujours, uniquement en cas de faute de votre part, ou jamais ?",
+   "teach": {
+    "why": "Le fait que les frais de port aller soient rendus change le calcul du remboursement sur chaque retour et la formulation de la politique. C'est un litige fréquent : fixez explicitement le cas « uniquement en cas de faute de notre part » plutôt que sur le principe."
+   }
+  },
+  "Q5.4.9": {
+   "text": "Facturez-vous des frais de remise en stock ?",
+   "help": "Les frais de remise en stock sont une règle de retour native (pourcentage du retour).",
+   "teach": {
+    "why": "Les frais de remise en stock sont une règle de retour native, exprimée en pourcentage du retour : un oui coûte donc de la configuration et non du développement. Cela reste à vérifier au regard du droit de la consommation de chaque marché où le client vend."
+   }
+  },
+  "Q5.4.10": {
+   "text": "Émettez-vous des remboursements partiels (par exemple pièces endommagées ou manquantes) ?",
+   "teach": {
+    "why": "Les remboursements partiels pour dommage ou pièces manquantes relèvent d'une appréciation manuelle. La vraie question est qui peut en émettre un, jusqu'à quel montant, et comment il parvient à la comptabilité — des permissions et un processus, pas une capacité de plateforme."
+   }
+  },
+  "Q5.4.11": {
+   "text": "Les remboursements doivent-ils être validés par quelqu'un avant d'être versés ?",
+   "teach": {
+    "why": "Une étape de validation décide qui détient les droits de remboursement, combien de temps le client attend, et si un outil de retours doit seulement modéliser une file de validation. C'est aussi le premier contrôle sur lequel la direction financière du client posera des questions."
+   }
+  },
+  "Q5.4.12": {
+   "text": "Les annulations et les remboursements doivent-ils être transmis à votre ERP ou à votre système financier ?",
+   "teach": {
+    "why": "Les annulations et les remboursements sont les événements les plus difficiles à garder cohérents entre Shopify et la comptabilité, parce que l'argent a déjà bougé. Un oui ajoute du travail d'intégration, de la gestion d'erreurs et des tests de rapprochement — pas seulement un webhook de plus."
+   }
+  },
+  "Q5.4.13": {
+   "text": "Les annulations doivent-elles être immédiates, sans votre validation ?",
+   "teach": {
+    "why": "Cette question n'existe que pour détecter une application. Les demandes d'annulation de Shopify exigent toujours la validation du marchand : « immédiat, sans validation » ne peut donc pas être livré par configuration — il faut une application de modification et d'annulation de commande.",
+    "limits": "Les demandes d'annulation natives exigent la validation du marchand ; il n'existe pas d'auto-annulation immédiate native."
+   }
+  },
+  "Q5.5.1": {
+   "text": "Souhaitez-vous une page de suivi de commande à votre marque sur votre propre site ?",
+   "help": "Shopify inclut une page de statut de commande et des e-mails d'expédition. Une page de suivi à votre marque, des alertes transporteur proactives ou des estimations de livraison exigent en général une application d'après-achat.",
+   "teach": {
+    "why": "Shopify fournit une page de statut de commande et des notifications d'expédition, pas une page de suivi à la marque sur le site du client. Un oui est le principal déclencheur d'une application de suivi après achat : établissez donc ce que « à notre marque » doit réellement inclure.",
+    "options": [
+     {
+      "option": "Page de statut de commande et e-mails d'expédition natifs",
+      "pros": "Inclus, aucune application, toujours en phase avec la commande.",
+      "cons": "Personnalisation limitée, aucune alerte sur les événements transporteur, et le trafic qu'une page de suivi capterait part sur le site du transporteur."
+     },
+     {
+      "option": "Application de suivi après achat",
+      "pros": "Suivi à votre marque sur votre domaine, alertes proactives de retard, une surface de merchandising après achat.",
+      "cons": "Licence récurrente, un prestataire de plus détenant les données de commande et d'adresse, et du travail de thème pour l'intégrer."
+     }
+    ]
+   }
+  },
+  "Q5.5.2": {
+   "text": "Sur quels canaux les clients doivent-ils recevoir des informations proactives de livraison (retards, en cours de livraison) ?",
+   "teach": {
+    "why": "Les notifications d'expédition par e-mail et SMS sont natives. Les alertes proactives de retard et de mise en livraison viennent d'une plateforme qui lit les événements transporteur : la liste des canaux décide donc ici si une application de suivi entre dans la recommandation."
+   }
+  },
+  "Q5.5.3": {
+   "text": "Les pages produit ou le paiement doivent-ils afficher des dates de livraison estimées ?",
+   "help": "Shopify peut afficher des dates de livraison au paiement : des dates manuelles partout, des dates automatiques uniquement pour les emplacements de préparation aux États-Unis.",
+   "teach": {
+    "why": "Shopify peut afficher des dates de livraison au paiement : des dates manuelles partout, des dates automatiques uniquement pour les emplacements de préparation aux États-Unis. Hors des États-Unis, les estimations automatiques ou les dates sur les pages produit exigent une application — une limite documentée qui tranche cette ligne.",
+    "limits": "Les dates de livraison automatiques sont limitées aux emplacements de préparation aux États-Unis ; ailleurs, les dates au paiement sont saisies manuellement.",
+    "options": [
+     {
+      "option": "Dates de livraison manuelles au paiement",
+      "pros": "Natif, gratuit, disponible partout où le client prépare ses commandes.",
+      "cons": "Des promesses statiques que quelqu'un doit entretenir ; aucune estimation en page produit ; aucun ajustement à la performance réelle du transporteur."
+     },
+     {
+      "option": "Application d'estimation de livraison",
+      "pros": "Estimations en page produit et au paiement hors des États-Unis, ajustées par produit et par destination.",
+      "cons": "Coût de licence, intégration au thème, et l'estimation ne vaut que ce que valent les données que le client lui fournit."
+     }
+    ]
+   }
+  },
+  "Q5.5.4": {
+   "text": "Les clients doivent-ils pouvoir ouvrir en ligne des demandes de garantie, de réparation ou d'entretien ?",
+   "teach": {
+    "why": "Les demandes de garantie, de réparation et d'entretien n'ont aucun parcours natif dans Shopify. Un oui implique une application ou un développement sur mesure, plus un processus opérationnel derrière : cadrez-le comme une ligne à part plutôt que de le replier dans les retours."
+   }
+  },
+  "Q5.6.1": {
+   "text": "Combien de magasins physiques (y compris éphémères) vendront avec Shopify ?",
+   "help": "0 s'il n'y en a aucun.",
+   "teach": {
+    "why": "Le nombre de magasins active le modificateur de périmètre Retail et POS et dimensionne le déploiement. Au-delà de cinq magasins, l'offre se fait en programme livré par incréments, ou en équipe de run au tarif catalogue — et non en un projet avec une seule mise en ligne."
+   }
+  },
+  "Q5.6.2": {
+   "text": "Point de vente au lancement ?",
+   "teach": {
+    "why": "Shopify POS et un point de vente tiers intégré à Shopify sont deux projets très différents : l'un est configuration, matériel et formation ; l'autre est une intégration de stocks, de commandes et de paiements. Cette réponse fixe tout le chantier retail.",
+    "options": [
+     {
+      "option": "Shopify POS",
+      "pros": "Un catalogue produit, un stock et une fiche client uniques entre le web et le magasin ; services omnicanaux disponibles nativement.",
+      "cons": "Matériel, reformation du personnel et un abonnement POS Pro par emplacement pour les services omnicanaux."
+     },
+     {
+      "option": "Point de vente tiers existant intégré à Shopify",
+      "pros": "Aucun changement pour le personnel de magasin, conserve le contrat retail en place et le reporting back-office.",
+      "cons": "Synchronisation des stocks et des commandes à construire et à surveiller ; les services omnicanaux natifs comme l'expédition depuis le magasin ne s'appliquent pas."
+     }
+    ]
+   }
+  },
+  "Q5.6.3": {
+   "text": "Quels services omnicanaux sont nécessaires en magasin ?",
+   "help": "Retrait en magasin, expédition depuis le magasin, retours en magasin de commandes web, rayon infini, transferts de stock, prix magasin.",
+   "teach": {
+    "why": "Les services en magasin listés ici arrivent avec POS Pro, qui est un abonnement par emplacement — un coût récurrent porté par le client, pas un développement ponctuel. Les catalogues de marché retail exigent POS Pro ou Plus. Signalez les deux avant que le prix ne soit convenu.",
+    "limits": "POS Pro est facturé par emplacement ; les catalogues de marché retail exigent POS Pro ou Plus."
+   }
+  },
+  "Q5.6.4": {
+   "text": "Dans quels pays se trouvent les magasins ?",
+   "teach": {
+    "why": "Les pays des magasins décident de la configuration de paiement, de fiscalité et de matériel dont chaque magasin a besoin, et si le retail s'inscrit dans un marché existant. Confirmez-les : le matériel POS et la disponibilité des paiements en magasin sont propres à chaque pays et doivent être vérifiés pays par pays."
+   }
   }
  },
  "document": {

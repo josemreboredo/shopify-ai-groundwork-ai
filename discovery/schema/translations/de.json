@@ -1273,6 +1273,467 @@
     "why": "Eine Erstattungsgarantie ist selten nativ. Shopify Protect setzt einen in den USA ansässigen Händler mit einem US-Shopify-Payments-Konto voraus und deckt nur Shop-Pay-Bestellungen physischer Waren ab — in Europa ist das also immer eine kostenpflichtige Betrugs-App.",
     "limits": "Shopify Protect verlangt außerdem den Versand mit gültiger Sendungsverfolgung innerhalb von 7 Tagen und die Bestellung im Transit innerhalb von 10 Tagen. Behandeln Sie es im europäischen Scoping als reinen US-Vorteil."
    }
+  },
+  "Q5.1.1": {
+   "text": "Wickeln Sie den Versand selbst ab, über einen 3PL-Dienstleister oder beides?",
+   "teach": {
+    "why": "Entscheidet, wer das Fulfillment im Build verantwortet: Shopify-Standorte, die im Admin bearbeitet werden, oder ein 3PL-Konnektor mit eigener Synchronisation von Bestellungen, Beständen und Sendungsverfolgung. Das bestimmt den Integrationsaufwand, die Umstellung zum Go-live und wer Ausnahmen bearbeitet."
+   }
+  },
+  "Q5.1.2": {
+   "text": "Welcher 3PL-Dienstleister?",
+   "teach": {
+    "why": "Der konkret genannte Dienstleister entscheidet, ob ein fertiger Shopify-Konnektor existiert oder die Integration gebaut und getestet werden muss. Er legt außerdem fest, was zurückfließt — Bestände, Sendungsnummern, Retouren — und welche Fehlerbehandlung Sie einplanen müssen."
+   }
+  },
+  "Q5.1.3": {
+   "text": "Wie viele Standorte beliefern Online-Bestellungen (Lager, 3PL-Standorte und Filialen, die versenden), und in welchen Ländern liegen sie?",
+   "help": "Filialen, die vor Ort verkaufen, werden getrennt in § 5.6 gezählt.",
+   "teach": {
+    "why": "Die Zahl der Standorte bestimmt sowohl den Plan als auch den Umfang des Routings. Shopify erlaubt 10 Standorte unterhalb von Plus und 200 auf Plus. Mehr als zwei beliefernde Standorte mit einem Routing jenseits der nativen Regeln lösen eine Scoping-Betrachtung für Multi-Location-Bestände aus.",
+    "limits": "10 Bestandsstandorte auf Basic, Grow und Advanced; 200 auf Plus. Von Apps angelegte Standorte zählen nicht mit."
+   }
+  },
+  "Q5.1.4": {
+   "text": "Wie soll Shopify den beliefernden Standort auswählen?",
+   "help": "Shopifys Routing-Regeln für Bestellungen: Teillieferungen minimieren, im Markt bleiben, nächstgelegener Standort, priorisierte Standorte, Standort-Metafelder. Alles andere braucht eine eigene Routing-Function oder das ERP bzw. OMS.",
+   "teach": {
+    "why": "Shopify wählt den Standort über native Routing-Regeln: Teillieferungen minimieren, im Markt bleiben, nächstgelegener Standort, priorisierte Standorte, Standort-Metafelder. Alles andere bedeutet eine eigene Routing-Function oder eine Entscheidung im ERP — ein anderer, größerer Build.",
+    "options": [
+     {
+      "option": "Native Routing-Regeln für Bestellungen",
+      "pros": "Ab Basic verfügbar, im Admin konfiguriert, kein Code, vom Kunden später änderbar.",
+      "cons": "Nur die dokumentierten Strategien; keine maßgeschneiderte Logik wie Kapazität, Kosten oder Annahmeschluss der Carrier."
+     },
+     {
+      "option": "Eigene Order-Routing-Location-Rule-Function, oder das ERP/OMS entscheidet",
+      "pros": "Jede Routing-Logik, die das Geschäft tatsächlich nutzt; passt zu Kunden, deren OMS ohnehin führend ist.",
+      "cons": "Entwicklung und laufende Pflege, und es setzt die Scoping-Markierung für Multi-Location-Bestände (T3)."
+     }
+    ]
+   }
+  },
+  "Q5.1.5": {
+   "text": "Welche Carrier nutzen Sie?",
+   "teach": {
+    "why": "Die Carrier-Liste zeigt, welche Tarife, Labels und Sendungsverfolgungen innerhalb von Shopify leben können und welche im System des Carriers bleiben oder eine App brauchen. Sie ist außerdem der erste Input für die Entscheidungen zu Versandtarifen und Labels weiter unten."
+   }
+  },
+  "Q5.1.6": {
+   "text": "Wie werden die Versandkosten berechnet?",
+   "help": "Pauschal, nach Gewicht oder Warenwert, kostenlos ab einer Schwelle, Live-Carrier-Tarife oder Tarife aus einer App.",
+   "teach": {
+    "why": "Pauschale, gewichts- und wertbasierte Tarife sind ab Basic nativ. Live berechnete Tarife von Drittanbieter-Carriern setzen Advanced oder Plus voraus und sind auf Grow nur als kostenpflichtige Erweiterung oder bei jährlicher Zahlweise möglich. Diese Antwort kann Plan und Preis bewegen.",
+    "limits": "Live berechneter Versand von Drittanbieter-Carriern ist auf Advanced und Plus verfügbar; Grow-Stores können ihn gegen eine zusätzliche monatliche Gebühr oder durch Wechsel auf jährliche Zahlweise hinzubuchen.",
+    "options": [
+     {
+      "option": "Native Tariftabellen (Pauschale, Gewicht, Preisbedingungen)",
+      "pros": "Funktioniert ab Basic, keine Zusatzkosten, vom Kunden vollständig konfigurierbar.",
+      "cons": "Die Tarife sind Ihre eigenen Schätzungen — die Marge verschiebt sich, sobald der Carrier seine Preise ändert."
+     },
+     {
+      "option": "Live berechnete Carrier-Tarife",
+      "pros": "Der Checkout zeigt den echten Preis des Carriers für diesen Warenkorb und dieses Ziel.",
+      "cons": "Braucht Advanced oder Plus (auf Grow Zusatzgebühr oder jährliche Zahlweise), ein Carrier-Konto und korrekte Gewichte und Packmaße."
+     }
+    ]
+   }
+  },
+  "Q5.1.7": {
+   "text": "Gibt es produktspezifische Versandregeln (schwer, gefährlich, temperaturgeführt)?",
+   "teach": {
+    "why": "Schwere, gefährliche oder temperaturgeführte Produkte brauchen in der Regel ein eigenes Versandprofil, eigene Tarife und eine gesonderte Carrier-Vereinbarung. Werden sie in der Discovery übersehen, tauchen sie nach dem Launch als Tarife auf, die unmögliche Lieferungen zusagen."
+   }
+  },
+  "Q5.1.9": {
+   "text": "In welche Länder versenden Sie nicht?",
+   "teach": {
+    "why": "Versandzonen und Markt-Setup entstehen daraus, wohin Sie nicht versenden. Stimmt das nicht, erreichen Kundinnen und Kunden den Checkout für Ziele, die Sie nicht bedienen können — und das kommt als Stornierungen, Erstattungen und Support-Last zurück."
+   }
+  },
+  "Q5.1.10": {
+   "text": "Schwellen für kostenlosen Versand je Markt (Markt, Schwelle, Währung, welche Tarife).",
+   "help": "Nativ: eine Tarifbedingung auf Basis des Bestellwerts oder ein automatischer Rabatt für kostenlosen Versand.",
+   "teach": {
+    "why": "Kostenloser Versand ist nativ — entweder als Wertbedingung an einem Versandtarif oder als automatischer Versandkostenrabatt. Schwellen, die sich je Markt und Währung unterscheiden, vervielfachen die zu konfigurierenden und zu testenden Tarife und Rabatte: Aufwand, keine Entwicklung.",
+    "limits": "Beide Mechanismen sind ab Basic nativ; die Kosten entstehen durch Konfiguration und Test je Markt."
+   }
+  },
+  "Q5.1.11": {
+   "text": "Welche Zustellarten bieten Sie an?",
+   "help": "Lokale Lieferung und Abholung in der Filiale sind nativ. Paketshops sind nur für Stores in Frankreich, Italien, Spanien und dem Vereinigten Königreich nativ (mit bestimmten Carriern); anderswo brauchen sie eine Liefer-App oder eine eigene Lösung. Lieferzeitfenster brauchen eine App; Versand aus der Filiale braucht Shopify POS.",
+   "teach": {
+    "why": "Lokale Lieferung und Abholung in der Filiale sind nativ. Paketshops sind nur für Stores in Frankreich, Italien, Spanien und dem Vereinigten Königreich mit bestimmten Carriern nativ. Lieferzeitfenster brauchen eine App; Versand aus der Filiale braucht Shopify POS.",
+    "limits": "Außerhalb von Frankreich, Italien, Spanien und dem Vereinigten Königreich brauchen Paketshops eine Custom App mit der Pickup Point Delivery Option Generator Function auf Plus und stehen für B2B und Express-Wallets nicht zur Verfügung."
+   }
+  },
+  "Q5.1.12": {
+   "text": "Wie werden Versandlabels erstellt?",
+   "teach": {
+    "why": "Wo Labels erstellt werden, entscheidet, woher die Sendungsnummern kommen — und damit, ob Kundinnen und Kunden automatisch Versandbenachrichtigungen erhalten oder jemand die Nummern von Hand in Shopify nachträgt. Es entscheidet außerdem, welches Team täglich im Admin arbeitet.",
+    "options": [
+     {
+      "option": "Labels in Shopify gekauft",
+      "pros": "Sendungsverfolgung und Fulfillment-Status aktualisieren sich automatisch; ein Arbeitsort für das Operations-Team.",
+      "cons": "Braucht korrekte Gewichte und ein Standardpaket, und die Label-Unterstützung hängt von Carrier und Land ab."
+     },
+     {
+      "option": "Labels aus dem System des Carriers oder des 3PL",
+      "pros": "Lässt bestehende Carrier-Verträge, Konditionen und Lagerprozesse unangetastet.",
+      "cons": "Die Sendungsnummern müssen per Integration nach Shopify zurückgeschrieben werden, sonst veralten Benachrichtigungen und Bestellstatusseite."
+     }
+    ]
+   }
+  },
+  "Q5.1.13": {
+   "text": "Haben alle Produkte korrekte Gewichte (und Packmaße), und woher stammen diese Daten?",
+   "help": "Gewichtsbasierte und live berechnete Tarife, Versandlabels und manche Zollberechnungen brauchen Produktgewichte.",
+   "teach": {
+    "why": "Gewichtsbasierte Tarife, live berechnete Carrier-Tarife, Versandlabels und manche Zollberechnungen lesen alle Produktgewichte und Packmaße. Fehlende oder von der alten Plattform geerbte Gewichtsdaten sind eine Migrationsaufgabe — und sie zerlegen die Tarife nach dem Launch unbemerkt.",
+    "limits": "Labels brauchen korrekte Gewichte und ein konfiguriertes Standardpaket."
+   }
+  },
+  "Q5.1.14": {
+   "text": "Gelten einzelne Produkte als Gefahrgut im Versand?",
+   "help": "Z. B. Aerosole (Sprays, manche Sonnenschutzmittel), entzündbare Flüssigkeiten (Parfüms, alkoholhaltige Produkte), Lithiumbatterien, Trockeneis. Sie brauchen in der Regel ein eigenes Versandprofil und eigene Carrier-Vereinbarungen.",
+   "teach": {
+    "why": "Gefahrgut bleibt in der Verantwortung des Händlers und schränkt ein, was Shopify leisten kann: In Shopify gekaufte USPS- und FedEx-Labels unterstützen keine Gefahrstoffe. Diese Produkte brauchen ein eigenes Versandprofil und eine direkte Vereinbarung mit dem Carrier.",
+    "limits": "Über Shopify gekaufte USPS- und FedEx-Labels unterstützen keine Gefahrstoffe."
+   }
+  },
+  "Q5.2.1": {
+   "text": "Fassen Sie die Retourenrichtlinie zusammen (Frist, Bedingungen, wer das Rücksendeporto trägt).",
+   "teach": {
+    "why": "Die schriftliche Richtlinie ist genau das, was Sie als Retourenregeln konfigurieren — Frist, Retourengebühr, Wiedereinlagerungsgebühr, endgültiger Verkauf — oder was eine Retouren-App nachbilden muss. Sie früh zu erfassen zeigt, ob die nativen Regeln sie überhaupt abbilden können."
+   }
+  },
+  "Q5.2.2": {
+   "text": "Shopify bietet Retourenanfragen im Kundenkonto, gesteuert über Retourenregeln (Frist, Retourengebühr, Wiedereinlagerungsgebühr, endgültiger Verkauf). Reicht das?",
+   "teach": {
+    "why": "Das ist die Frage, die die Retourenposition im Angebot entscheidet: native Selbstbedienungsretouren mit Retourenregeln oder eine kostenpflichtige Retourenplattform. Alles andere in diesem Unterabschnitt ist Beleg für genau diese eine Entscheidung.",
+    "limits": "Native Retourenregeln decken Frist, Retourengebühr, Wiedereinlagerungsgebühr und endgültigen Verkauf ab. Retourenlabels werden nur für Fulfillment-Standorte in den USA gekauft, und Kundinnen und Kunden können im Retourenformular keinen Umtausch wählen.",
+    "options": [
+     {
+      "option": "Native Selbstbedienungsretouren und Retourenregeln",
+      "pros": "Ab Basic enthalten, keine Lizenz, ein System für die Mitarbeitenden, funktioniert auch für B2B-Bestellungen.",
+      "cons": "Mitarbeitende genehmigen und bearbeiten Umtausch von Hand; keine QR-Abgabe; Labels nur für US-Standorte."
+     },
+     {
+      "option": "Retourenplattform (App)",
+      "pros": "Vom Kunden gewählter Umtausch und Guthaben, Labels und QR-Abgabe außerhalb der USA, Retourengründe und Auswertungen, Automatisierung bei Volumen.",
+      "cons": "Wiederkehrende Lizenzkosten, ein weiteres System für Mitarbeitende und Support und eine Integration, die Schritt halten muss."
+     }
+    ]
+   }
+  },
+  "Q5.2.3": {
+   "text": "Wickeln Sie Umtausch ab (nicht nur Erstattungen)?",
+   "teach": {
+    "why": "Umtausch existiert nativ nur als Artikel, die Mitarbeitende beim Genehmigen einer Retoure hinzufügen — die Kundschaft wählt den Ersatz nie selbst. Ein Ja ist hier meist das erste harte Signal, dass eine Retourenplattform in die Empfehlung gehört."
+   }
+  },
+  "Q5.2.4": {
+   "text": "Welche Apps für Retouren, Sendungsverfolgung oder die Zeit nach dem Kauf nutzen oder bevorzugen Sie?",
+   "teach": {
+    "why": "Eine bereits genutzte Retouren- oder Tracking-Plattform verwandelt die Empfehlung von „ein Werkzeug auswählen“ in „ein Werkzeug integrieren“, mit eigenem Vertrag, eigenen Daten und eigener Migration. Fragen Sie das, bevor die App-Auswahl entworfen wird, nicht danach."
+   }
+  },
+  "Q5.2.5": {
+   "text": "Wie viele Tage haben Kundinnen und Kunden, um eine Bestellung zurückzusenden?",
+   "teach": {
+    "why": "Die Frist ist eine native Retourenregel, die Zahl selbst ist also Konfiguration. Wichtig ist sie hier, weil ungewöhnliche Fristen oder Fristen, die je Markt oder Produkt variieren, den Kunden über das hinausschieben, was ein nativer Regelsatz abbilden kann."
+   }
+  },
+  "Q5.2.6": {
+   "text": "Welcher Anteil der Bestellungen wird heute retourniert (%)?",
+   "help": "Hohe Retourenquoten oder -mengen rechtfertigen meist eine Retourenplattform statt Shopifys nativer Selbstbedienungsretouren.",
+   "teach": {
+    "why": "Das Retourenvolumen ist der kommerzielle Test für eine Retourenplattform: Bei hoher Quote wird es zum Personalkostenfaktor, jede Retoure von Hand im Admin zu genehmigen. Diese Zahl rechtfertigt die App-Lizenz im Abschlussdokument — oder schließt sie aus."
+   }
+  },
+  "Q5.2.7": {
+   "text": "Wie senden Kundinnen und Kunden Artikel zurück: vorfrankiertes Label, Abgabe per QR-Code, eigene Sendung oder gemischt?",
+   "help": "Shopify erstellt Retourenlabels nur für Fulfillment-Standorte in den USA; andere Länder oder die QR-Abgabe brauchen eine Retouren-App.",
+   "teach": {
+    "why": "Shopify kauft Retourenlabels nur für Fulfillment-Standorte in den USA, und die Abgabe per QR-Code ist überhaupt nicht nativ. Für einen europäischen oder grenzüberschreitenden Kunden bedeuten vorfrankierte Labels oder QR-Abgabe eine Retouren-App — genau dafür gibt es diese Frage.",
+    "limits": "Native Retourenlabels sind auf Fulfillment-Standorte in den USA begrenzt.",
+    "options": [
+     {
+      "option": "Die Kundschaft organisiert und bezahlt die Rücksendung selbst",
+      "pros": "Keine Label-Infrastruktur nötig; native Retouren reichen; keine App-Lizenz.",
+      "cons": "Schlechteres Kundenerlebnis, mehr Supportkontakte und keine Verfolgung eingehender Pakete."
+     },
+     {
+      "option": "Vorfrankiertes Label oder QR-Abgabe",
+      "pros": "Von Verbrauchern erwartet, liefert Verfolgung der Rücksendung und erlaubt, die Erstattung beim Scan des Carriers auszulösen.",
+      "cons": "Außerhalb von US-Fulfillment-Standorten braucht es dafür eine Retouren-App plus ein Carrier-Konto — beides laufende Kosten."
+     }
+    ]
+   }
+  },
+  "Q5.2.8": {
+   "text": "Wer trägt das Rücksendeporto: Sie, die Kundschaft, oder hängt es vom Markt ab?",
+   "teach": {
+    "why": "Wer zahlt, entscheidet, ob eine Retourengebühr in die Regeln gehört und ob überhaupt Labels gekauft werden müssen. Eine Antwort „hängt vom Markt ab“ ist der Punkt, an dem ein nativer Regelsatz nicht mehr genügt."
+   }
+  },
+  "Q5.2.9": {
+   "text": "Welchen Umtausch bieten Sie an: dasselbe Produkt in einer anderen Variante, ein beliebiges anderes Produkt, oder zuerst Guthaben?",
+   "help": "Im Retourenformular von Shopify kann die Kundschaft keinen Umtausch wählen; Mitarbeitende fügen Umtauschartikel beim Genehmigen hinzu. Vom Kunden gewählter Umtausch braucht eine App.",
+   "teach": {
+    "why": "Im Retourenformular von Shopify kann die Kundschaft keinen Umtausch wählen; Mitarbeitende fügen Umtauschartikel beim Genehmigen hinzu. Variantentausch, Umtausch in ein beliebiges Produkt und Guthaben-zuerst-Strecken sind App-Funktionen — jede Antwort außer „keinen“ ist damit ein App-Signal."
+   }
+  },
+  "Q5.2.10": {
+   "text": "Akzeptieren Sie internationale Retouren (einschließlich Erstattung der Zölle)?",
+   "teach": {
+    "why": "Retouren und Zollerstattungen für internationale Bestellungen werden nativ abgewickelt, das Retourenlabel jedoch nicht — Shopify kauft die nur für Fulfillment-Standorte in den USA. Grenzüberschreitende Retouren bringen deshalb meist eine Retouren-App plus Zollpapiere mit sich.",
+    "limits": "Native Retourenlabels nur für Fulfillment-Standorte in den USA."
+   }
+  },
+  "Q5.2.11": {
+   "text": "Müssen retournierte Artikel geprüft werden, bevor Erstattung oder Umtausch erfolgen?",
+   "teach": {
+    "why": "Die Prüfung schiebt einen manuellen Schritt zwischen den Eingang des Pakets und die Geldbewegung. Sie legt den Auslöser für die Erstattung fest, wer prüft, wo das Ergebnis erfasst wird und wie lange die Kundschaft wartet — ebenso sehr Prozess und Personal wie System."
+   }
+  },
+  "Q5.2.12": {
+   "text": "Müssen Retourengründe erfasst und ausgewertet werden?",
+   "teach": {
+    "why": "Die Erfassung der Gründe macht aus Retouren Merchandising- und Qualitätsdaten. Fragen Sie, wo die Auswertung leben muss — im Shopify Admin, in einer Retouren-App oder im BI-Stack des Kunden —, denn das entscheidet, ob eine Plattform nötig ist."
+   }
+  },
+  "Q5.2.13": {
+   "text": "Sollen Geschäftskunden Retouren online beantragen (falls Sie B2B verkaufen)?",
+   "help": "Shopifys Retourenanfragen funktionieren auch für B2B-Bestellungen.",
+   "teach": {
+    "why": "Shopifys Retourenanfragen funktionieren auch für B2B-Bestellungen, das ist also meist Konfiguration und kein Build. Wichtig ist es, weil Genehmigung und Gutschriftabwicklung bei B2B-Retouren häufig im ERP liegen — und dieser Teil ist Integrationsarbeit."
+   }
+  },
+  "Q5.2.14": {
+   "text": "Unterscheiden sich Retourenfristen oder -bedingungen je Markt oder Produkt (z. B. Artikel im endgültigen Verkauf)?",
+   "help": "Endgültiger Verkauf je Produkt oder Kategorie ist nativ.",
+   "teach": {
+    "why": "Endgültiger Verkauf ist je Produkt oder Kategorie nativ. Fristen oder Bedingungen, die je Markt variieren, sind der Punkt, an dem ein einzelner nativer Regelsatz nicht mehr reicht und eine Retourenplattform in den Umfang kommt. Das ist bewusst eine Detektorfrage."
+   }
+  },
+  "Q5.3.1": {
+   "text": "Brauchen Benachrichtigungen zu Bestellung, Versand und Zustellung eigenes Design oder eigene Inhalte?",
+   "help": "Shopify-Benachrichtigungen sind bearbeitbar; SMS-Versandbenachrichtigungen sind nativ.",
+   "teach": {
+    "why": "Shopifys Benachrichtigungsvorlagen sind bearbeitbar, und SMS-Versandbenachrichtigungen sind nativ. Die Antwort entscheidet, ob das Vorlagenarbeit im Admin ist oder ein Grund, stattdessen über die E-Mail-Plattform des Kunden zu versenden."
+   }
+  },
+  "Q5.3.2": {
+   "text": "Werden die Benachrichtigungen von Shopify versendet, von der E-Mail-Plattform, oder von beiden?",
+   "teach": {
+    "why": "Wer versendet, entscheidet über die Integration und darüber, wem die Inhalte nach dem Go-live gehören. Eine Aufteilung zwischen Shopify und der E-Mail-Plattform schafft außerdem das Risiko doppelter Nachrichten — vereinbaren Sie die Aufteilung deshalb je Benachrichtigung und nicht im Grundsatz.",
+    "options": [
+     {
+      "option": "Shopify versendet alle transaktionalen Benachrichtigungen",
+      "pros": "Keine Integration, die Bestelldaten sind immer aktuell, SMS-Versandbenachrichtigungen inklusive.",
+      "cons": "Kontrolle über Vorlage und Design bleibt auf das begrenzt, was der Benachrichtigungseditor zulässt, und die Auswertung liegt getrennt vom Marketing-Stack."
+     },
+     {
+      "option": "Die E-Mail-Plattform versendet sie",
+      "pros": "Ein Satz Markenvorlagen und eine Auswertungssicht über Marketing- und Transaktionsmails hinweg.",
+      "cons": "Braucht Bestellereignisse, die an die Plattform gehen, sorgfältig abgeschaltete Shopify-Vorlagen und eine anderswo verantwortete Zustellbarkeit."
+     }
+    ]
+   }
+  },
+  "Q5.4.2": {
+   "text": "Sollen Kundinnen und Kunden Bestellungen selbst stornieren können?",
+   "help": "Kundinnen und Kunden können im Konto die Stornierung nicht versandter Bestellungen beantragen; Sie genehmigen. Sofortige Stornierung ohne Genehmigung braucht eine App.",
+   "teach": {
+    "why": "Kundinnen und Kunden können im Konto die Stornierung einer nicht versandten Bestellung beantragen, aber der Händler muss jeden Antrag genehmigen. Erwartet der Kunde, dass die Bestellung sofort verschwindet, ist das eine App und keine Konfiguration.",
+    "limits": "Native Stornierungsanträge brauchen immer die Genehmigung des Händlers.",
+    "options": [
+     {
+      "option": "Native Stornierungsanträge mit Genehmigung",
+      "pros": "Ab Basic enthalten, behält eine menschliche Prüfung, bevor Ware und Geld sich bewegen.",
+      "cons": "Nicht sofort; jemand muss jeden Antrag bearbeiten, was bei Volumen Supportaufwand bedeutet."
+     },
+     {
+      "option": "App für Bestellbearbeitung und Stornierung",
+      "pros": "Sofortige Selbstbedienungsstornierung und Änderungen, weniger Supportkontakte.",
+      "cons": "Wiederkehrende Lizenz, und sie muss mit den Kommissionierschlüssen abgestimmt sein, damit stornierte Bestellungen nicht schon gepickt sind."
+     }
+    ]
+   }
+  },
+  "Q5.4.3": {
+   "text": "Bis wann kann eine Bestellung storniert werden?",
+   "teach": {
+    "why": "Der Stichzeitpunkt muss dazu passen, wie schnell das Fulfillment kommissioniert — bei einem 3PL können das Minuten sein. Er entscheidet über die Regel, die Sie setzen, darüber, was der Support mit späten Anträgen macht, und darüber, ob „stornieren“ in Wahrheit „Annahme verweigern“ heißt."
+   }
+  },
+  "Q5.4.4": {
+   "text": "Erlauben Sie Teilstornierungen (einzelne Positionen einer Bestellung)?",
+   "teach": {
+    "why": "Eine Bestellung teilweise zu stornieren berührt die Erstattungsberechnung, die Wiedereinlagerung und die Meldung an Lager oder 3PL. Die Antwort zeigt, ob Stornierung eine einfache Regel ist oder ein Einzelfallprozess im Admin mit Integration dahinter."
+   }
+  },
+  "Q5.4.5": {
+   "text": "Sollen Kundinnen und Kunden eine Bestellung nach dem Absenden ändern können (Adresse, Positionen)?",
+   "help": "Mitarbeitende können Bestellungen nativ ändern; dass Kundinnen und Kunden ihre eigenen Bestellungen ändern, braucht eine App.",
+   "teach": {
+    "why": "Mitarbeitende können Bestellungen nativ ändern; Kundinnen und Kunden ihre eigene Bestellung nach dem Checkout nicht. Ein Ja bedeutet hier eine App zur Bestellbearbeitung — behandeln Sie das als App-Detektor und nicht als Konfigurationsfrage.",
+    "limits": "Die native Bestellbearbeitung ist ausschließlich eine Aktion von Mitarbeitenden im Admin."
+   }
+  },
+  "Q5.4.6": {
+   "text": "Wie werden Erstattungen ausgezahlt: auf das ursprüngliche Zahlungsmittel, als Shop-Guthaben oder als Geschenkkarte?",
+   "teach": {
+    "why": "Die Erstattungsart entscheidet über die Finanzspur: ursprüngliches Zahlungsmittel, Shop-Guthaben und Geschenkkarten landen jeweils anders in der Abstimmung und im ERP-Feed. Shop-Guthaben verändert außerdem, was Kundenkonten zeigen müssen."
+   }
+  },
+  "Q5.4.7": {
+   "text": "Wann wird erstattet: auf Antrag, beim Scan des Carriers, bei Eingang oder nach Prüfung?",
+   "help": "Erstattungen beim Scan des Carriers brauchen eine Retourenplattform, die an die Sendungsverfolgung angebunden ist.",
+   "teach": {
+    "why": "Erstattung auf Antrag, bei Genehmigung oder bei Eingang ist nativ. Die Erstattung beim Scan des Pakets durch den Carrier braucht eine an die Sendungsverfolgung angebundene Retourenplattform — ein sauberes App-Signal aus einer einzigen Antwort, und eines, das Kunden verlangen, ohne die Kosten zu kennen.",
+    "options": [
+     {
+      "option": "Erstattung bei Genehmigung oder Eingang (nativ)",
+      "pros": "Keine App, und das Geld bewegt sich erst, wenn Sie die Ware haben.",
+      "cons": "Die Kundschaft wartet Transportzeit plus Bearbeitung, was „Wo bleibt meine Erstattung“-Kontakte erzeugt."
+     },
+     {
+      "option": "Erstattung beim Scan des Carriers",
+      "pros": "Schnelle Erstattung, messbar besseres Retourenerlebnis.",
+      "cons": "Braucht eine an die Sendungsverfolgung angebundene Retourenplattform, und der Kunde trägt das Risiko für Pakete, die nie ankommen."
+     }
+    ]
+   }
+  },
+  "Q5.4.8": {
+   "text": "Werden die ursprünglichen Versandkosten erstattet: immer, nur bei eigenem Verschulden, oder nie?",
+   "teach": {
+    "why": "Ob die Hinversandkosten zurückkommen, verändert die Erstattungsberechnung bei jeder einzelnen Retoure und den Wortlaut der Richtlinie. Das ist ein häufiger Streitpunkt — legen Sie den Fall „nur bei eigenem Verschulden“ ausdrücklich fest und nicht im Grundsatz."
+   }
+  },
+  "Q5.4.9": {
+   "text": "Erheben Sie eine Wiedereinlagerungsgebühr?",
+   "help": "Eine Wiedereinlagerungsgebühr ist eine native Retourenregel (Prozentsatz der Retoure).",
+   "teach": {
+    "why": "Eine Wiedereinlagerungsgebühr ist eine native Retourenregel als Prozentsatz der Retoure — ein Ja kostet also Konfiguration und keine Entwicklung. Sie muss trotzdem gegen das Verbraucherrecht jedes Markts geprüft werden, in den der Kunde verkauft."
+   }
+  },
+  "Q5.4.10": {
+   "text": "Gewähren Sie Teilerstattungen (z. B. bei Beschädigung oder fehlenden Teilen)?",
+   "teach": {
+    "why": "Teilerstattungen bei Beschädigung oder fehlenden Teilen sind eine manuelle Ermessensentscheidung. Die eigentliche Frage ist, wer eine gewähren darf, bis zu welchem Wert und wie sie die Finanzabteilung erreicht — Berechtigungen und Prozess, nicht Plattformfähigkeit."
+   }
+  },
+  "Q5.4.11": {
+   "text": "Müssen Erstattungen von jemandem genehmigt werden, bevor sie ausgezahlt werden?",
+   "teach": {
+    "why": "Ein Genehmigungsschritt entscheidet, wer Erstattungsrechte hat, wie lange die Kundschaft wartet und ob ein Retourenwerkzeug überhaupt eine Genehmigungswarteschlange abbilden muss. Es ist außerdem die erste Kontrolle, nach der die Finanzabteilung des Kunden fragen wird."
+   }
+  },
+  "Q5.4.12": {
+   "text": "Müssen Stornierungen und Erstattungen an Ihr ERP- oder Finanzsystem übergeben werden?",
+   "teach": {
+    "why": "Stornierungen und Erstattungen sind die am schwersten konsistent zu haltenden Ereignisse zwischen Shopify und der Finanzwelt, weil das Geld sich schon bewegt hat. Ein Ja bringt Integrationsarbeit, Fehlerbehandlung und Abstimmungstests mit sich — nicht nur einen weiteren Webhook."
+   }
+  },
+  "Q5.4.13": {
+   "text": "Müssen Stornierungen sofort und ohne Ihre Genehmigung erfolgen?",
+   "teach": {
+    "why": "Diese Frage existiert ausschließlich, um eine App zu erkennen. Shopifys Stornierungsanträge brauchen immer die Genehmigung des Händlers — „sofort, ohne Genehmigung“ lässt sich durch Konfiguration also nicht liefern, es braucht eine App für Bestellbearbeitung und Stornierung.",
+    "limits": "Native Stornierungsanträge brauchen die Genehmigung des Händlers; eine native Sofortstornierung durch die Kundschaft gibt es nicht."
+   }
+  },
+  "Q5.5.1": {
+   "text": "Möchten Sie eine gebrandete Sendungsverfolgungsseite auf Ihrer eigenen Website?",
+   "help": "Shopify enthält eine Bestellstatusseite und Versand-E-Mails. Eine gebrandete Trackingseite, proaktive Carrier-Hinweise oder Lieferprognosen brauchen meist eine Post-Purchase-App.",
+   "teach": {
+    "why": "Shopify liefert eine Bestellstatusseite und Versandbenachrichtigungen, keine gebrandete Trackingseite auf der eigenen Website des Kunden. Ein Ja ist der Hauptauslöser für eine Post-Purchase-Tracking-App — klären Sie deshalb, was „gebranded“ konkret enthalten muss.",
+    "options": [
+     {
+      "option": "Native Bestellstatusseite und Versand-E-Mails",
+      "pros": "Enthalten, keine App, immer im Gleichklang mit der Bestellung.",
+      "cons": "Begrenztes Branding, keine Hinweise auf Carrier-Ereignisse, und der Traffic, den eine Trackingseite einfangen würde, geht auf die Seite des Carriers."
+     },
+     {
+      "option": "Post-Purchase-Tracking-App",
+      "pros": "Gebrandetes Tracking auf Ihrer Domain, proaktive Verzögerungshinweise, eine Merchandising-Fläche nach dem Kauf.",
+      "cons": "Wiederkehrende Lizenz, ein weiterer Anbieter mit Bestell- und Adressdaten, und Theme-Arbeit für die Einbettung."
+     }
+    ]
+   }
+  },
+  "Q5.5.2": {
+   "text": "Auf welchen Kanälen sollen Kundinnen und Kunden proaktive Lieferhinweise erhalten (Verzögerungen, in Zustellung)?",
+   "teach": {
+    "why": "Versandbenachrichtigungen per E-Mail und SMS sind nativ. Proaktive Hinweise zu Verzögerungen und zur laufenden Zustellung kommen von einer Plattform, die Carrier-Ereignisse liest — die Kanalliste entscheidet hier also, ob eine Tracking-App in die Empfehlung kommt."
+   }
+  },
+  "Q5.5.3": {
+   "text": "Sollen Produktseiten oder der Checkout voraussichtliche Liefertermine zeigen?",
+   "help": "Shopify kann Liefertermine im Checkout zeigen: manuelle Termine überall, automatische Termine nur für Fulfillment-Standorte in den USA.",
+   "teach": {
+    "why": "Shopify kann Liefertermine im Checkout zeigen: manuelle Termine überall, automatische nur für Fulfillment-Standorte in den USA. Außerhalb der USA brauchen automatische Prognosen oder Termine auf Produktseiten eine App — eine dokumentierte Grenze, die diese Position entscheidet.",
+    "limits": "Automatische Liefertermine sind auf Fulfillment-Standorte in den USA begrenzt; anderswo werden Termine im Checkout manuell gesetzt.",
+    "options": [
+     {
+      "option": "Manuelle Liefertermine im Checkout",
+      "pros": "Nativ, kostenlos, verfügbar an jedem Ort, von dem der Kunde beliefert.",
+      "cons": "Statische Zusagen, die jemand pflegen muss; keine Prognose auf der Produktseite; keine Anpassung an die tatsächliche Leistung des Carriers."
+     },
+     {
+      "option": "App für Lieferprognosen",
+      "pros": "Prognosen auf Produktseiten und im Checkout außerhalb der USA, feinjustiert je Produkt und Ziel.",
+      "cons": "Lizenzkosten, Integration ins Theme, und die Prognose ist nur so gut wie die Daten, die der Kunde einspeist."
+     }
+    ]
+   }
+  },
+  "Q5.5.4": {
+   "text": "Müssen Kundinnen und Kunden Garantie-, Reparatur- oder Serviceanliegen online eröffnen können?",
+   "teach": {
+    "why": "Für Garantie-, Reparatur- und Serviceanliegen gibt es in Shopify keine native Strecke. Ein Ja bedeutet eine App oder eine Eigenentwicklung samt operativem Prozess dahinter — planen Sie es als eigene Position und falten Sie es nicht in die Retouren."
+   }
+  },
+  "Q5.6.1": {
+   "text": "Wie viele stationäre Filialen (inklusive Pop-ups) werden mit Shopify verkaufen?",
+   "help": "0, wenn keine.",
+   "teach": {
+    "why": "Die Zahl der Filialen aktiviert den Scope-Modifikator Retail und POS und bemisst den Rollout. Mehr als fünf Filialen werden als Programm in Inkrementen oder als Betriebsteam nach Ratecard angeboten — nicht als ein Projekt mit einem Go-live."
+   }
+  },
+  "Q5.6.2": {
+   "text": "Kassensystem zum Launch?",
+   "teach": {
+    "why": "Shopify POS und ein an Shopify angebundenes Drittanbieter-Kassensystem sind sehr unterschiedliche Builds: das eine ist Konfiguration, Hardware und Schulung; das andere eine Integration von Beständen, Bestellungen und Zahlungen. Diese Antwort legt den gesamten Retail-Strang fest.",
+    "options": [
+     {
+      "option": "Shopify POS",
+      "pros": "Ein Produktkatalog, ein Bestand und ein Kundendatensatz über Online und Filiale hinweg; Omnichannel-Services nativ verfügbar.",
+      "cons": "Hardware, Umschulung der Mitarbeitenden und ein POS-Pro-Abonnement je Standort für die Omnichannel-Services."
+     },
+     {
+      "option": "Bestehendes Drittanbieter-Kassensystem, an Shopify angebunden",
+      "pros": "Keine Umstellung für das Filialpersonal, erhält den bestehenden Retail-Vertrag und das Backoffice-Reporting.",
+      "cons": "Bestands- und Bestellsynchronisation zu bauen und zu überwachen; native Omnichannel-Services wie Versand aus der Filiale entfallen."
+     }
+    ]
+   }
+  },
+  "Q5.6.3": {
+   "text": "Welche Omnichannel-Services werden in der Filiale gebraucht?",
+   "help": "Abholung in der Filiale, Versand aus der Filiale, Retouren von Online-Bestellungen in der Filiale, Endless Aisle, Bestandstransfers, Filialpreise.",
+   "teach": {
+    "why": "Die hier gelisteten Filial-Services kommen mit POS Pro, und das ist ein Abonnement je Standort — laufende Kosten, die der Kunde trägt, kein einmaliger Build. Marktkataloge für Retail brauchen POS Pro oder Plus. Weisen Sie auf beides hin, bevor der Preis vereinbart wird.",
+    "limits": "POS Pro wird je Standort abgerechnet; Marktkataloge für Retail setzen POS Pro oder Plus voraus."
+   }
+  },
+  "Q5.6.4": {
+   "text": "In welchen Ländern liegen die Filialen?",
+   "teach": {
+    "why": "Die Filialländer entscheiden über das Zahlungs-, Steuer- und Hardware-Setup jeder Filiale und darüber, ob Retail in einen bestehenden Markt fällt. Bestätigen Sie sie: POS-Hardware und die Verfügbarkeit von Retail-Zahlungen sind länderspezifisch und müssen je Land geprüft werden."
+   }
   }
  },
  "document": {

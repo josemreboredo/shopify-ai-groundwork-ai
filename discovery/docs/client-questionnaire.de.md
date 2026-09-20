@@ -1060,27 +1060,27 @@
 
 ### 5.1 Fulfillment-Modell
 
-**Q5.1.1** — Do you fulfil in-house, through a 3PL, or both? *(required)*
+**Q5.1.1** — Wickeln Sie den Versand selbst ab, über einen 3PL-Dienstleister oder beides? *(required)*
 
 *(tick one)*
 - [ ] In house
 - [ ] Third-party logistics (3PL)
 - [ ] Hybrid (DTC and B2B)
 
-**Q5.1.2** — Which 3PL provider? *(recommended)*
+**Q5.1.2** — Welcher 3PL-Dienstleister? *(recommended)*
 *Skip if Q5.1.1 = In house.*
 
 > Answer:
 
-**Q5.1.3** — How many locations will fulfil online orders (warehouses, 3PL locations and stores that ship orders), and in which countries are they? *(required)*
+**Q5.1.3** — Wie viele Standorte beliefern Online-Bestellungen (Lager, 3PL-Standorte und Filialen, die versenden), und in welchen Ländern liegen sie? *(required)*
 *Why we ask: Where stock sits decides what a customer pays at the border, which tax schemes are open to you, and whether a country can be served from the same store as the others or needs its own operation.*
-*Physical stores that sell in person are counted separately in § 5.6.*
+*Filialen, die vor Ort verkaufen, werden getrennt in § 5.6 gezählt.*
 
 - Fulfilment locations:
 - Fulfilment countries:
 
-**Q5.1.4** — How should Shopify pick the fulfilling location? *(required)*
-*Shopify's order routing rules: minimise split shipments, stay within the market, closest location, ranked locations, location metafields. Anything else needs a custom routing function or the ERP / OMS.*
+**Q5.1.4** — Wie soll Shopify den beliefernden Standort auswählen? *(required)*
+*Shopifys Routing-Regeln für Bestellungen: Teillieferungen minimieren, im Markt bleiben, nächstgelegener Standort, priorisierte Standorte, Standort-Metafelder. Alles andere braucht eine eigene Routing-Function oder das ERP bzw. OMS.*
 
 *(tick all that apply)*
 - [ ] Minimise split shipments
@@ -1092,12 +1092,12 @@
 - [ ] The ERP or OMS decides
 - [ ] Not sure yet
 
-**Q5.1.5** — Which carriers do you use? *(recommended)*
+**Q5.1.5** — Welche Carrier nutzen Sie? *(recommended)*
 
 > Answer:
 
-**Q5.1.6** — How are shipping rates calculated? *(required)*
-*Flat, weight or price based, free above a threshold, live carrier rates, or rates from an app.*
+**Q5.1.6** — Wie werden die Versandkosten berechnet? *(required)*
+*Pauschal, nach Gewicht oder Warenwert, kostenlos ab einer Schwelle, Live-Carrier-Tarife oder Tarife aus einer App.*
 
 *(tick all that apply)*
 - [ ] Flat
@@ -1107,23 +1107,23 @@
 - [ ] Rates from an app
 - [ ] Not sure yet
 
-**Q5.1.7** — Are there product-specific shipping rules (heavy, hazardous, temperature-controlled)? *(optional)*
+**Q5.1.7** — Gibt es produktspezifische Versandregeln (schwer, gefährlich, temperaturgeführt)? *(optional)*
 
 > Answer:
 
-**Q5.1.9** — Which countries do you not ship to? *(optional)*
+**Q5.1.9** — In welche Länder versenden Sie nicht? *(optional)*
 
 > Answer:
 
-**Q5.1.10** — Free-shipping thresholds per market (market, threshold, currency, which rates). *(recommended)*
-*Native: a rate condition based on order price, or an automatic free-shipping discount.*
+**Q5.1.10** — Schwellen für kostenlosen Versand je Markt (Markt, Schwelle, Währung, welche Tarife). *(recommended)*
+*Nativ: eine Tarifbedingung auf Basis des Bestellwerts oder ein automatischer Rabatt für kostenlosen Versand.*
 
 | Market | Threshold | Currency | Rates |
 |---|---|---|---|
 | | | | |
 
-**Q5.1.11** — Which delivery methods do you offer? *(required)*
-*Local delivery and pickup in store are native. Pickup points are native only for stores in France, Italy, Spain and the UK (with some carriers); elsewhere they need a delivery app or a custom solution. Delivery time slots need an app; ship from store needs Shopify POS.*
+**Q5.1.11** — Welche Zustellarten bieten Sie an? *(required)*
+*Lokale Lieferung und Abholung in der Filiale sind nativ. Paketshops sind nur für Stores in Frankreich, Italien, Spanien und dem Vereinigten Königreich nativ (mit bestimmten Carriern); anderswo brauchen sie eine Liefer-App oder eine eigene Lösung. Lieferzeitfenster brauchen eine App; Versand aus der Filiale braucht Shopify POS.*
 
 *(tick all that apply)*
 - [ ] Standard shipping
@@ -1136,7 +1136,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q5.1.12** — How are shipping labels created? *(optional)*
+**Q5.1.12** — Wie werden Versandlabels erstellt? *(optional)*
 
 *(tick one)*
 - [ ] Shopify Shipping
@@ -1144,9 +1144,9 @@
 - [ ] Carrier software
 - [ ] Shipping app
 
-**Q5.1.13** — Do all products have accurate weights (and package sizes), and where does that data come from? *(recommended)*
+**Q5.1.13** — Haben alle Produkte korrekte Gewichte (und Packmaße), und woher stammen diese Daten? *(recommended)*
 *Ask if Q5.1.6 includes Weight or price based, Live carrier rates or Rates from an app.*
-*Weight-based and carrier-calculated rates, shipping labels and some duties calculations need product weights.*
+*Gewichtsbasierte und live berechnete Tarife, Versandlabels und manche Zollberechnungen brauchen Produktgewichte.*
 
 *(tick one)*
 - [ ] From the PIM or ERP
@@ -1155,8 +1155,8 @@
 - [ ] Not available yet
 - [ ] Not sure yet
 
-**Q5.1.14** — Do any products count as dangerous goods for shipping? *(recommended)*
-*E.g. aerosols (sprays, some sunscreens), flammable liquids (perfumes, alcohol-based products), lithium batteries, dry ice. They usually need their own delivery profile and carrier arrangements.*
+**Q5.1.14** — Gelten einzelne Produkte als Gefahrgut im Versand? *(recommended)*
+*Z. B. Aerosole (Sprays, manche Sonnenschutzmittel), entzündbare Flüssigkeiten (Parfüms, alkoholhaltige Produkte), Lithiumbatterien, Trockeneis. Sie brauchen in der Regel ein eigenes Versandprofil und eigene Carrier-Vereinbarungen.*
 
 *(tick all that apply)*
 - [ ] Aerosols
@@ -1169,11 +1169,11 @@
 
 ### 5.2 Retouren & Umtausch
 
-**Q5.2.1** — Summarise the returns policy (window, conditions, who pays return postage). *(recommended)*
+**Q5.2.1** — Fassen Sie die Retourenrichtlinie zusammen (Frist, Bedingungen, wer das Rücksendeporto trägt). *(recommended)*
 
 > Answer:
 
-**Q5.2.2** — Shopify includes return requests in customer accounts, controlled by return rules (window, return fee, restocking fee, final sale). Is that enough? *(recommended)*
+**Q5.2.2** — Shopify bietet Retourenanfragen im Kundenkonto, gesteuert über Retourenregeln (Frist, Retourengebühr, Wiedereinlagerungsgebühr, endgültiger Verkauf). Reicht das? *(recommended)*
 
 *(tick one)*
 - [ ] Shopify self-serve returns are enough
@@ -1181,29 +1181,29 @@
 - [ ] Staff create returns only
 - [ ] Not sure yet
 
-**Q5.2.3** — Do you process exchanges (not only refunds)? *(optional)*
+**Q5.2.3** — Wickeln Sie Umtausch ab (nicht nur Erstattungen)? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.2.4** — Which returns, tracking or post-purchase apps do you use or prefer? *(optional)*
+**Q5.2.4** — Welche Apps für Retouren, Sendungsverfolgung oder die Zeit nach dem Kauf nutzen oder bevorzugen Sie? *(optional)*
 *Ask if Q1.2.1 is yes, or Q0.2.6 is 500 or more.*
 
 > Answer:
 
-**Q5.2.5** — How many days do customers have to return an order? *(recommended)*
+**Q5.2.5** — Wie viele Tage haben Kundinnen und Kunden, um eine Bestellung zurückzusenden? *(recommended)*
 
 > Answer:
 
-**Q5.2.6** — What share of orders is returned today (%)? *(recommended)*
+**Q5.2.6** — Welcher Anteil der Bestellungen wird heute retourniert (%)? *(recommended)*
 *Ask if Q0.2.6 is 500 or more.*
-*High return rates or volumes usually justify a returns platform instead of Shopify's native self-serve returns.*
+*Hohe Retourenquoten oder -mengen rechtfertigen meist eine Retourenplattform statt Shopifys nativer Selbstbedienungsretouren.*
 
 > Answer:
 
-**Q5.2.7** — How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed? *(recommended)*
+**Q5.2.7** — Wie senden Kundinnen und Kunden Artikel zurück: vorfrankiertes Label, Abgabe per QR-Code, eigene Sendung oder gemischt? *(recommended)*
 *Ask if Q0.2.6 is 500 or more.*
-*Shopify creates return labels only for US fulfilment locations; other countries, or QR drop-off, need a returns app.*
+*Shopify erstellt Retourenlabels nur für Fulfillment-Standorte in den USA; andere Länder oder die QR-Abgabe brauchen eine Retouren-App.*
 
 *(tick one)*
 - [ ] Prepaid label
@@ -1211,17 +1211,17 @@
 - [ ] Customer arranged
 - [ ] Mixed
 
-**Q5.2.8** — Who pays return shipping: you, the customer, or it depends on the market? *(recommended)*
+**Q5.2.8** — Wer trägt das Rücksendeporto: Sie, die Kundschaft, oder hängt es vom Markt ab? *(recommended)*
 
 *(tick one)*
 - [ ] Merchant
 - [ ] Customer
 - [ ] Depends on market
 
-**Q5.2.9** — Which exchanges do you offer: same product in another variant, any other product, or store credit first? *(optional)*
+**Q5.2.9** — Welchen Umtausch bieten Sie an: dasselbe Produkt in einer anderen Variante, ein beliebiges anderes Produkt, oder zuerst Guthaben? *(optional)*
 *Skip if Q5.2.3 = no.*
 *Ask if Q0.2.6 is 500 or more.*
-*Customers can't choose an exchange in Shopify's return form; staff add exchange items when approving. Customer-chosen exchanges need an app.*
+*Im Retourenformular von Shopify kann die Kundschaft keinen Umtausch wählen; Mitarbeitende fügen Umtauschartikel beim Genehmigen hinzu. Vom Kunden gewählter Umtausch braucht eine App.*
 
 *(tick all that apply)*
 - [ ] Same product variant
@@ -1230,43 +1230,43 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q5.2.10** — Do you accept international returns (including refunding duties)? *(optional)*
+**Q5.2.10** — Akzeptieren Sie internationale Retouren (einschließlich Erstattung der Zölle)? *(optional)*
 *Ask if Q3.1.1 has 2+ markets.*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.2.11** — Must returned items be inspected before the refund or exchange is issued? *(recommended)*
+**Q5.2.11** — Müssen retournierte Artikel geprüft werden, bevor Erstattung oder Umtausch erfolgen? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.2.12** — Do you need to capture and report return reasons? *(optional)*
+**Q5.2.12** — Müssen Retourengründe erfasst und ausgewertet werden? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.2.13** — Should B2B customers request returns online (if you sell B2B)? *(optional)*
-*Shopify's return requests also work for B2B orders.*
+**Q5.2.13** — Sollen Geschäftskunden Retouren online beantragen (falls Sie B2B verkaufen)? *(optional)*
+*Shopifys Retourenanfragen funktionieren auch für B2B-Bestellungen.*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.2.14** — Do return windows or conditions differ by market or product (e.g. final-sale items)? *(optional)*
-*Final sale per product or collection is native.*
+**Q5.2.14** — Unterscheiden sich Retourenfristen oder -bedingungen je Markt oder Produkt (z. B. Artikel im endgültigen Verkauf)? *(optional)*
+*Endgültiger Verkauf je Produkt oder Kategorie ist nativ.*
 
 - [ ] Yes
 - [ ] No
 
 ### 5.3 Benachrichtigungen
 
-**Q5.3.1** — Do order, shipping and delivery notifications need custom design or content? *(optional)*
-*Shopify notifications are editable; SMS shipping notifications are native.*
+**Q5.3.1** — Brauchen Benachrichtigungen zu Bestellung, Versand und Zustellung eigenes Design oder eigene Inhalte? *(optional)*
+*Shopify-Benachrichtigungen sind bearbeitbar; SMS-Versandbenachrichtigungen sind nativ.*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.3.2** — Are notifications sent by Shopify, by the email platform, or both? *(optional)*
+**Q5.3.2** — Werden die Benachrichtigungen von Shopify versendet, von der E-Mail-Plattform, oder von beiden? *(optional)*
 
 *(tick one)*
 - [ ] Shopify
@@ -1275,14 +1275,14 @@
 
 ### 5.4 Stornierungen & Erstattungen
 
-**Q5.4.2** — Should customers be able to cancel orders themselves? *(recommended)*
+**Q5.4.2** — Sollen Kundinnen und Kunden Bestellungen selbst stornieren können? *(recommended)*
 *Ask if Q0.2.6 is 500 or more.*
-*Customers can request cancellation of unshipped orders in their account; you approve. Instant cancellation without approval needs an app.*
+*Kundinnen und Kunden können im Konto die Stornierung nicht versandter Bestellungen beantragen; Sie genehmigen. Sofortige Stornierung ohne Genehmigung braucht eine App.*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.4.3** — Until when can an order be cancelled? *(recommended)*
+**Q5.4.3** — Bis wann kann eine Bestellung storniert werden? *(recommended)*
 
 *(tick one)*
 - [ ] No cancellations
@@ -1292,19 +1292,19 @@
 - [ ] Within 24 hours
 - [ ] Staff only
 
-**Q5.4.4** — Do you allow partial cancellations (some items of an order)? *(optional)*
+**Q5.4.4** — Erlauben Sie Teilstornierungen (einzelne Positionen einer Bestellung)? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.4.5** — Should customers be able to edit an order after placing it (address, items)? *(recommended)*
+**Q5.4.5** — Sollen Kundinnen und Kunden eine Bestellung nach dem Absenden ändern können (Adresse, Positionen)? *(recommended)*
 *Ask if Q0.2.6 is 500 or more.*
-*Staff can edit orders natively; customers editing their own orders needs an app.*
+*Mitarbeitende können Bestellungen nativ ändern; dass Kundinnen und Kunden ihre eigenen Bestellungen ändern, braucht eine App.*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.4.6** — How are refunds paid: to the original payment method, as store credit, or as a gift card? *(recommended)*
+**Q5.4.6** — Wie werden Erstattungen ausgezahlt: auf das ursprüngliche Zahlungsmittel, als Shop-Guthaben oder als Geschenkkarte? *(recommended)*
 
 *(tick all that apply)*
 - [ ] Original payment
@@ -1312,9 +1312,9 @@
 - [ ] Gift card
 - [ ] Not sure yet
 
-**Q5.4.7** — When is a refund issued: on request, when the carrier scans the return, on receipt, or after inspection? *(recommended)*
+**Q5.4.7** — Wann wird erstattet: auf Antrag, beim Scan des Carriers, bei Eingang oder nach Prüfung? *(recommended)*
 *Ask if Q0.2.6 is 500 or more.*
-*Refunds on carrier scan need a returns platform connected to carrier tracking.*
+*Erstattungen beim Scan des Carriers brauchen eine Retourenplattform, die an die Sendungsverfolgung angebunden ist.*
 
 *(tick one)*
 - [ ] On request
@@ -1322,35 +1322,35 @@
 - [ ] On receipt
 - [ ] After inspection
 
-**Q5.4.8** — Is the original shipping cost refunded: always, only when you are at fault, or never? *(optional)*
+**Q5.4.8** — Werden die ursprünglichen Versandkosten erstattet: immer, nur bei eigenem Verschulden, oder nie? *(optional)*
 
 *(tick one)*
 - [ ] Always
 - [ ] On fault only
 - [ ] Never
 
-**Q5.4.9** — Do you charge a restocking fee? *(optional)*
-*A restocking fee is a native return rule (percentage of the return).*
+**Q5.4.9** — Erheben Sie eine Wiedereinlagerungsgebühr? *(optional)*
+*Eine Wiedereinlagerungsgebühr ist eine native Retourenregel (Prozentsatz der Retoure).*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.4.10** — Do you issue partial refunds (e.g. damaged or missing parts)? *(optional)*
+**Q5.4.10** — Gewähren Sie Teilerstattungen (z. B. bei Beschädigung oder fehlenden Teilen)? *(optional)*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.4.11** — Must refunds be approved by someone before they are paid? *(recommended)*
+**Q5.4.11** — Müssen Erstattungen von jemandem genehmigt werden, bevor sie ausgezahlt werden? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.4.12** — Must cancellations and refunds be passed to your ERP or finance system? *(recommended)*
+**Q5.4.12** — Müssen Stornierungen und Erstattungen an Ihr ERP- oder Finanzsystem übergeben werden? *(recommended)*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.4.13** — Must cancellations be instant, without your approval? *(optional)*
+**Q5.4.13** — Müssen Stornierungen sofort und ohne Ihre Genehmigung erfolgen? *(optional)*
 *Skip if Q5.4.2 = no.*
 *Ask if Q5.4.2 is yes.*
 
@@ -1359,14 +1359,14 @@
 
 ### 5.5 Erlebnis nach dem Kauf
 
-**Q5.5.1** — Do you want a branded order-tracking page on your own site? *(recommended)*
+**Q5.5.1** — Möchten Sie eine gebrandete Sendungsverfolgungsseite auf Ihrer eigenen Website? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
-*Shopify includes an order status page and shipping emails. A branded tracking page, proactive carrier alerts or delivery estimates usually need a post-purchase app.*
+*Shopify enthält eine Bestellstatusseite und Versand-E-Mails. Eine gebrandete Trackingseite, proaktive Carrier-Hinweise oder Lieferprognosen brauchen meist eine Post-Purchase-App.*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.5.2** — On which channels should customers get proactive delivery updates (delays, out for delivery)? *(recommended)*
+**Q5.5.2** — Auf welchen Kanälen sollen Kundinnen und Kunden proaktive Lieferhinweise erhalten (Verzögerungen, in Zustellung)? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
 
 *(tick all that apply)*
@@ -1377,14 +1377,14 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q5.5.3** — Should product pages or checkout show estimated delivery dates? *(optional)*
+**Q5.5.3** — Sollen Produktseiten oder der Checkout voraussichtliche Liefertermine zeigen? *(optional)*
 *Ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise.*
-*Shopify can show delivery dates at checkout: manual dates everywhere, automatic dates only for US fulfilment locations.*
+*Shopify kann Liefertermine im Checkout zeigen: manuelle Termine überall, automatische Termine nur für Fulfillment-Standorte in den USA.*
 
 - [ ] Yes
 - [ ] No
 
-**Q5.5.4** — Do customers need to open warranty, repair or servicing claims online? *(recommended)*
+**Q5.5.4** — Müssen Kundinnen und Kunden Garantie-, Reparatur- oder Serviceanliegen online eröffnen können? *(recommended)*
 *Ask if Q1.1.3 mentions watch, jewel, electronic, appliance, furniture, bike, bicycle, tool, device or luxury.*
 
 - [ ] Yes
@@ -1392,12 +1392,12 @@
 
 ### 5.6 Retail & POS
 
-**Q5.6.1** — How many physical retail stores (including pop-ups) will sell with Shopify? *(required)*
-*0 if none.*
+**Q5.6.1** — Wie viele stationäre Filialen (inklusive Pop-ups) werden mit Shopify verkaufen? *(required)*
+*0, wenn keine.*
 
 > Answer:
 
-**Q5.6.2** — Point of sale at launch? *(required)*
+**Q5.6.2** — Kassensystem zum Launch? *(required)*
 *Skip if Q5.6.1 = 0.*
 
 *(tick one)*
@@ -1406,9 +1406,9 @@
 - [ ] Another POS, not integrated
 - [ ] Not sure yet
 
-**Q5.6.3** — Which omnichannel services are needed in store? *(required)*
+**Q5.6.3** — Welche Omnichannel-Services werden in der Filiale gebraucht? *(required)*
 *Skip if Q5.6.1 = 0.*
-*Pickup in store, ship from store, in-store returns of online orders, endless aisle, stock transfers, retail prices.*
+*Abholung in der Filiale, Versand aus der Filiale, Retouren von Online-Bestellungen in der Filiale, Endless Aisle, Bestandstransfers, Filialpreise.*
 
 *(tick all that apply)*
 - [ ] Buy online, pick up in store
@@ -1422,7 +1422,7 @@
 - [ ] None
 - [ ] Not sure yet
 
-**Q5.6.4** — In which countries are the stores? *(recommended)*
+**Q5.6.4** — In welchen Ländern liegen die Filialen? *(recommended)*
 *Skip if Q5.6.1 = 0.*
 
 > Answer:
