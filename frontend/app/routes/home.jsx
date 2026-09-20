@@ -5,6 +5,7 @@ import { discovery, serviceFailure } from '../discovery.server.js';
 import { processMeta } from '../../../discovery/service/process.js';
 import { offerStanding, statusOf } from '../../../discovery/service/summary.js';
 import { PRODUCT, pageTitle } from '../brand.js';
+import { LANGUAGES as SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '../../../discovery/service/i18n.js';
 
 export const meta = () => [{ title: pageTitle('Bids and engagements') }];
 
@@ -30,7 +31,10 @@ export async function action({ request }) {
   return redirect(`/engagements/${client}`);
 }
 
-const LANGUAGES = ['en', 'de', 'fr', 'it', 'es'];
+// The languages the tool can actually run an engagement in. The list used to be
+// written here by hand and carried two the questionnaire has no words for, so a
+// consultant could start an Italian engagement and be asked everything in English.
+const LANGUAGES = SUPPORTED_LANGUAGES.map((code) => [code, LANGUAGE_NAMES[code]]);
 
 /**
  * Where a record is in its own process — a different axis from the offer.
@@ -97,7 +101,7 @@ export default function Home({ loaderData, actionData }) {
             <div className="field">
               <label htmlFor="rfp-language">Language</label>
               <select id="rfp-language" name="language" defaultValue="en">
-                {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+                {LANGUAGES.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
               </select>
             </div>
             <button type="submit">Start a bid</button>
@@ -117,7 +121,7 @@ export default function Home({ loaderData, actionData }) {
             <div className="field">
               <label htmlFor="d-language">Language</label>
               <select id="d-language" name="language" defaultValue="en">
-                {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+                {LANGUAGES.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
               </select>
             </div>
             <div className="field">

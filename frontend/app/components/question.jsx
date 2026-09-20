@@ -140,10 +140,16 @@ export function EngagementHeader({ engagement, eyebrow, title, meta, back, langu
       <p className="eyebrow">{[processOf(engagement.process) === 'rfp' ? words.record : null, eyebrow].filter(Boolean).join(' · ') || words.record}</p>
       <h1>{title ?? client}</h1>
       {meta ? <p className="page-meta">{meta}</p> : null}
+      {/* Three facts, and the middle one used to be the opposite of true: it read
+          "answers and documents in English" while the questions Merkle sends and
+          the proposal it writes now come out in the engagement's language. What
+          stays English is what Merkle reads — the recorded answers and everything
+          the client never sees. */}
       {language?.translated ? (
         <p className="page-lang">
-          Questions in {LANGUAGE_NAMES[language.language] ?? language.language} · answers and documents in English
-          {language.complete ? '' : ` · ${language.questions} of ${language.of} questions translated so far, the rest stay in English`}
+          {LANGUAGE_NAMES[language.language] ?? language.language}: the questions, the ones we send the client and the {words.document.toLowerCase()}
+          {' · '}English: the recorded answers and everything internal
+          {language.complete ? '' : ` · ${language.questions} of ${language.of} questions translated so far, the rest are asked in English`}
         </p>
       ) : null}
       <EngagementNav engagement={engagement} />

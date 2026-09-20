@@ -24,7 +24,7 @@ import { approachBrief, closingStatus, deckBrief, deckDataPages, decideFromSessi
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
-import { clarificationBrief, clarificationTopics, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
+import { clarificationBrief, clarificationTopics, clarificationsPrompt } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
 import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
@@ -682,7 +682,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (needsApproach(doc)) return { status, step: 'approach', document, ...approachBrief(doc) };
       const final = finaliseEngagement(doc, null);
       if (!final.ok) throw new ServiceError(400, 'Engagement not valid', final.errors);
-      return { status, step: 'document', document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }) };
+      return { status, step: 'document', document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process, language: session.language }) };
     },
 
     /**
@@ -709,9 +709,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
             why: 'The engine only asks about unknowns that move the offer, the plan, the store topology, the cost or the risk. With nothing recorded yet it has nothing to weigh — read the documents in, then come back.',
           }]);
         }
-        return { instructions: CLARIFICATIONS_PROMPT, ...brief, settled: true };
+        return { instructions: clarificationsPrompt(session.language), ...brief, settled: true };
       }
-      return { instructions: CLARIFICATIONS_PROMPT, ...brief };
+      return { instructions: clarificationsPrompt(session.language), ...brief };
     },
 
     /**
@@ -830,7 +830,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         if (!approach) throw new ServiceError(409, 'Save the approach first — the deck data is built from it', [], [{ what: 'Draft and save the approach with save_approach' }]);
         const final = finaliseEngagement(decided.doc, approach);
         if (!final.ok) throw new ServiceError(400, 'The saved approach no longer fits the answers — draft it again', final.errors);
-        const pages = deckDataPages(deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }).deck_xml);
+        const pages = deckDataPages(deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process, language: session.language }).deck_xml);
         const n = Number(String(section).split(':')[2] ?? 1);
         if (!Number.isInteger(n) || n < 1 || n > pages.length) throw new ServiceError(404, `${section}: there are ${pages.length} pages of deck data`);
         return { section, page: n, of: pages.length, deck_xml: pages[n - 1] };
@@ -854,7 +854,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.closing = { ...session.closing, approach: { payload: approach, saved_at: today(), by: user.login, via } };
       session.updated_at = today();
       await store.save(session);
-      return { status: closingStatus(decided.doc), step: 'document', document: processMeta(session.process).document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }) };
+      return { status: closingStatus(decided.doc), step: 'document', document: processMeta(session.process).document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process, language: session.language }) };
     },
 
     /**

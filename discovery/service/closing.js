@@ -20,6 +20,7 @@ import { knowledgeFor } from '../agents/discovery/knowledge.js';
 import { ServiceError } from './errors.js';
 import { runCostFor } from '../agents/discovery/economics.js';
 import { challengesFor, topChallenges } from '../agents/discovery/challenge.js';
+import { writeInLanguage } from '../agents/language.js';
 import { DECK_PROMPT } from '../agents/discovery-deck/prompt.js';
 import { selectStories, summariseByEpic } from '../agents/backlog/select.js';
 import { openItems } from '../agents/interview/open-items.js';
@@ -124,8 +125,14 @@ Three things change because of that, and nothing else does.
 
 `;
 
-/** @param {{ process?: string }} [options] */
-export const deckGuide = ({ process } = {}) => `${process === 'rfp' ? BID_PREAMBLE : ''}${DECK_PROMPT}\n\nThe deck data (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`;
+/**
+ * @param {{ process?: string, language?: string }} [options]  language: the
+ *   engagement's conversation language. The deck and the annex are the client's
+ *   documents — the whole of both is written in it.
+ */
+export const deckGuide = ({ process, language } = {}) => `${writeInLanguage(language, {
+  what: 'The deck and the annex are the document the client reads',
+})}${process === 'rfp' ? BID_PREAMBLE : ''}${DECK_PROMPT}\n\nThe deck data (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`;
 
 /**
  * @param {object} engagement
@@ -134,7 +141,7 @@ export const deckGuide = ({ process } = {}) => `${process === 'rfp' ? BID_PREAMB
  *   the screen and never travelled any further, so a proposal stated none of
  *   them while the app promised it would.
  */
-export function deckBrief(engagement, { assumptions = [], process } = {}) {
+export function deckBrief(engagement, { assumptions = [], process, language } = {}) {
   const stories = engagement.delivery?.go ? selectStories(engagement) : null;
   const backlog = stories ? { stories, summary: summariseByEpic(stories) } : null;
   const { xml, warnings } = buildDeckXml(engagement, backlog, { stated: assumptions });
@@ -143,7 +150,7 @@ export function deckBrief(engagement, { assumptions = [], process } = {}) {
   // sets that informed them do not need to be sent a second time.
   const knowledge = knowledgeFor(engagement, { options: false });
   return {
-    instructions: deckGuide({ process }),
+    instructions: deckGuide({ process, language }),
     deck_xml: xml,
     deck_schema: buildDeckSchema(),
     reference_chapters: chapters.chapters,

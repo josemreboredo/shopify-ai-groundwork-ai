@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { ServiceError } from './index.js';
 import { deckDataPages } from './closing.js';
 import { renderSummaryMarkdown } from './summary.js';
+import { LANGUAGES } from './i18n.js';
 
 export const SERVER_INSTRUCTIONS = `Merkle Discovery: Shopify discovery engagements shared with the Lead Consultant web app.
 - Interim pilot: demo or anonymised engagements and documents only — no real client data.
@@ -140,7 +141,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     description: 'Create a new discovery engagement owned by you. The first question is always consent for AI processing (Q10.5.2).',
     inputSchema: z.object({
       client: slug,
-      language: z.string().regex(/^[a-z]{2}$/).default('en').describe('Conversation language (ISO 639-1)'),
+      language: z.enum(LANGUAGES).default('en').describe('The language the engagement is run in, and the language every client-facing document is written in'),
       mode: z.enum(['quick', 'standard', 'full']).default('standard').describe('quick: required questions; standard: + recommended; full: everything'),
     }),
     annotations: write,

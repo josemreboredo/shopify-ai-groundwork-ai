@@ -24,6 +24,7 @@ import { questionBank } from '../../schema/index.js';
 import { answeredQuestions } from './knowledge.js';
 import { questionApplies } from '../interview/next.js';
 import { runCostFor, basis } from './economics.js';
+import { writeInLanguage } from '../language.js';
 
 const BY_ID = new Map(questionBank.questions.map((q) => [q.id, q]));
 const SECTION_TITLE = new Map(questionBank.sections.map((s) => [String(s.id), s.title]));
@@ -242,8 +243,17 @@ export function clarificationBrief(doc, { max = Infinity } = {}) {
   };
 }
 
-/** The instruction the model follows to write them. */
-export const CLARIFICATIONS_PROMPT = `Write Merkle's clarification questions on this RFP, for the client to answer before we submit the proposal.
+/**
+ * The instruction the model follows to write them.
+ *
+ * These questions are the one thing in the tool that is *sent* to the client in
+ * the model's own words, so they are the first place the engagement's language
+ * has to reach. The split inside a question is the split the page already draws:
+ * the question and its "Why we ask" are the client's, and go in the client's
+ * language; what we would assume and what it costs us to be wrong are ours, and
+ * stay in English.
+ */
+const PROMPT = `Write Merkle's clarification questions on this RFP, for the client to answer before we submit the proposal.
 
 These are not discovery questions and this is not a form. They are the first thing this client reads from us: each one has to get the information we need *and* show that we already understand the trade-off it turns on. A long list says we have not read their document.
 
@@ -260,3 +270,12 @@ Order the questions by impact, highest first. Never write more than the topics y
 For each question also record, for the consultant only: which discovery questions it covers, what we will assume in the proposal if the client does not answer it, and what that costs us if the assumption turns out to be wrong — in scope, in the Shopify plan, in the number of stores or in what it costs to run.
 
 That last one is not paperwork. Anything the Lead Consultant decides not to ask becomes a stated assumption in the proposal, and an assumption with a consequence attached reads as a decision Merkle took deliberately; the same assumption without one reads as a gap, and a client prices gaps down.`;
+
+/** @param {string} [language] the engagement's conversation language */
+export const clarificationsPrompt = (language) => `${writeInLanguage(language, {
+  what: 'The question itself and its "Why we ask" paragraph are sent to the client exactly as you write them',
+  internal: 'Everything you record for the consultant — which discovery questions a question covers, what we would assume if it is not answered, and what that assumption costs if it is wrong —',
+})}${PROMPT}`;
+
+/** The English instruction, for the tests and for an engagement run in English. */
+export const CLARIFICATIONS_PROMPT = clarificationsPrompt('en');

@@ -17,15 +17,15 @@
 import de from '../schema/translations/de.json' with { type: 'json' };
 import fr from '../schema/translations/fr.json' with { type: 'json' };
 import { questionBank } from '../schema/index.js';
+// The list of languages and their names belong with the prompts that write in
+// them, and the agents may not import the service — so they live there and are
+// re-exported here, where the rest of the app already looks for them.
+import { LANGUAGES, LANGUAGE_NAMES } from '../agents/language.js';
 
 /** Translations by language code. English is the source, so it has no file. */
 export const TRANSLATIONS = { de, fr };
 
-/** Languages an engagement can be run in. */
-export const LANGUAGES = ['en', ...Object.keys(TRANSLATIONS)];
-
-/** Language names, in the language itself — for the consultant's language notice. */
-export const LANGUAGE_NAMES = { en: 'English', de: 'Deutsch', fr: 'Français', it: 'Italiano', es: 'Español' };
+export { LANGUAGES, LANGUAGE_NAMES };
 
 /** @param {string} [language] */
 export function translationFor(language) {

@@ -10,12 +10,12 @@
 import fs   from 'node:fs';
 import path from 'node:path';
 import { WORK_ROOT } from '../../paths.js';
+import { LANGUAGES, supported } from '../language.js';
 
 export const DEFAULT_WORK_ROOT = WORK_ROOT;
 export const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
 const MODES = ['quick', 'standard', 'full'];
 const PROCESSES = ['rfp', 'discovery'];
-const LANGUAGE = /^[a-z]{2}$/;
 
 /**
  * @typedef {Object} Session
@@ -39,7 +39,9 @@ const LANGUAGE = /^[a-z]{2}$/;
  */
 export function createSession({ client, language = 'en', mode = 'standard', process = 'discovery', today }) {
   if (!SLUG.test(client ?? '')) throw new Error('Invalid client — use a kebab-case slug, e.g. acme-watches');
-  if (!LANGUAGE.test(language)) throw new Error('Invalid language — use a two-letter ISO 639-1 code, e.g. de');
+  // Not a shape but a list: a two-letter code the questionnaire cannot be shown
+  // in is an engagement labelled with a language it never speaks.
+  if (!supported(language)) throw new Error(`Invalid language — the tool runs an engagement in ${LANGUAGES.join(', ')}`);
   if (!MODES.includes(mode)) throw new Error(`Invalid mode — use one of ${MODES.join(', ')}`);
   if (!PROCESSES.includes(process)) throw new Error(`Invalid process — use one of ${PROCESSES.join(', ')}`);
   return {

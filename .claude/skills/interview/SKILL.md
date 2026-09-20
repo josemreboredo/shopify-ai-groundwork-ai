@@ -23,7 +23,7 @@ offer, gates and exit rules. Never state an offer, gate or exit result that the 
 
 1. Start or resume:
    ```bash
-   npm run interview -- start --client <slug> --language <de|en|fr|it|es> --mode <quick|standard|full>
+   npm run interview -- start --client <slug> --language <en|de|fr> --mode <quick|standard|full>
    ```
    An existing session resumes automatically. Use `--restart` only if the consultant asks to start over.
 2. The first question is always consent (Q10.5.2). Nothing else can be recorded until it is answered `true`.
