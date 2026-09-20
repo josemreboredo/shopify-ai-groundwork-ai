@@ -533,6 +533,16 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 /* What the number does not say on its own */
 .sc-watch { margin: 12px 0 0; padding-left: 14px; border-left: 2px solid var(--warn); color: var(--muted); font-size: 0.88rem; max-width: 78ch; }
 
+/* Confirm or edit, side by side on the row */
+.row-actions { display: flex; gap: 14px; align-items: baseline; white-space: nowrap; }
+.row-actions form { display: inline; }
+button.link {
+  background: none; border: 0; padding: 0; cursor: pointer; font: inherit;
+  color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px;
+}
+button.link:hover { color: var(--red); text-decoration-color: var(--red); }
+button.link:disabled { color: var(--muted); cursor: default; }
+
 /* RFP Q&A: every question is asked or assumed, and the list shows which */
 .clarifications > li.q-accepted { border-left: 3px solid var(--ok); padding-left: 18px; }
 .clarifications > li.q-rejected { border-left: 3px solid var(--line); padding-left: 18px; opacity: 0.72; }

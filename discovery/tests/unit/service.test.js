@@ -341,3 +341,86 @@ describe('review, change and summary', () => {
     assert.doesNotMatch(md, /price_band|65000|100000|\+25%/);
   });
 });
+
+describe('confirming what was read out of the documents', () => {
+  const TODAY_BULK = '2026-09-20';
+  const lc = { login: 'lc-one', role: 'consultant' };
+
+  async function withExtracted() {
+    const store = createMemoryStore();
+    const svc = createDiscoveryService({ store, today: () => TODAY_BULK });
+    await svc.startInterview(lc, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(lc, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    const recorded = await svc.recordAnswers(lc, 'a-bid', [
+      { question_id: 'Q0.1.1', values: { '/business/primary_problem': 'Mobile checkout friction' }, evidence: { document: 'RFP.pdf', location: 'p. 3' } },
+    ]);
+    assert.deepEqual(recorded.results, [{ question_id: 'Q0.1.1', ok: true, status: 'tbc' }], 'recorded from a document, waiting on a human');
+    return { svc, store };
+  }
+
+  test('answers read from a document arrive waiting for a human, not confirmed', async () => {
+    const { svc } = await withExtracted();
+    const { engagement } = await svc.getSummary(lc, 'a-bid');
+    assert.ok(engagement.to_review >= 1, 'nothing a model extracted counts as confirmed on its own');
+  });
+
+  test('confirming the lot clears them, and says how many', async () => {
+    const { svc } = await withExtracted();
+    const before = (await svc.getSummary(lc, 'a-bid')).engagement.to_review;
+    const result = await svc.confirmAllAnswers(lc, 'a-bid');
+    assert.equal(result.confirmed, before);
+    assert.equal((await svc.getSummary(lc, 'a-bid')).engagement.to_review, 0);
+  });
+
+  test('a bulk confirmation is recorded as one — "all forty-six in a click" is a different answer from "one by one"', async () => {
+    const { svc, store } = await withExtracted();
+    await svc.confirmAllAnswers(lc, 'a-bid');
+    const session = await store.get('a-bid');
+    const touched = Object.values(session.provenance).filter((p) => p.confirmed_at === TODAY_BULK);
+    assert.ok(touched.length >= 1);
+    for (const p of touched) {
+      assert.equal(p.status, 'confirmed');
+      assert.equal(p.confirmed_by, 'lc-one');
+      assert.equal(p.confirmed_in_bulk, true, 'the engagement stays honest about how its answers were checked');
+    }
+  });
+
+  test('confirming one at a time is not marked as bulk', async () => {
+    const { svc, store } = await withExtracted();
+    const session = await store.get('a-bid');
+    const pointer = Object.entries(session.provenance).find(([, p]) => p.status === 'tbc')[0];
+    await svc.confirmAnswer(lc, 'a-bid', { pointer });
+    const after = await store.get('a-bid');
+    assert.equal(after.provenance[pointer].status, 'confirmed');
+    assert.ok(!after.provenance[pointer].confirmed_in_bulk);
+  });
+
+  test('one row at a time: a question is confirmed whole, not field by field', async () => {
+    const { svc, store } = await withExtracted();
+    const before = await store.get('a-bid');
+    const pointers = Object.entries(before.provenance).filter(([, p]) => p.question_id === 'Q0.1.1' && p.status === 'tbc');
+    assert.ok(pointers.length >= 1);
+
+    const result = await svc.confirmAnswer(lc, 'a-bid', { question_id: 'Q0.1.1' });
+    assert.equal(result.confirmed, pointers.length, 'every field that question filled is confirmed together');
+
+    const after = await store.get('a-bid');
+    for (const [pointer] of pointers) {
+      assert.equal(after.provenance[pointer].status, 'confirmed');
+      assert.ok(!after.provenance[pointer].confirmed_in_bulk, 'a row read and confirmed is not a bulk confirmation');
+    }
+  });
+
+  test('confirming a question with nothing waiting is refused, not silently ignored', async () => {
+    const { svc } = await withExtracted();
+    await svc.confirmAnswer(lc, 'a-bid', { question_id: 'Q0.1.1' });
+    await rejects(svc.confirmAnswer(lc, 'a-bid', { question_id: 'Q0.1.1' }), 404);
+    await rejects(svc.confirmAnswer(lc, 'a-bid', { question_id: 'Q9.9.9' }), 404);
+  });
+
+  test('with nothing waiting, it refuses rather than pretending to do something', async () => {
+    const { svc } = await withExtracted();
+    await svc.confirmAllAnswers(lc, 'a-bid');
+    await rejects(svc.confirmAllAnswers(lc, 'a-bid'), 409);
+  });
+});

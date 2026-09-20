@@ -390,16 +390,62 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     /**
      * Confirm an answer recorded "to confirm" (e.g. extracted from a document).
      *
-     * @param {User} user @param {string} client @param {{ pointer: string }} input
+     * By pointer for a single field, or by question id for a whole row of the
+     * review table — one question can fill several fields, and a consultant
+     * reading a row has confirmed the row, not one of its pointers.
+     *
+     * @param {User} user @param {string} client
+     * @param {{ pointer?: string, question_id?: string }} input
      */
-    async confirmAnswer(user, client, { pointer }) {
+    async confirmAnswer(user, client, { pointer, question_id }) {
       const session = await load(user, client);
-      const p = session.provenance[pointer];
-      if (!p) throw new ServiceError(404, `No answer recorded at ${pointer}`);
-      session.provenance[pointer] = { ...p, status: 'confirmed', confirmed_by: user.login, confirmed_at: today() };
+      const mark = (key) => {
+        session.provenance[key] = { ...session.provenance[key], status: 'confirmed', confirmed_by: user.login, confirmed_at: today() };
+      };
+      let confirmed = 0;
+      if (question_id) {
+        for (const [key, p] of Object.entries(session.provenance)) {
+          if (p.question_id === question_id && p.status === 'tbc') { mark(key); confirmed += 1; }
+        }
+        if (!confirmed) throw new ServiceError(404, `Nothing waiting for confirmation on ${question_id}`);
+      } else {
+        if (!session.provenance[pointer]) throw new ServiceError(404, `No answer recorded at ${pointer}`);
+        mark(pointer);
+        confirmed = 1;
+      }
       session.updated_at = today();
       await store.save(session);
-      return { ok: true };
+      return { ok: true, confirmed };
+    },
+
+    /**
+     * Confirm every answer that is waiting, in one go.
+     *
+     * Forty-six confirmations one at a time is not a review, it is a reason to
+     * skip reviewing — so this exists. But it records that it happened: an answer
+     * confirmed in bulk is marked as such, because months later "did a human check
+     * this?" is a real question, and "yes, all forty-six in one click" is a
+     * different answer from "yes, one by one". The citation on each answer is what
+     * makes the bulk confirmation defensible; hiding how it was done would not.
+     *
+     * @param {User} user @param {string} client
+     */
+    async confirmAllAnswers(user, client) {
+      const session = await load(user, client);
+      const waiting = Object.entries(session.provenance).filter(([, p]) => p.status === 'tbc');
+      if (!waiting.length) throw new ServiceError(409, 'Nothing is waiting for confirmation');
+      for (const [pointer, p] of waiting) {
+        session.provenance[pointer] = {
+          ...p,
+          status: 'confirmed',
+          confirmed_by: user.login,
+          confirmed_at: today(),
+          confirmed_in_bulk: true,
+        };
+      }
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, confirmed: waiting.length };
     },
 
     /**
