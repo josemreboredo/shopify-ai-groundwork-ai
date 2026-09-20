@@ -6,7 +6,7 @@ import { EngagementHeader, resultClass, words } from '../components/question.jsx
 import { pageTitle } from '../brand.js';
 import { offerStanding } from '../../../discovery/service/summary.js';
 
-export const meta = ({ params }) => [{ title: pageTitle('Summary', params.client) }];
+export const meta = ({ params }) => [{ title: pageTitle('Where it stands', params.client) }];
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);
@@ -17,67 +17,179 @@ export async function loader({ request, params }) {
   }
 }
 
-const STATE_LABEL = { answered: 'Answered', tbc: 'TBC', skipped: 'Not applicable', commented: 'Clarified by comment' };
+/**
+ * Where the bid stands, re-answered on every document read in and every answer
+ * confirmed.
+ *
+ * Step 3 takes a position for a room, once. This is the work state: what is left
+ * before a price can go on it, and what each gap costs if it never closes. It was
+ * the engine's internal working summary — 298 rows of answers, a second GO/STOP
+ * badge, the exit rules again — none of which answers "can we respond yet".
+ */
+function Bar({ settled, total }) {
+  const pct = total ? Math.round((settled / total) * 100) : 0;
+  return (
+    <div className="decisions-bar" role="img" aria-label={`${settled} of ${total} decisions settled`}>
+      <span className="settled" style={{ width: `${pct}%` }} />
+      <span className="rest" style={{ width: `${100 - pct}%` }} />
+    </div>
+  );
+}
+
+function Points({ title, lead, rows, client, tone }) {
+  if (!rows.length) return null;
+  return (
+    <>
+      <h3 className={`points-head ${tone}`}>{title} <span className="chip">{rows.length}</span></h3>
+      <p className="muted">{lead}</p>
+      <div className="table-scroll">
+        <table className="open-points">
+          <thead><tr><th>What is open</th><th>What it moves</th><th>If we never learn it</th></tr></thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={`${r.what}-${i}`}>
+                <td>
+                  <strong>{r.what}</strong>
+                  <div className="muted small">{r.reason}</div>
+                </td>
+                <td>{r.moves.length ? r.moves.join(', ') : <span className="muted">—</span>}</td>
+                <td>
+                  {r.consequence ?? (r.settles.length
+                    ? <Link to={`/engagements/${client}/clarifications`}>Ask it — {r.settles.slice(0, 3).join(', ')}</Link>
+                    : <span className="muted">—</span>)}
+                  {r.owner ? <div className="muted small">Decided by {r.owner}</div> : null}
+                  {!r.consequence && r.reason === 'we decided not to ask'
+                    ? <div className="no-consequence">No consequence stated — this is the one that becomes a scope argument</div>
+                    : null}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+}
 
 export default function Summary({ loaderData }) {
-  const { engagement, preview: p, open_items: openItems, sections, documents, notes, generated_at: generatedAt } = loaderData;
-  const signals = Object.entries(p.app_signals ?? {}).filter(([, reasons]) => reasons.length);
+  const { engagement, preview: p, readiness: r, open_points: open, documents, notes, generated_at: generatedAt } = loaderData;
+  const client = engagement.client;
   const standing = offerStanding(p);
+
+  if (!r) {
+    return (
+      <main>
+        <EngagementHeader engagement={engagement} eyebrow="Where it stands" meta={`Computed by the engine on ${generatedAt}`} />
+        <section className="card start blocked">
+          <p className="question">Not enough recorded yet</p>
+          <p className="muted">The engine cannot make an engagement of these answers, so there is nothing to weigh. Read the documents in and confirm what they say.</p>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main>
-      <EngagementHeader engagement={engagement} eyebrow="Summary" meta={`Computed by the engine on ${generatedAt}`} />
-      <p className="muted">
-        Internal working summary for the Lead Consultant — not a client document.{' '}
-        <a href={`/engagements/${engagement.client}/summary.md`} download>Download as Markdown</a>
+      <EngagementHeader engagement={engagement} eyebrow="Where it stands" meta={`Recomputed on every document and every confirmation · ${generatedAt}`} />
+
+      {/* 1 — can we respond or not */}
+      <section className={`card position ${r.ready ? 'go' : 'flag'}`}>
+        <p className="eyebrow">{standing.headline}</p>
+        <h2 className="plain verdict">
+          {r.ready
+            ? `Ready to price${r.counts.assumptions ? `, on ${r.counts.assumptions} stated assumption${r.counts.assumptions === 1 ? '' : 's'}` : ''}`
+            : `Not ready to price — ${r.blockers.length} thing${r.blockers.length === 1 ? '' : 's'} block${r.blockers.length === 1 ? 's' : ''} it`}
+        </h2>
+        {r.blockers.length ? (
+          <ul className="grounds">
+            {r.blockers.map((b) => (
+              <li key={b.what}><Link to={`/engagements/${client}/${b.where}`}>{b.what}</Link> — {b.why}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="muted">Nothing is waiting on a person, nothing is outside the offers, and everything still open can be priced on an assumption that is written down.</p>
+        )}
+      </section>
+
+      {/* 2 — the numbers, each one countable */}
+      <ul className="stats kpis">
+        <li><strong>{r.decisions.settled}<span className="of">/{r.decisions.total}</span></strong><span>engine decisions settled</span></li>
+        <li><strong>{r.counts.to_confirm}</strong><span>answers to confirm</span></li>
+        <li><strong>{r.counts.undecided}</strong><span>questions not yet asked or assumed</span></li>
+        <li><strong>{r.counts.assumptions}</strong><span>assumptions the proposal will state</span></li>
+        <li><strong>{r.counts.stops}<span className="of"> · {r.counts.flags} · {r.counts.warns}</span></strong><span>rules fired: outside the offers · needs an owner · commercial</span></li>
+      </ul>
+
+      {/* 3 — what the engine still cannot decide */}
+      <section>
+        <h2>What the engine still cannot decide</h2>
+        <p className="muted">
+          Thirty-three rules decide which offer this is, which Shopify plan the requirements force and which risks
+          get priced. A decision is settled when it fired on the answers, or when every answer it reads is
+          recorded <em>and confirmed</em>. It is not a completeness score: the one still open may be the only one
+          that matters.
+        </p>
+        <Bar settled={r.decisions.settled} total={r.decisions.total} />
+        {r.decisions.open.length ? (
+          <ul className="ticks">
+            {r.decisions.open.map((d) => (
+              <li key={`${d.kind}-${d.id}`}>
+                <strong>{d.kind === 'rule' ? `Rule ${d.id}` : d.label}</strong>
+                {d.kind === 'rule' ? <> — {d.label}</> : null}
+                <div className="muted small">{d.why}{d.missing.length ? ` · ${d.missing.length} input${d.missing.length === 1 ? '' : 's'} with nothing recorded` : ''}</div>
+              </li>
+            ))}
+          </ul>
+        ) : <p className="muted">All thirty-three have an answer behind them.</p>}
+      </section>
+
+      {/* 4 — what it costs to stay ignorant */}
+      <section>
+        <h2>Open points, and what they cost</h2>
+        <Points
+          title="Blocks a price"
+          tone="stop"
+          lead="Nothing we can assume covers these. A number put on the work without them is a guess with a price on it."
+          rows={open.blocks_a_price}
+          client={client}
+        />
+        <Points
+          title="Priced on an assumption"
+          tone="flag"
+          lead="These will be answered in the proposal by stating what Merkle assumed, what it costs to be wrong and who chose it."
+          rows={open.priced_on_an_assumption}
+          client={client}
+        />
+        {!open.blocks_a_price.length && !open.priced_on_an_assumption.length
+          ? <p className="muted">Nothing material is open.</p> : null}
+      </section>
+
+      {/* 5 — what each document actually settled */}
+      {documents.length ? (
+        <section>
+          <h2>What each document gave us</h2>
+          <div className="doc-bars">
+            {r.documents.map((d) => {
+              const most = Math.max(...r.documents.map((x) => x.answers), 1);
+              return (
+                <div key={d.name} className="doc-bar">
+                  <span className="doc-bar-name">{d.name}</span>
+                  <span className="doc-bar-track"><span style={{ width: `${Math.round((d.answers / most) * 100)}%` }} /></span>
+                  <span className="doc-bar-n">{d.answers} answer{d.answers === 1 ? '' : 's'}{d.sections ? ` · ${d.sections} section${d.sections === 1 ? '' : 's'}` : ''}</span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      <p className="muted small">
+        <Link to={`/engagements/${client}/review`}>Every answer</Link> ·{' '}
+        <Link to={`/engagements/${client}/go-no-go`}>The architect’s position</Link> ·{' '}
+        <a href={`/engagements/${client}/summary.md`} download>Download as Markdown</a>
+        {notes.length ? ` · ${notes.length} consultant note${notes.length === 1 ? '' : 's'}` : ''}
+        {p.app_signals && Object.values(p.app_signals).some((x) => x.length) ? ` · app signals in the engine summary` : ''}
       </p>
-
-      <div className="summary-grid">
-        <section className="card">
-          <h2>Offer</h2>
-          <p><strong>{p.offer.code} · {p.offer.name}</strong> {p.offer.provisional ? <span className="badge provisional">provisional</span> : null}</p>
-          <p>{p.go ? <span className="badge go">GO</span> : <span className="badge stop">STOP · route: {words(p.route ?? 'not decided')}</span>}</p>
-          <p className="muted">{p.coverage.required_answered} of {p.coverage.required_total} required answered · {p.coverage.required_tbc} TBC · {p.coverage.required_commented ?? 0} by comment · {p.coverage.required_open} open</p>
-          {p.plan_suggestion ? <p><strong>Minimum Shopify plan:</strong> {p.plan_suggestion.value}<br /><span className="muted">{p.plan_suggestion.reasons.join('; ')}</span></p> : null}
-        </section>
-        <section className="card">
-          <h2>Exit rules</h2>
-          {p.exit_rules.length ? <ul>{p.exit_rules.map((r) => <li key={r.rule}><span className={`badge ${resultClass(r.result)}`}>{r.rule} {r.result}</span> {r.evidence}</li>)}</ul> : <p className="muted">None fired.</p>}
-          <h3>Scope gates</h3>
-          <p className="muted">{Object.entries(p.scope_gates).map(([id, state]) => `${words(id)}: ${state}`).join(' · ')}</p>
-          <h3>L triggers</h3>
-          <p className="muted">{Object.entries(p.l_triggers).map(([id, state]) => `${words(id)}: ${state}`).join(' · ')}</p>
-        </section>
-      </div>
-
-      <h2>Open items ({openItems.length})</h2>
-      {openItems.length ? (
-        <ul>{openItems.map((i) => <li key={`${i.question_id}-${i.why}`}><Link to={`/engagements/${engagement.client}/questions/${i.question_id}`}>{i.question_id}</Link> {i.question} — <span className="muted">{i.why}</span></li>)}</ul>
-      ) : <p className="muted">None.</p>}
-
-      <h2>App signals</h2>
-      {signals.length ? <ul>{signals.map(([area, reasons]) => <li key={area}>{words(area)}: {reasons.join('; ')}</li>)}</ul> : <p className="muted">None — native Shopify covers the answers so far.</p>}
-
-      {sections.map((section) => (
-        <section key={section.title}>
-          <h2>{section.title}</h2>
-          <table>
-            <thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Status</th></tr></thead>
-            <tbody>
-              {section.questions.map((q) => (
-                <tr key={q.id}>
-                  <td><Link to={`/engagements/${engagement.client}/questions/${q.id}`}>{q.id}</Link></td>
-                  <td>{q.text}</td>
-                  <td><span className="pre">{q.value}</span>{q.note ? <div className="muted">{q.note}</div> : null}</td>
-                  <td>{STATE_LABEL[q.state]}{q.to_confirm ? ' (to confirm)' : ''}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      ))}
-
-      {documents.length ? (<><h2>Documents used</h2><ul>{documents.map((d) => <li key={d.name}>{d.name} · {d.type}{d.summary ? ` — ${d.summary}` : ''}</li>)}</ul></>) : null}
-      {notes.length ? (<><h2>Consultant notes</h2><ul>{notes.map((n, i) => <li key={i}>{n.at}: {n.text}</li>)}</ul></>) : null}
     </main>
   );
 }

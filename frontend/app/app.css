@@ -543,6 +543,32 @@ h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; tex
 .before { border-top: 1px solid var(--line); padding-top: 16px; }
 .before .eyebrow { margin-bottom: 8px; }
 
+/* Readiness: countable things, no invented scale */
+.stats.kpis { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 18px 0; margin: 0 0 8px; }
+.stats.kpis .of { font-size: 0.55em; font-weight: 400; color: var(--muted); }
+
+/* The 33 decisions as one bar. Part of a fixed whole, so a bar and not a donut:
+   a donut hides the very segment sizes it exists to compare. */
+.decisions-bar { display: flex; height: 14px; margin: 16px 0 18px; background: var(--panel); border: 1px solid var(--line); }
+.decisions-bar .settled { background: var(--ok); }
+.decisions-bar .rest { background: transparent; }
+
+.points-head { display: flex; align-items: baseline; gap: 10px; margin: 26px 0 4px; font-size: 1rem; }
+.points-head.stop::before { content: ''; width: 9px; height: 9px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
+.points-head.flag::before { content: ''; width: 9px; height: 9px; background: var(--warn); clip-path: polygon(100% 0, 100% 100%, 0 0); }
+table.open-points td { vertical-align: top; }
+table.open-points td:first-child { max-width: 34ch; }
+.no-consequence { margin-top: 5px; font-size: 0.8rem; color: var(--red-ink); font-weight: 600; }
+
+/* What each document actually gave us — this is what answers an upload. */
+.doc-bars { display: grid; gap: 10px; margin-top: 14px; }
+.doc-bar { display: grid; grid-template-columns: minmax(120px, 22ch) 1fr auto; gap: 14px; align-items: center; }
+.doc-bar-name { font-weight: 600; font-size: 0.9rem; }
+.doc-bar-track { background: var(--panel); border: 1px solid var(--line); height: 12px; }
+.doc-bar-track > span { display: block; height: 100%; background: var(--red); }
+.doc-bar-n { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
+@media (max-width: 720px) { .doc-bar { grid-template-columns: 1fr; gap: 4px; } }
+
 /* What leaves the deal: smaller bid, not a harder one */
 .exclusions { list-style: none; padding: 0; margin: 18px 0 0; }
 .exclusions > li { border-left: 3px solid var(--warn); padding: 2px 0 2px 18px; margin-bottom: 18px; max-width: 84ch; }
