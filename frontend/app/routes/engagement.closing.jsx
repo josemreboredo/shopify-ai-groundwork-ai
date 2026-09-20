@@ -4,7 +4,7 @@ import { Link, useRevalidator } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';
-import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
+import { Blockers, EngagementHeader } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 import { processMeta } from '../../../discovery/service/process.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
@@ -91,23 +91,7 @@ export default function Closing({ loaderData }) {
         ) : (
           <>
             <p className="question">{readiness.error}</p>
-            {readiness.blockers?.length ? (
-              <ol className="blockers">
-                {readiness.blockers.map((b, i) => (
-                  <li key={b.question_id ?? i}>
-                    <p className="blocker-what">{b.what}</p>
-                    {b.why ? <p className="muted"><WithQuestionLinks text={b.why} client={client} /></p> : null}
-                    {b.question_id ? (
-                      <Link className={`button${i === 0 ? '' : ' secondary'}`} to={`/engagements/${client}/questions/${b.question_id}`}>
-                        Answer {b.question_id}
-                      </Link>
-                    ) : null}
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <ul className="errors">{(readiness.errors ?? []).map((e) => <li key={e}><WithQuestionLinks text={e} client={client} /></li>)}</ul>
-            )}
+            <Blockers items={readiness.blockers} errors={readiness.errors} client={client} />
             <p className="muted">
               {readiness.blockers?.length > 1
                 ? 'Answer them in order — the first one is what the rest depend on.'

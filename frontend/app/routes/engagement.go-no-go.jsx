@@ -1,6 +1,6 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
+import { Blockers, EngagementHeader } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 import { Radar } from '../components/radar.jsx';
 import { pageTitle } from '../brand.js';
@@ -52,17 +52,7 @@ export default function GoNoGo({ loaderData }) {
         <section className="card start blocked">
           <p className="question">{blocked.error}</p>
           <p className="muted">There is nothing for this desk to weigh until these are recorded.</p>
-          <ul className="blockers">
-            {(blocked.blockers ?? []).map((b) => (
-              <li key={b.what}>
-                <strong>{b.what}</strong>
-                <p className="muted"><WithQuestionLinks text={b.why} client={engagement.client} /></p>
-              </li>
-            ))}
-            {!(blocked.blockers ?? []).length && blocked.errors.map((e) => (
-              <li key={e}><p className="muted"><WithQuestionLinks text={e} client={engagement.client} /></p></li>
-            ))}
-          </ul>
+          <Blockers items={blocked.blockers} errors={blocked.errors} client={engagement.client} />
         </section>
       </main>
     );

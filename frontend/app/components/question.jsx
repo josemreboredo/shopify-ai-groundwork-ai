@@ -76,6 +76,39 @@ export function EngagementNav({ engagement }) {
 }
 
 /**
+ * What is blocking, as things to go and do. An error that names a missing answer
+ * and leaves the consultant to find it is only half an error message, so every
+ * blocker that resolves to a question carries the link that fixes it. Three
+ * pages showed these and only one linked them.
+ *
+ * @param {{ items?: object[], errors?: string[], client: string }} props
+ */
+export function Blockers({ items = [], errors = [], client }) {
+  if (!items.length) {
+    return errors.length ? (
+      <ul className="blockers">
+        {errors.map((e) => <li key={e}><p className="muted"><WithQuestionLinks text={e} client={client} /></p></li>)}
+      </ul>
+    ) : null;
+  }
+  return (
+    <ol className="blockers">
+      {items.map((b, i) => (
+        <li key={b.question_id ?? b.what ?? i}>
+          <p className="blocker-what">{b.what}</p>
+          {b.why ? <p className="muted"><WithQuestionLinks text={b.why} client={client} /></p> : null}
+          {b.question_id ? (
+            <Link className={`button${i === 0 ? '' : ' secondary'}`} to={`/engagements/${client}/questions/${b.question_id}`}>
+              Answer {b.question_id}
+            </Link>
+          ) : null}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/**
  * Turns every question id in a message into a link that opens that question.
  * An error that names Q10.5.5 and then says "fix it in Review answers" makes the
  * consultant hunt through 240 rows for a question the message already knew.

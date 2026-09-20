@@ -3,7 +3,7 @@ import { Form, useNavigation, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
+import { Blockers, EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 import { pageTitle } from '../brand.js';
 
@@ -131,17 +131,7 @@ Write every question we need answered to price this properly — the Lead Consul
             {!saved ? <span className="muted">This page updates itself when Claude saves.</span> : null}
           </div>
         ) : (
-          <ul className="blockers">
-            {(readiness.blockers ?? []).map((b) => (
-              <li key={b.what}>
-                <strong>{b.what}</strong>
-                <p className="muted"><WithQuestionLinks text={b.why} client={client} /></p>
-              </li>
-            ))}
-            {!(readiness.blockers ?? []).length && readiness.errors.map((e) => (
-              <li key={e}><p className="muted"><WithQuestionLinks text={e} client={client} /></p></li>
-            ))}
-          </ul>
+          <Blockers items={readiness.blockers} errors={readiness.errors} client={client} />
         )}
         {actionData?.error ? <p className="error">{actionData.error}</p> : null}
         {actionData?.warning ? (

@@ -208,9 +208,29 @@ td a { font-weight: 600; }
 .table-input table { min-width: 100%; margin-bottom: 8px; }
 .table-input td { padding: 4px; min-width: 120px; }
 .table-input th { white-space: nowrap; }
+/* Accordions. Every <details> in the app carries the same marker — + closed,
+   − open, hard right, on the first line — and never the browser's triangle,
+   which is a different shape on every platform and none of them square. It is
+   one rule and not a per-component decision, so a new accordion is marked the
+   moment it is written: the home page's "New" fold was built without one and
+   read as a heading nobody could open.
+   The marker is currentColor at 55%, so it sits correctly on a black band as
+   well as on white, and it turns red with the summary on hover because it is
+   the same word being pointed at. It is positioned out of flow, so a summary
+   can be flex, grid or plain text and the marker lands in the same place. */
 details { margin: 16px 0; }
 main > details { margin: 20px 0; }
-details summary { cursor: pointer; color: var(--ink); font-size: 0.9rem; font-weight: 600; padding: 4px 0; }
+details summary {
+  position: relative; cursor: pointer; color: var(--ink); font-size: 0.9rem; font-weight: 600;
+  padding: 4px 1.9rem 4px 0; list-style: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::after {
+  content: '+'; position: absolute; right: 0; top: 4px;
+  font-size: 1.3em; line-height: 1.3; font-weight: 400; color: inherit; opacity: 0.55;
+}
+details[open] > summary::after { content: '−'; }
+details summary:hover::after, details summary:focus-visible::after { opacity: 1; }
 details summary:hover { color: var(--red); }
 details[open] > summary { margin-bottom: 10px; }
 details.card > summary { font-size: 0.95rem; }
@@ -270,7 +290,7 @@ button.destructive:hover { background: #000; border-color: #000; }
 
 /* Pre-filling from the client's documents: the step that has to start in Claude */
 .card.prefill { border-left: 4px solid var(--red); padding-top: 16px; padding-bottom: 16px; }
-details.card.prefill > summary { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; list-style-position: outside; }
+details.card.prefill > summary { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
 .prefill-title { font-weight: 700; color: var(--ink); }
 .prefill-status { font-weight: 500; font-size: 0.85rem; }
 details.card.prefill[open] > summary { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line-soft); }
@@ -796,22 +816,13 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
    the paragraph above ran the full width while the questions wrapped at half of
    it, which read as two different pages. */
 .clarifications > li > details > summary {
-  display: grid; grid-template-columns: 2.2rem 1fr 1.4rem; gap: 6px 0; align-items: baseline;
-  cursor: pointer; list-style: none; margin: 0 0 10px;
+  display: grid; grid-template-columns: 2.2rem 1fr; gap: 6px 0; align-items: baseline;
+  margin: 0 0 10px;
 }
-.clarifications > li > details > summary::-webkit-details-marker { display: none; }
 .clarifications > li > details > summary::before {
   content: counter(clarification); color: var(--red); font-variant-numeric: tabular-nums;
   font-weight: 700; font-size: 1.12rem;
 }
-/* The one thing a hidden marker owes you: something that says it opens. */
-.clarifications > li > details > summary::after {
-  content: '+'; grid-column: 3; justify-self: end; color: var(--muted);
-  font-size: 1.25rem; line-height: 1; font-weight: 400;
-}
-.clarifications > li > details[open] > summary::after { content: '−'; }
-.clarifications > li > details > summary:hover::after,
-.clarifications > li > details > summary:focus-visible::after { color: var(--red); }
 .clarifications .q-text { grid-column: 2; margin: 0; font-size: 1.12rem; line-height: 1.35; }
 .clarifications .q-badges { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; }
 .clarifications .q-badges:empty { display: none; }
