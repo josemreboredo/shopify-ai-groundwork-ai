@@ -143,6 +143,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       language: session.language,
       mode: session.mode,
       process: processOf(session.process),
+      won: session.won ?? null,
       owner: session.owner ?? null,
       started_at: session.started_at,
       updated_at: session.updated_at,
@@ -768,9 +769,36 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (!PROCESS_IDS.includes(process)) throw new ServiceError(400, `process must be one of ${PROCESS_IDS.join(', ')} (got ${process})`);
       const was = processOf(session.process);
       session.process = process;
+      // Back to being a bid means it has not been won — a record must not carry a
+      // win it does not have, however it got there.
+      if (process === 'rfp') delete session.won;
       session.updated_at = today();
       await store.save(session);
       return { ok: true, process, was };
+    },
+
+    /**
+     * Merkle won the bid. It becomes an engagement and the work carries on in the
+     * same record: the RFP, every answer read out of it with its citation, the
+     * questions sent to the client and every version of the proposal stay exactly
+     * where they are. That is the whole reason a bid was never a separate object.
+     *
+     * Winning is a milestone, not a correction, so it is its own action and it is
+     * dated. Someone who simply created the record as the wrong kind uses
+     * setProcess instead, and nothing claims a bid was won that was not.
+     *
+     * @param {User} user @param {string} client
+     */
+    async markBidWon(user, client) {
+      const session = await load(user, client);
+      if (processOf(session.process) !== 'rfp') {
+        throw new ServiceError(409, 'Only a bid can be won — this is already an engagement');
+      }
+      session.process = 'discovery';
+      session.won = { at: today(), from: 'rfp', by: user.login };
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, process: 'discovery', won_at: session.won.at };
     },
 
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */

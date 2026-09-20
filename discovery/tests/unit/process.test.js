@@ -84,6 +84,46 @@ describe('one engine, two processes', () => {
     assert.deepEqual(after.engagement.coverage, before.engagement.coverage, 'nothing recorded has changed');
   });
 
+  test('a bid that is won becomes an engagement and keeps everything it gathered', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await consented(svc, 'ricola-test', 'rfp');
+    await svc.registerDocument(consultant, 'ricola-test', { name: 'RFP-2024.pdf', type: 'rfp', summary: 'The brief' });
+    await svc.saveClarifications(consultant, 'ricola-test', {
+      questions: [{ question: 'One catalogue?', why_we_ask: 'It decides the store count.', covers: ['Q3.4.13'], assume_if_unanswered: 'One store with Markets.' }],
+    });
+    const before = await svc.getSummary(consultant, 'ricola-test');
+
+    const won = await svc.markBidWon(consultant, 'ricola-test');
+    assert.equal(won.process, 'discovery');
+    assert.equal(won.won_at, TODAY);
+
+    const after = await svc.getSummary(consultant, 'ricola-test');
+    assert.equal(after.engagement.process, 'discovery');
+    assert.deepEqual(after.engagement.won, { at: TODAY, from: 'rfp', by: 'lc-one' }, 'a win is dated, so it is never confused with a correction');
+    assert.deepEqual(after.engagement.coverage, before.engagement.coverage, 'not one answer moved');
+
+    // The whole point of never making a bid a separate object.
+    const kept = await svc.getClarifications(consultant, 'ricola-test');
+    assert.equal(kept.clarifications.questions.length, 1, 'the questions sent to the client survive the win');
+    assert.equal(kept.documents[0].name, 'RFP-2024.pdf', 'so does the RFP itself');
+  });
+
+  test('only a bid can be won, and a record made a bid again is no longer won', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await consented(svc, 'a-discovery', 'discovery');
+    await assert.rejects(
+      svc.markBidWon(consultant, 'a-discovery'),
+      (err) => err instanceof ServiceError && err.status === 409,
+      'an engagement cannot be won — it was never a bid',
+    );
+
+    await consented(svc, 'a-bid', 'rfp');
+    await svc.markBidWon(consultant, 'a-bid');
+    assert.ok((await svc.getSummary(consultant, 'a-bid')).engagement.won);
+    await svc.setProcess(consultant, 'a-bid', { process: 'rfp' });
+    assert.equal((await svc.getSummary(consultant, 'a-bid')).engagement.won, null, 'a record must not carry a win it does not have');
+  });
+
   test('an unknown process is refused rather than silently stored', async () => {
     const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
     await consented(svc, 'demo-client', 'rfp');

@@ -438,6 +438,18 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   .steps li { grid-template-columns: 52px minmax(0, 1fr); gap: 14px; }
 }
 
+/* What this record is: the first thing on the first screen, because a bid run as
+   a discovery is not a settings mistake, it is sixty questions to a client. */
+.process-card { border-left: 4px solid var(--navy); }
+.process-card.rfp { border-left-color: var(--red); }
+.process-card .actions { margin-bottom: 0; align-items: baseline; }
+.process-card .actions form { display: inline; }
+.process-card button.link {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font-size: 0.85rem; color: var(--muted); text-decoration: underline; text-underline-offset: 3px;
+}
+.process-card button.link:hover { color: var(--ink); }
+
 /* Which of the two processes a record is in */
 .badge.process-rfp { background: var(--navy); color: #fff; }
 .badge.process-discovery { background: var(--panel); color: var(--muted); }
