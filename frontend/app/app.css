@@ -25,6 +25,13 @@
   color: var(--ink);
   background: #fff;
 }
+/* Colour means one thing at a time.
+   --red is the Merkle mark: wedges, the rule under a heading, the active
+   underline, the focus ring. It is never a state and never a category.
+   State colours a surface, and only these: --ok settled, --warn waiting on a
+   decision, --stop stopped or lost, --line-strong in progress with nothing
+   wrong. Category — a bid against an engagement — is navy against grey,
+   as the process badges draw it. */
 * { box-sizing: border-box; }
 html { overflow-x: clip; }
 body { margin: 0; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: clip; }
@@ -228,7 +235,10 @@ details.card[open] > summary { margin-bottom: 12px; }
 
 /* One card per record, phones only — the table stays the desk instrument. */
 .record-cards { display: none; }
-.record-cards li { border: 1px solid var(--line); border-left: 3px solid var(--red); padding: 14px 16px; background: #fff; }
+.record-cards li { border: 1px solid var(--line); border-left: 3px solid var(--line-strong); padding: 14px 16px; background: #fff; }
+.record-cards li.tone-go { border-left-color: var(--ok); }
+.record-cards li.tone-flag { border-left-color: var(--warn); }
+.record-cards li.tone-stop { border-left-color: var(--stop); }
 .record-cards p { margin: 0; }
 .record-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .record-top a { font-size: 1.15rem; font-weight: 700; text-decoration: none; letter-spacing: -0.01em; }
@@ -477,7 +487,7 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 /* Two doors: you say what you are doing, nothing asks you to classify a record */
 .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 8px 0 44px; }
 .door { border: 1px solid var(--line); border-top: 3px solid var(--navy); padding: 26px 28px; background: #fff; }
-.door.rfp { border-top-color: var(--red); }
+.door.discovery { border-top-color: var(--line-strong); }
 .door-n { font-size: 0.74rem; letter-spacing: 0.1em; color: var(--muted); margin: 0 0 10px; }
 .door h2 { margin: 0 0 8px; font-size: 1.3rem; }
 .door > p { color: var(--muted); max-width: 46ch; margin: 0 0 20px; }

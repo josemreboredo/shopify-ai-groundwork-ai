@@ -143,7 +143,7 @@ export default function Home({ loaderData, actionData }) {
             are a desk instrument, so below 760px this list replaces them. */}
         <ul className="record-cards">
           {engagements.map((e) => (
-            <li key={e.client}>
+            <li key={e.client} className={`tone-${statusOf(e).tone || 'none'}`}>
               <p className="record-top">
                 <Link to={`/engagements/${e.client}`}>{e.client}</Link>
                 <Status e={e} />
