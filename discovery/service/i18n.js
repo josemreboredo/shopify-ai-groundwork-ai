@@ -14,6 +14,8 @@
  * @module discovery/service/i18n
  */
 
+import { createHash } from 'node:crypto';
+
 import de from '../schema/translations/de.json' with { type: 'json' };
 import fr from '../schema/translations/fr.json' with { type: 'json' };
 import { questionBank } from '../schema/index.js';
@@ -27,6 +29,26 @@ import { LANGUAGES, LANGUAGE_NAMES, supported, writtenIn } from '../agents/langu
 export const TRANSLATIONS = { de, fr };
 
 export { LANGUAGES, LANGUAGE_NAMES, supported as supportedLanguage, writtenIn };
+
+/**
+ * The English a translation was made from, as a short digest.
+ *
+ * A translation cannot tell that its source has moved. Q8.1.1 gained a column
+ * and a sentence of help; German and French kept the eight-column version, and
+ * nothing failed — a German client was handed a questionnaire asking for less
+ * than the schema holds. So every translated question records the digest of the
+ * English it was written against, and a test compares. Only the four strings a
+ * translator is responsible for are in it: a new Shopify source or plan note on
+ * the same question does not make the German wrong.
+ *
+ * @param {object} q  a question from the bank
+ * @returns {string}
+ */
+export function sourceDigest(q) {
+  const teach = q.teach ?? {};
+  const parts = [q.text ?? '', q.help ?? '', teach.why ?? '', teach.limits ?? ''];
+  return createHash('sha256').update(parts.join('\u0000')).digest('hex').slice(0, 12);
+}
 
 /** @param {string} [language] */
 export function translationFor(language) {

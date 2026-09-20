@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 
 import { createDiscoveryService } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
-import { TRANSLATIONS, LANGUAGES, coverage, translateQuestion, translateRows } from '../../service/i18n.js';
+import { TRANSLATIONS, LANGUAGES, coverage, translateQuestion, translateRows, sourceDigest } from '../../service/i18n.js';
 import { questionBank } from '../../schema/index.js';
 import { describeQuestion } from '../../agents/interview/next.js';
 import { renderQuestionnaire } from '../../scripts/render-questionnaire.js';
@@ -36,6 +36,26 @@ describe('questionnaire translations', () => {
         assert.ok(typeof q.text === 'string' && q.text.trim(), `${language} ${id}: needs the question text`);
         if (q.options) for (const value of Object.keys(q.options)) assert.ok(typeof q.options[value] === 'string', `${language} ${id}: option ${value}`);
       }
+    }
+  });
+
+  test('no translation is left behind when the English moves', () => {
+    // The failure this catches actually happened: Q8.1.1 gained a column and a
+    // sentence of help, German and French kept the eight-column version, and the
+    // whole suite stayed green. A German client was handed a questionnaire asking
+    // for less than the schema holds.
+    //
+    // If this fails, the English changed and the translation did not. Retranslate
+    // the question, then re-run the digest — do not just update the digest.
+    const byId = new Map(questionBank.questions.map((q) => [q.id, q]));
+    for (const [language, t] of Object.entries(TRANSLATIONS)) {
+      const from = t.translated_from ?? {};
+      for (const id of Object.keys(t.questions ?? {})) {
+        assert.ok(from[id], `${language} ${id}: translated with no record of the English it came from`);
+        assert.equal(from[id], sourceDigest(byId.get(id)),
+          `${language} ${id}: the English has changed since this was translated`);
+      }
+      for (const id of Object.keys(from)) assert.ok(t.questions?.[id], `${language}: ${id} has a digest but no translation`);
     }
   });
 
