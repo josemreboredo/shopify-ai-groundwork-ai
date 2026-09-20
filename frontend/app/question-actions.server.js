@@ -19,7 +19,7 @@ export async function questionAction(user, client, form) {
       // What was stored, in the words it was stored as. Recording an answer just
       // made the card vanish: a mis-click on a select was invisible, and only the
       // comment-only path ever said anything back.
-      return { ok: true, intent, question_id: questionId, commented: Boolean(result.commented), recorded: result.recorded ?? null };
+      return { ok: true, intent, question_id: questionId, commented: Boolean(result.commented), recorded: result.recorded ?? null, moved: result.moved ?? [] };
     }
     if (intent === 'tbc' || intent === 'skipped') await service.markQuestion(user, client, { question_id: questionId, as: intent, note });
     else if (intent === 'reopen') await service.reopenQuestion(user, client, { question_id: questionId });

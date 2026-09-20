@@ -26,6 +26,7 @@ import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
 import { clarificationBrief, clarificationTopics, clarificationsPrompt } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
+import { whatMoved } from './moved.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
 import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
@@ -418,6 +419,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         records.set(spec.root, group);
       }
 
+      const before = preview(session, today());
       const draft = structuredClone(session);
       applyAnswers(draft, question, records, { user, via: 'web', source, status, note });
       await store.save(draft);
@@ -427,7 +429,15 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const stored = reviewSections(draft, { includeOpen: false })
         .flatMap((sec) => sec.questions)
         .find((q) => q.id === question.id);
-      return { ok: true, preview: preview(draft, today()), recorded: stored ? { id: stored.id, value: stored.value, state: stored.state } : null };
+      const after = preview(draft, today());
+      return {
+        ok: true,
+        preview: after,
+        recorded: stored ? { id: stored.id, value: stored.value, state: stored.state } : null,
+        // What this answer changed — said once, where the consultant is looking,
+        // instead of left for them to notice in a column nobody watches.
+        moved: whatMoved(before, after),
+      };
     },
 
     /**

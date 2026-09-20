@@ -306,6 +306,16 @@ export default function Engagement({ loaderData, actionData }) {
           {actionData?.ok && actionData.recorded && !actionData.commented ? (
             <p className="muted" role="status"><strong>{actionData.recorded.id}</strong> recorded as “{actionData.recorded.value}”.</p>
           ) : null}
+          {/* Only when something actually moved. A line that speaks when nothing
+              happened is the line people stop reading. */}
+          {actionData?.ok && actionData.moved?.length ? (
+            <p className="moved" role="status">
+              That answer {actionData.moved.map((m, i) => (
+                <span key={m}>{i > 0 ? (i === actionData.moved.length - 1 ? ', and ' : ', ') : ''}<strong>{m}</strong></span>
+              ))}.{' '}
+              <Link to={`/engagements/${engagement.client}/summary`}>Where it stands</Link>
+            </p>
+          ) : null}
           {actionData?.ok && actionData.intent === 'tbc' ? (
             <p className="muted" role="status"><strong>{actionData.question_id}</strong> marked to check with the client{actionData.note ? `: ${actionData.note}` : ''}.</p>
           ) : null}
