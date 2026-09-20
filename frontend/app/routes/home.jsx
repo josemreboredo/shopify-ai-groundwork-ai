@@ -61,7 +61,7 @@ function progressUnder(e) {
   const c = e.coverage ?? {};
   if (!c.required_total) return null;
   if (id === 'interviewing') return c.required_tbc ? `${c.required_tbc} TBC` : null;
-  return `${c.required_answered} of ${c.required_total} required${c.required_tbc ? ` · ${c.required_tbc} TBC` : ''}`;
+  return `${c.required_answered} of ${c.required_total} required${c.required_tbc ? ` · ${c.required_tbc} with the client` : ''}`;
 }
 
 export default function Home({ loaderData, actionData }) {
@@ -96,7 +96,7 @@ export default function Home({ loaderData, actionData }) {
             <input type="hidden" name="mode" value="standard" />
             <div className="field">
               <label htmlFor="rfp-client">Client</label>
-              <input id="rfp-client" name="client" placeholder="la-prairie" pattern="[a-z0-9][a-z0-9-]*" required />
+              <input id="rfp-client" name="client" placeholder="client-a" pattern="[a-z0-9][a-z0-9-]*" required />
             </div>
             <div className="field">
               <label htmlFor="rfp-language">Language</label>
@@ -116,7 +116,7 @@ export default function Home({ loaderData, actionData }) {
             <input type="hidden" name="process" value="discovery" />
             <div className="field">
               <label htmlFor="d-client">Client</label>
-              <input id="d-client" name="client" placeholder="acme-watches" pattern="[a-z0-9][a-z0-9-]*" required />
+              <input id="d-client" name="client" placeholder="demo-brand" pattern="[a-z0-9][a-z0-9-]*" required />
             </div>
             <div className="field">
               <label htmlFor="d-language">Language</label>
@@ -137,7 +137,21 @@ export default function Home({ loaderData, actionData }) {
         </section>
       </div>
       </details>
-      {actionData?.error ? <p className="error">{actionData.error}</p> : null}
+      {/* The message sat 270px below the field that caused it, in a word the
+          field does not use, and said nothing about the record already there. */}
+      {actionData?.error ? (
+        <div className="card blocked">
+          <p className="question">{actionData.error}</p>
+          {actionData.blockers?.length ? (
+            actionData.blockers.map((b) => (
+              <p key={b.what}>
+                <span className="muted">{b.why}</span>{' '}
+                {b.href ? <Link className="button secondary" to={b.href}>{b.what}</Link> : null}
+              </p>
+            ))
+          ) : null}
+        </div>
+      ) : null}
 
       <h2>Open now</h2>
       {engagements.length === 0 ? <p className="muted">Nothing open yet.</p> : (
@@ -168,7 +182,7 @@ export default function Home({ loaderData, actionData }) {
         <div className="table-scroll record-table" role="region" tabIndex={0} aria-label="Bids and engagements, scrollable table">
         <table>
           <thead>
-            <tr><th scope="col">Client</th><th scope="col">What</th><th scope="col">Offer</th><th scope="col">Status</th><th scope="col">Required answered</th><th scope="col">To confirm</th><th scope="col">Mode</th><th scope="col">Owner</th><th scope="col">Updated</th></tr>
+            <tr><th scope="col">Client</th><th scope="col">What</th><th scope="col">Offer</th><th scope="col">Status</th><th scope="col">Required answered</th><th scope="col">To confirm</th><th scope="col">Depth</th><th scope="col">Owner</th><th scope="col">Updated</th></tr>
           </thead>
           <tbody>
             {engagements.map((e) => (
@@ -180,7 +194,7 @@ export default function Home({ loaderData, actionData }) {
                   {offerStanding(e).applies && e.offer.provisional ? <div className="muted small">provisional</div> : null}
                 </td>
                 <td><Status e={e} /></td>
-                <td>{e.coverage.required_answered} / {e.coverage.required_total}{e.coverage.required_tbc ? ` (${e.coverage.required_tbc} TBC)` : ''}</td>
+                <td>{e.coverage.required_answered} / {e.coverage.required_total}{e.coverage.required_tbc ? ` (${e.coverage.required_tbc} with the client)` : ''}</td>
                 <td>{e.to_review ? <span className="badge flag">{e.to_review}</span> : '—'}</td>
                 <td>{e.mode}</td>
                 <td>{e.owner ?? '—'}</td>

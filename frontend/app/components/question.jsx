@@ -104,6 +104,8 @@ export function Blockers({ items = [], errors = [], client, from }) {
             <Link className={`button${i === 0 ? '' : ' secondary'}`} to={`/engagements/${client}/questions/${b.question_id}?back=${encodeURIComponent(from ?? '')}`}>
               Answer {b.question_id}
             </Link>
+          ) : b.href ? (
+            <Link className={`button${i === 0 ? '' : ' secondary'}`} to={b.href}>{b.what}</Link>
           ) : null}
         </li>
       ))}
@@ -177,11 +179,12 @@ export function EngagementHeader({ engagement, eyebrow, title, meta, back, langu
   const words = processMeta(engagement.process);
   return (
     <header className="page-head">
-      <Link className="crumb" to={back?.to ?? '/'}>← {back?.label ?? 'Engagements'}</Link>
+      <Link className="crumb" to={back?.to ?? '/'}>← {back?.label ?? 'Bids and engagements'}</Link>
       {/* A bid is the unusual state and worth naming on every page. An engagement
           is the default: saying so on top of the page name is noise. */}
       <p className="eyebrow">{[processOf(engagement.process) === 'rfp' ? words.record : null, eyebrow].filter(Boolean).join(' · ') || words.record}</p>
-      <h1>{title ?? client}</h1>
+      <h1>{title ?? engagement.client_name ?? client}</h1>
+      {engagement.client_name ? <p className="page-lang">{client}</p> : null}
       {meta ? <p className="page-meta">{meta}</p> : null}
       {/* Three facts, and the middle one used to be the opposite of true: it read
           "answers and documents in English" while the questions Merkle sends and
@@ -348,10 +351,15 @@ function FieldInput({ spec, showLabel, value, describedBy, groupLabel }) {
   );
 }
 
+/**
+ * Closed by default. It was open on every one of three cards, every screen, for
+ * a consultant who has read it a hundred times — so the answer field began
+ * below the fold of each card.
+ */
 function WhyItMatters({ teach, drives }) {
   if (!teach && !drives?.length) return null;
   return (
-    <details className="teach" open>
+    <details className="teach">
       <summary>Why this matters — and the trade-offs</summary>
       {teach?.why ? <p>{teach.why}</p> : null}
       {drives?.length ? <p className="muted">Your answer changes: {drives.join(' · ')}.</p> : null}
@@ -433,11 +441,11 @@ export function QuestionCard({ question, actionData, busy, values = {}, note = '
           </ul>
         ) : null}
         <div className="actions">
-          <button type="submit" name="intent" value="answer" disabled={busy}>Record answer</button>
+          <button type="submit" name="intent" value="answer" disabled={busy}>{busy ? 'Recording…' : 'Record answer'}</button>
           {!consent ? (
             <>
               <label className="muted"><input type="checkbox" name="tbc_status" /> to confirm with client</label>
-              <button type="submit" name="intent" value="tbc" className="secondary" disabled={busy}>TBC</button>
+              <button type="submit" name="intent" value="tbc" className="secondary" disabled={busy}>They don’t know yet</button>
               <button type="submit" name="intent" value="skipped" className="secondary" disabled={busy}>Not applicable</button>
             </>
           ) : null}

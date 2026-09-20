@@ -251,6 +251,6 @@ export function viewsFor(engagement) {
     // the consultant is already talking to the client, so they are a view. The
     // handover is the mirror of that: a discovery's last step, a bid's side note.
     ...(rfp ? [{ path: 'handover', label: 'Handover' }] : [{ path: 'clarifications', label: 'Questions to the client' }]),
-    { path: 'settings', label: 'Change' },
+    { path: 'settings', label: 'Settings' },
   ];
 }

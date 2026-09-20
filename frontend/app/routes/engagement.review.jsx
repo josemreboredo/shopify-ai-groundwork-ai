@@ -47,6 +47,9 @@ const MATCH = {
   answered: (q) => q.state === 'answered' || q.state === 'commented',
 };
 
+/* An unmapped state used to throw and take Review with it: the page where a
+   consultant fixes things is the last one that should fall over. */
+const UNKNOWN_STATE = ['', 'Unknown'];
 const STATE = {
   answered: ['go', 'Answered'],
   commented: ['flag', 'Clarified by comment'],
@@ -76,7 +79,7 @@ export default function Review({ loaderData, actionData }) {
         language={language}
         engagement={engagement}
         eyebrow="Review answers"
-        meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} TBC · ${count('skipped')} not applicable · ${count('open')} open`}
+        meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} with the client · ${count('skipped')} not applicable · ${count('open')} open`}
       />
       {recorded ? (
         <p className="pilot" role="status"><strong>{recorded}</strong> recorded. It is highlighted below.</p>
@@ -164,7 +167,7 @@ export default function Review({ loaderData, actionData }) {
                     {q.note ? <div className="muted">{q.note}</div> : null}
                   </td>
                   <td>
-                    <span className={`badge ${STATE[q.state][0]}`}>{STATE[q.state][1]}</span>
+                    <span className={`badge ${(STATE[q.state] ?? UNKNOWN_STATE)[0]}`}>{(STATE[q.state] ?? UNKNOWN_STATE)[1]}</span>
                     {q.to_confirm ? <span className="badge flag">to confirm</span> : null}
                   </td>
                   <td className="row-actions">

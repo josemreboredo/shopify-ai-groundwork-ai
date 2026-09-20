@@ -196,6 +196,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
   function summary(session) {
     const p = preview(session, today());
     return {
+      // The trading name, collected at Q1.1.1 and never shown: every page of a
+      // record was headed by its URL slug.
+      client_name: session.answers?.meta?.client?.name ?? null,
       client: session.client,
       language: session.language,
       mode: session.mode,
@@ -343,7 +346,14 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.owner = user.login;
       session.documents = [];
       // Same message whether or not the owner can see it: slugs of other consultants' clients are not revealed.
-      if (await store.get(session.client)) throw new ServiceError(409, `The client slug ${session.client} is not available — choose another one`);
+      if (await store.get(session.client)) {
+        throw new ServiceError(409, `You already have a record called ${session.client}`, [], [{
+          question_id: null,
+          what: `Open ${session.client}`,
+          why: 'Names are how records are addressed, so two cannot share one. Open the one that exists, or start this under another name.',
+          href: `/engagements/${session.client}`,
+        }]);
+      }
       await store.create(session);
       return { client: session.client };
     },

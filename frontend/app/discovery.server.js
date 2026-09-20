@@ -48,7 +48,7 @@ export function oauth() {
 /** Turn a service error into a route response; rethrow anything else. */
 export function serviceFailure(err, extra = {}) {
   if (err instanceof ServiceError) {
-    return data({ ...extra, error: err.message, errors: err.errors }, { status: err.status });
+    return data({ ...extra, error: err.message, errors: err.errors, blockers: err.blockers ?? [] }, { status: err.status });
   }
   throw err;
 }

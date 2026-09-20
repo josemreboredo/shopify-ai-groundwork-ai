@@ -191,14 +191,21 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }) {
-  const STATUS = { 400: 'Cannot do that yet', 401: 'Sign in again', 403: 'No access to this engagement', 404: 'Not found', 409: 'Something is missing first' };
+  const STATUS = { 400: 'Cannot do that yet', 401: 'Sign in again', 403: 'No access to this record', 404: 'This page does not exist', 409: 'Something is missing first' };
+  const is404 = isRouteErrorResponse(error) && error.status === 404;
   const title = isRouteErrorResponse(error) ? STATUS[error.status] ?? `Something went wrong (${error.status})` : 'Something went wrong';
-  const details = isRouteErrorResponse(error) ? (typeof error.data === 'string' ? error.data : error.data?.error) : error instanceof Error ? error.message : '';
+  // A wrong URL printed the framework's own sentence — "Error: No route matches
+  // URL /nope" — which tells a consultant nothing and reads like a breakage.
+  const details = is404
+    ? 'The address is wrong, or the page moved. Everything the tool has is in the menu and the footer.'
+    : isRouteErrorResponse(error)
+      ? (typeof error.data === 'string' ? error.data : error.data?.error)
+      : error instanceof Error ? error.message : '';
   return (
-    <main className="narrow">
+    <main id="main" className="narrow">
       <h1>{title}</h1>
       {details ? <p>{details}</p> : null}
-      <p><Link to="/">Back to engagements</Link></p>
+      <p><Link to="/">Back to bids and engagements</Link> · <Link to="/manual">the manual</Link></p>
     </main>
   );
 }
