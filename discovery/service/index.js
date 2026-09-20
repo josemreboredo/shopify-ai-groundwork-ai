@@ -24,6 +24,7 @@ import { approachBrief, closingStatus, deckBrief, deckDataPages, decideFromSessi
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
+import { clarificationBrief, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
@@ -512,6 +513,61 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const final = finaliseEngagement(doc, null);
       if (!final.ok) throw new ServiceError(400, 'Engagement not valid', final.errors);
       return { status, step: 'document', ...deckBrief(final.engagement) };
+    },
+
+    /**
+     * The questions Merkle sends back after reading an RFP. The engine chooses the
+     * topics — the unknowns that move the offer, the plan, the topology, the cost
+     * or the risk — and Claude writes the few questions from them.
+     *
+     * @param {User} user @param {string} client
+     */
+    async prepareClarifications(user, client) {
+      const session = await load(user, client);
+      const decided = decideFromSession(session, today());
+      if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
+      const brief = clarificationBrief(decided.doc);
+      if (!brief.topics.length) {
+        throw new ServiceError(409, 'Nothing worth asking the client yet', [], [{
+          what: 'Pre-fill the engagement from the RFP first',
+          why: 'The engine only asks about unknowns that move the offer, the plan, the store topology, the cost or the risk. With nothing recorded yet it has nothing to weigh — read the documents in, then come back.',
+        }]);
+      }
+      return { instructions: CLARIFICATIONS_PROMPT, ...brief };
+    },
+
+    /**
+     * Save the questions Claude wrote, ready to send to the client.
+     *
+     * @param {User} user @param {string} client
+     * @param {{ questions: object[] }} input @param {{ via?: Channel }} [options]
+     */
+    async saveClarifications(user, client, { questions }, { via = 'claude' } = {}) {
+      const session = await load(user, client);
+      const list = Array.isArray(questions) ? questions : [];
+      const problems = [];
+      if (!list.length) problems.push('write at least one question');
+      list.forEach((q, i) => {
+        const where = `question ${i + 1}`;
+        if (!q.question?.trim()) problems.push(`${where}: the question itself is missing`);
+        if (!q.why_we_ask?.trim()) problems.push(`${where}: say why we ask — the trade-off is what shows we know the subject`);
+        if (!(q.covers ?? []).length) problems.push(`${where}: record which discovery questions it covers`);
+        if (!q.assume_if_unanswered?.trim()) problems.push(`${where}: say what we will assume in the proposal if they do not answer`);
+      });
+      if (problems.length) throw new ServiceError(400, 'Questions not saved', problems);
+      session.closing = {
+        ...session.closing,
+        clarifications: { questions: list, saved_at: today(), by: user.login, via },
+      };
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, saved_at: today(), questions: list.length };
+    },
+
+    /** The saved questions, for the app to show and download. @param {User} user @param {string} client */
+    async getClarifications(user, client) {
+      const session = await load(user, client);
+      return session.closing?.clarifications ?? null;
     },
 
     /**

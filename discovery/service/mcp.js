@@ -271,6 +271,28 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     annotations: write,
   }, (user, { client, deck, annex }) => service.saveClosingDocument(user, client, { deck, annex }, { via: 'claude' }));
 
+  tool('prepare_clarifications', {
+    title: 'Prepare the questions to send back on an RFP',
+    description: 'After an RFP has been read in, the topics worth asking the client about before the proposal: the unknowns that move the offer, the Shopify plan, the store topology, the cost or the risk, grouped so one question covers several, with the documented trade-off to show and what we would assume if they do not answer. Write the questions from these topics and save them with save_clarifications.',
+    inputSchema: z.object({ client: z.string().describe('Client slug') }),
+    annotations: read,
+  }, (user, { client }) => service.prepareClarifications(user, client));
+
+  tool('save_clarifications', {
+    title: 'Save the clarification questions',
+    description: 'Save the questions to send to the client. One entry per question: "question" (the client-facing text, in their context), "why_we_ask" (the trade-off, with the Shopify source for any platform fact), "covers" (the discovery question ids it answers) and "assume_if_unanswered" (what the proposal will state if they do not answer).',
+    inputSchema: z.object({
+      client: z.string().describe('Client slug'),
+      questions: z.array(z.object({
+        question: z.string().describe('The question as the client reads it, opening in their own context'),
+        why_we_ask: z.string().describe('What changes in the solution depending on the answer, with the official Shopify source for any platform fact'),
+        covers: z.array(z.string()).describe('Discovery question ids this covers'),
+        assume_if_unanswered: z.string().describe('What the proposal will assume if they do not answer'),
+      })).describe('Ordered by impact, highest first'),
+    }),
+    annotations: write,
+  }, (user, { client, questions }) => service.saveClarifications(user, client, { questions }, { via: 'claude' }));
+
   tool('get_reference', {
     title: 'Read the verified Shopify reference',
     description: 'The Shopify knowledge Merkle has already verified for this engagement, one piece at a time so no single result is too large. Call it without a section for the index, then fetch what you need: "limits:N" (documented limits — what breaks a naive answer), "options:N" (options already weighed with pros and cons), "plan_gates", and "chapter:<slug>" (the reference chapters appended to the annex). Read the limits and the relevant chapters before drafting the approach and before writing the deck.',
