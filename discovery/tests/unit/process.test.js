@@ -171,7 +171,7 @@ describe('one engine, two processes', () => {
     await consented(svc, 'ricola-test', 'rfp');
     await svc.registerDocument(consultant, 'ricola-test', { name: 'RFP-2024.pdf', type: 'rfp', summary: 'The brief' });
     await svc.saveClarifications(consultant, 'ricola-test', {
-      questions: [{ question: 'One catalogue?', why_we_ask: 'It decides the store count.', covers: ['Q3.4.13'], assume_if_unanswered: 'One store with Markets.' }],
+      questions: [{ question: 'One catalogue?', why_we_ask: 'It decides the store count.', covers: ['Q3.4.13'], assume_if_unanswered: 'One store with Markets.', impact_if_wrong: 'A second catalogue forces a second store and Plus.' }],
     });
     const before = await svc.getSummary(consultant, 'ricola-test');
 

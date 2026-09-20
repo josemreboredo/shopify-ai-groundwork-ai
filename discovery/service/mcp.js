@@ -280,7 +280,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
 
   tool('save_clarifications', {
     title: 'Save the clarification questions',
-    description: 'Save the questions to send to the client. One entry per question: "question" (the client-facing text, in their context), "why_we_ask" (the trade-off, with the Shopify source for any platform fact), "covers" (the discovery question ids it answers) and "assume_if_unanswered" (what the proposal will state if they do not answer).',
+    description: 'Save the questions to send to the client. One entry per question: "question" (the client-facing text, in their context), "why_we_ask" (the trade-off, with the Shopify source for any platform fact), "covers" (the discovery question ids it answers), "assume_if_unanswered" (what the proposal will state if they do not answer) and "impact_if_wrong" (what that costs us if it turns out wrong).',
     inputSchema: z.object({
       client: z.string().describe('Client slug'),
       questions: z.array(z.object({
@@ -288,6 +288,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
         why_we_ask: z.string().describe('What changes in the solution depending on the answer, with the official Shopify source for any platform fact'),
         covers: z.array(z.string()).describe('Discovery question ids this covers'),
         assume_if_unanswered: z.string().describe('What the proposal will assume if they do not answer'),
+        impact_if_wrong: z.string().describe('What it costs us if that assumption turns out to be wrong — scope, plan, store count or run cost. An assumption with no consequence stated reads to a client as a gap rather than a decision.'),
       })).describe('Ordered by impact, highest first'),
     }),
     annotations: write,

@@ -195,4 +195,6 @@ For each topic you are given:
 
 Order the questions by impact, highest first. Never write more than the topics you are given, and drop any topic where you cannot show a real trade-off — a question that does not demonstrate anything is one the client will resent.
 
-For each question also record, for the consultant only: which discovery questions it covers, and what we will assume in the proposal if the client does not answer it. Anything unanswered becomes a stated assumption, so nothing here is wasted.`;
+For each question also record, for the consultant only: which discovery questions it covers, what we will assume in the proposal if the client does not answer it, and what that costs us if the assumption turns out to be wrong — in scope, in the Shopify plan, in the number of stores or in what it costs to run.
+
+That last one is not paperwork. Anything the Lead Consultant decides not to ask becomes a stated assumption in the proposal, and an assumption with a consequence attached reads as a decision Merkle took deliberately; the same assumption without one reads as a gap, and a client prices gaps down.`;

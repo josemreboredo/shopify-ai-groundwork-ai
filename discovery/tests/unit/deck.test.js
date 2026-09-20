@@ -162,3 +162,42 @@ describe('helpers and CLI flow', () => {
     assert.deepEqual(findLeaks('Pricing includes the +Markets modifier', doc), ['modifier', '+Markets']);
   });
 });
+
+describe('what the client reads about the plan and the work', () => {
+  const fx = (name) => JSON.parse(fs.readFileSync(new URL(`../fixtures/engagements/${name}.json`, import.meta.url), 'utf8'));
+  const clientPlan = (doc) => buildDeckXml(doc).xml.split('\n').filter((l) => l.includes('<shopify-plan') && !l.includes('target='));
+
+  test('the plan on the client page is the one the requirements force, not the one the client guessed', () => {
+    // It used to print shopify.target_plan — the client's own answer, which can
+    // be "not_sure" and can sit below what the rules need. The engine's 19
+    // sourced rules only reached the consultant notes, so a deck could state a
+    // plan its own annex contradicted.
+    const light = fx('foundation-minimal');
+    assert.equal(light.shopify.target_plan, 'plus', 'the client asked for Plus');
+    for (const line of clientPlan(light)) {
+      assert.match(line, /required="basic"/, 'and nothing in the requirements needs it');
+      assert.match(line, /client-stated="plus"/, 'what they said travels beside it, not instead of it');
+      assert.match(line, /only need Basic/, 'and the disagreement is named rather than quietly resolved');
+    }
+  });
+
+  test('where the client is under what the rules need, the deck says which', () => {
+    const doc = structuredClone(fx('acme-watches'));
+    doc.shopify.target_plan = 'grow';
+    for (const line of clientPlan(doc)) assert.match(line, /requirements need Shopify Plus/);
+  });
+
+  test('the work split is counts of requirements, never a percentage', () => {
+    const xml = buildDeckXml(fx('acme-watches')).xml;
+    const section = xml.slice(xml.indexOf('id="work-split"'), xml.indexOf('id="work-split"') + 700);
+    assert.ok(section.includes('requirements='), 'it counts requirements');
+    assert.ok(!/percent=/.test(section), 'a percentage beside them is read as a share of effort, which it is not');
+    assert.match(section, /not a share of the effort or the cost/);
+  });
+
+  test('the methodology slide describes the reasoning, not Merkle’s questionnaire', () => {
+    const xml = buildDeckXml(fx('acme-watches')).xml;
+    assert.ok(!/sections 0–11/.test(xml), 'a client does not need to know they were processed by our plumbing');
+    assert.match(xml, /checked against Shopify’s own documentation/);
+  });
+});

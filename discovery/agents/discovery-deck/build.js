@@ -33,7 +33,7 @@ import { runCostFor } from '../discovery/economics.js';
 import { challengesFor, topChallenges } from '../discovery/challenge.js';
 import { organisationalProfile } from '../discovery/feasibility.js';
 import { toApproachPayload } from '../discovery/approach.js';
-import { planRequirements, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
+import { planRequirements, requiredPlan, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
 import { appSignals, appCandidates } from '../discovery/app-signals.js';
 
 const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
@@ -120,7 +120,7 @@ function executiveSummary(x, doc) {
   if (isLarger(doc)) x.field('engagement', larger(doc).proposal);
   else x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
   x.field('delivery-track', TRACK_LABEL[doc.offer.delivery_track]);
-  x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
+  planStatement(x, doc);
   x.list('key-capabilities', (doc.approach?.capability_map ?? []).slice(0, 4).map((r) => r.requirement), 'No approach drafted (STOP or not yet run)');
   x.close();
   const kpis = doc.business?.kpis ?? [];
@@ -153,9 +153,13 @@ function businessContext(x, doc) {
 function methodology(x, doc) {
   const provenance = Object.values(doc.provenance ?? {});
   x.open('section', { id: 'methodology', n: 4 });
+  // In the client's terms, not ours. This used to read "Structured discovery
+  // questionnaire (sections 0–11) → engagement specification → rules-based offer
+  // and risk screening", which tells a client they were processed by our
+  // internal plumbing and tells them nothing about why the recommendation holds.
   x.field('approach', isLarger(doc)
-    ? 'Structured discovery questionnaire (sections 0–11) → engagement specification → rules-based offer and risk screening → recommended solution approach; the backlog is defined in the dedicated Discovery Phase'
-    : 'Structured discovery questionnaire (sections 0–11) → engagement specification → rules-based offer and risk screening → solution design → backlog');
+    ? 'What you told us, mapped to what Shopify does — every platform capability checked against Shopify’s own documentation, every recommendation traced to an answer and a source. Scope, backlog and investment are defined in the Discovery Phase that opens the engagement.'
+    : 'What you told us, mapped to what Shopify does — every platform capability checked against Shopify’s own documentation, every recommendation traced to an answer and a source, with the options weighed and the rejected ones shown.');
   x.field('input', doc.meta.source);
   x.field('confirmed-answers-traced', provenance.filter((p) => p.status === 'confirmed').length);
   x.field('answers-to-confirm', provenance.filter((p) => p.status === 'tbc').length);
@@ -181,7 +185,7 @@ function solutionDesign(x, doc) {
   if (isLarger(doc)) x.field('engagement', larger(doc).proposal);
   else x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
   x.field('delivery-track', TRACK_LABEL[doc.offer.delivery_track]);
-  x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Q1.2.3 not answered');
+  planStatement(x, doc);
   x.field('architecture', `${doc.offer.delivery_track === 'hydrogen' ? 'Headless' : 'Online Store 2.0'} · ${markets.length > 1 ? `multi-market (${markets.filter((m) => m.code !== 'CN').length} markets${markets.some((m) => m.code === 'CN') ? ' + mainland China in a separate discovery' : ''})` : 'single market'}${b2b.enabled ? ' · B2B and DTC on one store' : ''}`);
   x.field('theme', doc.offer.delivery_track === 'liquid' ? `Horizon${doc.design?.theme_preference && doc.design.theme_preference !== 'Horizon' ? ` (client preference noted: ${doc.design.theme_preference})` : ''}` : 'Hydrogen');
   x.open('markets', { primary: doc.markets?.primary_markets?.join(', ') });
@@ -423,12 +427,15 @@ function workSplit(x, doc) {
     rows.filter((r) => r.resolution === 'theme').length,
     rows.filter((r) => r.resolution === 'custom').length,
   ];
-  const [config, theme, custom] = percentages(counts);
   x.open('section', { id: 'work-split', n: 10 });
-  x.empty('bucket', { name: 'Configuration (native features and apps)', requirements: counts[0], percent: config });
-  x.empty('bucket', { name: 'Theme customisation', requirements: counts[1], percent: theme });
-  x.empty('bucket', { name: 'Custom development', requirements: counts[2], percent: custom });
-  x.field('note', 'Share of requirements by resolution level. More configuration means lower risk and faster delivery.');
+  // Counts, not percentages. These are rows in the capability map, and a
+  // percentage next to them is read as a share of effort or of cost by everyone
+  // who sees it — which it is not, and which nothing here can support while
+  // Merkle has no delivery actuals to calibrate against.
+  x.empty('bucket', { name: 'Configuration (native features and apps)', requirements: counts[0] });
+  x.empty('bucket', { name: 'Theme customisation', requirements: counts[1] });
+  x.empty('bucket', { name: 'Custom development', requirements: counts[2] });
+  x.field('note', 'How many of the requirements are met at each level. It is a count of requirements, not a share of the effort or the cost.');
   x.close();
 }
 
@@ -469,6 +476,18 @@ function risks(x, doc) {
   x.close();
   x.open('assumptions');
   for (const a of doc.approach?.risks?.assumptions ?? []) x.field('assumption', a.statement, undefined, { 'impact-if-wrong': a.impact_if_wrong });
+  // The ones the Lead Consultant made by deciding a question was not worth
+  // asking. They carry an owner because somebody chose them, which is what
+  // separates a decision from a gap on a client's page.
+  for (const a of STATED) {
+    x.field('assumption', a.assumed, undefined, {
+      'impact-if-wrong': a.impact_if_wrong ?? undefined,
+      about: a.about,
+      owner: a.owner ?? undefined,
+      decided: a.decided_at ?? undefined,
+      source: a.source,
+    });
+  }
   x.close();
   x.close();
 }
@@ -530,7 +549,7 @@ function investment(x, doc) {
   }
   const totals = monthlyAppCosts(doc.approach?.app_shortlist);
   x.open('recurring-costs', { note: isLarger(doc) ? 'Billed by third parties' : 'Billed by third parties, not included in the band' });
-  x.field('shopify-plan', PLAN_LABEL[doc.shopify?.target_plan], 'Plan not recorded');
+  planStatement(x, doc);
   for (const [currency, amount] of Object.entries(totals)) x.empty('apps-monthly', { currency, amount });
   x.close();
   x.close();
@@ -588,7 +607,45 @@ function topology(x, doc) {
   x.close();
 }
 
-export function buildDeckXml(doc, backlog = null) {
+/**
+ * The plan the client's page states.
+ *
+ * It used to print shopify.target_plan — what the client answered, which can be
+ * "not_sure" and can sit below what the requirements need, so a deck could state
+ * a plan the engine's own rules contradict two sections later. The determination
+ * leads; what the client said travels beside it, and where they differ the slide
+ * says so rather than quietly picking one.
+ */
+function planStatement(x, doc) {
+  // No rule firing means Basic covers it, which is a determination and not a
+  // missing answer — treating it as "undetermined" hid the most useful case of
+  // all, a client buying a plan their requirements do not need.
+  const required = requiredPlan(doc) ?? 'basic';
+  const stated = doc.shopify?.target_plan;
+  const known = stated && stated !== 'not_sure' ? stated : null;
+  const gap = known ? PLAN_RANK_ORDER.indexOf(known) - PLAN_RANK_ORDER.indexOf(required) : 0;
+  x.field('shopify-plan', required === 'basic' ? 'Basic — nothing in the requirements needs a higher plan' : PLAN_NAME[required], 'Plan not determined', {
+    required,
+    'client-stated': known ?? undefined,
+    // Two different disagreements, and a consultant has to see which one it is:
+    // under-buying is a scope problem, over-buying is a cost conversation.
+    note: gap < 0
+      ? `The client expects ${PLAN_NAME[known]}; the requirements need ${PLAN_NAME[required]}`
+      : gap > 0
+        ? `The client expects ${PLAN_NAME[known]}; the requirements only need ${required === 'basic' ? 'Basic' : PLAN_NAME[required]}`
+        : undefined,
+  });
+}
+
+const PLAN_RANK_ORDER = ['basic', 'grow', 'advanced', 'plus'];
+
+/** Stated assumptions for the deck being built. Module-level so the assumptions
+ *  section reaches them without threading an argument through every section. */
+const STATED = [];
+
+export function buildDeckXml(doc, backlog = null, { stated = [] } = {}) {
+  STATED.length = 0;
+  STATED.push(...stated);
   const x = new XmlWriter();
   x.depth = 1;
   x.path.push('discovery-deck');

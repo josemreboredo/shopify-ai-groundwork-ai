@@ -158,6 +158,16 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     });
   }
 
+  /**
+   * The assumptions a proposal will state because the Lead Consultant decided a
+   * question was not worth asking. Computed here so every path into the deck
+   * carries them — they were built for the screen and travelled nowhere else,
+   * so a proposal stated none of them while the app promised that it would.
+   *
+   * @param {object} session @param {object} doc  decided engagement
+   */
+  const statedFor = (session, doc) => statedAssumptions(doc, session.closing?.clarifications ?? null);
+
   function summary(session) {
     const p = preview(session, today());
     return {
@@ -589,7 +599,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (needsApproach(doc)) return { status, step: 'approach', document, ...approachBrief(doc) };
       const final = finaliseEngagement(doc, null);
       if (!final.ok) throw new ServiceError(400, 'Engagement not valid', final.errors);
-      return { status, step: 'document', document, ...deckBrief(final.engagement) };
+      return { status, step: 'document', document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }) };
     },
 
     /**
@@ -630,6 +640,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         if (!q.why_we_ask?.trim()) problems.push(`${where}: say why we ask — the trade-off is what shows we know the subject`);
         if (!(q.covers ?? []).length) problems.push(`${where}: record which discovery questions it covers`);
         if (!q.assume_if_unanswered?.trim()) problems.push(`${where}: say what we will assume in the proposal if they do not answer`);
+        if (!q.impact_if_wrong?.trim()) problems.push(`${where}: say what it costs us if that assumption is wrong — without it the proposal states a gap rather than a decision`);
       });
       if (problems.length) throw new ServiceError(400, 'Questions not saved', problems);
       session.closing = {
@@ -690,7 +701,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         if (!approach) throw new ServiceError(409, 'Save the approach first — the deck data is built from it', [], [{ what: 'Draft and save the approach with save_approach' }]);
         const final = finaliseEngagement(decided.doc, approach);
         if (!final.ok) throw new ServiceError(400, 'The saved approach no longer fits the answers — draft it again', final.errors);
-        const pages = deckDataPages(deckBrief(final.engagement).deck_xml);
+        const pages = deckDataPages(deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }).deck_xml);
         const n = Number(String(section).split(':')[2] ?? 1);
         if (!Number.isInteger(n) || n < 1 || n > pages.length) throw new ServiceError(404, `${section}: there are ${pages.length} pages of deck data`);
         return { section, page: n, of: pages.length, deck_xml: pages[n - 1] };
@@ -714,7 +725,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.closing = { ...session.closing, approach: { payload: approach, saved_at: today(), by: user.login, via } };
       session.updated_at = today();
       await store.save(session);
-      return { status: closingStatus(decided.doc), step: 'document', document: processMeta(session.process).document, ...deckBrief(final.engagement) };
+      return { status: closingStatus(decided.doc), step: 'document', document: processMeta(session.process).document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }) };
     },
 
     /**

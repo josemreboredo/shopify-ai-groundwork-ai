@@ -37,7 +37,13 @@ export function statedAssumptions(doc, clarifications) {
     out.push({
       about: q.question,
       assumed: q.assume_if_unanswered,
-      impact_if_wrong: null,
+      // The one class of assumption a person chose to make was the only one with
+      // no consequence stated, which is backwards: the engine's assumptions are
+      // forced, this one was a decision. The model writes the consequence when it
+      // writes the question — it already knows the trade-off, it wrote "why we
+      // ask" — and the owner is whoever decided not to ask.
+      impact_if_wrong: q.impact_if_wrong ?? null,
+      owner: q.decided_by ?? null,
       source: 'rejected',
       question_id: null,
       covers: q.covers ?? [],
@@ -52,6 +58,7 @@ export function statedAssumptions(doc, clarifications) {
       about: a.about,
       assumed: a.assumed,
       impact_if_wrong: a.impact_if_wrong ?? null,
+      owner: null,
       source: 'topology',
       question_id: a.question_id ?? null,
       covers: a.question_id ? [a.question_id] : [],

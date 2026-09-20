@@ -96,6 +96,22 @@ export function planRequirements(doc) {
  * @param {object} doc
  * @returns {'grow'|'advanced'|'plus'|null}
  */
+/**
+ * The lowest plan the requirements force, whatever the client said they wanted.
+ *
+ * This was internal, so the client-facing slides printed shopify.target_plan —
+ * the client's own answer, which can be "not_sure" and can sit below what the
+ * rules require. The engine's nineteen rules, each citing an official page, only
+ * reached the consultant notes. The determination belongs on the client's page
+ * and what the client said belongs beside it, not in place of it.
+ *
+ * @param {object} doc
+ * @returns {'grow'|'advanced'|'plus'|null}  null when Basic covers everything
+ */
+export function requiredPlan(doc) {
+  return minimumPlan(doc);
+}
+
 function minimumPlan(doc) {
   const plans = planRequirements(doc).map((r) => r.plan);
   if (!plans.length) return null;

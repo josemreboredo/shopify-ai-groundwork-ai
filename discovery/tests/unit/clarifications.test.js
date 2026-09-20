@@ -28,6 +28,7 @@ const QUESTION = {
   why_we_ask: 'Shopify Markets serves several countries from one store; genuinely different catalogues need separate stores, which changes the build and the running cost.',
   covers: ['Q3.4.13', 'Q6.2.14'],
   assume_if_unanswered: 'One store with Shopify Markets.',
+  impact_if_wrong: 'A second catalogue forces a second store and moves the plan to Plus.',
 };
 
 describe('clarification questions (RFP)', () => {
@@ -140,8 +141,8 @@ describe('clarification questions (RFP)', () => {
     await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
 
     await assert.rejects(
-      svc.saveClarifications(consultant, 'demo-client', { questions: [{ question: 'Anything?', why_we_ask: '', covers: [], assume_if_unanswered: '' }] }),
-      (err) => err instanceof ServiceError && err.status === 400 && err.errors.length === 3,
+      svc.saveClarifications(consultant, 'demo-client', { questions: [{ question: 'Anything?', why_we_ask: '', covers: [], assume_if_unanswered: '', impact_if_wrong: '' }] }),
+      (err) => err instanceof ServiceError && err.status === 400 && err.errors.length === 4,
     );
     await assert.rejects(
       svc.saveClarifications(consultant, 'demo-client', { questions: [] }),
@@ -223,5 +224,66 @@ describe('asking or assuming, one or the other', () => {
     const svc = await started(createDiscoveryService({ store: createMemoryStore(), today: () => TODAY }), three);
     await assert.rejects(svc.decideClarifications(consultant, 'a-bid', { id: 'q9', status: 'accepted' }), (e) => e instanceof ServiceError && e.status === 404);
     await assert.rejects(svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'maybe' }), (e) => e instanceof ServiceError && e.status === 400);
+  });
+});
+
+describe('what the Lead Consultant decides not to ask reaches the proposal', () => {
+  const bid = async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-bid', { questions: [QUESTION] });
+    return svc;
+  };
+
+  test('a rejected question becomes an assumption with a consequence and an owner', async () => {
+    const svc = await bid();
+    await svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'rejected' });
+    const { assumptions } = await svc.getClarifications(consultant, 'a-bid');
+    const chosen = assumptions.find((a) => a.source === 'rejected');
+    assert.equal(chosen.assumed, QUESTION.assume_if_unanswered);
+    // The one assumption a person chose used to be the only one with no
+    // consequence stated, which is backwards — the engine's are forced, this
+    // one was a decision, and a client prices an assumption without a
+    // consequence as a gap.
+    assert.equal(chosen.impact_if_wrong, QUESTION.impact_if_wrong);
+    assert.equal(chosen.owner, 'lc-one');
+  });
+
+  test('a question with no stated consequence is refused at the door', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    const { impact_if_wrong: _dropped, ...incomplete } = QUESTION;
+    await assert.rejects(
+      svc.saveClarifications(consultant, 'a-bid', { questions: [incomplete] }),
+      (err) => err instanceof ServiceError && err.errors.some((e) => /costs us if that assumption is wrong/.test(e)),
+    );
+  });
+
+  test('it travels into the deck the proposal is written from', async () => {
+    const { deckBrief } = await import('../../service/closing.js');
+    const doc = acme();
+    const stated = [{ about: 'Who invoices?', assumed: 'All markets sell through one entity', impact_if_wrong: 'A second entity forces expansion stores', owner: 'lc-one', source: 'rejected' }];
+    // This is the bug the whole step existed to prevent: three screens of
+    // ceremony deciding an assumption register, and one missing argument
+    // between the service and the deck, so the proposal stated none of it.
+    assert.ok(!deckBrief(doc).deck_xml.includes('All markets sell through one entity'));
+    const xml = deckBrief(doc, { assumptions: stated }).deck_xml;
+    assert.ok(xml.includes('All markets sell through one entity'));
+    assert.ok(xml.includes('A second entity forces expansion stores'), 'with what it costs to be wrong');
+    assert.ok(/owner="lc-one"/.test(xml), 'and who decided it');
+  });
+
+  test('a bid is not told to write a Discovery Closing Document', async () => {
+    const { deckGuide } = await import('../../service/closing.js');
+    const discovery = deckGuide();
+    const bidGuide = deckGuide({ process: 'rfp' });
+    assert.match(discovery, /^You are a senior Shopify solutions consultant at Merkle closing a discovery engagement/);
+    assert.match(bidGuide, /^\*\*This is a bid, not a discovery\.\*\*/);
+    assert.match(bidGuide, /the document you are writing is \*\*the Proposal\*\*/i);
+    assert.match(bidGuide, /Answer their document, not ours/);
+    // and the eight thousand words that are right either way are not forked
+    assert.ok(bidGuide.includes(discovery), 'the preamble is added, the instruction is not rewritten');
   });
 });

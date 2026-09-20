@@ -106,18 +106,45 @@ export function finaliseEngagement(doc, approachPayload) {
  * @param {object} engagement  Finalised engagement
  */
 /** The writing guide: the deck prompt plus the layout catalogue. Same for every engagement. */
-export const deckGuide = () => `${DECK_PROMPT}\n\nThe deck data (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`;
+/**
+ * A bid is not a discovery, and the instruction the model follows opens by
+ * saying it is "closing a discovery engagement". Rather than fork eight thousand
+ * words that are right either way, this says what changes and lets the rest
+ * stand — the spine, the evidence rules and the consulting standard are the same
+ * work whoever is reading.
+ */
+const BID_PREAMBLE = `**This is a bid, not a discovery.** Merkle is answering an RFP and has not been engaged. Wherever the instruction below says "closing a discovery engagement" or "Discovery Closing Document", the document you are writing is **the Proposal**, read by people deciding whether to appoint Merkle at all.
 
-export function deckBrief(engagement) {
+Three things change because of that, and nothing else does.
+
+- **Answer their document, not ours.** The client wrote their requirements in their own words and their own order. Where the deck data gives you the document, section or quote a requirement came from, name it, so a reader scoring the response against their own list can find each answer. Merkle's questionnaire structure is ours and never appears.
+- **An assumption is a commitment, not a caveat.** Every entry in \`<assumptions>\` carries what it costs if it turns out wrong and, where somebody chose it, who. Write them together as decisions Merkle has taken on the evidence available. An assumption with a consequence attached reads as a decision; the same assumption without one reads as a gap, and a client prices gaps down.
+- **Nothing has been agreed with them.** In a discovery the client sat in the room. Here the answers were read out of a document and confirmed by a consultant, so never write as though anything was settled together.
+
+---
+
+`;
+
+/** @param {{ process?: string }} [options] */
+export const deckGuide = ({ process } = {}) => `${process === 'rfp' ? BID_PREAMBLE : ''}${DECK_PROMPT}\n\nThe deck data (deck_xml) is the content of discovery-deck.xml.\n\nFill the slide templates in deck_schema — the deck is not prose on slides. Layouts available:\n\n${layoutGuide()}\n\nThen save the deck and the annex document with save_closing_document (deck = the filled templates, annex = Markdown).`;
+
+/**
+ * @param {object} engagement
+ * @param {{ assumptions?: object[] }} [extra]  assumptions: the ones the Lead
+ *   Consultant created by deciding not to ask a question. They were computed for
+ *   the screen and never travelled any further, so a proposal stated none of
+ *   them while the app promised it would.
+ */
+export function deckBrief(engagement, { assumptions = [], process } = {}) {
   const stories = engagement.delivery?.go ? selectStories(engagement) : null;
   const backlog = stories ? { stories, summary: summariseByEpic(stories) } : null;
-  const { xml, warnings } = buildDeckXml(engagement, backlog);
+  const { xml, warnings } = buildDeckXml(engagement, backlog, { stated: assumptions });
   const chapters = chapterKnowledge(engagement);
   // The decisions are made by now and travel argued in deck_xml, so the option
   // sets that informed them do not need to be sent a second time.
   const knowledge = knowledgeFor(engagement, { options: false });
   return {
-    instructions: deckGuide(),
+    instructions: deckGuide({ process }),
     deck_xml: xml,
     deck_schema: buildDeckSchema(),
     reference_chapters: chapters.chapters,
