@@ -11,7 +11,9 @@ export async function loader({ request, params }) {
     if (!saved) throw new Response('No Discovery Closing Document saved yet', { status: 404 });
     const url = new URL(request.url);
     const annex = url.searchParams.get('part') === 'annex';
-    const internal = url.searchParams.get('internal') === '1';
+    // Owners only: a query parameter was the whole access control, and sign-in
+    // is open to any GitHub account.
+    const internal = url.searchParams.get('internal') === '1' && saved.pricing;
     if (annex && !saved.annex) throw new Response('No annex saved for this engagement', { status: 404 });
 
     const deck = annex

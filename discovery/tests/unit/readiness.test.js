@@ -13,6 +13,7 @@ import fs from 'node:fs';
 
 import { readiness, openPoints } from '../../service/readiness.js';
 import { offering } from '../../schema/index.js';
+import { offerStanding, statusOf } from '../../service/summary.js';
 
 const fixture = (name) => JSON.parse(fs.readFileSync(new URL(`../fixtures/engagements/${name}.json`, import.meta.url), 'utf8'));
 const acme = () => fixture('acme-watches');
@@ -243,5 +244,44 @@ describe('a won engagement is not still being priced', () => {
     }
     assert.match(unconfirmed('rfp').find((x) => /still to confirm/.test(x.what)).why, /A bid cannot rest/);
     assert.match(unconfirmed('discovery').find((x) => /still to confirm/.test(x.what)).why, /A closing document cannot rest/);
+  });
+});
+
+describe('the offer and the status are two axes', () => {
+  test('an engagement beyond the offers is not still an M', () => {
+    // The list read "M · Ecommerce Scale" under Offer and "Larger Engagement"
+    // under Status: an answer beside the rule that superseded it.
+    const beyond = { offer: { code: 'M', name: 'Ecommerce Scale' }, go: false, route: 'larger_engagement' };
+    assert.equal(offerStanding(beyond).short, 'Larger Engagement');
+    assert.equal(offerStanding(beyond).applies, false);
+    assert.equal(offerStanding({ offer: { code: 'S', name: 'Ecommerce Foundation' }, go: true }).short, 'S');
+    assert.equal(offerStanding({ offer: { code: 'M' }, go: false, route: 'no_bid' }).short, 'No bid');
+  });
+
+  test('a bid reports where it is in bidding', () => {
+    const bid = (over) => statusOf({ process: 'rfp', coverage: { required_answered: 1, required_total: 85 }, ...over }).label;
+    assert.match(bid({ documents: 0 }), /nothing read yet/i);
+    assert.match(bid({ documents: 1, to_review: 4 }), /4 to confirm/);
+    assert.match(bid({ documents: 1, clarifications_at: '2026-09-20', clarifications_undecided: 2 }), /2 questions to decide/);
+    assert.match(bid({ documents: 1, clarifications_at: '2026-09-20' }), /Questions with the client/);
+    assert.match(bid({ documents: 1, closing_document_at: '2026-09-21' }), /Proposal written/);
+    assert.match(bid({ outcome: 'submitted' }), /Bidded/);
+    assert.match(bid({ outcome: 'lost' }), /Lost/);
+  });
+
+  test('an engagement reports where it is in the discovery', () => {
+    const disc = (over) => statusOf({ process: 'discovery', coverage: { required_answered: 20, required_total: 85 }, ...over }).label;
+    assert.match(disc({}), /Interviewing — 20 of 85/);
+    assert.match(disc({ to_review: 9 }), /9 to confirm/);
+    assert.match(disc({ coverage: { required_answered: 85, required_total: 85 } }), /Ready to close/);
+    assert.match(disc({ closing_document_at: '2026-09-21' }), /Scope agreed/);
+  });
+
+  test('a status never repeats the offer’s own verdict', () => {
+    for (const process of ['rfp', 'discovery']) {
+      const s = statusOf({ process, go: false, route: 'larger_engagement', offer: { code: 'M' }, coverage: { required_answered: 1, required_total: 85 } });
+      assert.ok(!/larger engagement/i.test(s.label), `${process}: that belongs in the offer column`);
+      assert.ok(!/^GO$/.test(s.label));
+    }
   });
 });

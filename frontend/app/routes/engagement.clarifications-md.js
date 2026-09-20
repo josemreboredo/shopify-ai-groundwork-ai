@@ -9,7 +9,7 @@ import { renderClarificationsMarkdown } from '../../../discovery/service/clarifi
  */
 export async function loader({ request, params }) {
   const user = await requireUser(request);
-  const internal = new URL(request.url).searchParams.get('internal') === '1';
+  const internal = new URL(request.url).searchParams.get('internal') === '1' && saved.pricing;
   let saved;
   try {
     saved = await discovery().getClarifications(user, params.client);

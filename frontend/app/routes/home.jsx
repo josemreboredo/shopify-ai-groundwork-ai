@@ -3,6 +3,7 @@ import { Form, Link, redirect } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
+import { offerStanding, statusOf } from '../../../discovery/service/summary.js';
 import { PRODUCT, pageTitle } from '../brand.js';
 
 export const meta = () => [{ title: pageTitle('Bids and engagements') }];
@@ -31,12 +32,18 @@ export async function action({ request }) {
 
 const LANGUAGES = ['en', 'de', 'fr', 'it', 'es'];
 
+/**
+ * Where a record is in its own process — a different axis from the offer.
+ *
+ * This used to repeat the offer's own verdict, so the row read "M · Ecommerce
+ * Scale" under Offer and "Larger Engagement" under Status: an answer beside the
+ * rule that superseded it, in two columns pretending to say different things.
+ * The offer says what commercial shape this is; this says how far along it is,
+ * and a bid and an engagement are not far along the same thing.
+ */
 function Status({ e }) {
-  if (e.go) return <span className="badge go">GO</span>;
-  // Beyond the offers is not a refusal: only "No bid" reads as one.
-  if (e.route === 'larger_engagement') return <span className="badge flag">Larger Engagement</span>;
-  if (e.route === 'no_bid') return <span className="badge stop">No bid</span>;
-  return <span className="badge flag">Beyond offers · route needed</span>;
+  const s = statusOf(e);
+  return <span className={`badge ${s.tone}`}>{s.label}</span>;
 }
 
 export default function Home({ loaderData, actionData }) {
@@ -121,7 +128,7 @@ export default function Home({ loaderData, actionData }) {
               </p>
               <p className="record-what">
                 <span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span>
-                {' '}{e.offer.code} · {e.offer.name}
+                {' '}{offerStanding(e).short}
                 {e.offer.provisional ? <span className="muted small"> · provisional</span> : null}
               </p>
               <p className="record-progress">
@@ -143,7 +150,10 @@ export default function Home({ loaderData, actionData }) {
               <tr key={e.client}>
                 <td><Link to={`/engagements/${e.client}`}>{e.client}</Link></td>
                 <td><span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span></td>
-                <td>{e.offer.code} · {e.offer.name}{e.offer.provisional ? <div className="muted small">provisional</div> : null}</td>
+                <td>
+                  {offerStanding(e).short}
+                  {offerStanding(e).applies && e.offer.provisional ? <div className="muted small">provisional</div> : null}
+                </td>
                 <td><Status e={e} /></td>
                 <td>{e.coverage.required_answered} / {e.coverage.required_total}{e.coverage.required_tbc ? ` (${e.coverage.required_tbc} TBC)` : ''}</td>
                 <td>{e.to_review ? <span className="badge flag">{e.to_review}</span> : '—'}</td>

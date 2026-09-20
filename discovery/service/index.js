@@ -766,6 +766,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       return {
         engagement: summary(session),
         clarifications: saved,
+        // The internal copy carries what we would assume and who decided it.
+        // It is a download, and a download leaves the building.
+        pricing: user.role === 'owner',
         triage: triage(saved),
         // The questions are a snapshot and the engagement moves under them.
         freshness: clarificationsFreshness(topics, saved),
@@ -890,6 +893,15 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       return {
         version: doc.version ?? '1.0',
         saved_at: doc.saved_at,
+        // The PowerPoint titles itself after the process, and the route was
+        // reading it off an `engagement` key this never returned — so every
+        // PowerPoint download threw. Nothing covered it, which is how 412 tests
+        // passed over it.
+        process: processOf(session.process),
+        // Merkle's commercial position lives in the consultant notes, and a
+        // download is a file that leaves the building. Only an owner gets the
+        // whole document; everyone else gets the client part.
+        pricing: user.role === 'owner',
         deck: doc.deck ?? null,
         markdown: doc.markdown,
         annex: doc.annex ? annexWithChapters(doc.annex, engagement) : null,
@@ -924,6 +936,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const doc = session.closing?.document;
       return {
         freshness: { ...freshness, redraft_prompt: redraftPrompt(client, freshness.changes, processMeta(session.process).document) },
+        // The consultant-notes section of a saved document holds the price band
+        // and the commercial warnings, and the Markdown download returned it whole.
+        pricing: user.role === 'owner',
         version: doc?.version ?? (doc ? '1.0' : null),
         engagement: summary(session),
         approach: session.closing?.approach ? { saved_at: session.closing.approach.saved_at, by: session.closing.approach.by, via: session.closing.approach.via } : null,
