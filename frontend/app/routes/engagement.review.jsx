@@ -59,7 +59,7 @@ export default function Review({ loaderData, actionData }) {
   const [filter, setFilter] = useState('all');
   const shown = (questions) => questions.filter((q) => MATCH[filter](q));
   return (
-    <main>
+    <main id="main">
       <EngagementHeader
         language={language}
         engagement={engagement}
@@ -128,9 +128,9 @@ export default function Review({ loaderData, actionData }) {
       {sections.filter((section) => shown(section.questions).length).map((section) => (
         <section key={section.title}>
           <h2>{section.title}</h2>
-          <div className="table-scroll">
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="Answers, scrollable table">
           <table>
-            <thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Status</th><th /></tr></thead>
+            <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col">Answer</th><th scope="col">Status</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
             <tbody>
               {shown(section.questions).map((q) => (
                 <tr key={q.id} id={q.id}>

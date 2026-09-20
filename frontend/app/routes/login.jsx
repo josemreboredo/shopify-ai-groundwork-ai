@@ -18,7 +18,7 @@ export async function loader({ request }) {
 
 export default function Login({ loaderData }) {
   return (
-    <main className="signin">
+    <main id="main" className="signin">
       <section className="signin-hero">
         <p className="eyebrow">Merkle commerce practice</p>
         <h1>{PRODUCT}</h1>

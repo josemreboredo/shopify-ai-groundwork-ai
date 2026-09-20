@@ -42,9 +42,9 @@ function Points({ title, lead, rows, client, tone }) {
     <>
       <h3 className={`points-head ${tone}`}>{title} <span className="chip">{rows.length}</span></h3>
       <p className="muted">{lead}</p>
-      <div className="table-scroll">
+      <div className="table-scroll" role="region" tabIndex={0} aria-label="Open points, scrollable table">
         <table className="open-points">
-          <thead><tr><th>What is open</th><th>What it moves</th><th>Assumption</th></tr></thead>
+          <thead><tr><th scope="col">What is open</th><th scope="col">What it moves</th><th scope="col">Assumption</th></tr></thead>
           <tbody>
             {rows.map((r, i) => (
               <tr key={`${r.what}-${i}`}>
@@ -78,7 +78,7 @@ export default function Summary({ loaderData }) {
 
   if (!r) {
     return (
-      <main>
+      <main id="main">
         <EngagementHeader engagement={engagement} eyebrow="Where it stands" meta={`Computed by the engine on ${generatedAt}`} />
         <section className="card start blocked">
           <p className="question">Not enough recorded yet</p>
@@ -89,7 +89,7 @@ export default function Summary({ loaderData }) {
   }
 
   return (
-    <main>
+    <main id="main">
       <EngagementHeader engagement={engagement} eyebrow="Where it stands" meta={`Recomputed on every document and every confirmation · ${generatedAt}`} />
 
       {/* 1 — the slide. One answer, the shape of the gap, and what blocks it. */}
@@ -172,9 +172,9 @@ export default function Summary({ loaderData }) {
                 plan. The plan is the highest one any of them needs — not a preference, and never an assumption
                 that Plus is wanted.
               </p>
-              <div className="table-scroll">
+              <div className="table-scroll" role="region" tabIndex={0} aria-label="Open points, scrollable table">
                 <table>
-                  <thead><tr><th>Requirement</th><th>Needs</th><th>Shopify’s own page</th></tr></thead>
+                  <thead><tr><th scope="col">Requirement</th><th scope="col">Needs</th><th scope="col">Shopify’s own page</th></tr></thead>
                   <tbody>
                     {t.plan.forced_by.map((f) => (
                       <tr key={f.feature}>

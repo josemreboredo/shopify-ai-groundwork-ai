@@ -21,7 +21,7 @@ const CONTENTS = [
 
 export default function ManualDiscovery() {
   return (
-    <main className="manual">
+    <main id="main" className="manual">
       <header className="page-head">
         <p className="eyebrow"><Link to="/manual">Manual</Link> · the discovery path</p>
         <h1>Run a discovery</h1>

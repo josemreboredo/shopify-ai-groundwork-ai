@@ -42,7 +42,7 @@ function Status({ e }) {
 export default function Home({ loaderData, actionData }) {
   const { engagements } = loaderData;
   return (
-    <main>
+    <main id="main">
       <header className="page-head">
         <p className="eyebrow">{PRODUCT}</p>
         <h1>What are you working on?</h1>
@@ -132,10 +132,10 @@ export default function Home({ loaderData, actionData }) {
             </li>
           ))}
         </ul>
-        <div className="table-scroll record-table">
+        <div className="table-scroll record-table" role="region" tabIndex={0} aria-label="Bids and engagements, scrollable table">
         <table>
           <thead>
-            <tr><th>Client</th><th>What</th><th>Offer</th><th>Status</th><th>Required answered</th><th>To confirm</th><th>Mode</th><th>Owner</th><th>Updated</th></tr>
+            <tr><th scope="col">Client</th><th scope="col">What</th><th scope="col">Offer</th><th scope="col">Status</th><th scope="col">Required answered</th><th scope="col">To confirm</th><th scope="col">Mode</th><th scope="col">Owner</th><th scope="col">Updated</th></tr>
           </thead>
           <tbody>
             {engagements.map((e) => (

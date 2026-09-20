@@ -24,7 +24,7 @@ const CONTENTS = [
 export default function Manual({ loaderData }) {
   const { connector } = loaderData;
   return (
-    <main className="manual">
+    <main id="main" className="manual">
       <header className="page-head">
         <p className="eyebrow">How we work</p>
         <h1>Manual</h1>
@@ -79,7 +79,7 @@ export default function Manual({ loaderData }) {
 
       <h2 id="words">The words the tool uses</h2>
       <table>
-        <thead><tr><th>Word</th><th>What it means here</th></tr></thead>
+        <thead><tr><th scope="col">Word</th><th scope="col">What it means here</th></tr></thead>
         <tbody>
           <tr><td><strong>Bid</strong></td><td>One record while Merkle is trying to win the work. Its client document is the <strong>proposal</strong>.</td></tr>
           <tr><td><strong>Engagement</strong></td><td>The same record once the work is Merkle’s. Its client document is the <strong>Discovery Closing Document</strong>.</td></tr>
@@ -94,7 +94,7 @@ export default function Manual({ loaderData }) {
 
       <h2 id="help">Troubleshooting</h2>
       <table>
-        <thead><tr><th>What you see</th><th>What to do</th></tr></thead>
+        <thead><tr><th scope="col">What you see</th><th scope="col">What to do</th></tr></thead>
         <tbody>
           <tr><td>Claude doesn’t see the record or its tools</td><td>Enable <strong>{CONNECTOR}</strong> under + → Connectors in that chat; check the slug; reconnect the connector if Claude asks you to sign in again.</td></tr>
           <tr><td>“Record the client’s consent…”</td><td>Answer Q10.5.2 first. Nothing can be recorded before it.</td></tr>

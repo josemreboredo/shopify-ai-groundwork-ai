@@ -42,7 +42,7 @@ export default function GoNoGo({ loaderData }) {
   const tone = TONE[r.verdict] ?? 'flag';
 
   return (
-    <main>
+    <main id="main">
       <EngagementHeader engagement={engagement} eyebrow="Go/No-Go support" />
 
       {/* The position: the verdict, then one why, then the ground under it */}
@@ -82,9 +82,9 @@ export default function GoNoGo({ loaderData }) {
           </p>
           <div className="profile">
             <Radar axes={g.profile} />
-            <div className="table-scroll">
+            <div className="table-scroll" role="region" tabIndex={0} aria-label="The profile, scrollable table">
               <table>
-                <thead><tr><th>Dimension</th><th>Standing</th><th>What they asked for</th></tr></thead>
+                <thead><tr><th scope="col">Dimension</th><th scope="col">Standing</th><th scope="col">What they asked for</th></tr></thead>
                 <tbody>
                   {g.profile.map((a) => (
                     <tr key={a.id} className={a.level === 0 && a.known !== false ? 'idle' : undefined}>
@@ -94,8 +94,10 @@ export default function GoNoGo({ loaderData }) {
                         {a.rules.length ? <div className="muted small">{a.rules.map((r) => r.rule_id).join(', ')}</div> : null}
                       </td>
                       <td>
-                        {a.id === 'markets' && g.answered_elsewhere?.length ? (
-                          <span className="muted small">{g.answered_elsewhere[0].leaves}. </span>
+                        {a.also?.length ? (
+                          <div className="also">
+                            {a.also.map((w) => <p key={w.work} className="muted small">{w.topic} — {w.work}</p>)}
+                          </div>
                         ) : null}
                         {a.evidence ?? (a.known === false
                           ? <span className="muted">Nothing in the documents either way — <a href={`/engagements/${client}/clarifications`}>it is in the Q&amp;A</a> ({a.settled_by.join(', ')})</span>
@@ -127,6 +129,12 @@ export default function GoNoGo({ loaderData }) {
                 <p><strong>What we can do.</strong> {x.answer}</p>
                 <p><strong>What Shopify cannot.</strong> {x.what_it_cannot}</p>
                 <p className="muted">{x.where_it_goes}. {x.leaves}.</p>
+                {x.work?.length ? (
+                  <>
+                    <p className="muted small"><strong>Answering it is work in this build:</strong></p>
+                    <ul className="ticks">{x.work.map((w) => <li key={w}>{w}</li>)}</ul>
+                  </>
+                ) : null}
               </li>
             ))}
           </ul>

@@ -11,11 +11,12 @@
   --muted: #5d5d72;
   --line: #d6d6df;
   --line-soft: #e8e8ed;
+  --line-strong: #8a8a99;
   --panel: #f2f2f4;
   --accent: #0328d1;
   --red: #dd3039;
   --red-ink: #a72532;
-  --ok: #0f7a52;
+  --ok: #0c6342;
   --warn: #8a5a00;
   --stop: var(--red-ink);
   --page: 1280px;
@@ -38,14 +39,14 @@ main h2:not(.plain)::before {
   background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: var(--line); }
-a:hover { color: var(--red); text-decoration-color: var(--red); }
+a:hover { color: var(--red-ink); text-decoration-color: var(--red-ink); }
 :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .muted { color: var(--muted); font-size: 0.9rem; }
 .error { color: var(--stop); }
 .errors { color: var(--stop); margin: 10px 0; padding: 10px 12px 10px 28px; background: rgba(221, 48, 57, 0.06); list-style-position: outside; }
 .eyebrow {
   display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red);
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red-ink);
 }
 .eyebrow::before { content: ''; width: 10px; height: 10px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 
@@ -102,12 +103,11 @@ li::marker { color: var(--red); }
    about 1.1:1 — so they were present, clickable and invisible. White text with
    a dimmed underline that turns red on hover keeps the brand's link behaviour
    without borrowing a colour that cannot carry body text on black. */
-.page-head p a, .page-head li a, .page-head dd a,
-.band.dark p a, .band.dark li a, .band.dark dd a {
+.page-head a, .band.dark a, .signin-hero a, .l-triggers a, .decide a, .site-footer a {
   color: #fff; text-decoration-color: rgba(255, 255, 255, 0.5);
 }
-.page-head p a:hover, .page-head li a:hover, .page-head dd a:hover,
-.band.dark p a:hover, .band.dark li a:hover, .band.dark dd a:hover {
+.page-head a:hover, .band.dark a:hover, .signin-hero a:hover,
+.l-triggers a:hover, .decide a:hover, .site-footer a:hover {
   color: #fff; text-decoration-color: var(--red); text-decoration-thickness: 2px;
 }
 
@@ -163,8 +163,14 @@ button.secondary:hover, a.button.secondary:hover { background: #000; border-colo
 button:disabled { opacity: 0.4; cursor: default; }
 button:disabled:hover { background: #000; border-color: #000; }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 18px 0; }
-input, select, textarea { font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 0; width: 100%; background: #fff; color: var(--ink); }
-input:focus, select:focus, textarea:focus { border-color: #000; outline: none; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08); }
+input, select, textarea { font: inherit; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 0; width: 100%; background: #fff; color: var(--ink); }
+input:focus, select:focus, textarea:focus { border-color: #000; box-shadow: none; }
+/* `input:focus` outranked the global `:focus-visible`, so a keyboard user got a
+   1.14:1 shadow — and on the bordered checkbox, nothing at all. */
+input:focus-visible, select:focus-visible, textarea:focus-visible,
+.table-scroll:focus-visible, .table-input:focus-visible {
+  outline: 2px solid var(--red); outline-offset: 2px;
+}
 input[type='checkbox'], input[type='radio'] { width: auto; accent-color: var(--red); }
 textarea { min-height: 70px; }
 .field { margin: 12px 0; }
@@ -595,6 +601,15 @@ h2.headline-answer {
 .blocks > li > span { grid-column: 2; font-size: 0.86rem; }
 @media (max-width: 900px) { .standfirst-body { grid-template-columns: 1fr; gap: 26px; } }
 
+/* What happened to the bid — the only dataset that is Merkle's own */
+.outcome-form { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px; align-items: end; margin-top: 14px; }
+.outcome-form .field { margin: 0; }
+.outcome-form .field.wide { grid-column: 1 / -1; }
+.outcome-form button { grid-column: 1 / -1; justify-self: start; }
+.also { margin-top: 6px; }
+.also p { margin: 0 0 3px; }
+@media (max-width: 720px) { .outcome-form { grid-template-columns: 1fr; } }
+
 /* The two answers the offer owes whatever its commercial shape */
 .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 4px 0 8px; }
 .answer { border-left: 3px solid var(--red); padding: 4px 0 4px 18px; }
@@ -659,9 +674,9 @@ table.open-points td:first-child { max-width: 34ch; }
 /* Where the complexity sits. Square surfaces, one accent, three rings. */
 .radar { margin: 18px 0 0; }
 .radar svg { width: 100%; max-width: 560px; height: auto; display: block; overflow: visible; }
-.radar-ring, .radar-covered { fill: none; stroke: var(--line); stroke-width: 1; }
+.radar-ring, .radar-covered { fill: none; stroke: var(--line-strong); stroke-width: 1; }
 .radar-covered { fill: var(--panel); }
-.radar-spoke { stroke: var(--line); stroke-width: 1; }
+.radar-spoke { stroke: var(--line-strong); stroke-width: 1; }
 .radar-envelope { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
 .radar-shape { fill: rgba(221, 48, 57, 0.14); stroke: var(--red); stroke-width: 2; }
 .radar-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--ink); }
@@ -714,7 +729,7 @@ button.link {
   color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px;
 }
 button.link:hover { background: none; color: var(--red); text-decoration-color: var(--red); }
-button.link:disabled { color: var(--muted); cursor: default; }
+button.link:disabled { color: var(--line-strong); cursor: default; }
 
 /* RFP Q&A: every question is asked or assumed, and the list shows which */
 .clarifications > li.q-accepted { border-left: 3px solid var(--ok); padding-left: 18px; }
@@ -868,3 +883,9 @@ button.link:disabled { color: var(--muted); cursor: default; }
   /* Under 16px, iOS zooms on focus and does not zoom back. */
   .card.start textarea, .card.prefill textarea { font-size: 1rem; }
 }
+
+/* Utilities the accessibility pass needs: a way past sixteen navigation stops,
+   and text that only a screen reader reads. */
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 8px; top: 8px; z-index: 99; background: #000; color: #fff; padding: 10px 16px; text-decoration: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

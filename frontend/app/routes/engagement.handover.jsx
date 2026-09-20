@@ -33,7 +33,7 @@ export default function Handover({ loaderData }) {
   const { backlog, workbook } = handover;
 
   return (
-    <main>
+    <main id="main">
       <EngagementHeader
         engagement={engagement}
         eyebrow="Handover"
@@ -65,15 +65,15 @@ export default function Handover({ loaderData }) {
       {backlog.available ? (
         <section>
           <h2>What is in it</h2>
-          <div className="table-scroll">
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="The backlog, scrollable table">
             <table>
-              <thead><tr><th>Epic</th><th>Stories</th><th>Points</th></tr></thead>
+              <thead><tr><th scope="col">Epic</th><th scope="col">Stories</th><th scope="col">Points</th></tr></thead>
               <tbody>
                 {backlog.epics.map((e) => (
                   <tr key={e.epic}><td>{e.epic}</td><td>{e.stories}</td><td>{e.points}</td></tr>
                 ))}
               </tbody>
-              <tfoot><tr><th scope="row">Total</th><th>{backlog.stories}</th><th>{backlog.points}</th></tr></tfoot>
+              <tfoot><tr><th scope="row">Total</th><th scope="col">{backlog.stories}</th><th scope="col">{backlog.points}</th></tr></tfoot>
             </table>
           </div>
 

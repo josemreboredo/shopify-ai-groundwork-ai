@@ -168,14 +168,14 @@ If you cannot see any documents in this chat, stop and tell me: either I attach 
 function AnswersReview({ answers, documents, busy }) {
   const toConfirm = answers.filter((a) => a.status === 'tbc');
   const confirmed = answers.filter((a) => a.status !== 'tbc');
-  const head = <thead><tr><th>Question</th><th>Answer</th><th>Recorded</th><th>Status</th></tr></thead>;
+  const head = <thead><tr><th scope="col">Question</th><th scope="col">Answer</th><th scope="col">Recorded</th><th scope="col">Status</th></tr></thead>;
   return (
     <>
       <h2>Answers to confirm ({toConfirm.length})</h2>
       {toConfirm.length ? (
         <>
           <p className="muted">Recorded from documents (e.g. by Claude) or marked to confirm. Check the citation, then confirm — or record a corrected answer to the question.</p>
-          <div className="table-scroll"><table>{head}<tbody>{toConfirm.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table></div>
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="Answers from documents, scrollable table"><table>{head}<tbody>{toConfirm.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table></div>
         </>
       ) : <p className="muted">Nothing to confirm.</p>}
 
@@ -186,7 +186,7 @@ function AnswersReview({ answers, documents, busy }) {
 
       <details>
         <summary>All confirmed answers ({confirmed.length})</summary>
-        <div className="table-scroll"><table>{head}<tbody>{confirmed.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table></div>
+        <div className="table-scroll" role="region" tabIndex={0} aria-label="Answers from documents, scrollable table"><table>{head}<tbody>{confirmed.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table></div>
       </details>
     </>
   );
@@ -209,7 +209,7 @@ export default function Engagement({ loaderData, actionData }) {
     return () => clearInterval(id);
   }, [revalidator, next.consent_required]);
   return (
-    <main>
+    <main id="main">
       <Vocabularies vocabularies={vocabularies} />
       <EngagementHeader
         language={language}

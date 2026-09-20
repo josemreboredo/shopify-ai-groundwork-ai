@@ -68,9 +68,10 @@ export function Layout({ children }) {
         <Links />
       </head>
       <body>
+        <a className="skip" href="#main">Skip to content</a>
         <header className="topbar">
           <Link to="/" className="brand" aria-label={`${PRODUCT} — home`}><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
-          <nav className="topnav">
+          <nav className="topnav" aria-label="Main">
             {headerPages(root?.user).map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
           </nav>
           {root?.user ? (

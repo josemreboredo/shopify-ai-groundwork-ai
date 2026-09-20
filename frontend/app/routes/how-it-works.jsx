@@ -56,7 +56,7 @@ const LIMITS = [
 
 export default function HowItWorks() {
   return (
-    <main className="story">
+    <main id="main" className="story">
       <header className="page-head">
         <p className="eyebrow">How it works</p>
         <h1>Every recommendation, traceable</h1>

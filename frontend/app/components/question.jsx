@@ -3,7 +3,7 @@
  * from the schema (tables, groups, countries…), optionally pre-filled with the
  * current answer, plus the engine preview panel and engagement navigation.
  */
-import { useState } from 'react';
+import { cloneElement, isValidElement, useId, useState } from 'react';
 import { Form, Link, NavLink } from 'react-router';
 
 import { LANGUAGE_NAMES } from '../../../discovery/service/i18n.js';
@@ -37,6 +37,7 @@ export function EngagementNav({ engagement }) {
   const to = (path) => `/engagements/${client}${path ? `/${path}` : ''}`;
   return (
     <div className="wayfinder">
+      <nav aria-label="Steps" className="spine-nav">
       <ol className="steps-spine">
         {stepsFor(engagement).map((step) => (
           <li key={step.path || 'start'} className={step.state}>
@@ -48,7 +49,8 @@ export function EngagementNav({ engagement }) {
           </li>
         ))}
       </ol>
-      <nav className="views">
+      </nav>
+      <nav className="views" aria-label="Reference and settings">
         {viewsFor(engagement).map((v) => (
           <NavLink key={v.path} to={to(v.path)}>{v.label}</NavLink>
         ))}
@@ -104,24 +106,25 @@ export function EngagementHeader({ engagement, eyebrow, title, meta, back, langu
 const cellName = (pointer, row, key) => `${pointer}[${row}][${key}]`;
 const asText = (v) => (v === null || v === undefined ? '' : String(v));
 
-function Cell({ column, name, value }) {
+function Cell({ column, name, value, label }) {
+  const a = { 'aria-label': label };
   switch (column.kind) {
     case 'enum':
       return (
-        <select name={name} defaultValue={asText(value)}>
+        <select name={name} {...a} defaultValue={asText(value)}>
           <option value="">—</option>
           {column.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       );
     case 'multi_enum':
       return (
-        <select name={name} multiple size={Math.min(4, column.options.length)} defaultValue={Array.isArray(value) ? value : []}>
+        <select name={name} {...a} multiple size={Math.min(4, column.options.length)} defaultValue={Array.isArray(value) ? value : []}>
           {column.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       );
     case 'boolean':
       return (
-        <select name={name} defaultValue={asText(value)}>
+        <select name={name} {...a} defaultValue={asText(value)}>
           <option value="">—</option>
           <option value="true">Yes</option>
           <option value="false">No</option>
@@ -129,15 +132,15 @@ function Cell({ column, name, value }) {
       );
     case 'integer':
     case 'number':
-      return <input type="number" name={name} step={column.kind === 'integer' ? 1 : 'any'} defaultValue={asText(value)} />;
+      return <input type="number" name={name} {...a} step={column.kind === 'integer' ? 1 : 'any'} defaultValue={asText(value)} />;
     case 'date':
-      return <input type="date" name={name} defaultValue={asText(value)} />;
+      return <input type="date" name={name} {...a} defaultValue={asText(value)} />;
     case 'list':
-      return <input type="text" name={name} placeholder={column.vocabulary ? 'names or codes, comma-separated' : 'comma-separated'} defaultValue={Array.isArray(value) ? value.join(', ') : ''} />;
+      return <input type="text" name={name} {...a} placeholder={column.vocabulary ? 'names or codes, comma-separated' : 'comma-separated'} defaultValue={Array.isArray(value) ? value.join(', ') : ''} />;
     default:
       return column.vocabulary
-        ? <input type="text" name={name} list={`vocabulary-${column.vocabulary}`} placeholder="name or code" autoComplete="off" defaultValue={asText(value)} />
-        : <input type="text" name={name} defaultValue={asText(value)} />;
+        ? <input type="text" name={name} {...a} list={`vocabulary-${column.vocabulary}`} placeholder="name or code" autoComplete="off" defaultValue={asText(value)} />
+        : <input type="text" name={name} {...a} defaultValue={asText(value)} />;
   }
 }
 
@@ -152,13 +155,13 @@ function TableInput({ spec, value }) {
         <thead>
           <tr>
             {spec.columns.map((c) => <th key={c.key}>{words(c.key)}{c.required ? ' *' : ''}</th>)}
-            <th />
+            <th scope="col"><span className="sr-only">Actions</span></th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
             <tr key={row}>
-              {spec.columns.map((c) => <td key={c.key}><Cell column={c} name={cellName(spec.pointer, row, c.key)} value={initial[row]?.[c.key]} /></td>)}
+              {spec.columns.map((c) => <td key={c.key}><Cell column={c} name={cellName(spec.pointer, row, c.key)} value={initial[row]?.[c.key]} label={`${words(c.key)}, row ${row + 1}`} /></td>)}
               <td>
                 {rows.length > 1 ? <button type="button" className="link" onClick={() => setRows(rows.filter((r) => r !== row))}>Remove</button> : null}
               </td>
@@ -167,14 +170,16 @@ function TableInput({ spec, value }) {
         </tbody>
       </table>
       <button type="button" className="secondary" onClick={() => { setRows([...rows, nextRow]); setNextRow(nextRow + 1); }}>Add row</button>
-      <span className="muted"> * required in each row · empty rows are ignored{spec.columns.some((c) => c.kind === 'multi_enum') ? ' · hold ⌘ or Ctrl to pick several' : ''}</span>
+      <span className="muted"> * required in each row · empty rows are ignored{spec.columns.some((c) => c.kind === 'multi_enum') ? ' · pick several with Ctrl or ⌘ and click, or Ctrl with the arrow keys and Ctrl-space' : ''}</span>
     </div>
   );
 }
 
-function FieldInput({ spec, showLabel, value }) {
+function FieldInput({ spec, showLabel, value, describedBy, groupLabel }) {
+  const id = useId();
   const name = spec.pointer;
   const label = spec.label ?? (showLabel ? leaf(spec.pointer) : null);
+  const grouped = spec.kind === 'boolean' || spec.kind === 'multi_enum';
   let control;
   switch (spec.kind) {
     case 'boolean':
@@ -224,10 +229,21 @@ function FieldInput({ spec, showLabel, value }) {
         ? <input type="text" name={name} list={`vocabulary-${spec.vocabulary}`} placeholder={`e.g. ${examples[spec.vocabulary]}`} autoComplete="off" defaultValue={asText(value)} />
         : <input type="text" name={name} defaultValue={asText(value)} />;
   }
+  if (grouped) {
+    return (
+      <fieldset className="field">
+        <legend className={label ? undefined : 'sr-only'}>{label ?? groupLabel}</legend>
+        {control}
+      </fieldset>
+    );
+  }
+  const named = isValidElement(control)
+    ? cloneElement(control, { id, ...(describedBy ? { 'aria-describedby': describedBy, 'aria-invalid': true } : {}) })
+    : control;
   return (
     <div className="field">
-      {label ? <label>{label}</label> : null}
-      {control}
+      <label htmlFor={id} className={label ? undefined : 'sr-only'}>{label ?? groupLabel}</label>
+      {named}
     </div>
   );
 }
@@ -240,9 +256,9 @@ function WhyItMatters({ teach, drives }) {
       {teach?.why ? <p>{teach.why}</p> : null}
       {drives?.length ? <p className="muted">Your answer changes: {drives.join(' · ')}.</p> : null}
       {teach?.options?.length ? (
-        <div className="table-scroll">
+        <div className="table-scroll" role="region" tabIndex={0} aria-label="Options compared, scrollable table">
           <table>
-            <thead><tr><th>Option</th><th>Pros</th><th>Cons</th></tr></thead>
+            <thead><tr><th scope="col">Option</th><th scope="col">Pros</th><th scope="col">Cons</th></tr></thead>
             <tbody>{teach.options.map((o) => <tr key={o.option}><td>{o.option}</td><td>{o.pros}</td><td>{o.cons}</td></tr>)}</tbody>
           </table>
         </div>
@@ -288,18 +304,33 @@ export function QuestionCard({ question, actionData, busy, values = {}, note = '
         {question.audience === 'consultant' ? <span className="badge">consultant</span> : null}
         {question.block === 'consultant_wrap_up' ? <span className="badge">wrap-up</span> : null}
       </div>
-      <p className="question">{question.text}</p>
-      {question.help ? <p className="muted">{question.help}</p> : null}
+      <p className="question" lang={language}>{question.text}</p>
+      {question.help ? <p className="muted" lang={language}>{question.help}</p> : null}
       <WhyItMatters teach={question.teach} drives={question.drives} />
       <ShopifyKnowledge shopify={question.shopify} />
       <Form method="post" key={question.id}>
         <input type="hidden" name="question_id" value={question.id} />
-        {question.inputs.map((spec) => <FieldInput key={spec.pointer} spec={spec} showLabel={question.inputs.length > 1} value={values[spec.pointer]} />)}
+        {question.inputs.map((spec) => (
+          <FieldInput
+            key={spec.pointer}
+            spec={spec}
+            showLabel={question.inputs.length > 1}
+            value={values[spec.pointer]}
+            groupLabel={question.text}
+            describedBy={errors.length ? `${question.id}-errors` : undefined}
+          />
+        ))}
         <div className="field">
-          <label>Comment (original wording, caveats, clarifications — no personal data)</label>
-          <textarea name="note" rows={2} defaultValue={note} placeholder="A comment alone is a valid answer when no value fits, e.g. “We only ship inside the EU”" />
+          <label htmlFor={`${question.id}-note`}>Comment (original wording, caveats, clarifications — no personal data)</label>
+          <textarea id={`${question.id}-note`} name="note" rows={2} defaultValue={note} placeholder="A comment alone is a valid answer when no value fits, e.g. “We only ship inside the EU”" />
         </div>
-        {errors.length ? <ul className="errors">{errors.map((e) => <li key={e}>{e}</li>)}</ul> : null}
+        {/* Refusing an answer in silence is the same as doing nothing: the message
+            sat a thousand pixels down the page and nothing announced it. */}
+        {errors.length ? (
+          <ul className="errors" id={`${question.id}-errors`} role="alert">
+            {errors.map((e) => <li key={e}>{e}</li>)}
+          </ul>
+        ) : null}
         <div className="actions">
           <button type="submit" name="intent" value="answer" disabled={busy}>Record answer</button>
           {!consent ? (

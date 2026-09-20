@@ -52,7 +52,7 @@ export default function Closing({ loaderData }) {
   const action = status === 'none' ? 'Generate the document' : `Update the document${freshness.changes.length ? ` · ${freshness.changes.length} answer${freshness.changes.length > 1 ? 's' : ''} changed` : ''}`;
 
   return (
-    <main>
+    <main id="main">
       <EngagementHeader
         engagement={engagement}
         eyebrow={processMeta(engagement.process).document}
@@ -122,9 +122,9 @@ export default function Closing({ loaderData }) {
       {freshness.changes.length ? (
         <details className="card">
           <summary>{freshness.changes.length} answer{freshness.changes.length > 1 ? 's' : ''} changed since version {version}</summary>
-          <div className="table-scroll">
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="Answers changed, scrollable table">
           <table>
-            <thead><tr><th>Question</th><th>Was</th><th>Now</th></tr></thead>
+            <thead><tr><th scope="col">Question</th><th scope="col">Was</th><th scope="col">Now</th></tr></thead>
             <tbody>{freshness.changes.map((c) => (
               <tr key={c.pointer || c.question_id}>
                 <td>{c.question_id ?? c.pointer}{c.question ? <div className="muted">{c.question}</div> : null}</td>

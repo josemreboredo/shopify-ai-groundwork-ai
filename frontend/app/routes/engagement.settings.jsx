@@ -4,6 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader } from '../components/question.jsx';
 import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
+import { OUTCOMES } from '../../../discovery/service/outcome.js';
 import { pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Change', params.client) }];
@@ -44,6 +45,16 @@ export async function action({ request, params }) {
       const result = await discovery().setInterviewMode(user, params.client, { mode: String(form.get('mode') ?? '') });
       return { ok: true, intent, ...result };
     }
+    if (intent === 'outcome') {
+      const price = String(form.get('submitted_price') ?? '').trim();
+      const result = await discovery().recordOutcome(user, params.client, {
+        outcome: String(form.get('outcome') ?? ''),
+        submitted_price: price ? Number(price) : undefined,
+        currency: String(form.get('currency') ?? '').trim() || undefined,
+        note: String(form.get('note') ?? ''),
+      });
+      return { ok: true, intent, ...result };
+    }
     if (intent === 'delete') {
       await discovery().deleteEngagement(user, params.client, { confirm: String(form.get('confirm') ?? '') });
       return redirect('/');
@@ -70,7 +81,7 @@ export default function Settings({ loaderData, actionData }) {
   const failed = (intent) => actionData?.error && actionData.intent === intent;
 
   return (
-    <main>
+    <main id="main">
       <EngagementHeader engagement={engagement} eyebrow="Change" />
 
       {/* 1 — the milestone, when there is one to record */}
@@ -119,7 +130,51 @@ export default function Settings({ loaderData, actionData }) {
         {failed('process') ? <p className="error">{actionData.error}</p> : null}
       </details>
 
-      {/* 3 — how deep the questions go */}
+      {/* 3 — what happened to it. The one thing only Merkle can know. */}
+      <section className="card">
+        <h2>What happened to this bid</h2>
+        <p className="muted">
+          Winning had a button and nothing else did — not a loss, not a submission, not a decision to walk
+          away. Every number this tool quotes rests on Merkle’s offering rather than on a delivered project,
+          because there has not been one; this is the record that eventually fixes that. It is also the only
+          way to ever say whether any of the rest of this helps.
+        </p>
+        {engagement.outcome ? (
+          <p className="question">Recorded as <strong>{OUTCOMES[engagement.outcome]?.label ?? engagement.outcome}</strong> — {OUTCOMES[engagement.outcome]?.meaning}</p>
+        ) : null}
+        <Form method="post" className="outcome-form">
+          <input type="hidden" name="intent" value="outcome" />
+          <div className="field">
+            <label htmlFor="outcome">Outcome</label>
+            <select id="outcome" name="outcome" defaultValue={engagement.outcome ?? 'submitted'}>
+              {Object.entries(OUTCOMES).map(([id, o]) => <option key={id} value={id}>{o.label} — {o.meaning}</option>)}
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="submitted_price">Price submitted <span className="muted">(optional)</span></label>
+            <input id="submitted_price" name="submitted_price" type="number" min="0" step="1000" placeholder="88000" />
+          </div>
+          <div className="field">
+            <label htmlFor="currency">Currency</label>
+            <input id="currency" name="currency" placeholder="EUR" maxLength={3} autoComplete="off" />
+          </div>
+          <div className="field wide">
+            <label htmlFor="note">Why <span className="muted">(what decided it — the thing a number will never say)</span></label>
+            <input id="note" name="note" placeholder="Lost on price; incumbent retained" />
+          </div>
+          <button type="submit" className="secondary" disabled={busy}>Record it</button>
+        </Form>
+        {said('outcome') ? (
+          <p className="muted">
+            Recorded. The engine’s position at this moment is frozen with it — what it classified, what it said
+            about pricing and how much it had to assume — because the question a year from now is what it said
+            at the time.
+          </p>
+        ) : null}
+        {failed('outcome') ? <p className="error">{actionData.error}</p> : null}
+      </section>
+
+      {/* 4 — how deep the questions go */}
       <section className="card">
         <h2>How many questions</h2>
         <p className="muted">

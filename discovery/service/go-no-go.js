@@ -54,6 +54,7 @@ export function complexityProfile(doc) {
   const fired = doc.exits?.items ?? [];
   const ruleInputs = new Map(offering.exit_rules.map((r) => [r.id, r.inputs ?? []]));
 
+  const answeredElsewhereHere = answeredElsewhere(doc);
   return offering.scope_gates.map((g) => {
     const state = doc.offer?.scope_gates?.[g.id];
     const active = Boolean(state?.active);
@@ -76,6 +77,10 @@ export function complexityProfile(doc) {
       // unanswered question that feeds a gate is a candidate there.
       settled_by: known ? [] : questionBank.questions.filter((q) => (q.feeds ?? []).includes(`gate:${g.id}`)).map((q) => q.id),
       rules: rules.map((r) => ({ rule_id: r.rule_id, result: r.result, evidence: r.evidence })),
+      // A requirement answered with a route rather than a Shopify build is still
+      // work on this dimension, and the chart said nothing about it because it
+      // was filed as a carve-out.
+      also: g.id === 'markets' ? answeredElsewhereHere.flatMap((a) => a.work.map((w) => ({ topic: a.what, work: w }))) : [],
     };
   });
 }
@@ -110,9 +115,18 @@ export function answeredElsewhere(doc) {
       // What Merkle can do, said first.
       answer: 'Shopify can carry the brand in mainland China and feed the partner and marketplace channels that sell there.',
       what_it_cannot: 'It cannot be the shop customers buy from inside the country: Shopify has no infrastructure in mainland China, and selling onshore needs a PRC entity, an ICP filing or licence and onshore hosting.',
-      where_it_goes: 'Onshore selling is scoped as its own workstream, with its own discovery',
-      // The build this bid prices, once the part that cannot sit in it is out.
-      leaves: `${markets.length - 1} of ${markets.length} markets are built on Shopify in this engagement`,
+      where_it_goes: 'Only the onshore shop is scoped as its own workstream, with its own discovery',
+      // Not a subtraction. Taking China out of the market count read as though the
+      // requirement had left, and it has not — it is answered differently, and
+      // answering it is work: a brand site that performs behind the Great
+      // Firewall, and a feed into the partner channels that sell there.
+      leaves: `${markets.length} markets, of which ${markets.length - 1} are a Shopify shop and mainland China is brand presence feeding partner channels`,
+      // Which of the two answers it gets is still open, and the answer decides
+      // the work — so it is complexity, not an absence.
+      work: [
+        'A brand presence that performs in mainland China: fonts, scripts and third-party resources that are blocked or slow behind the Great Firewall',
+        'Feeding the partner and marketplace channels that sell there, if Shopify is to be the master for products, stock and orders',
+      ],
     });
   }
   return out;

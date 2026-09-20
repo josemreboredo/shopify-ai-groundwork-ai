@@ -30,6 +30,7 @@ import { handoverView, handoverFile, backlogBlocked } from './handover.js';
 import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
 import { readiness, openPoints, technicalAnswer } from './readiness.js';
+import { record as recordOutcomeEntry, ledger, OUTCOME_IDS, OUTCOMES } from './outcome.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
@@ -177,6 +178,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       mode: session.mode,
       process: processOf(session.process),
       won: session.won ?? null,
+      outcome: session.outcome?.current ?? null,
       owner: session.owner ?? null,
       started_at: session.started_at,
       updated_at: session.updated_at,
@@ -1076,6 +1078,51 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
           shape_assumed: assumedShape.map((q) => q.question),
         } : {}),
       };
+    },
+
+    /**
+     * Record what happened to a bid.
+     *
+     * Winning had a button and nothing else did — not a loss, not a submission,
+     * not a decision to walk away. So the one dataset only Merkle can accumulate
+     * was thrown away on every engagement, and the price bands stayed calibrated
+     * on nothing because nothing was ever recorded to calibrate them against.
+     *
+     * The engine's own position is frozen with it, because the question a year
+     * from now is what it said at the time.
+     *
+     * @param {User} user @param {string} client
+     * @param {{ outcome: string, submitted_price?: number, currency?: string, note?: string }} input
+     */
+    async recordOutcome(user, client, { outcome, submitted_price, currency, note }) {
+      const session = await load(user, client);
+      if (!OUTCOME_IDS.includes(outcome)) throw new ServiceError(400, `outcome must be one of ${OUTCOME_IDS.join(', ')} (got ${outcome})`);
+      const decided = decideFromSession(session, today());
+      const p = decided.ok ? preview(session, today()) : null;
+      const saved = session.closing?.clarifications ?? null;
+      session.outcome = recordOutcomeEntry(session, { outcome, submitted_price, currency, note }, {
+        by: user.login,
+        at: today(),
+        offer: p ? { code: p.offer?.code, go: p.go, route: p.route } : null,
+        position: decided.ok
+          ? { assumptions: statedAssumptions(decided.doc, saved).length, decisions_settled: readiness(decided.doc, { provenance: session.provenance }).decisions.settled }
+          : null,
+      });
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, ...session.outcome };
+    },
+
+    /** What the ledger can say across every engagement, and what it cannot say yet. */
+    async getLedger(user) {
+      if (!user) throw new ServiceError(401, 'Sign in first');
+      const sessions = (await store.list()).filter((s) => allowed(user, s));
+      return ledger(sessions.map((s) => ({
+        client: s.client,
+        process: processOf(s.process),
+        outcome: s.outcome?.current ?? null,
+        history: s.outcome?.history ?? [],
+      })));
     },
 
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */

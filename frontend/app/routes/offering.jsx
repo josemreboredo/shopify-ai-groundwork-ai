@@ -35,7 +35,7 @@ export default function Offering({ loaderData }) {
   const plans = ['Grow', 'Advanced', 'Shopify Plus'].map((plan) => ({ plan, features: view.plan_gates.filter((g) => g.plan === plan) }));
 
   return (
-    <main className="story offering">
+    <main id="main" className="story offering">
       <header className="page-head">
         <p className="eyebrow">Internal · signed-in consultants</p>
         <h1>Three offers, one engine</h1>
@@ -125,9 +125,9 @@ export default function Offering({ loaderData }) {
               <li key={title}><strong>{title}</strong><span>{line}</span></li>
             ))}
           </ol>
-          <div className="table-scroll">
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="Offer comparison, scrollable table">
             <table className="compare">
-              <thead><tr><th /><th>Storefront</th><th>Shopify plan</th><th>How it is built</th><th>Stores</th></tr></thead>
+              <thead><tr><th scope="col"><span className="sr-only">Actions</span></th><th scope="col">Storefront</th><th scope="col">Shopify plan</th><th scope="col">How it is built</th><th scope="col">Stores</th></tr></thead>
               <tbody>
                 {view.offers.map((o) => (
                   <tr key={o.code}>

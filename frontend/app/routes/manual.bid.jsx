@@ -20,7 +20,7 @@ const CONTENTS = [
 
 export default function ManualBid() {
   return (
-    <main className="manual">
+    <main id="main" className="manual">
       <header className="page-head">
         <p className="eyebrow"><Link to="/manual">Manual</Link> · the bid path</p>
         <h1>Answer an RFP</h1>
@@ -73,7 +73,7 @@ export default function ManualBid() {
       <h2 id="go-no-go">4. Go/No-Go support</h2>
       <p>This is not the bid decision. That is taken in a room by people who know the relationship, the competition and the pipeline. This page is what the Solution Architect brings to that room: <strong>whether Merkle can put a number on this work and stand behind it</strong>, and what that rests on.</p>
       <table>
-        <thead><tr><th>It reads</th><th>Because</th></tr></thead>
+        <thead><tr><th scope="col">It reads</th><th scope="col">Because</th></tr></thead>
         <tbody>
           <tr><td>Nothing to go on</td><td>Nothing has been read in yet.</td></tr>
           <tr><td>Not yet</td><td>Answers are still unconfirmed. An architect cannot stand behind extractions nobody has checked — confirming them moves the position on the same bid.</td></tr>

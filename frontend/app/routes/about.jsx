@@ -66,7 +66,7 @@ const OUTCOMES = [
 
 export default function About({ loaderData }) {
   return (
-    <main className="story">
+    <main id="main" className="story">
       <header className="page-head">
         <p className="eyebrow">Merkle commerce practice · {PRODUCT}</p>
         <h1>One engine, two ways in</h1>

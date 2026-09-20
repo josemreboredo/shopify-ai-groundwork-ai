@@ -13,7 +13,7 @@ export async function loader({ request }) {
 export default function Claude({ loaderData }) {
   const { url, instructions, projectName } = loaderData;
   return (
-    <main>
+    <main id="main">
       <header className="page-head">
         <p className="eyebrow">Claude Project</p>
         <h1>Work on an engagement from Claude</h1>

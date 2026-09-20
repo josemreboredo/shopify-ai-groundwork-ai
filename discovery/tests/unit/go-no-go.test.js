@@ -196,16 +196,28 @@ describe('a requirement the client asked for is answered, never excluded', () =>
     assert.ok(!/exclud/i.test(JSON.stringify(cn)), 'nothing they asked for is called an exclusion');
   });
 
-  test('what is scoped separately is the onshore build, not the requirement', () => {
-    const [cn] = answeredElsewhere(withChina());
-    assert.match(cn.where_it_goes, /own workstream/);
+  test('only the onshore shop is scoped apart, and the market is never subtracted', () => {
     const doc = withChina();
-    assert.match(cn.leaves, new RegExp(`${doc.markets.list.length - 1} of ${doc.markets.list.length} markets`), 'and the build this bid prices is named');
+    const [cn] = answeredElsewhere(doc);
+    assert.match(cn.where_it_goes, /onshore shop/i);
+    // Taking China out of the count read as though the requirement had left. It
+    // has not: every market is still answered, one of them differently.
+    assert.match(cn.leaves, new RegExp(`^${doc.markets.list.length} markets`));
+    assert.match(cn.leaves, /brand presence feeding partner channels/);
   });
 
-  test('it travels beside the shape rather than inside it', () => {
+  test('answering it is work, and the complexity picture says so', () => {
+    // It was filed as a carve-out and the chart said nothing about it. A brand
+    // site that performs behind the Great Firewall and a feed into the partner
+    // channels are build work, on the markets dimension, in this engagement.
     const v = goNoGoView(withChina(), state(), null);
-    assert.equal(v.answered_elsewhere.length, 1);
-    assert.ok(!v.profile.some((a) => /china/i.test(a.label)), 'it is not a complexity axis');
+    const markets = v.profile.find((a) => a.id === 'markets');
+    assert.ok(markets.also.length, 'the markets axis carries it');
+    for (const w of markets.also) {
+      assert.equal(w.topic, 'Mainland China');
+      assert.ok(w.work.length > 20, 'named as work, not as a label');
+    }
+    const other = v.profile.filter((a) => a.id !== 'markets');
+    assert.ok(other.every((a) => !a.also.length), 'and only on the dimension it belongs to');
   });
 });
