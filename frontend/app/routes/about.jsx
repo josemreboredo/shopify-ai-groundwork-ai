@@ -62,9 +62,9 @@ export default function About() {
         <p className="eyebrow">Merkle commerce practice</p>
         <h1>AI-assisted Shopify discovery</h1>
         <p className="lede">
-          A tool that lets any Merkle commerce consultant run a Shopify discovery with the depth of a Shopify
-          specialist, and close it with a sourced, client-ready solution document — with the AI kept firmly on
-          the side of drafting, never deciding.
+          A tool that lets any Merkle commerce consultant work with the depth of a Shopify specialist — running
+          a discovery, or answering an RFP — and close it with a sourced, client-ready solution document, with
+          the AI kept firmly on the side of drafting, never deciding.
         </p>
         <ul className="stats">
           {STATS.map(([n, label]) => <li key={n}><strong>{n}</strong><span>{label}</span></li>)}
@@ -113,6 +113,41 @@ export default function About() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="band">
+        <div className="band-inner">
+          <p className="eyebrow">The second way in</p>
+          <h2 className="plain">An RFP runs the same way, with two steps exchanged</h2>
+          <p className="lede">
+            Merkle does not only meet clients in a discovery. More often a document arrives with a deadline,
+            and the work is to answer it well enough to be shortlisted.
+          </p>
+          <div className="grid-2">
+            <article className="card">
+              <h3>The interview becomes a reading</h3>
+              <p>
+                The RFP is read in and everything it already answers is recorded against the questionnaire,
+                each with the section and sentence it came from — so what the client wrote is evidence, not
+                paraphrase, and the consultant confirms it before anything is built on it.
+              </p>
+            </article>
+            <article className="card">
+              <h3>The open items become the questions we send</h3>
+              <p>
+                Every RFP has a window for questions, and it is the first thing the client reads from us.
+                The engine keeps only the unknowns that would change the offer, the Shopify plan, the store
+                topology, the cost or the risk — and drops everything it can safely assume. A handful of
+                questions, each showing the trade-off it turns on, says we have read their document. Sixty
+                says we have not.
+              </p>
+            </article>
+          </div>
+          <p className="muted">
+            Whatever comes back unanswered is stated in the proposal as the assumption it is, so the bid stays
+            comparable and nothing is quietly guessed.
+          </p>
+        </div>
       </section>
 
       <section>

@@ -77,6 +77,38 @@ export default function HowItWorks() {
         <p className="rule-line">No answer behind it, or no source under it — nothing is produced.</p>
       </section>
 
+      {/* The same four steps, whichever way the information arrives */}
+      <section className="band">
+        <div className="band-inner">
+          <p className="eyebrow">Two ways in</p>
+          <h2 className="plain">The same four steps, whether the client is answering us or we are answering them</h2>
+          <div className="grid-2">
+            <article className="card">
+              <h3>An RFP arrives</h3>
+              <p>
+                The document is read in and every answer it already contains is recorded with the section and
+                the sentence it came from. The engine then names the handful of things still missing that would
+                change the solution — and those become the questions Merkle sends back inside the window,
+                each one showing the trade-off it turns on. What is never answered is stated as an assumption
+                in the proposal rather than quietly guessed.
+              </p>
+            </article>
+            <article className="card">
+              <h3>A discovery is run</h3>
+              <p>
+                The same questions are worked through with the client directly, in their language, over as many
+                sessions as it takes. The engine keeps the live list of what is still open, and the engagement
+                closes with the deck, the annex and the delivery backlog.
+              </p>
+            </article>
+          </div>
+          <p className="muted">
+            One engine underneath: the same question bank, the same scope gates, the same verified Shopify
+            documentation, the same offer. Only the door and what comes out of it differ.
+          </p>
+        </div>
+      </section>
+
       <section className="band dark">
         <div className="band-inner">
           <p className="eyebrow">Three guarantees</p>
