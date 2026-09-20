@@ -611,12 +611,15 @@ button.link:disabled { color: var(--muted); cursor: default; }
 /* Footer (merkle.com) */
 .site-footer { position: relative; background: #000; color: #fff; margin-top: 64px; padding: 64px 40px 28px; overflow: hidden; }
 .footer-inner { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
-.footer-main { display: flex; flex-direction: column; align-items: flex-start; gap: 34px; }
+/* The content keeps to the left half and the M owns the right, as on merkle.com.
+   Both widths are percentages of .footer-inner, so the lane and the watermark
+   cannot drift into each other at any screen width. */
+.footer-main { display: flex; flex-direction: column; align-items: flex-start; gap: 34px; max-width: 52%; }
 .footer-mark img { display: block; height: 26px; width: auto; }
 .footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
 /* One row of equal columns, as merkle.com lays them out — three when signed out,
    four when the Work group appears, each taking the same share of the width. */
-.footer-columns { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 40px; width: 100%; }
+.footer-columns { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 28px; width: 100%; }
 .footer-col-title { margin: 0 0 16px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); }
 .footer-links a { color: #fff; text-decoration: none; font-size: 1.05rem; position: relative; padding-bottom: 4px; }
 .footer-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
@@ -625,12 +628,17 @@ button.link:disabled { color: var(--muted); cursor: default; }
 .footer-social a { color: #fff; display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--red); border-radius: 12px; transition: background 0.2s ease, color 0.2s ease; }
 .footer-social a:hover, .footer-social a:focus-visible { background: var(--red); color: #fff; }
 .footer-note { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); max-width: 62ch; }
-.footer-watermark { position: absolute; right: -8px; top: 26px; width: min(46vw, 660px); height: auto; z-index: 0; pointer-events: none; }
+.footer-watermark { position: absolute; right: -8px; top: 26px; width: 44%; height: auto; z-index: 0; pointer-events: none; }
 .footer-base { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1280px; margin: 40px auto 0; }
 .footer-dentsu img { display: block; height: 14px; width: auto; opacity: 0.9; }
 .footer-copy { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
 
 /* Narrow screens */
+/* The left lane gets tight before the watermark is dropped, so the groups fold
+   into the two columns merkle.com itself uses rather than four cramped ones. */
+@media (max-width: 1100px) {
+  .footer-columns { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 28px; }
+}
 @media (max-width: 900px) {
   .layout, .inline-form, .summary-grid { grid-template-columns: 1fr; }
   main { padding: 28px 16px 48px; }
@@ -643,7 +651,7 @@ button.link:disabled { color: var(--muted); cursor: default; }
   .signin-hero h1 { font-size: 2.4rem; }
   .signin-panel { padding: 36px 20px 48px; }
   .site-footer { padding: 44px 16px 24px; }
-  .footer-main { gap: 26px; }
+  .footer-main { gap: 26px; max-width: none; }
   .footer-columns { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px; }
   .footer-watermark { display: none; }
   .footer-base { margin-top: 28px; }
