@@ -60,7 +60,14 @@ export default function Home({ loaderData, actionData }) {
         </p>
       </header>
 
-      {/* Two doors. You say what you are doing; nothing asks you to classify a record. */}
+      {/* Creating one is the occasional act; opening one is the daily one. The
+          forms took the whole top of the page for the thing you do least, so
+          they fold away and the list comes first. */}
+      <details className="card prefill new-record">
+        <summary>
+          <span className="prefill-title">New — answer an RFP, or run a discovery</span>
+          <span className="muted prefill-status">{engagements.length} open · start another</span>
+        </summary>
       <div className="doors">
         <section className="door rfp">
           <p className="door-n" aria-hidden="true">01</p>
@@ -111,6 +118,7 @@ export default function Home({ loaderData, actionData }) {
           </Form>
         </section>
       </div>
+      </details>
       {actionData?.error ? <p className="error">{actionData.error}</p> : null}
 
       <h2>Open now</h2>
