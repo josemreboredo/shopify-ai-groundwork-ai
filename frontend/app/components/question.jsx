@@ -41,7 +41,7 @@ export function EngagementNav({ engagement }) {
         {stepsFor(engagement).map((step) => (
           <li key={step.path || 'start'} className={step.state}>
             <NavLink to={to(step.path)} end={step.path === ''}>
-              <span className="step-n" aria-hidden="true">{step.state === 'done' ? '✓' : step.n}</span>
+              <span className="step-n" aria-hidden="true">{String(step.n).padStart(2, '0')}</span>
               <span className="step-label">{step.label}</span>
               {step.hint ? <span className="step-hint">{step.hint}</span> : null}
             </NavLink>

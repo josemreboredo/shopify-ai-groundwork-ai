@@ -27,7 +27,7 @@ const contrast = (a, b) => {
 /** White at an alpha, composited onto black. */
 const onBlack = (alpha) => [255 * alpha, 255 * alpha, 255 * alpha];
 
-describe('the step spine is legible on the band it is drawn on', () => {
+describe('the step spine follows the Merkle system it is drawn in', () => {
   test('no spine text colour comes from a token meant for white backgrounds', () => {
     const offenders = spine
       .split('\n')
@@ -45,11 +45,36 @@ describe('the step spine is legible on the band it is drawn on', () => {
     }
   });
 
-  test('the step you are on is the most prominent thing in the spine', () => {
-    assert.match(spine, /\.steps-spine \.current \.step-label \{[^}]*color: #fff/, 'the current step is pure white');
-    assert.match(spine, /\.steps-spine \.current \.step-label \{[^}]*font-weight: 600/);
-    // A step still to do must not be a filled white disc: it then reads as more
-    // important than the one you are on, which is the opposite of the point.
-    assert.match(spine, /\.step-n \{[^}]*background: transparent/);
+  test('one accent: the spine is red or it is nothing', () => {
+    const others = [...spine.matchAll(/var\(--(ok|warn|accent|navy|stop)\)/g)].map((m) => m[0]);
+    assert.deepEqual(others, [], 'merkle.com has a single accent — a green tick is a second one');
+    assert.ok(spine.includes('var(--red)'), 'and state is carried by that accent');
   });
+
+  test('square surfaces: nothing in the spine is a disc', () => {
+    assert.ok(!/border-radius:\s*(50%|999|9999)/.test(spine), 'the system is square surfaces and pill buttons — a numbered circle is neither');
+  });
+
+  test('state is carried by the brand’s own marks, not by invented ones', () => {
+    // The red wedge of the Merkle mark, exactly as it is used for every bullet
+    // and every section heading in the app.
+    assert.match(spine, /\.steps-spine \.done[^{]*\{[^}]*clip-path: polygon\(100% 0, 100% 100%, 0 0\)/, 'finished steps take the red wedge');
+    // The red bar of the tab ribbon, which is how this app has always said "here".
+    assert.match(spine, /\.steps-spine a::after \{[^}]*background: var\(--red\)/);
+    assert.match(spine, /\.steps-spine \.current a::after[^{]*\{[^}]*transform: scaleX\(1\)/);
+  });
+
+  test('the step you are on is the brightest thing in the ribbon', () => {
+    assert.match(spine, /\.steps-spine \.current a[^:]*,[^{]*\{[^}]*color: #fff/);
+  });
+
+  test('it speaks the same type as the tabs it replaced', () => {
+    for (const rule of ['.step-label', '.views a']) {
+      const block = spine.slice(spine.indexOf(rule));
+      const decl = block.slice(0, block.indexOf('}'));
+      assert.match(decl, /text-transform: uppercase/, `${rule} is uppercase, like every other navigation label`);
+      assert.match(decl, /letter-spacing: 0\.08em/, `${rule} carries the same letter-spacing`);
+    }
+  });
+
 });
