@@ -217,6 +217,17 @@ details.card[open] > summary { margin-bottom: 12px; }
 .mode-form select { width: auto; }
 @media (max-width: 760px) { .mode-form { margin-left: 0; width: 100%; } }
 
+/* One card per record, phones only — the table stays the desk instrument. */
+.record-cards { display: none; }
+.record-cards li { border: 1px solid var(--line); border-left: 3px solid var(--red); padding: 14px 16px; background: #fff; }
+.record-cards p { margin: 0; }
+.record-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.record-top a { font-size: 1.15rem; font-weight: 700; text-decoration: none; letter-spacing: -0.01em; }
+.record-top a:hover { color: var(--red); }
+.record-what { margin-top: 8px !important; font-size: 0.92rem; }
+.record-progress { margin-top: 6px !important; font-size: 0.92rem; }
+.record-meta { margin-top: 8px !important; color: var(--muted); font-size: 0.8rem; }
+
 /* Deleting an engagement: out of the way, and it asks for the slug back */
 details.danger { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
 details.danger > summary { color: var(--red-ink); font-weight: 700; }
@@ -252,7 +263,7 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
 
 /* The offering page */
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
-.table-scroll > table { min-width: max-content; }
+.table-scroll > table { width: max-content; min-width: 100%; max-width: none; }
 .chip { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
 .offering .small { font-size: 0.8rem; }
 
@@ -584,6 +595,14 @@ h2.headline-answer {
 .blocks > li > span { grid-column: 2; font-size: 0.86rem; }
 @media (max-width: 900px) { .standfirst-body { grid-template-columns: 1fr; gap: 26px; } }
 
+/* The two answers the offer owes whatever its commercial shape */
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 4px 0 8px; }
+.answer { border-left: 3px solid var(--red); padding: 4px 0 4px 18px; }
+.answer-label { margin: 0 0 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.answer-value { margin: 0 0 6px; font-size: 1.28rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
+.answer .muted { margin: 0; }
+@media (max-width: 760px) { .answers { grid-template-columns: 1fr; gap: 18px; } }
+
 /* Readiness: countable things, no invented scale */
 /* The same .stats component, on a white surface.
    It was written for the black statement band — .stats span is white text — so
@@ -781,7 +800,7 @@ button.link:disabled { color: var(--muted); cursor: default; }
   .footer-columns { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 28px; }
 }
 @media (max-width: 900px) {
-  .layout, .inline-form, .summary-grid { grid-template-columns: 1fr; }
+  .layout, .inline-form, .summary-grid { grid-template-columns: minmax(0, 1fr); }
   main { padding: 28px 16px 48px; }
   .page-head { margin: -28px calc(50% - 50vw) 24px; padding: 36px 16px 24px; }
   .panel { position: static; }
@@ -807,6 +826,19 @@ button.link:disabled { color: var(--muted); cursor: default; }
      the settings — sat in the clipped region. */
   .views { flex: 1 1 100%; margin-left: 0; flex-wrap: wrap; gap: 12px 18px; padding-bottom: 8px; }
   .doors { grid-template-columns: 1fr; gap: 20px; }
+  .record-cards { display: grid; gap: 12px; list-style: none; padding: 0; margin: 14px 0 0; }
+  .record-table { display: none; }
+  /* The spine was six labelled steps with hints, stacked — two screens of
+     navigation before a word of work. On a phone it says where you are, in one
+     line, and keeps the others as numbered stops you can still reach. */
+  .steps-spine { gap: 6px 10px; align-items: center; }
+  .steps-spine .current { flex: 1 1 100%; order: -1; }
+  .steps-spine li:not(.current) .step-label, .steps-spine li:not(.current) .step-hint {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .steps-spine li:not(.current) a { min-width: 44px; justify-content: center; padding: 8px 0 10px; }
+  .steps-spine li:not(.current) .step-n { font-size: 0.95rem; }
+  .step-hint { max-width: none; }
   .door { padding: 22px 18px; }
   .row-actions { white-space: normal; }
   /* State is carried by these, and 10.9px uppercase is not state anyone reads. */

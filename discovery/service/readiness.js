@@ -26,6 +26,7 @@
 
 import { offering } from '../schema/index.js';
 import { answeredAt } from '../agents/discovery/knowledge.js';
+import { requiredPlan, planRequirements, PLAN_LABEL } from '../agents/discovery/plan.js';
 
 /** Every decision the engine makes, with the answers it reads. */
 function decisions() {
@@ -179,5 +180,56 @@ export function openPoints(topics, assumptions, cannotPrice) {
     priced_on_an_assumption: assumed,
     // Stated, but nobody said what being wrong costs.
     without_consequence: assumed.filter((r) => r.reason !== 'still open, and assumable' && !r.consequence).length,
+  };
+}
+
+/**
+ * The two technical answers an offer has to carry however it is sold.
+ *
+ * A bid can be beyond S, M and L — priced on its own, routed to an Enterprise
+ * Engagement — and still owes the client the same two things: what it would be
+ * built on, and which Shopify plan the requirements force. Those are
+ * determinations about the work, not about the commercial shape, so they survive
+ * an engagement leaving the offering. They were only ever visible inside the
+ * closing document, which is written last.
+ *
+ * Both carry their reasons. The plan cites the Shopify page that sets each
+ * limit; the storefront cites the answer that decided it.
+ *
+ * @param {object} doc  decided engagement
+ */
+export function technicalAnswer(doc) {
+  const required = requiredPlan(doc) ?? 'basic';
+  const stated = doc.shopify?.target_plan;
+  const known = stated && stated !== 'not_sure' ? stated : null;
+
+  // The storefront is decided by the headless trigger, not by the offer code.
+  // An engagement outside the offers has no offer code, and still has an answer.
+  const headless = doc.offer?.l_triggers?.headless;
+  const track = headless?.active ? 'hydrogen' : 'liquid';
+
+  return {
+    storefront: {
+      track,
+      label: track === 'hydrogen' ? 'Headless — Hydrogen on the Storefront API' : 'Shopify’s Online Store, themed',
+      why: track === 'hydrogen'
+        ? 'A headless storefront was asked for, so the front end is built and hosted by Merkle and Shopify runs the commerce behind it.'
+        : 'Nothing in the requirements asks for a front end outside Shopify, so the storefront stays on the Online Store — cheaper to build, and the client’s own team can change it.',
+      evidence: headless?.evidence ?? null,
+      // What would move it, said plainly rather than left as a silent default.
+      would_change_it: track === 'hydrogen'
+        ? null
+        : 'A separate content platform or a custom front end would move it, and add a second build stream.',
+    },
+    plan: {
+      required,
+      label: required === 'basic' ? 'Basic is enough' : PLAN_LABEL[required],
+      client_stated: known,
+      // Every rule that forces a plan, each with the page that sets the limit.
+      forced_by: planRequirements(doc).map((r) => ({ feature: r.feature, plan: PLAN_LABEL[r.plan], docs: r.docs })),
+      disagreement: known && known !== required
+        ? `The client expects ${PLAN_LABEL[known]}; the requirements need ${required === 'basic' ? 'Basic' : PLAN_LABEL[required]}`
+        : null,
+    },
   };
 }

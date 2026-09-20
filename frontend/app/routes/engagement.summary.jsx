@@ -44,7 +44,7 @@ function Points({ title, lead, rows, client, tone }) {
       <p className="muted">{lead}</p>
       <div className="table-scroll">
         <table className="open-points">
-          <thead><tr><th>What is open</th><th>What it moves</th><th>If we never learn it</th></tr></thead>
+          <thead><tr><th>What is open</th><th>What it moves</th><th>Assumption</th></tr></thead>
           <tbody>
             {rows.map((r, i) => (
               <tr key={`${r.what}-${i}`}>
@@ -72,7 +72,7 @@ function Points({ title, lead, rows, client, tone }) {
 }
 
 export default function Summary({ loaderData }) {
-  const { engagement, preview: p, readiness: r, open_points: open, documents, notes, generated_at: generatedAt } = loaderData;
+  const { engagement, preview: p, readiness: r, technical: t, open_points: open, documents, notes, generated_at: generatedAt } = loaderData;
   const client = engagement.client;
   const standing = offerStanding(p);
 
@@ -131,7 +131,28 @@ export default function Summary({ loaderData }) {
         </div>
       </section>
 
-      {/* 2 — the numbers, each one countable */}
+      {/* 2 — the two answers the offer owes whatever its commercial shape */}
+      {t ? (
+        <div className="answers">
+          <div className="answer">
+            <p className="answer-label">Built on</p>
+            <p className="answer-value">{t.storefront.label}</p>
+            <p className="muted small">{t.storefront.why}</p>
+          </div>
+          <div className="answer">
+            <p className="answer-label">Shopify plan the requirements force</p>
+            <p className="answer-value">{t.plan.label}</p>
+            <p className="muted small">
+              {t.plan.forced_by.length
+                ? `${t.plan.forced_by.length} requirement${t.plan.forced_by.length === 1 ? '' : 's'} force${t.plan.forced_by.length === 1 ? 's' : ''} it`
+                : 'Nothing in the requirements needs a higher plan'}
+              {t.plan.disagreement ? ` · ${t.plan.disagreement}` : ''}
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {/* 3 — the numbers, each one countable */}
       <ul className="stats kpis">
         <li><strong>{r.counts.to_confirm}</strong><span>answers read from a document and still waiting on you</span></li>
         <li><strong>{r.counts.undecided}</strong><span>questions not yet asked or turned into an assumption</span></li>
@@ -140,7 +161,43 @@ export default function Summary({ loaderData }) {
         <li><strong>{r.counts.stops}<span className="of"> · {r.counts.flags} · {r.counts.warns}</span></strong><span>rules fired — outside the offers · needs an owner · commercial</span></li>
       </ul>
 
-      {/* 3 — what the engine still cannot decide */}
+      {/* 4 — why those two answers, with the page that sets each limit */}
+      {t ? (
+        <section>
+          <h2>Why that plan, and why that storefront</h2>
+          {t.plan.forced_by.length ? (
+            <>
+              <p className="muted">
+                Each of these is a requirement this engagement has that the platform only offers above a certain
+                plan. The plan is the highest one any of them needs — not a preference, and never an assumption
+                that Plus is wanted.
+              </p>
+              <div className="table-scroll">
+                <table>
+                  <thead><tr><th>Requirement</th><th>Needs</th><th>Shopify’s own page</th></tr></thead>
+                  <tbody>
+                    {t.plan.forced_by.map((f) => (
+                      <tr key={f.feature}>
+                        <th scope="row">{f.feature}</th>
+                        <td>{f.plan}</td>
+                        <td><a href={f.docs} target="_blank" rel="noreferrer">{new URL(f.docs).pathname.split('/').filter(Boolean).slice(-2).join('/')}</a></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            <p className="muted">No requirement in this engagement needs a plan above Basic. Anything higher would be the client’s choice, not ours.</p>
+          )}
+          <h3>The storefront</h3>
+          <p>{t.storefront.why}</p>
+          {t.storefront.evidence ? <p className="muted">{t.storefront.evidence}</p> : null}
+          {t.storefront.would_change_it ? <p className="muted">{t.storefront.would_change_it}</p> : null}
+        </section>
+      ) : null}
+
+      {/* 5 — what the engine still cannot decide */}
       <section>
         <h2>What the engine still cannot decide</h2>
         <p className="muted">

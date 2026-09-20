@@ -29,7 +29,7 @@ import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
 import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
-import { readiness, openPoints } from './readiness.js';
+import { readiness, openPoints, technicalAnswer } from './readiness.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
@@ -577,6 +577,9 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
             documents: documentYield(session),
           })
           : null,
+        // What the offer owes the client whatever its commercial shape: what it
+        // would be built on, and which plan the requirements force.
+        technical: decided.ok ? technicalAnswer(decided.doc) : null,
         open_items: openItems(session).map((i) => ({ ...i, question: questionById(i.question_id)?.text ?? null })),
         // What is open, grouped by what it costs rather than by where it came from.
         open_points: decided.ok ? openPoints(brief.topics, statedAssumptions(decided.doc, saved), brief.cannot_price_until_answered) : { blocks_a_price: [], priced_on_an_assumption: [] },

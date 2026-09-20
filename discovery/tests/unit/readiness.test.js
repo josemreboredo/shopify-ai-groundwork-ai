@@ -156,3 +156,47 @@ describe('nothing that blocks a price sits outside the questions', () => {
     assert.ok(cover.why_it_matters, 'and says why it is being asked');
   });
 });
+
+describe('what the offer owes whatever its commercial shape', () => {
+  test('an engagement beyond the offers still has a storefront and a plan', async () => {
+    const { technicalAnswer } = await import('../../service/readiness.js');
+    // Ricola is neither M nor L — it is routed to an Enterprise Engagement — and
+    // the client is still owed what it would be built on and which plan the
+    // requirements force. Those are answers about the work, not the commercial
+    // shape, so they survive leaving the offering.
+    const t = technicalAnswer(fixture('stop-custom-checkout'));
+    assert.ok(t.storefront.label);
+    assert.ok(t.storefront.why, 'and says why, rather than leaving a default silent');
+    assert.ok(t.plan.label);
+  });
+
+  test('the storefront is decided by the headless requirement, not by the offer code', async () => {
+    const { technicalAnswer } = await import('../../service/readiness.js');
+    const doc = acme();
+    assert.equal(technicalAnswer(doc).storefront.track, 'liquid');
+    assert.match(technicalAnswer(doc).storefront.would_change_it, /second build stream/);
+
+    doc.offer.l_triggers.headless = { active: true, evidence: 'Q9.2.1: a headless storefront is required' };
+    const headless = technicalAnswer(doc).storefront;
+    assert.equal(headless.track, 'hydrogen');
+    assert.match(headless.evidence, /Q9\.2\.1/, 'carrying the answer that decided it');
+  });
+
+  test('every requirement forcing a plan cites the Shopify page that sets the limit', async () => {
+    const { technicalAnswer } = await import('../../service/readiness.js');
+    const t = technicalAnswer(acme());
+    assert.equal(t.plan.required, 'plus');
+    assert.ok(t.plan.forced_by.length, 'and names what forces it');
+    for (const f of t.plan.forced_by) {
+      assert.ok(f.feature && f.plan);
+      assert.match(f.docs, /^https:\/\/(help\.shopify\.com|shopify\.dev)/, 'an official page, never a recollection');
+    }
+  });
+
+  test('a client expecting more than the requirements need is told so, not quietly agreed with', async () => {
+    const { technicalAnswer } = await import('../../service/readiness.js');
+    const t = technicalAnswer(fixture('stop-custom-checkout'));
+    assert.equal(t.plan.required, 'basic');
+    assert.match(t.plan.disagreement, /expects Shopify Plus; the requirements need Basic/);
+  });
+});
