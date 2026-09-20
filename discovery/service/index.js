@@ -30,7 +30,7 @@ import { handoverView, handoverFile, backlogBlocked } from './handover.js';
 import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
 import { readiness, openPoints, technicalAnswer } from './readiness.js';
-import { record as recordOutcomeEntry, ledger, OUTCOME_IDS, OUTCOMES } from './outcome.js';
+import { record as recordOutcomeEntry, ledger, OUTCOME_IDS } from './outcome.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
@@ -1172,6 +1172,13 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     async recordOutcome(user, client, { outcome, submitted_price, currency, note }) {
       const session = await load(user, client);
       if (!OUTCOME_IDS.includes(outcome)) throw new ServiceError(400, `outcome must be one of ${OUTCOME_IDS.join(', ')} (got ${outcome})`);
+      // This is the calibration dataset. "abc" became NaN, passed the
+      // `!== undefined` guard and was stored as null — a silent hole in the one
+      // record that exists to be counted later.
+      if (submitted_price !== undefined && submitted_price !== null
+        && (!Number.isFinite(submitted_price) || submitted_price < 0)) {
+        throw new ServiceError(400, 'The price submitted has to be a number', [`got ${JSON.stringify(submitted_price)}`]);
+      }
       const decided = decideFromSession(session, today());
       const p = decided.ok ? preview(session, today()) : null;
       const saved = session.closing?.clarifications ?? null;
@@ -1186,7 +1193,15 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         at: today(),
         offer: p ? { code: p.offer?.code, go: p.go, route: p.route } : null,
         position: decided.ok
-          ? { assumptions: statedAssumptions(decided.doc, saved).length, decisions_settled: readiness(decided.doc, { provenance: session.provenance }).decisions.settled }
+          ? (() => {
+            const state = { provenance: session.provenance, process: processOf(session.process) };
+            const r = readiness(decided.doc, state);
+            return {
+              verdict: goNoGoView(decided.doc, { coverage: p?.coverage, to_review: summary(session).to_review, documents: (session.documents ?? []).length }, saved).recommendation.verdict,
+              assumptions: statedAssumptions(decided.doc, saved).length,
+              decisions_settled: r.decisions.settled,
+            };
+          })()
           : null,
       });
       session.updated_at = today();

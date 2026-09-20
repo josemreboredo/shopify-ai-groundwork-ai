@@ -1,4 +1,4 @@
-import { Link, redirect, useNavigation } from 'react-router';
+import { redirect, useNavigation } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';

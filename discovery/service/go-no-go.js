@@ -120,7 +120,10 @@ export function answeredElsewhere(doc) {
       // requirement had left, and it has not — it is answered differently, and
       // answering it is work: a brand site that performs behind the Great
       // Firewall, and a feed into the partner channels that sell there.
-      leaves: `${markets.length} markets, of which ${markets.length - 1} are a Shopify shop and mainland China is brand presence feeding partner channels`,
+      // China alone read as "1 markets, of which 0 are a Shopify shop".
+      leaves: markets.length === 1
+        ? 'Mainland China is the only market, and it is brand presence feeding partner channels rather than a Shopify shop'
+        : `${markets.length} markets, of which ${markets.length - 1} ${markets.length === 2 ? 'is a Shopify shop' : 'are Shopify shops'} and mainland China is brand presence feeding partner channels`,
       // Which of the two answers it gets is still open, and the answer decides
       // the work — so it is complexity, not an absence.
       work: [

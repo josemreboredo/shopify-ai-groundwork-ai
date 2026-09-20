@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader, resultClass, words } from '../components/question.jsx';
+import { EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 import { offerStanding } from '../../../discovery/service/summary.js';
 

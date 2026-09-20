@@ -75,6 +75,37 @@ describe('the outcome ledger', () => {
     assert.equal(l.needs, 8, 'but only won and lost move a hit rate');
   });
 
+  test('the position it freezes is the engine\u2019s, not the caller\u2019s', async () => {
+    // The unit test above passes a verdict in and asserts it comes back, which
+    // is true of anything and was why the production path recording no verdict
+    // at all went unnoticed for as long as it existed.
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    const r = await svc.recordOutcome(consultant, 'a-bid', { outcome: 'submitted' });
+    const [entry] = r.history;
+    assert.ok('as_at' in entry, 'something is frozen with it');
+    // On an engagement too thin for the engine to decide there is no position to
+    // freeze, and the record says so rather than inventing one.
+    assert.deepEqual(entry.as_at, {});
+  });
+
+  test('a price that is not a number is refused, not stored as null', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    // "abc" became NaN, passed the !== undefined guard and was serialised as
+    // null — a hole in the one record that exists to be counted later.
+    await assert.rejects(
+      svc.recordOutcome(consultant, 'a-bid', { outcome: 'submitted', submitted_price: Number('abc') }),
+      (err) => err instanceof ServiceError && err.status === 400,
+    );
+    await assert.rejects(
+      svc.recordOutcome(consultant, 'a-bid', { outcome: 'submitted', submitted_price: -5 }),
+      (err) => err instanceof ServiceError && err.status === 400,
+    );
+  });
+
   test('the service records it against the engagement, and refuses an invented outcome', async () => {
     const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
     await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });

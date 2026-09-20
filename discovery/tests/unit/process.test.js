@@ -65,8 +65,19 @@ describe('one engine, two processes', () => {
     assert.deepEqual(at({}), ['done', 'done', 'current', 'todo', 'todo', 'todo']);
     assert.deepEqual(at({ go: true }), ['done', 'done', 'done', 'current', 'todo', 'todo'], 'within the offers, the questions are next');
     assert.deepEqual(at({ route: 'no_bid' }), ['done', 'done', 'done', 'current', 'todo', 'todo'], 'a recorded no-bid is still a decision taken');
-    // Checking where it stands comes between the questions and the price.
-    assert.deepEqual(at({ go: true, clarifications_at: '2026-09-20' }), ['done', 'done', 'done', 'done', 'current', 'todo']);
+    // With nothing left blocking it, the check is passed and the step that
+    // actually produces the document becomes the current one. It never could
+    // while it shared its condition with the check before it.
+    assert.deepEqual(at({ go: true, clarifications_at: '2026-09-20' }), ['done', 'done', 'done', 'done', 'done', 'current']);
+    assert.deepEqual(at({ go: true, clarifications_at: '2026-09-20', clarifications_undecided: 2 }), ['done', 'done', 'done', 'current', 'todo', 'todo'], 'an untriaged question takes it back');
+  });
+
+  test('every step can be the current one, including the last', () => {
+    // "Check where it stands" and "Write the proposal" shared a done condition,
+    // so they flipped together and the spine pointed at the summary for ever.
+    const ready = { process: 'rfp', documents: 1, to_review: 0, go: true, offer: { code: 'M' }, clarifications_at: '2026-09-20', clarifications_undecided: 0 };
+    assert.equal(stepsFor(ready).find((s) => s.state === 'current').label, 'Write the proposal');
+    assert.equal(stepsFor({ ...ready, closing_document_at: '2026-09-21' }).find((s) => s.state === 'current').label, 'Did we win it?');
   });
 
   test('a bid carries the evidence for the go/no-go, and a discovery does not', () => {

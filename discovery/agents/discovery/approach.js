@@ -10,7 +10,7 @@
 import { buildApproachSchema } from './extraction-schema.js';
 import { appSignals, appCandidates } from './app-signals.js';
 import { knowledgeFor } from './knowledge.js';
-import { rubricBrief, rubricErrors, axesFor } from './rubric.js';
+import { rubricBrief, rubricErrors } from './rubric.js';
 import { runCostFor } from './economics.js';
 import { organisationalProfile } from './feasibility.js';
 import { planSuggestion } from './plan.js';

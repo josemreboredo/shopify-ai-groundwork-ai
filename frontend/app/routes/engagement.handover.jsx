@@ -1,6 +1,6 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
+import { EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Handover', params.client) }];

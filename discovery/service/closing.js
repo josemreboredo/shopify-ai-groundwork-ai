@@ -24,7 +24,7 @@ import { toApproachPayload } from '../agents/discovery/approach.js';
 import { DECK_PROMPT } from '../agents/discovery-deck/prompt.js';
 import { selectStories, summariseByEpic } from '../agents/backlog/select.js';
 import { openItems } from '../agents/interview/open-items.js';
-import { chapterBrief, chapterKnowledge } from './reference.js';
+import { chapterKnowledge } from './reference.js';
 import { buildDeckSchema, layoutGuide } from './deck-template.js';
 
 let approachValidator;

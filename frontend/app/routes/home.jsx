@@ -2,7 +2,7 @@ import { Form, Link, redirect } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
+import { processMeta } from '../../../discovery/service/process.js';
 import { offerStanding, statusOf } from '../../../discovery/service/summary.js';
 import { PRODUCT, pageTitle } from '../brand.js';
 
@@ -44,6 +44,20 @@ const LANGUAGES = ['en', 'de', 'fr', 'it', 'es'];
 function Status({ e }) {
   const s = statusOf(e);
   return <span className={`badge ${s.tone}`}>{s.label}</span>;
+}
+
+/**
+ * What is left to say once the status badge has spoken. The badge already
+ * carries the count it is about — the answers to confirm, or how far the
+ * interview has got — so repeating it under the badge is noise, not detail.
+ */
+function progressUnder(e) {
+  const { id } = statusOf(e);
+  if (id === 'to_confirm' || id === 'reviewing' || id === 'questions_to_decide') return null;
+  const c = e.coverage ?? {};
+  if (!c.required_total) return null;
+  if (id === 'interviewing') return c.required_tbc ? `${c.required_tbc} TBC` : null;
+  return `${c.required_answered} of ${c.required_total} required${c.required_tbc ? ` · ${c.required_tbc} TBC` : ''}`;
 }
 
 export default function Home({ loaderData, actionData }) {
@@ -139,11 +153,10 @@ export default function Home({ loaderData, actionData }) {
                 {' '}{offerStanding(e).short}
                 {e.offer.provisional ? <span className="muted small"> · provisional</span> : null}
               </p>
-              <p className="record-progress">
-                {e.coverage.required_answered} of {e.coverage.required_total} required
-                {e.coverage.required_tbc ? ` · ${e.coverage.required_tbc} TBC` : ''}
-                {e.to_review ? <> · <span className="badge flag">{e.to_review} to confirm</span></> : null}
-              </p>
+              {/* The badge above now states the headline — "91 to confirm",
+                  "Interviewing — 61 of 85" — so the card said it twice. This line
+                  carries only what the badge did not. */}
+              {progressUnder(e) ? <p className="record-progress">{progressUnder(e)}</p> : null}
               <p className="record-meta">{e.mode} · {e.owner ?? '—'} · {e.updated_at}</p>
             </li>
           ))}

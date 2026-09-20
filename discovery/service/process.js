@@ -122,7 +122,11 @@ const STEPS = {
       // consultant never looks at the moment it matters.
       path: 'summary',
       label: 'Check where it stands',
-      done: Boolean(e.closing_document_at),
+      // Its own condition. It shared one with "Write the proposal", so the two
+      // flipped together and the spine pointed at the summary for ever — the
+      // step that actually produces the document was never the current one.
+      // The check is passed when nothing is left blocking it.
+      done: e.to_review === 0 && !e.clarifications_undecided && Boolean(e.go || e.route),
       hint: 'Everything the proposal will rest on, in one page',
     },
     {
