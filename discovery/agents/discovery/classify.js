@@ -170,7 +170,7 @@ const GATE_EVALUATORS = {
     return {
       active: counted.length >= 1,
       evidence: counted.length
-        ? `Counted integrations: ${counted.map((i) => `${i.system} (${i.category})`).join(', ')}`
+        ? `Counted integrations: ${counted.map((i) => `${i.system ?? 'system not named'} (${i.category})`).join(', ')}`
         : 'No counted integrations',
     };
   },
@@ -233,18 +233,34 @@ const GATE_EVALUATORS = {
     const collections = c.collections_estimate ?? 0;
     const curated = c.collection_mode === 'manual' || c.collection_mode === 'mixed';
 
+    /*
+     * Size fires on its own, as it does on the catalogue gate.
+     *
+     * The ceiling arm used to read "5,000 SKUs AND filters recorded", and the
+     * filters question is recommended rather than required — so a fifty-thousand
+     * SKU store where nobody had answered it came out with no search work at
+     * all. An empty list meant both "they want no filters" and "nobody asked",
+     * and the engine cannot tell those apart, so it stopped pretending to.
+     *
+     * Merchandising at that size is work whether or not a filter is ever
+     * configured. What the recorded filters change is the tier: the app tier is
+     * for a documented limit known to be crossed, not for one inferred from
+     * silence.
+     */
     const pastFilterCap = filters > 25;
-    const pastCollectionCeiling = skus >= 5000 && filters > 0;
+    const atCollectionScale = skus >= 5000;
+    const ceilingWillBite = atCollectionScale && filters > 0;
     const curatedAtScale = curated && collections >= 100;
 
-    const active = pastFilterCap || pastCollectionCeiling || curatedAtScale;
-    const tier = active ? (pastFilterCap || pastCollectionCeiling ? 'app' : 'native') : null;
+    const active = pastFilterCap || atCollectionScale || curatedAtScale;
+    const tier = active ? (pastFilterCap || ceilingWillBite ? 'app' : 'native') : null;
     const why = [
       filters ? `${filters} storefront filter(s)` : 'no storefront filters recorded',
       `${skus} SKUs`,
       collections ? `${collections} collections, ${c.collection_mode ?? 'mode not recorded'}` : null,
       pastFilterCap ? 'past the 25-filter cap' : null,
-      pastCollectionCeiling ? 'collections will cross the 5,000-product ceiling where filters stop showing' : null,
+      ceilingWillBite ? 'collections will cross the 5,000-product ceiling where filters stop showing' : null,
+      atCollectionScale && !filters ? 'merchandising at this catalogue size, with the filter set still to confirm' : null,
     ].filter(Boolean).join('; ');
     return { active, ...(tier ? { tier } : {}), evidence: why };
   },

@@ -330,10 +330,13 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.equal(at(5000).scope_gates.sku_complexity.tier, 'large');
     assert.equal(at(50000).scope_gates.sku_complexity.tier, 'very_large');
 
-    // And the tiers have to reach the quote, or none of this was worth doing.
-    assert.ok(at(50000).price_band.max > at(600).price_band.max * 1.4, 'an order of magnitude of catalogue is not a rounding difference');
-    assert.ok(at(50000).duration_weeks.max > at(5000).duration_weeks.max);
-    assert.ok(at(5000).duration_weeks.max > at(600).duration_weeks.max);
+    // And the tiers have to reach the estimate, or none of this was worth doing.
+    // Measured on the scope effort rather than the quoted duration: past 5,000
+    // SKUs the search gate fires too, so two gates make it an M and the band
+    // absorbs them until they outgrow it. The scope is where the size shows.
+    assert.ok(at(50000).scope_effort_weeks.max > at(5000).scope_effort_weeks.max);
+    assert.ok(at(5000).scope_effort_weeks.max > at(600).scope_effort_weeks.max);
+    assert.ok(at(600).price_band.max > at(400).price_band.max, 'and a priced gate moves an S band');
   });
 
   test('a flat catalogue of any size is not a Foundation', () => {
@@ -389,8 +392,14 @@ describe('the offer follows the effort, not the gate count', () => {
     // And a collection over 5,000 products shows no filters whatsoever.
     assert.equal(at({ sku_count: 4999, storefront_filters: filters(2) }).active, false);
     assert.equal(at({ sku_count: 5000, storefront_filters: filters(2) }).tier, 'app');
-    // No filters asked for is no filter problem, whatever the catalogue.
-    assert.equal(at({ sku_count: 80000 }).active, false);
+    // Size fires on its own. The filters question is recommended rather than
+    // required, so an empty list meant both "they want none" and "nobody asked",
+    // and a fifty-thousand SKU store came out with no search work at all.
+    assert.equal(at({ sku_count: 80000 }).tier, 'native', 'merchandising at that size is work either way');
+    assert.match(at({ sku_count: 80000 }).evidence, /filter set still to confirm/);
+    // What the recorded filters change is the tier, not whether it fires: the
+    // app tier is for a documented limit known to be crossed, not inferred.
+    assert.equal(at({ sku_count: 80000, storefront_filters: filters(2) }).tier, 'app');
 
     // Hand-curated merchandising at scale is somebody's job after launch, but
     // native still does it.
