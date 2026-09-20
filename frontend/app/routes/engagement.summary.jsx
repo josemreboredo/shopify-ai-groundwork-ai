@@ -97,8 +97,8 @@ export default function Summary({ loaderData }) {
         <p className="eyebrow">{standing.headline}</p>
         <h2 className="plain headline-answer">
           {r.ready
-            ? `Ready to price${r.counts.assumptions ? `, on ${r.counts.assumptions} stated assumption${r.counts.assumptions === 1 ? '' : 's'}` : ''}`
-            : `Not ready to price — ${r.blockers.length} thing${r.blockers.length === 1 ? '' : 's'} block${r.blockers.length === 1 ? 's' : ''} it`}
+            ? `Ready to ${r.for}${r.counts.assumptions ? `, on ${r.counts.assumptions} stated assumption${r.counts.assumptions === 1 ? '' : 's'}` : ''}`
+            : `Not ready to ${r.for} — ${r.blockers.length} thing${r.blockers.length === 1 ? '' : 's'} block${r.blockers.length === 1 ? 's' : ''} it`}
         </h2>
 
         <div className="standfirst-body">

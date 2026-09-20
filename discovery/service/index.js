@@ -570,6 +570,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         // a room, this is a work state re-answered on every upload.
         readiness: decided.ok
           ? readiness(decided.doc, {
+            process: processOf(session.process),
             provenance: session.provenance,
             toReview: summary(session).to_review,
             triage: triage(saved),

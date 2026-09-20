@@ -1,4 +1,5 @@
-import { Form, Link, Links, Meta, NavLink, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteLoaderData } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Form, Link, Links, Meta, NavLink, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useLocation, useRouteLoaderData } from 'react-router';
 
 import { getUser } from './auth.server.js';
 import { PRODUCT } from './brand.js';
@@ -57,6 +58,33 @@ export async function loader({ request }) {
   return { user: await getUser(request) };
 }
 
+/**
+ * Six uppercase links wrapped onto three lines, so every page on a phone opened
+ * with navigation. Below 760px they live behind one button; the footer keeps the
+ * full index for anyone whose JavaScript never arrives.
+ */
+function TopNav({ pages }) {
+  const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+  useEffect(() => setOpen(false), [pathname]);
+  return (
+    <>
+      <button
+        type="button"
+        className="menu-toggle"
+        aria-expanded={open}
+        aria-controls="topnav"
+        onClick={() => setOpen((v) => !v)}
+      >
+        {open ? 'Close' : 'Menu'}
+      </button>
+      <nav id="topnav" className={open ? 'topnav open' : 'topnav'} aria-label="Main">
+        {pages.map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
+      </nav>
+    </>
+  );
+}
+
 export function Layout({ children }) {
   const root = useRouteLoaderData('root');
   return (
@@ -71,9 +99,7 @@ export function Layout({ children }) {
         <a className="skip" href="#main">Skip to content</a>
         <header className="topbar">
           <Link to="/" className="brand" aria-label={`${PRODUCT} — home`}><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
-          <nav className="topnav" aria-label="Main">
-            {headerPages(root?.user).map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
-          </nav>
+          <TopNav pages={headerPages(root?.user)} />
           {root?.user ? (
             <Form method="post" action="/logout" className="user">
               <span className="who">{root.user.login} · {root.user.role}</span>

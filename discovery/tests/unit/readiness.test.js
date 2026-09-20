@@ -200,3 +200,48 @@ describe('what the offer owes whatever its commercial shape', () => {
     assert.match(t.plan.disagreement, /expects Shopify Plus; the requirements need Basic/);
   });
 });
+
+describe('a won engagement is not still being priced', () => {
+  const both = (over) => ({
+    bid: readiness(acme(), state(acme(), { process: 'rfp', ...over })),
+    won: readiness(acme(), state(acme(), { process: 'discovery', ...over })),
+  });
+
+  test('what being ready is for changes with the process', () => {
+    // After a win the spine switches to the discovery steps; this said "Not
+    // ready to price" on an engagement where there is nothing left to price.
+    const { bid, won } = both({});
+    assert.equal(bid.for, 'price');
+    assert.equal(won.for, 'close');
+  });
+
+  test('the blockers that are a bid’s alone do not stop a discovery', () => {
+    const doc = fixture('stop-custom-checkout');
+    const withBoth = (process) => readiness(doc, {
+      provenance: doc.provenance,
+      process,
+      toReview: 0,
+      cannotPrice: ['orders per month'],
+      triage: { proposed: [{}] },
+      openTopics: [],
+      assumptions: [],
+    });
+    const bid = withBoth('rfp').blockers.map((b) => b.what);
+    const won = withBoth('discovery').blockers.map((b) => b.what);
+    assert.ok(bid.some((w) => /outside the standard offers/.test(w)), 'a bid is stopped by it');
+    assert.ok(!won.some((w) => /outside the standard offers/.test(w)), 'a won engagement is being delivered, whatever shape it was sold in');
+    assert.ok(bid.some((w) => /not yet asked or assumed/.test(w)));
+    assert.ok(!won.some((w) => /not yet asked or assumed/.test(w)), 'the Q&A is a step on a bid and a view in a discovery');
+  });
+
+  test('what blocks both still blocks both', () => {
+    const doc = acme();
+    const unconfirmed = (process) => readiness(doc, state(doc, { process, toReview: 5 })).blockers;
+    for (const process of ['rfp', 'discovery']) {
+      const b = unconfirmed(process).find((x) => /still to confirm/.test(x.what));
+      assert.ok(b, `${process}: nothing rests on an extraction nobody has checked`);
+    }
+    assert.match(unconfirmed('rfp').find((x) => /still to confirm/.test(x.what)).why, /A bid cannot rest/);
+    assert.match(unconfirmed('discovery').find((x) => /still to confirm/.test(x.what)).why, /A closing document cannot rest/);
+  });
+});

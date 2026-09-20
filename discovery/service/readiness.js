@@ -70,6 +70,10 @@ function settle(decision, doc, provenance, fired) {
  *           cannotPrice?: string[], assumptions?: object[], documents?: object[] }} state
  */
 export function readiness(doc, state = {}) {
+  // A discovery is already won. "Ready to price" is the bid's question, and it
+  // read as that on a won engagement where there is nothing left to price —
+  // the spine had already changed to the discovery steps and this had not.
+  const bid = (state.process ?? 'rfp') === 'rfp';
   const fired = new Set([
     ...Object.entries(doc.offer?.scope_gates ?? {}).filter(([, g]) => g.active).map(([id]) => id),
     ...Object.entries(doc.offer?.l_triggers ?? {}).filter(([, t]) => t.active).map(([id]) => id),
@@ -88,16 +92,22 @@ export function readiness(doc, state = {}) {
   // them is a threshold on a ratio, because the ratio cannot see which of the
   // thirty-three is the one you actually need.
   const blockers = [
-    state.toReview ? { what: `${state.toReview} answer${state.toReview === 1 ? '' : 's'} still to confirm`, where: 'review', why: 'A bid cannot rest on an extraction nobody has checked.' } : null,
-    stops.length ? { what: `${stops.length} requirement${stops.length === 1 ? '' : 's'} outside the standard offers`, where: 'go-no-go', why: stops.map((s) => s.evidence).join('; ') } : null,
-    (state.cannotPrice ?? []).length ? { what: `${state.cannotPrice.length} input${state.cannotPrice.length === 1 ? '' : 's'} that cannot be costed at all`, where: 'clarifications', why: state.cannotPrice.join('; ') } : null,
+    state.toReview ? { what: `${state.toReview} answer${state.toReview === 1 ? '' : 's'} still to confirm`, where: 'review', why: `${bid ? 'A bid' : 'A closing document'} cannot rest on an extraction nobody has checked.` } : null,
+    // Only a bid is stopped by being outside the offers: an engagement that has
+    // been won is being delivered, whatever shape it was sold in.
+    bid && stops.length ? { what: `${stops.length} requirement${stops.length === 1 ? '' : 's'} outside the standard offers`, where: 'go-no-go', why: stops.map((s) => s.evidence).join('; ') } : null,
+    bid && (state.cannotPrice ?? []).length ? { what: `${state.cannotPrice.length} input${state.cannotPrice.length === 1 ? '' : 's'} that cannot be costed at all`, where: 'clarifications', why: state.cannotPrice.join('; ') } : null,
     shaping.length ? { what: `${shaping.length} open topic${shaping.length === 1 ? '' : 's'} that change the shape of the solution`, where: 'clarifications', why: shaping.map((t) => t.title).join(', ') } : null,
-    undecided ? { what: `${undecided} question${undecided === 1 ? '' : 's'} not yet asked or assumed`, where: 'clarifications', why: 'Undecided, a question reaches the client as neither.' } : null,
+    // The Q&A is a step on a bid and a view in a discovery, so an untriaged
+    // question stops one and not the other.
+    bid && undecided ? { what: `${undecided} question${undecided === 1 ? '' : 's'} not yet asked or assumed`, where: 'clarifications', why: 'Undecided, a question reaches the client as neither.' } : null,
   ].filter(Boolean);
 
   const assumptions = state.assumptions ?? [];
   return {
     ready: blockers.length === 0,
+    // What being ready is for. A bid is priced; a discovery is closed.
+    for: bid ? 'price' : 'close',
     blockers,
     decisions: {
       settled: settled.length,
