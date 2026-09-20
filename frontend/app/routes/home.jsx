@@ -79,7 +79,7 @@ export default function Home({ loaderData, actionData }) {
           they fold away and the list comes first. */}
       <details className="card prefill new-record">
         <summary>
-          <span className="prefill-title">New — answer a new RFP, or run a new discovery</span>
+          <span className="prefill-title">New — start a bid or a discovery</span>
           <span className="muted prefill-status">{engagements.length} open · start another</span>
         </summary>
       <div className="doors">
