@@ -6,6 +6,7 @@ import { discovery, serviceFailure } from '../discovery.server.js';
 import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
 import { EngagementHeader, PreviewPanel, QuestionCard, Vocabularies } from '../components/question.jsx';
+import { processMeta } from '../../../discovery/service/process.js';
 
 export const meta = ({ params }) => [{ title: `${params.client} · Merkle Discovery` }];
 
@@ -177,7 +178,7 @@ export default function Engagement({ loaderData, actionData }) {
               <div className="actions">
                 <Link className="button" to={`/engagements/${engagement.client}/summary`}>See the summary</Link>
                 <Link className="button secondary" to={`/engagements/${engagement.client}/review`}>Review or change answers</Link>
-                <Link className="button secondary" to={`/engagements/${engagement.client}/closing-document`}>Discovery Closing Document</Link>
+                <Link className="button secondary" to={`/engagements/${engagement.client}/closing-document`}>{processMeta(engagement.process).document}</Link>
               </div>
             </section>
           )}

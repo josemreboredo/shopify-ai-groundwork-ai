@@ -346,10 +346,10 @@ export function registerPrompts(server) {
   const message = (text) => ({ messages: [{ role: 'user', content: { type: 'text', text } }] });
 
   server.registerPrompt('draft_closing_document', {
-    title: 'Draft the Discovery Closing Document',
-    description: 'Research, decide and write the closing deck and annex for an engagement, then save both.',
+    title: 'Draft the client document',
+    description: 'Research, decide and write the deck and annex — a Discovery Closing Document, or a proposal on a bid — then save both.',
     argsSchema: { client: z.string().describe('Client slug, e.g. acme-watches') },
-  }, ({ client }) => message(`Draft the Discovery Closing Document for ${client}.
+  }, ({ client }) => message(`Draft the client document for ${client}. prepare_closing_document returns "document": what this one is called — a Discovery Closing Document, or a Proposal when Merkle is answering an RFP. Use that name for it throughout.
 
 Work as a Shopify Solution Architect: call prepare_closing_document, read the whole engagement, research every Shopify fact in the official documentation before you state it, draft and save the approach, then fill the deck templates and write the annex and save both with save_closing_document. Tell me the version you saved, the decisions taken and what is still to validate.`));
 
@@ -357,13 +357,25 @@ Work as a Shopify Solution Architect: call prepare_closing_document, read the wh
     title: 'Redraft after answers changed',
     description: 'Check what changed since the last version and rewrite the document accordingly.',
     argsSchema: { client: z.string().describe('Client slug, e.g. acme-watches') },
-  }, ({ client }) => message(`Redraft the Discovery Closing Document for ${client}.
+  }, ({ client }) => message(`Redraft the client document for ${client} — prepare_closing_document returns "document", the name this one goes by.
 
 Call get_closing_document first and read freshness.changes — those are the answers that moved since the last version.
 
 Then redraft in full: prepare_closing_document, draft the approach again from what it returns, save_approach, and only then write the deck and the annex and save both with save_closing_document. Changed answers can move the engine's own decisions — the market topology among them — so a deck rewritten on top of the previous approach would argue from a position the evidence no longer supports.
 
 Tell me which decisions, risks or scope items the changes moved, and which stayed the same and why.`));
+
+  server.registerPrompt('write_clarifications', {
+    title: 'Write the questions to send on an RFP',
+    description: 'The few considered questions Merkle sends back after reading an RFP, each showing the trade-off it turns on.',
+    argsSchema: { client: z.string().describe('Client slug, e.g. acme-watches') },
+  }, ({ client }) => message(`Write Merkle's clarification questions on the RFP for ${client}.
+
+Call prepare_clarifications and work only from the topics it gives you — the engine has already taken out everything it could safely assume, so do not add questions back. Research every Shopify fact in the official documentation before you state it.
+
+Write one question per topic, opening in the client's own words and followed by a short "Why we ask" that shows what changes in the solution depending on the answer. Then save them with save_clarifications, recording for each one which discovery questions it covers and what the proposal will assume if it comes back unanswered.
+
+These go to the client before we bid. A long list says we have not read their document; a short one, each question showing we already know the trade-off, says the opposite.`));
 
   server.registerPrompt('prefill_from_documents', {
     title: 'Pre-fill the engagement from the documents',

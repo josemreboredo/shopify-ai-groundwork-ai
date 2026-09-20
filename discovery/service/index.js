@@ -25,7 +25,7 @@ import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
 import { clarificationBrief, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
-import { processOf, PROCESS_IDS } from './process.js';
+import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
@@ -511,10 +511,11 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
           }],
         );
       }
-      if (needsApproach(doc)) return { status, step: 'approach', ...approachBrief(doc) };
+      const document = processMeta(session.process).document;
+      if (needsApproach(doc)) return { status, step: 'approach', document, ...approachBrief(doc) };
       const final = finaliseEngagement(doc, null);
       if (!final.ok) throw new ServiceError(400, 'Engagement not valid', final.errors);
-      return { status, step: 'document', ...deckBrief(final.engagement) };
+      return { status, step: 'document', document, ...deckBrief(final.engagement) };
     },
 
     /**
@@ -627,7 +628,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.closing = { ...session.closing, approach: { payload: approach, saved_at: today(), by: user.login, via } };
       session.updated_at = today();
       await store.save(session);
-      return { status: closingStatus(decided.doc), step: 'document', ...deckBrief(final.engagement) };
+      return { status: closingStatus(decided.doc), step: 'document', document: processMeta(session.process).document, ...deckBrief(final.engagement) };
     },
 
     /**
@@ -726,7 +727,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         : { known: false, up_to_date: true, changes: [] };
       const doc = session.closing?.document;
       return {
-        freshness: { ...freshness, redraft_prompt: redraftPrompt(client, freshness.changes) },
+        freshness: { ...freshness, redraft_prompt: redraftPrompt(client, freshness.changes, processMeta(session.process).document) },
         version: doc?.version ?? (doc ? '1.0' : null),
         engagement: summary(session),
         approach: session.closing?.approach ? { saved_at: session.closing.approach.saved_at, by: session.closing.approach.by, via: session.closing.approach.via } : null,

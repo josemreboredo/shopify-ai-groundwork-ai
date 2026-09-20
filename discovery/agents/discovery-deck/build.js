@@ -488,13 +488,13 @@ function nextSteps(x, doc) {
   x.list('client-to-confirm', (doc.approach?.risks?.open_items ?? []).map((o) => o.why), 'No open questions');
   x.list('standard', isLarger(doc)
     ? [
-      'Client reviews this Discovery Closing Document',
+      'Client reviews this document',
       'Client confirms priorities, launch waves and the topics for the Discovery Phase',
       `Merkle issues the proposal for the ${larger(doc).proposal}`,
       'Discovery Phase kick-off; the build backlog, plan and investment are agreed at its end',
     ]
     : [
-      'Client reviews and signs off this Discovery Closing Document',
+      'Client reviews and signs off this document',
       'Client confirms scope, exclusions and risk register',
       'Merkle issues the fixed-price proposal',
       'Sprint 1 kick-off',

@@ -21,7 +21,7 @@ export async function loader({ request, params }) {
       ? annexDeckFromMarkdown(saved.annex, { internal, client: params.client, date: saved.saved_at })
       : saved.deck ?? annexDeckFromMarkdown(saved.markdown, { internal, client: params.client, date: saved.saved_at, title: 'Discovery Closing Document' });
 
-    const file = await renderDeckPptx(deck, { client: params.client, version: saved.version, internal });
+    const file = await renderDeckPptx(deck, { client: params.client, version: saved.version, internal, process: saved.engagement.process });
     const name = `${params.client}-discovery-${annex ? 'annex' : 'closing-document'}${internal ? '-internal' : ''}-v${saved.version}.pptx`;
     return new Response(file, {
       headers: {

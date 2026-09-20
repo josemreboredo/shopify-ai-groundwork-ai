@@ -206,6 +206,17 @@ describe('MCP connector tools', () => {
     assert.match(res.headers.get('www-authenticate'), /resource_metadata="https:\/\/discovery\.example\.test\/\.well-known\/oauth-protected-resource\/mcp"/);
   });
 
+  test('every step a consultant starts from Claude has a prompt, including the one only a bid has', async () => {
+    const { rpc } = await connector();
+    const prompts = (await rpc('prompts/list', {})).payload.result.prompts.map((p) => p.name).sort();
+    assert.deepEqual(prompts, ['draft_closing_document', 'prefill_from_documents', 'redraft_closing_document', 'write_clarifications']);
+    // The prompts are registered once and cannot know which process a client is
+    // in, so they must not name the document — the tool result does that.
+    const drafting = (await rpc('prompts/get', { name: 'draft_closing_document', arguments: { client: 'rfp-demo' } })).payload.result;
+    assert.ok(!/Draft the Discovery Closing Document for/.test(drafting.messages[0].content.text), 'a bid is not drafting a Discovery Closing Document');
+    assert.match(drafting.messages[0].content.text, /"document"/, 'it is told where to find the right name');
+  });
+
   test('lists the discovery tools and runs the document workflow as the signed-in consultant', async () => {
     const { rpc, call, service } = await connector();
     const tools = (await rpc('tools/list', {})).payload.result.tools.map((t) => t.name).sort();

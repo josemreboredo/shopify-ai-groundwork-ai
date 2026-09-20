@@ -73,13 +73,13 @@ export function answerChanges(snapshot, session, describe) {
  * The line a Lead Consultant pastes into Claude to redraft the document with the
  * changes named.
  *
- * @param {string} client @param {Array<object>} changes
+ * @param {string} client @param {Array<object>} changes @param {string} [document]  what this process calls it
  */
-export function redraftPrompt(client, changes) {
-  if (!changes.length) return `Draft the Discovery Closing Document for ${client}.`;
+export function redraftPrompt(client, changes, document = 'Discovery Closing Document') {
+  if (!changes.length) return `Draft the ${document} for ${client}.`;
   const named = changes.slice(0, 12).map((c) => `${c.question_id ?? c.pointer}${c.after ? `: now ${c.after}` : ` (${c.kind})`}`);
   const more = changes.length > named.length ? ` and ${changes.length - named.length} more` : '';
-  return `Redraft the Discovery Closing Document for ${client}. These answers changed since the last version — ${named.join('; ')}${more}.
+  return `Redraft the ${document} for ${client}. These answers changed since the last version — ${named.join('; ')}${more}.
 
 Redraft it in full, not just the slides: call prepare_closing_document, draft the approach again from the engagement data it returns — the verified Shopify knowledge, the comparison rubric, the run cost and the organisation it gives you — save it with save_approach, then write the deck and the annex from the deck data and save both with save_closing_document. The answers that moved may have moved the engine's own decisions, the market topology among them, so a deck rewritten on top of the old approach would argue from a position the evidence no longer supports.
 

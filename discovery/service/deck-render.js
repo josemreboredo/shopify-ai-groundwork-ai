@@ -9,6 +9,7 @@
  */
 
 import PptxGenJS from 'pptxgenjs';
+import { processMeta } from './process.js';
 
 const BLACK = '000000';
 const INK = '0A1540';
@@ -468,15 +469,15 @@ const LAYOUT_RENDERERS = {
  * Render the filled deck as a PowerPoint file.
  *
  * @param {{ slides: Array<object> }} deck
- * @param {{ client: string, version?: string, internal?: boolean }} options
+ * @param {{ client: string, version?: string, internal?: boolean, process?: string }} options
  * @returns {Promise<Buffer>}
  */
-export async function renderDeckPptx(deck, { client, version = '', internal = false }) {
+export async function renderDeckPptx(deck, { client, version = '', internal = false, process }) {
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_16x9';
   pptx.author = 'Merkle';
   pptx.company = 'Merkle';
-  pptx.title = `Discovery Closing Document — ${client}`;
+  pptx.title = `${processMeta(process).document} — ${client}`;
 
   const footer = [client, version && `v${version}`, internal ? 'Lead Consultant draft — internal notes included' : 'Confidential'].filter(Boolean).join('  ·  ');
   pptx.defineSlideMaster({
