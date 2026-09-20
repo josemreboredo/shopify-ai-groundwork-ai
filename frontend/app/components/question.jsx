@@ -441,7 +441,7 @@ export function PreviewPanel({ preview }) {
           through am I". */}
       <p>{preview.coverage.required_answered} of {preview.coverage.required_total} required answered</p>
       <p className="muted small">
-        {preview.coverage.required_open} still open
+        {preview.coverage.required_open} required still open
         {preview.coverage.required_tbc ? ` · ${preview.coverage.required_tbc} with the client` : ''}
         {preview.coverage.required_commented ? ` · ${preview.coverage.required_commented} clarified by comment` : ''}
       </p>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Form, Link, useNavigation, useRevalidator } from 'react-router';
+import { Form, Link, NavLink, useNavigation, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
@@ -246,7 +246,7 @@ export default function Engagement({ loaderData, actionData }) {
               {next.sections?.length ? (
                 <nav className="sections" aria-label="Sections with questions open">
                   <NavLink to={`/engagements/${engagement.client}`} end className={next.section ? 'secondary' : 'active'}>
-                    All · {next.remaining}
+                    All · {next.remaining} to ask
                   </NavLink>
                   {next.sections.map((sec) => (
                     <NavLink
@@ -259,6 +259,11 @@ export default function Engagement({ loaderData, actionData }) {
                   ))}
                 </nav>
               ) : null}
+              <p className="muted small">
+                {next.section
+                  ? `Section ${next.section} · showing ${next.questions.length} of ${next.in_section} still to ask here · ${next.remaining} in this depth in all`
+                  : `Showing ${next.questions.length} of ${next.remaining} still to ask in this ${engagement.mode} depth · ${engagement.coverage?.required_answered ?? 0} of ${engagement.coverage?.required_total ?? 0} required answered`}
+              </p>
               {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} language={engagement.language} />) : (
                 <section className="card">
                   <p className="question">All questions for this {engagement.mode} interview are answered.</p>
