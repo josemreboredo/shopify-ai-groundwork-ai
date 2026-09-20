@@ -103,7 +103,7 @@ describe('route after a STOP', () => {
     assert.doesNotMatch(clientPart(xml), /price-band/);
     assert.ok(!clientPart(xml).includes(doc.offer.name), 'no standard offer name in the client sections of a Larger Engagement deck');
     assert.deepEqual(findLeaks(clientPart(xml), deck.doc, null), []);
-    assert.deepEqual(findLeaks('Investment: price band EUR 100,000+', deck.doc, null), ['price band']);
+    assert.deepEqual(findLeaks('Investment: price band CHF 140,000+', deck.doc, null), ['price band']);
     const notes = xml.slice(xml.indexOf('<section id="consultant-notes"'));
     for (const text of ['route="larger_engagement"', '<nearest-offer', 'reference-only="true"', 'Offer a Larger Engagement with all collected information', 'company-specific B2B catalogs']) {
       assert.ok(notes.includes(text), `consultant notes should include ${text}`);

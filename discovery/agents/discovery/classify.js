@@ -14,6 +14,30 @@ const COUNTED = new Set(offering.integration_definition.counted_categories);
 const NON_MIGRATION_SOURCES = new Set(['none', 'shopify']);
 
 /**
+ * How much of a project a migration is, by where the data is coming from.
+ *
+ * It used to be one flat modifier — one to two weeks, whatever the source. The
+ * published DACH benchmark separates them by a factor of two: a WooCommerce
+ * migration is a 4–8 week project, Shopware 8–12, Magento 10–14 (Greenblut, from
+ * 150+ migrations). Charging a Magento estate what a WooCommerce store costs is
+ * not a simplification, it is a loss taken on purpose.
+ *
+ * The tiers are the published totals minus a build with no migration in it.
+ */
+const MIGRATION_TIER = {
+  woocommerce: 'light',
+  shopware: 'medium',
+  bigcommerce: 'medium',
+  magento: 'heavy',
+  sfcc: 'heavy',
+  custom: 'heavy',
+  // An unnamed platform is assumed to be the middle case rather than the
+  // cheapest: "other" is what a consultant writes when it is not one of the
+  // ones they recognise, and those are rarely the simple ones.
+  other: 'medium',
+};
+
+/**
  * Integrations that count toward the integration gate and exit rule 11.7.
  *
  * @param {object} doc  Engagement document
@@ -126,7 +150,12 @@ const GATE_EVALUATORS = {
   migration: (doc) => {
     const source = doc.migration?.source_platform;
     const active = Boolean(source) && !NON_MIGRATION_SOURCES.has(source);
-    return { active, evidence: `Source platform: ${source ?? 'not recorded'}` };
+    const tier = active ? (MIGRATION_TIER[source] ?? 'medium') : null;
+    return {
+      active,
+      ...(tier ? { tier } : {}),
+      evidence: `Source platform: ${source ?? 'not recorded'}${tier ? ` (${tier} migration)` : ''}`,
+    };
   },
 };
 
@@ -153,6 +182,49 @@ const L_TRIGGER_EVALUATORS = {
  * @param {object} doc  Engagement document (answers only are read)
  * @returns {object}    Value for doc.offer
  */
+/**
+ * The modifier that prices one active gate.
+ *
+ * Two gates are no longer a single fixed number. A migration is priced by where
+ * the data comes from, and markets by how many there are — because the first
+ * extra market and the fourth are not the same work, and the offering used to
+ * charge one week for both.
+ *
+ * @param {object} gate      the gate definition from offering.json
+ * @param {object} evaluated what the evaluator found, including a migration tier
+ * @param {object} doc       engagement document
+ * @returns {object|null}
+ */
+function modifierFor(gate, evaluated, doc) {
+  const all = offering.modifiers ?? [];
+  if (gate.id === 'migration') {
+    return all.find((m) => m.gate === 'migration' && m.tier === evaluated?.tier)
+      ?? all.find((m) => m.gate === 'migration' && m.tier === 'medium')
+      ?? null;
+  }
+  const modifier = all.find((m) => m.gate === gate.id) ?? null;
+  if (!modifier || gate.id !== 'markets') return modifier;
+
+  // Half a week per market beyond the first, within the modifier's own band.
+  // Above five markets exit rule 11.3 takes it out of the offers entirely, so
+  // the band never has to stretch further than that.
+  const count = marketsOf(doc).length;
+  const weeks = Math.min(
+    Math.max((count - 1) * (modifier.per_market_weeks ?? 0.5), modifier.effort_weeks.min),
+    modifier.effort_weeks.max,
+  );
+  const price = Math.min(
+    Math.max((count - 1) * (modifier.per_market_price ?? 0), modifier.price_add.min),
+    modifier.price_add.max,
+  );
+  return {
+    ...modifier,
+    effort_weeks: { min: weeks, max: weeks },
+    price_add: { min: price, max: price },
+    markets: count,
+  };
+}
+
 export function classifyOffer(doc) {
   const scope_gates = Object.fromEntries(
     offering.scope_gates.map((g) => [g.id, GATE_EVALUATORS[g.id](doc)]),
@@ -164,26 +236,58 @@ export function classifyOffer(doc) {
   const activeGates    = offering.scope_gates.filter((g) => scope_gates[g.id].active);
   const activeTriggers = offering.l_triggers.filter((t) => l_triggers[t.id].active);
 
+  // What the active gates actually add, in weeks. Counting gates treats a
+  // Magento migration and a 500-SKU catalogue as the same thing; they differ by
+  // an order of magnitude, and the offering already records how much each one
+  // costs. Summing it is the only honest way to ask which offer this is.
+  const adds = activeGates.map((g) => modifierFor(g, scope_gates[g.id], doc)).filter(Boolean);
+  const effort = adds.reduce((a, m) => ({
+    min: a.min + (m.effort_weeks?.min ?? 0),
+    max: a.max + (m.effort_weeks?.max ?? 0),
+  }), { min: 0, max: 0 });
+  const base = offering.offers.S.duration_weeks;
+  const total = { min: base.min + effort.min, max: base.max + effort.max };
+
   let code;
   let modifiers = [];
   let rationale;
+  // Whether the modifier is added to what is quoted. "Priced with its modifier"
+  // is what the classification has always said, but the duration and the band
+  // returned were the bare offer's — invisible while a modifier was one week,
+  // and a five-week lie once a Magento migration is priced properly.
+  let priced = false;
 
   if (activeTriggers.length > 0) {
     code = 'L';
     rationale = `L trigger(s): ${activeTriggers.map((t) => t.label).join(', ')}`;
+  } else if (total.max > offering.offers.M.duration_weeks.max) {
+    // The scope no longer fits inside an M. The test is the ceiling it has
+    // outgrown, not the floor of the next offer up: a scope of 10–13 weeks
+    // fits an M of 6–13 exactly, and quoting it as a 13–20 week L would
+    // over-quote work the engine itself estimated at ten.
+    code = 'L';
+    rationale = `Scope reaches ${total.min}–${total.max} weeks (${activeGates.map((g) => g.label).join(', ')}), beyond the M ceiling of ${offering.offers.M.duration_weeks.max}`;
   } else if (activeGates.length >= 2) {
     code = 'M';
     rationale = `${activeGates.length} scope gates active: ${activeGates.map((g) => g.label).join(', ')}`;
   } else if (activeGates.length === 1) {
     code = 'S';
-    modifiers = activeGates[0].modifier ? [activeGates[0].modifier] : [];
+    modifiers = adds.map((m) => m.id);
     rationale = `1 scope gate active: ${activeGates[0].label}`;
+    priced = true;
   } else {
     code = 'S';
     rationale = 'No scope gates active';
   }
 
   const offer = offering.offers[code];
+  const add = priced
+    ? adds.reduce((a, m) => ({
+      weeks: { min: a.weeks.min + (m.effort_weeks?.min ?? 0), max: a.weeks.max + (m.effort_weeks?.max ?? 0) },
+      price: { min: a.price.min + (m.price_add?.min ?? 0), max: a.price.max + (m.price_add?.max ?? 0) },
+    }), { weeks: { min: 0, max: 0 }, price: { min: 0, max: 0 } })
+    : { weeks: { min: 0, max: 0 }, price: { min: 0, max: 0 } };
+
   return {
     code,
     name: offer.name,
@@ -192,12 +296,15 @@ export function classifyOffer(doc) {
     l_triggers,
     modifiers,
     price_band: {
-      min: offer.price_band.min,
-      max: offer.price_band.max,
+      min: offer.price_band.min + add.price.min,
+      max: offer.price_band.max + add.price.max,
       currency: offering.currency,
       open_ended: offer.price_band.open_ended,
     },
-    duration_weeks: { ...offer.duration_weeks },
+    duration_weeks: { min: offer.duration_weeks.min + add.weeks.min, max: offer.duration_weeks.max + add.weeks.max },
+    // What the gates add on their own, kept so the proposal can show its work
+    // and so a reader can check the offer against the scope rather than take it.
+    scope_effort_weeks: total,
     rationale,
   };
 }

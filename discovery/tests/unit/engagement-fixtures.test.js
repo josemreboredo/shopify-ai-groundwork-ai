@@ -68,7 +68,15 @@ for (const { file, doc } of fixtures) {
 
       const gates    = activeIds(offer.scope_gates);
       const triggers = activeIds(offer.l_triggers);
-      const expected = triggers.length > 0 ? 'L' : gates.length >= 2 ? 'M' : 'S';
+      // Modelled here rather than imported, so this stays an independent check
+      // and not the engine agreeing with itself. The rule: an L trigger wins,
+      // then scope that outgrew the M ceiling, then the gate count. The effort
+      // is read from the fixture — a golden value — rather than recomputed,
+      // because two gates are now priced by tier and by count.
+      const reach = offer.scope_effort_weeks?.max ?? offering.offers.S.duration_weeks.max;
+      const expected = triggers.length > 0 ? 'L'
+        : reach > offering.offers.M.duration_weeks.max ? 'L'
+          : gates.length >= 2 ? 'M' : 'S';
       assert.equal(offer.code, expected, `active gates [${gates}], L triggers [${triggers}]`);
 
       const def = offering.offers[offer.code];

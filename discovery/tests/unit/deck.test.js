@@ -85,10 +85,10 @@ describe('client deck XML', () => {
   test('investment shows the offer band only; L is open-ended', () => {
     const doc = load('acme-watches.json');
     const { xml } = buildDeckXml(doc, backlogFor(doc));
-    assert.match(xml, /<price-band currency="EUR" from="65000" to="100000"\/>/);
+    assert.match(xml, /<price-band currency="CHF" from="65000" to="135000"\/>/);
 
     const luxury = recompute({ ...load('acme-watches.json'), brand: { positioning: 'luxury' } });
-    assert.match(buildDeckXml(luxury).xml, /<price-band currency="EUR" from="100000" open-ended="true"\/>/);
+    assert.match(buildDeckXml(luxury).xml, /<price-band currency="CHF" from="140000" open-ended="true"\/>/);
   });
 
   test('client sections never contain modifiers, price adds, effort, story points or commercial warnings', () => {
@@ -105,7 +105,7 @@ describe('client deck XML', () => {
       assert.doesNotMatch(client, /points="|price[-_]add|effort[-_]weeks|\+25%|11\.11/i);
       for (const mod of offering.modifiers) assert.ok(!client.includes(mod.id), mod.id);
     }
-    assert.deepEqual(single.offer.modifiers, ['+Migration']);
+    assert.deepEqual(single.offer.modifiers, ['+Migration (heavy)']);
     assert.ok(noRetainer.exits.items.some((i) => i.rule_id === '11.11'));
   });
 
@@ -114,7 +114,7 @@ describe('client deck XML', () => {
     const { xml } = buildDeckXml(single, backlogFor(single));
     const notes = xml.slice(xml.indexOf('<section id="consultant-notes"'));
     assert.match(notes, /audience="lead-consultant"/);
-    assert.match(notes, /<modifier id="\+Migration"/);
+    assert.match(notes, /<modifier id="\+Migration \(heavy\)"/);
     assert.match(notes, /<total-points>\d+<\/total-points>/);
     assertWellFormed(xml);
 
@@ -158,7 +158,7 @@ describe('helpers and CLI flow', () => {
     fs.writeFileSync(path.join(dir, 'engagement.json'), JSON.stringify(doc));
     const { written } = writeDeck({ clientDir: dir });
     assert.deepEqual(written.map((f) => path.basename(f)).sort(), ['discovery-deck.xml']);
-    assert.deepEqual(findLeaks('## Investment\nEUR 65,000–100,000', doc), []);
+    assert.deepEqual(findLeaks('## Investment\nCHF 65,000–135,000', doc), []);
     assert.deepEqual(findLeaks('Pricing includes the +Markets modifier', doc), ['modifier', '+Markets']);
   });
 });

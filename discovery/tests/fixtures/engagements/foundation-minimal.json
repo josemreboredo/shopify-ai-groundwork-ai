@@ -130,14 +130,18 @@
     "price_band": {
       "min": 40000,
       "max": 65000,
-      "currency": "EUR",
+      "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
       "min": 4,
       "max": 5
     },
-    "rationale": "No scope gate and no L trigger is active, so the engagement classifies as S — Ecommerce Foundation with no modifiers."
+    "rationale": "No scope gate and no L trigger is active, so the engagement classifies as S — Ecommerce Foundation with no modifiers.",
+    "scope_effort_weeks": {
+      "min": 4,
+      "max": 5
+    }
   },
   "markets": {
     "primary_markets": [

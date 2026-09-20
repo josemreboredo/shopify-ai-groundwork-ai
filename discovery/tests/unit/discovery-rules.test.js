@@ -60,7 +60,7 @@ describe('classification edge cases', () => {
 
   test('a single gate gives S with its modifier; no gates gives S without modifiers', () => {
     const doc = { ...base(), migration: { source_platform: 'magento' } };
-    assert.deepEqual([classifyOffer(doc).code, classifyOffer(doc).modifiers], ['S', ['+Migration']]);
+    assert.deepEqual([classifyOffer(doc).code, classifyOffer(doc).modifiers], ['S', ['+Migration (heavy)']]);
 
     const singleMarket = { ...base(), markets: { list: [{ code: 'CH', currency: 'CHF', price_strategy: 'base_currency' }] } };
     assert.deepEqual([classifyOffer(singleMarket).code, classifyOffer(singleMarket).modifiers], ['S', []]);
@@ -164,6 +164,85 @@ describe('exit rule edge cases', () => {
     const doc = { ...base, compliance: { gdpr_deletion_workflow: true }, checkout: { customisation: ['fully_custom_checkout_ui'] } };
     for (const item of evaluateExits(withOffer(doc)).items) {
       if (item.result !== 'WARN') assert.ok(item.resolution.owner);
+    }
+  });
+});
+
+describe('the offer follows the effort, not the gate count', () => {
+  // Calibrated 2026-09-20 against published DACH delivery data: Greenblut
+  // (150+ migrations) and Eshop Guide (300+ projects). Before it, the offering
+  // did not close against its own arithmetic — seven gates added up to 10–13
+  // weeks and were quoted as an M of 6–9.
+  const base = () => ({ schema_version: '1.0.0', meta: { client: { name: 'X', slug: 'x' }, source: 'questionnaire' } });
+  const markets = (...codes) => ({ markets: { list: codes.map((code) => ({ code, currency: 'CHF', price_strategy: 'base_currency' })) } });
+
+  test('a migration is priced by where the data comes from', () => {
+    // The published totals differ by a factor of two: WooCommerce 4–8 weeks,
+    // Shopware 8–12, Magento 10–14. One flat modifier charged them the same.
+    const tier = (source) => classifyOffer({ ...base(), migration: { source_platform: source } });
+    assert.equal(tier('woocommerce').scope_gates.migration.tier, 'light');
+    assert.equal(tier('shopware').scope_gates.migration.tier, 'medium');
+    assert.equal(tier('magento').scope_gates.migration.tier, 'heavy');
+    assert.equal(tier('sfcc').scope_gates.migration.tier, 'heavy');
+    // An unnamed platform is the middle case, not the cheapest.
+    assert.equal(tier('other').scope_gates.migration.tier, 'medium');
+
+    const light = tier('woocommerce').duration_weeks;
+    const heavy = tier('magento').duration_weeks;
+    assert.ok(heavy.max > light.max * 1.5, `heavy ${heavy.max}wk should dwarf light ${light.max}wk`);
+  });
+
+  test('markets are priced per market, so five no longer cost what two cost', () => {
+    const two = classifyOffer({ ...base(), ...markets('CH', 'DE') });
+    const five = classifyOffer({ ...base(), ...markets('CH', 'DE', 'FR', 'IT', 'AT') });
+    assert.ok(five.price_band.max > two.price_band.max,
+      `five markets (${five.price_band.max}) must cost more than two (${two.price_band.max})`);
+    assert.ok(five.duration_weeks.max > two.duration_weeks.max);
+  });
+
+  test('S with a modifier quotes the modifier, not the bare offer', () => {
+    // "Priced with its modifier" is what the classification always said. The
+    // duration and the band returned were the bare S — invisible at one week,
+    // a five-week understatement once a Magento migration is priced properly.
+    const bare = classifyOffer(base());
+    const withHeavy = classifyOffer({ ...base(), migration: { source_platform: 'magento' } });
+    assert.equal(withHeavy.code, 'S');
+    assert.ok(withHeavy.duration_weeks.max > bare.duration_weeks.max + 4, 'the weeks are added');
+    assert.ok(withHeavy.price_band.max > bare.price_band.max + 30000, 'and so is the price');
+  });
+
+  test('scope that outgrows the M ceiling becomes an L, with no L trigger', () => {
+    const heavy = classifyOffer({
+      ...base(),
+      ...markets('CH', 'DE', 'FR'),
+      migration: { source_platform: 'magento' },
+      b2b: { enabled: true },
+      integrations: [{ category: 'erp', connector: 'custom' }],
+    });
+    assert.equal(heavy.code, 'L');
+    assert.deepEqual(Object.entries(heavy.l_triggers).filter(([, t]) => t.active), [],
+      'it is an L on effort alone, with no qualitative trigger');
+    assert.ok(heavy.scope_effort_weeks.max > offering.offers.M.duration_weeks.max);
+  });
+
+  test('and scope that still fits an M stays an M', () => {
+    // The mirror of the rule above: four light gates are not an L just for
+    // being four. This is why the escalation counts weeks, not gates.
+    const light = classifyOffer({
+      ...base(),
+      ...markets('CH', 'DE'),
+      retail: { store_count: 2, pos: 'shopify_pos' },
+      integrations: [{ category: 'erp', connector: 'custom' }],
+      catalogue: { sku_count: 900, variant_options_max: 3 },
+    });
+    assert.equal(light.code, 'M');
+    assert.ok(light.scope_effort_weeks.max <= offering.offers.M.duration_weeks.max);
+  });
+
+  test('every offer band is in Swiss francs', () => {
+    assert.equal(offering.currency, 'CHF');
+    for (const doc of [base(), { ...base(), brand: { positioning: 'luxury' } }]) {
+      assert.equal(classifyOffer(doc).price_band.currency, 'CHF');
     }
   });
 });

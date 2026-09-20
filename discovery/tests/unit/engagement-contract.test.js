@@ -133,6 +133,13 @@ describe('offering traceability', () => {
     const modifierIds = new Set(offering.modifiers.map((m) => m.id));
     for (const g of offering.scope_gates) {
       if (g.modifier !== null) assert.ok(modifierIds.has(g.modifier), `gate ${g.id}: unknown modifier ${g.modifier}`);
+      // A gate priced by tier declares no single modifier, so it needs one per
+      // tier instead — otherwise a source platform resolves to nothing and the
+      // gate is silently free.
+      for (const tier of g.modifier_tiers ?? []) {
+        assert.ok(offering.modifiers.some((m) => m.gate === g.id && m.tier === tier),
+          `gate ${g.id}: no modifier for tier ${tier}`);
+      }
     }
     assert.deepEqual(
       [...schemaNodeAt('/offer/modifiers/*').enum].sort(),

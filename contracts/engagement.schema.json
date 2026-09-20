@@ -482,12 +482,15 @@
           "type": "array",
           "items": {
             "enum": [
-              "+Markets",
               "+B2B",
               "+Integration",
-              "+Migration",
-              "+SKU",
-              "+Retail"
+              "+Markets",
+              "+Migration (heavy)",
+              "+Migration (light)",
+              "+Migration (medium)",
+              "+MultiCurrency",
+              "+Retail",
+              "+SKU"
             ]
           },
           "uniqueItems": true
@@ -520,6 +523,23 @@
         },
         "rationale": {
           "type": "string"
+        },
+        "scope_effort_weeks": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Weeks the base offer plus the active scope gates add up to. The offer is chosen from this, not from the number of gates: a Magento migration and a 500-SKU catalogue are one gate each and differ by an order of magnitude.",
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "min",
+            "max"
+          ]
         }
       }
     },
@@ -3923,6 +3943,15 @@
         },
         "evidence": {
           "type": "string"
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "light",
+            "medium",
+            "heavy"
+          ],
+          "description": "How much of a project this gate is. Set for migration, from the source platform: WooCommerce is light, Shopware medium, Magento or a custom platform heavy — the published DACH durations differ by a factor of two."
         }
       }
     }
