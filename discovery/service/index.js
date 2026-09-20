@@ -154,7 +154,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
   function documentYield(session) {
     const entries = Object.values(session.provenance ?? {});
     return (session.documents ?? []).map((d) => {
-      const from = entries.filter((p) => typeof p.note === 'string' && p.note.startsWith(`Source: ${d.name}`));
+      // Exactly this document. `startsWith` let "RFP.pdf" absorb every answer
+      // cited to "RFP.pdf annex", and nothing on the page could show it.
+      const from = entries.filter((p) => typeof p.note === 'string'
+        && (p.note === `Source: ${d.name}` || p.note.startsWith(`Source: ${d.name},`) || p.note.startsWith(`Source: ${d.name} “`) || p.note.startsWith(`Source: ${d.name} —`)));
       const sections = new Set(from.map((p) => String(p.question_id ?? '').replace(/^Q/, '').split('.')[0]).filter(Boolean));
       return { ...d, answers: from.length, sections: sections.size, to_confirm: from.filter((p) => p.status === 'tbc').length };
     });
@@ -199,7 +202,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       go: p.go,
       route: p.route ?? null,
       coverage: p.coverage,
-      to_review: Object.values(session.provenance).filter((p) => p.status === 'tbc').length,
+      // Questions, not pointers. The spine said "3 to confirm" where Review said
+      // "1 answer waiting" and confirming it reported "3 answers confirmed" —
+      // three counts of two different units, none of them wrong on its own.
+      to_review: new Set(Object.values(session.provenance).filter((p) => p.status === 'tbc').map((p) => p.question_id).filter(Boolean)).size,
       // What the step spine reads. It renders on every page, so the counts travel
       // with the engagement rather than costing each page another call.
       documents: (session.documents ?? []).length,
@@ -237,8 +243,23 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     const commented = session.commented ?? {};
     if (q.id in commented) return { state: 'commented', note: commented[q.id] };
     if (q.maps_to.some((p) => isAnswered(session.answers, p))) {
-      const provenance = q.maps_to.map((p) => Object.entries(session.provenance).find(([k]) => k === p || k.startsWith(`${p}/`))?.[1]).find(Boolean);
-      return { state: 'answered', note: provenance?.note ?? '', to_confirm: provenance?.status === 'tbc', via: provenance?.via ?? null };
+      // Every pointer the question fills, not the first one that happens to have
+      // provenance. Fifteen questions fill two or three fields, and reading the
+      // row's state off one of them made a question with one field confirmed and
+      // two waiting render as "Answered", with no Confirm button, hidden from the
+      // to-confirm filter and out of the bulk card — while the counter that feeds
+      // the spine kept counting the two. Nothing on any screen named the
+      // question, and nothing could clear it.
+      const entries = q.maps_to.flatMap((p) => Object.entries(session.provenance)
+        .filter(([k]) => k === p || k.startsWith(`${p}/`))
+        .map(([, v]) => v));
+      const first = entries.find(Boolean);
+      return {
+        state: 'answered',
+        note: first?.note ?? '',
+        to_confirm: entries.some((e) => e?.status === 'tbc'),
+        via: first?.via ?? null,
+      };
     }
     if (q.id in session.tbc) return { state: 'tbc', note: session.tbc[q.id] };
     if (q.id in session.skipped) return { state: 'skipped', note: session.skipped[q.id] };
@@ -495,7 +516,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       }
       session.updated_at = today();
       await store.save(session);
-      return { ok: true, confirmed: waiting.length };
+      return { ok: true, confirmed: new Set(waiting.map(([, p]) => p.question_id).filter(Boolean)).size };
     },
 
     /**
@@ -734,11 +755,15 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
           // decides what is actually sent, because it is their name on the mail.
           questions: list.map((q, i) => {
             const kept = decidedBefore(q.covers);
+            // The question's own fields first, so a payload cannot carry a status
+            // or a decider past the lines that compute them. Zod strips unknown
+            // keys on the connector today, and the guarantee should not rest on
+            // that: a forged `accepted` is a question sent to a client.
             return {
+              ...q,
               id: `q${i + 1}`,
               status: kept?.status ?? 'proposed',
               ...(kept ? { decided_at: kept.decided_at, decided_by: kept.decided_by, carried_over: true } : {}),
-              ...q,
             };
           }),
           saved_at: today(),

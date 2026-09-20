@@ -1,6 +1,7 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader } from '../components/question.jsx';
+import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
+import { ServiceError } from '../../../discovery/service/index.js';
 import { Radar } from '../components/radar.jsx';
 import { pageTitle } from '../brand.js';
 
@@ -17,9 +18,16 @@ export const meta = ({ params }) => [{ title: pageTitle('Go/No-Go support', para
 export async function loader({ request, params }) {
   const user = await requireUser(request);
   try {
-    return await discovery().getGoNoGo(user, params.client);
+    return { ...(await discovery().getGoNoGo(user, params.client)), blocked: null };
   } catch (err) {
-    throw serviceFailure(err);
+    // The blockers say which questions are missing and link to them. Rethrowing
+    // sent the architect a bare "Some answers are still missing" on the page a
+    // bid decision is taken from, while two sibling steps listed them.
+    if (!(err instanceof ServiceError)) throw serviceFailure(err);
+    // The engagement itself still loads, so the page keeps its header and its
+    // spine rather than dropping the consultant onto a bare error.
+    const { engagement } = await discovery().getSummary(user, params.client);
+    return { engagement, blocked: { error: err.message, errors: err.errors ?? [], blockers: err.blockers ?? [] } };
   }
 }
 
@@ -36,7 +44,29 @@ const OWNER = { agent: 'Claude Code agent', developer: 'Developer', consultant: 
 const money = (b) => (b ? `${b.currency ?? ''} ${Math.round(b.min / 1000)}k–${Math.round(b.max / 1000)}k${b.open_ended ? '+' : ''}`.trim() : null);
 
 export default function GoNoGo({ loaderData }) {
-  const { engagement, go_no_go: g } = loaderData;
+  const { engagement, go_no_go: g, blocked } = loaderData;
+  if (blocked) {
+    return (
+      <main>
+        <EngagementHeader engagement={engagement} eyebrow="Go/No-Go support" />
+        <section className="card start blocked">
+          <p className="question">{blocked.error}</p>
+          <p className="muted">There is nothing for this desk to weigh until these are recorded.</p>
+          <ul className="blockers">
+            {(blocked.blockers ?? []).map((b) => (
+              <li key={b.what}>
+                <strong>{b.what}</strong>
+                <p className="muted"><WithQuestionLinks text={b.why} client={engagement.client} /></p>
+              </li>
+            ))}
+            {!(blocked.blockers ?? []).length && blocked.errors.map((e) => (
+              <li key={e}><p className="muted"><WithQuestionLinks text={e} client={engagement.client} /></p></li>
+            ))}
+          </ul>
+        </section>
+      </main>
+    );
+  }
   const client = engagement.client;
   const r = g.recommendation;
   const tone = TONE[r.verdict] ?? 'flag';

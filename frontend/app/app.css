@@ -498,6 +498,8 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .steps-spine { display: flex; list-style: none; padding: 0; margin: 0; gap: 22px; flex: 1 1 auto; flex-wrap: wrap; }
 .views { margin-left: auto; flex: 0 0 auto; }
 .step-hint { max-width: 22ch; }
+/* Desktop shows the whole spine; the toggle is a phone control. */
+.spine-toggle { display: none; }
 .steps-spine a {
   position: relative; display: grid; grid-template-columns: auto 1fr; column-gap: 8px;
   padding: 10px 0 15px; text-decoration: none; color: rgba(255, 255, 255, 0.55);
@@ -836,11 +838,11 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 }
 @media (max-width: 760px) {
   .toc { columns: 1; }
-  .topbar { flex-wrap: wrap; gap: 16px 20px; padding: 14px 16px; }
+  .topbar { flex-wrap: wrap; gap: 14px 16px; padding: 14px 16px; }
   /* One button instead of three lines of links. The footer keeps the full index. */
   .menu-toggle {
-    display: inline-flex; align-items: center; justify-content: center; margin-left: auto; order: 2;
-    width: 46px; height: 46px; padding: 0; background: transparent;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; padding: 0; background: transparent; flex: 0 0 auto;
     border: 2px solid var(--red); border-radius: 999px; color: #fff; cursor: pointer;
   }
   .menu-toggle[aria-expanded='true'] { background: var(--red); }
@@ -854,16 +856,21 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
   .doors { grid-template-columns: 1fr; gap: 20px; }
   .record-cards { display: grid; gap: 12px; list-style: none; padding: 0; margin: 14px 0 0; }
   .record-table { display: none; }
-  /* The spine was six labelled steps with hints, stacked — two screens of
-     navigation before a word of work. On a phone it says where you are, in one
-     line, and keeps the others as numbered stops you can still reach. */
-  .steps-spine { gap: 6px 10px; align-items: center; }
-  .steps-spine .current { flex: 1 1 100%; order: -1; }
-  .steps-spine li:not(.current) .step-label, .steps-spine li:not(.current) .step-hint {
-    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  /* Closed, the spine is where you are. Open, it is the whole job, labelled —
+     a row of bare numbers told nobody what step four was. */
+  .spine-nav { width: 100%; }
+  .spine-toggle {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 0;
+    background: none; border: 0; color: rgba(255, 255, 255, 0.72); cursor: pointer;
+    font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
   }
-  .steps-spine li:not(.current) a { min-width: 44px; justify-content: center; padding: 8px 0 10px; }
-  .steps-spine li:not(.current) .step-n { font-size: 0.95rem; }
+  .spine-caret { width: 8px; height: 8px; border-right: 2px solid var(--red); border-bottom: 2px solid var(--red); transform: rotate(45deg) translate(-2px, -2px); }
+  .spine-toggle[aria-expanded='true'] .spine-caret { transform: rotate(-135deg) translate(-3px, -3px); }
+  .steps-spine { flex-direction: column; align-items: stretch; gap: 0; }
+  .steps-spine li { border-top: 1px solid rgba(255, 255, 255, 0.14); }
+  .steps-spine li:first-child { border-top: 0; }
+  .spine-nav:not(.open) .steps-spine li:not(.current) { display: none; }
+  .steps-spine a { padding: 12px 0; }
   .step-hint { max-width: none; }
   .door { padding: 22px 18px; }
   .row-actions { white-space: normal; }

@@ -171,7 +171,15 @@ describe('clarification questions (RFP)', () => {
     assert.equal(saved.clarifications.questions.length, 1);
     assert.equal(saved.clarifications.by, 'lc-one');
     assert.equal(saved.clarifications.saved_at, TODAY);
-    assert.match(renderClarificationsMarkdown(saved.engagement, saved.clarifications), /Why we ask/);
+    // Saved is not sent. The fixture carries status: 'accepted' and the service
+    // ignores it — a payload that could set its own status is a question in
+    // front of a client on an approval nobody gave.
+    assert.equal(saved.clarifications.questions[0].status, 'proposed');
+    assert.ok(!/Why we ask/.test(renderClarificationsMarkdown(saved.engagement, saved.clarifications)), 'nothing to send yet');
+
+    await svc.decideClarifications(consultant, 'demo-client', { id: 'q1', status: 'accepted' });
+    const decided = await svc.getClarifications(consultant, 'demo-client');
+    assert.match(renderClarificationsMarkdown(decided.engagement, decided.clarifications), /Why we ask/);
   });
 
   test('an engagement with nothing recorded is told to read the RFP in first, not handed an empty list', async () => {

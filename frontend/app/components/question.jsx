@@ -35,11 +35,27 @@ export function Vocabularies({ vocabularies }) {
 export function EngagementNav({ engagement }) {
   const client = engagement.client;
   const to = (path) => `/engagements/${client}${path ? `/${path}` : ''}`;
+  const steps = stepsFor(engagement);
+  const current = steps.find((s) => s.state === 'current') ?? steps[steps.length - 1];
+  // On a phone the spine showed the current step and then five bare numbers:
+  // "04" tells you nothing about what step four is. Closed, it shows where you
+  // are; open, it shows the job. The count is on the button either way.
+  const [open, setOpen] = useState(false);
   return (
     <div className="wayfinder">
-      <nav aria-label="Steps" className="spine-nav">
-      <ol className="steps-spine">
-        {stepsFor(engagement).map((step) => (
+      <nav aria-label="Steps" className={open ? 'spine-nav open' : 'spine-nav'}>
+      <button
+        type="button"
+        className="spine-toggle"
+        aria-expanded={open}
+        aria-controls="spine-steps"
+        onClick={() => setOpen((v) => !v)}
+      >
+        Step {current?.n ?? 1} of {steps.length}
+        <span aria-hidden="true" className="spine-caret" />
+      </button>
+      <ol className="steps-spine" id="spine-steps">
+        {steps.map((step) => (
           <li key={step.path || 'start'} className={step.state}>
             <NavLink to={to(step.path)} end={step.path === ''}>
               <span className="step-n" aria-hidden="true">{String(step.n).padStart(2, '0')}</span>

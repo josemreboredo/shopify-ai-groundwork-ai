@@ -60,40 +60,35 @@ export async function loader({ request }) {
 
 /**
  * Six uppercase links wrapped onto three lines, so every page on a phone opened
- * with navigation. Below 760px they live behind one button; the footer keeps the
- * full index for anyone whose JavaScript never arrives.
+ * with navigation. Below 760px they live behind one button — to the left of the
+ * wordmark, where a phone expects it — and the footer keeps the full index for
+ * anyone whose JavaScript never arrives.
  */
-function TopNav({ pages }) {
-  const [open, setOpen] = useState(false);
-  const { pathname } = useLocation();
-  useEffect(() => setOpen(false), [pathname]);
+function MenuToggle({ open, onToggle }) {
   return (
-    <>
-      <button
-        type="button"
-        className="menu-toggle"
-        aria-expanded={open}
-        aria-controls="topnav"
-        aria-label={open ? 'Close menu' : 'Menu'}
-        onClick={() => setOpen((v) => !v)}
-      >
-        {/* The word is gone from the screen, not from the accessibility tree:
-            the button keeps its name in aria-label, and the icon is decoration. */}
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" focusable="false">
-          {open
-            ? <><path d="M6.5 6.5l11 11" /><path d="M17.5 6.5l-11 11" /></>
-            : <><path d="M3.5 7h17" /><path d="M3.5 12h17" /><path d="M3.5 17h17" /></>}
-        </svg>
-      </button>
-      <nav id="topnav" className={open ? 'topnav open' : 'topnav'} aria-label="Main">
-        {pages.map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
-      </nav>
-    </>
+    <button
+      type="button"
+      className="menu-toggle"
+      aria-expanded={open}
+      aria-controls="topnav"
+      aria-label={open ? 'Close menu' : 'Menu'}
+      onClick={onToggle}
+    >
+      {/* The word is gone from the screen, not from the accessibility tree. */}
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" focusable="false">
+        {open
+          ? <><path d="M6.5 6.5l11 11" /><path d="M17.5 6.5l-11 11" /></>
+          : <><path d="M3.5 7h17" /><path d="M3.5 12h17" /><path d="M3.5 17h17" /></>}
+      </svg>
+    </button>
   );
 }
 
 export function Layout({ children }) {
   const root = useRouteLoaderData('root');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+  useEffect(() => setMenuOpen(false), [pathname]);
   return (
     <html lang="en">
       <head>
@@ -105,8 +100,11 @@ export function Layout({ children }) {
       <body>
         <a className="skip" href="#main">Skip to content</a>
         <header className="topbar">
+          <MenuToggle open={menuOpen} onToggle={() => setMenuOpen((v) => !v)} />
           <Link to="/" className="brand" aria-label={`${PRODUCT} — home`}><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
-          <TopNav pages={headerPages(root?.user)} />
+          <nav id="topnav" className={menuOpen ? 'topnav open' : 'topnav'} aria-label="Main">
+            {headerPages(root?.user).map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
+          </nav>
           {root?.user ? (
             <Form method="post" action="/logout" className="user">
               <span className="who">{root.user.login} · {root.user.role}</span>

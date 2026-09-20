@@ -38,7 +38,10 @@ function decisions() {
 }
 
 /** `/markets/list/*\/currency` as a test over the concrete pointers in provenance. */
-const matcher = (input) => new RegExp(`^${input.split('*').map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+')}`);
+// Anchored at both ends, allowing only a deeper path. Unanchored, /business/budget
+// matched the unrelated pointer /business/budget_note, so one stray unconfirmed
+// answer could mark a decision "not yet confirmed" on evidence that was not its own.
+const matcher = (input) => new RegExp(`^${input.split('*').map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+')}(/|$)`);
 
 /**
  * Settled means the engine has what it needs and a person has stood behind it.
@@ -112,8 +115,6 @@ export function readiness(doc, state = {}) {
     decisions: {
       settled: settled.length,
       total: all.length,
-      // Split so the bar says which gaps stop a price and which are assumable.
-      blocking: open.filter((d) => d.kind !== 'trigger' && (d.why === 'read from a document and not yet confirmed' || stops.length)).length,
       open: open.map(({ kind, id, label, why, missing }) => ({ kind, id, label, why, missing: missing ?? [] })),
     },
     counts: {

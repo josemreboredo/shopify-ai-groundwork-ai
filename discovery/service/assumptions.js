@@ -164,14 +164,21 @@ export function repliesReceived(doc, clarifications) {
       id: q.id,
       question: q.question,
       covers,
+      // A question resting on nothing can never be satisfied, so it would sit in
+      // "waiting" for ever and print "fills " with nothing after it.
+      unanswerable: covers.length === 0,
       answered: covers.length > 0 && back.length === covers.length,
       partial: back.length > 0 && back.length < covers.length,
       outstanding: covers.filter((c) => !answered.has(c)),
     };
   });
+  const back = rows.filter((r) => r.answered).length;
   return {
     asked: rows.length,
-    back: rows.filter((r) => r.answered).length,
+    back,
+    // Nothing asked is not everything answered. With no rows at all, "all back"
+    // is true of the empty set and rendered as a green "All 0 answered".
+    all_back: rows.length > 0 && back === rows.length,
     waiting: rows.filter((r) => !r.answered),
     rows,
   };
