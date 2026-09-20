@@ -141,6 +141,23 @@ export default function OfferingSegment({ loaderData }) {
                     </summary>
                     <p><strong>The exact rule.</strong> {g.condition}</p>
                     {g.adds ? <p>{g.adds}</p> : null}
+                    {/* A gate priced by tier shows every tier. One headline
+                        number is right for a third of engagements and wrong by
+                        a factor of five for the rest. */}
+                    {g.tiers ? (
+                      <ul className="tiers">
+                        {g.tiers.map((t) => (
+                          <li key={t.tier}>
+                            <strong>{t.tier}</strong>
+                            <span className="muted small">{t.adds}</span>
+                            <span className="tier-cost">
+                              +{weeks(t.effort_weeks)} week{t.effort_weeks.max === 1 ? '' : 's'}
+                              {view.pricing && t.price_add ? ` · ${band(t.price_add, currency)}` : ''}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
                   </details>
                 </li>
               ))}

@@ -73,18 +73,45 @@ export function offeringView({ pricing = false } = {}) {
     approach: APPROACH[code],
   }));
 
-  const modifiers = new Map(offering.modifiers.map((m) => [m.gate, m]));
+  // A gate can have more than one modifier now: a migration is priced by where
+  // the data comes from. Keyed by gate id, a Map kept only the last one, so
+  // every page showed a migration as the heavy tier — five to seven weeks for a
+  // WooCommerce store the engine prices at one to two.
+  const byGate = new Map();
+  for (const m of offering.modifiers) byGate.set(m.gate, [...(byGate.get(m.gate) ?? []), m]);
+
   const gates = offering.scope_gates.map((g) => {
-    const m = modifiers.get(g.id);
+    const all = byGate.get(g.id) ?? [];
+    const [first] = all;
+    if (!first) return { id: g.id, label: g.label, condition: g.condition };
+    // The headline figure spans every tier, so a gate never claims to cost more
+    // than its cheapest case or less than its dearest.
+    const effort = {
+      min: Math.min(...all.map((m) => m.effort_weeks.min)),
+      max: Math.max(...all.map((m) => m.effort_weeks.max)),
+    };
+    const price = {
+      min: Math.min(...all.map((m) => m.price_add.min)),
+      max: Math.max(...all.map((m) => m.price_add.max)),
+    };
     return {
       id: g.id,
       label: g.label,
       condition: g.condition,
-      ...(m ? {
-        modifier: m.id,
-        adds: m.description,
-        effort_weeks: m.effort_weeks,
-        ...(pricing ? { price_add: money(m.price_add) } : {}),
+      modifier: all.length === 1 ? first.id : null,
+      adds: all.length === 1 ? first.description : null,
+      effort_weeks: effort,
+      ...(pricing ? { price_add: money(price) } : {}),
+      // Every tier, named, so a consultant can see which case they are in
+      // rather than read one number that is right for a third of engagements.
+      ...(all.length > 1 ? {
+        tiers: all.map((m) => ({
+          tier: m.tier,
+          label: m.id,
+          adds: m.description,
+          effort_weeks: m.effort_weeks,
+          ...(pricing ? { price_add: money(m.price_add) } : {}),
+        })),
       } : {}),
     };
   });

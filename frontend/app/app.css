@@ -1319,3 +1319,15 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 .output-group li { padding: 14px 0; border-top: 1px solid var(--line-soft); display: grid; gap: 3px; }
 .output-group li:first-child { border-top: 0; }
 .output-group strong { font-size: 1rem; }
+
+/* A gate priced by tier shows its tiers. Migration is the first: a WooCommerce
+   store and a Magento estate are one gate each and differ by a factor of five,
+   and the page used to print the heavy figure for both. */
+.tiers { list-style: none; padding: 0; margin: 12px 0 0; }
+.tiers > li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--line-soft); }
+.tiers > li strong { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-ink); }
+.tiers .tier-cost { font-size: 0.82rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) {
+  .tiers > li { grid-template-columns: minmax(0, 1fr); }
+  .tiers .tier-cost { justify-self: start; }
+}
