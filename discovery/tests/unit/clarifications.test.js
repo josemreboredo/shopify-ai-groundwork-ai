@@ -35,7 +35,10 @@ describe('clarification questions (RFP)', () => {
   test('the engine asks only about unknowns that move the proposal, grouped by subject', () => {
     const topics = clarificationTopics(acme());
     assert.ok(topics.length > 0, 'an engagement with open items has something worth asking');
-    assert.ok(topics.length <= 6, 'a bid gets a handful of questions, not a questionnaire');
+    // No ceiling here on purpose. A constant deciding how many questions matter
+    // was truncating topics that move the price into assumptions nobody chose;
+    // the Lead Consultant is the ceiling, and every cut they make is recorded.
+    assert.ok(topics.every((t) => t.changes.length), 'but nothing that moves nothing gets in');
     for (const topic of topics) {
       assert.ok(topic.covers.length >= 1, `${topic.topic} covers at least one discovery question`);
       assert.ok(topic.changes.length >= 1, `${topic.topic} says what the answer changes — that is the whole entry condition`);
@@ -68,15 +71,21 @@ describe('clarification questions (RFP)', () => {
     }
   });
 
-  test('a topic that only moves a number waits until nothing bigger is open', () => {
+  test('what the documents never covered is a candidate too, not only what the engine noted', () => {
     const doc = acme();
-    const topics = clarificationTopics(doc);
-    const high = topics.filter((t) => t.impact === 'high');
-    if (high.length >= 3) {
-      assert.equal(topics.length, high.length, 'with three shape-changing topics open, a bid does not also ask about the plan or the run cost');
-    } else {
-      assert.ok(topics.length >= Math.min(3, high.length), 'with little open, the next best topics are still worth asking');
-    }
+    // On a bid the Q&A runs before the approach exists, so open_items is empty
+    // and the topics used to come almost entirely from the topology engine. A
+    // required question the RFP never touched was neither asked nor assumed.
+    const withoutApproach = structuredClone(doc);
+    delete withoutApproach.approach;
+    const before = clarificationTopics(doc).map((t) => t.topic).sort();
+    const after = clarificationTopics(withoutApproach).map((t) => t.topic).sort();
+    assert.ok(after.length >= before.length - 1, 'a bid sees essentially what a discovery sees');
+    assert.ok(after.length > 3, 'and far more than the topology engine alone produced');
+  });
+
+  test('"what the document did not cover" needs a document — an empty engagement asks nothing', () => {
+    assert.deepEqual(clarificationTopics({}), [], 'nobody drafts questions for an RFP no one has opened');
   });
 
   test('the questions are ordered by how much of the proposal each one unlocks', () => {
@@ -91,10 +100,6 @@ describe('clarification questions (RFP)', () => {
     assert.equal(brief.topics[0].impact, 'high');
     assert.ok(Array.isArray(brief.cannot_price_until_answered));
     assert.ok(!brief.cannot_price_until_answered.some((i) => /plan price/i.test(i)), 'Shopify plan prices are not in this repository, so they are never listed as a missing input');
-  });
-
-  test('an engagement with nothing open asks nothing at all', () => {
-    assert.deepEqual(clarificationTopics({}), []);
   });
 
   test('the document that goes to the client carries the question and the trade-off, and nothing else', () => {

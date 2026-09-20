@@ -21,6 +21,7 @@
  */
 
 import { questionBank } from '../../schema/index.js';
+import { answeredQuestions } from './knowledge.js';
 import { runCostFor } from './economics.js';
 
 const BY_ID = new Map(questionBank.questions.map((q) => [q.id, q]));
@@ -34,9 +35,6 @@ const MOVES = {
   cost: 'what the solution costs to run',
   risk: 'a risk we would otherwise have to price for',
 };
-
-/** Below this many shape-changing topics, the next best ones are worth asking anyway. */
-const FLOOR = 3;
 
 /** An unknown worth money: it feeds a gate, a rule, a plan requirement or the topology. */
 function movesWhat(question, doc) {
@@ -70,6 +68,32 @@ function unknowns(doc) {
   for (const a of doc.markets?.topology?.assumptions ?? []) {
     if (a.question_id) add(a.question_id, a.impact_if_wrong, { assumed: a.assumed });
   }
+
+  // Everything the document simply never covered.
+  //
+  // The three sources above are the engine's own notes, and on a bid two of them
+  // are empty: open_items is written into the approach, and the approach is
+  // drafted *after* this step. So the questions Merkle sent on an RFP came almost
+  // entirely from the market-topology engine, and a required question the RFP
+  // never touched — B2B, the migration, an integration — was neither asked nor
+  // assumed. It just disappeared, which is the one outcome this whole step exists
+  // to prevent.
+  //
+  // An unanswered question earns its place here on the same terms as everything
+  // else: movesWhat drops it below if it moves nothing.
+  //
+  // Only once something has been read, though: "what the document did not cover"
+  // means nothing until there is a document. On an empty engagement every
+  // question is unanswered, and without this guard the step would happily draft
+  // questions for a client whose RFP nobody has opened.
+  const answered = new Set(answeredQuestions(doc).map((q) => q.id));
+  if (answered.size) {
+    for (const q of questionBank.questions) {
+      if (answered.has(q.id) || out.has(q.id)) continue;
+      add(q.id, q.why_it_matters ?? q.teach?.why ?? 'Not covered by the documents');
+    }
+  }
+
   return [...out.values()];
 }
 
@@ -81,7 +105,7 @@ function unknowns(doc) {
  * @param {{ max?: number }} [options]
  * @returns {object[]}
  */
-export function clarificationTopics(doc, { max = 6 } = {}) {
+export function clarificationTopics(doc, { max = Infinity } = {}) {
   // Straight from the question bank, not from the verified knowledge for this
   // engagement: that only covers questions the client has already answered, and
   // every question here is unanswered by definition.
@@ -154,13 +178,14 @@ export function clarificationTopics(doc, { max = 6 } = {}) {
     ? (b.covers.length - a.covers.length) || (b.moves.length - a.moves.length)
     : a.impact === 'high' ? -1 : 1));
 
-  // A bid asks about what changes the shape of the solution, and only reaches for
-  // a number when nothing bigger is open. Send a client seven questions and the
-  // three that mattered are read with the same weight as the four that did not —
-  // which is the opposite of what a short, considered list is for.
-  const high = ordered.filter((t) => t.impact === 'high');
-  const chosen = high.length >= FLOOR ? high : ordered.slice(0, Math.max(FLOOR, high.length));
-  return chosen.slice(0, max).map(({ moves, ...topic }) => topic);
+  // Everything that moves the proposal, ranked — and no constant deciding how
+  // many that is. A floor of three and a ceiling of six were numbers this file
+  // chose: asking three because the constant says three is the form the whole
+  // step was written to avoid, and cutting at six dropped topics that move the
+  // price into assumptions nobody decided to make. The Lead Consultant is the
+  // ceiling now. They cut, and every cut is recorded as an assumption with what
+  // it costs to be wrong — which is a decision, where a silent truncation was not.
+  return ordered.slice(0, max).map(({ moves, ...topic }) => topic);
 }
 
 /**
@@ -170,7 +195,7 @@ export function clarificationTopics(doc, { max = 6 } = {}) {
  *
  * @param {object} doc @param {{ max?: number }} [options]
  */
-export function clarificationBrief(doc, { max = 6 } = {}) {
+export function clarificationBrief(doc, { max = Infinity } = {}) {
   const topics = clarificationTopics(doc, { max });
   const cost = runCostFor(doc);
   return {

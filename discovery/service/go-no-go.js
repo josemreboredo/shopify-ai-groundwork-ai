@@ -152,14 +152,20 @@ function recommend({ documents, answered, unconfirmed, openTopics, stops, cannot
   }
 
   // 4 — open topics that move the price, but that we could assume around.
-  if (openTopics.length > 2) {
-    because.push(`${openTopics.length} topics are still open that move the offer, the plan, the store topology or the cost: ${openTopics.map((t) => t.title).join(', ')}.`);
+  //
+  // Counted by the ones that change the *shape* of the solution. The raw total
+  // is now everything the documents never covered, which on any real RFP is
+  // several pages' worth — a threshold on that number would read "ask" forever
+  // and stop meaning anything.
+  const shaping = openTopics.filter((t) => t.impact === 'high');
+  if (shaping.length > 2) {
+    because.push(`${shaping.length} topics are still open that change the shape of the solution: ${shaping.map((t) => t.title).join(', ')}${openTopics.length > shaping.length ? `, with ${openTopics.length - shaping.length} smaller ones behind them` : ''}.`);
     return {
       verdict: 'go, but ask',
       headline: 'We can price this, and the price would rest on more assumptions than it should.',
       because,
       before_you_go: [
-        `Send the questions on the ${openTopics.length} topics above before the price is committed.`,
+        `Send the questions on the ${shaping.length} topics above before the price is committed.`,
         `Anything left unanswered becomes one of the ${assumptions} assumptions the proposal states.`,
       ],
     };
