@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
+import { EngineReadout, EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 import { offerStanding } from '../../../discovery/service/summary.js';
 import { processOf } from '../../../discovery/service/process.js';
@@ -275,6 +275,8 @@ export default function Summary({ loaderData }) {
 
       {/* Navigation, a download and a count in one undifferentiated micro-row.
           They are three different offers and read as one. */}
+      <EngineReadout preview={p} />
+
       <h2>Elsewhere</h2>
       <p>
         <Link to={`/engagements/${client}/review`}>Every answer</Link> ·{' '}

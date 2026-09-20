@@ -135,11 +135,16 @@ li::marker { color: var(--red); }
 
 /* Surfaces */
 .layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 28px; align-items: start; }
-/* The engine panel is a discovery's; a bid reads its documents on Go/No-Go. With
-   nothing in the second column the grid still held it open, so the one page
-   that shows what a document produced ran at 60% of the width of every other
-   page in the same record. */
+/* The engine's reading moved to "Where it stands", so the interview is one
+   column: a table question with eight fields was wrapping at 60% of the screen
+   to leave room for a panel restating what that page says in full. */
 .layout.alone { grid-template-columns: minmax(0, 1fr); }
+.engine-readout { background: var(--panel); border-top: 3px solid var(--red); padding: 22px 24px 24px; margin-top: 34px; }
+.engine-readout h2 { margin-top: 0; }
+.engine-readout h3 { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 22px 0 8px; }
+.engine-readout ul { padding-left: 0; list-style: none; margin: 4px 0; }
+.engine-readout li { margin: 5px 0; font-size: 0.9rem; padding-left: 16px; position: relative; }
+.engine-readout li::before { content: ''; position: absolute; left: 0; top: 8px; width: 7px; height: 7px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 .card { border: 1px solid var(--line); border-radius: 0; padding: 26px 28px; margin-bottom: 20px; background: #fff; }
 .card > * + * { margin-top: 14px; }
 .card > p + p { margin-top: 8px; }

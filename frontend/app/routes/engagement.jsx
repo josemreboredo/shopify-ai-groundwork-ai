@@ -5,7 +5,7 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
-import { EngagementErrorBoundary, EngagementHeader, PreviewPanel, QuestionCard, Vocabularies } from '../components/question.jsx';
+import { EngagementErrorBoundary, EngagementHeader, QuestionCard, Vocabularies } from '../components/question.jsx';
 import { processMeta } from '../../../discovery/service/process.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
 
@@ -224,7 +224,7 @@ export default function Engagement({ loaderData, actionData }) {
           ? `${documents.length} document${documents.length === 1 ? '' : 's'} read · ${toConfirm} answer${toConfirm === 1 ? '' : 's'} to confirm · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at}`
           : `${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${engagement.coverage?.required_answered ?? 0} of ${engagement.coverage?.required_total ?? 0} required answered${next.remaining ? ` · ${next.remaining} questions left in this depth` : ''}`}
       />
-      <div className={bid ? 'layout alone' : 'layout'}>
+      <div className="layout alone">
         <div>
           {next.consent_required ? (
             <p className="error">Record the client’s consent for AI processing before any other answer.</p>
@@ -327,7 +327,6 @@ export default function Engagement({ loaderData, actionData }) {
             </>
           ) : null}
         </div>
-        {bid ? null : <PreviewPanel preview={preview} />}
       </div>
     </main>
   );

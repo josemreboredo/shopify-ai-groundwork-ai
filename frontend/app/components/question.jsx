@@ -463,14 +463,24 @@ export function QuestionCard({ question, actionData, busy, values = {}, note = '
 const RESULT_CLASS = { STOP: 'stop', FLAG: 'flag', WARN: 'warn' };
 export const resultClass = (result) => RESULT_CLASS[result] ?? '';
 
-export function PreviewPanel({ preview }) {
+/**
+ * What the answers have moved: the gates, the triggers, the rules that fired and
+ * the apps they point to.
+ *
+ * It was a column beside the questions, which cost the questions a third of the
+ * screen — a table question with eight fields wrapped at 60% width so that a
+ * panel could restate what "Where it stands" says in full. The reading belongs
+ * on that page; the interview is for asking.
+ */
+export function EngineReadout({ preview }) {
   const signals = Object.entries(preview.app_signals ?? {}).filter(([, reasons]) => reasons.length);
   // An empty record classifies as the smallest offer and reads GO, because no
   // gate has fired. The panel said so beside a questionnaire nobody had started.
   const standing = offerStanding(preview);
   return (
-    <aside className="panel">
-      <h2>Offer</h2>
+    <section className="engine-readout">
+      <h2>What the answers move</h2>
+      <h3>Offer</h3>
       {standing.unknown ? (
         <>
           <p><strong>Not classified yet</strong></p>
@@ -521,6 +531,6 @@ export function PreviewPanel({ preview }) {
           <ul>{signals.map(([area, reasons]) => <li key={area}>{words(area)}: {reasons.join('; ')}</li>)}</ul>
         </>
       ) : null}
-    </aside>
+    </section>
   );
 }
