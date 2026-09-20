@@ -559,6 +559,10 @@ h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; tex
 .radar-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--ink); }
 .radar-label.idle { fill: var(--muted); font-weight: 400; }
 .radar-label.beyond { fill: var(--red-ink); }
+/* Nothing said either way — not a zero, and it must not read as one. */
+.radar-label.unknown { fill: var(--warn); font-weight: 700; }
+.radar-unknown { fill: #fff; stroke: var(--warn); stroke-width: 2; stroke-dasharray: 2 2; }
+.radar-key.unknown { background: #fff; border: 2px dashed var(--warn); border-radius: 50%; width: 11px; height: 11px; }
 .radar figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .radar-key { width: 14px; height: 10px; display: inline-block; }
 .radar-key.covered { background: var(--panel); border: 1px dashed var(--muted); }

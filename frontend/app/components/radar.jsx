@@ -53,6 +53,14 @@ export function Radar({ axes, max = 2, size = 320 }) {
           return <line key={a.label} className="radar-spoke" x1={cx} y1={cy} x2={x} y2={y} />;
         })}
 
+        {/* An axis with nothing behind it is not a zero. Drawing it as one told a
+            reader the document had settled something it never mentioned. */}
+        {axes.map((a, i) => {
+          if (a.known !== false) return null;
+          const [x, y] = point(cx, cy, radius, i, n, 1, max);
+          return <circle key={`unknown-${a.label}`} className="radar-unknown" cx={x} cy={y} r={5} />;
+        })}
+
         {/* What a standard offer covers, and what this engagement actually is. */}
         <path className="radar-envelope" d={path(covered)} />
         <path className="radar-shape" d={path(shape)} />
@@ -61,8 +69,8 @@ export function Radar({ axes, max = 2, size = 320 }) {
           const [x, y] = point(cx, cy, radius + 26, i, n, max, max);
           const anchor = Math.abs(x - cx) < 6 ? 'middle' : x > cx ? 'start' : 'end';
           return (
-            <text key={a.label} className={`radar-label ${a.level === 2 ? 'beyond' : a.level === 0 ? 'idle' : ''}`} x={x} y={y} textAnchor={anchor} dominantBaseline="middle">
-              {a.label}
+            <text key={a.label} className={`radar-label ${a.level === 2 ? 'beyond' : a.known === false ? 'unknown' : a.level === 0 ? 'idle' : ''}`} x={x} y={y} textAnchor={anchor} dominantBaseline="middle">
+              {a.label}{a.known === false ? ' ?' : ''}
             </text>
           );
         })}
@@ -70,6 +78,7 @@ export function Radar({ axes, max = 2, size = 320 }) {
       <figcaption>
         <span className="radar-key covered" /> What our offers cover
         <span className="radar-key shape" /> This bid
+        {axes.some((a) => a.known === false) ? <><span className="radar-key unknown" /> Nothing said either way</> : null}
       </figcaption>
     </figure>
   );

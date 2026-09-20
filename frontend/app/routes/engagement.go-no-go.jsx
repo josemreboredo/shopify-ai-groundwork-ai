@@ -77,7 +77,8 @@ export default function GoNoGo({ loaderData }) {
           <h2>Where the complexity sits</h2>
           <p className="muted">
             Each axis is one of the seven things that grow a Shopify build. Inside the dashed line is what
-            Merkle’s standard offers cover; anything past it is scoped and priced on its own.
+            Merkle’s standard offers cover; anything past it is scoped and priced on its own. An axis marked{' '}
+            <strong>?</strong> is one the documents never mentioned — not one we know does not apply.
           </p>
           <div className="profile">
             <Radar axes={g.profile.filter((a) => a.level > 0).length ? g.profile : g.profile} />
@@ -86,13 +87,17 @@ export default function GoNoGo({ loaderData }) {
                 <thead><tr><th>Dimension</th><th>Standing</th><th>What they asked for</th></tr></thead>
                 <tbody>
                   {g.profile.map((a) => (
-                    <tr key={a.id} className={a.level === 0 ? 'idle' : undefined}>
+                    <tr key={a.id} className={a.level === 0 && a.known !== false ? 'idle' : undefined}>
                       <th scope="row">{a.label}</th>
                       <td>
-                        <span className={`badge ${a.level === 2 ? 'stop' : a.level === 1 ? 'go' : ''}`}>{a.standing}</span>
+                        <span className={`badge ${a.level === 2 ? 'stop' : a.known === false ? 'flag' : a.level === 1 ? 'go' : ''}`}>{a.standing}</span>
                         {a.rules.length ? <div className="muted small">{a.rules.map((r) => r.rule_id).join(', ')}</div> : null}
                       </td>
-                      <td>{a.evidence ?? <span className="muted">—</span>}</td>
+                      <td>
+                        {a.evidence ?? (a.known === false
+                          ? <span className="muted">Nothing in the documents either way — <a href={`/engagements/${client}/clarifications`}>it is in the Q&amp;A</a> ({a.settled_by.join(', ')})</span>
+                          : <span className="muted">—</span>)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

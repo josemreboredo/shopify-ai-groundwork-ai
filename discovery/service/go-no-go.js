@@ -25,7 +25,8 @@
 import { clarificationBrief } from '../agents/discovery/clarifications.js';
 import { statedAssumptions } from './assumptions.js';
 import { selectStories } from '../agents/backlog/select.js';
-import { offering } from '../schema/index.js';
+import { offering, questionBank } from '../schema/index.js';
+import { answeredAt } from '../agents/discovery/knowledge.js';
 
 const SEVERITY = { STOP: 0, FLAG: 1, WARN: 2 };
 const SEVERITY_LABEL = {
@@ -59,12 +60,21 @@ export function complexityProfile(doc) {
     // The rules that read the same answers this gate reads.
     const rules = fired.filter((i) => (ruleInputs.get(i.rule_id) ?? []).some((input) => (g.inputs ?? []).includes(input)));
     const beyond = rules.some((r) => r.result === 'STOP');
+    // A gate that did not fire did not necessarily fail to apply. It may have had
+    // nothing to read. "No physical stores" and "nobody said whether there are
+    // physical stores" are different facts, and drawing both at zero told a
+    // reader the document had settled something it never mentioned.
+    const known = active || (g.inputs ?? []).some((pointer) => answeredAt(doc, pointer));
     return {
       id: g.id,
       label: g.label,
       level: !active ? 0 : beyond ? 2 : 1,
-      standing: !active ? 'not in play' : beyond ? 'beyond the offers' : 'within the offers',
+      known,
+      standing: !known ? 'not known' : !active ? 'not in play' : beyond ? 'beyond the offers' : 'within the offers',
       evidence: state?.evidence ?? null,
+      // The questions that would settle it — already in the Q&A, since every
+      // unanswered question that feeds a gate is a candidate there.
+      settled_by: known ? [] : questionBank.questions.filter((q) => (q.feeds ?? []).includes(`gate:${g.id}`)).map((q) => q.id),
       rules: rules.map((r) => ({ rule_id: r.rule_id, result: r.result, evidence: r.evidence })),
     };
   });

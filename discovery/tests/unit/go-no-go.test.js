@@ -12,6 +12,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 import { goNoGoView, complexityProfile } from '../../service/go-no-go.js';
+import { clarificationTopics } from '../../agents/discovery/clarifications.js';
 
 const fixture = (name) => JSON.parse(fs.readFileSync(new URL(`../fixtures/engagements/${name}.json`, import.meta.url), 'utf8'));
 const state = (over = {}) => ({ documents: 1, coverage: { required_answered: 62, required_total: 85 }, to_review: 0, ...over });
@@ -126,9 +127,31 @@ describe('where the complexity sits', () => {
     assert.equal(axes.length, 7, 'one per scope gate');
     for (const a of axes) {
       assert.ok([0, 1, 2].includes(a.level), 'a chart that draws ten gradations off three real ones invents nine');
-      assert.ok(['not in play', 'within the offers', 'beyond the offers'].includes(a.standing));
+      assert.ok(['not known', 'not in play', 'within the offers', 'beyond the offers'].includes(a.standing));
       if (a.level > 0) assert.ok(a.evidence, 'a dimension in play carries the answer that put it there');
     }
+  });
+
+  test('"nobody said" is not "does not apply", and says which questions would settle it', () => {
+    // A gate that did not fire may have had nothing to read. Drawing both at zero
+    // told a reader the document had settled something it never mentioned.
+    const retail = complexityProfile(fixture('acme-watches')).find((a) => a.id === 'retail_pos');
+    assert.equal(retail.known, false, 'the engagement says nothing about physical stores either way');
+    assert.equal(retail.standing, 'not known');
+    assert.ok(retail.settled_by.length, 'and the questions that would settle it are named');
+
+    // Those questions are already candidates in the Q&A, so it is asked or assumed.
+    const inQa = new Set(clarificationTopics(fixture('acme-watches')).flatMap((t) => t.covers.map((c) => c.question_id)));
+    assert.ok(retail.settled_by.every((id) => inQa.has(id)), 'an unknown dimension is not left hanging on a chart');
+  });
+
+  test('a dimension with answers behind it that did not fire is genuinely not in play', () => {
+    const doc = fixture('acme-watches');
+    doc.retail = { store_count: 0, pos: false, omnichannel: false };
+    const retail = complexityProfile(doc).find((a) => a.id === 'retail_pos');
+    assert.equal(retail.known, true);
+    assert.equal(retail.standing, 'not in play');
+    assert.deepEqual(retail.settled_by, [], 'nothing left to ask');
   });
 
   test('a dimension goes beyond the offers only when a rule fired on the answers that gate reads', () => {
