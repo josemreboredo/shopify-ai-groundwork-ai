@@ -17,6 +17,7 @@ import { clarificationsFreshness, repliesReceived, replyPrompt, statedAssumption
 import { createDiscoveryService, ServiceError } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 import { questionBank } from '../../schema/index.js';
+import { conditionMet } from '../../agents/interview/next.js';
 
 const TODAY = '2026-09-20';
 const consultant = { login: 'lc-one', role: 'consultant' };
@@ -423,5 +424,65 @@ describe('the proposal waits for the triage', () => {
       (err) => err instanceof ServiceError && err.status === 400 && !/still waiting on you/.test(err.message),
       'it stops for missing answers, never for an untriaged question list',
     );
+  });
+});
+
+describe('mainland China is asked about, not only excluded', () => {
+  const withChina = () => {
+    const doc = acme();
+    doc.markets.list.push({ code: 'CN', name: 'China' });
+    doc.exits.items.push({ rule_id: '11.20', result: 'FLAG', evidence: 'Mainland China (CN) is a launch market' });
+    return doc;
+  };
+
+  test('the route questions can reach the Q&A at all', () => {
+    // All 21 China questions fed nothing, so by construction none of them could
+    // ever be asked. The offering excludes mainland China, but which route the
+    // client intends decides whether that is a carve-out or a second engagement,
+    // and the tool would never have put the question.
+    const covered = new Set(clarificationTopics(withChina()).flatMap((t) => t.covers.map((c) => c.question_id)));
+    assert.ok(covered.has('Q3.5.1'), 'cross-border or onshore');
+    assert.ok(covered.has('Q3.5.6'), 'and what Shopify’s role would be');
+  });
+
+  test('it is its own subject, not folded into "which markets do you sell in"', () => {
+    const topics = clarificationTopics(withChina());
+    const china = topics.find((t) => t.title === 'Mainland China');
+    assert.ok(china, 'one question per subject, and this is not the markets subject');
+    assert.deepEqual(china.covers.map((c) => c.question_id).sort(), ['Q3.5.1', 'Q3.5.6']);
+    const markets = topics.find((t) => t.title === 'Markets & internationalisation');
+    assert.ok(!markets.covers.some((c) => c.question_id.startsWith('Q3.5')), 'and it does not appear in both');
+  });
+
+  test('the nineteen that belong to the separate China discovery stay out of the bid', () => {
+    const covered = new Set(clarificationTopics(withChina()).flatMap((t) => t.covers.map((c) => c.question_id)));
+    const inBid = [...covered].filter((id) => id.startsWith('Q3.5'));
+    assert.deepEqual(inBid.sort(), ['Q3.5.1', 'Q3.5.6'], 'ICP filings and bonded warehouses are not a bid question');
+  });
+
+  test('no China in the markets, no China topic', () => {
+    assert.ok(!clarificationTopics(acme()).some((t) => t.title === 'Mainland China'));
+  });
+});
+
+describe('a question about a subject the client does not have is never asked', () => {
+  test('conditional questions follow the same rule the interview follows', () => {
+    // `only_if` is how the bank says a whole subject does not exist for this
+    // client. Widening the sources to every unanswered question walked straight
+    // past it, and the moment a conditional question had feeds it leaked.
+    const byId = new Map(questionBank.questions.map((q) => [q.id, q]));
+    const asked = new Set(clarificationTopics(acme()).flatMap((t) => t.covers.map((c) => c.question_id)));
+    const leaking = [...asked].filter((id) => {
+      const q = byId.get(id);
+      return q?.only_if && !q.only_if.some((c) => conditionMet(c, acme()));
+    });
+    assert.deepEqual(leaking, [], 'no question whose condition does not hold');
+  });
+
+  test('and the same question is asked once the condition does hold', () => {
+    const doc = acme();
+    doc.markets.list.push({ code: 'CN', name: 'China' });
+    const asked = new Set(clarificationTopics(doc).flatMap((t) => t.covers.map((c) => c.question_id)));
+    assert.ok(asked.has('Q3.5.1'), 'China is in the markets, so the route question applies');
   });
 });

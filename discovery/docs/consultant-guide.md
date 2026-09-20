@@ -1026,6 +1026,7 @@ Sources: https://help.shopify.com/en/manual/international/managed-markets/requir
 ### 3.5 Mainland China
 
 **Q3.5.1** — Do you want to sell to mainland China cross-border (from outside China) or onshore, behind the Great Firewall? *(required · client)*
+Drives: rule 11.20 (FLAG)
 Asked only if the launch markets include mainland China (CN)
 
 **Why it matters.** Shopify's servers are not located in mainland China, and selling onshore needs a PRC entity, an ICP filing or licence and local hosting. This answer routes China to a separate discovery — it is outside this engagement's scope.
@@ -1082,6 +1083,7 @@ Asked only if the launch markets include mainland China (CN)
 Sources: https://help.shopify.com/en/manual/intro-to-shopify/initial-setup/sell-in-china/china-getting-started-to-do
 
 **Q3.5.6** — What is Shopify's role for mainland China? *(optional · consultant)*
+Drives: rule 11.20 (FLAG)
 Asked only if the launch markets include mainland China (CN)
 
 **Why it matters.** Even where China sells through local channels, Shopify can stay the global master for products, inventory and orders. This answer defines the integration surface between this engagement and the separate China workstream.
@@ -3240,7 +3242,7 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.17 | FLAG | Sensitive personal data is collected (health, age, biometric or financial data; special-category data under GDPR art. 9) | Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build | Q6.4.4 |
 | 11.18 | FLAG | Existing Shopify store uses retired or deprecated features (Shopify Scripts, checkout.liquid / additional scripts, online store script tags, legacy customer accounts, Stocky, Geolocation app) | Deprecation migration scoped as its own workstream (e.g. Scripts to Functions, legacy to customer accounts) | Q1.2.5 |
 | 11.19 | FLAG | B2B requirement that Shopify B2B does not support (subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards) | B2B architecture review: app or process change before build | Q6.2.12 |
-| 11.20 | FLAG | Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope | Separate China discovery (questions § 3.5, discovery/docs/china-mainland.md); mainland China excluded from this engagement's scope | Q3.1.1 |
+| 11.20 | FLAG | Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope | Separate China discovery (questions § 3.5, discovery/docs/china-mainland.md); mainland China excluded from this engagement's scope | Q3.1.1, Q3.5.1, Q3.5.6 |
 | 11.21 | STOP | Mainland China is the only launch market — not part of the Merkle offering | China discovery (discovery/docs/china-mainland.md) | Q3.1.1 |
 | 11.22 | WARN | More than 5 retail stores in scope | Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team | Q5.6.1 |
 | 11.23 | FLAG | More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision — the engine still recommends a topology. | Market topology and legal-entity mapping workshop before the solution architecture is baselined. | Q1.1.6, Q3.1.1 |

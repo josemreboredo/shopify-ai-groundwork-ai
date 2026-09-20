@@ -54,7 +54,7 @@ function hasOpenStop(session) {
  * @param {object} cond  { pointer, equals | not_equals | in | includes_any | min | count_min | matches }
  * @param {object} answers
  */
-function conditionMet(cond, answers) {
+export function conditionMet(cond, answers) {
   const values = valuesAt(answers, cond.pointer).flat();
   if (!values.length) return false;
   if ('equals' in cond) return values.includes(cond.equals);
@@ -69,6 +69,20 @@ function conditionMet(cond, answers) {
 
 /** True when a question has no `ask_if`, or any of its conditions holds. @param {object} q @param {object} answers */
 const isRelevant = (q, answers) => !q.ask_if || q.ask_if.some((c) => conditionMet(c, answers));
+
+/**
+ * Whether a question applies at all to these answers.
+ *
+ * `only_if` is how the bank says "this subject does not exist for this client" —
+ * the twenty-one mainland China questions only exist when CN is a launch market.
+ * The interview has always respected it; anything else that decides what to ask
+ * has to respect it too, or it puts a question about a subject the client does
+ * not have.
+ *
+ * @param {object} q @param {object} answers
+ */
+export const questionApplies = (q, answers) => (!q.only_if || q.only_if.some((c) => conditionMet(c, answers)))
+  && isRelevant(q, answers);
 
 /**
  * Whether a question belongs to the session's interview: its priority is in the

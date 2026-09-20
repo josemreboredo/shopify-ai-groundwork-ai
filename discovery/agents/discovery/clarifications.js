@@ -22,10 +22,28 @@
 
 import { questionBank } from '../../schema/index.js';
 import { answeredQuestions } from './knowledge.js';
+import { questionApplies } from '../interview/next.js';
 import { runCostFor } from './economics.js';
 
 const BY_ID = new Map(questionBank.questions.map((q) => [q.id, q]));
 const SECTION_TITLE = new Map(questionBank.sections.map((s) => [String(s.id), s.title]));
+
+/**
+ * Subjects that are not their parent section.
+ *
+ * Grouping by section puts one question in front of the client per subject, and
+ * mainland China is not the same subject as "which markets do you sell in". It
+ * is excluded from the offer and routed to a separate discovery, so folding it
+ * into a general markets question loses the one question worth asking about it —
+ * which route they intend — inside a question about something else.
+ */
+const OWN_SUBJECT = new Set(['3.5']);
+const SUBJECT_TITLE = new Map([['3.5', 'Mainland China']]);
+
+const subjectOf = (question) => {
+  const sub = String(question.subsection ?? '');
+  return OWN_SUBJECT.has(sub) ? sub : sub.split('.')[0];
+};
 
 /** Which part of the proposal an unknown moves. Nothing else earns a question. */
 const MOVES = {
@@ -90,6 +108,11 @@ function unknowns(doc) {
   if (answered.size) {
     for (const q of questionBank.questions) {
       if (answered.has(q.id) || out.has(q.id)) continue;
+      // And only where the subject exists for this client. `only_if` is how the
+      // bank says a whole subject does not apply — the mainland China questions
+      // exist only when CN is a launch market — and asking around it puts a
+      // question to a client about something they never mentioned having.
+      if (!questionApplies(q, doc)) continue;
       add(q.id, q.why_it_matters ?? q.teach?.why ?? 'Not covered by the documents');
     }
   }
@@ -121,10 +144,10 @@ export function clarificationTopics(doc, { max = Infinity } = {}) {
     // here says we have not understood what we were sent. It becomes an
     // assumption, or it waits for kick-off.
     if (!moves.length && unknown.swing !== 'high') continue;
-    const section = String(question.subsection).split('.')[0];
+    const section = subjectOf(question);
     const group = groups.get(section) ?? {
       topic: section,
-      title: SECTION_TITLE.get(section) ?? `Section ${section}`,
+      title: SUBJECT_TITLE.get(section) ?? SECTION_TITLE.get(section) ?? `Section ${section}`,
       covers: [],
       moves: new Set(),
       assume_if_unanswered: [],

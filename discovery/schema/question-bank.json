@@ -3094,7 +3094,10 @@
         "sources": [
           "https://help.shopify.com/en/manual/intro-to-shopify/initial-setup/sell-in-china/china-getting-started-to-do"
         ]
-      }
+      },
+      "feeds": [
+        "exit:11.20"
+      ]
     },
     {
       "id": "Q3.5.2",
@@ -3265,7 +3268,10 @@
         "sources": [
           "https://help.shopify.com/en/manual/intro-to-shopify/initial-setup/sell-in-china/china-getting-started-to-do"
         ]
-      }
+      },
+      "feeds": [
+        "exit:11.20"
+      ]
     },
     {
       "id": "Q3.5.7",
