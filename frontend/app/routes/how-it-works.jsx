@@ -68,6 +68,7 @@ export default function HowItWorks() {
       </header>
 
       <section>
+        <h2 className="sr-only">The mechanism, in four moves</h2>
         <div className="flow">
           {FLOW.map(([n, title, line]) => (
             <article key={n}>

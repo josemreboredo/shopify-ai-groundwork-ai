@@ -294,7 +294,7 @@ function ShopifyKnowledge({ shopify }) {
  * A question with its inputs and actions. `values` pre-fills the inputs (edit page);
  * `children` adds actions (e.g. reopen, clear).
  */
-export function QuestionCard({ question, actionData, busy, values = {}, note = '', children }) {
+export function QuestionCard({ question, actionData, busy, values = {}, note = '', language, children }) {
   const errors = actionData?.question_id === question.id && actionData.error ? (actionData.errors?.length ? actionData.errors : [actionData.error]) : [];
   const consent = question.id === 'Q10.5.2';
   return (

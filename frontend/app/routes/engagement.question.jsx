@@ -47,7 +47,7 @@ export default function EditQuestion({ loaderData, actionData }) {
         meta={STATE_TEXT[state]}
         back={{ to: `/engagements/${engagement.client}/review#${question.id}`, label: 'Review answers' }}
       />
-      <QuestionCard question={question} actionData={actionData} busy={busy} values={values} note={note}>
+      <QuestionCard question={question} actionData={actionData} busy={busy} values={values} note={note} language={engagement.language}>
         {['tbc', 'skipped', 'commented'].includes(state) ? <button type="submit" name="intent" value="reopen" className="secondary" disabled={busy}>Reopen question</button> : null}
         {state === 'answered' && question.id !== 'Q10.5.2' ? <button type="submit" name="intent" value="clear" className="secondary" disabled={busy}>Clear answer</button> : null}
       </QuestionCard>

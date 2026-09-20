@@ -121,7 +121,7 @@ export default function Home({ loaderData, actionData }) {
               <p className="record-what">
                 <span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span>
                 {' '}{e.offer.code} · {e.offer.name}
-                {e.offer.provisional ? <> <span className="badge provisional">provisional</span></> : null}
+                {e.offer.provisional ? <span className="muted small"> · provisional</span> : null}
               </p>
               <p className="record-progress">
                 {e.coverage.required_answered} of {e.coverage.required_total} required
@@ -142,7 +142,7 @@ export default function Home({ loaderData, actionData }) {
               <tr key={e.client}>
                 <td><Link to={`/engagements/${e.client}`}>{e.client}</Link></td>
                 <td><span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span></td>
-                <td>{e.offer.code} · {e.offer.name}{e.offer.provisional ? <> <span className="badge provisional">provisional</span></> : null}</td>
+                <td>{e.offer.code} · {e.offer.name}{e.offer.provisional ? <div className="muted small">provisional</div> : null}</td>
                 <td><Status e={e} /></td>
                 <td>{e.coverage.required_answered} / {e.coverage.required_total}{e.coverage.required_tbc ? ` (${e.coverage.required_tbc} TBC)` : ''}</td>
                 <td>{e.to_review ? <span className="badge flag">{e.to_review}</span> : '—'}</td>

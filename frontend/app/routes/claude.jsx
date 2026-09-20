@@ -38,7 +38,7 @@ export default function Claude({ loaderData }) {
       </ol>
 
       <h2>3. Project instructions</h2>
-      <textarea readOnly rows={24} value={instructions} />
+      <textarea readOnly rows={24} value={instructions} aria-label="Project instructions to copy into Claude" />
     </main>
   );
 }

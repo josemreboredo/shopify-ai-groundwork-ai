@@ -155,7 +155,7 @@ If you cannot see any documents in this chat, stop and tell me: either I attach 
       </div>
       <details>
         <summary>The instruction</summary>
-        <textarea readOnly rows={6} value={instruction} />
+        <textarea readOnly rows={6} value={instruction} aria-label="The instruction to paste into Claude" />
       </details>
       <p className="muted small">
         Claude can only read the documents it can see: the ones attached to that chat, or the ones in the project the chat is in.
@@ -226,7 +226,7 @@ export default function Engagement({ loaderData, actionData }) {
             <DocumentsRead client={engagement.client} documents={documentYield} toConfirm={toConfirm} />
           ) : (
             <>
-              {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} />) : (
+              {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} language={engagement.language} />) : (
                 <section className="card">
                   <p className="question">All questions for this {engagement.mode} interview are answered.</p>
                   <div className="actions">
@@ -244,7 +244,7 @@ export default function Engagement({ loaderData, actionData }) {
           <h2>Consultant notes</h2>
           {notes.length ? <ul>{notes.map((n, i) => <li key={i}>{n.at}: {n.text}</li>)}</ul> : <p className="muted">No notes.</p>}
           <Form method="post" className="actions">
-            <input type="text" name="text" placeholder="Context that is not an answer (no personal data)" />
+            <input type="text" name="text" aria-label="Consultant note" placeholder="Context that is not an answer (no personal data)" />
             <button type="submit" name="intent" value="note" className="secondary" disabled={busy}>Add note</button>
           </Form>
           {actionData?.intent === 'note' && actionData.error ? <ul className="errors">{(actionData.errors?.length ? actionData.errors : [actionData.error]).map((e) => <li key={e}>{e}</li>)}</ul> : null}
