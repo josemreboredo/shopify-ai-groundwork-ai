@@ -2,8 +2,9 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
+import { pageTitle } from '../brand.js';
 
-export const meta = () => [{ title: 'The offering · Merkle Discovery' }];
+export const meta = () => [{ title: pageTitle('The offering') }];
 
 /**
  * Signed-in only. Price bands travel only to owners: while sign-in is open to any

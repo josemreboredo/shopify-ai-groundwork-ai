@@ -4,8 +4,9 @@ import { Form, Link, useNavigation } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader } from '../components/question.jsx';
+import { pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: `Review answers · ${params.client} · Merkle Discovery` }];
+export const meta = ({ params }) => [{ title: pageTitle('Review answers', params.client) }];
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);

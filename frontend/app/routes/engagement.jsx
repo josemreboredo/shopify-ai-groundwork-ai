@@ -7,8 +7,9 @@ import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
 import { EngagementHeader, PreviewPanel, QuestionCard, Vocabularies } from '../components/question.jsx';
 import { processMeta } from '../../../discovery/service/process.js';
+import { CONNECTOR, pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: `${params.client} · Merkle Discovery` }];
+export const meta = ({ params }) => [{ title: pageTitle(params.client) }];
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);
@@ -104,7 +105,7 @@ function DocumentsRead({ client, documents, toConfirm }) {
 function PrefillCard({ client, documents, toConfirm, process }) {
   const [copied, setCopied] = useState(false);
   const rfp = process === 'rfp';
-  const instruction = `Read the documents in this project and pre-fill the Merkle Discovery ${rfp ? 'bid' : 'engagement'} ${client}.
+  const instruction = `Read the documents in this project and pre-fill the ${CONNECTOR} ${rfp ? 'bid' : 'engagement'} ${client}.
 
 Register each document with register_document, map what it says to the questionnaire with find_questions, and record answers with record_answers, each with its evidence (document, section, short quote). Where a document is unclear, mark the question TBC with a note instead of guessing. Then tell me what you recorded and what is still open.
 
@@ -141,7 +142,7 @@ If you cannot see any documents in this chat, stop and tell me: either I attach 
           </p>
           <ol className="prefill-steps">
             <li><strong>Pre-fill in Claude</strong> opens a chat with the instruction written — you only press Enter. Attach the RFP in that chat.</li>
-            <li>If the RFP is already in your <strong>Claude Project</strong> for this client, start the chat <em>inside the project</em> instead: copy the instruction and paste it there, or pick <strong>Pre-fill the engagement from the documents</strong> from the Merkle Discovery connector’s prompts.</li>
+            <li>If the RFP is already in your <strong>Claude Project</strong> for this client, start the chat <em>inside the project</em> instead: copy the instruction and paste it there, or pick <strong>Pre-fill the engagement from the documents</strong> from the {CONNECTOR} connector’s prompts.</li>
             <li>Come back here. The answers arrive marked <strong>to confirm</strong>, each with its citation; check them and confirm.</li>
           </ol>
         </>

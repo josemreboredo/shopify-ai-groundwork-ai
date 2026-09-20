@@ -3,8 +3,9 @@ import { Form, Link, redirect } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
+import { PRODUCT, pageTitle } from '../brand.js';
 
-export const meta = () => [{ title: 'Bids and engagements · Merkle Discovery' }];
+export const meta = () => [{ title: pageTitle('Bids and engagements') }];
 
 export async function loader({ request }) {
   const user = await requireUser(request);
@@ -43,7 +44,7 @@ export default function Home({ loaderData, actionData }) {
   return (
     <main>
       <header className="page-head">
-        <p className="eyebrow">Merkle Discovery</p>
+        <p className="eyebrow">{PRODUCT}</p>
         <h1>What are you working on?</h1>
         <p className="lede">
           One engine, two ways in. An RFP that has to be answered, or a discovery to run with a client —

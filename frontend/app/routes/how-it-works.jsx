@@ -1,7 +1,8 @@
 import { Link } from 'react-router';
+import { pageTitle } from '../brand.js';
 
 export const meta = () => [
-  { title: 'How it works · Merkle Discovery' },
+  { title: pageTitle('How it works') },
   { name: 'description', content: 'Every recommendation traces back to the client’s own words and to Shopify’s own documentation — or the tool refuses to produce it.' },
 ];
 
@@ -38,8 +39,10 @@ const GUARANTEES = [
     claim: 'A human signs it',
     line: 'Nothing reaches a client without the Lead Consultant reading it. The tool is built to make that review fast.',
     detail: [
-      'Answers the AI proposes from an RFP stay marked “to confirm” until the consultant confirms them with the client.',
+      'Answers the AI proposes from an RFP stay marked “to confirm” until the consultant confirms them — one at a time, or all of them at once when the reading has been checked as a batch.',
+      'Unconfirmed evidence blocks the position, not just the paperwork: the Go/No-Go step reads “I cannot stand behind this yet” until a human has accepted what was extracted.',
       'The claim, its source and the answer it rests on always sit next to each other, so checking a decision takes seconds rather than a repeat of the research.',
+      'When answers move afterwards, the tool names which ones and redrafts the approach behind the document, not only the slides. The previous version is kept.',
       'As with any AI-generated work, the output is reviewed before it is used. The difference is how quickly it can be checked.',
     ],
   },
@@ -84,27 +87,37 @@ export default function HowItWorks() {
           <h2 className="plain">The same four steps, whether the client is answering us or we are answering them</h2>
           <div className="grid-2">
             <article className="card">
-              <h3>An RFP arrives</h3>
+              <h3>A bid — an RFP arrives</h3>
+              <p>
+                Read the RFP · confirm what it says · Go/No-Go support · RFP Q&amp;A · write the proposal.
+              </p>
               <p>
                 The document is read in and every answer it already contains is recorded with the section and
-                the sentence it came from. The engine then names the handful of things still missing that would
-                change the solution — and those become the questions Merkle sends back inside the window,
+                the sentence it came from. Before anything is priced, the tool states whether this work can be
+                priced and stood behind at all. The engine then names the handful of things still missing that
+                would change the solution, and those become the questions Merkle sends back inside the window,
                 each one showing the trade-off it turns on. What is never answered is stated as an assumption
-                in the proposal rather than quietly guessed.
+                in the proposal rather than quietly guessed. A bid that is won becomes the engagement, in the
+                same record.
               </p>
             </article>
             <article className="card">
-              <h3>A discovery is run</h3>
+              <h3>A discovery — the work is won</h3>
+              <p>
+                Interview the client · review and confirm · agree the scope · hand over to delivery.
+              </p>
               <p>
                 The same questions are worked through with the client directly, in their language, over as many
-                sessions as it takes. The engine keeps the live list of what is still open, and the engagement
-                closes with the deck, the annex and the delivery backlog.
+                sessions as it takes. The engine keeps the live list of what is still open. Nothing has to be
+                persuaded here and everything has to be exact, so the path does not end at the client document:
+                it ends at the Jira backlog and the configuration workbook the build team opens on day one.
               </p>
             </article>
           </div>
           <p className="muted">
             One engine underneath: the same question bank, the same scope gates, the same verified Shopify
-            documentation, the same offer. Only the door and what comes out of it differ.
+            documentation, the same offer — and a test pins that the same answers give the same result either
+            way. Only the order of the steps and what comes out at the end differ.
           </p>
         </div>
       </section>

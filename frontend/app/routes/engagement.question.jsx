@@ -5,8 +5,9 @@ import { discovery, serviceFailure } from '../discovery.server.js';
 import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
 import { EngagementHeader, QuestionCard, Vocabularies } from '../components/question.jsx';
+import { pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: `${params.questionId} · ${params.client} · Merkle Discovery` }];
+export const meta = ({ params }) => [{ title: pageTitle(`${params.questionId}`, params.client) }];
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);

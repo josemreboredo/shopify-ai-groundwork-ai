@@ -1,6 +1,7 @@
 import { Form, Link, Links, Meta, NavLink, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useRouteLoaderData } from 'react-router';
 
 import { getUser } from './auth.server.js';
+import { PRODUCT } from './brand.js';
 import stylesheet from './app.css?url';
 
 export const links = () => [
@@ -14,7 +15,7 @@ export const links = () => [
 
 /** The site's pages, once: the header and the footer both render from this. */
 const PAGES = [
-  { to: '/', label: 'Engagements', end: true, signedIn: true },
+  { to: '/', label: 'Bids and engagements', end: true, signedIn: true },
   { to: '/offering', label: 'Offering', signedIn: true },
   { to: '/about', label: 'What this is' },
   { to: '/how-it-works', label: 'How it works' },
@@ -39,7 +40,7 @@ export function Layout({ children }) {
       </head>
       <body>
         <header className="topbar">
-          <Link to="/" className="brand" aria-label="Merkle Discovery — home"><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
+          <Link to="/" className="brand" aria-label={`${PRODUCT} — home`}><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
           <nav className="topnav">
             {pagesFor(root?.user).map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
           </nav>
@@ -98,7 +99,7 @@ function SiteFooter({ pages = [] }) {
             ))}
           </nav>
 
-          <p className="footer-note">Merkle Discovery — internal pilot tool. Demo or anonymised engagements only.</p>
+          <p className="footer-note">{PRODUCT} — internal pilot tool. Demo or anonymised engagements only.</p>
         </div>
 
         <svg className="footer-watermark" viewBox="0 0 32 18" aria-hidden="true" focusable="false">

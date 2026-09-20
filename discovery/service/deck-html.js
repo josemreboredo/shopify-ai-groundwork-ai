@@ -146,6 +146,9 @@ const SLIDE_HTML = {
   </div>${s.note ? `<p class="foot">${esc(s.note)}</p>` : ''}`,
 };
 
+/** The layouts a deck can be built from — the count the public pages quote. */
+export const SLIDE_LAYOUTS = Object.keys(SLIDE_HTML);
+
 const CSS = `
 :root { --ink:#0A1540; --navy:#040E4B; --red:#DD3039; --muted:#60607D; --line:#D6D6DF; --panel:#F2F2F4; }
 * { box-sizing:border-box; }

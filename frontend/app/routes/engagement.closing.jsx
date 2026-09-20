@@ -7,8 +7,9 @@ import { originOf } from '../origin.server.js';
 import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
 import { processMeta } from '../../../discovery/service/process.js';
+import { CONNECTOR, pageTitle } from '../brand.js';
 
-export const meta = ({ data, params }) => [{ title: `${processMeta(data?.engagement?.process).document} · ${params.client} · Merkle Discovery` }];
+export const meta = ({ data, params }) => [{ title: pageTitle(`${processMeta(data?.engagement?.process).document}`, params.client) }];
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);
@@ -80,7 +81,7 @@ export default function Closing({ loaderData }) {
               {waiting ? <span className="muted">This page updates itself when Claude saves.</span> : null}
             </div>
             <p className="muted">
-              Opens a Claude chat with the instruction written — you only press Enter. Check that the <strong>Merkle Discovery</strong> connector is on and the strongest model is selected. To use the RFPs you uploaded, start it inside your Claude Project and pick <strong>Draft the client document</strong> from the connector’s prompts. It can take up to 45 minutes, so <strong>Cowork</strong> suits it better than a normal chat.
+              Opens a Claude chat with the instruction written — you only press Enter. Check that the <strong>{CONNECTOR}</strong> connector is on and the strongest model is selected. To use the RFPs you uploaded, start it inside your Claude Project and pick <strong>Draft the client document</strong> from the connector’s prompts. It can take up to 45 minutes, so <strong>Cowork</strong> suits it better than a normal chat.
             </p>
             <details>
               <summary>The instruction it sends</summary>

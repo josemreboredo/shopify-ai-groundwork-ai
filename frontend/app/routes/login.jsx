@@ -2,8 +2,12 @@ import { Form, data, redirect } from 'react-router';
 
 import { getUser, openSignIn, safeNext, sessionStorage } from '../auth.server.js';
 import { engagementVisibility } from '../discovery.server.js';
+import { PRODUCT, pageTitle } from '../brand.js';
 
-export const meta = () => [{ title: 'Sign in · Merkle Discovery' }];
+export const meta = () => [
+  { title: pageTitle('Sign in') },
+  { name: 'description', content: 'One engine, two ways in: answer an RFP or run a Shopify discovery, with the commercials computed by code and every Shopify claim sourced.' },
+];
 
 export async function loader({ request }) {
   const next = safeNext(new URL(request.url).searchParams.get('next'));
@@ -16,16 +20,17 @@ export default function Login({ loaderData }) {
   return (
     <main className="signin">
       <section className="signin-hero">
-        <p className="eyebrow">AI-assisted</p>
-        <h1>Discovery</h1>
-        <p>The Lead Consultant workspace for Shopify discovery: AI reads the client’s documents and drafts the solution, the engine decides the scope, and you run the conversation.</p>
+        <p className="eyebrow">Merkle commerce practice</p>
+        <h1>{PRODUCT}</h1>
+        <p>One engine, two ways in. An <strong>RFP</strong> that has to be answered, or a <strong>discovery</strong> to run with a client — the same question bank, the same verified Shopify documentation, the same offer underneath.</p>
         <ul>
-          <li>AI pre-fills answers from the RFP, with the evidence for each one</li>
-          <li>Questions that teach Shopify while you ask them</li>
-          <li>Offer, scope gates and risks computed by code — never by the model</li>
-          <li>An AI-drafted deck and annex, every Shopify fact sourced</li>
+          <li>Claude reads the RFP and records what it answers, with the quote behind each one</li>
+          <li>A Go/No-Go position on whether the work can be priced and stood behind</li>
+          <li>Only the questions worth sending back, as a document the client can answer</li>
+          <li>Offer, scope gates and exit rules computed by code — never by the model</li>
+          <li>A proposal or a closing document, every Shopify fact sourced, then the delivery handover</li>
         </ul>
-        <p className="signin-more"><a href="/about">What this is and how the AI is governed →</a></p>
+        <p className="signin-more"><a href="/about">What this is and how the AI is governed →</a> · <a href="/manual">the manual</a></p>
       </section>
       <section className="signin-panel">
         <h2>Sign in</h2>
@@ -34,7 +39,7 @@ export default function Login({ loaderData }) {
           <input type="hidden" name="next" value={loaderData.next} />
           <button type="submit">Sign in with GitHub</button>
         </Form>
-        <p className="muted">{loaderData.open ? 'Any GitHub account can sign in as consultant.' : 'Access is limited to allowlisted accounts.'} {loaderData.shared ? 'Everyone signed in sees all engagements.' : 'Consultants see only their own engagements.'}</p>
+        <p className="muted">{loaderData.open ? 'Any GitHub account can sign in as consultant.' : 'Access is limited to allowlisted accounts.'} {loaderData.shared ? 'Everyone signed in sees all bids and engagements.' : 'Consultants see only their own bids and engagements.'}</p>
         <p className="signin-pilot">Pilot — demo or anonymised engagements and documents only.</p>
       </section>
     </main>

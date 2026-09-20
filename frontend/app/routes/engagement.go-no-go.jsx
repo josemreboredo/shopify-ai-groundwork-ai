@@ -1,8 +1,9 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader } from '../components/question.jsx';
+import { pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: `Go/No-Go support · ${params.client} · Merkle Discovery` }];
+export const meta = ({ params }) => [{ title: pageTitle('Go/No-Go support', params.client) }];
 
 /**
  * Where the Solution Architect stands on the bid, and why.

@@ -5,8 +5,9 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
+import { pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: `RFP Q&A · ${params.client} · Merkle Discovery` }];
+export const meta = ({ params }) => [{ title: pageTitle('RFP Q&A', params.client) }];
 
 /**
  * What Merkle sends back after reading an RFP. The engine has already chosen the

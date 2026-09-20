@@ -29,6 +29,8 @@ export default [
   route('how-it-works', 'routes/how-it-works.jsx'),
   route('claude', 'routes/claude.jsx'),
   route('manual', 'routes/manual.jsx'),
+  route('manual/bid', 'routes/manual.bid.jsx'),
+  route('manual/discovery', 'routes/manual.discovery.jsx'),
   // Claude connector (ADR 0015): MCP endpoint and OAuth
   route('mcp', 'routes/mcp.js'),
   route('.well-known/oauth-authorization-server', 'routes/well-known.authorization-server.js'),

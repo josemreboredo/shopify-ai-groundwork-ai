@@ -4,8 +4,9 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader } from '../components/question.jsx';
 import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
+import { pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: `Change · ${params.client} · Merkle Discovery` }];
+export const meta = ({ params }) => [{ title: pageTitle('Change', params.client) }];
 
 /**
  * Everything about the record itself, in one place.

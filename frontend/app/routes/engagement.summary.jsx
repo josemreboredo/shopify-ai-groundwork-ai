@@ -3,8 +3,9 @@ import { Link } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementHeader, resultClass, words } from '../components/question.jsx';
+import { pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: `Summary · ${params.client} · Merkle Discovery` }];
+export const meta = ({ params }) => [{ title: pageTitle('Summary', params.client) }];
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);

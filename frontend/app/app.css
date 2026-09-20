@@ -391,7 +391,7 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .steps { list-style: none; counter-reset: step; padding: 0; margin: 0; display: grid; gap: 4px; }
 .steps li { counter-increment: step; display: grid; grid-template-columns: 76px minmax(0, 1fr); column-gap: 24px; row-gap: 0; padding: 24px 0; border-top: 1px solid var(--line); }
 .steps li::before { content: counter(step, decimal-leading-zero); font-size: 1.6rem; font-weight: 700; color: var(--red); line-height: 1; }
-.steps h3 { margin: 0 0 6px; grid-column: 2; }
+.steps h3, .steps h4 { margin: 0 0 6px; grid-column: 2; font-size: 1.05rem; }
 .steps p { margin: 0; max-width: 88ch; grid-column: 2; }
 .rails { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 40px; margin: 32px 0 0; }
 .rails dt { font-weight: 700; margin-bottom: 4px; }

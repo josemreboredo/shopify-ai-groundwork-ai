@@ -3,8 +3,9 @@ import { Form, data, redirect } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { oauth } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';
+import { CONNECTOR, pageTitle } from '../brand.js';
 
-export const meta = () => [{ title: 'Connect Claude · Merkle Discovery' }];
+export const meta = () => [{ title: pageTitle('Connect Claude') }];
 
 const PARAMS = ['client_id', 'redirect_uri', 'response_type', 'code_challenge', 'code_challenge_method', 'scope', 'state', 'resource'];
 const pick = (source) => Object.fromEntries(PARAMS.map((k) => [k, source.get(k)]));
@@ -37,7 +38,7 @@ export default function Authorize({ loaderData }) {
   return (
     <main className="narrow">
       <h1>Connect {client.name}</h1>
-      <p><strong>{client.name}</strong> wants to use Merkle Discovery as <strong>{user.login}</strong> ({user.role}).</p>
+      <p><strong>{client.name}</strong> wants to use {CONNECTOR} as <strong>{user.login}</strong> ({user.role}).</p>
       <ul>
         <li>Read your engagements, questions, answers and the offer preview</li>
         <li>Record answers, notes and documents used — answers from documents stay “to confirm” until you confirm them</li>
