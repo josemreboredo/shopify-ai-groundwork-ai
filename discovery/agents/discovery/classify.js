@@ -558,6 +558,12 @@ const L_TRIGGER_EVALUATORS = {
  * @param {object} doc       engagement document
  * @returns {object|null}
  */
+/** Whether a gate fires on this document, asked without the offer being decided yet. */
+const ACTIVE_GATE = (doc, id) => Boolean(GATE_EVALUATORS[id]?.(doc)?.active);
+
+/** The storefront design tier this document asks for, or null. */
+const STOREFRONT_TIER = (doc) => GATE_EVALUATORS.storefront_design?.(doc)?.tier ?? null;
+
 function modifierFor(gate, evaluated, doc) {
   const all = offering.modifiers ?? [];
 
@@ -599,10 +605,35 @@ function modifierFor(gate, evaluated, doc) {
   const scale = SCALES[gate.id];
   if (!scale) return modifier;
 
+  /*
+   * A market costs what the storefront it is opened on costs to re-test.
+   *
+   * Every pack charged the same three quarters of a week per market, and they
+   * are not the same work: in an entry offer a market meets a configured theme
+   * and three languages, and in the largest it meets the full template set and
+   * six. The second is more surface to translate, check and sign off.
+   *
+   * Scaling by the pack would be circular — the pack is decided by the effort
+   * this is part of — so it scales by what actually drives it, which is more
+   * honest anyway: not "because it is an L" but "because there is a bespoke
+   * template set to re-test in every market". A large engagement picks these up
+   * by having them, and a small one that happens to have them pays for them too.
+   */
+  const surcharges = modifier.per_unit_surcharge ?? [];
+  const uplift = surcharges.reduce((a, s) => {
+    const g = evaluated && s.gate === gate.id ? evaluated : doc.offer?.scope_gates?.[s.gate];
+    const on = s.gate === 'storefront_design'
+      ? STOREFRONT_TIER(doc) === s.tier
+      : ACTIVE_GATE(doc, s.gate);
+    return on ? a + s.add : a;
+  }, 0);
+
   const units = Math.max(scale.count - scale.free, 0);
   const clamp = (n, band) => Math.min(Math.max(n, band.min), band.max);
-  const weeks = clamp(units * (modifier[scale.weeks] ?? 0), modifier.effort_weeks);
-  const price = clamp(units * (modifier[scale.price] ?? 0), modifier.price_add);
+  const perWeek = (modifier[scale.weeks] ?? 0) * (1 + uplift);
+  const perPrice = (modifier[scale.price] ?? 0) * (1 + uplift);
+  const weeks = clamp(units * perWeek, modifier.effort_weeks);
+  const price = clamp(units * perPrice, modifier.price_add);
   return {
     ...modifier,
     effort_weeks: { min: weeks, max: weeks },
