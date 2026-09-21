@@ -456,7 +456,7 @@ const gateWeeks = (w) => (w ? `+${w.min === w.max ? w.min : `${w.min}–${w.max}
  *
  * @param {{ catalogue: object[], totals: object, capacity: {min:number,max:number}|null, offerCode: string }} props
  */
-export function ScopeTable({ catalogue, totals, capacity, offerCode }) {
+export function ScopeTable({ catalogue, totals, capacity }) {
   if (!catalogue?.length) return null;
   return (
     <div className="scope-epics">
@@ -522,12 +522,13 @@ export function ScopeTable({ catalogue, totals, capacity, offerCode }) {
         </table>
       </div>
 
+      {/* Whether a gate's weeks land on top of the offer or inside it is stated
+          above the table now, per offer, because it is the question a reader
+          arrives with. What is left here is the one thing the table itself can
+          mislead about: the same number repeated down a column. */}
       <p className="muted small">
         A gate adds its weeks once, however many stories it carries — the column repeats the gate, not the cost.
-        {offerCode === 'S'
-          ? ' One gate stays in this offer, priced with its modifier; two or more make it an M, and the epics come with it.'
-          : ' Inside the capacity above a gate costs nothing more; past it, it is added to the weeks and to the band.'}
-        {' '}Each gate&rsquo;s exact condition is below, under the gates.
+        Each gate&rsquo;s exact condition is further down the page.
       </p>
     </div>
   );

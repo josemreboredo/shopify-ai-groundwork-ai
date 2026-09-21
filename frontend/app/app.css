@@ -1478,3 +1478,16 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
   .scope-row > td { padding: 2px 0; }
   .scope-when { display: inline-block; }
 }
+
+/* ── Does a gate land on top of the offer, or inside it? ──────────────────── */
+/* The question every reader of the epic table arrives with, and it used to be
+   answered in grey type underneath it. Stated first, and marked: red where the
+   weeks are added on top, plain where the band already carries them. */
+.gate-rule {
+  margin: 18px 0 20px; padding: 14px 18px; max-width: 76ch;
+  border-left: 3px solid var(--line-strong); background: var(--paper-2, #f5f5f5);
+  font-size: 0.97rem; line-height: 1.5;
+}
+.gate-rule.on-top { border-left-color: var(--red); }
+/* A stat whose value is a phrase, not a number: it must not tower like one. */
+.stats .stat-words { font-size: clamp(1.6rem, 3vw, 2.2rem); }

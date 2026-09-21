@@ -80,9 +80,13 @@ export default function OfferingSegment({ loaderData }) {
             offers whose scope is written as one line. */}
         <ul className="stats">
           <li><strong>{weeks(offer.duration_weeks)}</strong><span>weeks, end to end</span></li>
+          {/* A headline "0" reads as a missing number, not as a fact. On the
+              offer that carries no gate work the fact is the rule itself: a
+              gate here is added on top. */}
           <li>
-            <strong>{weeks(offer.gate_capacity_weeks)}</strong>
-            <span>weeks of scope gates this band already holds</span>
+            {offer.gate_capacity_weeks.max === 0
+              ? <><strong className="stat-words">On top</strong><span>this band holds no scope gates — one is added to the weeks and the price</span></>
+              : <><strong>{weeks(offer.gate_capacity_weeks)}</strong><span>weeks of scope gates this band already holds</span></>}
           </li>
           {view.pricing && offer.price_band
             ? <li><strong>{band(offer.price_band, currency)}</strong><span>internal price band — never in a client document</span></li>
@@ -91,18 +95,22 @@ export default function OfferingSegment({ loaderData }) {
       </header>
 
       <section>
-        <h2>Where it sits</h2>
-        <OfferScale offers={view.offers} pricing={view.pricing} currency={currency} here={offer.code} />
-      </section>
-
-      <section>
-        <h2>What it covers</h2>
+        <h2>What is in scope</h2>
         {/* The first line is the offer's claim — what makes "Foundation" a
             foundation and "Growth" growth — and it is not a scope item. Ticked
             alongside the rest it read as one, which is how an offer ends up with
             a name nobody can connect to what it delivers. */}
         <p className="answer-line">{offer.base_scope[0]}.</p>
         <ul className="ticks big">{offer.base_scope.slice(1).map((line) => <li key={line}>{line}</li>)}</ul>
+      </section>
+
+      <section>
+        <h2>Not in this offer, and what we assume</h2>
+        <p className="lede">
+          Everything below is deliberate. An offer that only lists what it includes is the one
+          argued about in week six.
+        </p>
+        <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} assumes={offer.assumes} />
       </section>
 
       <section>
@@ -113,15 +121,6 @@ export default function OfferingSegment({ loaderData }) {
           customisation are the four a client asks about by name, so they are named.
         </p>
         <PhasePlan phases={offer.phases} weeks={offer.duration_weeks} />
-      </section>
-
-      <section>
-        <h2>Where this offer stops</h2>
-        <p className="lede">
-          Everything below is deliberate. An offer that only lists what it includes is the one
-          argued about in week six.
-        </p>
-        <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} assumes={offer.assumes} />
       </section>
 
       {offer.storefront ? (
@@ -144,7 +143,16 @@ export default function OfferingSegment({ loaderData }) {
           a scope gate with its own weeks. Nothing is implied, because a fixed price cannot be argued from an
           implication.
         </p>
-        <ScopeTable catalogue={catalogue} totals={totals} capacity={offer.gate_capacity_weeks} offerCode={offer.code} />
+        {/* The question this page kept failing to answer: when a story says a
+            gate adds weeks, is that on top of the offer or already inside it?
+            The answer differs per offer and it used to be a grey line under the
+            table, which is where a reader looks last. */}
+        <p className={`gate-rule ${envelope.max === 0 ? 'on-top' : 'inside'}`}>
+          {envelope.max === 0
+            ? `This offer holds no scope-gate work at all. A gate here is an add-on: its weeks and its price are added on top of the ${weeks(offer.duration_weeks)} weeks above. One gate stays in this offer; two or more make it an ${view.offers.find((o) => o.code === 'M')?.name ?? 'M'}.`
+            : `This offer already holds ${weeks(envelope)} weeks of scope-gate work inside its band. A gate that fits in there costs nothing more. Only what goes past it is added on top of the ${weeks(offer.duration_weeks)} weeks above.`}
+        </p>
+        <ScopeTable catalogue={catalogue} totals={totals} capacity={offer.gate_capacity_weeks} />
       </section>
 
       {offer.tracks ? (
@@ -159,27 +167,14 @@ export default function OfferingSegment({ loaderData }) {
         </section>
       ) : null}
 
-      <section>
-        <h2>Who it sells to</h2>
-        <p className="lede">
-          Wholesale is not this offer plus an extra. Selling both ways is — that is the one case the
-          B2B gate is for.
-        </p>
-        <Channels channels={offer.channels} />
-      </section>
 
-      <section className="band">
-        <div className="band-inner">
-          <p className="eyebrow">How it meets Shopify</p>
-          <h2 className="plain">Four decisions, taken the same way every time</h2>
-          <dl className="rails">
-            <div><dt>Storefront</dt><dd>{offer.approach.storefront}</dd></div>
-            <div><dt>Shopify plan</dt><dd>{offer.approach.plan}</dd></div>
-            <div><dt>How it is built</dt><dd>{offer.approach.build}</dd></div>
-            <div><dt>Stores</dt><dd>{offer.approach.topology}</dd></div>
-          </dl>
-        </div>
-      </section>
+
+
+
+
+
+
+
 
       {segment.slug === 'l' ? (
         <section>
@@ -203,7 +198,7 @@ export default function OfferingSegment({ loaderData }) {
           saying what the offer already covers leaves the consultant to guess
           whether the number is inside the band or on top of it. */}
       <section>
-        <h2>{segment.slug === 'l' ? 'What the gates add to it' : 'What moves an engagement out of here'}</h2>
+        <h2>{segment.slug === 'l' ? 'What the gates add to it' : 'What would make this a bigger offer'}</h2>
         <p className="lede">
           {segment.slug === 's'
             ? 'One gate keeps it in S with a modifier, and the modifier is added to the weeks and the band — an S with a heavy migration quotes what a heavy migration costs. Two gates or more make it an M.'
@@ -243,6 +238,20 @@ export default function OfferingSegment({ loaderData }) {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section>
+        <h2>Who it sells to</h2>
+        <p className="lede">
+          Wholesale is not this offer plus an extra. Selling both ways is — that is the one case the
+          B2B gate is for.
+        </p>
+        <Channels channels={offer.channels} />
+      </section>
+
+      <section>
+        <h2>Where it sits</h2>
+        <OfferScale offers={view.offers} pricing={view.pricing} currency={currency} here={offer.code} />
       </section>
 
       <section>
