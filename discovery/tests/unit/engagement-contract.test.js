@@ -86,7 +86,9 @@ describe('question bank', () => {
       const value = q.skip_if.equals ?? q.skip_if.excludes;
       assert.notEqual(value, undefined, `${q.id}: skip_if needs equals or excludes`);
       const allowed = enumValues(schemaNodeAt(target.maps_to[0]));
-      if (typeof value === 'string') assert.ok(allowed?.includes(value), `${q.id}: ${value} is not a value of ${target.id}`);
+      for (const v of Array.isArray(value) ? value : [value]) {
+        if (typeof v === 'string') assert.ok(allowed?.includes(v), `${q.id}: ${v} is not a value of ${target.id}`);
+      }
     }
   });
 

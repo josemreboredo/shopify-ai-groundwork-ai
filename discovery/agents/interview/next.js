@@ -118,7 +118,14 @@ function isSkippedByRule(question, answers) {
   const value = valuesAt(answers, target.maps_to[0])[0];
   if (value === undefined) return false;
   if ('equals' in rule) return Array.isArray(value) ? value.length === 1 && value[0] === rule.equals : value === rule.equals;
-  if ('excludes' in rule) return Array.isArray(value) && !value.includes(rule.excludes);
+  /* `excludes` takes one value or several, and several means none of them.
+     A bundle is five values in the schema — fixed_bundle, multipack,
+     mix_and_match_bundle, bundle, product_set — so a single exclusion would
+     have shut the bundle question on a catalogue that sells multipacks. */
+  if ('excludes' in rule) {
+    const without = Array.isArray(rule.excludes) ? rule.excludes : [rule.excludes];
+    return Array.isArray(value) && !without.some((v) => value.includes(v));
+  }
   return false;
 }
 

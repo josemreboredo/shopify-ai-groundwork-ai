@@ -342,6 +342,7 @@
 - [ ] Noch unklar
 
 **Q2.2.2** — Laufen Abos über Shopify Subscriptions (Shopifys eigene App) oder über eine Drittanbieter-App? Bitte die App nennen, falls bekannt. *(recommended)*
+*Skip if Q2.2.1 does not include subscription.*
 *Ask if Q2.2.1 includes Subscription.*
 *Shopify Subscriptions: Kundinnen und Kunden überspringen, pausieren und kündigen im eigenen Konto; nicht mit Bundles oder B2B.*
 
@@ -349,6 +350,7 @@
 - Subscription app:
 
 **Q2.2.3** — Falls Sie Bundles verkaufen: Was müssen diese können? *(recommended)*
+*Skip if Q2.2.1 does not include fixed_bundle,multipack,mix_and_match_bundle,bundle,product_set.*
 *Ask if Q2.2.1 includes Fixed bundle, Multipack, Mix and match bundle or Bundle.*
 *Shopify Bundles: bis zu 30 Komponenten; nicht mit Abos oder Vorbestellungen; keine verschachtelten Bundles.*
 
@@ -364,6 +366,7 @@
 - [ ] Noch unklar
 
 **Q2.2.4** — Welche Abo-Funktionen werden benötigt? *(recommended)*
+*Skip if Q2.2.1 does not include subscription.*
 *Ask if Q2.2.1 includes Subscription.*
 
 *(tick all that apply)*
@@ -379,6 +382,7 @@
 - [ ] Noch unklar
 
 **Q2.2.5** — Wann wird bei Vorbestellungen abgerechnet? *(recommended)*
+*Skip if Q2.2.1 does not include pre_order.*
 *Ask if Q2.2.1 includes Pre order.*
 *Vorbestellungen brauchen eine Pre-Order-App; Express-Checkouts (Shop Pay, Apple Pay, Google Pay) stehen für Vorbestellungen nicht zur Verfügung.*
 

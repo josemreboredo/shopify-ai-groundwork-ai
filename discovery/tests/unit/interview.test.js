@@ -102,6 +102,12 @@ describe('question selection', () => {
       { what: 'B2B', gateway: { pointer: '/meta/client/business_model', value: 'dtc', question_id: 'Q1.1.4' }, prefix: 'Q6.2.' },
     ];
 
+    // A catalogue of plain products is asked nothing about subscriptions,
+    // bundles or pre-orders. Each of those was a question that read as an
+    // assumption: "which subscription features are needed" to a client who
+    // sells none reads as Merkle having decided they do.
+    const PLAIN_CATALOGUE = ['Q2.2.2', 'Q2.2.3', 'Q2.2.4', 'Q2.2.5'];
+
     for (const mode of ['quick', 'full']) {
       for (const { what, gateway, prefix } of SHUT) {
         const s = consented(mode);
@@ -113,6 +119,19 @@ describe('question selection', () => {
         const open = toExtraction(s).open_items.filter((i) => i.question_id?.startsWith(prefix));
         assert.deepEqual(open, [], `${mode}: ${what} is shut and still an open item`);
       }
+
+      const plain = consented(mode);
+      recordAnswer(plain, { pointer: '/catalogue/product_types', value: ['simple', 'variant'], question_id: 'Q2.2.1', today: TODAY });
+      const asked = nextQuestions(plain, { limit: 500 }).questions.map((q) => q.id).filter((id) => PLAIN_CATALOGUE.includes(id));
+      assert.deepEqual(asked, [], `${mode}: a plain catalogue was asked ${asked.join(', ')}`);
+
+      // And the gate is a gate, not a wall: say you sell bundles and the bundle
+      // question comes back, on a catalogue that names only one of the five
+      // values the schema calls a bundle.
+      const bundles = consented(mode);
+      recordAnswer(bundles, { pointer: '/catalogue/product_types', value: ['simple', 'multipack'], question_id: 'Q2.2.1', today: TODAY });
+      assert.ok(nextQuestions(bundles, { limit: 500 }).questions.some((q) => q.id === 'Q2.2.3'),
+        `${mode}: a multipack is a bundle and the bundle question should be asked`);
     }
   });
 

@@ -1467,6 +1467,12 @@
         "sources": [
           "https://help.shopify.com/en/manual/products/purchase-options/subscriptions/shopify-subscriptions/considerations"
         ]
+      },
+      "skip_if": {
+        "question": "Q2.2.1",
+        "excludes": [
+          "subscription"
+        ]
       }
     },
     {
@@ -1526,6 +1532,16 @@
         "sources": [
           "https://help.shopify.com/en/manual/products/bundles/eligibility-and-considerations"
         ]
+      },
+      "skip_if": {
+        "question": "Q2.2.1",
+        "excludes": [
+          "fixed_bundle",
+          "multipack",
+          "mix_and_match_bundle",
+          "bundle",
+          "product_set"
+        ]
       }
     },
     {
@@ -1578,6 +1594,12 @@
         "why": "Feature by feature is how you test whether Shopify Subscriptions is enough. Anything it does not cover raises the subscriptions_app signal and adds an app licence, a data migration of existing subscribers and integration work to the backlog.",
         "sources": [
           "https://help.shopify.com/en/manual/products/purchase-options/subscriptions/shopify-subscriptions"
+        ]
+      },
+      "skip_if": {
+        "question": "Q2.2.1",
+        "excludes": [
+          "subscription"
         ]
       }
     },
@@ -1643,6 +1665,12 @@
         "limits": "Pre-orders need an app. Shopify Payments or PayPal Express only, and Shop Pay, Apple Pay and Google Pay are not available for pre-orders.",
         "sources": [
           "https://help.shopify.com/en/manual/products/purchase-options/pre-orders"
+        ]
+      },
+      "skip_if": {
+        "question": "Q2.2.1",
+        "excludes": [
+          "pre_order"
         ]
       }
     },

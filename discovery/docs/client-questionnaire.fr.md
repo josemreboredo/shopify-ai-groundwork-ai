@@ -342,6 +342,7 @@
 - [ ] Pas encore certain
 
 **Q2.2.2** — Les abonnements passeront-ils par Shopify Subscriptions (l'application de Shopify) ou par une application tierce ? Précisez laquelle si vous la connaissez. *(recommended)*
+*Skip if Q2.2.1 does not include subscription.*
 *Ask if Q2.2.1 includes Subscription.*
 *Shopify Subscriptions : les clients sautent, suspendent et résilient depuis leur compte ; incompatible avec les offres groupées et le B2B.*
 
@@ -349,6 +350,7 @@
 - Subscription app:
 
 **Q2.2.3** — Si vous vendez des offres groupées : que doivent-elles permettre ? *(recommended)*
+*Skip if Q2.2.1 does not include fixed_bundle,multipack,mix_and_match_bundle,bundle,product_set.*
 *Ask if Q2.2.1 includes Fixed bundle, Multipack, Mix and match bundle or Bundle.*
 *Shopify Bundles : jusqu'à 30 composants ; incompatible avec les abonnements et les précommandes ; pas d'imbrication.*
 
@@ -364,6 +366,7 @@
 - [ ] Pas encore certain
 
 **Q2.2.4** — Quelles fonctionnalités d'abonnement sont nécessaires ? *(recommended)*
+*Skip if Q2.2.1 does not include subscription.*
 *Ask if Q2.2.1 includes Subscription.*
 
 *(tick all that apply)*
@@ -379,6 +382,7 @@
 - [ ] Pas encore certain
 
 **Q2.2.5** — Pour les précommandes, à quel moment le client est-il débité ? *(recommended)*
+*Skip if Q2.2.1 does not include pre_order.*
 *Ask if Q2.2.1 includes Pre order.*
 *Les précommandes nécessitent une application dédiée ; les paiements express (Shop Pay, Apple Pay, Google Pay) ne sont pas disponibles pour les précommandes.*
 

@@ -342,6 +342,7 @@
 - [ ] Not sure yet
 
 **Q2.2.2** — Will subscriptions run on Shopify Subscriptions (Shopify's app) or a third-party subscription app? Name the app if known. *(recommended)*
+*Skip if Q2.2.1 does not include subscription.*
 *Ask if Q2.2.1 includes Subscription.*
 *Shopify Subscriptions: customers skip, pause and cancel in their account; not with bundles or B2B.*
 
@@ -349,6 +350,7 @@
 - Subscription app:
 
 **Q2.2.3** — If you sell bundles: what must they do? *(recommended)*
+*Skip if Q2.2.1 does not include fixed_bundle,multipack,mix_and_match_bundle,bundle,product_set.*
 *Ask if Q2.2.1 includes Fixed bundle, Multipack, Mix and match bundle or Bundle.*
 *Shopify Bundles: up to 30 components; not with subscriptions or pre-orders; no nested bundles.*
 
@@ -364,6 +366,7 @@
 - [ ] Not sure yet
 
 **Q2.2.4** — Which subscription features are needed? *(recommended)*
+*Skip if Q2.2.1 does not include subscription.*
 *Ask if Q2.2.1 includes Subscription.*
 
 *(tick all that apply)*
@@ -379,6 +382,7 @@
 - [ ] Not sure yet
 
 **Q2.2.5** — For pre-orders, when is the customer charged? *(recommended)*
+*Skip if Q2.2.1 does not include pre_order.*
 *Ask if Q2.2.1 includes Pre order.*
 *Pre-orders need a pre-order app; express checkouts (Shop Pay, Apple Pay, Google Pay) are not available for pre-orders.*
 
