@@ -18,6 +18,7 @@ export const EPICS = [
   { id: 'markets',      prefix: 'MKT', name: 'Markets & internationalisation', summary: 'Shopify Markets, currencies, languages, domains and duties.' },
   { id: 'checkout',     prefix: 'PAY', name: 'Payments & checkout',            summary: 'Payment providers, checkout configuration and extensions.' },
   { id: 'shipping',     prefix: 'SHP', name: 'Shipping, tax & returns',        summary: 'Delivery profiles, rates, tax set-up, returns and notifications.' },
+  { id: 'retail',       prefix: 'RTL', name: 'Retail & POS',                  summary: 'Locations, Shopify POS, pickup in store, ship from store, in-store returns and stock across the estate.' },
   { id: 'customers',    prefix: 'CUS', name: 'Customers & B2B',                summary: 'Customer accounts, B2B companies, price lists and payment terms.' },
   { id: 'promotions',   prefix: 'PRM', name: 'Promotions & loyalty',           summary: 'Discounts, coupons, gift cards and loyalty programme.' },
   { id: 'marketing',    prefix: 'MKG', name: 'Marketing & analytics',          summary: 'SEO, tracking, email platform and reviews.' },

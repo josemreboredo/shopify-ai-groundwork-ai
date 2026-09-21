@@ -8,6 +8,7 @@ import catalogue from './catalogue.js';
 import markets from './markets.js';
 import checkout from './checkout.js';
 import shipping from './shipping.js';
+import retail from './retail.js';
 import customers from './customers.js';
 import promotions from './promotions.js';
 import marketing from './marketing.js';
@@ -25,6 +26,7 @@ export const STORY_DEFINITIONS = [
   ...markets,
   ...checkout,
   ...shipping,
+  ...retail,
   ...customers,
   ...promotions,
   ...marketing,

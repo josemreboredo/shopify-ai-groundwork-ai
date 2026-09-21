@@ -25,6 +25,7 @@ export default [
     owner: 'agent',
     depends_on: ['LWC-THM-005'],
     spec_refs: ['/marketing/seo/priority_channel', '/marketing/seo/custom_urls', '/marketing/seo/owner', '/markets/seo_per_language'],
+    gates: ['languages'],
     applies: () => true,
     agent_prompt: (doc) => `SEO owner: ${doc.marketing?.seo?.owner ?? 'to confirm'}; priority channel: ${doc.marketing?.seo?.priority_channel ? 'yes' : 'no'}. In ${themeName(doc)}, check title and meta description fallbacks, canonical tags, Open Graph tags and structured data (fix gaps with theme code, not an SEO app, unless approved). Shopify generates sitemap.xml and hreflang natively — do not add custom hreflang. Only customise robots.txt.liquid to block faceted filter parameters if crawl data shows a problem. ${doc.marketing?.seo?.custom_urls ? 'Custom URL structures were requested: explain Shopify\'s fixed /products/ and /collections/ paths and agree handles instead. ' : ''}${languages(doc).length > 1 ? 'Translate SEO fields and handles per language. ' : ''}Hand over an SEO checklist to the SEO owner.`,
   },

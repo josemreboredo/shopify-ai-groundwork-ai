@@ -61,6 +61,12 @@ function maximalEngagement() {
   doc.migration.data = ['products', 'customers', 'orders', 'content', 'redirects', 'reviews', 'gift_cards'];
   // Not headless: that is exit rule 11.26 now, and a STOP has no backlog to
   // build. Every offer is the same Liquid build, one size apart.
+  // Retail and a fourth language: both gates priced work the backlog delivered
+  // nothing for, and the coverage test could not see it because no fixture ever
+  // switched them on.
+  doc.retail = { store_count: 4, pos: 'shopify_pos', countries: ['CH', 'DE'],
+    omnichannel: ['buy_online_pickup_in_store', 'ship_to_customer_from_store', 'in_store_returns_exchanges_of_online_orders', 'endless_aisle_order_in_store', 'store_credit_gift_cards_in_store', 'stock_transfers_counts', 'retail_prices_or_catalogs', 'staff_roles_permissions'] };
+  doc.markets.list = doc.markets.list.map((m, i) => (i === 0 ? { ...m, languages: [...new Set([...(m.languages ?? []), 'en'])] } : m));
   doc.design = { ...doc.design, motion: true, custom_design: true };
   doc.compliance = { ...doc.compliance, legal_pages_status: 'needs_drafting', sensitive_data: false, industry_requirements: ['EU General Product Safety Regulation product safety information'] };
   doc.delivery = { ...doc.delivery, support_model: 'hypercare_only', sops_required: true, phased_launch: true };

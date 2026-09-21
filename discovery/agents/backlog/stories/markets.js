@@ -47,7 +47,7 @@ export default [
     owner: 'client',
     depends_on: ['LWC-MKT-001'],
     spec_refs: ['/markets/list/*/languages', '/markets/translation_method', '/markets/seo_per_language'],
-    gates: ['markets'],
+    gates: ['markets', 'languages'],
     applies: (doc) => languages(doc).length > 1,
     agent_prompt: (doc) => `Publish languages ${list(languages(doc))} and set up translation with ${doc.markets?.translation_method ?? 'the agreed method'}. Translate theme strings, navigation, policies, metafield content and SEO titles/descriptions. Rely on Shopify's native hreflang output.`,
   },

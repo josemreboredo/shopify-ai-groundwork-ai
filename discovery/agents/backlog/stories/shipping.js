@@ -137,6 +137,7 @@ export default [
     owner: 'agent',
     depends_on: ['LWC-THM-001'],
     spec_refs: ['/shipping/notifications/custom', '/shipping/notifications/sender', '/marketing/esp/platform'],
+    gates: ['languages'],
     applies: (doc) => doc.shipping?.notifications?.custom === true,
     agent_prompt: (doc) => `Customise Shopify notification templates (Settings > Notifications): brand settings (logo, accent colour) first, then Liquid template edits only where needed. Translate notification content per language with Translate & Adapt or the agreed method. Sender: ${doc.shipping?.notifications?.sender ?? 'shopify'} — ${doc.shipping?.notifications?.sender === 'esp' || doc.shipping?.notifications?.sender === 'mixed' ? `list which transactional messages ${doc.marketing?.esp?.platform ?? 'the ESP'} sends and disable those in Shopify to avoid duplicates. ` : ''}Send test notifications and check rendering in major email clients.`,
   },
