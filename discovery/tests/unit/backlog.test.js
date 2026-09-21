@@ -44,6 +44,13 @@ function maximalEngagement() {
     warranty_claims: true,
     platform_preference: 'parcelLab',
   };
+  // Combined listings, personalisation and the customs data every cross-border
+  // product needs: asked in the bank, delivered by nothing until now.
+  doc.catalogue.combined_listings = true;
+  doc.catalogue.personalisation = ['text_engraving', 'file_upload', 'paid_add_ons'];
+  doc.catalogue.customs_data_source = 'in_pim';
+  doc.catalogue.shipping_data_source = 'partial';
+  doc.catalogue.storefront_filters = ['size', 'colour', 'material', 'movement'];
   doc.catalogue.inventory = { ...doc.catalogue.inventory, out_of_stock_behaviour: ['back_in_stock_alert', 'pre_order'], low_stock_alerts: true };
   doc.shipping = { ...doc.shipping, model: 'hybrid', provider_3pl: 'ShipBob', fulfilment_locations: 3, routing_rules: ['closest_location', 'custom_rule_function'], rates: ['flat', 'free_above_threshold', 'carrier_calculated'], special_rules: ['Hazardous goods'], returns: { ...doc.shipping.returns, window_days: 30, return_rate_pct: 12, label: 'qr_drop_off', shipping_paid_by: 'merchant', exchange_types: ['any_product', 'store_credit_first'], international_returns: true, inspection_required: true, reason_tracking: true, b2b_returns_online: true } };
   doc.b2b = { ...doc.b2b, volume_discounts: true, payment_terms: ['net_terms'] };
@@ -160,6 +167,21 @@ describe('story definitions', () => {
         assert.doesNotMatch(s.title, /Bucherer/i);
       }
     }
+  });
+
+  test('every gate the offering prices has a story carrying it, fixtures or not', () => {
+    // The fixture-based check below can only see gates that happen to fire in
+    // the data it has. retail_pos was priced at one to five weeks and CHF 8-40k
+    // with no story anywhere, and languages had the work but no label, and
+    // neither showed up for exactly that reason: no fixture switched them on.
+    const carried = new Set(STORY_DEFINITIONS.flatMap((s) => s.gates ?? []));
+    const naked = offering.scope_gates.map((g) => g.id).filter((id) => !carried.has(id));
+    assert.deepEqual(naked, [], 'a gate with a price and no story sells work nothing delivers');
+
+    // And the reverse: a label nobody prices is a story pointing at nothing.
+    const priced = new Set(offering.scope_gates.map((g) => g.id));
+    const orphans = [...carried].filter((id) => !priced.has(id));
+    assert.deepEqual(orphans, [], 'a story labelled with a gate the offering does not have');
   });
 
   test('every active scope gate in the fixtures is delivered by at least one story', () => {
