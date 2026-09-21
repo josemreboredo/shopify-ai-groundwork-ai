@@ -358,7 +358,10 @@ generated from it — if the two disagree, the engine is right and this page is 
 | 11.22 | More than five retail stores in scope | WARN → Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team |
 | 11.23 | Several markets, with the legal entities and pricing still unresolved | FLAG → Market topology and legal-entity mapping workshop before the solution architecture is baselined. |
 | 11.24 | A system to be connected has no test environment to build against | FLAG → A named owner on the client side and a decision before the build starts |
+| 11.25 | A headless storefront below Plus, where only one deployment can be public | FLAG → Agree who reviews where, or price the Plus plan |
 | 11.26 | Content or a front end that lives outside Shopify | STOP → Merkle Arc |
+| 11.27 | One order, more than one delivery address | FLAG → One order per address, an app that does it, or drop the requirement — said in the proposal |
+| 11.28 | A Shop Mini — a build these offers do not price | FLAG → Scoped and priced separately, in this engagement or after it |
 
 ---
 

@@ -60,7 +60,7 @@ function maximalEngagement() {
   // Customer service: the bank had one question on it and that one was about
   // China, so a client running a helpdesk and taking phone orders was scope
   // nobody could see.
-  doc.service = { platform: 'helpdesk_app', platform_name: 'Gorgias', contact_form: 'into_the_helpdesk', orders_on_behalf: true };
+  doc.service = { platform: 'helpdesk_app', platform_name: 'Gorgias', contact_form: 'into_the_helpdesk', orders_on_behalf: true, booking: 'both' };
   doc.loyalty = { components: ['points_purchase', 'vip_tiers', 'referral', 'vip_early_access', 'store_credit'], phase: 'launch', app: 'Smile.io', esp_sync: true };
   doc.promotions = { ...doc.promotions, discount_types: ['percentage', 'fixed_amount', 'bogo', 'free_shipping', 'volume_tiered', 'automatic', 'code_based', 'scheduled_sale', 'stackable', 'pos_only'], stacking: 'custom_logic_function', gift_cards: { as_product: true, as_reward: true, format: 'both', expiry: false }, campaigns: { esp_triggered: true, landing_pages: true, countdown_timer: true, market_specific: true } };
   doc.marketing.analytics = { ...doc.marketing.analytics, server_side: true, custom_events: ['size_guide_open'] };

@@ -8986,6 +8986,55 @@
       }
     },
     {
+      "id": "Q9.2.12",
+      "subsection": "9.2",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "enum",
+      "text": "Do you want a presence inside Shopify’s Shop app — a Shop Mini?",
+      "help": "A full-screen shopping experience inside the Shop app. It is not your own app and not a headless storefront.",
+      "maps_to": [
+        "/design/shop_mini"
+      ],
+      "feeds": [
+        "exit:11.28"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Shop Minis React SDK",
+            "plan": "basic",
+            "docs": "https://shopify.dev/docs/api/shop-minis"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-21",
+          "source": "shopify.dev",
+          "edition": "Spring '26"
+        }
+      },
+      "teach": {
+        "why": "Wanting to be on a phone does not mean building an app. A Shop Mini reaches Shop’s buyers without a storefront of your own and without leaving Shopify; a standalone native app is the Storefront API plus Checkout Kit, which is a headless build and a different engagement.",
+        "limits": "A Mini \"must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop.\" It is built with the Shop Minis React SDK, so it is React Native work rather than theme work.",
+        "options": [
+          {
+            "option": "Shop Mini",
+            "pros": "Reaches Shop’s buyers, stays inside Shopify, and the commerce engine is the store you already have.",
+            "cons": "Lives only inside Shop — no icon on a home screen and no presence outside that app."
+          },
+          {
+            "option": "Your own native app",
+            "pros": "Your brand on the home screen, your notifications, your rules.",
+            "cons": "Storefront API plus Checkout Kit: a headless build, which leaves these offers and is scoped by Merkle Arc."
+          }
+        ],
+        "sources": [
+          "https://shopify.dev/docs/api/shop-minis",
+          "https://shopify.dev/docs/storefronts/headless/mobile-apps"
+        ]
+      }
+    },
+    {
       "id": "Q9.3.1",
       "subsection": "9.3",
       "priority": "required",
@@ -9599,6 +9648,62 @@
         "limits": "Draft orders are created in the admin or through the API; the customer pays by invoice link. Staff need the right permission, and the order still has to pick up the correct market prices and tax.",
         "sources": [
           "https://help.shopify.com/en/manual/fulfillment/managing-orders/create-orders"
+        ]
+      }
+    },
+    {
+      "id": "Q6.5.5",
+      "subsection": "6.5",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "enum",
+      "text": "Do customers book a slot with you — an in-store appointment, a virtual consultation, or both?",
+      "help": "Booking is not a Shopify feature; it is an App Store category, and the app is what holds the calendar.",
+      "maps_to": [
+        "/service/booking"
+      ],
+      "feeds": [
+        "app:booking_app"
+      ],
+      "ask_if": [
+        {
+          "pointer": "/retail/store_count",
+          "min": 1
+        },
+        {
+          "pointer": "/catalogue/product_types",
+          "includes_any": [
+            "virtual",
+            "made_to_order"
+          ]
+        },
+        {
+          "pointer": "/business/operational_pain",
+          "matches": "appointment|booking|consultation|fitting|showroom|reservation"
+        }
+      ],
+      "shopify": {
+        "native": [],
+        "app_category": {
+          "name": "Event booking",
+          "url": "https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking"
+        },
+        "apps": [
+          "cowlendar",
+          "appointments-and-bookings",
+          "appointly"
+        ],
+        "verified": {
+          "on": "2026-09-21",
+          "source": "apps.shopify.com",
+          "edition": "Spring '26"
+        }
+      },
+      "teach": {
+        "why": "A boutique appointment or a fitting is a real part of how some brands sell, and Shopify has nothing native for it — so it is an app with a licence, a calendar owner and a place in the staff’s day, decided on the ladder like any other app rather than assumed into the theme.",
+        "limits": "No native Shopify booking feature: appointments and services are an App Store category. Multi-location scheduling, staff portals, deposits and reminders differ by app, so the shortlist is made against what this client actually needs.",
+        "sources": [
+          "https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking"
         ]
       }
     }

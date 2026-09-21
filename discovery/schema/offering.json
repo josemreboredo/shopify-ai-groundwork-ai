@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.9.0",
+  "version": "2.11.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -1495,6 +1495,17 @@
         "/shipping/multi_address_orders"
       ],
       "label": "One order, more than one delivery address"
+    },
+    {
+      "id": "11.28",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "A presence inside Shopify's Shop app — a Shop Mini. It stays inside Shopify and sells the same store, but it is not theme work: Minis are \"immersive, full-screen buyer experiences within the Shop app\" built with the Shop Minis React SDK, and a Mini \"must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop\". Publishing one also needs Manage apps permission in the Partner organisation. None of these offers estimates React Native work",
+      "destination": "Not included in S, M or L: scope and price the Mini separately, and agree whether it runs in this engagement or after it",
+      "inputs": [
+        "/design/shop_mini"
+      ],
+      "label": "A Shop Mini — a build these offers do not price"
     }
   ],
   "routes": [
@@ -1677,6 +1688,14 @@
         "/compliance/invoicing/e_invoicing",
         "/markets/duties_ddp",
         "/markets/list/*/code"
+      ]
+    },
+    {
+      "id": "booking_app",
+      "label": "Appointments and booking",
+      "inputs": [
+        "/service/booking",
+        "/retail/store_count"
       ]
     }
   ],

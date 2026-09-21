@@ -258,6 +258,28 @@ const EVALUATORS = {
    * design system describes, and building one is the storefront design gate at
    * its bespoke tier, inside the offers, priced.
    */
+  /*
+   * A Shop Mini is a build, and not one of these.
+   *
+   * Verified 2026-09-21: Shop Minis are "immersive, full-screen buyer
+   * experiences within the Shop app", built with the Shop Minis React SDK, and
+   * a Mini "must function solely within the Shop app; it cannot be a standalone
+   * app that operates outside of the Shop" (shopify.dev/docs/api/shop-minis).
+   * So it is neither headless — nothing leaves Shopify — nor theme work, which
+   * is what S, M and L estimate. It is React Native, and no gate prices it.
+   *
+   * "Later" flags too, deliberately: the decision that matters is whether the
+   * Mini is in this engagement or a separate one, and that is decided before
+   * the build, not after it.
+   */
+  '11.28': (doc) => {
+    const want = doc.design?.shop_mini;
+    if (want !== 'now' && want !== 'later') return null;
+    return want === 'now'
+      ? 'A Shop Mini in this engagement: React SDK work inside the Shop app, which these offers do not estimate'
+      : 'A Shop Mini wanted later: React SDK work inside the Shop app, which these offers do not estimate';
+  },
+
   '11.26': (doc) => {
     const h = doc.design?.headless ?? {};
     const outsideContent = h.content_source === 'headless_cms' || h.content_source === 'pim';

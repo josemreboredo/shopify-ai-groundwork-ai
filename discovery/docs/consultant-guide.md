@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 2.9.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 2.11.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 122 of 304 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 124 of 306 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -2324,6 +2324,19 @@ Sources: https://apps.shopify.com/categories/store-management-support
 
 Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/create-orders
 
+**Q6.5.5** — Do customers book a slot with you — an in-store appointment, a virtual consultation, or both? *(recommended · client)*
+Drives: app signal Appointments and booking
+Quick interview: ask if Q5.6.1 is 1 or more, or Q2.2.1 includes Virtual or Made to order, or Q0.3.1 mentions appointment, booking, consultation, fitting, showroom or reservation
+
+**Why it matters.** A boutique appointment or a fitting is a real part of how some brands sell, and Shopify has nothing native for it — so it is an app with a licence, a calendar owner and a place in the staff’s day, decided on the ladder like any other app rather than assumed into the theme.
+
+**Limits.** No native Shopify booking feature: appointments and services are an App Store category. Multi-location scheduling, staff portals, deposits and reminders differ by app, so the shortlist is made against what this client actually needs.
+
+Sources: https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking
+
+If native is not enough: [Event booking](https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking) — [Appointment Booking Cowlendar](https://apps.shopify.com/cowlendar), [Easy Appointment Booking App](https://apps.shopify.com/appointments-and-bookings), [Appointment Booking App Apntly](https://apps.shopify.com/appointly)
+*Verified 2026-09-21 against apps.shopify.com (Spring '26).*
+
 ---
 
 ## § 7 — Marketing & promotions
@@ -3084,6 +3097,25 @@ Sources: https://help.shopify.com/en/manual/markets/rollouts
 If native is not enough: App Store — [Shoplift ‑ CRO & A/B Testing](https://apps.shopify.com/shoplift)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
+**Q9.2.12** — Do you want a presence inside Shopify’s Shop app — a Shop Mini? *(recommended · client)*
+Drives: rule 11.28 (FLAG)
+
+**Why it matters.** Wanting to be on a phone does not mean building an app. A Shop Mini reaches Shop’s buyers without a storefront of your own and without leaving Shopify; a standalone native app is the Storefront API plus Checkout Kit, which is a headless build and a different engagement.
+
+| Option | Pros | Cons |
+|---|---|---|
+| Shop Mini | Reaches Shop’s buyers, stays inside Shopify, and the commerce engine is the store you already have. | Lives only inside Shop — no icon on a home screen and no presence outside that app. |
+| Your own native app | Your brand on the home screen, your notifications, your rules. | Storefront API plus Checkout Kit: a headless build, which leaves these offers and is scoped by Merkle Arc. |
+
+**Limits.** A Mini "must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop." It is built with the Shop Minis React SDK, so it is React Native work rather than theme work.
+
+Sources: https://shopify.dev/docs/api/shop-minis · https://shopify.dev/docs/storefronts/headless/mobile-apps
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shop Minis React SDK | Basic |  | https://shopify.dev/docs/api/shop-minis |
+*Verified 2026-09-21 against shopify.dev (Spring '26).*
+
 ### 9.3 Accessibility
 
 **Q9.3.1** — Which accessibility standard applies? *(required · client)*
@@ -3322,3 +3354,4 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.25 | FLAG | A headless storefront on a plan below Shopify Plus. Oxygen storefronts always have a production and a preview environment and custom ones besides, but only one environment can be public: the limit is 1 on Starter, Basic, Grow and Advanced against 25 on Plus. Every other deployment needs a login to the store, which constrains how many review links can run in parallel with client stakeholders | A named owner before the build starts: agree who reviews where, or price the Plus plan | Q1.2.3, Q9.2.1 |
 | 11.26 | STOP | The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track | Merkle Arc — not quoted or estimated here; the Arc practice scopes it | Q9.2.6, Q9.2.8, Q9.2.11 |
 | 11.27 | FLAG | One order delivered to more than one address — gifting to several recipients, or a wholesale buyer splitting a single order across branches. Shopify has no way to do this: split shipping divides an order into several shipments when items cannot travel together, but every shipment goes to the same address, and it does not apply to accelerated checkouts or to draft orders that already carry a shipping line | Decide before the build: one order per address, an app that does it, or drop the requirement — and say which in the proposal | Q5.1.15 |
+| 11.28 | FLAG | A presence inside Shopify's Shop app — a Shop Mini. It stays inside Shopify and sells the same store, but it is not theme work: Minis are "immersive, full-screen buyer experiences within the Shop app" built with the Shop Minis React SDK, and a Mini "must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop". Publishing one also needs Manage apps permission in the Partner organisation. None of these offers estimates React Native work | Not included in S, M or L: scope and price the Mini separately, and agree whether it runs in this engagement or after it | Q9.2.12 |

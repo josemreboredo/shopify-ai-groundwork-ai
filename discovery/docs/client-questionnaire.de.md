@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.2.0 · offering 2.9.0
+> **Version:** question bank 1.2.0 · offering 2.11.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -1725,6 +1725,17 @@
 - [ ] Yes
 - [ ] No
 
+**Q6.5.5** — Buchen Ihre Kundinnen und Kunden Termine bei Ihnen — im Geschäft, als virtuelle Beratung oder beides? *(recommended)*
+*Ask if Q5.6.1 is 1 or more, or Q2.2.1 includes Virtual or Made to order, or Q0.3.1 mentions appointment, booking, consultation, fitting, showroom or reservation.*
+*Buchung ist keine Shopify-Funktion, sondern eine App-Store-Kategorie, und die App hält den Kalender.*
+
+*(tick one)*
+- [ ] Termine im Geschäft
+- [ ] Virtuelle Beratung
+- [ ] Beides
+- [ ] Keine
+- [ ] Noch unklar
+
 ---
 
 ## § 7 — Marketing & Promotions
@@ -2267,6 +2278,15 @@
 
 - [ ] Yes
 - [ ] No
+
+**Q9.2.12** — Möchten Sie in Shopifys Shop-App präsent sein — mit einem Shop Mini? *(recommended)*
+*Ein bildschirmfüllendes Einkaufserlebnis innerhalb der Shop-App. Es ist weder eine eigene App noch eine Headless-Storefront.*
+
+*(tick one)*
+- [ ] Jetzt
+- [ ] Später
+- [ ] Nein
+- [ ] Noch unklar
 
 ### 9.3 Barrierefreiheit
 

@@ -1,7 +1,7 @@
 {
   "$comment": "Questionnaire in de: what the client is asked and what the consultant reads while asking. Answers, summary, approach, deck and annex stay in English. Every string falls back to English when it is missing here.",
   "language": "de",
-  "updated": "2026-09-20",
+  "updated": "2026-09-21",
   "translated_from": {
     "Q0.1.1": "6ac73457cb2d",
     "Q0.1.2": "12eaa48ddc15",
@@ -138,6 +138,7 @@
     "Q5.1.12": "b73ebd6a2536",
     "Q5.1.13": "15f4759e40ce",
     "Q5.1.14": "ae7088886cf1",
+    "Q5.1.15": "40d15cf25cdc",
     "Q5.2.1": "ef6a27675207",
     "Q5.2.2": "8629366b7bb3",
     "Q5.2.3": "579ececa0805",
@@ -251,6 +252,36 @@
     "Q7.7.11": "c19c2dbafa8f",
     "Q7.7.12": "faef61349177",
     "Q7.7.13": "422197260889",
+    "Q8.1.1": "f1c272bb20a3",
+    "Q8.1.2": "4a2c019a0ceb",
+    "Q8.1.3": "b6bfc79e81e8",
+    "Q8.2.2": "bc863f9739a7",
+    "Q8.2.3": "6a6942ff7be2",
+    "Q8.2.4": "4a9da6ae4a6b",
+    "Q8.2.5": "877f890ced7e",
+    "Q8.2.6": "e5d979ba6410",
+    "Q9.1.1": "47e6d121842d",
+    "Q9.1.2": "2feb36b7a4bb",
+    "Q9.1.3": "10db3f545989",
+    "Q9.1.4": "fa6b55ef043d",
+    "Q9.1.5": "7d067caf1a34",
+    "Q9.2.1": "e046701406eb",
+    "Q9.2.2": "1cf06cb38140",
+    "Q9.2.3": "0088c055e7d4",
+    "Q9.2.4": "8b3cff99df17",
+    "Q9.2.5": "2d10b090d382",
+    "Q9.2.6": "a228475deec7",
+    "Q9.2.7": "d7cbd7c34f83",
+    "Q9.2.8": "719244a9158e",
+    "Q9.2.11": "01272779a513",
+    "Q9.2.9": "efe1ac926233",
+    "Q9.2.10": "a0d69c0f580a",
+    "Q9.2.12": "2ed9234dcc0e",
+    "Q9.3.1": "6bf3ad8d2c48",
+    "Q9.3.2": "6630ad795cac",
+    "Q9.4.1": "0d36dc79db10",
+    "Q9.4.2": "362eb5c47373",
+    "Q9.4.3": "0a2675fcb9a2",
     "Q10.1.1": "b9f70fd27510",
     "Q10.1.2": "bc4cf14af9af",
     "Q10.1.3": "7397293d9263",
@@ -273,40 +304,11 @@
     "Q10.5.3": "6bd26d662947",
     "Q10.5.4": "e4dc02253672",
     "Q10.5.5": "979e27fa1d32",
-    "Q8.1.1": "f1c272bb20a3",
-    "Q8.1.2": "4a2c019a0ceb",
-    "Q8.1.3": "b6bfc79e81e8",
-    "Q8.2.2": "bc863f9739a7",
-    "Q8.2.3": "6a6942ff7be2",
-    "Q8.2.4": "4a9da6ae4a6b",
-    "Q8.2.5": "877f890ced7e",
-    "Q8.2.6": "e5d979ba6410",
-    "Q9.1.1": "47e6d121842d",
-    "Q9.1.2": "2feb36b7a4bb",
-    "Q9.1.3": "10db3f545989",
-    "Q9.1.4": "fa6b55ef043d",
-    "Q9.1.5": "7d067caf1a34",
-    "Q9.2.1": "e046701406eb",
-    "Q9.2.2": "1cf06cb38140",
-    "Q9.2.3": "0088c055e7d4",
-    "Q9.2.4": "8b3cff99df17",
-    "Q9.2.5": "2d10b090d382",
-    "Q9.2.6": "a228475deec7",
-    "Q9.2.7": "d7cbd7c34f83",
-    "Q9.2.8": "719244a9158e",
-    "Q9.2.9": "efe1ac926233",
-    "Q9.2.10": "a0d69c0f580a",
-    "Q9.3.1": "6bf3ad8d2c48",
-    "Q9.3.2": "6630ad795cac",
-    "Q9.4.1": "0d36dc79db10",
-    "Q9.4.2": "362eb5c47373",
-    "Q9.4.3": "0a2675fcb9a2",
-    "Q9.2.11": "01272779a513",
     "Q6.5.1": "0e29baa1030e",
     "Q6.5.2": "0bc52d1b699c",
     "Q6.5.3": "b118523702dc",
     "Q6.5.4": "2fc09133ccfa",
-    "Q5.1.15": "40d15cf25cdc"
+    "Q6.5.5": "806c31083c6b"
   },
   "sections": {
     "0": "Geschäftsziele",
@@ -374,9 +376,9 @@
     "10.5": "Projekt-Setup (Consultant)"
   },
   "options": {
+    "1_hour": "Innerhalb von 1 Stunde",
     "100k_to_1m": "100.000 bis 1 Million",
     "15_minutes": "Innerhalb von 15 Minuten",
-    "1_hour": "Innerhalb von 1 Stunde",
     "24_hours": "Innerhalb von 24 Stunden",
     "3pl": "Logistikdienstleister (3PL)",
     "3pl_system": "System des 3PL",
@@ -532,6 +534,7 @@
     "in_house": "Im eigenen Haus",
     "in_pim": "Im PIM",
     "in_progress": "In Arbeit",
+    "in_store_appointments": "Termine im Geschäft",
     "in_store_returns_exchanges_of_online_orders": "Retouren und Umtausch von Online-Bestellungen in der Filiale",
     "include_everywhere": "Überall inklusive Steuer",
     "inside_china": "Innerhalb Chinas",
@@ -768,6 +771,7 @@
     "vip_early_access": "VIP-Vorabzugang",
     "vip_tiers": "VIP-Stufen",
     "virtual": "Virtuell",
+    "virtual_consultations": "Virtuelle Beratung",
     "volume_tiered": "Mengenstaffel",
     "wechat_mini_program": "WeChat-Mini-Programm",
     "weight_or_price_based": "Nach Gewicht oder Wert",
@@ -2107,6 +2111,14 @@
         "limits": "Über Shopify gekaufte USPS- und FedEx-Labels unterstützen keine Gefahrstoffe."
       }
     },
+    "Q5.1.15": {
+      "text": "Muss eine einzelne Bestellung jemals an mehr als eine Adresse gehen — Geschenke an mehrere Empfänger, oder eine Großhandelsbestellung, die auf Filialen aufgeteilt wird?",
+      "help": "Etwas anderes, als wenn eine Bestellung in mehreren Paketen ankommt — das macht Shopify von selbst.",
+      "teach": {
+        "why": "Shopify kann eine Bestellung nicht an mehr als eine Adresse liefern. Spät gefragt, wird daraus ein Change Request im UAT; jetzt gefragt, lautet die Antwort: eine Bestellung je Adresse, eine App, oder die Anforderung fällt — und alle drei sind billiger als die Entdeckung.",
+        "limits": "Split Shipping teilt eine Bestellung in mehrere Sendungen, wenn Artikel nicht zusammen reisen können — eine Vorbestellzeile, ein Abo, Bestand an verschiedenen Standorten, unterschiedliche Versandprofile — und die Kundin wählt je Sendung eine Versandoption. Jede Sendung geht weiterhin an eine Adresse, die Aufteilung lässt sich nicht selbst wählen, und Split Shipping gilt weder für beschleunigte Checkouts noch für Entwurfsaufträge, die bereits eine Versandzeile tragen."
+      }
+    },
     "Q5.2.1": {
       "text": "Fassen Sie die Retourenrichtlinie zusammen (Frist, Bedingungen, wer das Rücksendeporto trägt).",
       "teach": {
@@ -3215,203 +3227,6 @@
         "limits": "Die Anmeldung abzuschalten kann in manchen Kanälen bis zu sieben Tage brauchen, bis es wirkt."
       }
     },
-    "Q10.1.1": {
-      "text": "Was ist der angestrebte Go-live-Termin?",
-      "help": "Ein Termin, der früher liegt als die Lieferzeit, die der Umfang braucht, führt zu einem phasenweisen Plan nach dem MVP-Prinzip.",
-      "teach": {
-        "why": "Der Go-live-Termin legt den gesamten Plan fest. Exit-Regel 11.15 vergleicht die Wochen vom Kick-off bis zum Go-live mit der Mindestdauer des Angebots; liegt der Termin zu früh, wird das Engagement vor dem ersten Sprint nach dem MVP-Prinzip neu zugeschnitten.",
-        "limits": "Regel 11.15 zählt ab delivery.kickoff_date und fällt auf das Anlagedatum der Discovery zurück — ein unbekannter Kick-off macht die Prüfung also optimistisch."
-      }
-    },
-    "Q10.1.2": {
-      "text": "Woraus ergibt sich der Termin (Hochsaison, Produktlaunch, Vertragsende)?",
-      "teach": {
-        "why": "Ein Termin, der von etwas außerhalb des Projekts gesetzt wird — Hochsaison, Kollektionsstart, Vertragsende —, lässt sich nicht verschieben. Das verändert das Risikoregister: Nicht der Termin, sondern der Umfang nimmt jede Verzögerung auf. Ein weiches internes Ziel lässt Verhandlungsspielraum."
-      }
-    },
-    "Q10.1.3": {
-      "text": "Ist ein phasenweiser Launch geplant?",
-      "teach": {
-        "why": "Zeigt, ob Sie einen Launch planen oder mehrere. Ein phasenweiser Launch hält das erste Release schmal und schiebt die riskanten Teile nach hinten; ein einzelner Launch heißt, dass am Tag X alles fertig sein muss.",
-        "options": [
-          {
-            "option": "Phasenweiser Launch",
-            "pros": "Früherer Go-live bei schmalem Umfang; riskante Arbeit wandert in eine spätere Phase; echter Traffic informiert, was als Nächstes kommt.",
-            "cons": "Mehr Releases zu planen, zu testen und zu betreuen, und der Kunde lebt eine Weile mit bekannten Lücken."
-          },
-          {
-            "option": "Einzelner Launch",
-            "pros": "Eine Umstellung, ein Kommunikationsmoment, nichts Halbfertiges im Shop.",
-            "cons": "Alles muss zum Termin fertig sein; jede Verzögerung verschiebt den gesamten Launch."
-          }
-        ]
-      }
-    },
-    "Q10.1.4": {
-      "text": "Gewünschter Kick-off-Termin für das Projekt.",
-      "teach": {
-        "why": "Der Kick-off startet die Uhr, die Exit-Regel 11.15 nutzt — die verfügbaren Wochen werden ab hier gezählt. Ein später Kick-off bei festem Go-live verkürzt die Lieferung, ohne den Umfang zu verkürzen, und das soll in der Discovery sichtbar sein und nicht im zweiten Sprint."
-      }
-    },
-    "Q10.2.1": {
-      "text": "Wer ist auf Kundenseite beteiligt? Je Person: Rolle, RACI (R/A/C/I), entscheidungsbefugt (ja/nein). Namen sind optional.",
-      "teach": {
-        "why": "Die RACI-Aufstellung zeigt, wer freigibt, wer konsultiert werden muss und wer nur informiert wird. Jedes „C“ fügt jeder Design-, Content- und Umfangsprüfung eine Feedbackschleife hinzu, und nicht benannte Freigebende tauchen später als Verzögerung auf."
-      }
-    },
-    "Q10.2.2": {
-      "text": "Gibt es eine einzige entscheidungsbefugte Person für Umfang, Freigaben und Rückmeldungen?",
-      "help": "Eine einzige entscheidungsbefugte Person muss vor dem Leistungsschein benannt sein.",
-      "teach": {
-        "why": "Exit-Regel 11.16 markiert das. Ohne eine benannte entscheidungsbefugte Person bekommen Umfangsfragen mehrere Antworten und Freigaben bleiben stecken — die häufigste Ursache für Überschreitungen. Der Name muss vor Unterzeichnung des Leistungsscheins bestätigt sein.",
-        "limits": "Regel 11.16 ist ein FLAG, kein STOPP: Die Discovery läuft weiter, das Flag muss aber vor der Unterschrift geklärt sein."
-      }
-    },
-    "Q10.2.3": {
-      "text": "Ist klar, wer das Budget freigeben darf?",
-      "teach": {
-        "why": "Dieselbe Exit-Regel 11.16. Kann niemand zu Geld Ja sagen, ist der vereinbarte Umfang vorläufig — Änderungsanträge, Apps mit monatlichen Gebühren und der Retainer bleiben alle stecken. Benennen Sie die budgetverantwortliche Person vor dem Leistungsschein.",
-        "limits": "Regel 11.16 ist ein FLAG, kein STOPP: Die Discovery läuft weiter, die budgetverantwortliche Person muss aber vor der Unterschrift bestätigt sein."
-      }
-    },
-    "Q10.3.1": {
-      "text": "Welche Schulungen werden benötigt (Produkte, Bestellungen, Rabatte, Auswertungen)?",
-      "teach": {
-        "why": "Das entscheidet, wie viel Übergabe Sie bauen und bepreisen. Schulungen zu Produkten, Bestellungen, Rabatten und Auswertungen sind echte Lieferarbeit — Termine, Unterlagen, Aufzeichnungen. Alles, was hier nicht steht, liegt außerhalb des Umfangs und kommt später als Supportticket zurück."
-      }
-    },
-    "Q10.3.2": {
-      "text": "Werden schriftliche Arbeitsanweisungen benötigt?",
-      "teach": {
-        "why": "Schriftliche Arbeitsanweisungen sind ein eigenes Lieferergebnis: Jemand schreibt, prüft und pflegt sie. Jetzt zu fragen verhindert, dass sie im letzten Sprint als ungeplante Anforderung auftauchen.",
-        "options": [
-          {
-            "option": "Schriftliche Arbeitsanweisungen werden geliefert",
-            "pros": "Das Team des Kunden kann den Store ohne Hilfe betreiben; weniger Supporttickets und weniger Abhängigkeit von Einzelpersonen.",
-            "cons": "Schreiben, Prüfen und Pflegen ist Aufwand, der geplant und bepreist werden muss."
-          },
-          {
-            "option": "Keine schriftlichen Arbeitsanweisungen",
-            "pros": "Leichtere Übergabe; Live-Schulung und Aufzeichnungen können für ein kleines Team genügen.",
-            "cons": "Das Wissen bleibt bei Einzelnen, und jede Änderung wird zur Frage an den Retainer."
-          }
-        ]
-      }
-    },
-    "Q10.3.3": {
-      "text": "Welches Supportmodell nach dem Launch wird erwartet?",
-      "teach": {
-        "why": "Das prägt alles nach dem Go-live: Wer repariert am Wochenende einen kaputten Checkout, wer lädt die Kollektion der nächsten Saison ein. Das erwartete Modell treibt das Gespräch über den Retainer und entscheidet, welches Team nach dem Launch bleibt.",
-        "options": [
-          {
-            "option": "Laufender Retainer",
-            "pros": "Benanntes Team, vereinbarte Reaktionszeiten und geplante Verbesserungen nach dem Go-live.",
-            "cons": "Eine wiederkehrende Verpflichtung, die der Kunde einplanen und freigeben muss."
-          },
-          {
-            "option": "Support auf Anfrage",
-            "pros": "Der Kunde zahlt nur, wenn tatsächlich etwas gebraucht wird.",
-            "cons": "Keine zugesagte Verfügbarkeit; dringende Korrekturen konkurrieren mit anderer Arbeit und kosten mehr."
-          },
-          {
-            "option": "Das eigene Team des Kunden betreibt ihn",
-            "pros": "Geringste laufende Kosten und die schnellste interne Umsetzung von Routineänderungen.",
-            "cons": "Erfordert vollständige Schulung und Arbeitsanweisungen zur Übergabe, was den Lieferumfang vergrößert."
-          }
-        ]
-      }
-    },
-    "Q10.3.4": {
-      "text": "Ist der Grow-Retainer unterschrieben?",
-      "teach": {
-        "why": "Exit-Regel 11.11 warnt, wenn ein M- oder L-Engagement keinen unterschriebenen Grow-Retainer hat. Der Build wird unter der Annahme kalkuliert, dass die Arbeit nach dem Launch weitergeht; ohne Unterschrift werden die Konditionen angepasst. Prüfen Sie die Unterschrift, nicht die Absicht.",
-        "limits": "Regel 11.11 ist eine WARNUNG und gilt nur für M- und L-Engagements; sie stoppt die Discovery nicht."
-      }
-    },
-    "Q10.3.5": {
-      "text": "Laufzeit des Retainers in Monaten.",
-      "teach": {
-        "why": "Die Laufzeit entscheidet, wie lange das Team bleibt und wie viel Arbeit nach dem Launch bereits abgedeckt ist. Sie fließt in das kommerzielle Modell und sagt dem Kunden genau, was er nach dem Go-live bekommt, statt es offen zu lassen."
-      }
-    },
-    "Q10.3.6": {
-      "text": "Wird der Kunde Apps und Shopify-Funktionen nach dem Launch bei jeder Shopify Edition neu prüfen?",
-      "teach": {
-        "why": "Shopify kündigt zu jeder Edition Plattformänderungen an, und die Apps und Funktionen, von denen der Store abhängt, können sich ändern. Jemand muss sie neu prüfen. Ein Nein heißt hier, dass niemand beobachtet, wie der Store abdriftet — und das wird meist zu Retainer-Arbeit."
-      }
-    },
-    "Q10.4.1": {
-      "text": "Ist das Geschäft in einer regulierten Branche tätig (Pharma, Alkohol, Waffen, altersbeschränkte Waren, Finanzprodukte, Medizinprodukte)? Falls ja, in welcher?",
-      "help": "Eine regulierte Branche erfordert eine rechtliche Prüfung. Shopify hat eigene Regeln: Alkohol braucht zum Beispiel eine Altersprüfung; manche Geschäftsarten können Shopify Payments nicht nutzen.",
-      "teach": {
-        "why": "Das ist ein STOPP. Exit-Regel 11.8 schickt jedes regulierte Geschäft — Pharma, Alkohol, Waffen, altersbeschränkte Waren, Finanzprodukte, Medizinprodukte — in die Rechts- und Compliance-Prüfung. Shopify hat außerdem eigene Regeln, und manche Geschäftsarten können Shopify Payments nicht nutzen.",
-        "limits": "Shopifys Regeln für regulierte Waren (etwa Alkohol) gelten ab dem Basic-Plan; Apps zur Altersprüfung stehen auf der Auswahlliste. Geprüft am 17.09.2026."
-      }
-    },
-    "Q10.4.2": {
-      "text": "Sind die Rechtstexte (AGB, Datenschutz, Cookies, Retouren) fertig, aktualisierungsbedürftig oder noch zu erstellen?",
-      "teach": {
-        "why": "Rechtstexte sind Inhalte, die jemand vor dem Launch schreiben, freigeben und veröffentlichen muss. „Noch zu erstellen“ ist eine Kundenaufgabe auf dem kritischen Pfad, meist mit einer Rechtsberatung dabei — keine Theme-Aufgabe, die sich in einem Sprint erledigen lässt."
-      }
-    },
-    "Q10.4.3": {
-      "text": "Gibt es weitere branchenspezifische Compliance-Anforderungen?",
-      "teach": {
-        "why": "Das fängt die Anforderung ein, an die niemand gedacht hat — Zulassungen, Kennzeichnung, Aufbewahrungspflichten, Branchenkodizes. Es ist das Sicherheitsnetz für Exit-Regel 11.8: Alles, was hier genannt wird, geht in dieselbe rechtliche Prüfung, bevor der Umfang festgezurrt wird."
-      }
-    },
-    "Q10.4.4": {
-      "text": "Sind Geschäft und Sortiment für Shopify Payments zulässig (keine eingeschränkten oder verbotenen Kategorien)?",
-      "teach": {
-        "why": "Shopify Payments steht nicht jedem Land und nicht jeder Geschäftskategorie offen. Ist der Kunde nicht zulässig, ändern sich der Zahlungs-Stack, die Gebühren und ein Teil des Checkout-Erlebnisses — das muss also in der Discovery geklärt werden, nicht beim Launch.",
-        "limits": "Die Zulässigkeit hängt vom Land des Stores und den verkauften Produktkategorien ab; maßgeblich ist die Seite mit den unterstützten Ländern. Geprüft am 17.09.2026."
-      }
-    },
-    "Q10.5.1": {
-      "text": "Lead Consultant.",
-      "teach": {
-        "why": "Die benannte Beratung verantwortet den Engagement-Datensatz. Jedes Artefakt, das das Werkzeug erzeugt — Engagement-Datei, Deck, Backlog, Abschlussdokument —, trägt diesen Namen, damit jede Antwort und jede Einschätzung auf eine Person zurückführbar ist."
-      }
-    },
-    "Q10.5.2": {
-      "text": "Hat der Kunde zugestimmt, dass die Antworten von der KI-Discovery-Engine verarbeitet werden dürfen (keine personenbezogenen Kundendaten enthalten)?",
-      "help": "ADR 0007 — die Engine verweigert den Betrieb ohne erfasste Einwilligung.",
-      "teach": {
-        "why": "Nach ADR 0007 verweigert die Engine den Betrieb ohne erfasste Einwilligung. Es wird nichts verarbeitet, gespeichert oder erzeugt, bevor der Kunde der KI-Verarbeitung zugestimmt hat. Erfassen Sie sie ausdrücklich, und halten Sie personenbezogene Kundendaten ohnehin aus den Antworten heraus.",
-        "limits": "Die Einwilligung deckt ausschließlich die Discovery-Antworten ab; personenbezogene Kundendaten dürfen niemals eingegeben werden, mit oder ohne Einwilligung."
-      }
-    },
-    "Q10.5.3": {
-      "text": "Jira-Instanz und Projektschlüssel für das Backlog.",
-      "teach": {
-        "why": "Das Backlog wird für den Import in das Jira des Kunden erzeugt. Instanz und Projektschlüssel sagen dem Werkzeug, wohin die Tickets gehören; ohne sie ist der Export generisch und jemand tippt ihn von Hand nach."
-      }
-    },
-    "Q10.5.4": {
-      "text": "Zu verwendende Jira-Komponenten.",
-      "teach": {
-        "why": "Komponenten sorgen dafür, dass die erzeugten Tickets in der bestehenden Jira-Struktur des Kunden landen statt als flache Liste. Das ist der Unterschied zwischen einem Backlog, mit dem das Lieferteam am ersten Tag arbeiten kann, und einem, das erst jemand sortieren muss."
-      }
-    },
-    "Q10.5.5": {
-      "text": "Die Anforderungen gehen über die Angebote S, M und L hinaus. Wie geht Merkle vor: Larger Engagement oder Merkle Arc?",
-      "help": "Larger Engagement: Merkle schlägt ein Enterprise Engagement mit einer eigenen Discovery-Phase vor; Approach, Brief und Kundendeck entstehen weiterhin, Jira-Tickets nicht. Merkle Arc: Die Storefront ist kein Shopify-Theme, also kalkuliert und liefert die Arc-Practice sie als eigenes Engagement — die Discovery und der Approach gehen mit hinüber, und hier wird dafür weder ein Angebot noch eine Schätzung erzeugt. Ein Verzicht auf ein Angebot wird stattdessen im Outcome-Ledger festgehalten, sobald die Entscheidung wirklich gefallen ist.",
-      "teach": {
-        "why": "Nach einem STOPP kann das Engagement nicht als Standardangebot weiterlaufen, und das Werkzeug muss wissen, welches Ergebnis es erzeugen soll. Larger Engagement entwirft Approach, Brief und Kundendeck ohne Jira-Tickets. Merkle Arc übergibt den Storefront-Build samt der Discovery dahinter an die Arc-Practice; diese Engine kalkuliert Shopify-Builds und kalkuliert Arc nicht.",
-        "options": [
-          {
-            "option": "Larger Engagement",
-            "pros": "Hält den Kunden; der Blocker bekommt eine eigene Discovery-Phase mit den richtigen Leuten und dem richtigen Budget.",
-            "cons": "Längerer Vertriebszyklus, keine Jira-Tickets und kein Lieferstart jetzt; setzt ein Merkle Enterprise Engagement voraus, um tragfähig zu sein."
-          },
-          {
-            "option": "Merkle Arc",
-            "pros": "Hält die Arbeit innerhalb von Merkle, wo ein tokenisiertes Designsystem und eine Component Library bereits bestehen. Die Commerce-Engine kann weiterhin Shopify sein.",
-            "cons": "Andere Practice, andere Rate Card, anderer Zeitplan. Die Bänder S, M und L gelten nicht, und hier wird nichts davon geschätzt."
-          }
-        ]
-      }
-    },
     "Q8.1.1": {
       "text": "Listen Sie jedes System auf, das Produkt-, Bestands-, Bestell-, Kunden- oder Finanzdaten mit dem Store austauscht. Je System: System, Kategorie, Richtung, Datenobjekte, Frequenz, Konnektor (native App / iPaaS / eigen / keiner), verantwortliche Stelle, Status und ob es eine Testumgebung gibt, mit der wir uns vor dem Go-live verbinden können.",
       "help": "Typische Zuständigkeiten: Das PIM liefert Produkte, Attribute und Übersetzungen; das ERP liefert Preise (auch B2B-Kataloge), Bestände je Standort und Bestellstatus. Shopify braucht für Staging keine eigene Instanz, zu organisieren ist also nur Ihre Seite: Ein System ohne Testumgebung bedeutet, dass die Integration gegen Ihr Live-System getestet wird.",
@@ -3634,6 +3449,25 @@
         ]
       }
     },
+    "Q9.2.11": {
+      "text": "Welches Frontend: Shopify Hydrogen oder ein anderes Framework?",
+      "teach": {
+        "why": "Hier verläuft die Grenze zwischen einem Shopify-Engagement und einem Composable-Engagement. Hydrogen ist Shopifys eigenes Framework auf der Storefront API, und mit Inhalten in Metaobjects bleibt es ein Shopify-Build. Ein anderes Framework, eine native App oder mehrere Frontends auf einem Backend ist Merkle Arc, und diese Angebote kalkulieren das nicht.",
+        "limits": "Hydrogen braucht die Storefront API auf jedem Plan, Oxygen ist ab Basic enthalten. Unterhalb von Plus darf nur eine Oxygen-Umgebung öffentlich sein, parallele Review-Links für Stakeholder brauchen also ein Store-Login.",
+        "options": [
+          {
+            "option": "Shopify Hydrogen",
+            "pros": "Bleibt innerhalb der Angebote und innerhalb von Shopify: ein System, die Storefront API, Oxygen-Hosting inklusive, Inhalte in Metaobjects neben den Produkten, die sie verkaufen.",
+            "cons": "React und eine Deployment-Pipeline in eigener Verantwortung; der Theme-Editor entfällt, Redaktionen bekommen also genau die Bearbeitungsoberfläche, die gebaut wird."
+          },
+          {
+            "option": "Anderes Framework, native App oder mehrere Frontends",
+            "pros": "Was die Marke ohnehin betreibt, und ein Backend hinter mehreren Erlebnissen.",
+            "cons": "Kein Shopify-Build: Es geht an Merkle Arc, das es separat kalkuliert und liefert. Nichts in diesen Angeboten schätzt es."
+          }
+        ]
+      }
+    },
     "Q9.2.9": {
       "text": "Welche Plattformfunktionen werden für Headless benötigt?",
       "teach": {
@@ -3647,6 +3481,26 @@
       "teach": {
         "why": "Native Theme- und Checkout-Experimente laufen über Shopify Rollouts, und Rollouts beginnt beim Grow-Plan. Ein Basic-Kunde, der A/B-Tests erwartet, ist also ein Plan-Gespräch oder eine Drittanbieter-App — und das kommt spät ans Licht, wenn Sie nicht jetzt fragen.",
         "limits": "Rollouts-Experimente: ab dem Grow-Plan."
+      }
+    },
+    "Q9.2.12": {
+      "text": "Möchten Sie in Shopifys Shop-App präsent sein — mit einem Shop Mini?",
+      "help": "Ein bildschirmfüllendes Einkaufserlebnis innerhalb der Shop-App. Es ist weder eine eigene App noch eine Headless-Storefront.",
+      "teach": {
+        "why": "Auf dem Smartphone stattfinden zu wollen heißt nicht, eine App zu bauen. Ein Shop Mini erreicht die Käuferschaft von Shop ohne eigene Storefront und ohne Shopify zu verlassen; eine eigenständige native App ist Storefront API plus Checkout Kit, also ein Headless-Build und ein anderes Engagement.",
+        "limits": "Ein Mini „must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop.\" Gebaut wird es mit dem Shop Minis React SDK, es ist also React-Native-Arbeit und keine Theme-Arbeit.",
+        "options": [
+          {
+            "option": "Shop Mini",
+            "pros": "Erreicht die Käuferschaft von Shop, bleibt innerhalb von Shopify, und die Commerce-Engine ist der Shop, den Sie ohnehin haben.",
+            "cons": "Lebt ausschließlich in Shop — kein Icon auf dem Homescreen und keine Präsenz außerhalb dieser App."
+          },
+          {
+            "option": "Eigene native App",
+            "pros": "Ihre Marke auf dem Homescreen, Ihre Benachrichtigungen, Ihre Regeln.",
+            "cons": "Storefront API plus Checkout Kit: ein Headless-Build, der diese Angebote verlässt und von Merkle Arc kalkuliert wird."
+          }
+        ]
       }
     },
     "Q9.3.1": {
@@ -3684,21 +3538,199 @@
         "limits": "Skripte wirken auf dieselben Core Web Vitals, an denen der Kunde Sie messen wird, und jedes ist ebenso eine Einwilligungs- und Datenschutzfrage wie eine Performance-Frage."
       }
     },
-    "Q9.2.11": {
-      "text": "Welches Frontend: Shopify Hydrogen oder ein anderes Framework?",
+    "Q10.1.1": {
+      "text": "Was ist der angestrebte Go-live-Termin?",
+      "help": "Ein Termin, der früher liegt als die Lieferzeit, die der Umfang braucht, führt zu einem phasenweisen Plan nach dem MVP-Prinzip.",
       "teach": {
-        "why": "Hier verläuft die Grenze zwischen einem Shopify-Engagement und einem Composable-Engagement. Hydrogen ist Shopifys eigenes Framework auf der Storefront API, und mit Inhalten in Metaobjects bleibt es ein Shopify-Build. Ein anderes Framework, eine native App oder mehrere Frontends auf einem Backend ist Merkle Arc, und diese Angebote kalkulieren das nicht.",
-        "limits": "Hydrogen braucht die Storefront API auf jedem Plan, Oxygen ist ab Basic enthalten. Unterhalb von Plus darf nur eine Oxygen-Umgebung öffentlich sein, parallele Review-Links für Stakeholder brauchen also ein Store-Login.",
+        "why": "Der Go-live-Termin legt den gesamten Plan fest. Exit-Regel 11.15 vergleicht die Wochen vom Kick-off bis zum Go-live mit der Mindestdauer des Angebots; liegt der Termin zu früh, wird das Engagement vor dem ersten Sprint nach dem MVP-Prinzip neu zugeschnitten.",
+        "limits": "Regel 11.15 zählt ab delivery.kickoff_date und fällt auf das Anlagedatum der Discovery zurück — ein unbekannter Kick-off macht die Prüfung also optimistisch."
+      }
+    },
+    "Q10.1.2": {
+      "text": "Woraus ergibt sich der Termin (Hochsaison, Produktlaunch, Vertragsende)?",
+      "teach": {
+        "why": "Ein Termin, der von etwas außerhalb des Projekts gesetzt wird — Hochsaison, Kollektionsstart, Vertragsende —, lässt sich nicht verschieben. Das verändert das Risikoregister: Nicht der Termin, sondern der Umfang nimmt jede Verzögerung auf. Ein weiches internes Ziel lässt Verhandlungsspielraum."
+      }
+    },
+    "Q10.1.3": {
+      "text": "Ist ein phasenweiser Launch geplant?",
+      "teach": {
+        "why": "Zeigt, ob Sie einen Launch planen oder mehrere. Ein phasenweiser Launch hält das erste Release schmal und schiebt die riskanten Teile nach hinten; ein einzelner Launch heißt, dass am Tag X alles fertig sein muss.",
         "options": [
           {
-            "option": "Shopify Hydrogen",
-            "pros": "Bleibt innerhalb der Angebote und innerhalb von Shopify: ein System, die Storefront API, Oxygen-Hosting inklusive, Inhalte in Metaobjects neben den Produkten, die sie verkaufen.",
-            "cons": "React und eine Deployment-Pipeline in eigener Verantwortung; der Theme-Editor entfällt, Redaktionen bekommen also genau die Bearbeitungsoberfläche, die gebaut wird."
+            "option": "Phasenweiser Launch",
+            "pros": "Früherer Go-live bei schmalem Umfang; riskante Arbeit wandert in eine spätere Phase; echter Traffic informiert, was als Nächstes kommt.",
+            "cons": "Mehr Releases zu planen, zu testen und zu betreuen, und der Kunde lebt eine Weile mit bekannten Lücken."
           },
           {
-            "option": "Anderes Framework, native App oder mehrere Frontends",
-            "pros": "Was die Marke ohnehin betreibt, und ein Backend hinter mehreren Erlebnissen.",
-            "cons": "Kein Shopify-Build: Es geht an Merkle Arc, das es separat kalkuliert und liefert. Nichts in diesen Angeboten schätzt es."
+            "option": "Einzelner Launch",
+            "pros": "Eine Umstellung, ein Kommunikationsmoment, nichts Halbfertiges im Shop.",
+            "cons": "Alles muss zum Termin fertig sein; jede Verzögerung verschiebt den gesamten Launch."
+          }
+        ]
+      }
+    },
+    "Q10.1.4": {
+      "text": "Gewünschter Kick-off-Termin für das Projekt.",
+      "teach": {
+        "why": "Der Kick-off startet die Uhr, die Exit-Regel 11.15 nutzt — die verfügbaren Wochen werden ab hier gezählt. Ein später Kick-off bei festem Go-live verkürzt die Lieferung, ohne den Umfang zu verkürzen, und das soll in der Discovery sichtbar sein und nicht im zweiten Sprint."
+      }
+    },
+    "Q10.2.1": {
+      "text": "Wer ist auf Kundenseite beteiligt? Je Person: Rolle, RACI (R/A/C/I), entscheidungsbefugt (ja/nein). Namen sind optional.",
+      "teach": {
+        "why": "Die RACI-Aufstellung zeigt, wer freigibt, wer konsultiert werden muss und wer nur informiert wird. Jedes „C“ fügt jeder Design-, Content- und Umfangsprüfung eine Feedbackschleife hinzu, und nicht benannte Freigebende tauchen später als Verzögerung auf."
+      }
+    },
+    "Q10.2.2": {
+      "text": "Gibt es eine einzige entscheidungsbefugte Person für Umfang, Freigaben und Rückmeldungen?",
+      "help": "Eine einzige entscheidungsbefugte Person muss vor dem Leistungsschein benannt sein.",
+      "teach": {
+        "why": "Exit-Regel 11.16 markiert das. Ohne eine benannte entscheidungsbefugte Person bekommen Umfangsfragen mehrere Antworten und Freigaben bleiben stecken — die häufigste Ursache für Überschreitungen. Der Name muss vor Unterzeichnung des Leistungsscheins bestätigt sein.",
+        "limits": "Regel 11.16 ist ein FLAG, kein STOPP: Die Discovery läuft weiter, das Flag muss aber vor der Unterschrift geklärt sein."
+      }
+    },
+    "Q10.2.3": {
+      "text": "Ist klar, wer das Budget freigeben darf?",
+      "teach": {
+        "why": "Dieselbe Exit-Regel 11.16. Kann niemand zu Geld Ja sagen, ist der vereinbarte Umfang vorläufig — Änderungsanträge, Apps mit monatlichen Gebühren und der Retainer bleiben alle stecken. Benennen Sie die budgetverantwortliche Person vor dem Leistungsschein.",
+        "limits": "Regel 11.16 ist ein FLAG, kein STOPP: Die Discovery läuft weiter, die budgetverantwortliche Person muss aber vor der Unterschrift bestätigt sein."
+      }
+    },
+    "Q10.3.1": {
+      "text": "Welche Schulungen werden benötigt (Produkte, Bestellungen, Rabatte, Auswertungen)?",
+      "teach": {
+        "why": "Das entscheidet, wie viel Übergabe Sie bauen und bepreisen. Schulungen zu Produkten, Bestellungen, Rabatten und Auswertungen sind echte Lieferarbeit — Termine, Unterlagen, Aufzeichnungen. Alles, was hier nicht steht, liegt außerhalb des Umfangs und kommt später als Supportticket zurück."
+      }
+    },
+    "Q10.3.2": {
+      "text": "Werden schriftliche Arbeitsanweisungen benötigt?",
+      "teach": {
+        "why": "Schriftliche Arbeitsanweisungen sind ein eigenes Lieferergebnis: Jemand schreibt, prüft und pflegt sie. Jetzt zu fragen verhindert, dass sie im letzten Sprint als ungeplante Anforderung auftauchen.",
+        "options": [
+          {
+            "option": "Schriftliche Arbeitsanweisungen werden geliefert",
+            "pros": "Das Team des Kunden kann den Store ohne Hilfe betreiben; weniger Supporttickets und weniger Abhängigkeit von Einzelpersonen.",
+            "cons": "Schreiben, Prüfen und Pflegen ist Aufwand, der geplant und bepreist werden muss."
+          },
+          {
+            "option": "Keine schriftlichen Arbeitsanweisungen",
+            "pros": "Leichtere Übergabe; Live-Schulung und Aufzeichnungen können für ein kleines Team genügen.",
+            "cons": "Das Wissen bleibt bei Einzelnen, und jede Änderung wird zur Frage an den Retainer."
+          }
+        ]
+      }
+    },
+    "Q10.3.3": {
+      "text": "Welches Supportmodell nach dem Launch wird erwartet?",
+      "teach": {
+        "why": "Das prägt alles nach dem Go-live: Wer repariert am Wochenende einen kaputten Checkout, wer lädt die Kollektion der nächsten Saison ein. Das erwartete Modell treibt das Gespräch über den Retainer und entscheidet, welches Team nach dem Launch bleibt.",
+        "options": [
+          {
+            "option": "Laufender Retainer",
+            "pros": "Benanntes Team, vereinbarte Reaktionszeiten und geplante Verbesserungen nach dem Go-live.",
+            "cons": "Eine wiederkehrende Verpflichtung, die der Kunde einplanen und freigeben muss."
+          },
+          {
+            "option": "Support auf Anfrage",
+            "pros": "Der Kunde zahlt nur, wenn tatsächlich etwas gebraucht wird.",
+            "cons": "Keine zugesagte Verfügbarkeit; dringende Korrekturen konkurrieren mit anderer Arbeit und kosten mehr."
+          },
+          {
+            "option": "Das eigene Team des Kunden betreibt ihn",
+            "pros": "Geringste laufende Kosten und die schnellste interne Umsetzung von Routineänderungen.",
+            "cons": "Erfordert vollständige Schulung und Arbeitsanweisungen zur Übergabe, was den Lieferumfang vergrößert."
+          }
+        ]
+      }
+    },
+    "Q10.3.4": {
+      "text": "Ist der Grow-Retainer unterschrieben?",
+      "teach": {
+        "why": "Exit-Regel 11.11 warnt, wenn ein M- oder L-Engagement keinen unterschriebenen Grow-Retainer hat. Der Build wird unter der Annahme kalkuliert, dass die Arbeit nach dem Launch weitergeht; ohne Unterschrift werden die Konditionen angepasst. Prüfen Sie die Unterschrift, nicht die Absicht.",
+        "limits": "Regel 11.11 ist eine WARNUNG und gilt nur für M- und L-Engagements; sie stoppt die Discovery nicht."
+      }
+    },
+    "Q10.3.5": {
+      "text": "Laufzeit des Retainers in Monaten.",
+      "teach": {
+        "why": "Die Laufzeit entscheidet, wie lange das Team bleibt und wie viel Arbeit nach dem Launch bereits abgedeckt ist. Sie fließt in das kommerzielle Modell und sagt dem Kunden genau, was er nach dem Go-live bekommt, statt es offen zu lassen."
+      }
+    },
+    "Q10.3.6": {
+      "text": "Wird der Kunde Apps und Shopify-Funktionen nach dem Launch bei jeder Shopify Edition neu prüfen?",
+      "teach": {
+        "why": "Shopify kündigt zu jeder Edition Plattformänderungen an, und die Apps und Funktionen, von denen der Store abhängt, können sich ändern. Jemand muss sie neu prüfen. Ein Nein heißt hier, dass niemand beobachtet, wie der Store abdriftet — und das wird meist zu Retainer-Arbeit."
+      }
+    },
+    "Q10.4.1": {
+      "text": "Ist das Geschäft in einer regulierten Branche tätig (Pharma, Alkohol, Waffen, altersbeschränkte Waren, Finanzprodukte, Medizinprodukte)? Falls ja, in welcher?",
+      "help": "Eine regulierte Branche erfordert eine rechtliche Prüfung. Shopify hat eigene Regeln: Alkohol braucht zum Beispiel eine Altersprüfung; manche Geschäftsarten können Shopify Payments nicht nutzen.",
+      "teach": {
+        "why": "Das ist ein STOPP. Exit-Regel 11.8 schickt jedes regulierte Geschäft — Pharma, Alkohol, Waffen, altersbeschränkte Waren, Finanzprodukte, Medizinprodukte — in die Rechts- und Compliance-Prüfung. Shopify hat außerdem eigene Regeln, und manche Geschäftsarten können Shopify Payments nicht nutzen.",
+        "limits": "Shopifys Regeln für regulierte Waren (etwa Alkohol) gelten ab dem Basic-Plan; Apps zur Altersprüfung stehen auf der Auswahlliste. Geprüft am 17.09.2026."
+      }
+    },
+    "Q10.4.2": {
+      "text": "Sind die Rechtstexte (AGB, Datenschutz, Cookies, Retouren) fertig, aktualisierungsbedürftig oder noch zu erstellen?",
+      "teach": {
+        "why": "Rechtstexte sind Inhalte, die jemand vor dem Launch schreiben, freigeben und veröffentlichen muss. „Noch zu erstellen“ ist eine Kundenaufgabe auf dem kritischen Pfad, meist mit einer Rechtsberatung dabei — keine Theme-Aufgabe, die sich in einem Sprint erledigen lässt."
+      }
+    },
+    "Q10.4.3": {
+      "text": "Gibt es weitere branchenspezifische Compliance-Anforderungen?",
+      "teach": {
+        "why": "Das fängt die Anforderung ein, an die niemand gedacht hat — Zulassungen, Kennzeichnung, Aufbewahrungspflichten, Branchenkodizes. Es ist das Sicherheitsnetz für Exit-Regel 11.8: Alles, was hier genannt wird, geht in dieselbe rechtliche Prüfung, bevor der Umfang festgezurrt wird."
+      }
+    },
+    "Q10.4.4": {
+      "text": "Sind Geschäft und Sortiment für Shopify Payments zulässig (keine eingeschränkten oder verbotenen Kategorien)?",
+      "teach": {
+        "why": "Shopify Payments steht nicht jedem Land und nicht jeder Geschäftskategorie offen. Ist der Kunde nicht zulässig, ändern sich der Zahlungs-Stack, die Gebühren und ein Teil des Checkout-Erlebnisses — das muss also in der Discovery geklärt werden, nicht beim Launch.",
+        "limits": "Die Zulässigkeit hängt vom Land des Stores und den verkauften Produktkategorien ab; maßgeblich ist die Seite mit den unterstützten Ländern. Geprüft am 17.09.2026."
+      }
+    },
+    "Q10.5.1": {
+      "text": "Lead Consultant.",
+      "teach": {
+        "why": "Die benannte Beratung verantwortet den Engagement-Datensatz. Jedes Artefakt, das das Werkzeug erzeugt — Engagement-Datei, Deck, Backlog, Abschlussdokument —, trägt diesen Namen, damit jede Antwort und jede Einschätzung auf eine Person zurückführbar ist."
+      }
+    },
+    "Q10.5.2": {
+      "text": "Hat der Kunde zugestimmt, dass die Antworten von der KI-Discovery-Engine verarbeitet werden dürfen (keine personenbezogenen Kundendaten enthalten)?",
+      "help": "ADR 0007 — die Engine verweigert den Betrieb ohne erfasste Einwilligung.",
+      "teach": {
+        "why": "Nach ADR 0007 verweigert die Engine den Betrieb ohne erfasste Einwilligung. Es wird nichts verarbeitet, gespeichert oder erzeugt, bevor der Kunde der KI-Verarbeitung zugestimmt hat. Erfassen Sie sie ausdrücklich, und halten Sie personenbezogene Kundendaten ohnehin aus den Antworten heraus.",
+        "limits": "Die Einwilligung deckt ausschließlich die Discovery-Antworten ab; personenbezogene Kundendaten dürfen niemals eingegeben werden, mit oder ohne Einwilligung."
+      }
+    },
+    "Q10.5.3": {
+      "text": "Jira-Instanz und Projektschlüssel für das Backlog.",
+      "teach": {
+        "why": "Das Backlog wird für den Import in das Jira des Kunden erzeugt. Instanz und Projektschlüssel sagen dem Werkzeug, wohin die Tickets gehören; ohne sie ist der Export generisch und jemand tippt ihn von Hand nach."
+      }
+    },
+    "Q10.5.4": {
+      "text": "Zu verwendende Jira-Komponenten.",
+      "teach": {
+        "why": "Komponenten sorgen dafür, dass die erzeugten Tickets in der bestehenden Jira-Struktur des Kunden landen statt als flache Liste. Das ist der Unterschied zwischen einem Backlog, mit dem das Lieferteam am ersten Tag arbeiten kann, und einem, das erst jemand sortieren muss."
+      }
+    },
+    "Q10.5.5": {
+      "text": "Die Anforderungen gehen über die Angebote S, M und L hinaus. Wie geht Merkle vor: Larger Engagement oder Merkle Arc?",
+      "help": "Larger Engagement: Merkle schlägt ein Enterprise Engagement mit einer eigenen Discovery-Phase vor; Approach, Brief und Kundendeck entstehen weiterhin, Jira-Tickets nicht. Merkle Arc: Die Storefront ist kein Shopify-Theme, also kalkuliert und liefert die Arc-Practice sie als eigenes Engagement — die Discovery und der Approach gehen mit hinüber, und hier wird dafür weder ein Angebot noch eine Schätzung erzeugt. Ein Verzicht auf ein Angebot wird stattdessen im Outcome-Ledger festgehalten, sobald die Entscheidung wirklich gefallen ist.",
+      "teach": {
+        "why": "Nach einem STOPP kann das Engagement nicht als Standardangebot weiterlaufen, und das Werkzeug muss wissen, welches Ergebnis es erzeugen soll. Larger Engagement entwirft Approach, Brief und Kundendeck ohne Jira-Tickets. Merkle Arc übergibt den Storefront-Build samt der Discovery dahinter an die Arc-Practice; diese Engine kalkuliert Shopify-Builds und kalkuliert Arc nicht.",
+        "options": [
+          {
+            "option": "Larger Engagement",
+            "pros": "Hält den Kunden; der Blocker bekommt eine eigene Discovery-Phase mit den richtigen Leuten und dem richtigen Budget.",
+            "cons": "Längerer Vertriebszyklus, keine Jira-Tickets und kein Lieferstart jetzt; setzt ein Merkle Enterprise Engagement voraus, um tragfähig zu sein."
+          },
+          {
+            "option": "Merkle Arc",
+            "pros": "Hält die Arbeit innerhalb von Merkle, wo ein tokenisiertes Designsystem und eine Component Library bereits bestehen. Die Commerce-Engine kann weiterhin Shopify sein.",
+            "cons": "Andere Practice, andere Rate Card, anderer Zeitplan. Die Bänder S, M und L gelten nicht, und hier wird nichts davon geschätzt."
           }
         ]
       }
@@ -3733,12 +3765,12 @@
         "limits": "Entwurfsaufträge entstehen im Admin oder über die API; gezahlt wird per Rechnungslink. Das Team braucht die passende Berechtigung, und die Bestellung muss weiterhin die richtigen Marktpreise und Steuern ziehen."
       }
     },
-    "Q5.1.15": {
-      "text": "Muss eine einzelne Bestellung jemals an mehr als eine Adresse gehen — Geschenke an mehrere Empfänger, oder eine Großhandelsbestellung, die auf Filialen aufgeteilt wird?",
-      "help": "Etwas anderes, als wenn eine Bestellung in mehreren Paketen ankommt — das macht Shopify von selbst.",
+    "Q6.5.5": {
+      "text": "Buchen Ihre Kundinnen und Kunden Termine bei Ihnen — im Geschäft, als virtuelle Beratung oder beides?",
+      "help": "Buchung ist keine Shopify-Funktion, sondern eine App-Store-Kategorie, und die App hält den Kalender.",
       "teach": {
-        "why": "Shopify kann eine Bestellung nicht an mehr als eine Adresse liefern. Spät gefragt, wird daraus ein Change Request im UAT; jetzt gefragt, lautet die Antwort: eine Bestellung je Adresse, eine App, oder die Anforderung fällt — und alle drei sind billiger als die Entdeckung.",
-        "limits": "Split Shipping teilt eine Bestellung in mehrere Sendungen, wenn Artikel nicht zusammen reisen können — eine Vorbestellzeile, ein Abo, Bestand an verschiedenen Standorten, unterschiedliche Versandprofile — und die Kundin wählt je Sendung eine Versandoption. Jede Sendung geht weiterhin an eine Adresse, die Aufteilung lässt sich nicht selbst wählen, und Split Shipping gilt weder für beschleunigte Checkouts noch für Entwurfsaufträge, die bereits eine Versandzeile tragen."
+        "why": "Ein Termin in der Boutique oder eine Anprobe gehört bei manchen Marken fest zum Verkauf, und Shopify hat dafür nichts Natives — es ist also eine App mit Lizenz, einer verantwortlichen Person für den Kalender und einem Platz im Arbeitstag des Teams, entschieden auf der Leiter wie jede andere App und nicht stillschweigend ins Theme gelegt.",
+        "limits": "Keine native Shopify-Buchungsfunktion: Termine und Dienstleistungen sind eine App-Store-Kategorie. Terminplanung über mehrere Standorte, Mitarbeiterportale, Anzahlungen und Erinnerungen unterscheiden sich je App, die Auswahl entsteht also am tatsächlichen Bedarf dieses Kunden."
       }
     }
   },

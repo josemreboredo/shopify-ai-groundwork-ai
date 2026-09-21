@@ -3,11 +3,16 @@
  */
 
 import { isB2b, list, listOr, count, markets, isMigration, themeName, storeName } from './helpers.js';
+import { appSignals } from '../../discovery/app-signals.js';
 
 /** Customer service answers, and the words a consultant uses for them. */
 const service = (doc) => doc.service ?? {};
 const SERVICE_LABEL = { shopify_inbox: 'Shopify Inbox', helpdesk_app: 'a helpdesk app', external_helpdesk: 'a helpdesk outside Shopify', email_only: 'an email inbox', none: 'nowhere yet' };
 const CONTACT_LABEL = { email_only: 'in an email inbox', into_the_helpdesk: 'in the helpdesk', into_a_crm: 'in the CRM', none: 'nowhere — there is no form' };
+
+/** Booking answers in the consultant's words. */
+const BOOKING_LABEL = { in_store_appointments: 'appointments in store', virtual_consultations: 'virtual consultations', both: 'appointments in store and virtual consultations' };
+const booking = (doc) => { const b = service(doc).booking; return b && b !== 'none' && b !== 'not_sure' ? b : null; };
 
 /** Payment terms in words, without "none". @param {object} doc */
 const terms = (doc) => (doc.b2b?.payment_terms ?? []).filter((t) => t !== 'none').map((t) => t.replace(/_/g, ' '));
@@ -192,5 +197,28 @@ export default [
     security_flags: ['pii'],
     applies: (doc) => service(doc).orders_on_behalf === true,
     agent_prompt: (doc) => `Set up draft orders for ${storeName(doc)}: the staff permission, the discount limits per role, and the invoice flow. Test that a draft order takes the right market price, currency and tax${isB2b(doc) ? ', and that a company account buyer gets their price list and payment terms' : ''}. Agree what happens to an unpaid draft and who owns it. Train the people who will use it and put it in the runbook.`,
+  },
+  {
+    key: 'LWC-CUS-009',
+    epic: 'customers',
+    title: (doc) => `Let customers book ${BOOKING_LABEL[booking(doc)] ?? 'a slot'}`,
+    user_story: 'As a customer, I want to book a time with someone who knows the product, so that I get the visit or the call I came for rather than an email thread about when we are both free.',
+    description: (doc) => `Booking: ${BOOKING_LABEL[booking(doc)] ?? 'to confirm'}${(doc.retail?.store_count ?? 0) ? ` across ${count(doc.retail.store_count, 'location')}` : ''}. App signals: ${listOr(appSignals(doc).booking_app, 'none')}.`,
+    acceptance_criteria: (doc) => [
+      'Given that Shopify has no native booking, when the app is chosen, then the shortlist, the reason for the choice and the licence cost are recorded and the consultant has approved it',
+      `Given a shopper on the storefront, when they book, then they choose ${BOOKING_LABEL[booking(doc)] ?? 'a slot'} and receive a confirmation, and so does whoever has to be there`,
+      ...((doc.retail?.store_count ?? 0) > 1 ? [`Given ${count(doc.retail.store_count, 'location')}, when a slot is offered, then it reflects that location's own opening hours and staff, not a single shared calendar`] : []),
+      ...(booking(doc) === 'virtual_consultations' || booking(doc) === 'both' ? ['Given a virtual consultation, when it is booked, then the meeting link is created and sent, and a cancellation removes it'] : []),
+      'Given a booking that is changed or cancelled, when the customer does it themselves, then the calendar and the reminders follow, and staff are not told by the customer arriving',
+      'Given the app at handover, when the runbook is reviewed, then the calendar has a named owner on the client side and the booking data is covered by the same privacy notice as the rest of the store',
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'consultant',
+    depends_on: ['LWC-THM-003'],
+    spec_refs: ['/service/booking', '/retail/store_count'],
+    security_flags: ['pii'],
+    applies: (doc) => Boolean(booking(doc)),
+    agent_prompt: (doc) => `Deliver booking for ${storeName(doc)}: ${BOOKING_LABEL[booking(doc)] ?? 'to confirm'}${(doc.retail?.store_count ?? 0) ? ` across ${count(doc.retail.store_count, 'location')}` : ''}. Shopify has nothing native for this, so it is an App Store choice: shortlist from the Event booking category against what this client needs — multi-location calendars, staff assignment, deposits, reminders, meeting links — and present the choice with its licence cost for consultant approval before installing anything. Configure the storefront entry point, the confirmation and reminder messages in every language the store runs in, and self-service reschedule and cancel. Name the person who owns the calendar after handover, and check the booking data sits under the store's own privacy notice.`,
   },
 ];

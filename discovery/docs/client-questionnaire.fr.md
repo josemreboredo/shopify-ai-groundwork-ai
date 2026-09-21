@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.2.0 · offering 2.9.0
+> **Version:** question bank 1.2.0 · offering 2.11.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -1725,6 +1725,17 @@
 - [ ] Yes
 - [ ] No
 
+**Q6.5.5** — Vos clients réservent-ils un créneau chez vous — rendez-vous en magasin, conseil à distance, ou les deux ? *(recommended)*
+*Ask if Q5.6.1 is 1 or more, or Q2.2.1 includes Virtual or Made to order, or Q0.3.1 mentions appointment, booking, consultation, fitting, showroom or reservation.*
+*La réservation n’est pas une fonction Shopify : c’est une catégorie de l’App Store, et c’est l’application qui tient le calendrier.*
+
+*(tick one)*
+- [ ] Rendez-vous en magasin
+- [ ] Conseil à distance
+- [ ] Les deux
+- [ ] Aucun
+- [ ] Pas encore certain
+
 ---
 
 ## § 7 — Marketing & promotions
@@ -2267,6 +2278,15 @@
 
 - [ ] Yes
 - [ ] No
+
+**Q9.2.12** — Souhaitez-vous une présence dans l’application Shop de Shopify — un Shop Mini ? *(recommended)*
+*Une expérience d’achat plein écran à l’intérieur de l’application Shop. Ce n’est ni votre propre application, ni une vitrine headless.*
+
+*(tick one)*
+- [ ] Maintenant
+- [ ] Plus tard
+- [ ] Non
+- [ ] Pas encore certain
 
 ### 9.3 Accessibilité
 

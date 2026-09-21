@@ -1596,6 +1596,17 @@
 - [x] Yes
 - [ ] No
 
+**Q6.5.5** — Do customers book a slot with you — an in-store appointment, a virtual consultation, or both? *(recommended)*
+*Ask if Q5.6.1 is 1 or more, or Q2.2.1 includes Virtual or Made to order, or Q0.3.1 mentions appointment, booking, consultation, fitting, showroom or reservation.*
+*Booking is not a Shopify feature; it is an App Store category, and the app is what holds the calendar.*
+
+*(tick one)*
+- [ ] in store appointments
+- [x] virtual consultations
+- [ ] both
+- [ ] none
+- [ ] not sure yet
+
 ---
 
 ## § 7 — Marketing & promotions
@@ -2130,6 +2141,15 @@ Managing Director, with the Finance Controller informed.
 
 - [ ] Yes
 - [ ] No
+
+**Q9.2.12** — Do you want a presence inside Shopify’s Shop app — a Shop Mini? *(recommended)*
+*A full-screen shopping experience inside the Shop app. It is not your own app and not a headless storefront.*
+
+*(tick one)*
+- [ ] now
+- [x] later
+- [ ] no
+- [ ] not sure yet
 
 ### 9.3 Accessibility
 
