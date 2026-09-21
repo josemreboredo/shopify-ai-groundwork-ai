@@ -9,9 +9,7 @@
  */
 
 import { offering, questionBank } from '../../schema/index.js';
-import { assemble } from '../discovery/engine.js';
-import { classifyOffer } from '../discovery/classify.js';
-import { evaluateExits } from '../discovery/exits.js';
+import { assemble, weigh } from '../discovery/engine.js';
 import { appSignals } from '../discovery/app-signals.js';
 import { planSuggestion } from '../discovery/plan.js';
 import { isAnswered } from './session.js';
@@ -28,9 +26,11 @@ const anyInputKnown = (answers, inputs) => inputs.some((p) => !p.startsWith('/of
  * @param {string} today
  */
 export function preview(session, today) {
-  const doc = assemble(session.answers, { today, clientSlug: session.client, source: 'chatbot' });
-  doc.offer = classifyOffer(doc);
-  const exits = evaluateExits(doc);
+  // Everything the engine decides, decided once. This used to classify and
+  // evaluate here and skip the topology `decide` derives, which meant the
+  // preview reported fewer fired rules than the engine actually fires.
+  const doc = weigh(assemble(session.answers, { today, clientSlug: session.client, source: 'chatbot' }));
+  const exits = doc.exits;
 
   const state = (definitions, computed) => Object.fromEntries(definitions.map((d) => [
     d.id,

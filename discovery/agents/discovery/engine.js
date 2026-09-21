@@ -129,9 +129,24 @@ function crossBorderModel(doc, topology) {
   return 'self_managed_markets';
 }
 
-export function decide(extraction, options) {
-  /** @type {any} */
-  const doc = assemble(extraction.answers, options);
+/**
+ * Everything the engine decides, from an assembled document.
+ *
+ * This was the body of `decide` and the interview preview had its own copy of
+ * two of its four steps. The copy skipped the topology, which is derived here
+ * and nowhere else — so on a multi-market engagement with unresolved topology,
+ * rule 11.23 fired for `decide` and never for the preview. That is one of the
+ * five risks rule 11.3 counts, so the same answers came out GO on one page of
+ * the app and STOP on another, and a consultant had no way to tell which was
+ * the engine.
+ *
+ * There is one of these now. A caller that wants what the engine thinks calls
+ * it; there is no second opinion to drift from.
+ *
+ * @param {any} doc  an assembled engagement
+ * @param {object[]} [exitCandidates]  LLM-detected candidates, added never substituted
+ */
+export function weigh(doc, exitCandidates = []) {
   const topology = evaluateTopology(doc);
   if (topology) {
     // Derived, never answered: the questionnaire asks about the business, the
@@ -139,8 +154,14 @@ export function decide(extraction, options) {
     doc.markets = { ...doc.markets, topology, cross_border_model: crossBorderModel(doc, topology) };
   }
   doc.offer = classifyOffer(doc);
-  doc.exits = evaluateExits(doc, extraction.exitCandidates);
+  doc.exits = evaluateExits(doc, exitCandidates);
   doc.delivery = { ...(doc.delivery ?? {}), go: !doc.exits.triggered };
+  return doc;
+}
+
+export function decide(extraction, options) {
+  /** @type {any} */
+  const doc = weigh(assemble(extraction.answers, options), extraction.exitCandidates);
   if (Object.keys(extraction.provenance).length) doc.provenance = extraction.provenance;
   if (extraction.notes?.length) doc.notes = extraction.notes;
   const plan = planSuggestion(doc);
