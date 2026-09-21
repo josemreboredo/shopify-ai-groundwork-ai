@@ -274,9 +274,13 @@ export function PhasePlan({ phases, weeks }) {
         <li key={p.id}>
           <div className="phase-head">
             <h3>{p.name}</h3>
+            {/* The number is its own column, not the text after the bar: as a
+                flex item it was pushed out of the cell by the longest bar, so
+                the longest phase was the one phase whose duration could not be
+                read on a phone. */}
             <p className="phase-weeks">
               <span className="phase-bar" style={{ inlineSize: `${Math.max((p.weeks.max / longest) * 100, 6)}%` }} aria-hidden="true" />
-              <b>{span(p.weeks)}</b> <span className="muted small">week{p.weeks.max === 1 ? '' : 's'}</span>
+              <span className="phase-n"><b>{span(p.weeks)}</b> <span className="muted small">week{p.weeks.max === 1 ? '' : 's'}</span></span>
             </p>
           </div>
           <p className="phase-covers">{p.covers}</p>
@@ -292,7 +296,7 @@ export function PhasePlan({ phases, weeks }) {
       <li className="phases-total">
         <div className="phase-head">
           <h3>End to end</h3>
-          <p className="phase-weeks"><b>{span(weeks)}</b> <span className="muted small">weeks</span></p>
+          <p className="phase-weeks"><span className="phase-n"><b>{span(weeks)}</b> <span className="muted small">weeks</span></span></p>
         </div>
         <p className="phase-covers">The phases add up to the offer. They are held to it by a test, so a phase cannot quietly grow.</p>
       </li>
@@ -327,21 +331,26 @@ export function Channels({ channels }) {
 }
 
 /**
- * How the storefront is built, where the offer builds it more than one way.
+ * How the storefront is built.
  *
  * The track used to be a property of the offer, which told a headless
  * engagement it was getting a theme. It is an answer: Ecommerce Growth builds
  * either way and spends the same weeks differently, exactly as it does per
  * channel.
  *
- * @param {{ tracks: {liquid: string, hydrogen: string} }} props
+ * Where an offer builds only one way it still answers the question, with `only`.
+ * The section used to disappear on S and M, and a section that is absent is
+ * indistinguishable from a page that ended early — a consultant moving between
+ * the three offers lost their place in a page that was meant to be one template
+ * with different values in it.
+ *
+ * @param {{ tracks?: {liquid: string, hydrogen: string}, only?: {label: string, body: string} }} props
  */
-export function Tracks({ tracks }) {
-  if (!tracks) return null;
-  const rows = [
-    ['Shopify theme', tracks.liquid],
-    ['Headless · Hydrogen', tracks.hydrogen],
-  ];
+export function Tracks({ tracks, only }) {
+  const rows = tracks
+    ? [['Shopify theme', tracks.liquid], ['Headless · Hydrogen', tracks.hydrogen]]
+    : (only ? [[only.label, only.body]] : []);
+  if (!rows.length) return null;
   return (
     <dl className="channels">
       {rows.map(([label, body]) => (
@@ -507,7 +516,7 @@ export function ScopeTable({ catalogue, totals, capacity }) {
                     <td data-label="In the price when">
                       {s.when === 'always' ? <span className="scope-when is-always">Always</span> : null}
                       {s.when === 'answers' ? <><span className="scope-when is-answers">The answers say so</span> <Decided questions={s.decided_by} /></> : null}
-                      {s.when === 'gate' ? <span className="scope-when is-gated">{s.gate.label} gate</span> : null}
+                      {s.when === 'gate' ? <span className="scope-when is-gated"><span className="gate-name">{s.gate.label} gate</span></span> : null}
                     </td>
                     <td data-label="Adds">
                       {s.when === 'gate' && s.firstOfGate && gateWeeks(s.gate.effort_weeks)
@@ -530,6 +539,165 @@ export function ScopeTable({ catalogue, totals, capacity }) {
         A gate adds its weeks once, however many stories it carries — the column repeats the gate, not the cost.
         Each gate&rsquo;s exact condition is further down the page.
       </p>
+    </div>
+  );
+}
+
+/**
+ * What puts an engagement in this offer.
+ *
+ * The engine decides the offer from five rules in order and stops at the first
+ * yes, and the index page draws all five. From an offer's own page the reader
+ * has one question — is this engagement an M — and only the L page answered it,
+ * in two paragraphs of prose under a heading S and M did not have.
+ *
+ * So it is the same five rules, read from one offer's side: the rungs that land
+ * here are marked, the rest stay grey, and the answer is the shape of the list
+ * rather than a sentence to find inside it. Nothing is written by hand — drift
+ * between this list and the engine is the one failure it exists to prevent.
+ *
+ * @param {{ classification: object[], here: string }} props
+ */
+export function Lands({ classification, here }) {
+  if (!classification?.length) return null;
+  return (
+    <ol className="lands" aria-label={`The rules that decide the offer, with the ones that land on ${here} marked`}>
+      {classification.map((c) => {
+        const mine = c.offer === here;
+        return (
+          <li key={c.order} className={mine ? 'here' : undefined}>
+            {/* `plain` already carries ", priced with its modifier" where the
+                rule applies one — appending it from `with_modifier` as well
+                printed the clause twice. */}
+            <span className="land-rule">{c.plain}</span>
+            <span className="land-offer" aria-label={mine ? `lands on ${c.offer} — this offer` : `lands on ${c.offer}`}>{c.offer}</span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+/**
+ * What each pack gets.
+ *
+ * The index had no comparison at all: a scale of durations, a list of doors and
+ * a table counting epics, none of which answers "how many markets does an M
+ * cover". The honest answer is that the packs do not have per-dimension
+ * allowances. They hold the same catalogue of work and differ in one number —
+ * the scope-gate weeks the band already carries, 0 in S, 2–8 in M, 9–15 in L —
+ * which every dimension draws from.
+ *
+ * So the rows that genuinely differ take three columns, and every capability row
+ * spans them. Printing the same sentence in three columns would manufacture a
+ * difference the engine does not make, and a consultant would quote from it.
+ *
+ * Every figure is read from the offering: the capacities from the offers, the
+ * rates and tiers from the gates' own modifiers, the ceilings from the exit
+ * rules that set them. Nothing in here is typed twice.
+ *
+ * @param {{ offers: object[], gates: object[], ceilings: object, pricing: boolean,
+ *   currency?: string, weeks: Function, band: Function }} props
+ */
+export function PackTable({ offers, gates, ceilings, pricing, currency, weeks, band }) {
+  if (!offers?.length) return null;
+  const capacity = (o) => o.gate_capacity_weeks;
+  const gateCost = (g) => {
+    if (!g.effort_weeks) return null;
+    const w = `+${weeks(g.effort_weeks)} week${g.effort_weeks.max === 1 ? '' : 's'}`;
+    return pricing && g.price_add ? `${w} · ${band(g.price_add, currency)}` : w;
+  };
+
+  return (
+    <div className="table-scroll" role="region" tabIndex={0} aria-label="What each pack gets, compared">
+      <table className="compare packs">
+        <thead>
+          <tr>
+            <th scope="col">What the pack gets</th>
+            {offers.map((o) => (
+              <th scope="col" key={o.code}>
+                <span className="pack-code">{o.code}</span>
+                <span className="pack-name">{o.name} · {weeks(o.duration_weeks)} weeks</span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="pack-differs">
+          <tr>
+            <th scope="row">Scope-gate weeks the band already carries</th>
+            {offers.map((o) => (
+              <td key={o.code} data-label={o.code}>
+                <span className="pack-budget">
+                  {capacity(o).max === 0 ? 'None' : `${weeks(capacity(o))} weeks`}
+                </span>
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th scope="row">So a scope gate is…</th>
+            {offers.map((o) => (
+              <td key={o.code} data-label={o.code}>
+                {capacity(o).max === 0
+                  ? 'added on top, in weeks and in price. One gate only — two make it an M.'
+                  : 'taken out of the band first. Only what goes past the band is added on top.'}
+              </td>
+            ))}
+          </tr>
+          {pricing && offers.every((o) => o.price_band) ? (
+            <tr>
+              <th scope="row">Internal band</th>
+              {offers.map((o) => (
+                <td key={o.code} data-label={o.code}><span className="pack-budget">{band(o.price_band, currency)}</span></td>
+              ))}
+            </tr>
+          ) : null}
+        </tbody>
+        <tbody>
+          <tr className="pack-group">
+            <th scope="rowgroup" colSpan={offers.length + 1}>
+              The same in every pack
+              <span className="pack-group-note">
+                Every pack holds the same catalogue of work. What one of these costs does not change
+                between S, M and L — only whether the band already carries it does, which is the row above.
+              </span>
+            </th>
+          </tr>
+          {gates.map((g) => {
+            const cap = ceilings[g.id];
+            return (
+              <tr key={g.id} className="pack-same">
+                <th scope="row">{g.label}</th>
+                <td colSpan={offers.length}>
+                  {g.tiers ? (
+                    <>
+                      {g.tiers.map((t, i) => (
+                        <span key={t.tier}>
+                          {i ? ' · ' : ''}{t.tier.replace(/_/g, ' ')}{' '}
+                          <span className="pack-adds">
+                            +{weeks(t.effort_weeks)} week{t.effort_weeks.max === 1 ? '' : 's'}
+                            {pricing && t.price_add ? ` · ${band(t.price_add, currency)}` : ''}
+                          </span>
+                        </span>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      {g.adds ? `${g.adds}. ` : ''}
+                      {gateCost(g) ? <span className="pack-adds">{gateCost(g)}</span> : <span className="muted">No fixed effort</span>}
+                    </>
+                  )}
+                  {cap ? (
+                    <span className={`pack-cap ${cap.leaves ? 'stop' : 'warn'}`}>
+                      {cap.leaves ? 'Above this it leaves the offers' : 'Above this it stays in the offer and gets a named owner'}
+                      {' — '}rule {cap.id}: {cap.label.toLowerCase()}
+                    </span>
+                  ) : null}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }

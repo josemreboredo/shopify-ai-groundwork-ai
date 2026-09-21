@@ -5,7 +5,7 @@ import { offeringView } from '../../../discovery/service/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../discovery/service/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { band, TRACK, weeks } from '../offering.js';
-import { OfferScale } from '../components/diagram.jsx';
+import { OfferScale, PackTable } from '../components/diagram.jsx';
 
 export const meta = () => [{ title: pageTitle('The offering') }];
 
@@ -22,6 +22,18 @@ export async function loader({ request }) {
 
 const COUNT = { 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven' };
 
+/**
+ * The three gates whose ceiling is a rule rather than a budget.
+ *
+ * Most of what an engagement can hold is limited by the scope-gate weeks the
+ * band carries, which is a number per offer. These three are limited by an exit
+ * rule instead: above it the engagement leaves S, M and L altogether, whatever
+ * the band could have absorbed. The rule's own wording is read from the view, so
+ * the ceiling on the page is the ceiling the engine enforces; if a rule is ever
+ * retired the cell simply stops claiming one.
+ */
+const CEILING = { integration: '11.7', languages: '11.4', retail_pos: '11.22' };
+
 /** The resolution ladder every requirement climbs, cheapest first. */
 const LADDER = [
   ['Native Shopify', 'A feature the platform already has, configured'],
@@ -34,6 +46,21 @@ export default function Offering({ loaderData }) {
   const { view, catalogue, totals } = loaderData;
   const currency = view.offers[0]?.currency;
   const plans = ['Grow', 'Advanced', 'Shopify Plus'].map((plan) => ({ plan, features: view.plan_gates.filter((g) => g.plan === plan) }));
+  // The exit rule behind each ceiling, by its own id, so the table quotes the
+  // engine's wording rather than a number retyped here.
+  /* Two different ceilings, and the page said "leaves the offers" for both.
+     More than three integrations or six languages is a STOP — the engagement is
+     not one of these offers any more. More than five retail stores is a WARN:
+     it stays in the offer and gets an owner. Printing the harder sentence over
+     the softer rule is the kind of thing a consultant repeats in a room. */
+  const rules = new Map([
+    ...view.exits.beyond_offers.map((r) => [r.id, { ...r, leaves: true }]),
+    ...view.exits.flags.map((r) => [r.id, { ...r, leaves: false }]),
+    ...view.exits.commercial.map((r) => [r.id, { ...r, leaves: false }]),
+  ]);
+  const ceilings = Object.fromEntries(
+    Object.entries(CEILING).map(([gate, id]) => [gate, rules.get(id)]).filter(([, rule]) => rule?.label),
+  );
 
   return (
     <main id="main" className="story offering">
@@ -55,14 +82,17 @@ export default function Offering({ loaderData }) {
         </ul>
       </header>
 
-      {/* 1 — the way in. Each offer is a door, not a column of text. */}
+      {/* 1 — the definition, before any comparison.
+          The page opened on a chart of durations: a reader arriving to find out
+          what an M is had to infer it from a bar. The doors carry the
+          definition — who each offer is for, in the client's own situation —
+          so they come first and the chart follows them. */}
       <section>
-        <h2>The three offers, on one scale</h2>
-        <OfferScale offers={view.offers} pricing={view.pricing} currency={currency} />
-      </section>
-
-      <section>
-        <h2>The four segments</h2>
+        <h2>What the three offers are</h2>
+        <p className="lede">
+          One sentence each, and then the page compares them. Each offer has its own page: what it covers,
+          how it meets Shopify, and what moves an engagement out of it.
+        </p>
         <ol className="segments">
           {view.offers.map((o) => (
             <li key={o.code}>
@@ -98,6 +128,37 @@ export default function Offering({ loaderData }) {
         ) : (
           <p className="muted">Price bands are shown to engagement leads. The durations above are the high-level estimate.</p>
         )}
+      </section>
+
+      {/* 2 — the comparison, and the one honest shape for it.
+          The three packs hold the same catalogue of work. They differ in the
+          scope-gate weeks the band already carries, and every dimension draws
+          from that one budget — there is no per-market or per-integration
+          allowance to print. So the rows that differ get three columns and the
+          rest span them: three identical columns would invent a difference the
+          engine does not make, and a consultant would quote from it. */}
+      <section>
+        <h2>What each pack gets</h2>
+        <p className="lede">
+          Every pack builds from the same catalogue. What separates them is one number — the scope-gate
+          weeks the band already carries — and everything below draws from it. In {view.offers[0]?.code} a
+          gate is added on top of the price; in the larger packs it comes out of the band until the band
+          is used up.
+        </p>
+        <PackTable
+          offers={view.offers}
+          gates={view.gates}
+          ceilings={ceilings}
+          pricing={view.pricing}
+          currency={currency}
+          weeks={weeks}
+          band={band}
+        />
+      </section>
+
+      <section>
+        <h2>The three offers, on one scale</h2>
+        <OfferScale offers={view.offers} pricing={view.pricing} currency={currency} />
       </section>
 
       {/* 2 — the rule, drawn. "Stops at the first yes" is the whole of it. */}
@@ -177,8 +238,13 @@ export default function Offering({ loaderData }) {
               <li key={title}><strong>{title}</strong><span>{line}</span></li>
             ))}
           </ol>
+          {/* Measured at 1440 before it was named: 3,440px of table inside a
+              1,216px container, so "How it is built" and "Stores" sat off-screen
+              behind a scrollbar nobody finds. Four columns of real sentences
+              have no natural width; the class is what lets the stylesheet give
+              them one. */}
           <div className="table-scroll" role="region" tabIndex={0} aria-label="Offer comparison, scrollable table">
-            <table className="compare">
+            <table className="compare offer-approach">
               <thead><tr><th scope="col"><span className="sr-only">Offer</span></th><th scope="col">Storefront</th><th scope="col">Shopify plan</th><th scope="col">How it is built</th><th scope="col">Stores</th></tr></thead>
               <tbody>
                 {view.offers.map((o) => (

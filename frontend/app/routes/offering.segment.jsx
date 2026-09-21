@@ -5,7 +5,49 @@ import { offeringView } from '../../../discovery/service/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../discovery/service/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { Boundaries, Channels, OfferScale, PhasePlan, ScopeTable, Storefront, Tracks } from '../components/diagram.jsx';
+import { Boundaries, Channels, Lands, OfferScale, PhasePlan, ScopeTable, Storefront, Tracks } from '../components/diagram.jsx';
+
+/**
+ * The three questions a consultant arrives with, over the sections that answer
+ * them.
+ *
+ * Measured before they existed: ten `h2` on an L page, every one at 16px, 700,
+ * uppercase, separated by nine identical 130px gaps. Ten headings of equal
+ * weight are a list, not a hierarchy — nowhere for the eye to land, and no way
+ * to skip three sections at once.
+ */
+const PARTS = {
+  scope: ['01', 'What it covers', 'The claim, and where it stops'],
+  phases: ['02', 'What it builds', 'The weeks, the storefront and the backlog behind the price'],
+  lands: ['03', 'What moves it', 'What puts an engagement here, and what takes it somewhere else'],
+};
+
+/** The ribbon under the page head. Five screens of page, opened before a call. */
+const JUMP = [
+  ['scope', 'In scope'],
+  ['boundaries', 'Not in it'],
+  ['phases', 'Phase by phase'],
+  ['storefront', 'Storefront'],
+  ['stories', 'Every story'],
+  ['lands', 'Puts it here'],
+  ['gates', 'Moves it up'],
+  ['channels', 'Who it sells to'],
+  ['scale', 'Where it sits'],
+];
+
+/** The part marker, where a section opens one. */
+function Part({ id }) {
+  const part = PARTS[id];
+  if (!part) return null;
+  const [n, name, what] = part;
+  return (
+    <p className="part">
+      <span className="part-n">Part {n}</span>
+      <span>{name}</span>
+      <span className="part-what">{what}</span>
+    </p>
+  );
+}
 
 /**
  * One offer, on its own page.
@@ -92,9 +134,13 @@ export default function OfferingSegment({ loaderData }) {
             ? <li><strong>{band(offer.price_band, currency)}</strong><span>internal price band — never in a client document</span></li>
             : <li><strong>{TRACK[offer.delivery_track] ?? offer.delivery_track}</strong><span>how the storefront is built</span></li>}
         </ul>
+        <nav className="jump" aria-label="On this page">
+          {JUMP.map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
+        </nav>
       </header>
 
-      <section>
+      <section id="scope" className="part-start">
+        <Part id="scope" />
         <h2>What is in scope</h2>
         {/* The first line is the offer's claim — what makes "Foundation" a
             foundation and "Growth" growth — and it is not a scope item. Ticked
@@ -104,7 +150,7 @@ export default function OfferingSegment({ loaderData }) {
         <ul className="ticks big">{offer.base_scope.slice(1).map((line) => <li key={line}>{line}</li>)}</ul>
       </section>
 
-      <section>
+      <section id="boundaries">
         <h2>Not in this offer, and what we assume</h2>
         <p className="lede">
           Everything below is deliberate. An offer that only lists what it includes is the one
@@ -113,7 +159,8 @@ export default function OfferingSegment({ loaderData }) {
         <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} assumes={offer.assumes} />
       </section>
 
-      <section>
+      <section id="phases" className="part-start">
+        <Part id="phases" />
         <h2>What you get, phase by phase</h2>
         <p className="lede">
           The phases in the order they run, each with the weeks it takes and the things that are
@@ -123,19 +170,43 @@ export default function OfferingSegment({ loaderData }) {
         <PhasePlan phases={offer.phases} weeks={offer.duration_weeks} />
       </section>
 
-      {offer.storefront ? (
-        <section>
-          <h2>What gets built, counted</h2>
-          <p className="lede">
-            The templates this offer builds, and how many sections are built rather than configured. The phases
-            describe the work; this is the number a fixed price is argued about.
+      {/* The heading used to be "What gets built, counted" against "What it
+          builds, epic by epic" two sections later — two headings answering the
+          same question with different units. They are named by their unit now:
+          weeks above, templates here, stories below. */}
+      <section id="storefront">
+        <h2>The storefront, counted</h2>
+        <p className="lede">
+          The templates this offer builds, and how many sections are built rather than configured. The phases
+          describe the work; this is the number a fixed price is argued about.
+        </p>
+        <Storefront storefront={offer.storefront} />
+        {/* How it is built used to be a section of its own that existed on L
+            alone, so the three offers were three different pages. It is the same
+            question on all of them — Growth answers it two ways and the other
+            two answer it once — and it belongs beside what gets built. */}
+        <h3>How it is built</h3>
+        {offer.tracks ? (
+          <p className="muted">
+            Two ways, one band. The track is an answer rather than a property of the offer — a headless build
+            spends the same weeks differently, it does not add weeks on top. Content stays in Shopify either way;
+            content or a front end outside it is <Link to="/offering/arc">Merkle Arc</Link>.
           </p>
-          <Storefront storefront={offer.storefront} />
-        </section>
-      ) : null}
+        ) : (
+          <p className="muted">
+            One way. A headless storefront is not a variant of this offer: it is an{' '}
+            <Link to="/offering/l">L trigger</Link>, and it lands the engagement in Ecommerce Growth whatever the
+            rest of the scope says.
+          </p>
+        )}
+        <Tracks
+          tracks={offer.tracks}
+          only={{ label: TRACK[offer.delivery_track] ?? offer.delivery_track, body: offer.approach.storefront }}
+        />
+      </section>
 
-      <section>
-        <h2>What it builds, epic by epic</h2>
+      <section id="stories">
+        <h2>The backlog, story by story</h2>
         <p className="lede">
           {totals.epics} epics and all {totals.stories} stories in them, read off the backlog this engine generates rather than
           described again here. Each story sits in one of three places, and the difference is what the client
@@ -155,49 +226,32 @@ export default function OfferingSegment({ loaderData }) {
         <ScopeTable catalogue={catalogue} totals={totals} capacity={offer.gate_capacity_weeks} />
       </section>
 
-      {offer.tracks ? (
-        <section>
-          <h2>How the storefront is built</h2>
-          <p className="lede">
-            Two ways, one band. The track is an answer rather than a property of the offer — a headless build
-            spends the same weeks differently, it does not add weeks on top. Content stays in Shopify either way;
-            content or a front end outside it is <Link to="/offering/arc">Merkle Arc</Link>.
-          </p>
-          <Tracks tracks={offer.tracks} />
-        </section>
-      ) : null}
-
-
-
-
-
-
-
-
-
-
-      {segment.slug === 'l' ? (
-        <section>
-          <h2>What lands an engagement here</h2>
-          <p className="lede">
-            Two ways. A headless storefront lands here whatever the scope says — four weeks of Foundation cannot
-            produce one at any catalogue size — and so does scope that adds up to more than an Ecommerce Scale can
-            hold. Either way it is the same offer, one size up.
-          </p>
-          <p className="muted">
-            Nothing else qualitative puts an engagement here. A luxury brand with one market and a small catalogue
-            is a small engagement; a brand that wants every template designed answers the design questions, and
-            those are priced by the storefront design gate below. What does leave the offers is content or a front
-            end outside Shopify — <Link to="/offering/arc">Merkle Arc</Link>, which these offers do not quote.
-          </p>
-        </section>
-      ) : null}
+      {/* On every offer, not only on L.
+          "Is this engagement an M" is the question these pages are opened with,
+          and it was answered on one page out of three — in prose, under a
+          heading S and M did not have, which is also why a consultant moving
+          between the offers lost their place. */}
+      <section id="lands" className="part-start">
+        <Part id="lands" />
+        <h2>What puts an engagement here</h2>
+        <p className="lede">
+          The engine asks these in order and stops at the first yes. Nobody picks the offer by hand, and nothing
+          qualitative puts an engagement in one: a luxury brand with one market and a small catalogue is a small
+          engagement.
+        </p>
+        <Lands classification={view.classification} here={offer.code} />
+        <p className="lands-note">
+          {segment.slug === 'l'
+            ? <>A headless storefront lands here whatever the rest of the scope says — four weeks of Foundation cannot produce one at any catalogue size. What leaves the offers altogether is content or a front end outside Shopify: <Link to="/offering/arc">Merkle Arc</Link>, which these offers do not quote.</>
+            : <>These are the whole decision — there is no sixth rule and no judgement call after them. What leaves the offers altogether is content or a front end outside Shopify: <Link to="/offering/arc">Merkle Arc</Link>, a separate engagement that nothing here quotes or estimates.</>}
+        </p>
+      </section>
 
       {/* The gates, on every offer — and what the band already holds before any
           of them is added to it. A page that lists what a gate costs without
           saying what the offer already covers leaves the consultant to guess
           whether the number is inside the band or on top of it. */}
-      <section>
+      <section id="gates">
         <h2>{segment.slug === 'l' ? 'What the gates add to it' : 'What would make this a bigger offer'}</h2>
         <p className="lede">
           {segment.slug === 's'
@@ -240,7 +294,7 @@ export default function OfferingSegment({ loaderData }) {
         </ol>
       </section>
 
-      <section>
+      <section id="channels">
         <h2>Who it sells to</h2>
         <p className="lede">
           Wholesale is not this offer plus an extra. Selling both ways is — that is the one case the
@@ -249,7 +303,7 @@ export default function OfferingSegment({ loaderData }) {
         <Channels channels={offer.channels} />
       </section>
 
-      <section>
+      <section id="scale">
         <h2>Where it sits</h2>
         <OfferScale offers={view.offers} pricing={view.pricing} currency={currency} here={offer.code} />
       </section>
