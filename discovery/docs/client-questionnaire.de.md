@@ -1580,6 +1580,7 @@
 - [ ] Noch unklar
 
 **Q6.2.14** — Wird das Großhandelsgeschäft von einem eigenen Team mit eigenen Zielen oder eigener Ergebnisrechnung geführt? *(recommended)*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 *Ask if Q1.1.4 is Business to business (B2B), or Q1.1.4 is Hybrid (DTC and B2B).*
 *Why we ask: A wholesale business with its own team, targets and customers usually wants to move at its own pace — its own campaigns, its own releases, its own data. That is the difference between wholesale living alongside the consumer store and wholesale having a store of its own.*
 *Wir fragen nach der Organisation des Geschäfts, nicht nach der Website.*

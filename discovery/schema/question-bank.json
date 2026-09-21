@@ -6524,6 +6524,10 @@
           "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
           "https://help.shopify.com/en/manual/b2b/getting-started/plan-features"
         ]
+      },
+      "skip_if": {
+        "question": "Q1.1.4",
+        "equals": "dtc"
       }
     },
     {

@@ -1580,6 +1580,7 @@
 - [ ] Pas encore certain
 
 **Q6.2.14** — L'activité de gros est-elle pilotée par sa propre équipe, avec ses propres objectifs ou son propre compte de résultat ? *(recommended)*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 *Ask if Q1.1.4 is Business to business (B2B), or Q1.1.4 is Hybrid (DTC and B2B).*
 *Why we ask: A wholesale business with its own team, targets and customers usually wants to move at its own pace — its own campaigns, its own releases, its own data. That is the difference between wholesale living alongside the consumer store and wholesale having a store of its own.*
 *Nous interrogeons l'organisation de l'entreprise, pas le site web.*
