@@ -83,10 +83,13 @@ describe('client deck XML', () => {
   });
 
   test('investment shows the offer band only; L is open-ended', () => {
-    // Golden values: the M band plus the weeks its gates push past the envelope
-    // the band already holds, and an L whose gates fit inside its own.
+    // Golden values: the S band plus a heavy migration priced in full, because S
+    // carries no gate weeks of its own. It came down when the migration tiers
+    // stopped including the redirect estate — that work is the SEO continuity
+    // gate now, and a Magento replatform with a large estate was paying for it
+    // in both places.
     const single = recompute({ ...load('foundation-minimal.json'), migration: { source_platform: 'magento' } });
-    assert.match(buildDeckXml(single, backlogFor(single)).xml, /<price-band currency="CHF" from="78000" to="120000"\/>/);
+    assert.match(buildDeckXml(single, backlogFor(single)).xml, /<price-band currency="CHF" from="70000" to="109000"\/>/);
 
     const doc = load('acme-watches.json');
     const { xml } = buildDeckXml(doc, backlogFor(doc));

@@ -1077,42 +1077,42 @@
       "id": "+Migration (light)",
       "gate": "migration",
       "tier": "light",
-      "description": "WooCommerce or Shopify-to-Shopify: catalogue, customers, redirects",
+      "description": "WooCommerce or Shopify-to-Shopify: catalogue, customers and order history. The redirect estate is the SEO continuity gate, not this one.",
       "effort_weeks": {
         "min": 1,
-        "max": 2
+        "max": 1.5
       },
       "price_add": {
         "min": 8000,
-        "max": 15000
+        "max": 12000
       }
     },
     {
       "id": "+Migration (medium)",
       "gate": "migration",
       "tier": "medium",
-      "description": "Shopware or BigCommerce: data model differences, order history, redirect mapping",
+      "description": "Shopware or BigCommerce: data model differences to map, order history, customer and price-list structures. Redirects are priced by the SEO continuity gate.",
       "effort_weeks": {
-        "min": 3,
-        "max": 5
+        "min": 2.5,
+        "max": 4
       },
       "price_add": {
-        "min": 22000,
-        "max": 38000
+        "min": 18000,
+        "max": 30000
       }
     },
     {
       "id": "+Migration (heavy)",
       "gate": "migration",
       "tier": "heavy",
-      "description": "Magento, Salesforce Commerce Cloud or a custom platform: bespoke data model, integrations to re-point, large redirect estate",
+      "description": "Magento, Salesforce Commerce Cloud or a custom platform: a bespoke data model to map and integrations to re-point. Redirects are priced by the SEO continuity gate.",
       "effort_weeks": {
-        "min": 5,
-        "max": 7
+        "min": 4,
+        "max": 5.5
       },
       "price_add": {
-        "min": 38000,
-        "max": 55000
+        "min": 30000,
+        "max": 44000
       }
     },
     {
@@ -1857,15 +1857,19 @@
         "S": "No — new store, or Shopify to Shopify",
         "M": "Yes, from WooCommerce or Shopify",
         "L": "Yes, from WooCommerce or Shopify",
-        "note": "Shopware, BigCommerce, Magento, Salesforce Commerce Cloud and custom platforms are quoted on top: a heavy migration is seven weeks on its own, which the band cannot hold beside a full template set."
+        "note": "Shopware, BigCommerce, Magento, Salesforce Commerce Cloud and custom platforms are an add-on: four to five and a half weeks on their own, which the band cannot hold beside a full template set. The redirect estate is not in here — it is the SEO continuity row, priced once."
       },
       {
         "id": "b2b",
         "what": "B2B / wholesale alongside consumer",
         "gate": "b2b",
         "S": "No — one channel",
-        "M": "No — quoted on top",
-        "L": "Yes"
+        "M": "Add-on",
+        "L": "Yes",
+        "addon": [
+          "M"
+        ],
+        "note": "B2B fits inside an M, but only just — it uses the last half-week the band has. Sold as an add-on so the pack keeps its headroom and the price says what it is."
       },
       {
         "id": "catalogue",
@@ -1890,17 +1894,25 @@
         "what": "Physical stores on Shopify POS",
         "gate": "retail_pos",
         "S": "None",
-        "M": "None — quoted on top",
-        "L": "None — quoted on top",
-        "note": "Five locations is the ceiling; above that it stays in the offer with a named owner (rule 11.22)."
+        "M": "Add-on",
+        "L": "Add-on",
+        "note": "Five locations is the ceiling; above that it stays in the offer with a named owner (rule 11.22).",
+        "addon": [
+          "M",
+          "L"
+        ]
       },
       {
         "id": "subscriptions",
         "what": "Subscriptions",
         "gate": "subscriptions",
         "S": "No",
-        "M": "No — quoted on top",
-        "L": "No — quoted on top"
+        "M": "Add-on",
+        "L": "Add-on",
+        "addon": [
+          "M",
+          "L"
+        ]
       },
       {
         "id": "checkout",
@@ -1925,8 +1937,9 @@
         "what": "SEO continuity",
         "gate": "seo_continuity",
         "S": "No redirect estate",
-        "M": "Included with the migration",
-        "L": "Included with the migration"
+        "M": "Included — the redirect map, metadata and canonicals",
+        "L": "Included — the redirect map, metadata and canonicals",
+        "note": "A redirect estate of 10,000 URLs or more, or rankings the business runs on, is an add-on: the map is built from a crawl rather than a pattern and watched after launch."
       },
       {
         "id": "support",

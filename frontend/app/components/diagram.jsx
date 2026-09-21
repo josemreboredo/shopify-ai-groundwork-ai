@@ -671,10 +671,18 @@ export function PackTable({ offers, closedScope, pricing, currency, weeks, band 
               <th scope="row">{row.what}</th>
               {offers.map((o) => {
                 const value = row.values[o.code] ?? '—';
-                const no = /^No\b/.test(value);
+                const isAddon = row.addon?.includes(o.code);
+                const no = !isAddon && /^No\b/.test(value);
                 return (
-                  <td key={o.code} data-label={o.code} className={no ? 'pack-no' : 'pack-yes'}>
+                  <td key={o.code} data-label={o.code} className={isAddon ? 'pack-addon' : no ? 'pack-no' : 'pack-yes'}>
                     {value}
+                    {/* An add-on with no price beside it is just a softer no. */}
+                    {isAddon && row.cost ? (
+                      <span className="pack-addon-cost">
+                        +{weeks(row.cost.effort_weeks)} week{row.cost.effort_weeks.max === 1 ? '' : 's'}
+                        {pricing && row.cost.price_add ? ` · ${band(row.cost.price_add, currency)}` : ''}
+                      </span>
+                    ) : null}
                   </td>
                 );
               })}

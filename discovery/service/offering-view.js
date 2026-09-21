@@ -65,6 +65,20 @@ function plainRule(c) {
 }
 
 /**
+ * What a gate costs, for a row that sells it as an add-on.
+ *
+ * @param {string} gateId
+ * @param {boolean} pricing  whether this caller may see Merkle's price
+ */
+function addonCost(gateId, pricing) {
+  const mods = offering.modifiers.filter((m) => m.gate === gateId);
+  if (!mods.length) return null;
+  const weeks = { min: Math.min(...mods.map((m) => m.effort_weeks.min)), max: Math.max(...mods.map((m) => m.effort_weeks.max)) };
+  const price = { min: Math.min(...mods.map((m) => m.price_add.min)), max: Math.max(...mods.map((m) => m.price_add.max)) };
+  return { effort_weeks: weeks, ...(pricing ? { price_add: money(price) } : {}) };
+}
+
+/**
  * @param {{ pricing?: boolean }} [options]  pricing: include price bands, price
  *   additions and internal notes. Only for callers allowed to see Merkle pricing.
  */
@@ -187,8 +201,18 @@ export function offeringView({ pricing = false } = {}) {
        offer decided"; this answers the question a client asks instead — if I
        buy an M, what exactly do I get. `limits` is the machine-readable twin
        the test builds from and has no business on a page, so it is not here. */
-    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, S, M, L, note }) => ({
-      id, what, gate, values: { S, M, L }, ...(note ? { note } : {}),
+    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, S, M, L, note, addon }) => ({
+      id,
+      what,
+      gate,
+      values: { S, M, L },
+      ...(note ? { note } : {}),
+      /* Which packs can buy this, and what it costs there. A capability the
+         client can buy is not a "No", and printing one loses the sale in the
+         room — but an add-on with no price beside it is just a softer no. The
+         cost is the gate's own, so it cannot drift from what the engine
+         quotes. */
+      ...(addon?.length ? { addon, cost: addonCost(gate, pricing) } : {}),
     })),
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {

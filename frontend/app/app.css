@@ -1735,3 +1735,11 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .pack-notes ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; }
 .pack-notes li { font-size: 0.9rem; line-height: 1.45; color: var(--muted); }
 .pack-notes li strong { color: var(--ink); font-weight: 600; }
+/* An add-on is neither a yes nor a no: it is on the price list. Marked with the
+   accent so it reads as available, and carrying its cost so it is not a softer no. */
+.pack-gets .pack-addon { color: var(--ink); }
+.pack-gets .pack-addon::before {
+  content: ''; display: inline-block; inline-size: 8px; block-size: 8px;
+  background: var(--red); margin-inline-end: 8px; vertical-align: 0.05em;
+}
+.pack-addon-cost { display: block; margin-top: 3px; font-size: 0.85rem; color: var(--muted); }
