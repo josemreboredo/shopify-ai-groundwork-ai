@@ -704,6 +704,44 @@ describe('the offer follows the effort, not the gate count', () => {
     }
   });
 
+  test('adding scope never makes an engagement cheaper or shorter', () => {
+    /*
+     * The property nobody was checking, and the one most likely to break
+     * quietly: every modifier clamps its per-unit total to a band and several
+     * are tiered, so a change to a ceiling or a tier boundary can make more
+     * work cost less without failing anything else. A consultant cannot defend
+     * a quote that goes down when the scope goes up, and would not think to
+     * look for it.
+     */
+    const base = () => ({ schema_version: '1.0.0', meta: { client: { name: 'X', slug: 'x' }, source: 'questionnaire' } });
+    const withMarkets = (n) => ({ markets: { list: Array.from({ length: n }, (_, i) => ({ code: `M${i}`, currency: 'CHF', price_strategy: 'base_currency', languages: ['de'] })) } });
+    const more = {
+      'multi-currency': (d) => ({ ...d, markets: { list: d.markets.list.map((m, i) => ({ ...m, currency: i ? 'EUR' : 'CHF' })) } }),
+      b2b: (d) => ({ ...d, meta: { ...d.meta, client: { ...d.meta.client, business_model: 'hybrid' } } }),
+      integration: (d) => ({ ...d, integrations: [{ system: 'erp', category: 'erp', connector: 'custom' }] }),
+      design: (d) => ({ ...d, design: { figma: { completeness: 'all_templates' } } }),
+      migration: (d) => ({ ...d, migration: { source_platform: 'magento' } }),
+      retail: (d) => ({ ...d, retail: { store_count: 1, pos: 'shopify_pos' } }),
+      catalogue: (d) => ({ ...d, catalogue: { sku_count: 20000, variant_options_max: 3 } }),
+    };
+
+    for (let n = 1; n <= 8; n++) {
+      const before = classifyOffer({ ...base(), ...withMarkets(n) });
+      for (const [what, add] of Object.entries(more)) {
+        const after = classifyOffer(add({ ...base(), ...withMarkets(n) }));
+        assert.ok(after.price_band.max >= before.price_band.max,
+          `${n} markets plus ${what}: the band falls from ${before.price_band.max} to ${after.price_band.max}`);
+        assert.ok(after.duration_weeks.max >= before.duration_weeks.max,
+          `${n} markets plus ${what}: the weeks fall from ${before.duration_weeks.max} to ${after.duration_weeks.max}`);
+      }
+      // And one more market is never cheaper than the market before it.
+      if (n > 1) {
+        const fewer = classifyOffer({ ...base(), ...withMarkets(n - 1) });
+        assert.ok(before.price_band.max >= fewer.price_band.max, `${n} markets is cheaper than ${n - 1}`);
+      }
+    }
+  });
+
   test('every offer band is in Swiss francs', () => {
     assert.equal(offering.currency, 'CHF');
     for (const doc of [base(), { ...base(), brand: { positioning: 'luxury' } }]) {
