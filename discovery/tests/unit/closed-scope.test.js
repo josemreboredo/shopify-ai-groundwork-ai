@@ -37,7 +37,9 @@ function engagementAt(limits) {
         languages,
       })),
     },
-    catalogue: { sku_count: limits.sku_count, variant_options_max: 1 },
+    // A pack that promises complex variants has to be built with them, or the
+    // catalogue gate never fires and the test proves the wrong engagement.
+    catalogue: { sku_count: limits.sku_count, variant_options_max: limits.variant_options ?? 1 },
     design: { figma: { completeness: limits.storefront } },
     integrations: Array.from({ length: limits.integrations }, (_, i) => ({
       system: `sys${i}`, category: ['erp', 'pim', 'crm'][i], connector: 'custom', status: 'to_build', test_environment: 'available',
