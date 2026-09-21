@@ -782,14 +782,15 @@
       "description": "Shopify Markets set-up: geo-routing, Translate & Adapt, tax and payments per market — about half a week per market beyond the first",
       "effort_weeks": {
         "min": 1,
-        "max": 2.5
+        "max": 6
       },
       "price_add": {
         "min": 8000,
-        "max": 20000
+        "max": 96000
       },
       "per_market_weeks": 0.5,
-      "per_market_price": 8000
+      "per_market_price": 8000,
+      "$comment": "Scales per market with no rule above it: the ceiling is what a market count can reach before the effort rule (11.3) takes over, not a cap on what a market costs."
     },
     {
       "id": "+B2B",
