@@ -670,6 +670,40 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.deepEqual(model('b2b').price_band, model('dtc').price_band);
   });
 
+  test('no modifier is priced at a rate the offers themselves do not charge', () => {
+    /*
+     * The bug this closes, found by being asked "are you sure about the
+     * markets": +Markets charged CHF 8,000 for half a week, which is CHF 16k a
+     * week, where all three offers and every other modifier sit near ten or
+     * eleven. Nothing was wrong with either number alone, and nothing in the
+     * suite could see that they disagreed — so the offering promised twice the
+     * markets it could actually deliver, on arithmetic nobody had sourced.
+     *
+     * The bound is deliberately wide. It is not a pricing policy; it is a check
+     * that a line item has not drifted out of the scale the rest of the
+     * offering is built on, which is the failure that hides.
+     */
+    const rate = (price, weeks) => (price.min + price.max) / (weeks.min + weeks.max) / 1000;
+    const offers = Object.values(offering.offers).map((o) => rate(o.price_band, o.duration_weeks));
+    const floor = Math.min(...offers) * 0.7;
+    const ceiling = Math.max(...offers) * 1.25;
+
+    for (const m of offering.modifiers) {
+      const r = rate(m.price_add, m.effort_weeks);
+      assert.ok(r >= floor && r <= ceiling,
+        `${m.id} is CHF ${r.toFixed(1)}k a week against the ${floor.toFixed(1)}–${ceiling.toFixed(1)}k the offers charge`);
+      // A per-unit rate has to agree with its own band, or the unit price and
+      // the unit effort are describing different work.
+      for (const [w, p] of [['per_market_weeks', 'per_market_price'], ['per_integration_weeks', 'per_integration_price'],
+        ['per_language_weeks', 'per_language_price'], ['per_location_weeks', 'per_location_price']]) {
+        if (!m[w]) continue;
+        const unit = m[p] / m[w] / 1000;
+        assert.ok(unit >= floor && unit <= ceiling,
+          `${m.id}: ${m[w].toString()} weeks at CHF ${m[p]} is ${unit.toFixed(1)}k a week, outside the ${floor.toFixed(1)}–${ceiling.toFixed(1)}k the offers charge`);
+      }
+    }
+  });
+
   test('every offer band is in Swiss francs', () => {
     assert.equal(offering.currency, 'CHF');
     for (const doc of [base(), { ...base(), brand: { positioning: 'luxury' } }]) {

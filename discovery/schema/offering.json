@@ -779,18 +779,18 @@
     {
       "id": "+Markets",
       "gate": "markets",
-      "description": "Shopify Markets set-up: geo-routing, Translate & Adapt, tax and payments per market — about half a week per market beyond the first",
+      "description": "Shopify Markets set-up: geo-routing, Translate & Adapt, tax, duties and payment methods per market, and the checkout tested in each one — about three quarters of a week per market beyond the first",
       "effort_weeks": {
         "min": 1,
-        "max": 6
+        "max": 9
       },
       "price_add": {
         "min": 8000,
         "max": 96000
       },
-      "per_market_weeks": 0.5,
+      "per_market_weeks": 0.75,
       "per_market_price": 8000,
-      "$comment": "Scales per market with no rule above it: the ceiling is what a market count can reach before the effort rule (11.3) takes over, not a cap on what a market costs."
+      "$comment": "Half a week per market was the only rate in this offering that disagreed with its own price: CHF 8,000 against 0.5 weeks is CHF 16k a week, where every other modifier and all three offers sit at 10-11k. Nothing in the repo ever sourced the half-week. The price is the number with a market behind it, so the effort moved to meet it. The ceiling is what a market count reaches before the effort rule takes over."
     },
     {
       "id": "+B2B",
@@ -1812,9 +1812,9 @@
         "what": "Markets",
         "gate": "markets",
         "S": "1",
-        "M": "Up to 6",
-        "L": "Up to 7",
-        "note": "The most the pack holds with everything else in it taken too. A client who skips the migration or takes fewer languages has room for more; a further market beyond the row is about half a week and CHF 8k, quoted on top."
+        "M": "Up to 4",
+        "L": "Up to 5",
+        "note": "The most the pack holds with everything else in it taken too — a client who skips the migration or takes fewer languages has room for more. A further market is three quarters of a week and CHF 8k, quoted on top: geo-routing, tax, duties and payment methods configured, and the checkout tested in that market."
       },
       {
         "id": "multi_currency",
@@ -1964,7 +1964,7 @@
         "migration": null
       },
       "M": {
-        "markets": 6,
+        "markets": 4,
         "multi_currency": true,
         "languages": 4,
         "b2b": false,
@@ -1975,7 +1975,7 @@
         "migration": "woocommerce"
       },
       "L": {
-        "markets": 7,
+        "markets": 5,
         "multi_currency": true,
         "languages": 6,
         "b2b": true,

@@ -213,20 +213,31 @@
       }
     },
     "l_triggers": {},
-    "modifiers": [],
+    "modifiers": [
+      "+Markets",
+      "+MultiCurrency",
+      "+B2B",
+      "+Integration",
+      "+SKU (standard)",
+      "+Migration (light)",
+      "+SEO (standard)",
+      "+Checkout (standard)",
+      "+Analytics (standard)",
+      "+Support (extended)"
+    ],
     "price_band": {
-      "min": 140000,
+      "min": 145000,
       "max": 220000,
       "currency": "CHF",
       "open_ended": true
     },
     "duration_weeks": {
-      "min": 13,
+      "min": 13.5,
       "max": 20
     },
     "rationale": "Ten scope gates are active and they add up to 13–17.5 weeks, past the 13-week ceiling of Ecommerce Scale, so the engagement classifies as L — Ecommerce Growth. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The gates sit inside the 9–15 weeks the L band already holds, so nothing is quoted on top of it.",
     "scope_effort_weeks": {
-      "min": 13,
+      "min": 13.5,
       "max": 17.5
     },
     "gate_capacity_weeks": {
@@ -243,19 +254,19 @@
         }
       },
       {
-        "gate": "migration",
-        "label": "Migration",
+        "gate": "post_launch_support",
+        "label": "Post-launch support",
         "weeks": {
           "min": 1,
           "max": 2
         }
       },
       {
-        "gate": "post_launch_support",
-        "label": "Post-launch support",
+        "gate": "markets",
+        "label": "Markets",
         "weeks": {
-          "min": 1,
-          "max": 2
+          "min": 1.5,
+          "max": 1.5
         }
       },
       {
@@ -267,11 +278,11 @@
         }
       },
       {
-        "gate": "markets",
-        "label": "Markets",
+        "gate": "migration",
+        "label": "Migration",
         "weeks": {
           "min": 1,
-          "max": 1
+          "max": 1.5
         }
       },
       {
