@@ -177,12 +177,12 @@
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A migration where there is one to run, priced by where the data comes from",
       "price_band": {
         "min": 65000,
-        "max": 135000,
+        "max": 145000,
         "open_ended": false
       },
       "duration_weeks": {
         "min": 6,
-        "max": 13
+        "max": 14
       },
       "phases": [
         {
@@ -232,14 +232,15 @@
           "name": "Template customisation",
           "weeks": {
             "min": 1.5,
-            "max": 3
+            "max": 4
           },
           "covers": "Standard sections where they fit, built sections where the gates need them.",
           "deliverables": [
             "Brand tokens and every template built from the theme’s standard sections, as in Ecommerce Foundation",
             "The sections the gated requirements need, built as Online Store 2.0 theme blocks with translatable setting labels and presets",
             "A market switcher, B2B price display and the catalogue patterns a deep range needs, where those gates fired",
-            "Theme Check and the accessibility checks clean on every block"
+            "Theme Check and the accessibility checks clean on every block",
+            "Blocks on the Thank you and Order status pages, built as an app extension: order tracking, a survey or a referral after the sale, on any plan except Starter"
           ]
         },
         {
@@ -356,12 +357,12 @@
       "base_scope": "A platform that has to perform from day one, because the one it replaces already did · The enterprise migration: the data, the redirect estate and the integrations the old platform was carrying · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 140000,
-        "max": 220000,
+        "max": 230000,
         "open_ended": true
       },
       "duration_weeks": {
         "min": 13,
-        "max": 20
+        "max": 21
       },
       "phases": [
         {
@@ -411,13 +412,14 @@
           "name": "Design system and templates",
           "weeks": {
             "min": 4,
-            "max": 6
+            "max": 7
           },
           "covers": "The design system built as sections and blocks over one token layer, with every template against it — the largest phase in this offer, and the reason it is this offer",
           "deliverables": [
             "One token layer — colour, type, spacing, motion — that every section reads from, so a brand change is a token change",
             "The design system built as sections and blocks the merchant can still rearrange, not templates traced screen by screen",
-            "Every template against it, with motion and interaction as specified and reduced motion respected"
+            "Every template against it, with motion and interaction as specified and reduced motion respected",
+            "Blocks on the Thank you and Order status pages, built as an app extension: order tracking, a survey or a referral after the sale, on any plan except Starter"
           ]
         },
         {
@@ -1981,15 +1983,15 @@
         "what": "Checkout",
         "gate": "checkout_extensibility",
         "S": "Settings and editor branding",
-        "M": "Settings and editor branding",
-        "L": "Settings and editor branding",
-        "note": "Shopify gates the checkout in three steps, and so do we. Blocks on the Thank you and Order status pages run on every plan except Starter and are an add-on in any pack. Blocks and custom fields inside the information, shipping and payment steps need Shopify Plus — on any other plan that is a plan decision before it is a scope one. Backend rules are Shopify Functions. A fully custom checkout UI is not sold at all (rule 11.6).",
+        "M": "Settings, branding, and blocks on the Thank you and Order status pages",
+        "L": "Settings, branding, and blocks on the Thank you and Order status pages",
+        "note": "Shopify gates the checkout in three steps and so do we. Blocks on the Thank you and Order status pages run on every plan except Starter, so M and L build them: order tracking, a survey, a referral block after the sale. Blocks and custom fields inside the information, shipping and payment steps need Shopify Plus — on any other plan that is a plan decision before it is a scope one. Backend rules are Shopify Functions. A fully custom checkout UI is not sold at all (rule 11.6).",
         "addon": [
           "S",
           "M",
           "L"
         ],
-        "addon_label": "Checkout extensions"
+        "addon_label": "Inside the checkout steps (Plus), or backend rules as Functions"
       },
       {
         "id": "analytics",
@@ -2040,7 +2042,8 @@
         "sku_count": 400,
         "integrations": 0,
         "retail_locations": 0,
-        "migration": null
+        "migration": null,
+        "checkout": null
       },
       "M": {
         "markets": 3,
@@ -2052,7 +2055,8 @@
         "integrations": 1,
         "retail_locations": 0,
         "migration": "woocommerce",
-        "variant_options": 2
+        "variant_options": 2,
+        "checkout": "thank_you_order_status_blocks"
       },
       "L": {
         "markets": 4,
@@ -2064,7 +2068,8 @@
         "integrations": 1,
         "retail_locations": 0,
         "migration": "shopware",
-        "variant_options": 2
+        "variant_options": 2,
+        "checkout": "thank_you_order_status_blocks"
       }
     }
   }

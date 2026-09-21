@@ -46,6 +46,8 @@ function engagementAt(limits) {
     })),
     retail: { store_count: limits.retail_locations, pos: limits.retail_locations ? 'shopify_pos' : false },
     migration: limits.migration ? { source_platform: limits.migration, seo_equity: 'none' } : {},
+    // A pack that promises checkout blocks has to be built with them.
+    checkout: limits.checkout ? { customisation: [limits.checkout] } : {},
   };
 }
 
