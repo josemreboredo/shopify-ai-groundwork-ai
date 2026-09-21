@@ -73,7 +73,13 @@ function maximalEngagement() {
     us_buyers: true, customer_data_sharing: 'approved', catalog_readiness: 'partial', catalog_mapping_needed: true,
     crawler_policy: 'selective', knowledge_base: true, own_agent_surface: 'later',
     merchant_ai_tools: ['sidekick', 'shopify_magic', 'semantic_search'], terms_owner: 'Head of Ecommerce' };
-  doc.design = { ...doc.design, motion: true, custom_design: true };
+  /* Headless, with content in Shopify.
+     Headless was an L trigger, then an exit, then a trigger again, and this
+     fixture followed it out and not back — so the Hydrogen stories had no
+     engagement to fire on. Content stays in metaobjects, or exit rule 11.26
+     fires and a STOP has no backlog at all. */
+  doc.design = { ...doc.design, motion: true, custom_design: true, headless_required: true,
+    headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects', hosting: 'oxygen', reasons: ['performance'] } };
   doc.compliance = { ...doc.compliance, legal_pages_status: 'needs_drafting', sensitive_data: false, industry_requirements: ['EU General Product Safety Regulation product safety information'] };
   doc.delivery = { ...doc.delivery, support_model: 'hypercare_only', sops_required: true, phased_launch: true };
   doc.offer = classifyOffer(doc);
