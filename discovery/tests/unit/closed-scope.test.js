@@ -51,6 +51,33 @@ function engagementAt(limits) {
   };
 }
 
+import fs from 'node:fs';
+
+describe('the strategy document and the engine quote the same offering', () => {
+  /*
+   * offering.json names docs/strategy.md as its source, and the two drifted
+   * apart the first afternoon the bands moved: the document still said an M was
+   * 6-13 weeks at CHF 65-135k after the engine had started quoting 6-14 at
+   * 65-145. Nothing could see it, because one is prose and the other is data.
+   *
+   * A document that is cited as the source of a number has to carry that
+   * number. This reads the table rather than trusting it.
+   */
+  const strategy = fs.readFileSync(new URL('../../../docs/strategy.md', import.meta.url), 'utf8');
+
+  test('every offer\u2019s band and duration appear in the table that claims to define them', () => {
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      const b = offer.price_band;
+      const d = offer.duration_weeks;
+      const money = `CHF ${b.min / 1000}\u2013${b.max / 1000}k${b.open_ended ? '+' : ''}`;
+      const weeks = `${d.min}\u2013${d.max} weeks`;
+      assert.ok(strategy.includes(money), `${code}: strategy.md does not quote ${money}`);
+      assert.ok(strategy.includes(weeks), `${code}: strategy.md does not quote ${weeks}`);
+      assert.ok(strategy.includes(offer.name), `${code}: strategy.md never names ${offer.name}`);
+    }
+  });
+});
+
 describe('the closed scope each pack sells', () => {
   const { rows, limits } = offering.closed_scope;
 

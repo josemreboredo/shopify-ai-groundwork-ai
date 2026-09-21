@@ -217,7 +217,7 @@ store-spec.yaml → `shopify theme push` pipeline (~85% of implementation)
 | Offer | Code | Triggered by | Base scope | Typical value | Delivery |
 |---|---|---|---|---|---|
 | **Ecommerce Foundation** | S | 0–1 scope gates | A brand starting ecommerce. New Shopify store on the plan the requirements need (ADR 0011) · Horizon theme · core catalogue · payments · standard checkout | CHF 40–65k | 4–5 weeks |
-| **Ecommerce Scale** | M | ≥ 2 scope gates | A brand that already sells and cannot scale. Everything in S · the gates that fired, each as its own workstream · the markets, catalogue and systems behind them | CHF 65–135k | 6–13 weeks |
+| **Ecommerce Scale** | M | ≥ 2 scope gates | A brand that already sells and cannot scale. Everything in S · the gates that fired, each as its own workstream · the markets, catalogue and systems behind them | CHF 65–145k | 6–14 weeks |
 
 Both S and M are deliverable by Consultant + AI + two part-time collaborators.
 No permanent agency headcount required.
@@ -246,7 +246,7 @@ token application, boilerplate, automated QA (~60% of implementation)
 
 | Offer | Code | Triggered by | Scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Growth** | L | A headless requirement, or scope past the M ceiling | A brand already selling professionally on an enterprise platform. The enterprise migration · measurement that stands up · personalisation and experimentation live at launch · the design system built once over one token layer | CHF 140–220k+ | 13–20 weeks |
+| **Ecommerce Growth** | L | A headless requirement, or scope past the M ceiling | A brand already selling professionally on an enterprise platform. The enterprise migration · measurement that stands up · personalisation and experimentation live at launch · the design system built once over one token layer | CHF 140–230k+ | 13–21 weeks |
 
 L builds either way and spends the same weeks differently — as theme sections and
 blocks, or as owned components on Hydrogen — so the track follows the answers
