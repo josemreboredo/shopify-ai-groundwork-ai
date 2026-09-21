@@ -700,6 +700,13 @@
       "verified": {
         "on": "2026-09-21",
         "source": "help.shopify.com"
+      },
+      "platform_limit": {
+        "what": "Filters per store",
+        "shopify": 25,
+        "shopify_plus": 25,
+        "merkle_line": 25,
+        "source": "https://help.shopify.com/en/manual/online-store/storefront-search/search-and-discovery-filters"
       }
     },
     {
@@ -740,6 +747,14 @@
       "verified": {
         "on": "2026-09-17",
         "source": "question bank citations"
+      },
+      "platform_limit": {
+        "what": "Inventory locations per store",
+        "shopify": 10,
+        "shopify_plus": 200,
+        "merkle_line": 5,
+        "source": "https://help.shopify.com/en/manual/fulfillment/setup/locations/setup",
+        "note": "Apps that stock inventory — 3PL, dropshipping, custom fulfilment — are treated as locations but do not count toward the limit."
       }
     },
     {
@@ -756,6 +771,13 @@
       "verified": {
         "on": "2026-09-17",
         "source": "question bank citations"
+      },
+      "platform_limit": {
+        "what": "Published languages per store",
+        "shopify": 20,
+        "shopify_plus": 30,
+        "merkle_line": 6,
+        "source": "https://help.shopify.com/en/manual/international/localization-and-translation"
       }
     },
     {
@@ -779,6 +801,13 @@
       "verified": {
         "on": "2026-09-21",
         "source": "help.shopify.com"
+      },
+      "platform_limit": {
+        "what": "URL redirects per store",
+        "shopify": 100000,
+        "shopify_plus": 20000000,
+        "merkle_line": 10000,
+        "source": "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect"
       }
     },
     {

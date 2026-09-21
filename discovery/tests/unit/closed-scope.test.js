@@ -80,6 +80,29 @@ describe('every threshold a price rests on is referenced', () => {
     }
   });
 
+  test('we never promise past what Shopify allows', () => {
+    /*
+     * Two kinds of number live in these gates and they read identically: a
+     * limit Shopify enforces, and a line Merkle drew. They argue differently —
+     * one is a fact to cite, the other a position to defend — and only one of
+     * them can make the offering promise something the platform cannot do.
+     *
+     * So where a gate has both, it records both, and our line has to sit inside
+     * the platform's. Ten locations on Basic, Grow and Advanced against the five
+     * we sell; twenty published languages against our six.
+     */
+    for (const g of offering.scope_gates) {
+      const l = g.platform_limit;
+      if (!l) continue;
+      assert.ok(l.merkle_line <= l.shopify,
+        `${g.id}: we sell up to ${l.merkle_line} ${l.what.toLowerCase()} and Shopify allows ${l.shopify}`);
+      assert.ok(l.shopify <= l.shopify_plus, `${g.id}: the Plus limit is below the standard one`);
+      assert.ok(l.source?.startsWith('https://'), `${g.id}: a platform limit with no page behind it`);
+      assert.ok(g.sources?.includes(l.source) || g.sources?.length,
+        `${g.id}: the platform limit cites a page the gate does not`);
+    }
+  });
+
   test('a source is a page, not a search or an anchor pretending to be one', () => {
     for (const g of offering.scope_gates) {
       for (const u of g.sources ?? []) {
