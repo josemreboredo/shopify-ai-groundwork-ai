@@ -11,6 +11,8 @@ import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
+import { classifyOffer } from '../../agents/discovery/classify.js';
+import { evaluateExits } from '../../agents/discovery/exits.js';
 import { readiness, openPoints } from '../../service/readiness.js';
 import { offering } from '../../schema/index.js';
 import { offerStanding, statusOf } from '../../service/summary.js';
@@ -57,6 +59,29 @@ describe('can we price this yet', () => {
     assert.equal(r.blockers.length, 1);
     assert.match(r.blockers[0].what, /change the shape/);
     assert.ok(r.decisions.settled / r.decisions.total > 0.8, 'well past any percentage threshold, and still blocked');
+  });
+
+  test('a scope past the offers blocks the price without pretending to be a gap in the answers', () => {
+    // The report this came from: every question answered, a Q&A document read
+    // back in, and the page still not ready — with the blocker reading
+    // "1 requirement outside the standard offers". Nothing was missing and no
+    // requirement was outside. The scope had outgrown the largest offer, which
+    // is a size, not a gap, and saying otherwise sent a consultant hunting.
+    const doc = acme();
+    doc.migration = { ...doc.migration, source_platform: 'magento' };
+    doc.design = { ...doc.design, figma: { ...doc.design?.figma, completeness: 'all_templates' } };
+    doc.retail = { store_count: 3, pos: 'shopify_pos' };
+    doc.markets.list = ['DE', 'AT', 'CH', 'NL', 'FR', 'PL'].map((code) => ({ code, currency: 'EUR', price_strategy: 'base_currency', languages: ['de'] }));
+    doc.offer = classifyOffer(doc);
+    doc.exits = evaluateExits(doc);
+    assert.ok(doc.exits.items.some((i) => i.rule_id === '11.3'), 'the fixture has to actually outgrow the offers');
+
+    const r = readiness(doc, state(doc));
+    const stop = r.blockers.find((b) => b.where === 'go-no-go');
+    assert.ok(stop, 'the overrun still blocks the price');
+    assert.doesNotMatch(stop.what, /requirement/, 'an overrun is not a requirement');
+    assert.match(stop.what, /past what the largest offer holds/);
+    assert.match(stop.why, /weeks/, 'and the evidence is still the number it fired on');
   });
 
   test('every blocker names where to go and what the evidence is', () => {

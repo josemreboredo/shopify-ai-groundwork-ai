@@ -192,6 +192,17 @@ function offerOf(doc) {
 }
 
 /**
+ * The rule that fires on the total rather than on any one answer.
+ *
+ * It is the only STOP with no requirement behind it, which is why it needs
+ * naming here: every sentence that counts requirements has to leave it out.
+ */
+const EFFORT_RULE = '11.3';
+
+/** Evidence written as a clause inside a sentence, not as its own. */
+const lower = (text) => (text ? text.charAt(0).toLowerCase() + text.slice(1) : text);
+
+/**
  * Where the architect stands, and the facts he stands on.
  *
  * Read in order, the first thing that stops him is the answer. Percentages are
@@ -244,14 +255,39 @@ function recommend({ documents, answered, fromDocuments, unconfirmed, openTopics
 
   ground.push('Everything read out of the documents has been confirmed by a person.');
 
-  // 2 — requirements that put the work outside what Merkle sells as a standard offer.
+  // 2 — what puts the work outside what Merkle sells as a standard offer.
   if (stops.length) {
+    /*
+     * An overrun is not a requirement, and saying it was cost a consultant an
+     * afternoon.
+     *
+     * Every fired STOP used to be counted as "a requirement", which is true of a
+     * custom checkout or a regulated industry — one answer, nameable, and the
+     * client can be asked about it. Rule 11.3 is not one of those. It fires on
+     * the sum of everything, so "1 requirement put this outside our offers"
+     * sent a reader looking for a requirement that does not exist, on an
+     * engagement where the honest answer is that nothing single is out and the
+     * total has outgrown the largest offer.
+     */
+    const named = stops.filter((x) => x.rule_id !== EFFORT_RULE);
+    const overrun = stops.find((x) => x.rule_id === EFFORT_RULE);
+    const why = [];
+    if (named.length) {
+      why.push(`${named.length} requirement${named.length === 1 ? '' : 's'} put this outside Merkle's standard offers: ${named.map((x) => x.evidence).join('; ')}.`);
+    }
+    if (overrun) {
+      why.push(named.length
+        ? `On top of that, the scope as a whole outgrew the offers: ${lower(overrun.evidence)}.`
+        : `No single requirement is outside the offers — together they add up to more than the largest one holds: ${lower(overrun.evidence)}.`);
+    }
     return said(
       'not a standard bid',
       'We can describe this, but not price it as one of our offers.',
-      `${stops.length} requirement${stops.length === 1 ? '' : 's'} put this outside Merkle's standard offers: ${stops.map((s) => s.evidence).join('; ')}.`,
+      why.join(' '),
       [
-        'Decide the route before pricing: an Enterprise Engagement with its own Discovery Phase, or no bid.',
+        overrun && !named.length
+          ? 'Nothing here is refused. What is on the table is whether the scope is cut to fit an offer, or priced as the programme it is.'
+          : 'Decide the route before pricing: an Enterprise Engagement with its own Discovery Phase, or no bid.',
         'Anything quoted at S, M or L here would sell bespoke work at a standard price.',
       ],
     );
@@ -354,6 +390,19 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
     // The same gates as a shape, so where the complexity sits is visible before
     // it is read.
     profile: complexityProfile(doc),
+    /* And, when the scope has outgrown the largest offer, what adds up to it.
+       The chart cannot carry this: an overrun belongs to no single dimension,
+       so it showed every gate inside the offers on an engagement that is not.
+       Here it is the sum itemised, heaviest first — the only form of it a
+       consultant can do anything with. */
+    outgrew: stops.some((x) => x.rule_id === EFFORT_RULE)
+      ? {
+        weeks: doc.offer?.scope_effort_weeks ?? null,
+        holds: offering.offers.L.duration_weeks.max,
+        base: offering.offers.S.duration_weeks,
+        gates: doc.offer?.scope_effort_by_gate ?? [],
+      }
+      : null,
     // And what the client asked for that is answered outside this build — not a
     // complexity, and not an exclusion either.
     answered_elsewhere: answeredElsewhere(doc),

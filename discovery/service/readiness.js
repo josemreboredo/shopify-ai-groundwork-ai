@@ -28,6 +28,9 @@ import { offering, questionBank } from '../schema/index.js';
 import { answeredAt } from '../agents/discovery/knowledge.js';
 import { requiredPlan, planRequirements, PLAN_LABEL } from '../agents/discovery/plan.js';
 
+/** The one STOP that fires on the total rather than on any single answer. */
+const EFFORT_RULE = '11.3';
+
 /** Every decision the engine makes, with the answers it reads. */
 function decisions() {
   return [
@@ -130,7 +133,19 @@ export function readiness(doc, state = {}) {
     state.toReview ? { what: `${state.toReview} answer${state.toReview === 1 ? '' : 's'} still to confirm`, where: 'review', why: `${bid ? 'A bid' : 'A closing document'} cannot rest on an extraction nobody has checked.` } : null,
     // Only a bid is stopped by being outside the offers: an engagement that has
     // been won is being delivered, whatever shape it was sold in.
-    bid && stops.length ? { what: `${stops.length} requirement${stops.length === 1 ? '' : 's'} outside the standard offers`, where: 'go-no-go', why: stops.map((s) => s.evidence).join('; ') } : null,
+    // Same distinction the go/no-go makes, and for the same reason: the effort
+    // ceiling fires on the sum, so counting it as a requirement sends a reader
+    // looking for one. It is also the blocker most often misread as missing
+    // information — every question answered, and the page still not ready,
+    // because what stops the price is the size of the scope and not a gap in it.
+    bid && stops.length ? (() => {
+      const named = stops.filter((x) => x.rule_id !== EFFORT_RULE);
+      const overrun = stops.find((x) => x.rule_id === EFFORT_RULE);
+      const what = named.length
+        ? `${named.length} requirement${named.length === 1 ? '' : 's'} outside the standard offers${overrun ? ', and a scope past the largest offer' : ''}`
+        : 'The scope, as a whole, is past what the largest offer holds';
+      return { what, where: 'go-no-go', why: stops.map((x) => x.evidence).join('; ') };
+    })() : null,
     bid && (state.cannotPrice ?? []).length ? { what: `${state.cannotPrice.length} input${state.cannotPrice.length === 1 ? '' : 's'} that cannot be costed at all`, where: 'clarifications', why: state.cannotPrice.join('; ') } : null,
     shaping.length ? { what: `${shaping.length} open topic${shaping.length === 1 ? '' : 's'} that change the shape of the solution`, where: 'clarifications', why: shaping.map((t) => t.title).join(', ') } : null,
     // The Q&A is a step on a bid and a view in a discovery, so an untriaged

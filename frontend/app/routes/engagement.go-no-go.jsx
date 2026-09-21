@@ -50,6 +50,9 @@ const TONE = {
 const OWNER = { agent: 'Claude Code agent', developer: 'Developer', consultant: 'Consultant', client: 'Client' };
 const money = (b) => (b ? `${b.currency ?? ''} ${Math.round(b.min / 1000)}k–${Math.round(b.max / 1000)}k${b.open_ended ? '+' : ''}`.trim() : null);
 
+/** "3" or "5–7". */
+const span = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}\u2013${w.max}`) : '—');
+
 export default function GoNoGo({ loaderData }) {
   const { engagement, go_no_go: g, blocked } = loaderData;
   if (blocked) {
@@ -97,6 +100,39 @@ export default function GoNoGo({ loaderData }) {
           the room, and this desk knows nothing about them.
         </p>
       </section>
+
+      {/* What adds up to an overrun.
+          "Which requirement is outside the offers?" has no answer on an
+          engagement that hit the effort ceiling — none of them is, and the page
+          said "1 requirement" anyway, which sends a consultant looking for
+          something that does not exist. This is the sum itemised: nothing to
+          remove, a list to negotiate. */}
+      {g.outgrew ? (
+        <section>
+          <h2>What adds up to it</h2>
+          <p className="muted">
+            Nothing on this list is outside the offers on its own. Together they reach{' '}
+            <strong>{span(g.outgrew.weeks)} weeks</strong> against the <strong>{g.outgrew.holds}</strong> the
+            largest offer holds, and there is no offer above it to move to.
+          </p>
+          <ol className="outgrew">
+            <li className="outgrew-base">
+              <span className="outgrew-what">The build itself</span>
+              <span className="outgrew-weeks">{span(g.outgrew.base)}</span>
+            </li>
+            {g.outgrew.gates.map((x) => (
+              <li key={x.gate}>
+                <span className="outgrew-what">{x.label}</span>
+                <span className="outgrew-weeks">+{span(x.weeks)}</span>
+              </li>
+            ))}
+            <li className="outgrew-total">
+              <span className="outgrew-what">Total</span>
+              <span className="outgrew-weeks">{span(g.outgrew.weeks)} weeks</span>
+            </li>
+          </ol>
+        </section>
+      ) : null}
 
       {/* Where the complexity sits, before it is read */}
       {g.profile?.length ? (

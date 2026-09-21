@@ -513,20 +513,20 @@
               "+MultiCurrency",
               "+Retail",
               "+Analytics (advanced)",
-            "+Analytics (standard)",
-            "+Checkout (functions)",
-            "+Checkout (standard)",
-            "+SEO (large)",
-            "+SEO (standard)",
-            "+Search (app)",
-            "+Search (native)",
-            "+SKU (large)",
-            "+SKU (standard)",
-            "+SKU (very large)",
-            "+Subscriptions (advanced)",
-            "+Subscriptions (standard)",
-            "+Support (extended)",
-            "+Support (standard)"
+              "+Analytics (standard)",
+              "+Checkout (functions)",
+              "+Checkout (standard)",
+              "+SEO (large)",
+              "+SEO (standard)",
+              "+Search (app)",
+              "+Search (native)",
+              "+SKU (large)",
+              "+SKU (standard)",
+              "+SKU (very large)",
+              "+Subscriptions (advanced)",
+              "+Subscriptions (standard)",
+              "+Support (extended)",
+              "+Support (standard)"
             ]
           },
           "uniqueItems": true
@@ -565,10 +565,17 @@
           "additionalProperties": false,
           "description": "Weeks of scope gates this offer's band already contains. L is the last offer: when the gates exceed this there is nothing to promote to, so the excess is added to the quoted band and duration.",
           "properties": {
-            "min": { "type": "number" },
-            "max": { "type": "number" }
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
           },
-          "required": ["min", "max"]
+          "required": [
+            "min",
+            "max"
+          ]
         },
         "scope_effort_weeks": {
           "type": "object",
@@ -586,6 +593,43 @@
             "min",
             "max"
           ]
+        },
+        "scope_effort_by_gate": {
+          "type": "array",
+          "description": "The scope effort itemised by gate, heaviest first. The total alone cannot be acted on: a scope that has outgrown the largest offer needs to say where the weeks are.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gate",
+              "label",
+              "weeks"
+            ],
+            "properties": {
+              "gate": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "weeks": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "min",
+                  "max"
+                ],
+                "properties": {
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -2196,15 +2240,44 @@
       "description": "Customer service: where a shopper's question lands and who answers it. Nothing here was asked before, so a client running a helpdesk and taking orders by phone was undiscovered scope.",
       "properties": {
         "platform": {
-          "enum": ["shopify_inbox", "helpdesk_app", "external_helpdesk", "email_only", "none", "not_sure"],
+          "enum": [
+            "shopify_inbox",
+            "helpdesk_app",
+            "external_helpdesk",
+            "email_only",
+            "none",
+            "not_sure"
+          ],
           "description": "Where customer conversations are handled after launch"
         },
-        "platform_name": { "type": "string", "description": "The named helpdesk, e.g. Gorgias or Zendesk. Never a person." },
+        "platform_name": {
+          "type": "string",
+          "description": "The named helpdesk, e.g. Gorgias or Zendesk. Never a person."
+        },
         "contact_form": {
-          "enum": ["email_only", "into_the_helpdesk", "into_a_crm", "none", "not_sure"],
+          "enum": [
+            "email_only",
+            "into_the_helpdesk",
+            "into_a_crm",
+            "none",
+            "not_sure"
+          ],
           "description": "Where the storefront contact form delivers"
         },
-        "orders_on_behalf": { "type": "boolean", "description": "Staff create orders for customers (phone, showroom, wholesale) using draft orders" }
+        "orders_on_behalf": {
+          "type": "boolean",
+          "description": "Staff create orders for customers (phone, showroom, wholesale) using draft orders"
+        },
+        "booking": {
+          "enum": [
+            "in_store_appointments",
+            "virtual_consultations",
+            "both",
+            "none",
+            "not_sure"
+          ],
+          "description": "Customers book a slot — an in-store appointment, a virtual consultation, or both. Shopify has no native booking; it is an App Store category."
+        }
       }
     },
     "loyalty": {
@@ -2837,6 +2910,15 @@
         },
         "headless_required": {
           "type": "boolean"
+        },
+        "shop_mini": {
+          "enum": [
+            "now",
+            "later",
+            "no",
+            "not_sure"
+          ],
+          "description": "A Shop Mini: a full-screen experience inside Shopify's Shop app, built with the Shop Minis React SDK. Not a headless storefront and not a standalone app — a Mini works only inside Shop."
         },
         "theme_preference": {
           "type": "string"

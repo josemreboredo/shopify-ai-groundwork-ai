@@ -614,6 +614,20 @@ export function classifyOffer(doc) {
   // an order of magnitude, and the offering already records how much each one
   // costs. Summing it is the only honest way to ask which offer this is.
   const adds = activeGates.map((g) => modifierFor(g, scope_gates[g.id], doc)).filter(Boolean);
+  /*
+   * The same sum, itemised.
+   *
+   * Only the total survived, and on an engagement that outgrows the largest
+   * offer the total is the one number that cannot be acted on: a consultant
+   * reading "the scope reaches 30 weeks against the 20 an L holds" has been told
+   * there is a problem and nothing about where it is. The gate labels, not the
+   * modifier ids — the ids are internal pricing vocabulary and this is read in
+   * front of the work, not the price.
+   */
+  const byGate = activeGates
+    .map((g, i) => ({ gate: g.id, label: g.label, weeks: adds[i]?.effort_weeks }))
+    .filter((x) => x.weeks)
+    .sort((a, b) => b.weeks.max - a.weeks.max);
   const effort = adds.reduce((a, m) => ({
     min: a.min + (m.effort_weeks?.min ?? 0),
     max: a.max + (m.effort_weeks?.max ?? 0),
@@ -738,6 +752,9 @@ export function classifyOffer(doc) {
     // What the gates add on their own, kept so the proposal can show its work
     // and so a reader can check the offer against the scope rather than take it.
     scope_effort_weeks: total,
+    // And the same sum gate by gate, heaviest first, so a scope that has
+    // outgrown the offers can be argued with rather than only reported.
+    scope_effort_by_gate: byGate,
     // The gate weeks this offer's band already contains, so a reader can check
     // an overflow rather than take it.
     gate_capacity_weeks: capacity,

@@ -14,6 +14,8 @@ import fs from 'node:fs';
 import { goNoGoView, complexityProfile, answeredElsewhere } from '../../service/go-no-go.js';
 import { clarificationTopics } from '../../agents/discovery/clarifications.js';
 import { offering } from '../../schema/index.js';
+import { classifyOffer } from '../../agents/discovery/classify.js';
+import { evaluateExits } from '../../agents/discovery/exits.js';
 
 const fixture = (name) => JSON.parse(fs.readFileSync(new URL(`../fixtures/engagements/${name}.json`, import.meta.url), 'utf8'));
 const state = (over = {}) => ({ documents: 1, coverage: { required_answered: 62, required_total: 85 }, to_review: 0, ...over });
@@ -124,6 +126,65 @@ describe('go/no-go support', () => {
     const v = view();
     assert.equal(v.not_ours.length, 19);
     for (const q of v.not_ours) assert.ok(q.ask && q.owner, `Q${q.n} names an owner`);
+  });
+});
+
+describe('a scope that outgrew the offers', () => {
+  /** An engagement whose gates add up past what the largest offer holds. */
+  const outgrown = () => {
+    const doc = fixture('acme-watches');
+    doc.migration = { ...doc.migration, source_platform: 'magento' };
+    doc.design = { ...doc.design, figma: { ...doc.design?.figma, completeness: 'all_templates' } };
+    doc.retail = { store_count: 3, pos: 'shopify_pos' };
+    doc.markets.list = ['DE', 'AT', 'CH', 'NL', 'FR', 'PL'].map((code) => ({ code, currency: 'EUR', price_strategy: 'base_currency', languages: ['de'] }));
+    doc.offer = classifyOffer(doc);
+    doc.exits = evaluateExits(doc);
+    assert.ok(doc.exits.items.some((i) => i.rule_id === '11.3'), 'the fixture has to actually outgrow the offers');
+    return doc;
+  };
+
+  test('it is not called a requirement, because there is no requirement to point at', () => {
+    // The sentence counted every fired STOP as "a requirement", which is true of
+    // a custom checkout and false of the effort ceiling — it fires on the sum.
+    // A consultant read "1 requirement put this outside our offers", went
+    // looking for the requirement, and there was none to find.
+    const r = goNoGoView(outgrown(), state(), null).recommendation;
+    assert.equal(r.verdict, 'not a standard bid');
+    assert.match(r.why, /No single requirement is outside the offers/);
+    assert.doesNotMatch(r.why, /\b1 requirement\b/, 'an overrun is never counted as a requirement');
+    // And it does not read as a refusal, because it is not one.
+    assert.ok(r.before_you_go.some((b) => /Nothing here is refused/.test(b)));
+  });
+
+  test('a nameable STOP is still counted and named', () => {
+    const doc = outgrown();
+    doc.checkout = { ...doc.checkout, customisation: ['fully_custom_checkout_ui'] };
+    doc.exits = evaluateExits(doc);
+    const r = goNoGoView(doc, state(), null).recommendation;
+    assert.match(r.why, /1 requirement put this outside/, 'the custom checkout is one requirement, and it is counted');
+    assert.match(r.why, /custom checkout/i);
+    // Both facts reach the reader; the overrun is added, not swallowed.
+    assert.match(r.why, /On top of that, the scope as a whole outgrew the offers/);
+  });
+
+  test('the sum is itemised, because a total cannot be negotiated', () => {
+    const v = goNoGoView(outgrown(), state(), null);
+    assert.ok(v.outgrew, 'an overrun has to show its working');
+    assert.ok(v.outgrew.gates.length >= 4);
+    // Heaviest first: the first thing to argue about is the biggest.
+    const maxes = v.outgrew.gates.map((x) => x.weeks.max);
+    assert.deepEqual(maxes, [...maxes].sort((a, b) => b - a), 'ordered by what it costs');
+    // The itemised list plus the build has to equal the total the page quotes.
+    const sum = (k) => v.outgrew.base[k] + v.outgrew.gates.reduce((a, x) => a + x.weeks[k], 0);
+    assert.equal(sum('min'), v.outgrew.weeks.min, 'the items add up to the total');
+    assert.equal(sum('max'), v.outgrew.weeks.max);
+    assert.ok(v.outgrew.weeks.max > v.outgrew.holds);
+    // Gate labels, never the internal modifier ids this is priced from.
+    for (const x of v.outgrew.gates) assert.doesNotMatch(x.label, /^\+/, `${x.label} is a modifier id`);
+  });
+
+  test('an engagement inside the offers shows no ledger at all', () => {
+    assert.equal(view().outgrew, null);
   });
 });
 
