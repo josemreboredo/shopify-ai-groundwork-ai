@@ -301,7 +301,11 @@
     "Q9.4.1": "0d36dc79db10",
     "Q9.4.2": "362eb5c47373",
     "Q9.4.3": "0a2675fcb9a2",
-    "Q9.2.11": "01272779a513"
+    "Q9.2.11": "01272779a513",
+    "Q6.5.1": "0e29baa1030e",
+    "Q6.5.2": "0bc52d1b699c",
+    "Q6.5.3": "b118523702dc",
+    "Q6.5.4": "2fc09133ccfa"
   },
   "sections": {
     "0": "Objectifs business",
@@ -3696,6 +3700,36 @@
             "cons": "Pas un build Shopify : cela part chez Merkle Arc, qui le cadre et le chiffre séparément. Rien dans ces offres ne l'estime."
           }
         ]
+      }
+    },
+    "Q6.5.1": {
+      "text": "Où les questions des clients seront-elles traitées après le lancement : Shopify Inbox, une application de helpdesk, un helpdesk hors de Shopify, l'e-mail seul, ou nulle part encore ?",
+      "help": "Shopify Inbox est gratuit et vit dans l'admin. Un helpdesk comme Gorgias ou Zendesk fait venir le contexte de commande et demande en général une connexion construite.",
+      "teach": {
+        "why": "L'endroit où arrive une question décide s'il faut intégrer quoi que ce soit. Un helpdesk hors de Shopify a besoin des données de commande et de client : c'est une intégration avec un coût ; Shopify Inbox n'en demande aucune.",
+        "limits": "Un helpdesk hors de Shopify ne compte comme intégration que si le connecteur est construit sur mesure — une application de l'App Store avec connecteur natif est une application."
+      }
+    },
+    "Q6.5.2": {
+      "text": "Quel helpdesk, si un nom est arrêté ?",
+      "help": "Le nom du produit, pas une personne.",
+      "teach": {
+        "why": "Nommé tôt, il peut être vérifié dans le registre de l'App Store pour un connecteur natif, avant que quiconque suppose un développement sur mesure."
+      }
+    },
+    "Q6.5.3": {
+      "text": "Où le formulaire de contact de la vitrine doit-il aboutir : une boîte e-mail, le helpdesk, un CRM — ou n'y a-t-il pas de formulaire ?",
+      "help": "Les thèmes Shopify fournissent un formulaire de contact qui envoie un e-mail. Tout le reste est une connexion que quelqu'un construit et entretient.",
+      "teach": {
+        "why": "Le formulaire du thème envoie un e-mail et rien d'autre. S'il doit ouvrir un ticket ou créer une fiche CRM, c'est du développement — et il est régulièrement supposé plutôt que cadré."
+      }
+    },
+    "Q6.5.4": {
+      "text": "Votre équipe crée-t-elle des commandes pour les clients — par téléphone, en showroom, ou pour des acheteurs grossistes ?",
+      "help": "Dans Shopify c'est une commande provisoire : l'équipe construit la commande dans l'admin et envoie une facture à régler.",
+      "teach": {
+        "why": "Commander au nom d'un client est un vrai flux de travail, avec des conséquences sur les permissions, le paiement et la taxe, et il est invisible sur la vitrine. Non posé, il revient après le lancement en demande de changement.",
+        "limits": "Les commandes provisoires se créent dans l'admin ou via l'API ; le client paie par lien de facture. L'équipe a besoin de la bonne permission, et la commande doit toujours reprendre les prix de marché et la taxe corrects."
       }
     }
   },

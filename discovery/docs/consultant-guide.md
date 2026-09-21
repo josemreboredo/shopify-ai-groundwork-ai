@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 122 of 299 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 122 of 303 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -2286,6 +2286,34 @@ Sources: https://help.shopify.com/en/manual/privacy-and-security/privacy/process
 Drives: gate Analytics and consent
 
 **Why it matters.** Every point where consent is captured — newsletter form, checkout, account creation, pop-up, in store — is a point where the record must be created and carried. The list shows which integrations must write consent back, and where an audit would find gaps.
+
+### 6.5 Customer service
+
+**Q6.5.1** — Where will customer questions be answered after launch: Shopify Inbox, a helpdesk app, a helpdesk outside Shopify, email only, or nowhere yet? *(required · client)*
+
+**Why it matters.** Where a question lands decides whether anything has to be integrated at all. A helpdesk outside Shopify needs order and customer context sent to it, which is an integration with a cost; Shopify Inbox needs none.
+
+**Limits.** A helpdesk outside Shopify counts as an integration only when the connector is custom-built — an App Store app with a native connector is an app.
+
+Sources: https://help.shopify.com/en/manual/shopify-inbox
+
+**Q6.5.2** — Which helpdesk, if one is named? *(recommended · client)*
+
+**Why it matters.** Named early, it can be checked against the App Store registry for a native connector before anyone assumes a custom build.
+
+Sources: https://apps.shopify.com/categories/store-management-support
+
+**Q6.5.3** — Where should the storefront contact form deliver: an email inbox, the helpdesk, a CRM, or is there no form? *(required · client)*
+
+**Why it matters.** The theme contact form sends email and nothing else. If it has to open a case or create a CRM record, that is build work and it is routinely assumed rather than scoped.
+
+**Q6.5.4** — Does your team create orders for customers — by phone, in a showroom, or for wholesale buyers? *(required · client)*
+
+**Why it matters.** Ordering on behalf of a customer is a real workflow with permissions, payment and tax consequences, and it is invisible on the storefront. Unasked, it arrives after launch as a change request.
+
+**Limits.** Draft orders are created in the admin or through the API; the customer pays by invoice link. Staff need the right permission, and the order still has to pick up the correct market prices and tax.
+
+Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/create-orders
 
 ---
 

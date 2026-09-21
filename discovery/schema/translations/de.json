@@ -301,7 +301,11 @@
     "Q9.4.1": "0d36dc79db10",
     "Q9.4.2": "362eb5c47373",
     "Q9.4.3": "0a2675fcb9a2",
-    "Q9.2.11": "01272779a513"
+    "Q9.2.11": "01272779a513",
+    "Q6.5.1": "0e29baa1030e",
+    "Q6.5.2": "0bc52d1b699c",
+    "Q6.5.3": "b118523702dc",
+    "Q6.5.4": "2fc09133ccfa"
   },
   "sections": {
     "0": "Geschäftsziele",
@@ -3696,6 +3700,36 @@
             "cons": "Kein Shopify-Build: Es geht an Merkle Arc, das es separat kalkuliert und liefert. Nichts in diesen Angeboten schätzt es."
           }
         ]
+      }
+    },
+    "Q6.5.1": {
+      "text": "Wo werden Kundenanfragen nach dem Launch beantwortet: Shopify Inbox, eine Helpdesk-App, ein Helpdesk außerhalb von Shopify, nur E-Mail, oder noch nirgends?",
+      "help": "Shopify Inbox ist kostenlos und liegt im Admin. Ein Helpdesk wie Gorgias oder Zendesk zieht den Bestellkontext hinein und braucht dafür in der Regel eine gebaute Verbindung.",
+      "teach": {
+        "why": "Wo eine Anfrage landet, entscheidet, ob überhaupt etwas integriert werden muss. Ein Helpdesk außerhalb von Shopify braucht Bestell- und Kundendaten, das ist eine Integration mit Kosten; Shopify Inbox braucht keine.",
+        "limits": "Ein Helpdesk außerhalb von Shopify zählt nur dann als Integration, wenn der Connector eigens gebaut wird — eine App-Store-App mit nativem Connector ist eine App."
+      }
+    },
+    "Q6.5.2": {
+      "text": "Welcher Helpdesk, falls einer feststeht?",
+      "help": "Der Produktname, keine Person.",
+      "teach": {
+        "why": "Früh benannt, lässt er sich gegen das App-Store-Register auf einen nativen Connector prüfen, bevor jemand einen Eigenbau annimmt."
+      }
+    },
+    "Q6.5.3": {
+      "text": "Wohin soll das Kontaktformular der Storefront zustellen: in ein E-Mail-Postfach, in den Helpdesk, in ein CRM — oder gibt es kein Formular?",
+      "help": "Shopify-Themes bringen ein Kontaktformular mit, das E-Mails sendet. Alles andere ist eine Verbindung, die jemand baut und pflegt.",
+      "teach": {
+        "why": "Das Formular im Theme sendet E-Mails und sonst nichts. Soll es einen Fall eröffnen oder einen CRM-Datensatz anlegen, ist das Entwicklungsarbeit — und sie wird regelmäßig angenommen statt kalkuliert."
+      }
+    },
+    "Q6.5.4": {
+      "text": "Legt Ihr Team Bestellungen für Kundinnen und Kunden an — telefonisch, im Showroom oder für Großhandelskäufer?",
+      "help": "In Shopify ist das ein Entwurfsauftrag: Das Team baut die Bestellung im Admin und schickt eine Rechnung zur Zahlung.",
+      "teach": {
+        "why": "Im Namen eines Kunden zu bestellen ist ein echter Arbeitsablauf mit Folgen für Berechtigungen, Zahlung und Steuern, und auf der Storefront ist er unsichtbar. Ungefragt kommt er nach dem Launch als Change Request.",
+        "limits": "Entwurfsaufträge entstehen im Admin oder über die API; gezahlt wird per Rechnungslink. Das Team braucht die passende Berechtigung, und die Bestellung muss weiterhin die richtigen Marktpreise und Steuern ziehen."
       }
     }
   },

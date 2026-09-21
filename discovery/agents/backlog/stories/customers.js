@@ -2,7 +2,12 @@
  * @file customers.js — epic "Customers & B2B" (LWC-CUS-*)
  */
 
-import { isB2b, list, listOr, count, markets, isMigration, themeName } from './helpers.js';
+import { isB2b, list, listOr, count, markets, isMigration, themeName, storeName } from './helpers.js';
+
+/** Customer service answers, and the words a consultant uses for them. */
+const service = (doc) => doc.service ?? {};
+const SERVICE_LABEL = { shopify_inbox: 'Shopify Inbox', helpdesk_app: 'a helpdesk app', external_helpdesk: 'a helpdesk outside Shopify', email_only: 'an email inbox', none: 'nowhere yet' };
+const CONTACT_LABEL = { email_only: 'in an email inbox', into_the_helpdesk: 'in the helpdesk', into_a_crm: 'in the CRM', none: 'nowhere — there is no form' };
 
 /** Payment terms in words, without "none". @param {object} doc */
 const terms = (doc) => (doc.b2b?.payment_terms ?? []).filter((t) => t !== 'none').map((t) => t.replace(/_/g, ' '));
@@ -129,5 +134,63 @@ export default [
     security_flags: ['pii'],
     applies: (doc) => (doc.customers?.segments?.length ?? 0) > 0 || (doc.customers?.tags_in_use?.length ?? 0) > 0,
     agent_prompt: (doc) => `Segments: ${listOr(doc.customers?.segments, 'none listed')}; source of truth: ${doc.customers?.segmentation_source ?? 'shopify'}. Build Shopify customer segments with ShopifyQL segment queries for segments mastered in Shopify; for ESP-mastered segments, define which Shopify fields and tags sync to ${doc.marketing?.esp?.platform ?? 'the ESP'}. Review tags ${listOr(doc.customers?.tags_in_use, 'in use')} and propose replacements. Never export customer lists outside Shopify or the ESP.`,
+  },
+  /*
+   * Customer service, which nothing asked about until now.
+   *
+   * The bank had one question on it and that one was about China. So a client
+   * running Gorgias and taking orders by phone was undiscovered scope: the
+   * engine could not price what nobody told it. Questions 6.5.1 to 6.5.4 ask;
+   * these two deliver.
+   */
+  {
+    key: 'LWC-CUS-007',
+    epic: 'customers',
+    title: (doc) => `Route customer questions into ${service(doc).platform_name || SERVICE_LABEL[service(doc).platform] || 'the agreed place'}`,
+    user_story: 'As a customer-service agent, I want a question to arrive where I work with the order already attached, so that I am not searching two systems to answer one email.',
+    description: (doc) => `Service platform: ${SERVICE_LABEL[service(doc).platform] ?? 'to confirm'}${service(doc).platform_name ? ` (${service(doc).platform_name})` : ''}. Contact form delivers: ${CONTACT_LABEL[service(doc).contact_form] ?? 'to confirm'}.`,
+    acceptance_criteria: (doc) => [
+      `Given a shopper using the contact form, when they submit it, then it arrives ${CONTACT_LABEL[service(doc).contact_form] ?? 'where the client agreed'} and the sender gets a confirmation`,
+      ...(service(doc).contact_form === 'into_the_helpdesk' || service(doc).contact_form === 'into_a_crm'
+        ? ['Given a submission, when it creates a case or a record, then it carries the customer and, where the shopper gave one, the order reference']
+        : []),
+      ...(service(doc).platform === 'helpdesk_app' || service(doc).platform === 'external_helpdesk'
+        ? ['Given an agent opening a conversation, when they read it, then the order history is visible without leaving the helpdesk',
+           'Given the connection to the helpdesk, when it fails, then somebody is alerted rather than the queue quietly emptying']
+        : []),
+      'Given the routing, when it is handed over, then who answers, within what time and in which languages is written down',
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'developer',
+    depends_on: ['LWC-THM-003'],
+    spec_refs: ['/service/platform', '/service/platform_name', '/service/contact_form', '/markets/list'],
+    applies: (doc) => {
+      const v = service(doc);
+      return Boolean(v.platform && v.platform !== 'none' && v.platform !== 'not_sure')
+        || Boolean(v.contact_form && v.contact_form !== 'none' && v.contact_form !== 'not_sure');
+    },
+    agent_prompt: (doc) => `Wire customer service for ${storeName(doc)}. Platform: ${SERVICE_LABEL[service(doc).platform] ?? 'to confirm'}${service(doc).platform_name ? ` (${service(doc).platform_name})` : ''}. Contact form delivers ${CONTACT_LABEL[service(doc).contact_form] ?? 'to confirm'}. Check the App Store registry for a native connector before assuming anything is custom-built. Where a case or CRM record is created, carry the customer and the order reference. Add monitoring so a broken connection is noticed. Document who answers, in what time and in which languages${markets(doc).length > 1 ? ` across ${list(markets(doc).map((m) => m.code))}` : ''}.`,
+  },
+  {
+    key: 'LWC-CUS-008',
+    epic: 'customers',
+    title: 'Let staff create orders on a customer\u2019s behalf',
+    user_story: 'As a sales assistant, I want to build an order for a customer and send them an invoice, so that a phone or showroom sale does not have to be re-typed somewhere else.',
+    acceptance_criteria: (doc) => [
+      'Given a customer on the phone or in a showroom, when staff build a draft order, then they can add products, apply the agreed discount and send an invoice to pay',
+      `Given a draft order${markets(doc).length > 1 ? ' for any market' : ''}, when it is priced, then it picks up the correct market price, currency and tax rather than the default`,
+      'Given the permission to create orders, when it is granted, then it is granted to the roles that need it and to no one else, and discount limits are part of that decision',
+      ...(isB2b(doc) ? ['Given a B2B buyer with a company account, when an order is built for them, then it uses their price list and payment terms'] : []),
+      'Given a draft order that is never paid, when the agreed window passes, then what happens to it is written down and has an owner',
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'consultant',
+    depends_on: ['LWC-CUS-001'],
+    spec_refs: ['/service/orders_on_behalf', '/b2b/enabled', '/delivery/admin_roles'],
+    security_flags: ['pii'],
+    applies: (doc) => service(doc).orders_on_behalf === true,
+    agent_prompt: (doc) => `Set up draft orders for ${storeName(doc)}: the staff permission, the discount limits per role, and the invoice flow. Test that a draft order takes the right market price, currency and tax${isB2b(doc) ? ', and that a company account buyer gets their price list and payment terms' : ''}. Agree what happens to an unpaid draft and who owns it. Train the people who will use it and put it in the runbook.`,
   },
 ];

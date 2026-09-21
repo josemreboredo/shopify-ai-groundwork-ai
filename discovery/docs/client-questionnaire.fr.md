@@ -1685,6 +1685,40 @@
 - [ ] Aucun
 - [ ] Pas encore certain
 
+### 6.5 Customer service
+
+**Q6.5.1** — Où les questions des clients seront-elles traitées après le lancement : Shopify Inbox, une application de helpdesk, un helpdesk hors de Shopify, l'e-mail seul, ou nulle part encore ? *(required)*
+*Shopify Inbox est gratuit et vit dans l'admin. Un helpdesk comme Gorgias ou Zendesk fait venir le contexte de commande et demande en général une connexion construite.*
+
+*(tick one)*
+- [ ] Shopify inbox
+- [ ] Helpdesk app
+- [ ] External helpdesk
+- [ ] Email only
+- [ ] Aucun
+- [ ] Pas encore certain
+
+**Q6.5.2** — Quel helpdesk, si un nom est arrêté ? *(recommended)*
+*Le nom du produit, pas une personne.*
+
+> Answer:
+
+**Q6.5.3** — Où le formulaire de contact de la vitrine doit-il aboutir : une boîte e-mail, le helpdesk, un CRM — ou n'y a-t-il pas de formulaire ? *(required)*
+*Les thèmes Shopify fournissent un formulaire de contact qui envoie un e-mail. Tout le reste est une connexion que quelqu'un construit et entretient.*
+
+*(tick one)*
+- [ ] Email only
+- [ ] Into the helpdesk
+- [ ] Into a CRM
+- [ ] Aucun
+- [ ] Pas encore certain
+
+**Q6.5.4** — Votre équipe crée-t-elle des commandes pour les clients — par téléphone, en showroom, ou pour des acheteurs grossistes ? *(required)*
+*Dans Shopify c'est une commande provisoire : l'équipe construit la commande dans l'admin et envoie une facture à régler.*
+
+- [ ] Yes
+- [ ] No
+
 ---
 
 ## § 7 — Marketing & promotions

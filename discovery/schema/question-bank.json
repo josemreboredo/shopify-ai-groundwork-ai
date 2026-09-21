@@ -176,6 +176,10 @@
         {
           "id": "6.4",
           "title": "Privacy & consent"
+        },
+        {
+          "id": "6.5",
+          "title": "Customer service"
         }
       ]
     },
@@ -9502,6 +9506,77 @@
             "pros": "Keeps the work inside Merkle, where a tokenised design system and a component library already exist. The commerce engine can still be Shopify.",
             "cons": "A different practice, a different rate card and a different timeline. The S, M and L bands do not apply and nothing here estimates it."
           }
+        ]
+      }
+    },
+    {
+      "id": "Q6.5.1",
+      "subsection": "6.5",
+      "priority": "required",
+      "audience": "client",
+      "answer_type": "enum",
+      "text": "Where will customer questions be answered after launch: Shopify Inbox, a helpdesk app, a helpdesk outside Shopify, email only, or nowhere yet?",
+      "help": "Shopify Inbox is free and lives in the admin. A helpdesk such as Gorgias or Zendesk pulls order context in and usually needs a connection built.",
+      "maps_to": [
+        "/service/platform"
+      ],
+      "teach": {
+        "why": "Where a question lands decides whether anything has to be integrated at all. A helpdesk outside Shopify needs order and customer context sent to it, which is an integration with a cost; Shopify Inbox needs none.",
+        "limits": "A helpdesk outside Shopify counts as an integration only when the connector is custom-built — an App Store app with a native connector is an app.",
+        "sources": [
+          "https://help.shopify.com/en/manual/shopify-inbox"
+        ]
+      }
+    },
+    {
+      "id": "Q6.5.2",
+      "subsection": "6.5",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "text",
+      "text": "Which helpdesk, if one is named?",
+      "help": "The product name, not a person.",
+      "maps_to": [
+        "/service/platform_name"
+      ],
+      "teach": {
+        "why": "Named early, it can be checked against the App Store registry for a native connector before anyone assumes a custom build.",
+        "sources": [
+          "https://apps.shopify.com/categories/store-management-support"
+        ]
+      }
+    },
+    {
+      "id": "Q6.5.3",
+      "subsection": "6.5",
+      "priority": "required",
+      "audience": "client",
+      "answer_type": "enum",
+      "text": "Where should the storefront contact form deliver: an email inbox, the helpdesk, a CRM, or is there no form?",
+      "help": "Shopify themes ship a contact form that sends email. Anything else is a connection somebody builds and maintains.",
+      "maps_to": [
+        "/service/contact_form"
+      ],
+      "teach": {
+        "why": "The theme contact form sends email and nothing else. If it has to open a case or create a CRM record, that is build work and it is routinely assumed rather than scoped."
+      }
+    },
+    {
+      "id": "Q6.5.4",
+      "subsection": "6.5",
+      "priority": "required",
+      "audience": "client",
+      "answer_type": "boolean",
+      "text": "Does your team create orders for customers — by phone, in a showroom, or for wholesale buyers?",
+      "help": "In Shopify this is a draft order: staff build the order in the admin and send an invoice to pay.",
+      "maps_to": [
+        "/service/orders_on_behalf"
+      ],
+      "teach": {
+        "why": "Ordering on behalf of a customer is a real workflow with permissions, payment and tax consequences, and it is invisible on the storefront. Unasked, it arrives after launch as a change request.",
+        "limits": "Draft orders are created in the admin or through the API; the customer pays by invoice link. Staff need the right permission, and the order still has to pick up the correct market prices and tax.",
+        "sources": [
+          "https://help.shopify.com/en/manual/fulfillment/managing-orders/create-orders"
         ]
       }
     }

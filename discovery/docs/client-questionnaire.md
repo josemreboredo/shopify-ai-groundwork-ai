@@ -1685,6 +1685,40 @@
 - [ ] None
 - [ ] Not sure yet
 
+### 6.5 Customer service
+
+**Q6.5.1** — Where will customer questions be answered after launch: Shopify Inbox, a helpdesk app, a helpdesk outside Shopify, email only, or nowhere yet? *(required)*
+*Shopify Inbox is free and lives in the admin. A helpdesk such as Gorgias or Zendesk pulls order context in and usually needs a connection built.*
+
+*(tick one)*
+- [ ] Shopify inbox
+- [ ] Helpdesk app
+- [ ] External helpdesk
+- [ ] Email only
+- [ ] None
+- [ ] Not sure yet
+
+**Q6.5.2** — Which helpdesk, if one is named? *(recommended)*
+*The product name, not a person.*
+
+> Answer:
+
+**Q6.5.3** — Where should the storefront contact form deliver: an email inbox, the helpdesk, a CRM, or is there no form? *(required)*
+*Shopify themes ship a contact form that sends email. Anything else is a connection somebody builds and maintains.*
+
+*(tick one)*
+- [ ] Email only
+- [ ] Into the helpdesk
+- [ ] Into a CRM
+- [ ] None
+- [ ] Not sure yet
+
+**Q6.5.4** — Does your team create orders for customers — by phone, in a showroom, or for wholesale buyers? *(required)*
+*In Shopify this is a draft order: staff build the order in the admin and send an invoice to pay.*
+
+- [ ] Yes
+- [ ] No
+
 ---
 
 ## § 7 — Marketing & promotions

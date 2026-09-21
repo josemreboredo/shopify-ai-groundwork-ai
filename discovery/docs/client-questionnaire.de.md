@@ -1685,6 +1685,40 @@
 - [ ] Keine
 - [ ] Noch unklar
 
+### 6.5 Customer service
+
+**Q6.5.1** — Wo werden Kundenanfragen nach dem Launch beantwortet: Shopify Inbox, eine Helpdesk-App, ein Helpdesk außerhalb von Shopify, nur E-Mail, oder noch nirgends? *(required)*
+*Shopify Inbox ist kostenlos und liegt im Admin. Ein Helpdesk wie Gorgias oder Zendesk zieht den Bestellkontext hinein und braucht dafür in der Regel eine gebaute Verbindung.*
+
+*(tick one)*
+- [ ] Shopify inbox
+- [ ] Helpdesk app
+- [ ] External helpdesk
+- [ ] Email only
+- [ ] Keine
+- [ ] Noch unklar
+
+**Q6.5.2** — Welcher Helpdesk, falls einer feststeht? *(recommended)*
+*Der Produktname, keine Person.*
+
+> Answer:
+
+**Q6.5.3** — Wohin soll das Kontaktformular der Storefront zustellen: in ein E-Mail-Postfach, in den Helpdesk, in ein CRM — oder gibt es kein Formular? *(required)*
+*Shopify-Themes bringen ein Kontaktformular mit, das E-Mails sendet. Alles andere ist eine Verbindung, die jemand baut und pflegt.*
+
+*(tick one)*
+- [ ] Email only
+- [ ] Into the helpdesk
+- [ ] Into a CRM
+- [ ] Keine
+- [ ] Noch unklar
+
+**Q6.5.4** — Legt Ihr Team Bestellungen für Kundinnen und Kunden an — telefonisch, im Showroom oder für Großhandelskäufer? *(required)*
+*In Shopify ist das ein Entwurfsauftrag: Das Team baut die Bestellung im Admin und schickt eine Rechnung zur Zahlung.*
+
+- [ ] Yes
+- [ ] No
+
 ---
 
 ## § 7 — Marketing & Promotions

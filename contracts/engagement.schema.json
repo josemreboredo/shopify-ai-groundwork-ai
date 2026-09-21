@@ -2186,6 +2186,23 @@
         }
       }
     },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Customer service: where a shopper's question lands and who answers it. Nothing here was asked before, so a client running a helpdesk and taking orders by phone was undiscovered scope.",
+      "properties": {
+        "platform": {
+          "enum": ["shopify_inbox", "helpdesk_app", "external_helpdesk", "email_only", "none", "not_sure"],
+          "description": "Where customer conversations are handled after launch"
+        },
+        "platform_name": { "type": "string", "description": "The named helpdesk, e.g. Gorgias or Zendesk. Never a person." },
+        "contact_form": {
+          "enum": ["email_only", "into_the_helpdesk", "into_a_crm", "none", "not_sure"],
+          "description": "Where the storefront contact form delivers"
+        },
+        "orders_on_behalf": { "type": "boolean", "description": "Staff create orders for customers (phone, showroom, wholesale) using draft orders" }
+      }
+    },
     "loyalty": {
       "type": "object",
       "additionalProperties": false,
