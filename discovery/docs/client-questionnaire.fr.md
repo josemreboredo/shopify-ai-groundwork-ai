@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.2.0 · offering 2.8.0
+> **Version:** question bank 1.2.0 · offering 2.9.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -1166,6 +1166,12 @@
 - [ ] Autres matières dangereuses
 - [ ] Aucun
 - [ ] Pas encore certain
+
+**Q5.1.15** — Une même commande doit-elle parfois partir vers plusieurs adresses — des cadeaux à plusieurs destinataires, ou une commande de gros répartie entre succursales ? *(recommended)*
+*Différent d'une commande qui arrive en plusieurs colis, ce que Shopify fait tout seul.*
+
+- [ ] Yes
+- [ ] No
 
 ### 5.2 Retours & échanges
 

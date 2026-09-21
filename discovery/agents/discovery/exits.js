@@ -1,7 +1,7 @@
 /**
  * @file exits.js
  * @description Deterministic exit-rule evaluation (ADR 0003) for rules
- * 11.1–11.26 in discovery/schema/offering.json, plus merging of LLM-detected candidates.
+ * 11.1–11.27 in discovery/schema/offering.json, plus merging of LLM-detected candidates.
  * LLM candidates are added, never allowed to remove or overwrite rule results.
  *
  * @module discovery/exits
@@ -220,6 +220,25 @@ const EVALUATORS = {
     if (!plan || plan === 'plus') return null;
     return `Headless storefront on the ${plan} plan: one public environment (25 on Plus), so every other deployment needs a store login`;
   },
+
+  /*
+   * One order, more than one address — which Shopify cannot do.
+   *
+   * Verified 2026-09-21: split shipping divides an order into several shipments
+   * when items cannot travel together — a preorder line, a subscription, stock
+   * in different locations, different shipping profiles — and "the customer can
+   * select an available shipping option for each shipment". Every shipment still
+   * goes to one address. It also does not apply to accelerated checkouts or to
+   * draft orders that already carry a shipping line, which is exactly where a
+   * wholesale buyer or a gifting flow would have expected it.
+   *
+   * A flag rather than a stop: there are answers — one order per address, an
+   * app, or dropping it — but all three are decisions, and the expensive version
+   * is finding out in UAT.
+   */
+  '11.27': (doc) => (doc.shipping?.multi_address_orders === true
+    ? 'One order delivered to more than one address, which Shopify cannot do — split shipping is several shipments to a single address'
+    : null),
 
   /*
    * Where Shopify stops holding the storefront.

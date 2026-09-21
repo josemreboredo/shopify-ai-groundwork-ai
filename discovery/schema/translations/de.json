@@ -305,7 +305,8 @@
     "Q6.5.1": "0e29baa1030e",
     "Q6.5.2": "0bc52d1b699c",
     "Q6.5.3": "b118523702dc",
-    "Q6.5.4": "2fc09133ccfa"
+    "Q6.5.4": "2fc09133ccfa",
+    "Q5.1.15": "40d15cf25cdc"
   },
   "sections": {
     "0": "Geschäftsziele",
@@ -3730,6 +3731,14 @@
       "teach": {
         "why": "Im Namen eines Kunden zu bestellen ist ein echter Arbeitsablauf mit Folgen für Berechtigungen, Zahlung und Steuern, und auf der Storefront ist er unsichtbar. Ungefragt kommt er nach dem Launch als Change Request.",
         "limits": "Entwurfsaufträge entstehen im Admin oder über die API; gezahlt wird per Rechnungslink. Das Team braucht die passende Berechtigung, und die Bestellung muss weiterhin die richtigen Marktpreise und Steuern ziehen."
+      }
+    },
+    "Q5.1.15": {
+      "text": "Muss eine einzelne Bestellung jemals an mehr als eine Adresse gehen — Geschenke an mehrere Empfänger, oder eine Großhandelsbestellung, die auf Filialen aufgeteilt wird?",
+      "help": "Etwas anderes, als wenn eine Bestellung in mehreren Paketen ankommt — das macht Shopify von selbst.",
+      "teach": {
+        "why": "Shopify kann eine Bestellung nicht an mehr als eine Adresse liefern. Spät gefragt, wird daraus ein Change Request im UAT; jetzt gefragt, lautet die Antwort: eine Bestellung je Adresse, eine App, oder die Anforderung fällt — und alle drei sind billiger als die Entdeckung.",
+        "limits": "Split Shipping teilt eine Bestellung in mehrere Sendungen, wenn Artikel nicht zusammen reisen können — eine Vorbestellzeile, ein Abo, Bestand an verschiedenen Standorten, unterschiedliche Versandprofile — und die Kundin wählt je Sendung eine Versandoption. Jede Sendung geht weiterhin an eine Adresse, die Aufteilung lässt sich nicht selbst wählen, und Split Shipping gilt weder für beschleunigte Checkouts noch für Entwurfsaufträge, die bereits eine Versandzeile tragen."
       }
     }
   },

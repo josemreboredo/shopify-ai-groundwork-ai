@@ -1057,6 +1057,12 @@
 - [ ] None
 - [ ] Not sure yet
 
+**Q5.1.15** — Does a single order ever need to go to more than one address — gifts to several recipients, or one wholesale order split across branches? *(recommended)*
+*Different from an order arriving in several parcels, which Shopify does on its own.*
+
+- [ ] Yes
+- [x] No
+
 ### 5.2 Returns & exchanges
 
 **Q5.2.1** — Summarise the returns policy (window, conditions, who pays return postage). *(recommended)*

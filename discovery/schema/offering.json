@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.8.0",
+  "version": "2.9.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -1484,6 +1484,17 @@
         "/design/headless/reasons"
       ],
       "label": "Content or a front end that lives outside Shopify"
+    },
+    {
+      "id": "11.27",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "One order delivered to more than one address — gifting to several recipients, or a wholesale buyer splitting a single order across branches. Shopify has no way to do this: split shipping divides an order into several shipments when items cannot travel together, but every shipment goes to the same address, and it does not apply to accelerated checkouts or to draft orders that already carry a shipping line",
+      "destination": "Decide before the build: one order per address, an app that does it, or drop the requirement — and say which in the proposal",
+      "inputs": [
+        "/shipping/multi_address_orders"
+      ],
+      "label": "One order, more than one delivery address"
     }
   ],
   "routes": [

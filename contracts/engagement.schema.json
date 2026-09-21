@@ -1823,6 +1823,10 @@
             "shipping_app"
           ]
         },
+        "multi_address_orders": {
+          "type": "boolean",
+          "description": "One order delivered to more than one address. Shopify cannot do this: split shipping divides an order into several shipments but they all go to a single address (exit rule 11.27)."
+        },
         "dangerous_goods": {
           "type": "array",
           "uniqueItems": true,

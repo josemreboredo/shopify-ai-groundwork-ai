@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 2.8.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 2.9.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 122 of 303 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 122 of 304 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -1584,6 +1584,15 @@ Sources: https://help.shopify.com/en/manual/compliance/legal/shipping-dangerous-
 |---|---|---|---|
 | Shipping dangerous goods (merchant responsibility; restricted with Shopify Shipping labels) | Basic | USPS and FedEx labels bought in Shopify don't support hazardous materials | https://help.shopify.com/en/manual/compliance/legal/shipping-dangerous-goods |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q5.1.15** — Does a single order ever need to go to more than one address — gifts to several recipients, or one wholesale order split across branches? *(recommended · client)*
+Drives: rule 11.27 (FLAG)
+
+**Why it matters.** Shopify cannot deliver one order to more than one address. Asked late, it becomes a change request in UAT; asked now, the answer is one order per address, an app, or dropping it — and all three are cheaper than discovering it.
+
+**Limits.** Split shipping divides an order into several shipments when items cannot travel together — a preorder line, a subscription, stock in different locations, different shipping profiles — and the customer picks a shipping option per shipment. Every shipment still goes to one address, the customer cannot choose how the order splits, and split shipping does not apply to accelerated checkouts or to draft orders that already carry a shipping line.
+
+Sources: https://help.shopify.com/en/manual/checkout-settings/split-shipping
 
 ### 5.2 Returns & exchanges
 
@@ -3312,3 +3321,4 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.24 | FLAG | A system Merkle has to build a connector for has no non-production environment to integrate against (test_environment none). Shopify itself needs no instance ladder — a theme stages as an unpublished theme in the production store and checkout is managed — so the only environment risk on a Shopify build sits on the client side. Without a sandbox, integration testing serialises against the client’s live system and the schedule stretches | A named owner on the client side and a decision before the build starts: provide a sandbox, or agree the testing window against production | Q8.1.1 |
 | 11.25 | FLAG | A headless storefront on a plan below Shopify Plus. Oxygen storefronts always have a production and a preview environment and custom ones besides, but only one environment can be public: the limit is 1 on Starter, Basic, Grow and Advanced against 25 on Plus. Every other deployment needs a login to the store, which constrains how many review links can run in parallel with client stakeholders | A named owner before the build starts: agree who reviews where, or price the Plus plan | Q1.2.3, Q9.2.1 |
 | 11.26 | STOP | The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track | Merkle Arc — not quoted or estimated here; the Arc practice scopes it | Q9.2.6, Q9.2.8, Q9.2.11 |
+| 11.27 | FLAG | One order delivered to more than one address — gifting to several recipients, or a wholesale buyer splitting a single order across branches. Shopify has no way to do this: split shipping divides an order into several shipments when items cannot travel together, but every shipment goes to the same address, and it does not apply to accelerated checkouts or to draft orders that already carry a shipping line | Decide before the build: one order per address, an app that does it, or drop the requirement — and say which in the proposal | Q5.1.15 |

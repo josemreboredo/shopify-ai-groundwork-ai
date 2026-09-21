@@ -4669,6 +4669,28 @@
       }
     },
     {
+      "id": "Q5.1.15",
+      "subsection": "5.1",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "boolean",
+      "text": "Does a single order ever need to go to more than one address — gifts to several recipients, or one wholesale order split across branches?",
+      "help": "Different from an order arriving in several parcels, which Shopify does on its own.",
+      "maps_to": [
+        "/shipping/multi_address_orders"
+      ],
+      "feeds": [
+        "exit:11.27"
+      ],
+      "teach": {
+        "why": "Shopify cannot deliver one order to more than one address. Asked late, it becomes a change request in UAT; asked now, the answer is one order per address, an app, or dropping it — and all three are cheaper than discovering it.",
+        "limits": "Split shipping divides an order into several shipments when items cannot travel together — a preorder line, a subscription, stock in different locations, different shipping profiles — and the customer picks a shipping option per shipment. Every shipment still goes to one address, the customer cannot choose how the order splits, and split shipping does not apply to accelerated checkouts or to draft orders that already carry a shipping line.",
+        "sources": [
+          "https://help.shopify.com/en/manual/checkout-settings/split-shipping"
+        ]
+      }
+    },
+    {
       "id": "Q5.2.1",
       "subsection": "5.2",
       "priority": "recommended",

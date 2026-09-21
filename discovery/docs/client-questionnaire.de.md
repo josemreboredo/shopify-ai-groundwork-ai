@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.2.0 · offering 2.8.0
+> **Version:** question bank 1.2.0 · offering 2.9.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -1166,6 +1166,12 @@
 - [ ] Andere Gefahrstoffe
 - [ ] Keine
 - [ ] Noch unklar
+
+**Q5.1.15** — Muss eine einzelne Bestellung jemals an mehr als eine Adresse gehen — Geschenke an mehrere Empfänger, oder eine Großhandelsbestellung, die auf Filialen aufgeteilt wird? *(recommended)*
+*Etwas anderes, als wenn eine Bestellung in mehreren Paketen ankommt — das macht Shopify von selbst.*
+
+- [ ] Yes
+- [ ] No
 
 ### 5.2 Retouren & Umtausch
 

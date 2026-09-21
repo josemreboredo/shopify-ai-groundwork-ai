@@ -305,7 +305,8 @@
     "Q6.5.1": "0e29baa1030e",
     "Q6.5.2": "0bc52d1b699c",
     "Q6.5.3": "b118523702dc",
-    "Q6.5.4": "2fc09133ccfa"
+    "Q6.5.4": "2fc09133ccfa",
+    "Q5.1.15": "40d15cf25cdc"
   },
   "sections": {
     "0": "Objectifs business",
@@ -3730,6 +3731,14 @@
       "teach": {
         "why": "Commander au nom d'un client est un vrai flux de travail, avec des conséquences sur les permissions, le paiement et la taxe, et il est invisible sur la vitrine. Non posé, il revient après le lancement en demande de changement.",
         "limits": "Les commandes provisoires se créent dans l'admin ou via l'API ; le client paie par lien de facture. L'équipe a besoin de la bonne permission, et la commande doit toujours reprendre les prix de marché et la taxe corrects."
+      }
+    },
+    "Q5.1.15": {
+      "text": "Une même commande doit-elle parfois partir vers plusieurs adresses — des cadeaux à plusieurs destinataires, ou une commande de gros répartie entre succursales ?",
+      "help": "Différent d'une commande qui arrive en plusieurs colis, ce que Shopify fait tout seul.",
+      "teach": {
+        "why": "Shopify ne sait pas livrer une commande à plusieurs adresses. Posée tard, la question devient une demande de changement en UAT ; posée maintenant, la réponse est une commande par adresse, une application, ou l'abandon de l'exigence — et les trois coûtent moins cher que la découverte.",
+        "limits": "Le split shipping divise une commande en plusieurs expéditions quand des articles ne peuvent pas voyager ensemble — une ligne en précommande, un abonnement, du stock dans des emplacements différents, des profils d'expédition différents — et le client choisit une option d'expédition par expédition. Chaque expédition part toujours vers une seule adresse, le client ne choisit pas la répartition, et le split shipping ne s'applique ni aux checkouts accélérés ni aux commandes provisoires portant déjà une ligne d'expédition."
       }
     }
   },
