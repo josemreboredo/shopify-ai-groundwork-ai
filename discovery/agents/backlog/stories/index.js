@@ -12,6 +12,7 @@ import retail from './retail.js';
 import customers from './customers.js';
 import promotions from './promotions.js';
 import marketing from './marketing.js';
+import ai from './ai.js';
 import integrations from './integrations.js';
 import migration from './migration.js';
 import compliance from './compliance.js';
@@ -30,6 +31,7 @@ export const STORY_DEFINITIONS = [
   ...customers,
   ...promotions,
   ...marketing,
+  ...ai,
   ...integrations,
   ...migration,
   ...compliance,

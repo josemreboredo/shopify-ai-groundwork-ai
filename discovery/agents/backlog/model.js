@@ -22,6 +22,7 @@ export const EPICS = [
   { id: 'customers',    prefix: 'CUS', name: 'Customers & B2B',                summary: 'Customer accounts, B2B companies, price lists and payment terms.' },
   { id: 'promotions',   prefix: 'PRM', name: 'Promotions & loyalty',           summary: 'Discounts, coupons, gift cards and loyalty programme.' },
   { id: 'marketing',    prefix: 'MKG', name: 'Marketing & analytics',          summary: 'SEO, tracking, email platform and reviews.' },
+  { id: 'ai',           prefix: 'AI',  name: 'AI & agentic commerce',        summary: 'Selling inside AI assistants, Shopify Catalog readiness, crawler policy, the knowledge base and merchant AI tools.' },
   { id: 'integrations', prefix: 'INT', name: 'Integrations',                   summary: 'ERP, PIM, CRM, 3PL and other system connections.' },
   { id: 'migration',    prefix: 'MIG', name: 'Data migration',                 summary: 'Products, customers, orders, content and redirects from the current platform.' },
   { id: 'compliance',   prefix: 'CMP', name: 'Privacy & compliance',           summary: 'Cookie consent, legal pages, data-subject requests.' },
