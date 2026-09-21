@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
+import { scopeCatalogue, scopeTotals } from '../../../discovery/service/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { band, TRACK, weeks } from '../offering.js';
 import { OfferScale } from '../components/diagram.jsx';
@@ -15,7 +16,8 @@ export const meta = () => [{ title: pageTitle('The offering') }];
  */
 export async function loader({ request }) {
   const user = await requireUser(request);
-  return { view: offeringView({ pricing: user.role === 'owner' }) };
+  const catalogue = scopeCatalogue();
+  return { view: offeringView({ pricing: user.role === 'owner' }), catalogue, totals: scopeTotals(catalogue) };
 }
 
 const COUNT = { 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven' };
@@ -29,7 +31,7 @@ const LADDER = [
 ];
 
 export default function Offering({ loaderData }) {
-  const { view } = loaderData;
+  const { view, catalogue, totals } = loaderData;
   const currency = view.offers[0]?.currency;
   const plans = ['Grow', 'Advanced', 'Shopify Plus'].map((plan) => ({ plan, features: view.plan_gates.filter((g) => g.plan === plan) }));
 
@@ -125,6 +127,43 @@ export default function Offering({ loaderData }) {
             is how an Ecommerce Growth with a Magento estate and six markets stops being quoted the same as one
             with a single market and no migration.
           </p>
+        </div>
+      </section>
+
+      {/* 3 — what is actually built. Sold at a fixed price, argued at story
+          level, so the map says what the sixteen epics hold before anyone opens
+          an offer. */}
+      <section>
+        <h2>What the offers build</h2>
+        <p className="lede">
+          Every offer delivers the same {totals.epics} epics; what changes is how much of each one the answers
+          call for. {totals.always} stories are in the price whatever the client answers, {totals.conditional} more
+          arrive when their answers call for them, and {totals.gated} sit behind a scope gate that has its own
+          weeks. Each offer&rsquo;s page has the list, story by story.
+        </p>
+        <div className="table-scroll" role="region" tabIndex={0} aria-label="Epics and what each holds, scrollable table">
+          <table className="compare epics">
+            <thead>
+              <tr>
+                <th scope="col">Epic</th>
+                <th scope="col">Always</th>
+                <th scope="col">On the answers</th>
+                <th scope="col">Behind a gate</th>
+                <th scope="col">Which gates</th>
+              </tr>
+            </thead>
+            <tbody>
+              {catalogue.map((e) => (
+                <tr key={e.id}>
+                  <th scope="row">{e.name}</th>
+                  <td data-label="Always">{e.always.length}</td>
+                  <td data-label="On the answers">{e.conditional.length}</td>
+                  <td data-label="Behind a gate">{e.gated.reduce((n, g) => n + g.stories.length, 0)}</td>
+                  <td data-label="Which gates">{e.gated.length ? e.gated.map((g) => g.label).join(', ') : <span className="muted">—</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 

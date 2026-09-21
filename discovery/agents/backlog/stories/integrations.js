@@ -31,8 +31,9 @@ const customConnectors = (doc) => (doc.integrations ?? []).filter((i) => i.conne
  * Shared shape for category stories.
  * @param {object} o
  */
-const categoryStory = ({ key, category, noun, title, user_story, extraCriteria = () => [], extraPrompt = () => '', points, gaia_tier, security_flags, depends_on }) => ({
+const categoryStory = ({ key, scope, category, noun, title, user_story, extraCriteria = () => [], extraPrompt = () => '', points, gaia_tier, security_flags, depends_on }) => ({
   key,
+  scope,
   epic: 'integrations',
   title: (doc) => title(systems(integrationsOf(doc, category))),
   user_story,
@@ -58,6 +59,7 @@ const categoryStory = ({ key, category, noun, title, user_story, extraCriteria =
 export default [
   categoryStory({
     key: 'LWC-INT-001',
+    scope: 'Connect the ERP to Shopify',
     category: 'erp',
     noun: 'ERP',
     title: (names) => `Connect ${names} (ERP) to Shopify`,
@@ -76,6 +78,7 @@ export default [
   }),
   categoryStory({
     key: 'LWC-INT-002',
+    scope: 'Connect the PIM to Shopify',
     category: 'pim',
     noun: 'PIM',
     title: (names) => `Connect ${names} (PIM) to Shopify`,
@@ -91,6 +94,7 @@ export default [
   }),
   categoryStory({
     key: 'LWC-INT-003',
+    scope: 'Connect the CRM to Shopify',
     category: 'crm',
     noun: 'CRM',
     title: (names) => `Connect ${names} (CRM) to Shopify`,
@@ -106,6 +110,7 @@ export default [
   }),
   categoryStory({
     key: 'LWC-INT-004',
+    scope: 'Connect the 3PL or WMS to Shopify',
     category: '3pl_wms',
     noun: '3PL/WMS',
     title: (names) => `Connect ${names} (3PL/WMS) to Shopify`,
@@ -121,6 +126,7 @@ export default [
   }),
   {
     key: 'LWC-INT-005',
+    scope: 'Build the custom or middleware connector',
     epic: 'integrations',
     title: (doc) => `Build the custom or middleware connector for ${systems(customConnectors(doc))}`,
     user_story: 'As the business, I want a secure, observable custom connector where no off-the-shelf connector exists, so that data flows reliably and safely.',

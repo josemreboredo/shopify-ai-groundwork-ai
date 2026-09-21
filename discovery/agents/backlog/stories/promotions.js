@@ -34,7 +34,7 @@ export default [
     depends_on: ['LWC-PAY-002'],
     spec_refs: ['/promotions/discount_types', '/promotions/stacking', '/promotions/campaigns/market_specific'],
     applies: (doc) => types(doc).length > 0,
-    agent_prompt: (doc) => `Discount types: ${list(types(doc))}. Stacking: ${stackingText[doc.promotions?.stacking] ?? 'to confirm'}. Use native Shopify discounts (amount off products, amount off order, buy X get Y, free shipping; automatic or code) with combination settings per discount class. ${types(doc).includes('volume_tiered') && !isB2b(doc) ? 'Tiered volume discounts for retail may need a discount function — flag it before building. ' : ''}${types(doc).includes('pos_only') ? 'POS-only discounts: restrict eligibility to the Point of Sale channel. ' : ''}Restrict by market where required. Create one example of each type on the development store, document the recipe for marketers and test combinations in cart and checkout.`,
+    agent_prompt: (doc) => `Discount types: ${list(types(doc))}. Stacking: ${stackingText[doc.promotions?.stacking] ?? 'to confirm'}. Use native Shopify discounts (amount off products, amount off order, buy X get Y, free shipping; automatic or code) with combination settings per discount class. ${types(doc).includes('volume_tiered') && !isB2b(doc) ? 'Tiered volume discounts for retail may need a discount function — flag it before building. ' : ''}${types(doc).includes('pos_only') ? 'POS-only discounts: restrict eligibility to the Point of Sale channel. ' : ''}Restrict by market where required. Create one example of each type on the build store, document the recipe for marketers and test combinations in cart and checkout.`,
   },
   {
     key: 'LWC-PRM-002',
@@ -53,7 +53,7 @@ export default [
     spec_refs: ['/promotions/stacking', '/promotions/discount_types'],
     security_flags: ['secrets'],
     applies: (doc) => doc.promotions?.stacking === 'custom_logic_function',
-    agent_prompt: (doc) => `Write down every stacking rule for ${list(types(doc))} and mark which native combinations already cover. For the remainder, scaffold a Discount Function (Shopify Functions discount API, latest stable version) in the store's custom app with Shopify CLI, read configuration from the discount's metafield, add input-query fixtures and unit tests, and expose a simple admin UI extension or metafield editor for marketers. Deploy to the development store only after consultant review of the rule table.`,
+    agent_prompt: (doc) => `Write down every stacking rule for ${list(types(doc))} and mark which native combinations already cover. For the remainder, scaffold a Discount Function (Shopify Functions discount API, latest stable version) in the store's custom app with Shopify CLI, read configuration from the discount's metafield, add input-query fixtures and unit tests, and expose a simple admin UI extension or metafield editor for marketers. Deploy to the build store only after consultant review of the rule table.`,
   },
   {
     key: 'LWC-PRM-003',
@@ -90,7 +90,7 @@ export default [
     depends_on: ['LWC-PRM-001'],
     spec_refs: ['/promotions/discount_types', '/promotions/campaigns/market_specific'],
     applies: (doc) => types(doc).includes('scheduled_sale'),
-    agent_prompt: (doc) => `Prefer automatic discounts with start and end dates for sales (prices stay intact). Where compare-at price changes are required, build a Shopify Flow workflow with a scheduled trigger that sets and reverts compare-at and sale prices for a tagged collection, with a dry-run report first. Schedule storefront banners in ${themeName(doc)} with theme settings or a metaobject that has start and end dates. Test a sale starting and ending within one hour on the development store.`,
+    agent_prompt: (doc) => `Prefer automatic discounts with start and end dates for sales (prices stay intact). Where compare-at price changes are required, build a Shopify Flow workflow with a scheduled trigger that sets and reverts compare-at and sale prices for a tagged collection, with a dry-run report first. Schedule storefront banners in ${themeName(doc)} with theme settings or a metaobject that has start and end dates. Test a sale starting and ending within one hour on the build store.`,
   },
   {
     key: 'LWC-PRM-005',

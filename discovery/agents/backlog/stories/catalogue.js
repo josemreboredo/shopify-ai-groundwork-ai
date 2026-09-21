@@ -39,6 +39,7 @@ export default [
   },
   {
     key: 'LWC-CAT-002',
+    scope: 'Create metafield definitions and filters for the agreed product attributes',
     epic: 'catalogue',
     title: (doc) => `Create metafield definitions and filters for ${attributes(doc).length} product attribute${attributes(doc).length === 1 ? '' : 's'}`,
     description: (doc) => `Attributes: ${listOr(attributes(doc), 'to confirm')}.`,

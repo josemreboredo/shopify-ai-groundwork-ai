@@ -255,6 +255,7 @@ export default [
    */
   {
     key: 'LWC-SHP-011',
+    scope: 'Offer the delivery methods the client sells on',
     epic: 'shipping',
     title: (doc) => `Offer the delivery methods the client sells on: ${listOr((doc.shipping?.delivery_methods ?? []).filter((m) => m !== 'none' && m !== 'not_sure').map((m) => m.replace(/_/g, ' ')), 'to confirm')}`,
     user_story: 'As a shopper, I want the delivery choice that suits me, so that I am not forced into a courier slot I will miss.',

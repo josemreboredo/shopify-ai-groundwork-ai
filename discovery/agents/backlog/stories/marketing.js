@@ -72,6 +72,7 @@ export default [
   },
   {
     key: 'LWC-MKG-004',
+    scope: 'Connect the email platform and rebuild the flows',
     epic: 'marketing',
     title: (doc) => `Connect ${doc.marketing?.esp?.platform} and rebuild email flows`,
     user_story: 'As a marketer, I want our email platform connected with the flows that drive revenue, so that automated emails work from day one.',
@@ -87,10 +88,11 @@ export default [
     spec_refs: ['/marketing/esp/platform', '/marketing/esp/flows', '/marketing/esp/segments_master', '/integrations/*/category'],
     security_flags: ['pii'],
     applies: (doc) => Boolean(doc.marketing?.esp?.platform),
-    agent_prompt: (doc) => `Install ${doc.marketing?.esp?.platform}'s Shopify app, connect it to the development store and enable customer, order and catalogue sync plus onsite tracking via its app embed (respecting consent). Sync email marketing consent both ways. Rebuild flows: ${listOr(doc.marketing?.esp?.flows, 'to confirm')} — the agent sets up triggers and filters; the client team owns copy and design. Segments master: ${doc.marketing?.esp?.segments_master ?? 'to confirm'}. Disable the equivalent Shopify marketing automations to avoid duplicates. Test every flow with an internal test profile.`,
+    agent_prompt: (doc) => `Install ${doc.marketing?.esp?.platform}'s Shopify app, connect it to the build store and enable customer, order and catalogue sync plus onsite tracking via its app embed (respecting consent). Sync email marketing consent both ways. Rebuild flows: ${listOr(doc.marketing?.esp?.flows, 'to confirm')} — the agent sets up triggers and filters; the client team owns copy and design. Segments master: ${doc.marketing?.esp?.segments_master ?? 'to confirm'}. Disable the equivalent Shopify marketing automations to avoid duplicates. Test every flow with an internal test profile.`,
   },
   {
     key: 'LWC-MKG-005',
+    scope: 'Add product reviews and UGC',
     epic: 'marketing',
     title: (doc) => `Add product reviews${doc.marketing?.reviews?.ugc ? ' and UGC' : ''} with ${reviewsApp(doc)}`,
     user_story: 'As a shopper, I want to read genuine reviews from other customers, so that I can buy with confidence.',

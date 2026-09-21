@@ -77,6 +77,7 @@ export default [
   },
   {
     key: 'LWC-AI-003',
+    scope: 'Set the AI crawler policy',
     epic: 'ai',
     title: (doc) => `Set the AI crawler policy (${set(doc, 'crawler_policy') ?? 'to confirm'})`,
     user_story: 'As the business owner, I want a deliberate position on AI crawlers, so that our content is used on our terms and everyone knows what that choice does and does not do.',
@@ -129,7 +130,7 @@ export default [
     depends_on: ['LWC-FND-001'],
     spec_refs: ['/ai/merchant_ai_tools', '/shopify/target_plan'],
     applies: (doc) => tools(doc).length > 0,
-    agent_prompt: (doc) => `Enable and demonstrate ${listOr(tools(doc).map((t) => t.replace(/_/g, ' ')), 'the agreed Shopify AI tools')} on the development store with the client's own products. Check plan and catalogue eligibility where the tool needs it rather than assuming. Agree who approves anything customer-facing that a tool generates, and include the tools in the training pack.`,
+    agent_prompt: (doc) => `Enable and demonstrate ${listOr(tools(doc).map((t) => t.replace(/_/g, ' ')), 'the agreed Shopify AI tools')} on the build store with the client's own products. Check plan and catalogue eligibility where the tool needs it rather than assuming. Agree who approves anything customer-facing that a tool generates, and include the tools in the training pack.`,
   },
   {
     key: 'LWC-AI-006',

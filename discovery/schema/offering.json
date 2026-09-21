@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.11.0",
+  "version": "2.12.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -149,7 +149,8 @@
         "A catalogue of 5,000 SKUs or more, or 500 with complex variants, metafields or bundles — not in the base: that is the catalogue gate, priced by size",
         "Bespoke sections or a full template set designed in Figma — the base configures the theme; designing beyond it is the storefront design gate",
         "Content production: copy, photography and video are the client’s, or a separate engagement. Nothing here writes them",
-        "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate"
+        "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate",
+        "Running costs. The Shopify plan and every app subscription are billed to the client from the day they are installed — this offer selects and configures apps against the agreed monthly ceiling, it does not pay for them"
       ],
       "assumes": [
         "Two rounds of feedback on the template set, then sign-off. A third round is a change request, not a revision",
@@ -157,7 +158,8 @@
         "The catalogue loaded once, from one source file the client supplies in an agreed shape. Re-loads after a data change are a change request",
         "One training session per role, recorded, in the week before launch",
         "Hypercare for 30 days after go-live: a named channel, a response within one working day, and defects triaged with the client",
-        "One development store and one theme release path. Staging beyond that is a gate"
+        "One build store and one theme release path. Staging beyond that is a gate",
+        "The build store is transferred to the client at go-live, with their billing and plan in place. Until then it sits in Merkle’s Partner organisation on Basic-plan media storage limits"
       ],
       "client_provides": [
         "One decision-maker for scope, approvals and feedback, available inside the week",
@@ -484,7 +486,8 @@
         "Custom checkout UI. Shopify no longer permits it whatever the rest of the storefront does — Checkout Extensibility is the whole of what is possible",
         "A storefront whose content or front end lives outside Shopify: an external CMS or PIM, another framework, a native app, several front ends on one backend. Hydrogen with content in Shopify is this offer; the rest is Merkle Arc",
         "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
-        "Content production, photography and video, and the copy that goes on the templates this offer builds"
+        "Content production, photography and video, and the copy that goes on the templates this offer builds",
+        "A Shop Mini — a presence inside Shopify’s Shop app. It stays inside Shopify, so it is not Merkle Arc; it is React SDK work built against the Shop Minis SDK, which no offer here estimates. It is scoped and priced on its own"
       ],
       "assumes": [
         "Everything Ecommerce Scale assumes, at this size",

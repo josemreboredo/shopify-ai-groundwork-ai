@@ -15,6 +15,7 @@ const strategyText = {
 export default [
   {
     key: 'LWC-MKT-001',
+    scope: 'Configure Shopify Markets for the selling markets',
     epic: 'markets',
     title: (doc) => `Configure Shopify Markets for ${list(markets(doc).map((m) => m.code))}`,
     user_story: 'As a shopper, I want to see my market\'s currency, prices and language automatically, so that buying feels local.',
@@ -35,6 +36,7 @@ export default [
   },
   {
     key: 'LWC-MKT-002',
+    scope: 'Translate the storefront into the agreed languages',
     epic: 'markets',
     title: (doc) => `Translate the storefront into ${list(languages(doc))}`,
     user_story: 'As a shopper, I want the store in my language, so that I understand products, policies and checkout.',
@@ -53,6 +55,7 @@ export default [
   },
   {
     key: 'LWC-MKT-003',
+    scope: 'Set market pricing per market and currency',
     epic: 'markets',
     title: (doc) => `Set market pricing for ${list(markets(doc).map((m) => `${m.code} (${m.currency ?? 'currency TBC'})`))}`,
     user_story: 'As a pricing manager, I want each market to have deliberate prices in its currency, so that margins and price points are right everywhere.',

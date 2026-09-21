@@ -1436,3 +1436,37 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 .outgrew-base .outgrew-what { color: var(--muted); }
 .outgrew-total { border-bottom: none; border-top: 2px solid var(--red); margin-top: 4px; font-weight: 700; }
 .outgrew-total .outgrew-weeks { color: var(--ink); }
+
+/* What an offer builds, epic by epic.
+   The offering pages described a hundred and eighteen stories in three lines of
+   base scope, and these are sold at a fixed price. Each epic opens to its own
+   three lists — in the price, in the price on the answers, behind a gate — and
+   the story key travels with every line so a consultant can find it in Jira
+   without asking anyone. */
+.scope-epics { margin: 22px 0 0; }
+.epic-list { list-style: none; padding: 0; margin: 26px 0 16px; max-width: 78ch; }
+.epic-list > li { border-top: 1px solid var(--line); }
+.epic-list > li:last-child { border-bottom: 1px solid var(--line); }
+.epic-list > li > details > summary { padding: 16px 1.9rem 16px 0; margin: 0; }
+.epic-list .claim { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+.epic-list .claim-line { display: block; color: var(--muted); font-size: 0.88rem; margin-top: 4px; }
+.scope-group { margin: 0 0 18px; }
+.scope-group h4 {
+  margin: 0 0 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap;
+}
+.scope-group.gated h4 { color: var(--ink); }
+.scope-group.gated { border-left: 2px solid var(--line-strong); padding-left: 14px; }
+.scope-group > .muted.small { margin: 0 0 8px; max-width: 74ch; }
+.scope-cost { font-variant-numeric: tabular-nums; color: var(--muted); letter-spacing: 0; text-transform: none; }
+.scope-lines { list-style: none; padding: 0; margin: 0; }
+.scope-lines > li { font-size: 0.93rem; line-height: 1.5; padding: 3px 0; }
+.scope-key {
+  display: inline-block; min-width: 8.5em; margin-right: 10px; color: var(--muted);
+  font-size: 0.78rem; font-variant-numeric: tabular-nums;
+}
+.decided abbr { border-bottom: 1px dotted var(--line-strong); text-decoration: none; cursor: help; font-size: 0.8rem; color: var(--muted); }
+.decided abbr + abbr { margin-left: 6px; }
+@media (max-width: 640px) {
+  .scope-key { display: block; min-width: 0; margin: 0; }
+}

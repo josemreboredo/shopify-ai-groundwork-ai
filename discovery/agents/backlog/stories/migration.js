@@ -24,7 +24,7 @@ export default [
     description: (doc) => `Data in scope: ${listOr(data(doc), 'to confirm')}. Volumes: ${count(doc.migration?.volumes?.products, 'unknown')} products, ${count(doc.migration?.volumes?.customers, 'unknown')} customers, ${count(doc.migration?.volumes?.orders, 'unknown')} orders, ${count(doc.migration?.volumes?.redirects, 'unknown')} redirects.`,
     acceptance_criteria: (doc) => [
       `Given the data in scope (${listOr(data(doc), 'to confirm')}), when the mapping is reviewed, then every source field is mapped, transformed or explicitly dropped with client sign-off`,
-      'Given a sample export of 100 records per object, when it is imported to the development store, then the reconciliation report shows counts and field checks with no unexplained differences',
+      'Given a sample export of 100 records per object, when it is imported to the build store, then the reconciliation report shows counts and field checks with no unexplained differences',
       'Given the cut-over approach, when the plan is approved, then it defines the content freeze, delta import window, rollback and owners',
       ...flag1114(doc),
     ],
@@ -102,6 +102,7 @@ export default [
   },
   {
     key: 'LWC-MIG-005',
+    scope: 'Migrate pages, blog content and product reviews',
     epic: 'migration',
     title: (doc) => `Migrate ${[migrates(doc, 'content') ? 'pages and blog content' : '', migrates(doc, 'reviews') ? 'product reviews' : ''].filter(Boolean).join(' and ')}`,
     user_story: 'As a marketer, I want our content and reviews carried over, so that we keep SEO value and social proof.',

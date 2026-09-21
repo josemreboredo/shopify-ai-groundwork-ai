@@ -2,9 +2,10 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
+import { scopeCatalogue, scopeTotals } from '../../../discovery/service/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { Boundaries, Channels, OfferScale, PhasePlan, Storefront, Tracks } from '../components/diagram.jsx';
+import { Boundaries, Channels, OfferScale, PhasePlan, ScopeByEpic, Storefront, Tracks } from '../components/diagram.jsx';
 
 /**
  * One offer, on its own page.
@@ -29,7 +30,11 @@ export async function loader({ request, params }) {
   const view = offeringView({ pricing: user.role === 'owner' });
   const segment = segmentOf(view, params.segment);
   if (!segment) throw new Response('Not found', { status: 404, statusText: 'No such offer' });
-  return { view, segment };
+  // The scope catalogue is the same backlog for every offer — what differs is
+  // which gates are inside the band. Arc has no backlog, because nothing here
+  // builds it.
+  const catalogue = segment.slug === 'arc' ? null : scopeCatalogue();
+  return { view, segment, catalogue, totals: catalogue ? scopeTotals(catalogue) : null };
 }
 
 /** The offer this one grows into, and the one it grew from. */
@@ -46,7 +51,7 @@ function Neighbours({ segment }) {
 }
 
 export default function OfferingSegment({ loaderData }) {
-  const { view, segment } = loaderData;
+  const { view, segment, catalogue, totals } = loaderData;
   const currency = view.offers[0]?.currency;
 
   // Arc is not an offer, so this page does not pretend it is one.
@@ -129,6 +134,18 @@ export default function OfferingSegment({ loaderData }) {
           <Storefront storefront={offer.storefront} />
         </section>
       ) : null}
+
+      <section>
+        <h2>What it builds, epic by epic</h2>
+        <p className="lede">
+          {totals.epics} epics and all {totals.stories} stories in them, read off the backlog this engine generates rather than
+          described again here. Each story sits in one of three places, and the difference is what the client
+          is buying: in the price whatever they answer, in the price once their answers call for it, or behind
+          a scope gate with its own weeks. Nothing is implied, because a fixed price cannot be argued from an
+          implication.
+        </p>
+        <ScopeByEpic catalogue={catalogue} totals={totals} capacity={offer.gate_capacity_weeks} offerCode={offer.code} />
+      </section>
 
       {offer.tracks ? (
         <section>

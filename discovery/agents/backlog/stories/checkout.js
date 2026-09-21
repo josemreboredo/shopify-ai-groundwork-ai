@@ -27,7 +27,7 @@ export default [
     spec_refs: ['/payments/providers', '/payments/local_methods', '/payments/bnpl', '/payments/multi_currency_settlement', '/payments/pci_scope'],
     security_flags: ['payments'],
     applies: () => true,
-    agent_prompt: (doc) => `Configure payments on the development store: ${listOr(doc.payments?.providers, 'Shopify Payments')} as providers${doc.payments?.local_methods?.length ? `, local methods ${list(doc.payments.local_methods)}` : ''}${doc.payments?.bnpl?.length ? `, buy-now-pay-later ${list(doc.payments.bnpl)}` : ''}. Prefer methods available inside Shopify Payments; install a payment app from the Shopify App Store only for methods Shopify Payments does not offer. Set availability per market and currency. PCI scope is ${doc.payments?.pci_scope ?? 'shopify_hosted'} — keep all card handling in Shopify-hosted checkout. The client owner completes KYC/merchant onboarding; never enter or store their banking or identity documents. Run test-mode orders and refunds per method and record results.`,
+    agent_prompt: (doc) => `Configure payments on the build store: ${listOr(doc.payments?.providers, 'Shopify Payments')} as providers${doc.payments?.local_methods?.length ? `, local methods ${list(doc.payments.local_methods)}` : ''}${doc.payments?.bnpl?.length ? `, buy-now-pay-later ${list(doc.payments.bnpl)}` : ''}. Prefer methods available inside Shopify Payments; install a payment app from the Shopify App Store only for methods Shopify Payments does not offer. Set availability per market and currency. PCI scope is ${doc.payments?.pci_scope ?? 'shopify_hosted'} — keep all card handling in Shopify-hosted checkout. The client owner completes KYC/merchant onboarding; never enter or store their banking or identity documents. Run test-mode orders and refunds per method and record results.`,
   },
   {
     key: 'LWC-PAY-002',
@@ -50,6 +50,7 @@ export default [
   },
   {
     key: 'LWC-PAY-003',
+    scope: 'Deliver the agreed checkout requirements with native settings or UI extensions',
     epic: 'checkout',
     title: (doc) => `Deliver ${extensionsOf(doc).length} checkout requirement${extensionsOf(doc).length === 1 ? '' : 's'} with native settings or UI extensions`,
     description: (doc) => `Requirements: ${listOr(extensionsOf(doc), 'to confirm')}.`,
@@ -67,10 +68,11 @@ export default [
     spec_refs: ['/checkout/customisation', '/checkout/extensions', '/checkout/custom_fields'],
     security_flags: ['secrets'],
     applies: (doc) => (doc.checkout?.customisation ?? []).some((c) => ['checkout_step_blocks_or_fields', 'thank_you_order_status_blocks'].includes(c)) && extensionsOf(doc).length > 0,
-    agent_prompt: (doc) => `Requirements: ${listOr(extensionsOf(doc), 'none listed')}. For each, check native options first: ${isB2b(doc) ? 'B2B checkout already has a purchase order number field and company locations store a tax registration ID — do not rebuild these. ' : ''}Scaffold a custom app with Shopify CLI (shopify app init) and add checkout UI extensions with shopify app generate extension, using Polaris checkout components and the latest stable API version. Store values with the applyMetafieldsChange / attribute APIs on the order. Information, shipping and payment step targets require Shopify Plus; Thank you and Order status targets work on all plans. Keep app credentials in the CLI environment only. Validate with shopify app build before deploying to the development store.`,
+    agent_prompt: (doc) => `Requirements: ${listOr(extensionsOf(doc), 'none listed')}. For each, check native options first: ${isB2b(doc) ? 'B2B checkout already has a purchase order number field and company locations store a tax registration ID — do not rebuild these. ' : ''}Scaffold a custom app with Shopify CLI (shopify app init) and add checkout UI extensions with shopify app generate extension, using Polaris checkout components and the latest stable API version. Store values with the applyMetafieldsChange / attribute APIs on the order. Information, shipping and payment step targets require Shopify Plus; Thank you and Order status targets work on all plans. Keep app credentials in the CLI environment only. Validate with shopify app build before deploying to the build store.`,
   },
   {
     key: 'LWC-PAY-004',
+    scope: 'Set up gift cards and store credit',
     epic: 'checkout',
     title: (doc) => `Set up ${[giftCardsInScope(doc) ? 'gift cards' : '', doc.checkout?.store_credit ? 'store credit' : ''].filter(Boolean).join(' and ')}`,
     user_story: 'As a shopper, I want to buy, receive and redeem gift cards and store credit easily, so that gifting and refunds are simple.',
@@ -145,7 +147,7 @@ export default [
     spec_refs: ['/checkout/order_restrictions'],
     security_flags: ['secrets'],
     applies: (doc) => (doc.checkout?.order_restrictions ?? []).some((r) => r !== 'none'),
-    agent_prompt: (doc) => `Rules: ${list((doc.checkout?.order_restrictions ?? []).filter((r) => r !== 'none').map((r) => r.replace(/_/g, ' ')))}. First check whether native settings cover a rule (market exclusions, shipping zones, product availability per market, B2B quantity rules). For the rest, scaffold a Cart and Checkout Validation Function with Shopify CLI in the store's custom app, read thresholds from a metafield on the validation so merchants can change them, return localised error messages, add unit tests with input fixtures and deploy with shopify app deploy to the development store.`,
+    agent_prompt: (doc) => `Rules: ${list((doc.checkout?.order_restrictions ?? []).filter((r) => r !== 'none').map((r) => r.replace(/_/g, ' ')))}. First check whether native settings cover a rule (market exclusions, shipping zones, product availability per market, B2B quantity rules). For the rest, scaffold a Cart and Checkout Validation Function with Shopify CLI in the store's custom app, read thresholds from a metafield on the validation so merchants can change them, return localised error messages, add unit tests with input fixtures and deploy with shopify app deploy to the build store.`,
   },
   /*
    * Accelerated checkout, which the bank asked about (Q4.1.6) and nothing built.

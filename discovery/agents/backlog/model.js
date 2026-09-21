@@ -12,7 +12,7 @@
  * (LWC-<prefix>-NNN); keys are never reused or renumbered.
  */
 export const EPICS = [
-  { id: 'foundation',   prefix: 'FND', name: 'Store foundation',               summary: 'Shopify Plus store set-up, users, apps baseline and environments.' },
+  { id: 'foundation',   prefix: 'FND', name: 'Store foundation',               summary: 'Build store on the quoted plan, users, apps baseline and environments.' },
   { id: 'theme',        prefix: 'THM', name: 'Storefront & theme',             summary: 'Horizon theme, brand tokens and page templates.' },
   { id: 'catalogue',    prefix: 'CAT', name: 'Catalogue & product data',       summary: 'Product model, metafields, collections, search and filters.' },
   { id: 'markets',      prefix: 'MKT', name: 'Markets & internationalisation', summary: 'Shopify Markets, currencies, languages, domains and duties.' },
@@ -42,7 +42,7 @@ export const OWNERS = ['consultant', 'agent', 'designer', 'developer', 'client']
 
 /** Definition of Done applied to every story (Gaia DoD, Shopify lens). */
 export const DEFINITION_OF_DONE = [
-  'Acceptance criteria met and demonstrated on the development store',
+  'Acceptance criteria met and demonstrated on the build store',
   'Consultant approved the plan before any store mutation (T2+)',
   'Theme Check / automated tests pass; no hard-coded brand values or secrets',
   'Works on mobile and desktop; WCAG 2.1 AA checks pass for changed UI',
@@ -56,6 +56,11 @@ export const DEFINITION_OF_DONE = [
  * @property {string}   key                 LWC-<PREFIX>-NNN, stable
  * @property {string}   epic                EPICS id
  * @property {string|Dyn} title             Short Jira summary
+ * @property {string}   [scope]             Catalogue label: what this story is when no
+ *                                          engagement is in front of it, for the offering
+ *                                          pages. Only needed where a dynamic title reads
+ *                                          badly without answers ("Configure Shopify Markets
+ *                                          for "), and a test says which those are.
  * @property {string|Dyn} user_story        "As a …, I want …, so that …"
  * @property {string|Dyn} [description]
  * @property {string[]|Dyn} acceptance_criteria  Given / When / Then statements

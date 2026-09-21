@@ -419,3 +419,109 @@ export function Boundaries({ notIncluded, clientProvides, assumes }) {
     </>
   );
 }
+
+/** "Q6.5.5, Q6.5.4 and one more" — the questions that switch a story on. */
+function Decided({ questions }) {
+  if (!questions?.length) return null;
+  const shown = questions.slice(0, 2);
+  const rest = questions.length - shown.length;
+  return (
+    <span className="decided">
+      {shown.map((q) => <abbr key={q.id} title={q.text}>{q.id}</abbr>)}
+      {rest > 0 ? <span className="muted small"> +{rest}</span> : null}
+    </span>
+  );
+}
+
+/**
+ * What an offer builds, epic by epic — and on what condition.
+ *
+ * These are sold at a fixed price, and the offering pages were describing a
+ * hundred and eighteen stories in three lines of base scope. A client signing a
+ * fixed price is entitled to the list, and a consultant defending one needs it
+ * in the room.
+ *
+ * Three states, because there are only three, and the difference is the whole
+ * commercial point: in the price whatever the client answers; in the price when
+ * their answers call for it, with the question named; or behind a scope gate,
+ * which is free inside the band's capacity and added to it past that. Nothing
+ * here is written by hand — it is the backlog the engine generates, read as a
+ * scope statement.
+ *
+ * @param {{ catalogue: object[], totals: object, capacity: {min:number,max:number}|null, offerCode: string }} props
+ */
+export function ScopeByEpic({ catalogue, totals, capacity, offerCode }) {
+  if (!catalogue?.length) return null;
+  return (
+    <div className="scope-epics">
+      <ul className="stats kpis">
+        <li><strong>{totals.epics}</strong><span>epics, every one of them delivered by named stories</span></li>
+        <li><strong>{totals.always}</strong><span>stories in every engagement, whatever the answers</span></li>
+        <li><strong>{totals.conditional}</strong><span>more when the answers call for them — inside this band</span></li>
+        <li><strong>{totals.gated}</strong><span>behind a scope gate, priced{capacity ? ` past ${capacity.min}–${capacity.max} weeks` : ''}</span></li>
+      </ul>
+      <ol className="epic-list">
+        {catalogue.map((epic) => {
+          const gatedCount = epic.gated.reduce((n, g) => n + g.stories.length, 0);
+          return (
+            <li key={epic.id}>
+              <details>
+                <summary>
+                  <span className="claim">{epic.name}</span>
+                  <span className="claim-line">
+                    {epic.always.length} always · {epic.conditional.length} on the answers · {gatedCount} gated
+                    <span className="muted"> · {epic.summary}</span>
+                  </span>
+                </summary>
+
+                {epic.always.length ? (
+                  <div className="scope-group">
+                    <h4>In the price, whatever the client answers</h4>
+                    <ul className="scope-lines">
+                      {epic.always.map((s) => <li key={s.key}><span className="scope-key">{s.key}</span>{s.label}</li>)}
+                    </ul>
+                  </div>
+                ) : null}
+
+                {epic.conditional.length ? (
+                  <div className="scope-group">
+                    <h4>In the price when the answers call for it</h4>
+                    <ul className="scope-lines">
+                      {epic.conditional.map((s) => (
+                        <li key={s.key}>
+                          <span className="scope-key">{s.key}</span>{s.label} <Decided questions={s.decided_by} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
+                {epic.gated.map((g) => (
+                  <div className="scope-group gated" key={g.id}>
+                    <h4>
+                      {g.label}
+                      {g.effort_weeks ? <span className="scope-cost">+{g.effort_weeks.min === g.effort_weeks.max ? g.effort_weeks.min : `${g.effort_weeks.min}–${g.effort_weeks.max}`} weeks</span> : null}
+                    </h4>
+                    <p className="muted small">{g.condition}</p>
+                    <ul className="scope-lines">
+                      {g.stories.map((s) => <li key={s.key}><span className="scope-key">{s.key}</span>{s.label}</li>)}
+                    </ul>
+                  </div>
+                ))}
+
+                {!epic.always.length && !epic.conditional.length && !gatedCount ? (
+                  <p className="muted">Nothing in this offer delivers this epic.</p>
+                ) : null}
+              </details>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="muted small">
+        {offerCode === 'S'
+          ? 'One gate stays in this offer, priced with its modifier. Two or more make it an M, and the epics come with it.'
+          : 'A gate inside the capacity above costs nothing more. Past it, the gate is added to the weeks and to the band.'}
+      </p>
+    </div>
+  );
+}
