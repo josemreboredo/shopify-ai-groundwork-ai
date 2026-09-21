@@ -715,7 +715,7 @@
     {
       "id": "checkout_extensibility",
       "label": "Checkout extensibility",
-      "condition": "The checkout needs more than its settings and the editor's branding: extensions, custom fields, or backend logic built as Shopify Functions. A fully custom checkout UI is exit rule 11.6, not this gate",
+      "condition": "The checkout needs more than its settings and the editor's branding. Three different things, and Shopify gates them differently: the Thank you and Order status pages take UI extensions on every plan except Starter; the information, shipping and payment steps take them only on Shopify Plus; backend logic is Shopify Functions. A fully custom checkout UI is exit rule 11.6, not this gate",
       "inputs": [
         "/checkout/customisation",
         "/checkout/extensions",
@@ -724,14 +724,24 @@
       ],
       "modifier": null,
       "modifier_tiers": [
-        "standard",
+        "post_purchase",
+        "in_checkout",
         "functions"
-      ]
+      ],
+      "sources": [
+        "https://shopify.dev/docs/api/checkout-ui-extensions",
+        "https://shopify.dev/docs/apps/build/checkout/thank-you-order-status",
+        "https://shopify.dev/changelog/new-checkout-functionality-for-merchants-on-basic-shopify-and-advanced-plans"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "shopify.dev"
+      }
     },
     {
       "id": "analytics_consent",
       "label": "Analytics and consent",
-      "condition": "Measurement beyond what every store already has. GA4 and a pixel are in every offer; the gate opens on a third destination, a tag manager, custom events, server-side tagging or a third-party consent platform",
+      "condition": "Measurement beyond what every store already has. Shopify Analytics — the pre-built reports, the dashboard and the ShopifyQL query editor — is on every plan, with more reports the higher the plan, and GA4 connects through the Google & YouTube channel with its ecommerce events tracked automatically. The gate opens past that: a third destination, a tag manager, custom events, server-side tagging or a third-party consent platform",
       "inputs": [
         "/marketing/analytics/platforms",
         "/marketing/analytics/pixels",
@@ -745,7 +755,16 @@
       "modifier_tiers": [
         "standard",
         "advanced"
-      ]
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/reports-and-analytics/shopify-reports",
+        "https://help.shopify.com/en/manual/reports-and-analytics/google-analytics/google-analytics-setup",
+        "https://help.shopify.com/en/manual/promoting-marketing/pixels/custom-pixels/gtm-tutorial"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "help.shopify.com"
+      }
     },
     {
       "id": "post_launch_support",
@@ -975,10 +994,10 @@
       }
     },
     {
-      "id": "+Checkout (standard)",
+      "id": "+Checkout (post-purchase)",
       "gate": "checkout_extensibility",
-      "tier": "standard",
-      "description": "Checkout and Thank you / Order status UI extensions and custom fields, built and deployed as an app rather than configured",
+      "tier": "post_purchase",
+      "description": "UI extensions on the Thank you and Order status pages — order tracking, surveys, referrals, an app block after the sale. Available on every plan except Starter, so this needs no Plus",
       "effort_weeks": {
         "min": 0.5,
         "max": 1
@@ -986,6 +1005,20 @@
       "price_add": {
         "min": 6000,
         "max": 11000
+      }
+    },
+    {
+      "id": "+Checkout (in-checkout)",
+      "gate": "checkout_extensibility",
+      "tier": "in_checkout",
+      "description": "UI extensions and custom fields on the information, shipping and payment steps. Shopify Plus only — on any other plan this is not a scope decision, it is a plan decision",
+      "effort_weeks": {
+        "min": 1,
+        "max": 2
+      },
+      "price_add": {
+        "min": 11000,
+        "max": 22000
       }
     },
     {
@@ -1921,16 +1954,28 @@
         "S": "Settings and editor branding",
         "M": "Settings and editor branding",
         "L": "Settings and editor branding",
-        "note": "Extensions and Shopify Functions are quoted on top in every pack."
+        "note": "Shopify gates the checkout in three steps, and so do we. Blocks on the Thank you and Order status pages run on every plan except Starter and are an add-on in any pack. Blocks and custom fields inside the information, shipping and payment steps need Shopify Plus — on any other plan that is a plan decision before it is a scope one. Backend rules are Shopify Functions. A fully custom checkout UI is not sold at all (rule 11.6).",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Checkout extensions"
       },
       {
         "id": "analytics",
         "what": "Analytics and consent",
         "gate": "analytics_consent",
-        "S": "GA4 and one pixel",
-        "M": "GA4 and one pixel",
-        "L": "GA4 and one pixel",
-        "note": "A third destination, a tag manager or a consent platform is quoted on top."
+        "S": "Shopify Analytics and its reports, plus GA4",
+        "M": "Shopify Analytics and its reports, plus GA4",
+        "L": "Shopify Analytics and its reports, plus GA4",
+        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor, with more reports the higher the Shopify plan. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically. The add-on is what goes past that — a third destination, a tag manager, custom events, server-side tagging or a consent platform.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "More destinations, a tag manager or consent"
       },
       {
         "id": "seo",

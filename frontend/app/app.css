@@ -1743,3 +1743,11 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
   background: var(--red); margin-inline-end: 8px; vertical-align: 0.05em;
 }
 .pack-addon-cost { display: block; margin-top: 3px; font-size: 0.85rem; color: var(--muted); }
+/* A pack that includes something and can also buy more: the add-on carries its
+   own name, so its price cannot be read as the price of what is already in. */
+.pack-addon-extra { display: block; margin-top: 7px; padding-top: 6px; border-top: 1px dotted var(--line-strong); }
+.pack-addon-extra b { display: block; font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+.pack-addon-extra b::before {
+  content: ''; display: inline-block; inline-size: 7px; block-size: 7px;
+  background: var(--red); margin-inline-end: 7px; vertical-align: 0.05em;
+}

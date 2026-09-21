@@ -674,13 +674,22 @@ export function PackTable({ offers, closedScope, pricing, currency, weeks, band 
                 const isAddon = row.addon?.includes(o.code);
                 const no = !isAddon && /^No\b/.test(value);
                 return (
-                  <td key={o.code} data-label={o.code} className={isAddon ? 'pack-addon' : no ? 'pack-no' : 'pack-yes'}>
+                  <td key={o.code} data-label={o.code} className={isAddon && !row.addon_label ? 'pack-addon' : no ? 'pack-no' : 'pack-yes'}>
+                    {/* Two different shapes. Where the pack includes nothing of
+                        this and can buy it, the cell is the add-on. Where the
+                        pack includes something AND can buy more, the price has
+                        to sit under the add-on's own name — printed under the
+                        included line it read as the price of what was already
+                        in, which is how "Settings and editor branding" came to
+                        look like it cost CHF 32k. */}
                     {value}
-                    {/* An add-on with no price beside it is just a softer no. */}
                     {isAddon && row.cost ? (
-                      <span className="pack-addon-cost">
-                        +{weeks(row.cost.effort_weeks)} week{row.cost.effort_weeks.max === 1 ? '' : 's'}
-                        {pricing && row.cost.price_add ? ` · ${band(row.cost.price_add, currency)}` : ''}
+                      <span className={row.addon_label ? 'pack-addon-extra' : 'pack-addon-cost'}>
+                        {row.addon_label ? <b>Add-on: {row.addon_label}</b> : null}
+                        <span className="pack-addon-cost">
+                          +{weeks(row.cost.effort_weeks)} week{row.cost.effort_weeks.max === 1 ? '' : 's'}
+                          {pricing && row.cost.price_add ? ` · ${band(row.cost.price_add, currency)}` : ''}
+                        </span>
                       </span>
                     ) : null}
                   </td>

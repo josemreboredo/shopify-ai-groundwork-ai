@@ -201,7 +201,7 @@ export function offeringView({ pricing = false } = {}) {
        offer decided"; this answers the question a client asks instead — if I
        buy an M, what exactly do I get. `limits` is the machine-readable twin
        the test builds from and has no business on a page, so it is not here. */
-    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, S, M, L, note, addon }) => ({
+    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, S, M, L, note, addon, addon_label: addonLabel }) => ({
       id,
       what,
       gate,
@@ -212,7 +212,7 @@ export function offeringView({ pricing = false } = {}) {
          room — but an add-on with no price beside it is just a softer no. The
          cost is the gate's own, so it cannot drift from what the engine
          quotes. */
-      ...(addon?.length ? { addon, cost: addonCost(gate, pricing) } : {}),
+      ...(addon?.length ? { addon, ...(addonLabel ? { addon_label: addonLabel } : {}), cost: addonCost(gate, pricing) } : {}),
     })),
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {

@@ -168,7 +168,8 @@
       },
       "sku_complexity": {
         "active": true,
-        "evidence": "Q2.1.1 / Q2.3.3: ~800 SKUs with custom metafields (movement_type, case_material, water_resistance_atm)."
+        "evidence": "Q2.1.1 / Q2.3.3: ~800 SKUs with custom metafields (movement_type, case_material, water_resistance_atm).",
+        "tier": "standard"
       },
       "migration": {
         "active": true,
@@ -198,7 +199,7 @@
       },
       "checkout_extensibility": {
         "active": true,
-        "tier": "standard",
+        "tier": "in_checkout",
         "evidence": "Q4.2.1 / Q4.2.3: checkout step blocks and custom fields; Q4.2.2: trust badges."
       },
       "analytics_consent": {
@@ -221,24 +222,24 @@
       "+SKU (standard)",
       "+Migration (light)",
       "+SEO (standard)",
-      "+Checkout (standard)",
+      "+Checkout (in-checkout)",
       "+Analytics (standard)",
       "+Support (extended)"
     ],
     "price_band": {
-      "min": 145000,
+      "min": 150000,
       "max": 220000,
       "currency": "CHF",
       "open_ended": true
     },
     "duration_weeks": {
-      "min": 13.5,
+      "min": 14,
       "max": 20
     },
     "rationale": "Ten scope gates are active and they add up to 13–17.5 weeks, past the 13-week ceiling of Ecommerce Scale, so the engagement classifies as L — Ecommerce Growth. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The gates sit inside the 9–15 weeks the L band already holds, so nothing is quoted on top of it.",
     "scope_effort_weeks": {
-      "min": 13.5,
-      "max": 17.5
+      "min": 14,
+      "max": 18.5
     },
     "gate_capacity_weeks": {
       "min": 9,
@@ -250,6 +251,14 @@
         "label": "Integration",
         "weeks": {
           "min": 2,
+          "max": 2
+        }
+      },
+      {
+        "gate": "checkout_extensibility",
+        "label": "Checkout extensibility",
+        "weeks": {
+          "min": 1,
           "max": 2
         }
       },
@@ -288,14 +297,6 @@
       {
         "gate": "seo_continuity",
         "label": "SEO continuity",
-        "weeks": {
-          "min": 0.5,
-          "max": 1
-        }
-      },
-      {
-        "gate": "checkout_extensibility",
-        "label": "Checkout extensibility",
         "weeks": {
           "min": 0.5,
           "max": 1

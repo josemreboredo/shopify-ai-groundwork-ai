@@ -417,7 +417,20 @@ const GATE_EVALUATORS = {
     const backend = customisation.includes('backend_logic_functions')
       || extensions.some((e) => FUNCTIONS.has(e))
       || restrictions.length > 0;
-    const tier = active ? (backend ? 'functions' : 'standard') : null;
+    /*
+     * Three tiers, because Shopify gates the three differently and the page was
+     * quoting them as one. Verified 2026-09-21 on shopify.dev: UI extensions on
+     * the Thank you and Order status pages run on every plan except Starter,
+     * while the information, shipping and payment steps are Shopify Plus only.
+     * Quoting a thank-you block at the in-checkout price charges a Basic store
+     * for a plan it does not need, and telling an M it cannot have checkout
+     * extensions at all was simply wrong.
+     */
+    const IN_CHECKOUT = new Set(['checkout_step_blocks_or_fields', 'checkout_branding_api_styling']);
+    const inCheckout = customisation.some((x) => IN_CHECKOUT.has(x))
+      || extensions.some((e) => !FUNCTIONS.has(e))
+      || fields;
+    const tier = active ? (backend ? 'functions' : inCheckout ? 'in_checkout' : 'post_purchase') : null;
     return {
       active,
       ...(tier ? { tier } : {}),

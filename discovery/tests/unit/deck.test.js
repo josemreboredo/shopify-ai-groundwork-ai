@@ -95,7 +95,7 @@ describe('client deck XML', () => {
     const { xml } = buildDeckXml(doc, backlogFor(doc));
     // Above the bare L floor, because acme's gates come to more than the nine
     // weeks the band carries at its minimum, and the excess is quoted on top.
-    assert.match(xml, /<price-band currency="CHF" from="145000" open-ended="true"\/>/);
+    assert.match(xml, /<price-band currency="CHF" from="150000" open-ended="true"\/>/);
   });
 
   test('client sections never contain modifiers, price adds, effort, story points or commercial warnings', () => {
