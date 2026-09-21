@@ -1720,3 +1720,18 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
   .pack-differs td::before { content: attr(data-label) ' '; font-weight: 700; color: var(--ink); }
   .pack-group > th { padding-top: 8px; }
 }
+
+/* ── What each pack includes ──────────────────────────────────────────────── */
+/* One row per capability, one cell per pack. "No" is not a failure state and is
+   not drawn as one — it is the boundary that makes the pack a pack — so it is
+   muted rather than red. Red in this system is the mark, never a verdict. */
+.pack-gets th[scope="row"] { font-weight: 600; }
+.pack-gets td { font-size: 0.95rem; line-height: 1.45; }
+.pack-gets .pack-no { color: var(--muted); }
+.pack-notes th[scope="row"] {
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  vertical-align: top;
+}
+.pack-notes ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; }
+.pack-notes li { font-size: 0.9rem; line-height: 1.45; color: var(--muted); }
+.pack-notes li strong { color: var(--ink); font-weight: 600; }

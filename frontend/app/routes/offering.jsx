@@ -147,8 +147,7 @@ export default function Offering({ loaderData }) {
         </p>
         <PackTable
           offers={view.offers}
-          gates={view.gates}
-          ceilings={ceilings}
+          closedScope={view.closed_scope}
           pricing={view.pricing}
           currency={currency}
           weeks={weeks}

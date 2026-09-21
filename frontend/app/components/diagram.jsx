@@ -599,7 +599,7 @@ export function Lands({ classification, here }) {
  * @param {{ offers: object[], gates: object[], ceilings: object, pricing: boolean,
  *   currency?: string, weeks: Function, band: Function }} props
  */
-export function PackTable({ offers, gates, ceilings, pricing, currency, weeks, band }) {
+export function PackTable({ offers, closedScope, pricing, currency, weeks, band }) {
   if (!offers?.length) return null;
   const capacity = (o) => o.gate_capacity_weeks;
   const gateCost = (g) => {
@@ -655,47 +655,43 @@ export function PackTable({ offers, gates, ceilings, pricing, currency, weeks, b
         <tbody>
           <tr className="pack-group">
             <th scope="rowgroup" colSpan={offers.length + 1}>
-              The same in every pack
+              What each pack includes
               <span className="pack-group-note">
-                Every pack holds the same catalogue of work. What one of these costs does not change
-                between S, M and L — only whether the band already carries it does, which is the row above.
+                Closed. Anything past a row is quoted on top of the pack, never assumed into it — and a test
+                builds an engagement that takes exactly this and checks the engine still calls it that pack.
               </span>
             </th>
           </tr>
-          {gates.map((g) => {
-            const cap = ceilings[g.id];
-            return (
-              <tr key={g.id} className="pack-same">
-                <th scope="row">{g.label}</th>
-                <td colSpan={offers.length}>
-                  {g.tiers ? (
-                    <>
-                      {g.tiers.map((t, i) => (
-                        <span key={t.tier}>
-                          {i ? ' · ' : ''}{t.tier.replace(/_/g, ' ')}{' '}
-                          <span className="pack-adds">
-                            +{weeks(t.effort_weeks)} week{t.effort_weeks.max === 1 ? '' : 's'}
-                            {pricing && t.price_add ? ` · ${band(t.price_add, currency)}` : ''}
-                          </span>
-                        </span>
-                      ))}
-                    </>
-                  ) : (
-                    <>
-                      {g.adds ? `${g.adds}. ` : ''}
-                      {gateCost(g) ? <span className="pack-adds">{gateCost(g)}</span> : <span className="muted">No fixed effort</span>}
-                    </>
-                  )}
-                  {cap ? (
-                    <span className={`pack-cap ${cap.leaves ? 'stop' : 'warn'}`}>
-                      {cap.leaves ? 'Above this it leaves the offers' : 'Above this it stays in the offer and gets a named owner'}
-                      {' — '}rule {cap.id}: {cap.label.toLowerCase()}
-                    </span>
-                  ) : null}
-                </td>
-              </tr>
-            );
-          })}
+          {/* One row per capability, one cell per pack. This replaced a block
+              that said "the same in every pack" and then printed what each one
+              costs — true, and the wrong question. A client does not ask what a
+              market costs; they ask how many markets they get. */}
+          {closedScope.map((row) => (
+            <tr key={row.id} className="pack-gets">
+              <th scope="row">{row.what}</th>
+              {offers.map((o) => {
+                const value = row.values[o.code] ?? '—';
+                const no = /^No\b/.test(value);
+                return (
+                  <td key={o.code} data-label={o.code} className={no ? 'pack-no' : 'pack-yes'}>
+                    {value}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+          {closedScope.some((r) => r.note) ? (
+            <tr className="pack-notes">
+              <th scope="row">Quoted on top</th>
+              <td colSpan={offers.length}>
+                <ul>
+                  {closedScope.filter((r) => r.note).map((r) => (
+                    <li key={r.id}><strong>{r.what}.</strong> {r.note}</li>
+                  ))}
+                </ul>
+              </td>
+            </tr>
+          ) : null}
         </tbody>
       </table>
     </div>

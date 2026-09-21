@@ -183,6 +183,13 @@ export function offeringView({ pricing = false } = {}) {
     offers,
     classification: offering.classification.map((c) => ({ order: c.order, when: c.when, offer: c.offer, plain: plainRule(c), ...(c.apply_modifier ? { with_modifier: true } : {}) })),
     gates,
+    /* What each pack sells, closed. The rest of this view answers "how is an
+       offer decided"; this answers the question a client asks instead — if I
+       buy an M, what exactly do I get. `limits` is the machine-readable twin
+       the test builds from and has no business on a page, so it is not here. */
+    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, S, M, L, note }) => ({
+      id, what, gate, values: { S, M, L }, ...(note ? { note } : {}),
+    })),
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {
       beyond_offers: byResult('STOP'),
