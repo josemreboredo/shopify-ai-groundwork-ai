@@ -164,7 +164,8 @@
     "gate_capacity_weeks": {
       "min": 0,
       "max": 0
-    }
+    },
+    "scope_effort_by_gate": []
   },
   "markets": {
     "primary_markets": [

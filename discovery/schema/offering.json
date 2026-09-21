@@ -1203,12 +1203,21 @@
       "id": "11.3",
       "result": "STOP",
       "status": "canonical",
-      "condition": "Base weeks plus the active scope gates exceed the L duration — the work is a programme, not an offer",
-      "destination": "Larger Engagement: delivered as a programme with a template, plus an increment per market or brand",
+      "condition": "Scope has outgrown the gate work this offer's band already carries, AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: the offer quotes its own overflow at the rate of the work that caused it. What cannot be quoted is scope this large that cannot yet be committed to",
+      "destination": "An Enterprise Engagement opening with a dedicated Discovery Phase, to close the open risks before the scope is committed",
       "inputs": [
+        "/offer/scope_effort_by_gate",
+        "/offer/gate_capacity_weeks",
         "/offer/scope_effort_weeks"
       ],
-      "label": "The scope is beyond what the largest offer holds"
+      "label": "Scope past the offer envelope, with too much about delivering it still open",
+      "reads_rules": [
+        "11.12",
+        "11.14",
+        "11.15",
+        "11.23",
+        "11.24"
+      ]
     },
     {
       "id": "11.4",

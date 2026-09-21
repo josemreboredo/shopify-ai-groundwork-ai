@@ -16,6 +16,18 @@ const RULES = new Map(offering.exit_rules.map((r) => [r.id, r]));
 const DEFAULT_OWNER = 'Lead Consultant';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+/**
+ * The risks a Discovery Phase exists to close.
+ *
+ * Not a list of bad things: a list of things that cannot be committed to a
+ * fixed scope until somebody has looked. Each is already its own rule with its
+ * own evidence and its own owner; 11.3 only asks how many are open at once.
+ */
+const DISCOVERY_RISKS = ['11.12', '11.14', '11.15', '11.23', '11.24'];
+
+/** One is a flag with an owner. Two, on scope past the offer's envelope, is a discovery. */
+const DISCOVERY_RISK_THRESHOLD = 2;
+
 /** Retail stores covered by the +Retail modifier; above this, 11.22 (programme pricing, never per store). */
 export const RETAIL_STORES_INCLUDED = 5;
 
@@ -57,11 +69,37 @@ const EVALUATORS = {
    * and become a programme, which is what the published benchmark says happens
    * once a template carries the repetition.
    */
-  '11.3': (doc) => {
+  /*
+   * Scope this large, with this much still unknown about delivering it.
+   *
+   * It used to fire on weeks alone: effort past what an L's band holds. That
+   * stopped being true the day the offer learned to quote its own overflow —
+   * the band carries nine to fifteen weeks of gate work and the excess is
+   * charged at the rate of the gates that caused it, so the engine was
+   * producing a defensible quote (24–30 weeks, a real number) and this rule was
+   * suppressing it one line later. A page that computes a price and then says
+   * it cannot price it is worse than either answer alone.
+   *
+   * Size is not what makes a programme. A Larger Engagement is, in this tool,
+   * literally an Enterprise Engagement that opens with a dedicated Discovery
+   * Phase — so the thing that routes work there is not being big, it is not
+   * being committable yet. That is what these five rules measure: a connector
+   * that does not exist, a migration carrying rankings, a deadline shorter than
+   * the build, a topology nobody has settled, a system with nowhere to test
+   * against. One of those is a flag with an owner. Two of them, on scope that
+   * has already outgrown the offer's envelope, is a discovery.
+   */
+  '11.3': (doc, fired = new Set()) => {
+    const gates = doc.offer?.scope_effort_by_gate ?? [];
+    const capacity = doc.offer?.gate_capacity_weeks;
+    if (!gates.length || !capacity) return null;
+    const total = gates.reduce((a, g) => a + g.weeks.max, 0);
+    if (total <= capacity.max) return null;
+
+    const open = DISCOVERY_RISKS.filter((id) => fired.has(id));
+    if (open.length < DISCOVERY_RISK_THRESHOLD) return null;
     const scope = doc.offer?.scope_effort_weeks;
-    const ceiling = offering.offers.L.duration_weeks.max;
-    if (!scope || scope.max <= ceiling) return null;
-    return `Scope reaches ${scope.min}–${scope.max} weeks, beyond the ${ceiling} an L holds`;
+    return `Scope of ${scope.min}\u2013${scope.max} weeks, ${Math.round((total - capacity.max) * 10) / 10} beyond what the offer carries, with ${open.length} delivery risks still open (${open.join(', ')})`;
   },
 
   '11.4': (doc) => {
@@ -325,8 +363,25 @@ function toItem(rule, source, evidence) {
  */
 export function evaluateExits(doc, llmCandidates = []) {
   const items = [];
+  /*
+   * Two passes, because one rule is about the others.
+   *
+   * Every rule used to read only the answers, which is right for all but one of
+   * them: 11.3 asks whether scope this large can be committed without
+   * discovering more first, and what it has to read to answer that is which
+   * delivery risks are still open. A rule that reads rules declares it in
+   * offering.json — `reads_rules` — so the dependency is in the offering a
+   * consultant can read, not hidden in an evaluator.
+   */
+  const deferred = [];
   for (const rule of offering.exit_rules) {
+    if (rule.reads_rules?.length) { deferred.push(rule); continue; }
     const evidence = EVALUATORS[rule.id](doc);
+    if (evidence) items.push(toItem(rule, 'rule', evidence));
+  }
+  const firedFirstPass = new Set(items.map((i) => i.rule_id));
+  for (const rule of deferred) {
+    const evidence = EVALUATORS[rule.id](doc, firedFirstPass);
     if (evidence) items.push(toItem(rule, 'rule', evidence));
   }
 

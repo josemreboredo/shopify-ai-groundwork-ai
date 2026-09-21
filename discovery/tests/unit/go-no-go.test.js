@@ -178,13 +178,54 @@ describe('a scope that outgrew the offers', () => {
     const sum = (k) => v.outgrew.base[k] + v.outgrew.gates.reduce((a, x) => a + x.weeks[k], 0);
     assert.equal(sum('min'), v.outgrew.weeks.min, 'the items add up to the total');
     assert.equal(sum('max'), v.outgrew.weeks.max);
-    assert.ok(v.outgrew.weeks.max > v.outgrew.holds);
+    // What the ledger exists to explain: the gates come to more than the band
+    // already carries, which is why the quote is bigger than the offer's.
+    const gateWeeks = v.outgrew.gates.reduce((a, x) => a + x.weeks.max, 0);
+    assert.ok(gateWeeks > v.outgrew.carries.max, `gates ${gateWeeks} must exceed the ${v.outgrew.carries.max} the band carries`);
+    assert.ok(v.outgrew.quoted.max > offering.offers.L.duration_weeks.max, 'and the quote says so');
     // Gate labels, never the internal modifier ids this is priced from.
     for (const x of v.outgrew.gates) assert.doesNotMatch(x.label, /^\+/, `${x.label} is a modifier id`);
   });
 
   test('an engagement inside the offers shows no ledger at all', () => {
     assert.equal(view().outgrew, null);
+  });
+
+  test('the same risks on a small scope are flags with owners, not a programme', () => {
+    // The other half of the rule, and the one that would quietly reroute half
+    // the pipeline if it were dropped: open risks alone do not make a
+    // discovery. A small build with an ERP that has no sandbox has a problem
+    // with an owner and a date, not a scope nobody can commit to.
+    const doc = fixture('foundation-minimal');
+    doc.integrations = [{ system: 'Navision', category: 'erp', connector: 'none', status: 'to_build', test_environment: 'none' }];
+    doc.migration = { source_platform: 'magento', seo_equity: 'significant', historical_orders_required: true };
+    doc.offer = classifyOffer(doc);
+    doc.exits = evaluateExits(doc);
+
+    const open = doc.exits.items.filter((i) => ['11.12', '11.14', '11.24'].includes(i.rule_id));
+    assert.ok(open.length >= 2, 'the fixture has to actually carry the risks');
+    assert.ok(!doc.exits.items.some((i) => i.rule_id === '11.3'),
+      'risks without scope past the envelope are flags, not a discovery');
+  });
+
+  test('a big offer with its risks closed is quoted, not routed away', () => {
+    // The contradiction this rewrite closed: the engine produced a defensible
+    // quote and the page said it could not price it, one line later. Size is
+    // priced by the overflow; what routes work to a Discovery Phase is not
+    // being big, it is not being committable yet.
+    const doc = outgrown();
+    doc.migration = { ...doc.migration, seo_equity: 'none', historical_orders_required: false, subscriptions: false };
+    doc.integrations = (doc.integrations ?? []).map((i) => ({ ...i, connector: 'ipaas', test_environment: 'available' }));
+    doc.markets = { ...doc.markets, topology: { ...doc.markets?.topology, confidence: 'confirmed' } };
+    doc.offer = classifyOffer(doc);
+    doc.exits = evaluateExits(doc);
+
+    assert.ok(!doc.exits.items.some((i) => i.rule_id === '11.3'), 'risks closed, so no programme route');
+    const v = goNoGoView(doc, state(), null);
+    assert.notEqual(v.recommendation.verdict, 'not a standard bid');
+    // And the ledger is still shown, because the quote is still bigger than an
+    // L's band and somebody has to explain that in a room.
+    assert.ok(v.outgrew, 'a quote past the band still shows its working');
   });
 });
 

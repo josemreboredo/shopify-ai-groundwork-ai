@@ -80,8 +80,8 @@ describe('can we price this yet', () => {
     const stop = r.blockers.find((b) => b.where === 'go-no-go');
     assert.ok(stop, 'the overrun still blocks the price');
     assert.doesNotMatch(stop.what, /requirement/, 'an overrun is not a requirement');
-    assert.match(stop.what, /past what the largest offer holds/);
-    assert.match(stop.why, /weeks/, 'and the evidence is still the number it fired on');
+    assert.match(stop.what, /Scope past what the offer carries, with delivery risks still open/);
+    assert.match(stop.why, /weeks/, 'and the evidence is still the arithmetic it fired on');
   });
 
   test('every blocker names where to go and what the evidence is', () => {

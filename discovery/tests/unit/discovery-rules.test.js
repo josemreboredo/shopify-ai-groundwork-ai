@@ -585,8 +585,12 @@ describe('the offer follows the effort, not the gate count', () => {
     const twelve = classifyOffer({ ...base(), ...markets('CH', 'DE', 'AT', 'FR', 'IT', 'ES', 'NL', 'BE', 'PL', 'SE', 'DK', 'NO') });
     assert.ok(twelve.scope_effort_weeks.max <= offering.offers.L.duration_weeks.max,
       'markets alone do not exceed the L ceiling');
-    assert.deepEqual(offering.exit_rules.find((r) => r.id === '11.3').inputs, ['/offer/scope_effort_weeks'],
-      '11.3 reads the total, not the market count');
+    // 11.3 reads the computed scope, never the market count. What it reads grew
+    // when the rule stopped being about size alone, but it is still the offer's
+    // own arithmetic and never a count of anything a client answered.
+    const eleven3 = offering.exit_rules.find((r) => r.id === '11.3');
+    assert.ok(eleven3.inputs.every((i) => i.startsWith('/offer/')), '11.3 reads the computed offer, not the answers');
+    assert.ok(eleven3.inputs.includes('/offer/scope_effort_weeks'));
   });
 
   test('the phases add up to the offer, so a phase cannot quietly grow', () => {

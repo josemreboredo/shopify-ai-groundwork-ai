@@ -109,11 +109,12 @@ export default function GoNoGo({ loaderData }) {
           remove, a list to negotiate. */}
       {g.outgrew ? (
         <section>
-          <h2>What adds up to it</h2>
+          <h2>Why this is bigger than the offer</h2>
           <p className="muted">
-            Nothing on this list is outside the offers on its own. Together they reach{' '}
-            <strong>{span(g.outgrew.weeks)} weeks</strong> against the <strong>{g.outgrew.holds}</strong> the
-            largest offer holds, and there is no offer above it to move to.
+            Nothing on this list is outside the offers on its own. The offer's band already carries{' '}
+            <strong>{span(g.outgrew.carries)} weeks</strong> of scope-gate work; this engagement asks for more
+            than that, so the excess is quoted on top at the rate of the work that caused it — which is why it
+            is quoted at <strong>{span(g.outgrew.quoted)} weeks</strong> rather than the offer's usual band.
           </p>
           <ol className="outgrew">
             <li className="outgrew-base">

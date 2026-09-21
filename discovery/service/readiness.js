@@ -143,7 +143,7 @@ export function readiness(doc, state = {}) {
       const overrun = stops.find((x) => x.rule_id === EFFORT_RULE);
       const what = named.length
         ? `${named.length} requirement${named.length === 1 ? '' : 's'} outside the standard offers${overrun ? ', and a scope past the largest offer' : ''}`
-        : 'The scope, as a whole, is past what the largest offer holds';
+        : 'Scope past what the offer carries, with delivery risks still open';
       return { what, where: 'go-no-go', why: stops.map((x) => x.evidence).join('; ') };
     })() : null,
     bid && (state.cannotPrice ?? []).length ? { what: `${state.cannotPrice.length} input${state.cannotPrice.length === 1 ? '' : 's'} that cannot be costed at all`, where: 'clarifications', why: state.cannotPrice.join('; ') } : null,

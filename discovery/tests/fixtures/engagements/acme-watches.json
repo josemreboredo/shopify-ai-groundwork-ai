@@ -232,7 +232,89 @@
     "gate_capacity_weeks": {
       "min": 9,
       "max": 15
-    }
+    },
+    "scope_effort_by_gate": [
+      {
+        "gate": "integration",
+        "label": "Integration",
+        "weeks": {
+          "min": 2,
+          "max": 2
+        }
+      },
+      {
+        "gate": "migration",
+        "label": "Migration",
+        "weeks": {
+          "min": 1,
+          "max": 2
+        }
+      },
+      {
+        "gate": "post_launch_support",
+        "label": "Post-launch support",
+        "weeks": {
+          "min": 1,
+          "max": 2
+        }
+      },
+      {
+        "gate": "b2b",
+        "label": "B2B / Wholesale",
+        "weeks": {
+          "min": 1.5,
+          "max": 1.5
+        }
+      },
+      {
+        "gate": "markets",
+        "label": "Markets",
+        "weeks": {
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "gate": "seo_continuity",
+        "label": "SEO continuity",
+        "weeks": {
+          "min": 0.5,
+          "max": 1
+        }
+      },
+      {
+        "gate": "checkout_extensibility",
+        "label": "Checkout extensibility",
+        "weeks": {
+          "min": 0.5,
+          "max": 1
+        }
+      },
+      {
+        "gate": "analytics_consent",
+        "label": "Analytics and consent",
+        "weeks": {
+          "min": 0.5,
+          "max": 1
+        }
+      },
+      {
+        "gate": "multi_currency",
+        "label": "Multi-currency",
+        "weeks": {
+          "min": 0.5,
+          "max": 0.5
+        }
+      },
+      {
+        "gate": "sku_complexity",
+        "label": "Catalogue size and complexity",
+        "weeks": {
+          "min": 0.5,
+          "max": 0.5
+        }
+      }
+    ]
   },
   "markets": {
     "primary_markets": [

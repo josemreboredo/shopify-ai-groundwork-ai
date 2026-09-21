@@ -153,7 +153,33 @@
     "gate_capacity_weeks": {
       "min": 2,
       "max": 8
-    }
+    },
+    "scope_effort_by_gate": [
+      {
+        "gate": "storefront_design",
+        "label": "Storefront design",
+        "weeks": {
+          "min": 1,
+          "max": 2
+        }
+      },
+      {
+        "gate": "markets",
+        "label": "Markets",
+        "weeks": {
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "gate": "multi_currency",
+        "label": "Multi-currency",
+        "weeks": {
+          "min": 0.5,
+          "max": 0.5
+        }
+      }
+    ]
   },
   "markets": {
     "primary_markets": [
