@@ -1812,9 +1812,9 @@
         "what": "Markets",
         "gate": "markets",
         "S": "1",
-        "M": "Up to 3",
-        "L": "Up to 5",
-        "note": "A further market is about half a week and is quoted on top."
+        "M": "Up to 6",
+        "L": "Up to 7",
+        "note": "The most the pack holds with everything else in it taken too. A client who skips the migration or takes fewer languages has room for more; a further market beyond the row is about half a week and CHF 8k, quoted on top."
       },
       {
         "id": "multi_currency",
@@ -1964,7 +1964,7 @@
         "migration": null
       },
       "M": {
-        "markets": 3,
+        "markets": 6,
         "multi_currency": true,
         "languages": 4,
         "b2b": false,
@@ -1975,7 +1975,7 @@
         "migration": "woocommerce"
       },
       "L": {
-        "markets": 5,
+        "markets": 7,
         "multi_currency": true,
         "languages": 6,
         "b2b": true,
