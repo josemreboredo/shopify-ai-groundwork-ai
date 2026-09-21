@@ -94,6 +94,10 @@ export function offeringView({ pricing = false } = {}) {
        and spends the same weeks differently, so the track is a decision inside
        the offer rather than a label on it. */
     tracks: o.tracks ?? null,
+    /* What gets built, counted. "The templates the catalogue needs" is true and
+       unquotable; a client buying a fixed price wants the list and the number of
+       bespoke sections, because that is the line they will argue about. */
+    storefront: o.storefront ?? null,
     /* What is deliberately not in it, and what the client has to bring. An
        offer that only lists what it includes is the one that gets argued about
        in week six — and "we assumed you had a sandbox" is not an argument

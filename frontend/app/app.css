@@ -709,6 +709,14 @@ h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; tex
 
 /* The standfirst: one answer, the shape of the gap and what blocks it, read in
    three seconds. Below it the page goes into detail; this part does not. */
+/* What an offer builds, counted. The template list reads as an inventory —
+   numbered, in columns, so the length is visible at a glance rather than as a
+   long scroll. */
+.storefront-scope { margin: 20px 0 0; }
+.templates { margin: 18px 0 14px; padding-left: 20px; columns: 2; column-gap: 40px; display: block; }
+.templates li { break-inside: avoid; margin-bottom: 7px; }
+@media (max-width: 720px) { .templates { columns: 1; } }
+
 /* What the engine quoted, set apart from the rest of the working state: it is
    the one number on this page that leaves the room, so it does not sit in the
    run of sections as though it were another count. */

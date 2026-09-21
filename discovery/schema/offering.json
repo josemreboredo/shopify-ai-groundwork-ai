@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -126,6 +126,21 @@
         "b2c": "The whole offer, as written: one consumer storefront with the standard checkout.",
         "b2b": "Not an extra on top of the consumer store — the same weeks spent differently. Company accounts, a price list and quantity rules take the place of the consumer promotion and checkout work, because a wholesale buyer needs neither.",
         "both": "Two channels in one store, and the second one is a scope gate rather than a base: see Scale."
+      },
+      "storefront": {
+        "templates": [
+          "Home",
+          "Collection",
+          "Product",
+          "Cart",
+          "Search results",
+          "Customer account",
+          "Content pages — about, contact, FAQ",
+          "404 and password"
+        ],
+        "sections": "The theme’s own sections, arranged per template and set with brand tokens. The merchant can add, remove and reorder any of them afterwards.",
+        "bespoke_sections": 0,
+        "note": "None built. A section the theme does not have is the storefront design gate, priced at its extended tier — and one gate keeps this an S with its modifier."
       },
       "not_included": [
         "A migration from another platform — not in the base: it is a scope gate with its own weeks and its own price",
@@ -290,6 +305,23 @@
         "b2c": "The consumer storefront, at the scale the gates describe: markets, languages, catalogue depth and the systems behind them.",
         "b2b": "The same, wholesale: company accounts and locations, price lists per company, quantity rules, payment terms and the B2B templates. The consumer-only work is not in it.",
         "both": "Where +B2B is actually earned. Both storefronts are built, both are tested, and a decision has to be taken per market about which channel sells there."
+      },
+      "storefront": {
+        "templates": [
+          "Home",
+          "Collection",
+          "Product",
+          "Cart",
+          "Search results",
+          "Customer account",
+          "Content pages — about, contact, FAQ",
+          "404 and password",
+          "A template per market where the market genuinely differs",
+          "B2B templates where the second channel sells"
+        ],
+        "sections": "The theme’s own sections as in Foundation, plus the ones the gates that fired actually need — a market switcher, B2B price display, the catalogue patterns a deep range needs — built as Online Store 2.0 blocks so the merchant can still rearrange them.",
+        "bespoke_sections": 3,
+        "note": "Up to three built. Past three, it is the storefront design gate at its extended or bespoke tier, and the weeks come with it rather than out of the band."
       },
       "not_included": [
         "A headless storefront. That is an L trigger: it changes the offer rather than extending this one",
@@ -471,6 +503,24 @@
       "tracks": {
         "liquid": "One Shopify theme, built out: the design system as sections and blocks over one token layer, every template against it, and the merchant still able to rearrange them. The default, and the right answer more often than it is chosen.",
         "hydrogen": "Not an extra on top — the same weeks spent differently. There is no theme to select, so the route structure, the rendering strategy and the caching model are the decision instead, and the component layer is owned rather than configured. Content stays in Shopify: metaobjects and metafields through the Storefront API, which is what keeps this a Shopify build. Content or a front end outside Shopify is Merkle Arc."
+      },
+      "storefront": {
+        "templates": [
+          "Home",
+          "Collection",
+          "Product",
+          "Cart",
+          "Search results",
+          "Customer account",
+          "Content pages — about, contact, FAQ",
+          "404 and password",
+          "A template per market where the market genuinely differs",
+          "B2B templates where the second channel sells",
+          "The campaign and editorial templates the content model needs"
+        ],
+        "sections": "The whole template set built against one token layer — as theme sections and blocks on the Liquid track, as owned components on the headless one. Not a count of bespoke sections: the set is the deliverable, which is why the design phase is four to six weeks and the largest in this offer.",
+        "bespoke_sections": null,
+        "note": "The set, not a number. What is still outside it is a design system that is the design source rather than a brand to apply — that is Merkle Arc."
       }
     }
   },

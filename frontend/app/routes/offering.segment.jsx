@@ -4,7 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../discovery/service/offering-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { Boundaries, Channels, OfferScale, PhasePlan, Tracks } from '../components/diagram.jsx';
+import { Boundaries, Channels, OfferScale, PhasePlan, Storefront, Tracks } from '../components/diagram.jsx';
 
 /**
  * One offer, on its own page.
@@ -118,6 +118,17 @@ export default function OfferingSegment({ loaderData }) {
         </p>
         <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} assumes={offer.assumes} />
       </section>
+
+      {offer.storefront ? (
+        <section>
+          <h2>What gets built, counted</h2>
+          <p className="lede">
+            The templates this offer builds, and how many sections are built rather than configured. The phases
+            describe the work; this is the number a fixed price is argued about.
+          </p>
+          <Storefront storefront={offer.storefront} />
+        </section>
+      ) : null}
 
       {offer.tracks ? (
         <section>

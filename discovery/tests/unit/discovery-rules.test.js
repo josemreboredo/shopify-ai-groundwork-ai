@@ -408,6 +408,29 @@ describe('the offer follows the effort, not the gate count', () => {
       'a rule that maintains itself is not merchandising work');
   });
 
+  test('every offer says what it builds, counted', () => {
+    // "Brand tokens and the standard sections" against "the sections the gated
+    // requirements need" against "the design system" — all true, none of it
+    // countable, and on a fixed price the count is the argument.
+    const bespoke = {};
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      const s = offer.storefront;
+      assert.ok(s, `${code}: says nothing about what it builds`);
+      assert.ok(s.templates?.length >= 8, `${code}: a storefront is more than seven templates`);
+      assert.equal(new Set(s.templates).size, s.templates.length, `${code}: the same template twice`);
+      assert.ok(s.sections?.length > 60, `${code}: the sections line has to say something`);
+      assert.ok(s.note?.length > 40, `${code}: and what happens past it`);
+      bespoke[code] = s.bespoke_sections;
+    }
+    // Foundation configures, Scale builds a few, Growth builds the set — and a
+    // null is the set, not an omission.
+    assert.equal(bespoke.S, 0);
+    assert.ok(bespoke.M > bespoke.S, 'Scale builds more than Foundation');
+    assert.equal(bespoke.L, null, 'Growth is the whole template set, which is not a count');
+    assert.ok(offering.offers.L.storefront.templates.length > offering.offers.S.storefront.templates.length,
+      'and the bigger offer builds more templates');
+  });
+
   test('every offer says what its price assumes, in quantities somebody can be held to', () => {
     // What an offer includes and what it excludes both assume a quantity, and an
     // unwritten quantity is where a fixed price becomes time and materials

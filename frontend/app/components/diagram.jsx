@@ -352,6 +352,37 @@ export function Tracks({ tracks }) {
 }
 
 /**
+ * The templates an offer builds, and how many sections are built rather than
+ * configured.
+ *
+ * The phases said "brand tokens and the standard sections" against "the
+ * sections the gated requirements need" against "the design system" — true,
+ * and none of it countable. On a fixed price the count is the argument.
+ *
+ * @param {{ storefront: { templates: string[], sections: string, bespoke_sections: number|null, note: string } }} props
+ */
+export function Storefront({ storefront }) {
+  if (!storefront) return null;
+  const { templates = [], sections, bespoke_sections: bespoke, note } = storefront;
+  return (
+    <div className="storefront-scope">
+      <ul className="stats kpis">
+        <li><strong>{templates.length}</strong><span>template{templates.length === 1 ? '' : 's'} built</span></li>
+        <li>
+          <strong>{bespoke === null || bespoke === undefined ? 'The set' : bespoke}</strong>
+          <span>{bespoke === null || bespoke === undefined ? 'every template against the design system' : `bespoke section${bespoke === 1 ? '' : 's'}, built rather than configured`}</span>
+        </li>
+      </ul>
+      <ol className="templates">
+        {templates.map((t) => <li key={t}>{t}</li>)}
+      </ol>
+      <p className="muted small">{sections}</p>
+      {note ? <p className="callout"><strong>Past that.</strong> {note}</p> : null}
+    </div>
+  );
+}
+
+/**
  * The two lists an offer is argued about in week six for not having.
  *
  * An offer that only says what it includes leaves every boundary to be
