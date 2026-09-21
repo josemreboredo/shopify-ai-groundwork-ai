@@ -1803,5 +1803,175 @@
       "decision": "Not part of the offering. When CN is a launch market, 11.20 (FLAG) excludes it from markets, languages, offer, plan and build scope and routes it to a separate China discovery; 11.21 (STOP) when CN is the only market",
       "rationale": "Owner decision 2026-09-17. Research (discovery/docs/china-mainland.md, checked 2026-09-17): Shopify's servers are not in mainland China, proxy set-ups in front of Shopify are unsupported and no public case of Shopify behind the Great Firewall exists; onshore selling needs a PRC entity, ICP and onshore hosting, cross-border selling needs marketplace, customs and product-registration decisions — a China-specific discovery"
     }
-  ]
+  ],
+  "closed_scope": {
+    "$comment": "What each pack sells, closed. Every row is checked against the engine by a test: an engagement that takes exactly what a pack promises must classify as that pack, and its scope gates must fit inside the weeks that pack's band already carries. Anything past a row is quoted on top of the pack, never assumed into it. `limits` is the machine-readable form of the same promise and is what the test builds from.",
+    "rows": [
+      {
+        "id": "markets",
+        "what": "Markets",
+        "gate": "markets",
+        "S": "1",
+        "M": "Up to 3",
+        "L": "Up to 5",
+        "note": "A further market is about half a week and is quoted on top."
+      },
+      {
+        "id": "multi_currency",
+        "what": "Multi-currency checkout",
+        "gate": "multi_currency",
+        "S": "No — one checkout currency",
+        "M": "Yes",
+        "L": "Yes"
+      },
+      {
+        "id": "languages",
+        "what": "Languages",
+        "gate": "languages",
+        "S": "Up to 3",
+        "M": "Up to 4",
+        "L": "Up to 6",
+        "note": "Six is the ceiling in every pack: more is a separate discovery (rule 11.4)."
+      },
+      {
+        "id": "storefront_design",
+        "what": "Custom templates",
+        "gate": "storefront_design",
+        "S": "No — theme configured, standard sections",
+        "M": "Yes — bespoke sections from a key-screens design",
+        "L": "Yes — the full template set from a design system"
+      },
+      {
+        "id": "integrations",
+        "what": "Integrations",
+        "gate": "integration",
+        "S": "None",
+        "M": "One",
+        "L": "Up to 2",
+        "note": "Three is the ceiling in every pack: more is a separate discovery (rule 11.7)."
+      },
+      {
+        "id": "migration",
+        "what": "Migration from another platform",
+        "gate": "migration",
+        "S": "No — new store, or Shopify to Shopify",
+        "M": "Yes, from WooCommerce or Shopify",
+        "L": "Yes, from WooCommerce or Shopify",
+        "note": "Shopware, BigCommerce, Magento, Salesforce Commerce Cloud and custom platforms are quoted on top: a heavy migration is seven weeks on its own, which the band cannot hold beside a full template set."
+      },
+      {
+        "id": "b2b",
+        "what": "B2B / wholesale alongside consumer",
+        "gate": "b2b",
+        "S": "No — one channel",
+        "M": "No — quoted on top",
+        "L": "Yes"
+      },
+      {
+        "id": "catalogue",
+        "what": "Catalogue",
+        "gate": "sku_complexity",
+        "S": "Under 500 SKUs, or simple",
+        "M": "Under 500 SKUs, or simple",
+        "L": "Under 500 SKUs, or simple",
+        "note": "A large or complex catalogue is quoted on top in every pack."
+      },
+      {
+        "id": "search",
+        "what": "Search and merchandising",
+        "gate": "search_merchandising",
+        "S": "Shopify Search & Discovery",
+        "M": "Shopify Search & Discovery",
+        "L": "Shopify Search & Discovery",
+        "note": "Past 25 filters or 5,000 products it is quoted on top."
+      },
+      {
+        "id": "retail_pos",
+        "what": "Physical stores on Shopify POS",
+        "gate": "retail_pos",
+        "S": "None",
+        "M": "None — quoted on top",
+        "L": "None — quoted on top",
+        "note": "Five locations is the ceiling; above that it stays in the offer with a named owner (rule 11.22)."
+      },
+      {
+        "id": "subscriptions",
+        "what": "Subscriptions",
+        "gate": "subscriptions",
+        "S": "No",
+        "M": "No — quoted on top",
+        "L": "No — quoted on top"
+      },
+      {
+        "id": "checkout",
+        "what": "Checkout",
+        "gate": "checkout_extensibility",
+        "S": "Settings and editor branding",
+        "M": "Settings and editor branding",
+        "L": "Settings and editor branding",
+        "note": "Extensions and Shopify Functions are quoted on top in every pack."
+      },
+      {
+        "id": "analytics",
+        "what": "Analytics and consent",
+        "gate": "analytics_consent",
+        "S": "GA4 and one pixel",
+        "M": "GA4 and one pixel",
+        "L": "GA4 and one pixel",
+        "note": "A third destination, a tag manager or a consent platform is quoted on top."
+      },
+      {
+        "id": "seo",
+        "what": "SEO continuity",
+        "gate": "seo_continuity",
+        "S": "No redirect estate",
+        "M": "Included with the migration",
+        "L": "Included with the migration"
+      },
+      {
+        "id": "support",
+        "what": "After go-live",
+        "gate": "post_launch_support",
+        "S": "Hypercare",
+        "M": "Hypercare",
+        "L": "Hypercare",
+        "note": "Written SOPs or a handover into a retainer are quoted on top."
+      }
+    ],
+    "limits": {
+      "S": {
+        "markets": 1,
+        "multi_currency": false,
+        "languages": 3,
+        "b2b": false,
+        "storefront": "brand_only",
+        "sku_count": 400,
+        "integrations": 0,
+        "retail_locations": 0,
+        "migration": null
+      },
+      "M": {
+        "markets": 3,
+        "multi_currency": true,
+        "languages": 4,
+        "b2b": false,
+        "storefront": "key_screens",
+        "sku_count": 400,
+        "integrations": 1,
+        "retail_locations": 0,
+        "migration": "woocommerce"
+      },
+      "L": {
+        "markets": 5,
+        "multi_currency": true,
+        "languages": 6,
+        "b2b": true,
+        "storefront": "all_templates",
+        "sku_count": 400,
+        "integrations": 2,
+        "retail_locations": 0,
+        "migration": "woocommerce"
+      }
+    }
+  }
 }

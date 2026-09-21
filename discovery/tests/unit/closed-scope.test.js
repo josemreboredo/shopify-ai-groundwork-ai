@@ -1,0 +1,104 @@
+/**
+ * What each pack promises, checked against what the engine does with it.
+ *
+ * The offering was built one way round: it derives the offer from the answers.
+ * A client reads it the other way — "if I buy an M, what exactly do I get" —
+ * and that question had no answer anywhere, so a consultant improvised one in
+ * the room. `closed_scope` is the answer, and this file is what stops it
+ * becoming a leaflet the engine disagrees with.
+ *
+ * The check is not that the words match the gate conditions. It is stronger: an
+ * engagement that takes exactly what a pack promises is run through the real
+ * classifier, and has to come out as that pack, with its scope gates fitting
+ * inside the weeks that pack's band already carries. Promise a market too many
+ * and the engagement quietly becomes the next offer up; promise a migration too
+ * heavy and the band overflows and the price moves. Either way this goes red.
+ */
+import { test, describe } from 'node:test';
+import assert from 'node:assert/strict';
+
+import { offering } from '../../schema/index.js';
+import { classifyOffer } from '../../agents/discovery/classify.js';
+
+const LANGS = ['de', 'fr', 'it', 'en', 'es', 'pt', 'nl'];
+const CODES = ['CH', 'DE', 'AT', 'FR', 'IT', 'ES', 'NL', 'BE', 'PL', 'SE'];
+
+/** An engagement that takes exactly what a pack promises, and nothing more. */
+function engagementAt(limits) {
+  const languages = LANGS.slice(0, limits.languages);
+  return {
+    schema_version: '1.0.0',
+    meta: { client: { name: 'X', slug: 'x', business_model: limits.b2b ? 'hybrid' : 'dtc' }, source: 'questionnaire', created_at: '2026-09-01' },
+    markets: {
+      list: Array.from({ length: limits.markets }, (_, i) => ({
+        code: CODES[i],
+        currency: limits.multi_currency && i > 0 ? 'EUR' : 'CHF',
+        price_strategy: 'base_currency',
+        languages,
+      })),
+    },
+    catalogue: { sku_count: limits.sku_count, variant_options_max: 1 },
+    design: { figma: { completeness: limits.storefront } },
+    integrations: Array.from({ length: limits.integrations }, (_, i) => ({
+      system: `sys${i}`, category: ['erp', 'pim', 'crm'][i], connector: 'custom', status: 'to_build', test_environment: 'available',
+    })),
+    retail: { store_count: limits.retail_locations, pos: limits.retail_locations ? 'shopify_pos' : false },
+    migration: limits.migration ? { source_platform: limits.migration, seo_equity: 'none' } : {},
+  };
+}
+
+describe('the closed scope each pack sells', () => {
+  const { rows, limits } = offering.closed_scope;
+
+  test('a client who takes exactly what a pack promises gets that pack', () => {
+    for (const [code, lim] of Object.entries(limits)) {
+      const offer = classifyOffer(engagementAt(lim));
+      assert.equal(offer.code, code,
+        `${code} promises a scope the engine classifies as ${offer.code} — the leaflet and the engine disagree`);
+    }
+  });
+
+  test('and it fits inside the weeks that pack already carries, so the price does not move', () => {
+    for (const [code, lim] of Object.entries(limits)) {
+      const offer = classifyOffer(engagementAt(lim));
+      const gates = offer.scope_effort_by_gate.reduce((a, g) => a + g.weeks.max, 0);
+      assert.ok(gates <= offer.gate_capacity_weeks.max,
+        `${code} promises ${gates} weeks of scope gates against the ${offer.gate_capacity_weeks.max} its band carries — quoting it would cost more than the pack`);
+      assert.ok(offer.duration_weeks.max <= offering.offers[code].duration_weeks.max,
+        `${code} promises more than its own duration`);
+    }
+  });
+
+  test('S promises no scope gate at all, which is what makes it the entry offer', () => {
+    const offer = classifyOffer(engagementAt(limits.S));
+    const active = Object.entries(offer.scope_gates).filter(([, g]) => g.active).map(([id]) => id);
+    assert.deepEqual(active, [], `S promises something that fires ${active.join(', ')}`);
+  });
+
+  test('every row names a real gate, and every gate is accounted for', () => {
+    const gates = new Set(offering.scope_gates.map((g) => g.id));
+    const named = new Set();
+    for (const row of rows) {
+      assert.ok(gates.has(row.gate), `${row.id}: ${row.gate} is not a scope gate`);
+      named.add(row.gate);
+      for (const code of ['S', 'M', 'L']) {
+        // "1" is a complete answer for markets on an S, so this tests for
+        // emptiness rather than for length.
+        assert.ok(typeof row[code] === 'string' && row[code].trim(), `${row.id}: nothing said for ${code}`);
+      }
+    }
+    // A gate with no row is a capability a client is never told about, and it
+    // is the one that surfaces in week six.
+    const unnamed = [...gates].filter((g) => !named.has(g));
+    assert.deepEqual(unnamed, [], 'scope gates the closed scope never mentions');
+  });
+
+  test('a ceiling quoted in a row is the ceiling a rule actually enforces', () => {
+    const byId = new Map(offering.exit_rules.map((r) => [r.id, r]));
+    for (const row of rows) {
+      for (const id of (row.note ?? '').match(/rule (\d+\.\d+)/g)?.map((m) => m.slice(5)) ?? []) {
+        assert.ok(byId.has(id), `${row.id}: cites rule ${id}, which does not exist`);
+      }
+    }
+  });
+});
