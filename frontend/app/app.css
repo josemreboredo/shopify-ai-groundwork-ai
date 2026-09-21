@@ -1437,36 +1437,44 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 .outgrew-total { border-bottom: none; border-top: 2px solid var(--red); margin-top: 4px; font-weight: 700; }
 .outgrew-total .outgrew-weeks { color: var(--ink); }
 
-/* What an offer builds, epic by epic.
-   The offering pages described a hundred and eighteen stories in three lines of
-   base scope, and these are sold at a fixed price. Each epic opens to its own
-   three lists — in the price, in the price on the answers, behind a gate — and
-   the story key travels with every line so a consultant can find it in Jira
-   without asking anyone. */
+/* What an offer builds, epic by epic — one table, because these are sold at a
+   fixed price and a consultant reads down a list rather than opening sixteen
+   accordions. The epic is a group header inside the table; the price-deciding
+   column is the third one. */
 .scope-epics { margin: 22px 0 0; }
-.epic-list { list-style: none; padding: 0; margin: 26px 0 16px; max-width: 78ch; }
-.epic-list > li { border-top: 1px solid var(--line); }
-.epic-list > li:last-child { border-bottom: 1px solid var(--line); }
-.epic-list > li > details > summary { padding: 16px 1.9rem 16px 0; margin: 0; }
-.epic-list .claim { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
-.epic-list .claim-line { display: block; color: var(--muted); font-size: 0.88rem; margin-top: 4px; }
-.scope-group { margin: 0 0 18px; }
-.scope-group h4 {
-  margin: 0 0 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--muted); display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap;
-}
-.scope-group.gated h4 { color: var(--ink); }
-.scope-group.gated { border-left: 2px solid var(--line-strong); padding-left: 14px; }
-.scope-group > .muted.small { margin: 0 0 8px; max-width: 74ch; }
-.scope-cost { font-variant-numeric: tabular-nums; color: var(--muted); letter-spacing: 0; text-transform: none; }
-.scope-lines { list-style: none; padding: 0; margin: 0; }
-.scope-lines > li { font-size: 0.93rem; line-height: 1.5; padding: 3px 0; }
-.scope-key {
-  display: inline-block; min-width: 8.5em; margin-right: 10px; color: var(--muted);
-  font-size: 0.78rem; font-variant-numeric: tabular-nums;
-}
-.decided abbr { border-bottom: 1px dotted var(--line-strong); text-decoration: none; cursor: help; font-size: 0.8rem; color: var(--muted); }
-.decided abbr + abbr { margin-left: 6px; }
-@media (max-width: 640px) {
-  .scope-key { display: block; min-width: 0; margin: 0; }
+.scope-table { margin-top: 24px; }
+/* The shared scroller sizes a table to its content, which for a hundred and
+   eighteen rows of prose is a table several screens wide. This one is a fixed
+   grid that wraps instead: the key and the two right-hand columns are as wide
+   as they need to be, and what the story delivers takes the rest. */
+.table-scroll > .scope-table { width: 100%; min-width: 0; max-width: 100%; table-layout: fixed; }
+.scope-table th[scope="col"] { white-space: nowrap; }
+.scope-table th[scope="col"]:nth-child(1), .scope-row > td:nth-child(1) { width: 8.5rem; }
+.scope-table th[scope="col"]:nth-child(3), .scope-row > td:nth-child(3) { width: 17rem; }
+.scope-table th[scope="col"]:nth-child(4), .scope-row > td:nth-child(4) { width: 6.5rem; }
+.scope-table tbody + tbody .epic-row > th { border-top: 1px solid var(--line-strong); }
+.epic-row > th { text-align: left; padding: 22px 12px 8px 0; width: auto; }
+.epic-name { display: block; font-size: 1.02rem; letter-spacing: -0.01em; }
+.epic-meta { display: block; font-weight: 400; color: var(--muted); font-size: 0.82rem; margin-top: 3px; }
+.scope-row > td { vertical-align: top; padding: 6px 12px 6px 0; font-size: 0.9rem; }
+.scope-key { color: var(--muted); font-size: 0.78rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Prefixed, because .gate is a card elsewhere on this page set and .answers is a
+   two-column grid: an unprefixed state class here inherited both and broke the
+   row into pieces. */
+.scope-when { font-size: 0.82rem; }
+.scope-when.is-always { color: var(--ok); }
+.scope-when.is-answers { color: var(--muted); }
+.scope-when.is-gated { color: var(--ink); border-bottom: 1px solid var(--line-strong); }
+.scope-cost { font-variant-numeric: tabular-nums; font-size: 0.85rem; white-space: nowrap; }
+.decided abbr { border-bottom: 1px dotted var(--line-strong); text-decoration: none; cursor: help; font-size: 0.78rem; color: var(--muted); }
+.decided abbr + abbr { margin-left: 5px; }
+@media (max-width: 560px) {
+  /* The stacked-card rule turns every cell into a block; the epic header is a
+     heading in that stack rather than a card of its own. */
+  /* The stacked-card rule puts a border round every row; the epic header is a
+     heading in that stack, not a card of its own. */
+  .scope-table .epic-row { border: 0; padding: 18px 0 0; margin-bottom: 0; }
+  .scope-table .epic-row > th { border: 0; padding: 0; }
+  .scope-row > td { padding: 2px 0; }
+  .scope-when { display: inline-block; }
 }

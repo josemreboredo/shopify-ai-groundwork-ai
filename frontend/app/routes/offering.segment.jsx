@@ -5,7 +5,7 @@ import { offeringView } from '../../../discovery/service/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../discovery/service/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { Boundaries, Channels, OfferScale, PhasePlan, ScopeByEpic, Storefront, Tracks } from '../components/diagram.jsx';
+import { Boundaries, Channels, OfferScale, PhasePlan, ScopeTable, Storefront, Tracks } from '../components/diagram.jsx';
 
 /**
  * One offer, on its own page.
@@ -144,7 +144,7 @@ export default function OfferingSegment({ loaderData }) {
           a scope gate with its own weeks. Nothing is implied, because a fixed price cannot be argued from an
           implication.
         </p>
-        <ScopeByEpic catalogue={catalogue} totals={totals} capacity={offer.gate_capacity_weeks} offerCode={offer.code} />
+        <ScopeTable catalogue={catalogue} totals={totals} capacity={offer.gate_capacity_weeks} offerCode={offer.code} />
       </section>
 
       {offer.tracks ? (
