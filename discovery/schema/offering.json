@@ -565,7 +565,15 @@
       "inputs": [
         "/markets/list"
       ],
-      "modifier": "+Markets"
+      "modifier": "+Markets",
+      "sources": [
+        "https://help.shopify.com/en/manual/markets/getting-started/market-types",
+        "https://help.shopify.com/en/manual/markets/customizations/local-currencies"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "multi_currency",
@@ -575,7 +583,14 @@
         "/markets/list/*/currency",
         "/markets/list/*/price_strategy"
       ],
-      "modifier": "+MultiCurrency"
+      "modifier": "+MultiCurrency",
+      "sources": [
+        "https://help.shopify.com/en/manual/markets/customizations/local-currencies"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "b2b",
@@ -587,7 +602,15 @@
         "/b2b/price_lists",
         "/b2b/volume_discounts"
       ],
-      "modifier": "+B2B"
+      "modifier": "+B2B",
+      "sources": [
+        "https://help.shopify.com/en/manual/b2b/getting-started/plan-features",
+        "https://help.shopify.com/en/manual/b2b/getting-started/features"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "integration",
@@ -597,7 +620,14 @@
         "/integrations/*/category",
         "/integrations/*/connector"
       ],
-      "modifier": "+Integration"
+      "modifier": "+Integration",
+      "sources": [
+        "https://shopify.dev/docs/api/usage/limits"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "storefront_design",
@@ -613,7 +643,15 @@
       "modifier_tiers": [
         "extended",
         "bespoke"
-      ]
+      ],
+      "sources": [
+        "https://shopify.dev/docs/storefronts/themes/architecture",
+        "https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "shopify.dev"
+      }
     },
     {
       "id": "sku_complexity",
@@ -630,7 +668,15 @@
         "standard",
         "large",
         "very_large"
-      ]
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/products/variants/add-variants",
+        "https://help.shopify.com/en/manual/products/bundles/shopify-bundles"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "search_merchandising",
@@ -668,7 +714,15 @@
         "light",
         "medium",
         "heavy"
-      ]
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/migrating-to-shopify",
+        "https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-woocommerce"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "retail_pos",
@@ -679,7 +733,14 @@
         "/retail/pos",
         "/retail/omnichannel"
       ],
-      "modifier": "+Retail"
+      "modifier": "+Retail",
+      "sources": [
+        "https://help.shopify.com/en/manual/sell-in-person/getting-started/identify-your-pos-needs"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "languages",
@@ -688,12 +749,19 @@
       "inputs": [
         "/markets/list/*/languages"
       ],
-      "modifier": "+Languages"
+      "modifier": "+Languages",
+      "sources": [
+        "https://help.shopify.com/en/manual/international/localization-and-translation"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "seo_continuity",
       "label": "SEO continuity",
-      "condition": "The storefront's URLs change on a business whose traffic comes through search: significant SEO equity to preserve, a redirect estate of 1,000 URLs or more, or custom URL structures where organic is a priority channel. Deliberately independent of the migration gate — a rebuild on Shopify changes every URL without changing the platform",
+      "condition": "The storefront's URLs change on a business whose traffic comes through search: significant SEO equity to preserve, a redirect estate of 1,000 URLs or more, or custom URL structures where organic is a priority channel. Deliberately independent of the migration gate — a rebuild on Shopify changes every URL without changing the platform. Shopify itself caps a store at 100,000 URL redirects, and 20,000,000 on Plus, so the ceiling that bites here is the work of building the map rather than the platform's",
       "inputs": [
         "/migration/seo_equity",
         "/migration/volumes/redirects",
@@ -704,7 +772,14 @@
       "modifier_tiers": [
         "standard",
         "large"
-      ]
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "help.shopify.com"
+      }
     },
     {
       "id": "subscriptions",
@@ -720,7 +795,15 @@
       "modifier_tiers": [
         "standard",
         "advanced"
-      ]
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/products/purchase-options/subscriptions/shopify-subscriptions",
+        "https://help.shopify.com/en/manual/products/purchase-options/subscriptions/shopify-subscriptions/considerations"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "checkout_extensibility",
@@ -739,9 +822,9 @@
         "functions"
       ],
       "sources": [
-        "https://shopify.dev/docs/api/checkout-ui-extensions",
+        "https://shopify.dev/docs/api/checkout-ui-extensions/latest",
         "https://shopify.dev/docs/apps/build/checkout/thank-you-order-status",
-        "https://shopify.dev/changelog/new-checkout-functionality-for-merchants-on-basic-shopify-and-advanced-plans"
+        "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/upgrade-thank-you-order-status/customization-options"
       ],
       "verified": {
         "on": "2026-09-21",
@@ -789,7 +872,9 @@
       "modifier_tiers": [
         "standard",
         "extended"
-      ]
+      ],
+      "shopify_fact": false,
+      "$comment": "No Shopify citation, deliberately: written SOPs and a handover into a retainer are how Merkle delivers, not something Shopify documents."
     }
   ],
   "l_triggers": [

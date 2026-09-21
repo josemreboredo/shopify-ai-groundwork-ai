@@ -16,6 +16,7 @@
  */
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 
 import { offering } from '../../schema/index.js';
 import { classifyOffer } from '../../agents/discovery/classify.js';
@@ -51,7 +52,44 @@ function engagementAt(limits) {
   };
 }
 
-import fs from 'node:fs';
+describe('every threshold a price rests on is referenced', () => {
+  /*
+   * ADR 0011: every Shopify fact carries an official source and the date it was
+   * checked. The question bank has always done this; the offering did not, and
+   * the offering is where the thresholds that decide a price live — 500 SKUs,
+   * 25 filters, five stores, six languages. A number nobody sourced is how half
+   * a week per market survived a day of being quoted.
+   *
+   * A gate that is not a Shopify fact says so rather than borrowing a citation:
+   * what a client runs the store with after go-live is a Merkle decision, and
+   * decorating it with a Shopify URL would be worse than leaving it bare.
+   */
+  const SHOPIFY = /^https:\/\/(help\.shopify\.com|shopify\.dev|www\.shopify\.com|changelog\.shopify\.com)\//;
+
+  test('every scope gate cites Shopify, or declares that it is not a Shopify fact', () => {
+    for (const g of offering.scope_gates) {
+      if (g.shopify_fact === false) {
+        assert.ok(g.$comment, `${g.id}: says it is not a Shopify fact without saying why`);
+        assert.ok(!g.sources, `${g.id}: claims not to be a Shopify fact and cites Shopify anyway`);
+        continue;
+      }
+      assert.ok(g.sources?.length, `${g.id}: no source for the thresholds it prices`);
+      for (const u of g.sources) assert.match(u, SHOPIFY, `${g.id}: ${u} is not a Shopify page`);
+      assert.ok(g.verified?.on, `${g.id}: cites sources with no date they were checked`);
+      assert.match(g.verified.on, /^\d{4}-\d{2}-\d{2}$/, `${g.id}: verification date is not a date`);
+    }
+  });
+
+  test('a source is a page, not a search or an anchor pretending to be one', () => {
+    for (const g of offering.scope_gates) {
+      for (const u of g.sources ?? []) {
+        assert.ok(!u.includes('#'), `${g.id}: ${u} points at an anchor, which moves without the page moving`);
+        // Anchored on the path segment: 'storefront-search' is a page, '/search' is a query.
+        assert.ok(!/\/search(\/|$)|[?&]q=/.test(u), `${g.id}: ${u} is a search, not a citation`);
+      }
+    }
+  });
+});
 
 describe('the strategy document and the engine quote the same offering', () => {
   /*
