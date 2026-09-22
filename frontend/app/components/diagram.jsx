@@ -647,7 +647,11 @@ export function PackTable({ offers, closedScope, pricing, currency, weeks, band 
             <tr>
               <th scope="row">Internal band</th>
               {offers.map((o) => (
-                <td key={o.code} data-label={o.code}><span className="pack-budget">{band(o.price_band, currency)}</span></td>
+                <td key={o.code} data-label={o.code}>
+                  <span className="pack-budget">
+                    Up to {currency ?? ''} {Math.round(o.price_band.max / 1000)}k{o.price_band.open_ended ? '+' : ''}
+                  </span>
+                </td>
               ))}
             </tr>
           ) : null}
