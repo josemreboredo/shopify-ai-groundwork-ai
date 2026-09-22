@@ -1,0 +1,129 @@
+/* ==========================================================================
+   LWC LIBRARY — TYPOGRAPHY TOKENS
+   Swap the font-family and scale per brand. Base scale is fixed.
+
+   HOW TO BRAND:
+     1. Replace --lwc-font-primary and --lwc-font-secondary with brand fonts
+     2. Adjust --lwc-font-weight-* if the brand font has different weights
+     3. Keep the scale (--lwc-text-*) intact — it drives component sizing
+   ========================================================================== */
+
+:root {
+  /* --------------------------------------------------------------------------
+     Font families — SWAP THESE per brand
+     -------------------------------------------------------------------------- */
+
+  /* Primary: used for headings, display, editorial copy */
+  --lwc-font-primary: 'Georgia', 'Times New Roman', serif;
+
+  /* Secondary: used for UI, labels, navigation, CTAs */
+  --lwc-font-secondary: 'Helvetica Neue', 'Arial', sans-serif;
+
+  /* Mono: used for prices, codes, data */
+  --lwc-font-mono: 'Menlo', 'Courier New', monospace;
+
+  /* --------------------------------------------------------------------------
+     Font weights — adjust if brand font has limited weight support
+     -------------------------------------------------------------------------- */
+  --lwc-font-weight-light:    300;
+  --lwc-font-weight-regular:  400;
+  --lwc-font-weight-medium:   500;
+  --lwc-font-weight-semibold: 600;
+  --lwc-font-weight-bold:     700;
+
+  /* --------------------------------------------------------------------------
+     Type scale (rem-based, base 16px)
+     -------------------------------------------------------------------------- */
+  --lwc-text-xs:   0.75rem;   /*  12px */
+  --lwc-text-sm:   0.875rem;  /*  14px */
+  --lwc-text-base: 1rem;      /*  16px */
+  --lwc-text-lg:   1.125rem;  /*  18px */
+  --lwc-text-xl:   1.25rem;   /*  20px */
+  --lwc-text-2xl:  1.5rem;    /*  24px */
+  --lwc-text-3xl:  1.875rem;  /*  30px */
+  --lwc-text-4xl:  2.25rem;   /*  36px */
+  --lwc-text-5xl:  3rem;      /*  48px */
+  --lwc-text-6xl:  3.75rem;   /*  60px */
+  --lwc-text-7xl:  4.5rem;    /*  72px */
+
+  /* --------------------------------------------------------------------------
+     Line heights
+     -------------------------------------------------------------------------- */
+  --lwc-leading-none:    1;
+  --lwc-leading-tight:   1.25;
+  --lwc-leading-snug:    1.375;
+  --lwc-leading-normal:  1.5;
+  --lwc-leading-relaxed: 1.625;
+  --lwc-leading-loose:   2;
+
+  /* --------------------------------------------------------------------------
+     Letter spacing
+     -------------------------------------------------------------------------- */
+  --lwc-tracking-tighter: -0.05em;
+  --lwc-tracking-tight:   -0.025em;
+  --lwc-tracking-normal:   0em;
+  --lwc-tracking-wide:     0.025em;
+  --lwc-tracking-wider:    0.05em;
+  --lwc-tracking-widest:   0.1em;    /* Luxury brand default for caps labels */
+
+  /* --------------------------------------------------------------------------
+     Semantic type roles — map brand font + scale to UI roles
+     Override these in brand theme to change the feel without touching components
+     -------------------------------------------------------------------------- */
+
+  /* Display / Hero */
+  --lwc-type-display-font:    var(--lwc-font-primary);
+  --lwc-type-display-size:    clamp(var(--lwc-text-4xl), 6vw, var(--lwc-text-7xl));
+  --lwc-type-display-weight:  var(--lwc-font-weight-light);
+  --lwc-type-display-leading: var(--lwc-leading-tight);
+  --lwc-type-display-tracking: var(--lwc-tracking-tight);
+
+  /* Heading H1 */
+  --lwc-type-h1-font:    var(--lwc-font-primary);
+  --lwc-type-h1-size:    clamp(var(--lwc-text-3xl), 4vw, var(--lwc-text-5xl));
+  --lwc-type-h1-weight:  var(--lwc-font-weight-light);
+  --lwc-type-h1-leading: var(--lwc-leading-tight);
+  --lwc-type-h1-tracking: var(--lwc-tracking-normal);
+
+  /* Heading H2 */
+  --lwc-type-h2-font:    var(--lwc-font-primary);
+  --lwc-type-h2-size:    clamp(var(--lwc-text-2xl), 3vw, var(--lwc-text-4xl));
+  --lwc-type-h2-weight:  var(--lwc-font-weight-light);
+  --lwc-type-h2-leading: var(--lwc-leading-snug);
+  --lwc-type-h2-tracking: var(--lwc-tracking-normal);
+
+  /* Heading H3 */
+  --lwc-type-h3-font:    var(--lwc-font-primary);
+  --lwc-type-h3-size:    clamp(var(--lwc-text-xl), 2vw, var(--lwc-text-3xl));
+  --lwc-type-h3-weight:  var(--lwc-font-weight-regular);
+  --lwc-type-h3-leading: var(--lwc-leading-snug);
+  --lwc-type-h3-tracking: var(--lwc-tracking-normal);
+
+  /* Body copy */
+  --lwc-type-body-font:    var(--lwc-font-secondary);
+  --lwc-type-body-size:    var(--lwc-text-base);
+  --lwc-type-body-weight:  var(--lwc-font-weight-regular);
+  --lwc-type-body-leading: var(--lwc-leading-relaxed);
+  --lwc-type-body-tracking: var(--lwc-tracking-normal);
+
+  /* Body small */
+  --lwc-type-body-sm-font:    var(--lwc-font-secondary);
+  --lwc-type-body-sm-size:    var(--lwc-text-sm);
+  --lwc-type-body-sm-weight:  var(--lwc-font-weight-regular);
+  --lwc-type-body-sm-leading: var(--lwc-leading-normal);
+
+  /* UI labels (navigation, buttons, tabs) */
+  --lwc-type-label-font:     var(--lwc-font-secondary);
+  --lwc-type-label-size:     var(--lwc-text-xs);
+  --lwc-type-label-weight:   var(--lwc-font-weight-medium);
+  --lwc-type-label-leading:  var(--lwc-leading-none);
+  --lwc-type-label-tracking: var(--lwc-tracking-widest);
+  --lwc-type-label-transform: uppercase;
+
+  /* Price / numeric display */
+  --lwc-type-price-font:    var(--lwc-font-mono);
+  --lwc-type-price-size:    var(--lwc-text-lg);
+  --lwc-type-price-weight:  var(--lwc-font-weight-regular);
+  --lwc-type-price-leading: var(--lwc-leading-none);
+  --lwc-type-price-tracking: var(--lwc-tracking-tight);
+}

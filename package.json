@@ -1,0 +1,36 @@
+{
+  "name": "shopify-ai-builder",
+  "version": "1.0.0",
+  "description": "Gaia-governed AI delivery platform for Shopify consultants",
+  "type": "module",
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "test": "node --test \"discovery/tests/**/*.test.js\"",
+    "questionnaire:render": "node discovery/scripts/render-questionnaire.js",
+    "discover": "node --env-file-if-exists=.env discovery/agents/discovery/cli.js",
+    "discover:prepare": "node discovery/agents/discovery/claude-code.js prepare",
+    "discover:assemble": "node discovery/agents/discovery/claude-code.js assemble",
+    "discover:finish": "node discovery/agents/discovery/claude-code.js finish",
+    "backlog": "node discovery/agents/backlog/cli.js",
+    "deck": "node discovery/agents/discovery-deck/build.js",
+    "deck:check": "node discovery/agents/discovery-deck/build.js check",
+    "deck:prompt": "node discovery/scripts/render-deck-prompt.js",
+    "reference:chapters": "node discovery/scripts/render-reference-chapters.js",
+    "teach:merge": "node discovery/scripts/merge-teach.mjs",
+    "interview": "node discovery/agents/interview/cli.js",
+    "apps": "node discovery/scripts/apps.js",
+    "workbook": "node discovery/agents/workbook/build.js",
+    "web": "npm run dev --workspace frontend",
+    "web:build": "npm run build --workspace frontend",
+    "sources:check": "node discovery/scripts/check-sources.mjs"
+  },
+  "engines": {
+    "node": ">=22.9.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.126.0",
+    "ajv": "^8.20.0"
+  }
+}

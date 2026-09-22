@@ -1,0 +1,471 @@
+{
+ "$comment": "Questionnaire in fr: what the client is asked and what the consultant reads while asking. Answers, summary, approach, deck and annex stay in English. Every string falls back to English when it is missing here.",
+ "language": "fr",
+ "updated": "2026-09-18",
+ "sections": {
+  "0": "Objectifs business",
+  "1": "Entreprise, marque & Shopify",
+  "2": "Catalogue & produits",
+  "3": "Marchés & internationalisation",
+  "4": "Paiements & checkout",
+  "5": "Livraison & fulfillment",
+  "6": "Clients, B2B & confidentialité",
+  "7": "Marketing & promotions",
+  "8": "Intégrations & migration",
+  "9": "Design & expérience",
+  "10": "Réalisation, gouvernance & conformité"
+ },
+ "subsections": {
+  "0.1": "Le problème central",
+  "0.2": "Chiffre d’affaires & conversion",
+  "0.3": "Points de friction opérationnels",
+  "0.4": "Objectifs de croissance & KPI",
+  "0.5": "Contexte plateforme",
+  "0.6": "Budget",
+  "1.1": "Identité de l’entreprise",
+  "1.2": "Compte Shopify",
+  "1.3": "Marque & positionnement",
+  "1.4": "Contexte concurrentiel",
+  "2.1": "Taille du catalogue & variantes",
+  "2.2": "Types de produits",
+  "2.3": "Données catalogue",
+  "2.4": "Prix",
+  "2.5": "Stock",
+  "3.1": "Marchés au lancement",
+  "3.2": "Langue",
+  "3.4": "Taxes & droits de douane",
+  "3.5": "Chine continentale",
+  "4.1": "Paiements",
+  "4.2": "Checkout",
+  "4.3": "Fraude & risque",
+  "5.1": "Modèle de fulfillment",
+  "5.2": "Retours & échanges",
+  "5.3": "Notifications",
+  "5.4": "Annulations & remboursements",
+  "5.5": "Expérience après achat",
+  "5.6": "Retail & POS",
+  "6.1": "Comptes clients",
+  "6.2": "B2B & vente en gros",
+  "6.3": "Fidélité & segmentation",
+  "6.4": "Confidentialité & consentement",
+  "7.1": "SEO",
+  "7.2": "Analytics & tracking",
+  "7.3": "E-mail & CRM",
+  "7.4": "Avis & affiliation",
+  "7.5": "Remises & codes promo",
+  "7.6": "Cartes cadeaux & campagnes",
+  "7.7": "IA & commerce agentique",
+  "8.1": "Systèmes connectés",
+  "8.2": "Migration des données",
+  "9.1": "Matière de design",
+  "9.2": "Vitrine",
+  "9.3": "Accessibilité",
+  "9.4": "Performance",
+  "10.1": "Calendrier",
+  "10.2": "Équipe & décisions",
+  "10.3": "Support & formation",
+  "10.4": "Juridique & secteurs réglementés",
+  "10.5": "Mise en place du projet (consultant)"
+ },
+ "options": {},
+ "questions": {
+  "Q0.1.1": {
+   "text": "Qu’est-ce qui empêche le plus votre e-commerce de croître aujourd’hui ?",
+   "teach": {
+    "why": "Toute l’offre se dimensionne à partir d’un seul énoncé du problème. Il détermine s’il s’agit d’une construction de vitrine, d’une replateformisation, d’une remise à plat des opérations ou d’un programme de croissance — et c’est la référence à laquelle le document de clôture et le backlog seront comparés."
+   }
+  },
+  "Q0.1.2": {
+   "text": "Depuis combien de temps ce problème existe-t-il, et qu’avez-vous déjà tenté pour le résoudre ?",
+   "teach": {
+    "why": "Indique si le problème vient de la plateforme ou de l’organisation. Un client qui a déjà acheté trois applications pour cela a un problème de diagnostic, pas de développement. Cela montre aussi quelles solutions ont été essayées puis écartées."
+   }
+  },
+  "Q0.1.3": {
+   "text": "Si nous ne résolvions qu’une seule chose dans cette mission, laquelle aurait le plus fort impact business ?",
+   "teach": {
+    "why": "Impose une priorité avant toute négociation de périmètre. Elle fixe la phase un du backlog et fournit l’argument à opposer quand d’autres sujets s’ajouteront."
+   }
+  },
+  "Q0.2.1": {
+   "text": "Quel est votre chiffre d’affaires e-commerce mensuel actuel (fourchette et devise) ?",
+   "teach": {
+    "why": "La tranche de chiffre d’affaires dimensionne l’offre et permet de vérifier la cohérence du plan et du budget. Les commissions carte et les frais de transaction baissent quand le plan monte : le volume décide donc si un plan supérieur se rentabilise.",
+    "limits": "Les prix et les commissions carte sont affichés en devise locale et diffèrent selon la région — vérifiez la page tarifs de Shopify pour le marché du client avant d’annoncer un chiffre."
+   }
+  },
+  "Q0.2.2": {
+   "text": "Quel est votre taux de conversion actuel (%) ?",
+   "teach": {
+    "why": "Le taux de conversion de départ indique si le brief est une construction ou un programme d’optimisation, et donne le KPI sur lequel le projet sera jugé. Un taux très bas oriente vers le checkout, le catalogue et la performance plutôt que vers un nouveau thème."
+   }
+  },
+  "Q0.2.3": {
+   "text": "Quelles catégories de produits, quels marchés ou quels segments de clientèle sous-performent ?",
+   "teach": {
+    "why": "Désigne où l’argent se perd. Les pays sous-performants amènent du périmètre Markets — devise, prix, langue, domaines ; les catégories sous-performantes renvoient plutôt au merchandising, à la recherche et aux données produit."
+   }
+  },
+  "Q0.2.4": {
+   "text": "Le principal goulet d’étranglement est-il l’acquisition (trafic), la conversion (le trafic n’achète pas) ou la rétention (les clients ne reviennent pas) ?",
+   "teach": {
+    "why": "Cela oriente toute la solution. L’acquisition renvoie aux canaux de vente, au SEO et aux nouveaux marchés ; la conversion au thème, à la recherche et au checkout ; la rétention aux comptes clients, aux abonnements et à la messagerie. Chaque cas donne un backlog et une sélection d’applications différents."
+   }
+  },
+  "Q0.2.5": {
+   "text": "Quelle part du chiffre d’affaires provient aujourd’hui de chaque canal (boutique en ligne, magasins, marketplaces, social commerce, vente en gros / B2B, autres) ?",
+   "help": "Nous indique si le périmètre retail, B2B et marketplace entre en jeu.",
+   "teach": {
+    "why": "Le mix de canaux montre quelle part du travail se situe hors de la boutique en ligne. Le retail amène le POS et les emplacements de stock, la vente en gros amène le périmètre B2B, les marketplaces et le social amènent des canaux de vente supplémentaires — chacun étant une configuration et un backlog à part."
+   }
+  },
+  "Q0.2.6": {
+   "text": "Combien de commandes par mois prévoyez-vous la première année ?",
+   "help": "Les applications de retours, de suivi et d’anti-fraude sont facturées au volume de commandes.",
+   "teach": {
+    "why": "Le volume de commandes pèse plus sur le coût récurrent que sur le coût de construction : les applications de retours, de suivi, d’anti-fraude et d’avis sont facturées par tranche de commandes. Il dimensionne aussi la migration de l’historique des commandes et la configuration du fulfillment.",
+    "limits": "Sur une boutique d’essai ou de développement, la mutation orderCreate est plafonnée à cinq nouvelles commandes par minute : un import de commandes en volume réel ne peut pas y être répété."
+   }
+  },
+  "Q0.3.1": {
+   "text": "Quelles tâches manuelles votre équipe effectue-t-elle aujourd’hui que la plateforme devrait automatiser, et quels processus se cassent le plus souvent ?",
+   "teach": {
+    "why": "Le travail manuel est là où un projet Shopify se rentabilise. Chaque point devient une automatisation Flow, une intégration, une application ou un réglage dans l’admin — c’est la principale source d’éléments de backlog hors vitrine."
+   }
+  },
+  "Q0.3.2": {
+   "text": "Combien d’heures par semaine l’équipe consacre-t-elle à des contournements ?",
+   "teach": {
+    "why": "Met un chiffre sur l’argument opérationnel, pour défendre le périmètre d’automatisation par les coûts plutôt que par l’opinion. Alimente le business case et l’offre, pas l’architecture."
+   }
+  },
+  "Q0.4.1": {
+   "text": "À quoi ressemble le succès dans douze mois (chiffre d’affaires, nouveaux marchés, canaux, volume clients) ?",
+   "teach": {
+    "why": "Les objectifs à douze mois décident de ce qu’il faut concevoir maintenant plutôt que plus tard : de nouveaux pays impliquent Markets, de nouveaux canaux impliquent des canaux de vente, le volume implique de la marge sur le plan et les API. Cela sépare le périmètre de lancement de la roadmap."
+   }
+  },
+  "Q0.4.2": {
+   "text": "Quels KPI mesureront le succès ? Pour chacun : indicateur, valeur de référence actuelle, cible, horizon en mois.",
+   "teach": {
+    "why": "Références et cibles rendent le projet mesurable à la recette. Sans le chiffre d’aujourd’hui, aucune affirmation après le lancement n’est défendable. Cela indique aussi quels outils d’analytics et de tracking doivent être en service au lancement, et non après."
+   }
+  },
+  "Q0.5.1": {
+   "text": "Qu’est-ce qui a déclenché cette mission — pourquoi Shopify, et pourquoi maintenant ?",
+   "teach": {
+    "why": "Le déclencheur révèle qui pilote réellement et quelle est l’échéance : un renouvellement de contrat, une replateformisation ratée, une levée de fonds. Il fixe l’urgence, le décideur, et la part de l’existant réellement ouverte au changement."
+   }
+  },
+  "Q0.5.2": {
+   "text": "Si vous quittez une autre plateforme, que ne faut-il surtout pas perdre lors de la transition ?",
+   "teach": {
+    "why": "Cette liste est le registre des risques de la migration : URL et référencement, historique des commandes, comptes clients, intégrations, avis. Chaque élément relève soit du chemin d’import de Shopify, soit d’un chantier distinct à chiffrer.",
+    "limits": "Les mots de passe clients ne peuvent pas être migrés par CSV, car ils sont chiffrés hors de Shopify ; les clients sont invités à définir un nouveau mot de passe, ou à se connecter avec un code à six chiffres reçu par e-mail. Les avis ne peuvent pas être exportés depuis Squarespace. L’indexation des nouvelles pages peut prendre de 48 à 72 heures, et la récupération du trafic davantage."
+   }
+  },
+  "Q0.5.3": {
+   "text": "Qu’est-ce qui vous satisfait le moins dans la boutique ou la configuration actuelle ?",
+   "teach": {
+    "why": "Les frustrations nomment ce à quoi le client comparera la nouvelle boutique dès le premier jour. Elles se convertissent directement en éléments de backlog et en brief de design — et montrent parfois que la plateforme n’a jamais été le problème."
+   }
+  },
+  "Q0.5.4": {
+   "text": "Depuis quelle plateforme migrez-vous (ou aucune — création ex nihilo) ?",
+   "help": "L’application Store Migration de Shopify importe les produits et les clients depuis certaines plateformes (par ex. WooCommerce, Wix, Square) ; les autres plateformes passent par une application de migration ou par l’API.",
+   "teach": {
+    "why": "Détermine la voie de migration et son coût. L’application Store Migration de Shopify couvre une liste documentée de plateformes sources, et seulement les produits et les clients ; tout le reste, ainsi que l’historique des commandes, nécessite une application de migration ou du développement API. Déclenche le modificateur de périmètre Migration.",
+    "options": [
+     {
+      "option": "Application Store Migration de Shopify (CSV, plateformes sources documentées)",
+      "pros": "Solution first-party, sans coût de licence, rapport d’erreurs par élément.",
+      "cons": "Produits et clients uniquement — pas d’historique de commandes, pas de prix par emplacement, trois options produit au maximum."
+     },
+     {
+      "option": "Application de migration tierce (par exemple Matrixify)",
+      "pros": "Déplace ensemble produits, clients et historique des commandes, sans développement.",
+      "cons": "Licence et support chez un tiers ; les recommandations partenaires de Shopify positionnent cette voie pour les clients Plus."
+     },
+     {
+      "option": "Scripts API sur mesure (import en masse, orderCreate)",
+      "pros": "Contrôle total du mapping pour des données sources atypiques et de gros volumes.",
+      "cons": "Effort de développement et de test ; limites de 100 Mo JSONL et de 24 heures d’exécution ; le plafond de commandes des boutiques de développement empêche la répétition générale."
+     }
+    ],
+    "limits": "L’application Store Migration documente Amazon, Clover, Etsy, eBay, GoDaddy, Lightspeed, Square, Squarespace, Wix et WooCommerce comme sources, et importe les produits et les clients, pas les commandes historiques. Les produits ayant plus de trois options perdent leurs options à l’import ; les prix par emplacement ne sont pas pris en charge. Ordre d’import : produits, puis clients, puis commandes. Les redirections d’URL sont plafonnées à 100 000, ou 20 000 000 sur Plus. Désactivez les notifications de nouvelle commande avant d’importer les commandes, sinon chaque commande importée enverra un e-mail à l’équipe."
+   }
+  },
+  "Q0.6.1": {
+   "text": "Quelle est l’enveloppe budgétaire approximative pour ce projet (fourchette et devise) ?",
+   "teach": {
+    "why": "La tranche budgétaire choisit la taille de l’offre et décide de la part réalisable en configuration native plutôt qu’en développement sur mesure. Elle fait aussi apparaître tôt le cas où les exigences imposent un plan ou un développement que l’enveloppe ne portera pas."
+   }
+  },
+  "Q0.6.2": {
+   "text": "La priorité est-elle de minimiser le coût initial (applications et configuration), de posséder la solution (développement sur mesure), ou un équilibre entre les deux ?",
+   "teach": {
+    "why": "Fixe la philosophie de construction. Applications et configuration lancent plus vite et coûtent au mois ; un développement sur mesure coûte davantage au départ et appartient au client. Cela change l’architecture, la sélection d’applications et le coût de fonctionnement de la boutique.",
+    "options": [
+     {
+      "option": "Applications et configuration d’abord",
+      "pros": "Lancement le plus rapide, coût initial le plus faible, l’éditeur maintient la fonctionnalité.",
+      "cons": "Abonnements mensuels permanents, contrôle limité, et c’est la roadmap de l’éditeur qui décide des évolutions."
+     },
+     {
+      "option": "Développement sur mesure (application personnalisée ou extensions)",
+      "pros": "Exactement le comportement voulu, propriété du client, aucun abonnement par application.",
+      "cons": "Coût initial plus élevé et engagement de maintenance dans la durée ; une Shopify Function dans une application personnalisée exige Plus."
+     }
+    ],
+    "limits": "Les applications publiques de l’App Store contenant des Shopify Functions s’installent sur n’importe quel plan ; les Functions au sein d’une application personnalisée conçue pour un seul marchand exigent Plus."
+   }
+  },
+  "Q0.6.3": {
+   "text": "Existe-t-il un plafond mensuel pour les abonnements aux applications ?",
+   "help": "De nombreux besoins sont couverts par les applications de Shopify (par ex. Subscriptions, Bundles, Search & Discovery, Translate & Adapt, Flow, Messaging). Nous les examinons en premier.",
+   "teach": {
+    "why": "Les abonnements aux applications sont une ligne permanente du compte de résultat du client : un plafond annoncé contraint donc la sélection. Examinez d’abord les applications de Shopify — Subscriptions, Bundles, Search & Discovery, Translate & Adapt, Flow, Messaging — avant de proposer des tiers payants."
+   }
+  },
+  "Q1.1.1": {
+   "text": "Nom commercial et raison sociale (si différents).",
+   "teach": {
+    "why": "C’est la personne morale qui détient le compte Shopify, le compte bancaire et les politiques de la boutique ; le nom commercial est ce que voient les clients. Relever les deux maintenant évite une incohérence lors de la vérification des paiements.",
+    "limits": "Shopify Payments exige une entité commerciale et un compte bancaire dans une région éligible, et chaque pays pris en charge a ses propres exigences de compte bancaire et de vérification d’entreprise."
+   }
+  },
+  "Q1.1.2": {
+   "text": "Pays d’immatriculation / siège social.",
+   "teach": {
+    "why": "Le pays d’immatriculation fixe le pays principal de la boutique, ce qui détermine la disponibilité des prestataires de paiement, la devise de versement, la configuration fiscale et le marché de référence autour duquel tout le reste est configuré.",
+    "limits": "Shopify Payments n’est disponible que dans les pays et régions pris en charge ; vérifiez le pays de l’entité du client dans l’index des pays pris en charge de Shopify avant de supposer que c’est une option. Les frais de conversion de devise dépendent du pays principal de la boutique."
+   }
+  },
+  "Q1.1.3": {
+   "text": "Secteur et univers produit.",
+   "teach": {
+    "why": "L’univers détermine la complexité du catalogue, les besoins éditoriaux et, surtout, l’exposition juridique. Les catégories réglementées — pharmacie, alcool, armes, produits soumis à un âge minimum, produits financiers, dispositifs médicaux — déclenchent un STOP pour revue juridique et conformité avant tout engagement de périmètre."
+   }
+  },
+  "Q1.1.4": {
+   "text": "L’activité est-elle direct-to-consumer, B2B, ou hybride ?",
+   "help": "B2B ou hybride amène les questions B2B et vente en gros (§ 6.2).",
+   "teach": {
+    "why": "Détermine si le périmètre vente en gros entre en jeu. B2B ou hybride ouvre les questions du § 6.2 et le modificateur de périmètre B2B : entreprises, sites d’entreprise, catalogues, conditions de paiement et numéros de commande — un modèle de données différent du D2C, pas un réglage de remise.",
+    "options": [
+     {
+      "option": "Boutique mixte — une boutique pour le D2C et le B2B",
+      "pros": "Un catalogue, une administration, un thème à maintenir ; les prix B2B s’ajoutent via les catalogues.",
+      "cons": "Chaque décision de vitrine et de checkout doit convenir aux deux publics, et les restrictions du checkout B2B s’appliquent."
+     },
+     {
+      "option": "Boutique B2B dédiée, distincte du D2C",
+      "pros": "Séparation nette de l’expérience, des prix et des opérations ; rien du D2C ne contraint le site professionnel.",
+      "cons": "Une deuxième boutique à construire, exploiter et synchroniser ; les expansion stores sont une fonctionnalité Plus."
+     }
+    ],
+    "limits": "Le B2B natif fonctionne sur tous les plans à partir de Basic : entreprises, sites, conditions de paiement, numéros de commande, règles de quantité et prix dégressifs. Basic, Grow et Advanced autorisent jusqu’à 3 catalogues actifs sur l’ensemble des marchés B2B et exigent les nouveaux Shopify Markets ; catalogues illimités, catalogues attribués à une entreprise ou à un site, acomptes et paiements partiels sont réservés à Plus. Le checkout B2B ne prend en charge ni les paiements accélérés (Shop Pay, Apple Pay, Google Pay, Amazon Pay), ni les abonnements, ni les anciens comptes clients."
+   }
+  },
+  "Q1.1.5": {
+   "text": "URL du site actuel.",
+   "teach": {
+    "why": "Le site actuel est la preuve la plus rapide dont vous disposez : taille du catalogue, complexité des options, volume éditorial, plateforme actuelle et intégrations visibles de l’extérieur. Il ancre aussi le chantier redirections et SEO s’il s’agit d’une replateformisation."
+   }
+  },
+  "Q1.1.6": {
+   "text": "Vendez-vous via plus d’une personne morale (par ex. une par pays ou région) ? Merci de les lister.",
+   "help": "Plusieurs entités de vente dans une boutique, ou une boutique par entité, change la configuration.",
+   "teach": {
+    "why": "Détermine la topologie des boutiques. Plusieurs entités de vente dans une boutique signifie une administration avec des entités par marché ; une boutique par entité signifie plusieurs boutiques à construire et exploiter. Cela change la fiscalité, les versements, la facturation et le plan, et alimente le STOP lié au plan.",
+    "options": [
+     {
+      "option": "Une boutique, plusieurs entités commerciales par marché",
+      "pros": "Un catalogue, une administration et un thème, avec entité, versements et fiscalité par marché.",
+      "cons": "Réservé à Plus, et exige Shopify Payments ainsi que les nouveaux Markets."
+     },
+     {
+      "option": "Une boutique par entité (expansion stores)",
+      "pros": "Séparation stricte des données, des équipes, de la finance et des opérations locales.",
+      "cons": "Réservé à Plus ; chaque évolution de catalogue, de thème et d’application doit être répétée sur chaque boutique."
+     }
+    ],
+    "limits": "Attribuer des entités commerciales distinctes aux marchés est réservé à Plus et exige Shopify Payments et les nouveaux Markets ; sinon la voie passe par les expansion stores, également réservées à Plus (une boutique principale plus neuf expansion stores au contrat)."
+   }
+  },
+  "Q1.1.7": {
+   "text": "Où vendrez-vous au lancement ?",
+   "help": "Boutique en ligne, Shopify POS, application Shop, marketplaces, canaux sociaux, B2B, front-ends headless ou applicatifs, agents d’achat IA.",
+   "teach": {
+    "why": "Les canaux de lancement déterminent ce qui se construit au-delà de la boutique en ligne. Chaque canal est une configuration et un backlog à part : POS, Shop, Marketplace Connect, Facebook et Instagram, Google et YouTube, TikTok, ou un front-end headless sur la Storefront API.",
+    "options": [
+     {
+      "option": "La boutique en ligne de Shopify (thème Liquid) comme front-end",
+      "pros": "Lancement le plus rapide, modifiable par le client, compatible avec les applications de thème et le checkout standard.",
+      "cons": "La liberté du front-end est bornée par le modèle de thème et de sections."
+     },
+     {
+      "option": "Front-end headless sur la Storefront API",
+      "pros": "Contrôle total de l’expérience et des choix technologiques côté front.",
+      "cons": "Un développement et un engagement d’hébergement ; le merchandising par l’éditeur de thème est perdu s’il n’est pas remplacé."
+     }
+    ],
+    "limits": "Les canaux de vente standard et le canal headless sont disponibles dès Basic. Les vitrines agentiques (ChatGPT, Google AI Mode et Gemini, Copilot, Meta) sont actives par défaut pour les boutiques éligibles : « agents d’achat IA » relève donc généralement d’une décision sur ce que l’on laisse activé, pas d’un développement."
+   }
+  },
+  "Q1.2.1": {
+   "text": "Existe-t-il déjà une boutique Shopify ?",
+   "teach": {
+    "why": "Détermine le point de départ : configurer et améliorer l’existant, ou construire une nouvelle boutique et migrer dessus. Cela change l’approche de réalisation, le profil de risque et la présence ou non d’un audit de la boutique actuelle dans la mission.",
+    "options": [
+     {
+      "option": "Construire sur la boutique existante",
+      "pros": "Conserve l’historique des commandes et des clients, les applications, les domaines et le SEO ; aucune migration de données.",
+      "cons": "Hérite du thème, du parc d’applications et des fonctionnalités obsolètes existants, et les modifications se font sur une boutique en activité."
+     },
+     {
+      "option": "Construire une nouvelle boutique et migrer",
+      "pros": "Architecture et modèle de données propres, et un espace sûr pour construire à l’écart de l’activité.",
+      "cons": "Une migration et une bascule à planifier et à financer, avec un risque de redirections et de SEO au lancement."
+     }
+    ]
+   }
+  },
+  "Q1.2.2": {
+   "text": "URL de la boutique existante, plan Shopify actuel et thème actuel.",
+   "teach": {
+    "why": "Le plan et le thème actuels fixent la base : quelles fonctionnalités le client possède déjà, si le thème est un thème Online Store 2.0 pris en charge ou un thème ancien personnalisé, et quelle part de l’existant peut être reprise."
+   }
+  },
+  "Q1.2.3": {
+   "text": "Sur quel plan Shopify la nouvelle boutique fonctionnera-t-elle (si c’est déjà décidé) ?",
+   "help": "Nous recommandons le plan une fois les exigences connues.",
+   "teach": {
+    "why": "Le plan est la contrainte la plus dure d’un projet Shopify — plusieurs fonctionnalités dépendent du plan, pas du développement. Recommandez-le à partir des exigences, puis confrontez l’hypothèse du client ; un écart est un STOP, pas un détail.",
+    "limits": "Seuils documentés qui décident le plus souvent du plan : comptes du personnel (Basic 0, Grow 5, Advanced 15, Plus illimité) ; plus de 10 emplacements de stock, les extensions d’interface de checkout aux étapes information, livraison ou paiement, la Checkout Branding API, les expansion stores, les entités commerciales par marché, plus de 20 langues publiées, les fiches combinées et les Functions dans une application personnalisée sont Plus ; la personnalisation de thème par marché, les tarifs calculés par transporteur et les versements multidevises commencent à Advanced."
+   }
+  },
+  "Q1.2.4": {
+   "text": "Quelles applications sont installées aujourd’hui, à quoi servent-elles, et lesquelles doivent rester ?",
+   "teach": {
+    "why": "La liste des applications installées est à la fois une ligne de coût et un document d’exigences — chaque application est une tâche que la boutique accomplit aujourd’hui. Celles qui doivent rester déterminent ce que la nouvelle construction doit continuer d’assurer, et celles qui peuvent être remplacées par une fonctionnalité native."
+   }
+  },
+  "Q1.2.5": {
+   "text": "Audit de la boutique existante : quelles fonctionnalités Shopify retirées ou obsolètes utilise-t-elle encore ?",
+   "help": "Shopify Scripts ne fonctionne plus depuis le 30/06/2026 ; checkout.liquid et les scripts additionnels sont retirés ; les script tags de la boutique en ligne s’arrêtent le 01/03/2027 ; les anciens comptes clients sont obsolètes ; Stocky est retiré ; l’application Geolocation est retirée.",
+   "teach": {
+    "why": "Les fonctionnalités retirées ou obsolètes sont des pannes silencieuses : de la logique qui a déjà cessé de fonctionner, ou qui va cesser. Chaque occurrence devient un chantier à part — Scripts vers Functions, script tags vers theme app extensions, anciens comptes clients vers les comptes actuels — signalé, et non absorbé dans le travail de thème.",
+    "options": [
+     {
+      "option": "Traiter d’abord les obsolescences, comme chantier distinct",
+      "pros": "Supprime le risque de panne avant de construire par-dessus.",
+      "cons": "Consomme du budget pour de la parité plutôt que pour du visible."
+     },
+     {
+      "option": "Intégrer les remplacements dans la nouvelle construction",
+      "pros": "Un seul passage de conception, un seul cycle de tests, aucun travail fait deux fois.",
+      "cons": "Ce qui est déjà retiré reste cassé jusqu’à la mise en production."
+     }
+    ],
+    "limits": "Shopify Scripts ne fonctionne plus depuis le 30/06/2026 ; checkout.liquid et les scripts additionnels sont retirés ; les script tags de la boutique en ligne s’arrêtent le 01/03/2027 ; les anciens comptes clients sont obsolètes depuis le 26/02/2026 ; Stocky a été retiré le 31/08/2026, remplacé par les bons de commande et transferts d’inventaire ; l’application Geolocation est retirée."
+   }
+  },
+  "Q1.2.6": {
+   "text": "Combien de personnes auront besoin de leur propre accès à l’administration Shopify après la mise en ligne ?",
+   "help": "Les comptes collaborateur et le personnel uniquement POS ne sont pas comptés.",
+   "teach": {
+    "why": "Les utilisateurs nommés de l’administration relèvent d’un seuil de plan, pas d’une option de licence. L’effectif peut à lui seul faire monter la boutique d’un plan : il faut donc le compter avant d’annoncer le plan.",
+    "limits": "Basic 0 compte du personnel, Grow 5, Advanced 15, Plus illimité. Les comptes collaborateur (accès agence) et le personnel uniquement POS ne sont pas décomptés."
+   }
+  },
+  "Q1.3.1": {
+   "text": "Comment décririez-vous le positionnement de la marque : value, milieu de gamme, premium, luxe ou enterprise ?",
+   "help": "Le positionnement façonne la profondeur du design et l’approche de la solution.",
+   "teach": {
+    "why": "Le positionnement fixe la profondeur du design et l’approche de la solution. Un positionnement luxe ou enterprise déclenche l’offre L : design sur mesure, davantage de développement front-end et un cycle de validation plus long, plutôt qu’un thème configuré."
+   }
+  },
+  "Q1.3.2": {
+   "text": "L’identité de marque est-elle finalisée (logo, palette de couleurs, typographie) ?",
+   "teach": {
+    "why": "Une identité inachevée est un risque de planning, pas une préférence esthétique. Si logo, palette et typographie bougent encore, le travail de thème et de design attend ou se fait deux fois — décidez lequel, et chiffrez-le.",
+    "options": [
+     {
+      "option": "Démarrer la construction sur l’identité actuelle",
+      "pros": "Tient les dates de livraison ; les tokens et les réglages de thème absorbent les changements ultérieurs de couleur et de typographie.",
+      "cons": "Tout ce qui est structurel et change avec l’identité devient de la reprise."
+     },
+     {
+      "option": "Attendre la validation de l’identité",
+      "pros": "Un seul passage de conception, aucune reprise, des validations plus nettes.",
+      "cons": "Du temps de production immobilisé et une date de lancement qui dépend de quelqu’un hors projet."
+     }
+    ]
+   }
+  },
+  "Q1.3.3": {
+   "text": "Dans quels formats les éléments de marque sont-ils disponibles (SVG, PNG, Figma, PDF de charte) ?",
+   "teach": {
+    "why": "Les formats déterminent la charge de production en phase de design. Des logos vectoriels et un fichier Figma alimentent directement le thème ; un PDF de charte et des éléments en résolution print imposent de redessiner et de réexporter avant que quoi que ce soit n’atteigne la boutique."
+   }
+  },
+  "Q1.3.4": {
+   "text": "Existe-t-il une charte de marque stricte à respecter ?",
+   "teach": {
+    "why": "Une charte stricte implique un cycle de revue et de validation sur chaque écran, et moins de liberté pour utiliser les composants du thème. C’est du temps et de l’effort de production : cela appartient au chiffrage, pas à une surprise ultérieure."
+   }
+  },
+  "Q1.3.5": {
+   "text": "Qu’est-ce qui différencie la marque — prix, qualité, exclusivité, communauté, durabilité ?",
+   "teach": {
+    "why": "Les facteurs de différenciation disent ce que la vitrine doit réellement démontrer — la durabilité demande des données produit et du contenu, l’exclusivité des mécaniques d’accès restreint ou de séries limitées, la communauté des avis et des comptes. Chacun devient du backlog concret, pas du discours de marque."
+   }
+  },
+  "Q1.4.1": {
+   "text": "Quels sont vos trois principaux concurrents en ligne ?",
+   "teach": {
+    "why": "Les concurrents fixent l’attente du client sur ce qui est normal. Ils indiquent quelles fonctionnalités seront réclamées en cours de projet et donnent une référence concrète à la discussion design et UX, à la place des adjectifs."
+   }
+  },
+  "Q1.4.2": {
+   "text": "Quelles boutiques (concurrentes ou non) souhaitez-vous citer en référence d’UX ?",
+   "teach": {
+    "why": "Les références UX convertissent le goût en éléments précis — navigation, page produit, panier et comportement du checkout. Servez-vous-en pour arrêter le périmètre front-end avant le début du design, et pour repérer les comportements qui exigeront une application ou du développement sur mesure."
+   }
+  }
+ },
+ "document": {
+  "title": "Questionnaire de discovery Shopify",
+  "how_to_use": [
+   "**Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque",
+   "question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont",
+   "renseignées par le lead consultant, pas par le client."
+  ],
+  "output": [
+   "**Résultat :** le questionnaire complété alimente le moteur de discovery, qui produit la spécification de la mission,",
+   "la classification de l’offre, la capability map, le deck de clôture et le backlog."
+  ],
+  "personal_data": "**Données personnelles :** ne consignez aucune donnée personnelle de client final. Les noms des interlocuteurs sont facultatifs.",
+  "checklist_title": "Liste de contrôle",
+  "checklist": [
+   "Chaque question *required* des §§ 0 à 10 a une réponse ou « TBC »",
+   "Au moins un KPI a une valeur de référence et une cible (Q0.4.2)",
+   "Chaque système connecté est listé en Q8.1.1 avec sens d’échange et connecteur",
+   "Le consentement au traitement par IA est consigné (Q10.5.2)"
+  ]
+ },
+ "intros": {
+  "0": "Ce qui ne va pas avant ce qu’il faut construire. Cette section est le brief principal : chaque capacité que nous cadrons doit remonter à une réponse donnée ici.",
+  "1": "Configuration de la boutique, plan Shopify, positionnement de marque et éléments graphiques.",
+  "2": "Modèle produit, variantes, métachamps, prix et stock.",
+  "3": "Shopify Markets, devises, langues, taxes et droits de douane.",
+  "4": "Prestataires de paiement, périmètre PCI et personnalisation du checkout.",
+  "5": "Comment les commandes parviennent aux clients et reviennent : fulfillment, livraison, retours, annulations, remboursements et expérience après achat — et si le natif Shopify (règles de retour et d’annulation, retours en autonomie, page de statut de commande, dates de livraison) suffit ou s’il faut une application.",
+  "6": "Comptes clients, B2B, fidélité, segmentation et obligations liées aux données personnelles.",
+  "7": "SEO, analytics, e-mail, avis, affiliation, remises, campagnes et commerce piloté par l’IA.",
+  "8": "Tout système qui échange des données avec la boutique, et ce qui vient de la plateforme actuelle.",
+  "9": "Source du design, approche de la vitrine, accessibilité et performance.",
+  "10": "Calendrier, prise de décision, support, juridique et outillage projet."
+ }
+}
