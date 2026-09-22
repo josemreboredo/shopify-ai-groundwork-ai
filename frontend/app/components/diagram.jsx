@@ -599,6 +599,105 @@ export function Lands({ classification, here }) {
  * @param {{ offers: object[], gates: object[], ceilings: object, pricing: boolean,
  *   currency?: string, weeks: Function, band: Function }} props
  */
+/**
+ * Detailed comparison table using closed_scope (what each pack includes).
+ * Shows all "up to X" limits from the model, with add-ons listed separately.
+ */
+export function ComparisonTable({ closedScope, offers }) {
+  if (!closedScope?.length) return null;
+
+  // Every row is "what's included, up to the limit" — that is what closed
+  // scope means, and it is true of a row whether or not it also has an
+  // add-on past that limit (ten of the sixteen do). Filtering those ten out
+  // of the first table lost their included value entirely: the reader saw
+  // "Shopify stores" only as a checkmark in the add-on table, never learning
+  // a pack already includes one. The add-on table is a second, additional
+  // fact about a row, not a different set of rows.
+  const included = closedScope;
+  const addons = closedScope.filter((row) => row.addon?.length);
+
+  return (
+    <div className="comparison-container">
+      <div className="comparison-section">
+        <h3 className="comparison-title">What each pack includes — up to the limit</h3>
+        <p className="comparison-note">Everything listed here comes with the pack price. Anything past these limits is quoted separately as an add-on scope gate.</p>
+        <div className="table-scroll" role="region" tabIndex={0} aria-label="Closed scope: what each pack includes">
+          <table className="compare comparison closed-scope">
+            <thead>
+              <tr>
+                <th scope="col">Capability</th>
+                {offers.map((o) => (
+                  <th scope="col" key={o.code}>
+                    <span className="pack-code">{o.code}</span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {included.map((row) => (
+                <tr key={row.id}>
+                  <th scope="row">
+                    <span className="capability-name">{row.what}</span>
+                    {row.note ? <span className="capability-note">{row.note}</span> : null}
+                  </th>
+                  {offers.map((o) => {
+                    const value = row.values[o.code] ?? '—';
+                    const isNo = /^No\b/.test(value);
+                    return (
+                      <td key={`${row.id}-${o.code}`} data-label={o.code} className={isNo ? 'closed-no' : 'closed-yes'}>
+                        {value}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {addons.length > 0 ? (
+        <div className="comparison-section">
+          <h3 className="comparison-title">Available as scope gates (quoted separately)</h3>
+          <p className="comparison-note">These capabilities can be added to any pack. Each is priced and scheduled independently based on requirements.</p>
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="Add-on scope gates">
+            <table className="compare comparison scope-gates">
+              <thead>
+                <tr>
+                  <th scope="col">Add-on capability</th>
+                  {offers.map((o) => (
+                    <th scope="col" key={o.code}>
+                      <span className="pack-code">{o.code}</span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {addons.map((row) => (
+                  <tr key={row.id}>
+                    <th scope="row">
+                      <span className="capability-name">{row.what}</span>
+                      {row.addon_label ? <span className="addon-label">{row.addon_label}</span> : null}
+                    </th>
+                    {offers.map((o) => {
+                      const canBuy = row.addon?.includes(o.code);
+                      return (
+                        <td key={`${row.id}-${o.code}`} data-label={o.code} className={canBuy ? 'addon-available' : 'addon-none'}>
+                          {canBuy ? <span className="addon-mark">✓ Available</span> : '—'}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function PackTable({ offers, closedScope, pricing, currency, weeks, band }) {
   if (!offers?.length) return null;
   const capacity = (o) => o.gate_capacity_weeks;

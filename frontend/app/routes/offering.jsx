@@ -5,7 +5,7 @@ import { offeringView } from '../../../ai/shared/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../ai/shared/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { band, TRACK, weeks } from '../offering.js';
-import { OfferScale, PackTable } from '../components/diagram.jsx';
+import { OfferScale, PackTable, ComparisonTable } from '../components/diagram.jsx';
 
 export const meta = () => [{ title: pageTitle('The offering') }];
 
@@ -156,78 +156,23 @@ export default function Offering({ loaderData }) {
       </section>
 
       <section>
+        <h2>What each pack includes, and what's available as add-ons</h2>
+        <p className="lede">
+          Each pack covers everything in the first table up to the limit shown. The second table lists all
+          scope gates that can be added to any pack — each is quoted separately with its own weeks and price.
+        </p>
+        <ComparisonTable
+          closedScope={view.closed_scope}
+          offers={view.offers}
+        />
+      </section>
+
+      <section>
         <h2>The three offers, on one scale</h2>
         <OfferScale offers={view.offers} pricing={view.pricing} currency={currency} />
       </section>
 
-      {/* 2 — the rule, drawn. "Stops at the first yes" is the whole of it. */}
-      <section className="band dark">
-        <div className="band-inner">
-          <p className="eyebrow">How the offer is decided</p>
-          {/* Counted, not typed. It read "four" while the engine asked five for
-              as long as the fifth rule existed, which is the exact failure this
-              whole page is meant to prevent. */}
-          <h2 className="plain">{COUNT[view.classification.length] ?? view.classification.length} questions, in order. It stops at the first yes.</h2>
-          <ol className="decide">
-            {view.classification.map((c) => (
-              <li key={c.order}>
-                <span className="decide-q">{c.plain}</span>
-                <span className="decide-arrow" aria-hidden="true">&rarr;</span>
-                <span className="decide-a">{c.offer}</span>
-              </li>
-            ))}
-          </ol>
-          {/* What the gates do once the offer is decided. The pages quoted each
-              gate's cost and never said what the band already covered, so a
-              consultant could not tell whether "+5 to 7 weeks" was inside the
-              number or on top of it. */}
-          <p className="decide-note">
-            Then the gates. Each band already holds some of them — {view.offers.filter((o) => o.gate_capacity_weeks?.max).map((o) => `${o.code} holds ${weeks(o.gate_capacity_weeks)} weeks`).join(', ')} —
-            and inside that they cost nothing more. Past it, each one is added to the weeks and to the band, which
-            is how an Ecommerce Growth with a Magento estate and six markets stops being quoted the same as one
-            with a single market and no migration.
-          </p>
-        </div>
-      </section>
-
-      {/* 3 — what is actually built. Sold at a fixed price, argued at story
-          level, so the map says what the sixteen epics hold before anyone opens
-          an offer. */}
-      <section>
-        <h2>What the offers build</h2>
-        <p className="lede">
-          Every offer delivers the same {totals.epics} epics; what changes is how much of each one the answers
-          call for. {totals.always} stories are in the price whatever the client answers, {totals.conditional} more
-          arrive when their answers call for them, and {totals.gated} sit behind a scope gate that has its own
-          weeks. Each offer&rsquo;s page has the list, story by story.
-        </p>
-        <div className="table-scroll" role="region" tabIndex={0} aria-label="Epics and what each holds, scrollable table">
-          <table className="compare epics">
-            <thead>
-              <tr>
-                <th scope="col">Epic</th>
-                <th scope="col">Always</th>
-                <th scope="col">On the answers</th>
-                <th scope="col">Behind a gate</th>
-                <th scope="col">Which gates</th>
-              </tr>
-            </thead>
-            <tbody>
-              {catalogue.map((e) => (
-                <tr key={e.id}>
-                  <th scope="row">{e.name}</th>
-                  <td data-label="Always">{e.always.length}</td>
-                  <td data-label="On the answers">{e.conditional.length}</td>
-                  <td data-label="Behind a gate">{e.gated.reduce((n, g) => n + g.stories.length, 0)}</td>
-                  <td data-label="Which gates">{e.gated.length ? e.gated.map((g) => g.label).join(', ') : <span className="muted">—</span>}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* 3 — the one rule that is the same in every offer */}
+      {/* The one rule that is the same in every offer */}
       <section className="band">
         <div className="band-inner">
           <p className="eyebrow">How each offer meets Shopify</p>
