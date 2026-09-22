@@ -1,21 +1,21 @@
 import { findPersonalData } from '../agents/discovery/input.js';
 
 /**
- * Log a message, refusing to emit it in production if the payload contains
- * personal data (per CLAUDE.md: never log PII).
+ * Log, refusing to emit in production if any argument contains personal data
+ * (per CLAUDE.md: never log PII). Takes the same arguments as console[level]
+ * — a single pre-formatted JSON string, or a message plus a data object — so
+ * it drops into an existing console.log call site unchanged.
  *
  * @param {'log' | 'warn' | 'error' | 'info'} level
- * @param {string} message
- * @param {unknown} [data]
- * @throws {Error} in production when `data` contains an e-mail, phone number, or card number
+ * @param {...unknown} args
+ * @throws {Error} in production when an argument contains an e-mail, phone number, card number, or a named individual
  */
-export function safeLog(level, message, data) {
-  if (data !== undefined && process.env.NODE_ENV === 'production') {
-    const reasons = findPersonalData(JSON.stringify(data));
-    if (reasons.length) {
-      throw new Error(`Refusing to log "${message}": payload ${reasons.join(', ')}`);
-    }
+export function safeLog(level, ...args) {
+  if (process.env.NODE_ENV === 'production') {
+    const text = args.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+    const reasons = findPersonalData(text);
+    if (reasons.length) throw new Error(`Refusing to log: payload ${reasons.join(', ')}`);
   }
   // eslint-disable-next-line no-console
-  console[level](message, ...(data === undefined ? [] : [data]));
+  console[level](...args);
 }

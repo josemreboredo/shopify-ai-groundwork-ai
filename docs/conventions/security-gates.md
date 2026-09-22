@@ -76,8 +76,34 @@ Applied following the 2026-09-22 Dentsu security review of the codebase.
 - **Safe logging**: `discovery/service/safe-log.js` wraps `console.*` and refuses
   to log (throws) any payload that matches the PII patterns in
   `discovery/agents/discovery/input.js` (`findPersonalData`) when
-  `NODE_ENV=production`. Use it instead of `console.log`/`console.error` for any
-  log statement that might carry engagement data.
+  `NODE_ENV=production`. Wired in at the MCP connector's tool-call logger
+  (`discovery/service/mcp.js`). Use it instead of `console.log`/`console.error`
+  for any other log statement that might carry engagement data — it was
+  previously written but not called anywhere, so it protected nothing.
+- **PII detection also covers a named individual next to a C-suite title**
+  ("Jane Doe, the CFO" / "the CFO, Jane Doe") in `findPersonalData` and
+  `redactQuestionnaire` (`discovery/agents/discovery/input.js`). This is a
+  narrow heuristic, not general name detection — a bare name in prose with no
+  adjacent title still gets through; that needs a language model to catch
+  reliably, which would defeat the purpose of screening before the LLM call.
+- **Client-facing document leak check now runs on the live/MCP path too**:
+  `saveClosingDocument` (`discovery/service/index.js`) calls `findLeaks` (built
+  for the CLI deck builder, `discovery/agents/discovery-deck/build.js`) so a
+  deck drafted live with Claude can't save with Merkle's internal pricing,
+  modifiers or commercial warnings in it — previously only the CLI path had
+  this check, and only as an optional manual `deck:check` step.
+- **Claude account tier is a policy control, not a code one** (ADR 0007,
+  amended 2026-09-22): every execution mode must run on a dentsu Claude
+  Enterprise seat. The app cannot verify which Anthropic account tier a
+  calling Claude Code or Claude Projects session is authenticated with, so
+  this is enforced by only giving tool access to consultants who hold a
+  dentsu Enterprise seat — not by anything in this codebase.
+- **Known architectural limit, not fixed by the above**: when Claude reads a
+  document directly from a Claude Project (the `prefill_from_documents`
+  flow, ADR 0015), this app never receives the file, so `redactQuestionnaire`
+  never runs on it — the document reaches Claude exactly as uploaded. This is
+  acceptable only because that Claude session runs on the dentsu Enterprise
+  tier above; it would not be if it did not.
 - **Dependency audit**: run `npm audit` as part of routine maintenance (monthly,
   or before any release); `npm audit fix` / `--force` for anything with an
   available non-breaking fix. Test PPTX/deck generation after any `pptxgenjs`

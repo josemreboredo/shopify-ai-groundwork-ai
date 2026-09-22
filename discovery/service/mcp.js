@@ -14,6 +14,7 @@ import { ServiceError } from './index.js';
 import { deckDataPages } from './closing.js';
 import { renderSummaryMarkdown } from './summary.js';
 import { LANGUAGES } from './i18n.js';
+import { safeLog } from './safe-log.js';
 
 export const SERVER_INSTRUCTIONS = `Merkle Discovery: Shopify discovery engagements shared with the Lead Consultant web app.
 - Interim pilot: demo or anonymised engagements and documents only — no real client data.
@@ -80,7 +81,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
   /** Run a service call as the connected consultant; service errors become tool errors. */
   const tool = (name, config, run) => server.registerTool(name, config, async (args, ctx) => {
     const started = Date.now();
-    const log = (outcome, bytes) => console.log(JSON.stringify({ mcp_tool: name, outcome, ms: Date.now() - started, ...(bytes !== undefined ? { kb: Math.round(bytes / 1024), tokens_est: Math.round(bytes / 4) } : {}) }));
+    const log = (outcome, bytes) => safeLog('log', JSON.stringify({ mcp_tool: name, outcome, ms: Date.now() - started, ...(bytes !== undefined ? { kb: Math.round(bytes / 1024), tokens_est: Math.round(bytes / 4) } : {}) }));
     try {
       const user = await userOf(ctx);
       if (!user) { log('unauthorised'); return { isError: true, content: [{ type: 'text', text: 'Not signed in, or this account is no longer on the allowlist.' }] }; }

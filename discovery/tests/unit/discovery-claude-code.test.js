@@ -128,11 +128,11 @@ describe('Claude Code mode', () => {
     assert.deepEqual(fs.readdirSync(outDir), []);
   });
 
-  test('work directory names are derived safely and the account notice names the migration', () => {
+  test('work directory names are derived safely and the account notice requires a dentsu Enterprise seat', () => {
     assert.equal(workName('/x/ACME Watches_questionnaire.md'), 'acme-watches');
     assert.equal(workName('/x/../../etc.md'), 'etc');
     assert.equal(workName('/x/q.md', 'helix-audio'), 'helix-audio');
-    assert.match(ACCOUNT_NOTICE, /personal Claude Pro/);
-    assert.match(ACCOUNT_NOTICE, /dentsu's Claude Enterprise/);
+    assert.match(ACCOUNT_NOTICE, /dentsu Claude Enterprise/);
+    assert.match(ACCOUNT_NOTICE, /must never be processed from a personal Claude account/);
   });
 });

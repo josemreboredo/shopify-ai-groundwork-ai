@@ -37,4 +37,21 @@ describe('safeLog (never log personal data, per CLAUDE.md)', () => {
     process.env.NODE_ENV = 'development';
     assert.doesNotThrow(() => safeLog('warn', 'debug dump', { note: 'contact jane.doe@client.example' }));
   });
+
+  test('works with a single pre-formatted JSON string, the mcp.js call pattern', () => {
+    process.env.NODE_ENV = 'production';
+    assert.doesNotThrow(() => safeLog('log', JSON.stringify({ mcp_tool: 'get_interview', outcome: 'ok', ms: 12 })));
+    assert.throws(
+      () => safeLog('log', JSON.stringify({ mcp_tool: 'add_note', outcome: 'ok', echo: 'contact jane.doe@client.example' })),
+      /Refusing to log/,
+    );
+  });
+
+  test('refuses a named individual next to their role, same as findPersonalData', () => {
+    process.env.NODE_ENV = 'production';
+    assert.throws(
+      () => safeLog('log', 'note added', { text: 'Jane Doe, the CFO, confirmed the budget' }),
+      /Refusing to log/,
+    );
+  });
 });

@@ -13,7 +13,7 @@ import { offering, validateEngagement } from '../../schema/index.js';
 
 const validateEngagementErrors = (doc) => { const r = validateEngagement(doc); return r.valid ? [] : r.errors; };
 import { runDiscovery } from '../../agents/discovery/engine.js';
-import { hasConsent, redactQuestionnaire, InputRejectedError } from '../../agents/discovery/input.js';
+import { hasConsent, redactQuestionnaire, findPersonalData, InputRejectedError } from '../../agents/discovery/input.js';
 import { buildExtractionSchema, buildApproachSchema, countOptionalParameters, MAX_OPTIONAL_PARAMETERS, fieldCatalogue } from '../../agents/discovery/extraction-schema.js';
 import { assembleAnswers, flattenAnswers, extractAnswers, ExtractionInvalidError } from '../../agents/discovery/extract.js';
 import Anthropic from '@anthropic-ai/sdk';
@@ -127,6 +127,28 @@ describe('input guards', () => {
     assert.throws(() => redactQuestionnaire('card 4111 1111 1111 1111'), InputRejectedError);
     const list = Array.from({ length: 4 }, (_, i) => `c${i}@example.com`).join('\n');
     assert.throws(() => redactQuestionnaire(list), InputRejectedError);
+  });
+
+  test('findPersonalData catches a named individual next to their C-suite title, either order', () => {
+    assert.deepEqual(findPersonalData('Jane Doe, the CFO, confirmed the budget'), ['names an individual by name and role — record the role only']);
+    assert.deepEqual(findPersonalData('The CFO, Jane Doe, confirmed the budget'), ['names an individual by name and role — record the role only']);
+    assert.deepEqual(findPersonalData('Jane Doe is our Chief Marketing Officer'), ['names an individual by name and role — record the role only']);
+    assert.deepEqual(findPersonalData('The client wants faster checkout and better analytics'), []);
+  });
+
+  test('findPersonalData does not flag ordinary role tables or brand names', () => {
+    // The false positive this regression guards: "Managing Director" and "IT
+    // Lead" in adjacent RACI rows are two capitalised-word phrases near each
+    // other, but neither one names a person.
+    assert.deepEqual(findPersonalData('| Managing Director | A | yes |\n| IT Lead | C | no |'), []);
+    assert.deepEqual(findPersonalData('We use Shopify Plus and Adyen Payments for checkout'), []);
+  });
+
+  test('redactQuestionnaire rejects a name written in prose next to a role, outside the stakeholder table', () => {
+    assert.throws(
+      () => redactQuestionnaire('**Q1.1.1** — Notes\n\nJane Doe, the CFO, confirmed the budget.'),
+      InputRejectedError,
+    );
   });
 });
 

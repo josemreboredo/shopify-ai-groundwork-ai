@@ -24,6 +24,7 @@ import { approachBrief, closingStatus, deckBrief, deckDataPages, decideFromSessi
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
+import { findLeaks } from '../agents/discovery-deck/build.js';
 import { clarificationBrief, clarificationTopics, clarificationsPrompt } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { whatMoved } from './moved.js';
@@ -964,6 +965,13 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         const problems = deckErrors(deck, decided.ok ? decided.doc : {});
         if (problems.length) throw new ServiceError(400, 'Deck not saved', problems);
         text = deckToMarkdown(deck);
+        // The live/MCP deck schema has no internal-only section (unlike the CLI
+        // XML builder's "consultant-notes"): everything Claude writes here is
+        // treated as client-facing, so it is checked whole, with no part to strip.
+        if (decided.ok) {
+          const leaks = findLeaks(text, decided.doc);
+          if (leaks.length) throw new ServiceError(400, 'Deck not saved', [`internal data found in the deck (${leaks.join(', ')}) — Merkle's commercial position must never reach a client document`]);
+        }
       } else if (text.length < 500) {
         throw new ServiceError(400, 'Nothing to save — fill the deck templates (deck), or send only the annex to attach it to the version already saved');
       }

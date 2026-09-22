@@ -33,10 +33,9 @@ const Ajv2020 = require('ajv/dist/2020');
 const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
 
 export const ACCOUNT_NOTICE = [
-  '⚠  Claude Code mode runs on a personal Claude Pro account (interim decision, ADR 0007).',
-  '   Before dentsu / Merkle adoption or processing real client data at scale, migrate to',
-  "   dentsu's Claude Enterprise. Until then, keep \"use my chats to improve models\" switched off",
-  '   in claude.ai → Settings → Privacy.',
+  '⚠  This tool must only be run from a dentsu Claude Enterprise seat (ADR 0007).',
+  '   Real client data must never be processed from a personal Claude account —',
+  '   only consultants with a dentsu Claude Enterprise seat are authorised to use this tool.',
 ].join('\n');
 
 /** Paths inside a work directory. */

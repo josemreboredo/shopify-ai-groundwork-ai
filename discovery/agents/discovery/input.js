@@ -22,6 +22,26 @@ const EMAIL = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 // International numbers only (+CC or 00CC prefix) — avoids matching dates, SKUs and volumes.
 const PHONE = /(?:\+|\b00)\d{1,3}[\s.-]?(?:\(?\d{1,4}\)?[\s.-]?){2,5}\d{2,4}\b/g;
 const CARD_CANDIDATE = /\b(?:\d[ -]?){13,19}\b/g;
+/**
+ * A person's name written down almost always sits next to their role, the way
+ * a consultant actually types it ("Jane Doe, the CFO", "the CFO, Jane Doe").
+ * This cannot catch a bare name in prose — that needs a language model, not a
+ * regex — but it catches the common, concrete shape free-text notes take.
+ *
+ * Kept to unambiguous C-suite titles only (not "Director"/"Manager"/"Lead"/
+ * "Partner"): those are common words in ordinary business text (a RACI table's
+ * "role" column, "the IT Manager role") and a two-capitalised-word phrase sits
+ * next to one constantly without naming anyone — "Managing Director" next to
+ * "IT Lead" in adjacent table rows was one such false positive caught in
+ * testing. The window also stops at a newline or "|" so it cannot cross a
+ * table row/cell boundary the way that one did.
+ */
+const ROLE_WORD = 'CEO|CFO|COO|CTO|CMO|CHRO|CIO|Chief [A-Za-z]+ Officer|Founder';
+const NAME_WORD = "[A-Z][a-zA-Z'-]+ [A-Z][a-zA-Z'-]+";
+// No 'g' flag: used only with .test(), which — unlike .match() — carries
+// lastIndex state across calls on a global regex and would silently miss
+// matches in a later call that starts mid-string from the previous one.
+const NAME_NEAR_ROLE = new RegExp(`\\b(?:${NAME_WORD})\\b[^.\\n|]{0,40}\\b(?:${ROLE_WORD})\\b|\\b(?:${ROLE_WORD})\\b[^.\\n|]{0,40}\\b(?:${NAME_WORD})\\b`);
 
 /**
  * Text of one question block: from its "**Qx.y.z**" marker up to the next
@@ -110,6 +130,7 @@ export function findPersonalData(text) {
       break;
     }
   }
+  if (NAME_NEAR_ROLE.test(text)) reasons.push('names an individual by name and role — record the role only');
   return reasons;
 }
 
@@ -139,6 +160,13 @@ export function redactQuestionnaire(markdown) {
   const phones = text.match(PHONE) ?? [];
   text = text.replace(PHONE, '[redacted-phone]');
   const names = redactStakeholderNames(text);
+
+  // Checked after the stakeholder table (Q10.2.1) is already redacted, so this
+  // only catches a name written in prose elsewhere — the table's own names are
+  // handled above and would otherwise trip this on the very data it redacts.
+  if (NAME_NEAR_ROLE.test(names.text)) {
+    throw new InputRejectedError('Questionnaire names an individual by name and role in free text — record the role only, remove the name.');
+  }
 
   return {
     text: names.text,
