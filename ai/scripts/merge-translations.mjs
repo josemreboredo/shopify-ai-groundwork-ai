@@ -2,9 +2,9 @@
 /**
  * @file merge-translations.mjs
  * @description Merges translation batches (one file per section, written by hand
- * or by Claude) into discovery/schema/translations/<language>.json.
+ * or by Claude) into ai/schema/translations/<language>.json.
  *
- * Usage: node discovery/scripts/merge-translations.mjs <batch-dir> <language> [...languages]
+ * Usage: node ai/scripts/merge-translations.mjs <batch-dir> <language> [...languages]
  *   Batch files: <language>-head.json (document, sections, subsections, intros,
  *   options) and <language>-s<section>.json (questions, keyed by question id).
  */

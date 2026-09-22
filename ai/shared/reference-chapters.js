@@ -1,6 +1,6 @@
 /**
  * @file reference-chapters.js
- * @description GENERATED from discovery/docs/reference/*.md — do not edit. Run `npm run reference:chapters`.
+ * @description GENERATED from ai/docs/reference/*.md — do not edit. Run `npm run reference:chapters`.
  *
  * @module ai/shared/reference-chapters
  */

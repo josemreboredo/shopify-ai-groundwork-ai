@@ -6,10 +6,10 @@
  *   → schema validation.
  *
  * This folder shares its name with one of the two processes the tool runs
- * ("discovery" vs "rfp", named in `discovery/service/process.js`) but is not
+ * ("discovery" vs "rfp", named in `ai/shared/process.js`) but is not
  * that process's code — `weigh()` and `decide()` here are the shared engine,
  * called by both the Bid (RFP) and Engagement (discovery) paths alike. See
- * `discovery/tests/unit/one-engine.test.js`, which exists specifically to
+ * `ai/tests/unit/one-engine.test.js`, which exists specifically to
  * keep the two paths from silently disagreeing again.
  *
  * @module ai/engine

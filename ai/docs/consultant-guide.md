@@ -1,4 +1,4 @@
-<!-- GENERATED FILE — do not edit. Source: discovery/schema/question-bank.json + discovery/schema/offering.json + discovery/schema/apps.json. Re-render: npm run questionnaire:render -->
+<!-- GENERATED FILE — do not edit. Source: ai/schema/question-bank.json + ai/schema/offering.json + ai/schema/apps.json. Re-render: npm run questionnaire:render -->
 
 # Consultant guide — Shopify knowledge per question
 
@@ -680,7 +680,7 @@ Sources: https://help.shopify.com/en/manual/products/inventory/purchase-orders
 ### 3.1 Markets at launch
 
 **Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required · client)*
-Drives: gate Markets · gate Multi-currency · gate Languages · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP) · rule 11.23 (FLAG)
+Drives: gate Markets · gate More than one Shopify store · gate Multi-currency · gate Languages · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP) · rule 11.23 (FLAG)
 Who holds this fact: Country manager or commercial lead for the range and the team; the controller for the invoicing company.
 
 **What a usable answer looks like.** One row per launch country, with the invoicing company named even when it is the same everywhere, and the range marked same, subset or different. A vague answer sounds like "Europe" or "the usual countries". The follow-up that sharpens it: "which company name appears on the invoice a customer in that country receives?"

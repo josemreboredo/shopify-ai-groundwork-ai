@@ -1,4 +1,4 @@
-<!-- GENERATED FILE — do not edit. Source: discovery/schema/question-bank.json + discovery/schema/offering.json. Re-render: npm run questionnaire:render -->
+<!-- GENERATED FILE — do not edit. Source: ai/schema/question-bank.json + ai/schema/offering.json. Re-render: npm run questionnaire:render -->
 
 # Questionnaire de discovery Shopify
 

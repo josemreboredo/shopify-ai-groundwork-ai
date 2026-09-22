@@ -41,6 +41,7 @@ export default [
     gaia_tier: 'T1',
     points: 2,
     owner: 'consultant',
+    gates: ['store_estate'],
     spec_refs: ['/shopify/target_plan', '/delivery/admin_roles'],
     security_flags: ['auth', 'secrets'],
     applies: () => true,

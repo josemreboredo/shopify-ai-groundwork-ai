@@ -576,6 +576,25 @@
       }
     },
     {
+      "id": "store_estate",
+      "label": "More than one Shopify store",
+      "condition": "The requirements cannot be delivered on one store with Shopify Markets, so the engine's topology recommends expansion stores or a hybrid. Shopify includes ten stores per Plus contract at no extra licence cost, which is why this is easy to agree to and expensive to deliver: expansion stores share no data by default, apps are billed per store and theme licences cannot be shared, so every integration is wired again, every theme deployed again and every app bought again, per store",
+      "inputs": [
+        "/markets/topology/recommendation",
+        "/markets/topology/separate_store_markets"
+      ],
+      "modifier": "+Stores",
+      "sources": [
+        "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
+        "https://help.shopify.com/en/manual/markets/customizations/business-entities",
+        "https://help.shopify.com/en/manual/b2b/getting-started/store-type"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "help.shopify.com"
+      }
+    },
+    {
       "id": "multi_currency",
       "label": "Multi-currency",
       "condition": "More than one distinct checkout currency across markets whose price_strategy is not display_only",
@@ -948,6 +967,35 @@
           "why": "A full template set is re-tested and signed off in every market — the largest surface a further market meets"
         }
       ]
+    },
+    {
+      "id": "+Stores",
+      "gate": "store_estate",
+      "description": "Each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again — expansion stores share no data",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 9
+      },
+      "price_add": {
+        "min": 16000,
+        "max": 96000
+      },
+      "per_store_weeks": 1.5,
+      "per_store_price": 16000,
+      "per_unit_surcharge": [
+        {
+          "gate": "integration",
+          "add": 0.33,
+          "why": "No data is shared between stores, so every connection is wired, tested and reconciled again in each one"
+        },
+        {
+          "gate": "storefront_design",
+          "tier": "bespoke",
+          "add": 0.33,
+          "why": "Theme licences cannot be shared, so a bespoke template set is deployed and kept in step store by store"
+        }
+      ],
+      "$comment": "Ten stores come with a Plus contract at no licence cost, which is exactly why nobody counts them. The cost is not the licence: it is apps billed per store, theme licences per store, and integrations wired per store because expansion stores share no data by default."
     },
     {
       "id": "+B2B",
@@ -1986,6 +2034,21 @@
         "M": "Up to 3",
         "L": "Up to 3",
         "note": "The most the pack holds with everything else in it taken too. A further market is three quarters of a week and CHF 8k, and a third more where it meets a bespoke template set rather than a configured theme — a market is re-tested and signed off against whatever the pack builds, so it costs more in the larger packs than in the entry one."
+      },
+      {
+        "id": "store_estate",
+        "what": "Shopify stores",
+        "gate": "store_estate",
+        "S": "One",
+        "M": "One, with Shopify Markets",
+        "L": "One, with Shopify Markets",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Each further store",
+        "note": "One store with Shopify Markets covers currency, language, domain, pricing and catalogue per market, and on Plus it routes payments through a different legal entity per market. A second store is not a licence question — ten come with a Plus contract — it is that expansion stores share no data by default, so every integration is wired again in each one, apps are billed per store and theme licences cannot be shared. The engine derives how many the requirements need; nobody is asked to guess."
       },
       {
         "id": "multi_currency",

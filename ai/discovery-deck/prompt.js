@@ -1,6 +1,6 @@
 /**
  * @file prompt.js
- * @description GENERATED from discovery/docs/deck-prompt.md — do not edit. Run `npm run deck:prompt`.
+ * @description GENERATED from ai/docs/deck-prompt.md — do not edit. Run `npm run deck:prompt`.
  *
  * @module discovery-deck/prompt
  */

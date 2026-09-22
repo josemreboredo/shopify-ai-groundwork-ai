@@ -17,9 +17,9 @@
  * recommendation has failed at its job.
  *
  * Every criterion resting on a Shopify platform fact carries its official
- * source in the trigger it fires (`source`, in SOURCES). A few criteria rest
- * on business governance instead — who runs a market, whether wholesale is
- * its own operation — and carry none, because there is nothing Shopify
+ * source in the trigger it fires (`source`, in SOURCES). One criterion rests
+ * on business governance instead — who runs a market day to day
+ * (governance_isolation) — and carries none, because there is nothing Shopify
  * publishes to cite for a client's own org chart; citing a Shopify page there
  * would misrepresent what it backs. Where Shopify publishes nothing on the
  * platform question itself — there is no official side-by-side comparison of
@@ -32,12 +32,22 @@
 
 import { marketsOf, hasChinaMainland } from './classify.js';
 
-/** Official Shopify sources, verified 2026-09-18. */
+/** Official Shopify sources, verified 2026-09-18; business entities and the B2B store type 2026-09-22. */
 export const SOURCES = {
   expansion_stores: 'https://help.shopify.com/en/manual/organization-settings/expansion-stores',
   markets: 'https://help.shopify.com/en/manual/markets',
   catalogs: 'https://help.shopify.com/en/manual/markets/customizations/catalogs',
+  // The Markets-level feature (Plus only): assigns a business entity per
+  // market, so orders route to that entity's Shopify Payments account. More
+  // precise than SOURCES.entities for this criterion — that page documents the
+  // prerequisite (multiple Payments accounts), this one the per-market
+  // assignment the criterion is actually about.
+  business_entities: 'https://help.shopify.com/en/manual/markets/customizations/business-entities',
   entities: 'https://help.shopify.com/en/manual/payments/shopify-payments/onboarding/selling-with-multiple-entities',
+  // Dedicated vs blended B2B store: the actual platform backing for "run as
+  // its own operation" — different staff, inventory and access are exactly
+  // what a dedicated store is for.
+  b2b_store_type: 'https://help.shopify.com/en/manual/b2b/getting-started/store-type',
   per_market_theme: 'https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets',
   b2b_plans: 'https://help.shopify.com/en/manual/b2b/getting-started/plan-features',
   managed_markets_requirements: 'https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations',
@@ -73,16 +83,26 @@ const distinct = (values) => [...new Set(values.filter(Boolean))];
  */
 const CRITERIA = [
   {
+    /*
+     * A second legal entity is not automatically a second store.
+     *
+     * Verified 2026-09-22: Shopify lets a Plus store assign a business entity
+     * per market, so orders in that market route through that entity's
+     * Shopify Payments account and pay out to its bank — one store, several
+     * entities (SOURCES.business_entities; the prerequisite multi-account
+     * Payments set-up is SOURCES.entities). That page is explicit it affects
+     * payment processing only, and says nothing about invoicing or tax
+     * registrations — so the entity split still counts, at a lower weight
+     * than it carried, and what carries the weight now is the invoicing and
+     * tax footprint below it.
+     *
+     * Below Plus (and on Enterprise Commerce, unconfirmed either way — see the
+     * mitigation logic) the feature does not exist at all, and a second
+     * entity really does mean a second store.
+     */
     id: 'legal_entity_per_market',
-    // Was weight 5 (the highest), on the assumption that a different selling
-    // entity per market forces separate stores. Shopify Payments now routes
-    // transactions and payouts to the right entity from one store — Plus and
-    // Enterprise Commerce only, and payment/payout only; it is silent on VAT
-    // invoicing and does not cover tax filing (SOURCES.entities). So on a
-    // target plan that has it, multiple entities alone no longer force a
-    // split — invoicing_and_tax_footprint is the criterion that still can.
     weight: 3,
-    label: 'A different selling legal entity per market, with its own settlement',
+    label: 'A different selling legal entity per market — on Plus this is business entities per market, below Plus it is a second store',
     evaluate(doc, markets) {
       const plan = doc.shopify?.target_plan;
       // Mitigation requires knowing the plan; 'not_sure' or unanswered is
@@ -90,7 +110,7 @@ const CRITERIA = [
       // engine reasons from an unknown.
       const mitigated = plan === 'plus' || plan === 'enterprise';
       const mitigation = mitigated
-        ? ` — mitigated: Shopify Payments routes each entity's transactions and payouts from one store on ${plan === 'plus' ? 'Plus' : 'Enterprise Commerce'} (${SOURCES.entities}), though it does not cover VAT invoicing or tax filing`
+        ? ` — mitigated: Shopify Payments routes each entity's transactions and payouts from one store on ${plan === 'plus' ? 'Plus' : 'Enterprise Commerce'} (${SOURCES.business_entities}), though it does not cover VAT invoicing or tax filing`
         : '';
       const mapped = markets.filter((m) => m.selling_entity);
       const entities = distinct(mapped.map((m) => m.selling_entity));
@@ -103,7 +123,7 @@ const CRITERIA = [
           question_ids: ['Q3.1.1', 'Q1.1.6'],
           stated: true,
           broad: !mitigated && others.length >= Math.ceil(markets.length / 2),
-          source: SOURCES.entities,
+          source: SOURCES.business_entities,
         };
       }
       // No per-market mapping, but several entities are recorded: the topology
@@ -116,7 +136,7 @@ const CRITERIA = [
           question_ids: ['Q1.1.6', 'Q3.1.1'],
           stated: false,
           broad: !mitigated,
-          source: SOURCES.entities,
+          source: SOURCES.business_entities,
         };
       }
       return null;
@@ -178,15 +198,17 @@ const CRITERIA = [
       if (doc.b2b?.enabled !== true || doc.b2b?.own_operation !== true) return null;
       return {
         markets: [],
-        // No Shopify source applies here, same as governance_isolation: this
-        // is a business-governance signal (a separately-run team), not a
-        // platform fact. B2B itself runs on every plan from Basic
-        // (SOURCES.b2b_plans, verified) — that is not what fires this
-        // criterion and citing it here would misrepresent what it backs.
+        // Shopify's own B2B store-type guidance names this exact split: a
+        // dedicated store is for different staff, different inventory, and
+        // restricted access — the platform's own framing of "its own
+        // operation" (SOURCES.b2b_store_type). B2B itself runs on every plan
+        // from Basic (SOURCES.b2b_plans) — that fact is unrelated to why this
+        // fires and is not cited here.
         evidence: 'The wholesale business is run by its own team with its own targets or P&L',
         question_ids: ['Q6.2.14', 'Q1.1.4'],
         stated: true,
         broad: false,
+        source: SOURCES.b2b_store_type,
         adds_store: 'B2B',
       };
     },
@@ -225,6 +247,17 @@ const CRITERIA = [
     },
   },
 ];
+
+/**
+ * Every market except the one the first store is built for: the stated
+ * primary market, or just the first one recorded when none is stated.
+ */
+function nonPrimary(doc, markets) {
+  const primaries = doc.markets?.primary_markets ?? [];
+  const first = primaries.length ? markets.filter((m) => primaries.includes(m.code)) : markets.slice(0, 1);
+  const firstCodes = new Set(first.map((m) => m.code));
+  return markets.filter((m) => !firstCodes.has(m.code));
+}
 
 /** The entity that sells in the primary markets, or the most common one. */
 function primaryEntity(doc, mapped) {
@@ -533,7 +566,17 @@ export function evaluateTopology(doc) {
     rejected,
     assumptions,
     open_inputs,
+    // A hybrid separates only the markets that actually diverged; a full
+    // expansion-store recommendation separates all of them. Either way this
+    // lists stores *beyond the first* (classify.js's storesBeyondTheFirst),
+    // so one market — the primary one, same market a selling entity defaults
+    // to — stays off the list as the implicit first store, not because it is
+    // exempt but because it is the one nothing further is added for. Left
+    // unset for anything else, storesBeyondTheFirst() silently priced zero
+    // extra stores for a full expansion recommendation before this — the
+    // most expensive shape, costed as the cheapest one.
     ...(recommendation === 'hybrid' && separate.length ? { separate_store_markets: separate } : {}),
+    ...(recommendation === 'expansion_stores' ? { separate_store_markets: codes(nonPrimary(doc, markets)) } : {}),
     managed_markets,
     ...(stated ? { stated_preference: stated } : {}),
     ...(disagreement ? { disagreement } : {}),

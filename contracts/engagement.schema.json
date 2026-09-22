@@ -443,6 +443,9 @@
             "markets": {
               "$ref": "#/$defs/gate"
             },
+            "store_estate": {
+              "$ref": "#/$defs/gate"
+            },
             "multi_currency": {
               "$ref": "#/$defs/gate"
             },
@@ -524,6 +527,7 @@
               "+SKU (very large)",
               "+Search (app)",
               "+Search (native)",
+              "+Stores",
               "+Subscriptions (advanced)",
               "+Subscriptions (standard)",
               "+Support (extended)",
@@ -992,7 +996,7 @@
               "items": {
                 "$ref": "#/$defs/country"
               },
-              "description": "Markets that leave the core store under a hybrid recommendation."
+              "description": "Markets that get their own store: the diverging subset under a hybrid recommendation, or every market under a full expansion-stores recommendation."
             },
             "managed_markets": {
               "type": "object",

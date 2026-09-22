@@ -10,6 +10,7 @@ import assert from 'node:assert/strict';
 import { evaluateTopology, managedMarketsVerdict, excludedFromBuild } from '../../engine/topology.js';
 import { evaluateExits } from '../../engine/exits.js';
 import { planRequirements } from '../../engine/plan.js';
+import { storesBeyondTheFirst } from '../../engine/classify.js';
 import { approachQualityErrors } from '../../engine/approach.js';
 import { deckErrors } from '../../shared/deck-template.js';
 
@@ -82,7 +83,23 @@ describe('market topology', () => {
     const plus = evaluateTopology(engagement({ markets: marketsRow, entities: ['ACME AG', 'ACME GmbH'], plan: 'plus' }));
     assert.notEqual(plus.recommendation, 'expansion_stores', 'mitigated on Plus — one criterion alone no longer forces a split');
     assert.match(entityTrigger(plus).evidence, /mitigated: Shopify Payments routes each entity/);
-    assert.equal(entityTrigger(plus).source, 'https://help.shopify.com/en/manual/payments/shopify-payments/onboarding/selling-with-multiple-entities');
+    assert.equal(entityTrigger(plus).source, 'https://help.shopify.com/en/manual/markets/customizations/business-entities');
+  });
+
+  test('3c · a full expansion-stores recommendation prices every market beyond the primary as a store — not zero', () => {
+    // The regression this guards: separate_store_markets was only ever
+    // populated for 'hybrid', so storesBeyondTheFirst() (classify.js) priced
+    // a full expansion-stores estate — the most expensive shape — as though
+    // it were a single store, silently.
+    const doc = engagement({
+      markets: [stated('CH'), stated('DE', { selling_entity: 'ACME GmbH' }), stated('FR', { selling_entity: 'ACME SAS' })],
+      entities: ['ACME AG', 'ACME GmbH', 'ACME SAS'],
+    });
+    const t = evaluateTopology(doc);
+    assert.equal(t.recommendation, 'expansion_stores');
+    assert.deepEqual(t.separate_store_markets, ['DE', 'FR'], 'CH is the primary market — the implicit first store, not listed');
+    doc.markets.topology = t;
+    assert.equal(storesBeyondTheFirst(doc), 2);
   });
 
   test('4 · mainland China alongside other markets → hybrid, and China stays out of the build', () => {

@@ -1,6 +1,6 @@
 /**
  * @file render-reference-chapters.js
- * @description Copy Merkle's Shopify reference chapters (discovery/docs/reference/*.md)
+ * @description Copy Merkle's Shopify reference chapters (ai/docs/reference/*.md)
  * into a JS module, so the web app and the Claude connector carry them in bundled
  * server code. Run after editing a chapter: `npm run reference:chapters`
  * (a test fails when they differ).
@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { DISCOVERY_ROOT } from '../paths.js';
 
 export const SOURCE_DIR = path.join(DISCOVERY_ROOT, 'docs', 'reference');
-export const OUTPUT = path.join(DISCOVERY_ROOT, 'service', 'reference-chapters.js');
+export const OUTPUT = path.join(DISCOVERY_ROOT, 'shared', 'reference-chapters.js');
 
 /** Parse `--- key: value ---` front matter plus the body. @param {string} text */
 export function parseChapter(slug, text) {
@@ -52,7 +52,7 @@ export function readChapters(dir = SOURCE_DIR) {
 export function renderChaptersModule(chapters) {
   return `/**
  * @file reference-chapters.js
- * @description GENERATED from discovery/docs/reference/*.md — do not edit. Run \`npm run reference:chapters\`.
+ * @description GENERATED from ai/docs/reference/*.md — do not edit. Run \`npm run reference:chapters\`.
  *
  * @module ai/shared/reference-chapters
  */

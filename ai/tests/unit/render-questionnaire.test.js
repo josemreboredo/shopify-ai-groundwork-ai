@@ -8,11 +8,11 @@ import fs       from 'node:fs';
 import { renderQuestionnaire, renderConsultantGuide, OUTPUT, GUIDE_OUTPUT } from '../../scripts/render-questionnaire.js';
 import { questionBank } from '../../schema/index.js';
 
-test('discovery/docs/client-questionnaire.md is up to date (npm run questionnaire:render)', () => {
+test('ai/docs/client-questionnaire.md is up to date (npm run questionnaire:render)', () => {
   assert.equal(fs.readFileSync(OUTPUT, 'utf8'), renderQuestionnaire());
 });
 
-test('discovery/docs/consultant-guide.md is up to date (npm run questionnaire:render)', () => {
+test('ai/docs/consultant-guide.md is up to date (npm run questionnaire:render)', () => {
   assert.equal(fs.readFileSync(GUIDE_OUTPUT, 'utf8'), renderConsultantGuide());
 });
 

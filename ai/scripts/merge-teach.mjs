@@ -1,7 +1,7 @@
 /**
  * Merge `teach` blocks written per section (scratchpad/why/*.out.json) into the
  * question bank. Validates shape and drops anything that does not belong to a
- * known question. Usage: node discovery/scripts/merge-teach.mjs <dir>
+ * known question. Usage: node ai/scripts/merge-teach.mjs <dir>
  */
 import fs from 'node:fs';
 import path from 'node:path';

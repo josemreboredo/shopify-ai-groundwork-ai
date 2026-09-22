@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
  * @file render-questionnaire.js
- * @description Generates, from discovery/schema/question-bank.json, discovery/schema/offering.json
- * and discovery/schema/apps.json:
- *   - discovery/docs/client-questionnaire.md  the questionnaire used with the client
+ * @description Generates, from ai/schema/question-bank.json, ai/schema/offering.json
+ * and ai/schema/apps.json:
+ *   - ai/docs/client-questionnaire.md  the questionnaire used with the client
  *     (neutral wording: no Shopify plan requirements, rule numbers, offers or § 11 —
  *     owner decisions 2026-09-17; STOP-only consultant questions are left out)
- *   - discovery/docs/consultant-guide.md      Shopify knowledge per question for the
+ *   - ai/docs/consultant-guide.md      Shopify knowledge per question for the
  *     consultant: native features, minimum plan, docs, App Store apps, rules fed
  * Both files are outputs — edit the sources, then re-render.
  *
@@ -40,7 +40,7 @@ export const GUIDE_OUTPUT = path.join(DOCS_DIR, 'consultant-guide.md');
 const PRIORITY_LABEL = { required: 'required', recommended: 'recommended', optional: 'optional' };
 
 /**
- * Readable option label (discovery/schema/option-labels.json + acronyms), in the
+ * Readable option label (ai/schema/option-labels.json + acronyms), in the
  * conversation language when the translation has it.
  *
  * @param {string} value @param {Record<string, string>} [labels]
@@ -114,7 +114,7 @@ export function renderQuestionnaire(language) {
   const t = translationFor(language);
   const doc = t?.document ?? {};
   const out = [
-    '<!-- GENERATED FILE — do not edit. Source: discovery/schema/question-bank.json + discovery/schema/offering.json. Re-render: npm run questionnaire:render -->',
+    '<!-- GENERATED FILE — do not edit. Source: ai/schema/question-bank.json + ai/schema/offering.json. Re-render: npm run questionnaire:render -->',
     '',
     `# ${doc.title ?? 'Shopify Discovery Questionnaire'}`,
     '',
@@ -259,7 +259,7 @@ function renderGuideQuestion(q) {
 export function renderConsultantGuide() {
   const withBlock = questionBank.questions.filter((q) => q.shopify).length;
   const out = [
-    '<!-- GENERATED FILE — do not edit. Source: discovery/schema/question-bank.json + discovery/schema/offering.json + discovery/schema/apps.json. Re-render: npm run questionnaire:render -->',
+    '<!-- GENERATED FILE — do not edit. Source: ai/schema/question-bank.json + ai/schema/offering.json + ai/schema/apps.json. Re-render: npm run questionnaire:render -->',
     '',
     '# Consultant guide — Shopify knowledge per question',
     '',

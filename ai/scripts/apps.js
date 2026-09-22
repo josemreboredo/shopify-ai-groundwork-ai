@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @file cli.js
- * @description App Store registry (discovery/schema/apps.json). Apps enter as `proposed`;
+ * @description App Store registry (ai/schema/apps.json). Apps enter as `proposed`;
  * the lead consultant approves an app after the engagement work in which it
  * was used (owner decision 2026-09-17). No prices are stored.
  *
@@ -26,7 +26,7 @@ const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
  */
 function approveApp(registry, { handle, by, today, engagement, note }) {
   const app = registry.apps.find((a) => a.handle === handle);
-  if (!app) throw new Error(`Unknown app handle "${handle}" — add it to discovery/schema/apps.json first`);
+  if (!app) throw new Error(`Unknown app handle "${handle}" — add it to ai/schema/apps.json first`);
   if (!by?.trim()) throw new Error('--by is required: the role of the lead consultant approving the app');
   if (/@|\d{6,}/.test(by)) throw new Error('--by takes a role, not personal contact data');
   if (engagement !== undefined && !SLUG.test(engagement)) throw new Error('--engagement must be a client slug');

@@ -689,7 +689,7 @@ export function buildDeckXml(doc, backlog = null, { stated = [] } = {}) {
 
   const head = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    `<discovery-deck client="${esc(doc.meta.client.slug)}" mode="${deckMode(doc)}" audience="lead-consultant" template="discovery/docs/deck-template.md">`,
+    `<discovery-deck client="${esc(doc.meta.client.slug)}" mode="${deckMode(doc)}" audience="lead-consultant" template="ai/docs/deck-template.md">`,
     `  <warnings count="${x.warnings.length}">`,
     ...x.warnings.map((w) => `    <warning>${esc(w)}</warning>`),
     '  </warnings>',

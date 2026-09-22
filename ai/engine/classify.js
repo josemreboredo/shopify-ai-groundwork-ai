@@ -79,6 +79,22 @@ const CHINA_MAINLAND = 'CN';
 /** Locations selling with Shopify POS or an integrated one. @param {object} doc */
 export const retailLocations = (doc) => doc.retail?.store_count ?? 0;
 
+/**
+ * Stores the topology needs beyond the first.
+ *
+ * `separate_store_markets` is the markets the engine could not fit on the main
+ * store. A hybrid puts those on their own stores and keeps the rest together; a
+ * full expansion recommendation does the same thing more widely. Either way the
+ * count is what the engine already worked out, not a number anyone typed.
+ *
+ * @param {object} doc
+ */
+export function storesBeyondTheFirst(doc) {
+  const t = doc.markets?.topology;
+  if (!t || t.recommendation === 'single_store_markets' || t.recommendation === 'single_store_managed_markets') return 0;
+  return (t.separate_store_markets ?? []).length;
+}
+
 /** Launch markets in the offering's scope (mainland China excluded). @param {object} doc */
 export const marketsOf = (doc) => (doc.markets?.list ?? []).filter((m) => m.code !== CHINA_MAINLAND);
 
@@ -116,6 +132,32 @@ const GATE_EVALUATORS = {
   markets: (doc) => {
     const codes = marketsOf(doc).map((m) => m.code);
     return { active: codes.length >= 2, evidence: `${codes.length} market(s) at launch${codes.length ? `: ${codes.join(', ')}` : ''}` };
+  },
+
+  /*
+   * How many Shopify stores the requirements actually need.
+   *
+   * The engine has always derived this — one store with Markets, expansion
+   * stores, or a hybrid — and then priced every engagement as though the answer
+   * were one. Ten stores come with a Plus contract at no licence cost, which is
+   * exactly why nobody counts them; the cost is that expansion stores share no
+   * data by default, so every integration is wired again in each one, apps are
+   * billed per store and theme licences cannot be shared.
+   *
+   * It reads the derived topology rather than an answer, because no client
+   * knows how many Shopify stores they need — that is the question this tool
+   * exists to answer.
+   */
+  store_estate: (doc) => {
+    const t = doc.markets?.topology;
+    const extra = storesBeyondTheFirst(doc);
+    if (!t || extra <= 0) {
+      return { active: false, evidence: t ? 'One store with Shopify Markets' : 'Topology not derived yet' };
+    }
+    return {
+      active: true,
+      evidence: `${t.recommendation.replace(/_/g, ' ')}: ${extra + 1} stores, ${extra} beyond the first`,
+    };
   },
 
   languages: (doc) => {
@@ -595,6 +637,7 @@ function modifierFor(gate, evaluated, doc) {
     languages: { count: distinctLanguages(doc).length, free: modifier.free_languages ?? 3, weeks: 'per_language_weeks', price: 'per_language_price' },
     integration: { count: countedIntegrations(doc).length, free: 0, weeks: 'per_integration_weeks', price: 'per_integration_price' },
     retail_pos: { count: retailLocations(doc), free: 0, weeks: 'per_location_weeks', price: 'per_location_price' },
+    store_estate: { count: storesBeyondTheFirst(doc), free: 0, weeks: 'per_store_weeks', price: 'per_store_price' },
   };
   const scale = SCALES[gate.id];
   if (!scale) return modifier;

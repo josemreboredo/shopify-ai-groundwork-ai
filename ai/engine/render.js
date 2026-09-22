@@ -257,7 +257,7 @@ function chinaTable(doc) {
     ['Blocked services review', v(c.blocked_services_review)], ['Marketing channels', v(c.marketing_channels)],
     ['Customer service', v(c.customer_service)], ['Local partner', v(c.local_partner)], ['China launch target', v(c.target_launch_date)],
     ['PRC legal, tax and customs advice', v(c.legal_advice)],
-  ]) + '\n\nReference: `discovery/docs/china-mainland.md`.';
+  ]) + '\n\nReference: `ai/docs/china-mainland.md`.';
 }
 
 /** Scope profile rows: what makes this engagement bigger than an offer. @param {object} doc */
