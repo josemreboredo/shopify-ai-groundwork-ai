@@ -14,7 +14,10 @@ export function getSecurityHeaders() {
       "connect-src 'self' https://api.anthropic.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
-      "form-action 'self'"
+      // 'self' for the app's own forms, github.com because the sign-in form
+      // posts to /auth/github, which 302s to GitHub's OAuth authorize page —
+      // form-action also gates redirects that follow a form submission.
+      "form-action 'self' https://github.com"
     ].join('; '),
 
     // Prevent clickjacking attacks
