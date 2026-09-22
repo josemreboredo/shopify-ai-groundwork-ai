@@ -3,6 +3,11 @@ import { Form, Link, Links, Meta, NavLink, Outlet, Scripts, ScrollRestoration, i
 import { getUser } from './auth.server.js';
 import { PRODUCT } from './brand.js';
 import stylesheet from './app.css?url';
+import { getSecurityHeaders } from './utils/security-headers.js';
+
+export function headers() {
+  return getSecurityHeaders();
+}
 
 export const links = () => [
   { rel: 'icon', href: '/favicon.ico', sizes: '128x128' },
