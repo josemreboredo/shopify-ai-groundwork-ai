@@ -72,6 +72,19 @@ describe('market topology', () => {
       'the derived topology, not the client preference, is what asks for Plus');
   });
 
+  test('3b · a different entity per market alone does not force expansion stores on Plus — Shopify Payments routes it from one store', () => {
+    const marketsRow = [stated('CH'), stated('DE', { selling_entity: 'ACME GmbH' })];
+    const basic = evaluateTopology(engagement({ markets: marketsRow, entities: ['ACME AG', 'ACME GmbH'], plan: 'basic' }));
+    const entityTrigger = (t) => t.triggers.find((x) => x.criterion === 'legal_entity_per_market');
+    assert.equal(basic.recommendation, 'expansion_stores', 'unmitigated on a plan without the feature');
+    assert.doesNotMatch(entityTrigger(basic).evidence, /mitigated/);
+
+    const plus = evaluateTopology(engagement({ markets: marketsRow, entities: ['ACME AG', 'ACME GmbH'], plan: 'plus' }));
+    assert.notEqual(plus.recommendation, 'expansion_stores', 'mitigated on Plus — one criterion alone no longer forces a split');
+    assert.match(entityTrigger(plus).evidence, /mitigated: Shopify Payments routes each entity/);
+    assert.equal(entityTrigger(plus).source, 'https://help.shopify.com/en/manual/payments/shopify-payments/onboarding/selling-with-multiple-entities');
+  });
+
   test('4 · mainland China alongside other markets → hybrid, and China stays out of the build', () => {
     const t = evaluateTopology(engagement({ markets: [stated('CH'), stated('DE'), { code: 'CN', currency: 'CNY' }] }));
     assert.equal(t.recommendation, 'hybrid');

@@ -896,6 +896,10 @@
                     "items": {
                       "type": "string"
                     }
+                  },
+                  "source": {
+                    "type": "string",
+                    "description": "Official Shopify source, when the trigger rests on a platform fact rather than business governance."
                   }
                 }
               }
@@ -946,6 +950,10 @@
                   },
                   "question_id": {
                     "type": "string"
+                  },
+                  "source": {
+                    "type": "string",
+                    "description": "Official Shopify source, when the assumption rests on a platform fact."
                   }
                 }
               }
@@ -1053,6 +1061,10 @@
                       "type": "string"
                     }
                   }
+                },
+                "uk_considerations": {
+                  "type": "string",
+                  "description": "Present when the headquarters country is GB: UK Managed Markets has its own terms (fulfilment confined to Great Britain or Northern Ireland, no Shopify Protect, no multi-currency payouts, VAT registration must match the business name) that this evaluator cannot check from a country code alone."
                 }
               }
             },
@@ -1082,6 +1094,10 @@
                   "type": "string"
                 }
               }
+            },
+            "per_market_theme_note": {
+              "type": "string",
+              "description": "Present whenever the recommendation leaves more than one market on the same store: per-market theme content needs the Advanced plan or higher."
             }
           }
         }

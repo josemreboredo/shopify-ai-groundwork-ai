@@ -16,9 +16,14 @@
  * `to_validate`, with every assumption listed — a discovery that produces no
  * recommendation has failed at its job.
  *
- * Every Shopify constraint encoded here carries its official source next to it.
- * Where Shopify publishes nothing — there is no official side-by-side comparison
- * of one store with Markets versus expansion stores, and no published cap on
+ * Every criterion resting on a Shopify platform fact carries its official
+ * source in the trigger it fires (`source`, in SOURCES). A few criteria rest
+ * on business governance instead — who runs a market, whether wholesale is
+ * its own operation — and carry none, because there is nothing Shopify
+ * publishes to cite for a client's own org chart; citing a Shopify page there
+ * would misrepresent what it backs. Where Shopify publishes nothing on the
+ * platform question itself — there is no official side-by-side comparison of
+ * one store with Markets versus expansion stores, and no published cap on
  * markets, currencies or price lists per store — the code says so and the
  * consequence is framed as architecture, not as a documented limit.
  *
@@ -39,7 +44,11 @@ export const SOURCES = {
   managed_markets_overview: 'https://help.shopify.com/en/manual/international/managed-markets/overview',
   managed_markets_uk: 'https://help.shopify.com/en/manual/international/managed-markets/managed-markets-uk',
   taxes: 'https://help.shopify.com/en/manual/taxes/registration/setup',
-  china: 'https://help.shopify.com/en/manual/international/managed-markets/prohibited-items',
+  // Not a single Shopify page: Shopify documents no mainland-China-specific
+  // infrastructure position at all. The claim (PRC entity, ICP filing, onshore
+  // hosting) is sourced from Chinese government orders and MIIT notices, not
+  // from Shopify — see the dedicated brief.
+  china: '../docs/china-mainland.md',
 };
 
 /** Countries whose businesses Shopify documents as eligible for Managed Markets. */
@@ -65,9 +74,24 @@ const distinct = (values) => [...new Set(values.filter(Boolean))];
 const CRITERIA = [
   {
     id: 'legal_entity_per_market',
-    weight: 5,
+    // Was weight 5 (the highest), on the assumption that a different selling
+    // entity per market forces separate stores. Shopify Payments now routes
+    // transactions and payouts to the right entity from one store — Plus and
+    // Enterprise Commerce only, and payment/payout only; it is silent on VAT
+    // invoicing and does not cover tax filing (SOURCES.entities). So on a
+    // target plan that has it, multiple entities alone no longer force a
+    // split — invoicing_and_tax_footprint is the criterion that still can.
+    weight: 3,
     label: 'A different selling legal entity per market, with its own settlement',
     evaluate(doc, markets) {
+      const plan = doc.shopify?.target_plan;
+      // Mitigation requires knowing the plan; 'not_sure' or unanswered is
+      // treated the same as not having it, same as everywhere else this
+      // engine reasons from an unknown.
+      const mitigated = plan === 'plus' || plan === 'enterprise';
+      const mitigation = mitigated
+        ? ` — mitigated: Shopify Payments routes each entity's transactions and payouts from one store on ${plan === 'plus' ? 'Plus' : 'Enterprise Commerce'} (${SOURCES.entities}), though it does not cover VAT invoicing or tax filing`
+        : '';
       const mapped = markets.filter((m) => m.selling_entity);
       const entities = distinct(mapped.map((m) => m.selling_entity));
       if (entities.length > 1) {
@@ -75,10 +99,11 @@ const CRITERIA = [
         const others = mapped.filter((m) => m.selling_entity !== primary);
         return {
           markets: codes(others),
-          evidence: `${entities.length} selling entities across ${markets.length} markets (${entities.join(', ')})`,
+          evidence: `${entities.length} selling entities across ${markets.length} markets (${entities.join(', ')})${mitigation}`,
           question_ids: ['Q3.1.1', 'Q1.1.6'],
           stated: true,
-          broad: others.length >= Math.ceil(markets.length / 2),
+          broad: !mitigated && others.length >= Math.ceil(markets.length / 2),
+          source: SOURCES.entities,
         };
       }
       // No per-market mapping, but several entities are recorded: the topology
@@ -87,10 +112,11 @@ const CRITERIA = [
       if (!mapped.length && recorded.length > 1) {
         return {
           markets: codes(markets),
-          evidence: `${recorded.length} legal entities recorded (${recorded.join(', ')}) with no per-market mapping`,
+          evidence: `${recorded.length} legal entities recorded (${recorded.join(', ')}) with no per-market mapping${mitigation}`,
           question_ids: ['Q1.1.6', 'Q3.1.1'],
           stated: false,
-          broad: true,
+          broad: !mitigated,
+          source: SOURCES.entities,
         };
       }
       return null;
@@ -112,6 +138,7 @@ const CRITERIA = [
           question_ids: ['Q3.1.1', 'Q3.4.2'],
           stated: true,
           broad: own.length >= Math.ceil(markets.length / 2),
+          source: SOURCES.taxes,
         };
       }
       return null;
@@ -130,6 +157,7 @@ const CRITERIA = [
         question_ids: ['Q3.1.1'],
         stated: true,
         broad: different.length >= Math.ceil(markets.length / 2),
+        source: SOURCES.catalogs,
       };
     },
   },
@@ -150,6 +178,11 @@ const CRITERIA = [
       if (doc.b2b?.enabled !== true || doc.b2b?.own_operation !== true) return null;
       return {
         markets: [],
+        // No Shopify source applies here, same as governance_isolation: this
+        // is a business-governance signal (a separately-run team), not a
+        // platform fact. B2B itself runs on every plan from Basic
+        // (SOURCES.b2b_plans, verified) — that is not what fires this
+        // criterion and citing it here would misrepresent what it backs.
         evidence: 'The wholesale business is run by its own team with its own targets or P&L',
         question_ids: ['Q6.2.14', 'Q1.1.4'],
         stated: true,
@@ -187,6 +220,7 @@ const CRITERIA = [
         stated: true,
         broad: false,
         excluded_from_build: true,
+        source: SOURCES.china,
       };
     },
   },
@@ -264,6 +298,7 @@ function assumptionsFor(doc, markets) {
     about: 'App requirements that cannot coexist on one store',
     assumed: 'No market needs an app the others cannot live with (apps are installed store-wide)',
     impact_if_wrong: 'One incompatible app requirement is enough to force a separate store for that market',
+    source: SOURCES.expansion_stores,
     question_id: null,
   });
   return out.map(({ question_id, ...rest }) => (question_id ? { ...rest, question_id } : rest));
@@ -367,6 +402,15 @@ export function managedMarketsVerdict(doc) {
     status: failing.length ? 'not_eligible' : 'eligible',
     conditions,
     ...(failing.length ? {} : { cost_signal: costSignal(doc) }),
+    // UK has its own terms beyond the general conditions above (no Shopify
+    // Protect, no multi-currency payouts, no refunds through Managed Markets,
+    // fulfilment must be either Great Britain or Northern Ireland — not both
+    // — and a VAT registration that must match the registered business name).
+    // Not folded into a pass/fail condition: the country code this engine
+    // works from (GB) does not distinguish Great Britain from Northern
+    // Ireland, so whether a GB fulfilment answer actually crosses that line
+    // needs a person to check, not this evaluator.
+    ...(hq === 'GB' ? { uk_considerations: SOURCES.managed_markets_uk } : {}),
   };
 }
 
@@ -418,6 +462,10 @@ export function evaluateTopology(doc) {
       evidence: hit.evidence,
       ...(hit.markets?.length ? { markets: hit.markets } : {}),
       question_ids: hit.question_ids,
+      // Not every criterion rests on a Shopify platform fact — some (business
+      // ownership, team structure) are consulting judgement with nothing to
+      // cite; those legitimately have no source.
+      ...(hit.source ? { source: hit.source } : {}),
       _broad: hit.broad,
       _stated: hit.stated,
       _adds_store: hit.adds_store,
@@ -472,6 +520,12 @@ export function evaluateTopology(doc) {
       }
     : null;
 
+  // Any recommendation except a full expansion-store estate leaves at least
+  // one store serving more than one market — where per-market theme content
+  // (not just settings) needs the Advanced plan or higher; Basic and Grow
+  // share one theme customisation across every market on that store.
+  const sharesOneStoreAcrossMarkets = recommendation !== 'expansion_stores';
+
   return {
     recommendation,
     confidence,
@@ -483,6 +537,7 @@ export function evaluateTopology(doc) {
     managed_markets,
     ...(stated ? { stated_preference: stated } : {}),
     ...(disagreement ? { disagreement } : {}),
+    ...(sharesOneStoreAcrossMarkets ? { per_market_theme_note: SOURCES.per_market_theme } : {}),
   };
 }
 
@@ -491,7 +546,7 @@ function rejectionReason(option, { recommendation, triggers, markets, managed_ma
   const names = triggers.map((t) => t.criterion.replace(/_/g, ' ')).join(', ');
   switch (option) {
     case 'single_store_markets':
-      return `Rejected: ${names || 'the facts'} separate ${separate.length || markets.length} of ${markets.length} markets, and one store shares one theme, one app estate and one admin across all of them`;
+      return `Rejected: ${names || 'the facts'} separate ${separate.length || markets.length} of ${markets.length} markets, and one store shares one theme, one app estate and one admin across all of them (${SOURCES.markets})`;
     case 'expansion_stores':
       return recommendation === 'hybrid'
         ? `Rejected: only ${separate.length} of ${markets.length} markets diverge, and a full multi-store estate would duplicate catalogue, theme and app work for markets that do not need it (expansion stores also require Shopify Plus — ${SOURCES.expansion_stores})`

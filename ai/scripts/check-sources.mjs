@@ -38,7 +38,7 @@ export function citedSources() {
     found.get(clean).add(where);
   };
 
-  const bank = JSON.parse(fs.readFileSync(path.join(ROOT, 'discovery/schema/question-bank.json'), 'utf8'));
+  const bank = JSON.parse(fs.readFileSync(path.join(ROOT, 'ai/schema/question-bank.json'), 'utf8'));
   for (const q of bank.questions) {
     for (const u of q.teach?.sources ?? []) add(u, q.id);
     for (const n of q.shopify?.native ?? []) if (n.docs) add(n.docs, q.id);
@@ -47,18 +47,18 @@ export function citedSources() {
   // The offering cites Shopify too, and for a while nothing checked it: the
   // gates carry the thresholds a price is argued from, so a page that moved
   // under one of them is worth more than a page that moved under a question.
-  const offering = JSON.parse(fs.readFileSync(path.join(ROOT, 'discovery/schema/offering.json'), 'utf8'));
+  const offering = JSON.parse(fs.readFileSync(path.join(ROOT, 'ai/schema/offering.json'), 'utf8'));
   for (const g of offering.scope_gates ?? []) for (const u of g.sources ?? []) add(u, `gate:${g.id}`);
   for (const t of offering.l_triggers ?? []) for (const u of t.sources ?? []) add(u, `trigger:${t.id}`);
   for (const r of offering.exit_rules ?? []) for (const u of r.sources ?? []) add(u, `rule:${r.id}`);
 
-  const refDir = path.join(ROOT, 'discovery/docs/reference');
+  const refDir = path.join(ROOT, 'ai/docs/reference');
   for (const file of fs.readdirSync(refDir).filter((f) => f.endsWith('.md'))) {
     for (const m of fs.readFileSync(path.join(refDir, file), 'utf8').matchAll(/https:\/\/[^\s)\]—]+/g)) add(m[0], file.replace('.md', ''));
   }
-  const engine = fs.readFileSync(path.join(ROOT, 'discovery/agents/discovery/topology.js'), 'utf8');
+  const engine = fs.readFileSync(path.join(ROOT, 'ai/engine/topology.js'), 'utf8');
   for (const m of engine.matchAll(/'(https:\/\/[^']+)'/g)) add(m[1], 'topology.js');
-  const plan = fs.readFileSync(path.join(ROOT, 'discovery/agents/discovery/plan.js'), 'utf8');
+  const plan = fs.readFileSync(path.join(ROOT, 'ai/engine/plan.js'), 'utf8');
   for (const m of plan.matchAll(/`\$\{H\}([^`]+)`/g)) add(`https://help.shopify.com/en/manual/${m[1]}`, 'plan.js');
 
   return [...found.entries()].map(([url, where]) => ({ url, where: [...where] })).sort((a, b) => a.url.localeCompare(b.url));
