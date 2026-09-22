@@ -5,7 +5,7 @@ import { offeringView } from '../../../ai/shared/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../ai/shared/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { band, TRACK, weeks } from '../offering.js';
-import { OfferScale, PackTable, ComparisonTable } from '../components/diagram.jsx';
+import { OfferScale, PackTable } from '../components/diagram.jsx';
 
 export const meta = () => [{ title: pageTitle('The offering') }];
 
@@ -152,19 +152,19 @@ export default function Offering({ loaderData }) {
           currency={currency}
           weeks={weeks}
           band={band}
+          track={(t) => TRACK[t] ?? t}
         />
-      </section>
-
-      <section>
-        <h2>What each pack includes, and what's available as add-ons</h2>
-        <p className="lede">
-          Each pack covers everything in the first table up to the limit shown. The second table lists all
-          scope gates that can be added to any pack — each is quoted separately with its own weeks and price.
+        <p className="callout">
+          <strong>Not a row here because nothing scales it by pack.</strong> Payment providers and local
+          payment methods (TWINT, Klarna, iDEAL and the rest) are Shopify Payments or Adyen admin settings,
+          the same in every pack — not a scope gate, unless payment methods must be hidden, renamed or
+          reordered by market, which is a checkout Function and does show in the row above. Legal entities,
+          duties, tax registrations and shipping methods are discovery questions, not priced ceilings: they
+          decide the store topology (see Shopify stores, above) and are then set up in the configuration
+          workbook once the pack is agreed. Which apps are needed is a recommendation per requirement, named
+          and confirmed with the client — never its own line, since the app subscription is the client&rsquo;s
+          own cost, not Merkle&rsquo;s.
         </p>
-        <ComparisonTable
-          closedScope={view.closed_scope}
-          offers={view.offers}
-        />
       </section>
 
       <section>

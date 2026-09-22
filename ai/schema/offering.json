@@ -2082,7 +2082,7 @@
           "L"
         ],
         "addon_label": "Each further store",
-        "note": "Every pack includes one Shopify store, and one store already serves every market in it — different currency, language, domain, prices and catalogue per market, no second store required. A second store is usually not a licence question — ten come with a Plus contract at no extra cost — it is that a separate store shares no data with the first by default, so every integration is wired again, apps are billed again and the theme is deployed and kept in step again, store by store. The one case where it is a licence question: a genuinely separate brand, which Shopify does not treat as a free expansion of the first and needs its own Shopify Plus subscription instead. Whether a client's requirements need a second store is not a question we ask; the engine derives it from the same market answers (does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, or need its own theme design) — a client rarely wants two stores for their own sake, it follows from facts like these."
+        "note": "Every pack includes one Shopify store, and one store already serves every market in it — different currency, language, domain, prices and catalogue per market, no second store required. Needing a second store is not an add-on you choose from S or M: it forces the engagement to L outright, whichever pack the rest of the answers would otherwise have meant, because a second store duplicates every integration, app and theme deployment on its own. Number of brands and number of themes are not their own rows because they are two of the facts that decide this one: one brand, one theme design is what \"up to 1 store\" assumes; a second customer-facing brand always needs its own store (and its own Shopify Plus subscription — unlike an ordinary further store, that one is not free with the first), and a market wanting a genuinely different theme design, not just translated content, needs its own store too. Whether a client's requirements need a second store is not a question we ask; the engine derives it from the same market answers (does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, need its own theme design, or belong to a second brand)."
       },
       {
         "id": "multi_currency",
@@ -2113,10 +2113,10 @@
         "id": "integrations",
         "what": "Integrations",
         "gate": "integration",
-        "S": "Up to 0 integrations",
-        "M": "Up to 1 integration",
-        "L": "Up to 3 integrations",
-        "note": "Three is the ceiling in every pack: more is a separate discovery (rule 11.7)."
+        "S": "Native Shopify apps only — no system integration",
+        "M": "Up to 1 system integration",
+        "L": "Up to 3 system integrations",
+        "note": "A system integration is a live connection to an ERP, PIM, CRM, OMS, 3PL/WMS or POS — or any other system wired with a custom connector. An App Store app that already talks to Shopify natively (email, reviews, search, loyalty, analytics) is not one, whichever pack it is in. Three is the ceiling in every pack: more is a separate discovery (rule 11.7)."
       },
       {
         "id": "migration",
@@ -2137,9 +2137,9 @@
         "id": "b2b",
         "what": "B2B / wholesale alongside consumer",
         "gate": "b2b",
-        "S": "Add-on",
-        "M": "Add-on",
-        "L": "Add-on",
+        "S": "Not in the base pack — its own scope gate",
+        "M": "Not in the base pack — its own scope gate",
+        "L": "Not in the base pack — its own scope gate",
         "addon": [
           "S",
           "M",
@@ -2181,9 +2181,9 @@
         "id": "retail_pos",
         "what": "Physical stores on Shopify POS",
         "gate": "retail_pos",
-        "S": "Add-on",
-        "M": "Add-on",
-        "L": "Add-on",
+        "S": "Not in the base pack — its own scope gate",
+        "M": "Not in the base pack — its own scope gate",
+        "L": "Not in the base pack — its own scope gate",
         "note": "Five locations is the ceiling; above that it stays in the offer with a named owner (rule 11.22).",
         "addon": [
           "S",
