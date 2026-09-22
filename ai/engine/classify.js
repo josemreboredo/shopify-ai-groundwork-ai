@@ -456,12 +456,17 @@ const GATE_EVALUATORS = {
     const fields = (c.custom_fields ?? []).length > 0;
     // Blocking countries is a market setting; the rest need a validation Function.
     const restrictions = real(c.order_restrictions).filter((r) => r !== 'block_countries');
+    // Hiding, renaming or reordering payment methods is a Payment Customization
+    // Function (shopify.dev/docs/api/functions/latest/payment-customization),
+    // not a setting — it was asked (Q4.1.7) and never read anywhere.
+    const methodRules = doc.payments?.method_rules === true;
 
-    const active = customisation.length > 0 || extensions.length > 0 || fields || restrictions.length > 0;
+    const active = customisation.length > 0 || extensions.length > 0 || fields || restrictions.length > 0 || methodRules;
     const FUNCTIONS = new Set(['cart_checkout_validation', 'delivery_customization', 'payment_customization']);
     const backend = customisation.includes('backend_logic_functions')
       || extensions.some((e) => FUNCTIONS.has(e))
-      || restrictions.length > 0;
+      || restrictions.length > 0
+      || methodRules;
     /*
      * Three tiers, because Shopify gates the three differently and the page was
      * quoting them as one. Verified 2026-09-21 on shopify.dev: UI extensions on
@@ -480,7 +485,7 @@ const GATE_EVALUATORS = {
       active,
       ...(tier ? { tier } : {}),
       evidence: active
-        ? `Checkout: ${[...customisation, ...extensions].join(', ') || 'custom fields'}${restrictions.length ? `; order rules: ${restrictions.join(', ')}` : ''}`
+        ? `Checkout: ${[...customisation, ...extensions].join(', ') || (fields ? 'custom fields' : 'payment method rules')}${restrictions.length ? `; order rules: ${restrictions.join(', ')}` : ''}${methodRules ? '; payment methods hidden, renamed or reordered' : ''}`
         : 'Checkout settings and editor branding only — in every offer',
     };
   },

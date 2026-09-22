@@ -860,12 +860,13 @@
     {
       "id": "checkout_extensibility",
       "label": "Checkout extensibility",
-      "condition": "The checkout needs more than its settings and the editor's branding. Three different things, and Shopify gates them differently: the Thank you and Order status pages take UI extensions on every plan except Starter; the information, shipping and payment steps take them only on Shopify Plus; backend logic is Shopify Functions. A fully custom checkout UI is exit rule 11.6, not this gate",
+      "condition": "The checkout needs more than its settings and the editor's branding. Three different things, and Shopify gates them differently: the Thank you and Order status pages take UI extensions on every plan except Starter; the information, shipping and payment steps take them only on Shopify Plus; backend logic is Shopify Functions — hiding, renaming or reordering payment methods by market, customer type or cart is a Payment Customization Function, not a setting. A fully custom checkout UI is exit rule 11.6, not this gate",
       "inputs": [
         "/checkout/customisation",
         "/checkout/extensions",
         "/checkout/custom_fields",
-        "/checkout/order_restrictions"
+        "/checkout/order_restrictions",
+        "/payments/method_rules"
       ],
       "modifier": null,
       "modifier_tiers": [
@@ -876,7 +877,8 @@
       "sources": [
         "https://shopify.dev/docs/api/checkout-ui-extensions/latest",
         "https://shopify.dev/docs/apps/build/checkout/thank-you-order-status",
-        "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/upgrade-thank-you-order-status/customization-options"
+        "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/upgrade-thank-you-order-status/customization-options",
+        "https://shopify.dev/docs/api/functions/latest/payment-customization"
       ],
       "verified": {
         "on": "2026-09-21",
@@ -1978,6 +1980,11 @@
       "question": "Multi-currency gate has no modifier",
       "decision": "Uses +Markets",
       "rationale": "Multi-currency set-up is Shopify Markets configuration work; it only matters as a modifier when it is the single active gate"
+    },
+    {
+      "question": "Payment providers, local payment methods, BNPL and accelerated checkouts have no scope gate (Q4.1.1, Q4.1.2, Q4.1.3, Q4.1.6)",
+      "decision": "Native admin configuration, priced into every offer's baseline (strategy.md: S already includes 'payments')",
+      "rationale": "Shopify's own documentation frames activating local payment methods and Shop Pay Installments as admin settings ('activate', 'deactivate any conflicting gateway'), not development — verified 2026-09-22 on help.shopify.com/en/manual/payments/shopify-payments/local-payment-methods and help.shopify.com/en/manual/payments/shop-pay-installments. Third-party BNPL (Klarna, Affirm, Afterpay) installs as an app, same as any other App Store app this tool recommends but does not itself price. Hiding, renaming or reordering payment methods (Q4.1.7) is the one genuine exception — a Payment Customization Shopify Function — and it now feeds gate:checkout_extensibility instead of going nowhere"
     },
     {
       "question": "Luxury positioning alone forces L",

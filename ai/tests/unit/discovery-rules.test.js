@@ -567,6 +567,21 @@ describe('the offer follows the effort, not the gate count', () => {
       `six languages (${six.price_band.max}) must cost more than four (${four.price_band.max})`);
   });
 
+  test('hiding, renaming or reordering payment methods is a checkout Function, priced like one', () => {
+    // Q4.1.7 asked this and it went nowhere — checkout_extensibility read four
+    // other checkout fields and never /payments/method_rules, so a client
+    // asking only for payment-method rules got quoted as though nothing about
+    // checkout had been asked for at all.
+    const none = classifyOffer(base());
+    assert.equal(none.scope_gates.checkout_extensibility.active, false);
+
+    const rules = classifyOffer({ ...base(), payments: { method_rules: true } });
+    assert.equal(rules.scope_gates.checkout_extensibility.active, true);
+    assert.equal(rules.scope_gates.checkout_extensibility.tier, 'functions',
+      'a Payment Customization Function is backend logic, the same tier as the other checkout Functions');
+    assert.match(rules.scope_gates.checkout_extensibility.evidence, /payment method/);
+  });
+
   test('integrations are priced per integration and retail per location', () => {
     // One ERP connector and four are not the same job. A flat modifier quoted
     // them identically, which is the single largest way an M overran.

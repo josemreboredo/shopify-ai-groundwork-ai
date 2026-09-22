@@ -3979,6 +3979,9 @@
       "maps_to": [
         "/payments/method_rules"
       ],
+      "feeds": [
+        "gate:checkout_extensibility"
+      ],
       "shopify": {
         "native": [],
         "extension_points": [

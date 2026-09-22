@@ -1327,6 +1327,7 @@ Sources: https://www.shopify.com/security/pci-compliant
 **Limits.** B2B checkout and pre-orders do not support express checkouts.
 
 **Q4.1.7** — Must payment methods be hidden, renamed or reordered by market, customer type or cart? *(recommended · client)*
+Drives: gate Checkout extensibility
 
 **Why it matters.** Hiding, renaming or reordering payment methods is not a setting. It is a Payment Customization Shopify Function, so it means an app. A public app carrying that Function installs on any plan; the same Function inside a custom app needs Plus.
 
