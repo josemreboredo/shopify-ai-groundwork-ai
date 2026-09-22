@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.12.0",
+  "version": "2.13.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -596,6 +596,14 @@
       "verified": {
         "on": "2026-09-21",
         "source": "help.shopify.com"
+      },
+      "platform_limit": {
+        "what": "Shopify stores per subscription",
+        "shopify": 1,
+        "shopify_plus": 10,
+        "merkle_line": 1,
+        "source": "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
+        "note": "A Plus contract carries one main store and nine expansion stores at no extra licence cost, and every expansion store must be identical to the main brand. The cost of a second store is not the licence: apps are billed per store, theme licences cannot be shared, and expansion stores share no data, so every integration is wired again."
       }
     },
     {
@@ -669,10 +677,11 @@
       ],
       "sources": [
         "https://shopify.dev/docs/storefronts/themes/architecture",
+        "https://shopify.dev/docs/storefronts/themes/architecture/sections",
         "https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid"
       ],
       "verified": {
-        "on": "2026-09-21",
+        "on": "2026-09-23",
         "source": "shopify.dev"
       }
     },
@@ -1767,6 +1776,18 @@
         "/design/shop_mini"
       ],
       "label": "A Shop Mini — a build these offers do not price"
+    },
+    {
+      "id": "11.29",
+      "result": "STOP",
+      "status": "canonical",
+      "condition": "More than one customer-facing brand, each needing its own full template set from a design system (the storefront design gate at its bespoke tier). One design programme repeated per brand is not a pack: Ecommerce Growth prices one. Multibrand on a configured theme, or on a key-screens design, is not this rule — a second brand already forces Ecommerce Growth through the multi-brand store it needs, and that is where it stays",
+      "destination": "Merkle Arc — a design-system programme per brand, scoped by the Arc practice",
+      "inputs": [
+        "/meta/client/brand_count",
+        "/offer/scope_gates/storefront_design/tier"
+      ],
+      "label": "More than one brand, each with its own full design system"
     }
   ],
   "routes": [
@@ -2058,103 +2079,148 @@
     }
   ],
   "closed_scope": {
-    "$comment": "What each pack sells, closed. Every row is checked against the engine by a test: an engagement that takes exactly what a pack promises must classify as that pack, and its scope gates must fit inside the weeks that pack's band already carries. Anything past a row is quoted on top of the pack, never assumed into it. `limits` is the machine-readable form of the same promise and is what the test builds from.",
+    "$comment": "What each pack sells, closed. Every row is checked against the engine by a test: an engagement that takes exactly what a pack promises must classify as that pack, and its scope gates must fit inside the weeks that pack's band already carries. Anything past a row is quoted on top of the pack, never assumed into it. `limits` is the machine-readable form of the same promise and is what the test builds from. Rows are the comparison table: a pack includes something of every row, and a cell is the most that pack holds — a quantity, or an em dash where the pack holds none of it, never an explanation. A capability no pack includes is not a row at all: it is an add-on service, listed in `addons` with its scope and its cost. `groups` is the reading order of the row groups.",
+    "groups": [
+      "Markets and stores",
+      "Catalogue and search",
+      "Storefront",
+      "Checkout and payments",
+      "Shipping and fulfilment",
+      "Data and integrations",
+      "Running the store"
+    ],
     "rows": [
       {
         "id": "markets",
         "what": "Markets",
         "gate": "markets",
+        "group": "Markets and stores",
+        "shopify_limit": "No documented cap on markets per store",
         "S": "Up to 1 market",
         "M": "Up to 3 markets",
         "L": "Up to 3 markets",
-        "note": "The most the pack holds with everything else in it taken too. A further market is three quarters of a week and CHF 8k, and a third more where it meets a bespoke template set rather than a configured theme — a market is re-tested and signed off against whatever the pack builds, so it costs more in the larger packs than in the entry one."
+        "note": "The most the pack holds with everything else in it taken too. A further market is three quarters of a week, and a third more where it meets a bespoke template set rather than a configured theme — a market is re-tested and signed off against whatever the pack builds, so it costs more in the larger packs than in the entry one. What it costs is in the add-on services below, where the price is gated to the people allowed to see it.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Each further market"
       },
       {
         "id": "store_estate",
         "what": "Shopify stores",
         "gate": "store_estate",
+        "group": "Markets and stores",
+        "shopify_limit": "One store per subscription; a Plus contract carries ten — one main store and nine expansion stores, each of which must be identical to the main brand",
         "S": "Up to 1 store",
         "M": "Up to 1 store",
         "L": "Up to 1 store",
+        "note": "One store already serves every market in the pack — a different currency, language, domain, price and catalogue per market, no second store required. Needing a second store is not an add-on chosen from S or M: it makes the engagement an Ecommerce Growth outright, whichever pack the rest of the answers would have meant, because expansion stores share no data, so every integration is wired again, every theme deployed again and every app bought again, per store. Whether the requirements need one is not a question we ask: the engine derives it from the market answers — does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, need its own theme design, or belong to a second brand.",
+        "addon": [
+          "L"
+        ],
+        "addon_label": "Each further store"
+      },
+      {
+        "id": "brands",
+        "what": "Customer-facing brands",
+        "gate": null,
+        "group": "Markets and stores",
+        "shopify_limit": "Shopify documents no way to run two brands on one store — an expansion store must be identical to the main brand, so a second brand needs its own Shopify Plus subscription",
+        "S": "Up to 1",
+        "M": "Up to 1",
+        "L": "Up to 1",
+        "note": "A second brand is not a second market. It always needs its own store, and unlike an ordinary further store that one is not free with the first — which is why one brand is what every pack assumes even in a single market.",
+        "sources": [
+          "https://help.shopify.com/en/manual/organization-settings/expansion-stores"
+        ],
+        "verified": {
+          "on": "2026-09-22",
+          "source": "help.shopify.com"
+        }
+      },
+      {
+        "id": "entities",
+        "what": "Selling entities",
+        "gate": null,
+        "group": "Markets and stores",
+        "shopify_limit": "Assigning a business entity per market is Shopify Plus only, and needs Shopify Payments and the new Markets",
+        "S": "Up to 1",
+        "M": "Up to 1",
+        "L": "Up to 1",
+        "note": "Every pack assumes one selling entity, because a second is a plan decision before it is a scope one (rule 11.1). Past what Plus’s own per-market entity assignment covers, a further entity is a further store — the row above. Several markets with the entities and the tax footprint still unresolved is a flag of its own (rule 11.23).",
+        "sources": [
+          "https://help.shopify.com/en/manual/payments/shopify-payments/onboarding/selling-with-multiple-entities"
+        ],
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com"
+        }
+      },
+      {
+        "id": "multi_currency",
+        "what": "Checkout currencies",
+        "gate": "multi_currency",
+        "group": "Markets and stores",
+        "shopify_limit": "Charging in a local currency needs Shopify Payments or Adyen; with any other provider the buyer is charged in the store’s default currency",
+        "S": "Up to 1 currency",
+        "M": "One per market",
+        "L": "One per market",
+        "note": "Displaying a local price and charging in it are two different features, and only the second costs anything. Being paid in that currency is a third: multi-currency payouts need Advanced or Plus (rule 11.1).",
         "addon": [
           "S",
           "M",
           "L"
         ],
-        "addon_label": "Each further store",
-        "note": "Every pack includes one Shopify store, and one store already serves every market in it — different currency, language, domain, prices and catalogue per market, no second store required. Needing a second store is not an add-on you choose from S or M: it forces the engagement to L outright, whichever pack the rest of the answers would otherwise have meant, because a second store duplicates every integration, app and theme deployment on its own. Number of brands and number of themes are not their own rows because they are two of the facts that decide this one: one brand, one theme design is what \"up to 1 store\" assumes; a second customer-facing brand always needs its own store (and its own Shopify Plus subscription — unlike an ordinary further store, that one is not free with the first), and a market wanting a genuinely different theme design, not just translated content, needs its own store too. Whether a client's requirements need a second store is not a question we ask; the engine derives it from the same market answers (does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, need its own theme design, or belong to a second brand)."
-      },
-      {
-        "id": "multi_currency",
-        "what": "Multi-currency checkout",
-        "gate": "multi_currency",
-        "S": "No — one checkout currency",
-        "M": "Yes",
-        "L": "Yes"
+        "addon_label": "A second checkout currency"
       },
       {
         "id": "languages",
         "what": "Languages",
         "gate": "languages",
-        "S": "Up to 3",
-        "M": "Up to 4",
-        "L": "Up to 6",
-        "note": "Six is the ceiling in every pack: more is a separate discovery (rule 11.4)."
-      },
-      {
-        "id": "storefront_design",
-        "what": "Custom templates",
-        "gate": "storefront_design",
-        "S": "No — theme configured, standard sections",
-        "M": "Yes — bespoke sections from a key-screens design",
-        "L": "Yes — the full template set from a design system"
-      },
-      {
-        "id": "integrations",
-        "what": "Integrations",
-        "gate": "integration",
-        "S": "Native Shopify apps only — no system integration",
-        "M": "Up to 1 system integration",
-        "L": "Up to 3 system integrations",
-        "note": "A system integration is a live connection to an ERP, PIM, CRM, OMS, 3PL/WMS or POS — or any other system wired with a custom connector. An App Store app that already talks to Shopify natively (email, reviews, search, loyalty, analytics) is not one, whichever pack it is in. Three is the ceiling in every pack: more is a separate discovery (rule 11.7)."
-      },
-      {
-        "id": "migration",
-        "what": "Migration from another platform",
-        "gate": "migration",
-        "S": "No — new store, or Shopify to Shopify",
-        "M": "From WooCommerce or Shopify",
-        "L": "From Shopware, BigCommerce, WooCommerce or Shopify",
-        "note": "The tier is set by where the data comes from, because that is what decides the work: WooCommerce and Shopify share a data model, Shopware and BigCommerce do not, and Magento, SFCC and bespoke platforms need the model mapped and every integration re-pointed. The redirect estate is not in here — it is the SEO continuity row, priced once.",
+        "group": "Markets and stores",
+        "shopify_limit": "20 published languages per store, 30 on Plus",
+        "S": "Up to 3 languages",
+        "M": "Up to 4 languages",
+        "L": "Up to 6 languages",
+        "note": "Translate & Adapt auto-translates two and Swiss DE/FR/IT is in every pack, which is why the gate opens at the fourth. Six is the ceiling in every pack: more is a separate discovery (rule 11.4), well below what Shopify itself would publish.",
         "addon": [
           "S",
           "M",
           "L"
         ],
-        "addon_label": "Magento, Salesforce Commerce Cloud or a custom platform"
+        "addon_label": "Each further language"
       },
       {
-        "id": "b2b",
-        "what": "B2B / wholesale alongside consumer",
-        "gate": "b2b",
-        "S": "Not in the base pack — its own scope gate",
-        "M": "Not in the base pack — its own scope gate",
-        "L": "Not in the base pack — its own scope gate",
-        "addon": [
-          "S",
-          "M",
-          "L"
+        "id": "tax",
+        "what": "Tax, duties and registrations",
+        "gate": null,
+        "group": "Markets and stores",
+        "shopify_limit": "Shopify Tax covers the United States, European Union, United Kingdom and Canada; Basic Tax covers Norway, Switzerland, Australia, New Zealand and Singapore and needs a tax registration number. Shopify calculates, and never files or remits",
+        "S": "Configured per market in scope",
+        "M": "Configured per market in scope",
+        "L": "Configured per market in scope",
+        "note": "The same set-up work in every pack, scaled by the markets row rather than priced on its own. The registrations themselves are the client’s to hold — no configuration works around one they do not have — and the rates, duties and thresholds are completed in the configuration workbook once the pack is agreed (ADR 0012).",
+        "sources": [
+          "https://help.shopify.com/en/manual/taxes/registration",
+          "https://help.shopify.com/en/manual/taxes/shopify-tax/choose-tax-service"
         ],
-        "note": "Selling wholesale alongside consumer is the same build whichever pack it sits in — company accounts, price lists per company, quantity rules and payment terms — so it is priced the same way in all three rather than folded into the largest. Wholesale only is not this row at all: it is the base of the pack, the same weeks spent differently."
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com"
+        }
       },
       {
         "id": "catalogue",
         "what": "Catalogue",
         "gate": "sku_complexity",
-        "S": "Under 500 SKUs, or simple",
+        "group": "Catalogue and search",
+        "shopify_limit": "3 variant options and 2,048 variants per product; above 5,000 products a collection shows no filters at all",
+        "S": "Up to 4,999 simple SKUs, or 499 with complex variants",
         "M": "Up to 4,999 SKUs, with complex variants, metafields or bundles",
         "L": "Up to 4,999 SKUs, with complex variants, metafields or bundles",
-        "note": "Five thousand is not an arbitrary line: above it Shopify shows no filters on a collection, so a catalogue that size brings the search row with it and costs a week more than the catalogue work alone. That is why it is an add-on rather than a bigger pack.",
+        "note": "Five thousand is not an arbitrary line: above it Shopify shows no filters on a collection, so a catalogue that size brings the search row with it and costs a week more than the catalogue work alone. That is why it is an add-on rather than a bigger pack. A product needing more options or variants than Shopify allows is its own review (rule 11.5).",
         "addon": [
           "S",
           "M",
@@ -2166,10 +2232,12 @@
         "id": "search",
         "what": "Search and merchandising",
         "gate": "search_merchandising",
+        "group": "Catalogue and search",
+        "shopify_limit": "25 filters per store (25 on Plus too), at most 100 values shown per filter, no filters on a collection above 5,000 products or on a search returning more than 100,000 results",
         "S": "Shopify Search & Discovery",
         "M": "Shopify Search & Discovery",
         "L": "Shopify Search & Discovery",
-        "note": "Shopify Search & Discovery is free and in every pack, with its limits designed around rather than discovered: 25 filters per store, no filters at all on a collection above 5,000 products, at most 100 values shown per filter, and no filters on a search returning more than 100,000 results. A catalogue or a filter set that needs more than that needs a search app, which is the add-on — and note that a catalogue above 5,000 SKUs brings this row with it.",
+        "note": "Search & Discovery is free and in every pack, with its limits designed around rather than discovered. A catalogue or a filter set that needs more than they allow needs a search app, which is the add-on — and a catalogue above 5,000 SKUs brings this row with it.",
         "addon": [
           "S",
           "M",
@@ -2178,39 +2246,50 @@
         "addon_label": "Past a documented Shopify limit"
       },
       {
-        "id": "retail_pos",
-        "what": "Physical stores on Shopify POS",
-        "gate": "retail_pos",
-        "S": "Not in the base pack — its own scope gate",
-        "M": "Not in the base pack — its own scope gate",
-        "L": "Not in the base pack — its own scope gate",
-        "note": "Five locations is the ceiling; above that it stays in the offer with a named owner (rule 11.22).",
+        "id": "storefront_design",
+        "what": "Templates and sections",
+        "gate": "storefront_design",
+        "group": "Storefront",
+        "shopify_limit": "25 sections per template or section group, and 50 blocks per section",
+        "S": "The theme’s own sections, 0 bespoke",
+        "M": "Up to 3 bespoke sections",
+        "L": "The full template set",
+        "note": "Horizon configured with brand tokens is in every pack, and the merchant can still rearrange it afterwards. Past that it is a design gate: bespoke sections and blocks from a key-screens design, or every template from a mapped design system.",
         "addon": [
           "S",
           "M",
           "L"
-        ]
+        ],
+        "addon_label": "Bespoke sections, or a full template set"
       },
       {
-        "id": "subscriptions",
-        "what": "Subscriptions",
-        "gate": "subscriptions",
-        "S": "No",
-        "M": "Add-on",
-        "L": "Add-on",
-        "addon": [
-          "M",
-          "L"
-        ]
+        "id": "themes",
+        "what": "Theme designs",
+        "gate": null,
+        "group": "Storefront",
+        "shopify_limit": "Per-market theme customization reaches section content and block visibility only — never theme settings such as colour and typography, and never Liquid templates",
+        "S": "Up to 1",
+        "M": "Up to 1",
+        "L": "Up to 1",
+        "note": "One theme design serves every market in the pack, translated and with per-market content. A market that needs a genuinely different design rather than different content needs its own store — the Shopify stores row — and per-market content itself needs Advanced (rule 11.1).",
+        "sources": [
+          "https://help.shopify.com/en/manual/markets/customizations/online-store"
+        ],
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com"
+        }
       },
       {
         "id": "checkout",
         "what": "Checkout",
         "gate": "checkout_extensibility",
+        "group": "Checkout and payments",
+        "shopify_limit": "UI extensions on the Thank you and Order status pages on every plan except Starter; on the information, shipping and payment steps only on Shopify Plus",
         "S": "Settings and editor branding",
         "M": "Settings, branding, and blocks on the Thank you and Order status pages",
         "L": "Settings, branding, and blocks on the Thank you and Order status pages",
-        "note": "Shopify gates the checkout in three steps and so do we. Blocks on the Thank you and Order status pages run on every plan except Starter, so M and L build them: order tracking, a survey, a referral block after the sale. Blocks and custom fields inside the information, shipping and payment steps need Shopify Plus — on any other plan that is a plan decision before it is a scope one. Backend rules are Shopify Functions. A fully custom checkout UI is not sold at all (rule 11.6).",
+        "note": "Shopify gates the checkout in three steps and so do we. Blocks after the sale — order tracking, a survey, a referral — run on every plan except Starter, so M and L build them. Blocks and custom fields inside the checkout steps need Plus, which on any other plan is a plan decision before it is a scope one. Backend rules are Shopify Functions. A fully custom checkout UI is not sold at all (rule 11.6).",
         "addon": [
           "S",
           "M",
@@ -2219,13 +2298,123 @@
         "addon_label": "Inside the checkout steps (Plus), or backend rules as Functions"
       },
       {
+        "id": "payments",
+        "what": "Payment providers and local methods",
+        "gate": null,
+        "group": "Checkout and payments",
+        "shopify_limit": "Shopify Payments is available in supported countries only; which local methods appear is set by the store country’s payment-methods page, and a third-party gateway adds a transaction fee",
+        "S": "Shopify Payments or a gateway, with the market’s local methods",
+        "M": "Shopify Payments or a gateway, with the market’s local methods",
+        "L": "Shopify Payments or a gateway, with the market’s local methods",
+        "note": "Admin settings, connected and tested with a real transaction in every pack — which is why the cells do not differ. Two things next to it do cost: charging in a local currency needs Shopify Payments or Adyen (the checkout currencies row), and hiding, renaming or reordering methods by market, customer type or cart is a payment-customization Function (the checkout row). Payouts in more than one currency need Advanced or Plus (rule 11.1).",
+        "sources": [
+          "https://help.shopify.com/en/manual/payments/shopify-payments/supported-countries",
+          "https://help.shopify.com/en/manual/payments/shopify-payments/local-payment-methods",
+          "https://help.shopify.com/en/manual/payments/third-party-providers"
+        ],
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com"
+        }
+      },
+      {
+        "id": "fulfilment",
+        "what": "Fulfilment locations",
+        "gate": null,
+        "group": "Shipping and fulfilment",
+        "shopify_limit": "10 inventory locations per store, 200 on Plus; locations created by apps are not counted",
+        "S": "Shopify’s own order routing",
+        "M": "Shopify’s own order routing",
+        "L": "Shopify’s own order routing",
+        "note": "Locations and their routing rules are configuration in every pack. More than two fulfilling locations with routing Shopify cannot do on its own is scoped separately (rule 11.13), and more than ten locations is a plan decision (rule 11.1). Selling in a physical store with Shopify POS is not this row — it is an add-on service.",
+        "sources": [
+          "https://help.shopify.com/en/manual/fulfillment/setup/locations/setup"
+        ],
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com"
+        }
+      },
+      {
+        "id": "shipping_rates",
+        "what": "Shipping rates",
+        "gate": null,
+        "group": "Shipping and fulfilment",
+        "shopify_limit": "Flat, weight-based and price-based rates from Basic; live third-party carrier-calculated rates need Advanced or Plus, and a paid add-on on Grow",
+        "S": "Rate tables — flat, weight or price",
+        "M": "Rate tables — flat, weight or price",
+        "L": "Rate tables — flat, weight or price",
+        "note": "The shipping profile is set up for the markets in scope in every pack. The rates themselves, the free-shipping thresholds per market and the delivery methods are completed in the configuration workbook once the pack is agreed (ADR 0012). Live carrier-calculated rates are a plan decision (rule 11.1); one order delivered to more than one address is something Shopify cannot do at all (rule 11.27).",
+        "sources": [
+          "https://help.shopify.com/en/manual/fulfillment/setup/shipping-rates/setting-up-shipping-rates",
+          "https://help.shopify.com/en/manual/fulfillment/setup/shipping-rates/third-party-carrier-calculated-shipping"
+        ],
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com"
+        }
+      },
+      {
+        "id": "integrations",
+        "what": "System integrations",
+        "gate": "integration",
+        "group": "Data and integrations",
+        "shopify_limit": "No documented cap on connected systems — Shopify limits the rate of Admin API calls per store instead",
+        "S": "—",
+        "M": "Up to 1 system integration",
+        "L": "Up to 1 system integration",
+        "note": "A system integration is a live connection to an ERP, PIM, CRM, OMS, 3PL/WMS or POS — or any other system wired with a custom connector. An App Store app that already talks to Shopify natively (email, reviews, search, loyalty, analytics) is not one, whichever pack it is in. One is what the band carries with everything else in the pack taken too; each further one is quoted on top, and more than three at launch is a separate discovery (rule 11.7).",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Each further system integration"
+      },
+      {
+        "id": "migration",
+        "what": "Migration from another platform",
+        "gate": "migration",
+        "group": "Data and integrations",
+        "shopify_limit": "No documented Shopify ceiling — what sets the work is the source platform’s data model",
+        "S": "—",
+        "M": "WooCommerce or Shopify",
+        "L": "Shopware, BigCommerce, WooCommerce or Shopify",
+        "note": "The tier is set by where the data comes from, because that is what decides the work: WooCommerce and Shopify share a data model, Shopware and BigCommerce do not, and Magento, SFCC and bespoke platforms need the model mapped and every integration re-pointed. The redirect estate is not in here — it is the SEO continuity row, priced once. A migration carrying real search traffic or complex history is scoped as its own track (rule 11.14).",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Magento, Salesforce Commerce Cloud or a custom platform"
+      },
+      {
+        "id": "seo",
+        "what": "SEO continuity",
+        "gate": "seo_continuity",
+        "group": "Data and integrations",
+        "shopify_limit": "100,000 URL redirects per store, 20,000,000 on Plus",
+        "S": "—",
+        "M": "Up to 10,000 URLs",
+        "L": "Up to 10,000 URLs",
+        "note": "Up to ten thousand URLs the map is authored from the old estate’s patterns and imported, with metadata and canonicals carried across and indexation watched through cut-over. The ceiling that bites is the work of building the map, not the platform’s. Above ten thousand, or where the business runs on its rankings, the map is built from a crawl instead, verified on staging and watched after launch — that is the add-on. A pack already carrying a migration does not also carry a redirect estate this size for free: where both are in scope the second is quoted on top.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Above 10,000 URLs, or rankings the business runs on"
+      },
+      {
         "id": "analytics",
         "what": "Analytics and consent",
         "gate": "analytics_consent",
-        "S": "Shopify Analytics and its reports, plus GA4",
-        "M": "Shopify Analytics and its reports, plus GA4",
-        "L": "Shopify Analytics and its reports, plus GA4",
-        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor, with more reports the higher the Shopify plan. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically. The add-on is what goes past that — a third destination, a tag manager, custom events, server-side tagging or a consent platform.",
+        "group": "Data and integrations",
+        "shopify_limit": "Shopify Analytics is on every plan, with more pre-built reports the higher the plan",
+        "S": "Shopify Analytics, its reports and GA4",
+        "M": "Shopify Analytics, its reports and GA4",
+        "L": "Shopify Analytics, its reports and GA4",
+        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically. The add-on is what goes past that — a third destination, a tag manager, custom events, server-side tagging or a consent platform.",
         "addon": [
           "S",
           "M",
@@ -2234,27 +2423,231 @@
         "addon_label": "More destinations, a tag manager or consent"
       },
       {
-        "id": "seo",
-        "what": "SEO continuity",
-        "gate": "seo_continuity",
-        "S": "No redirect estate",
-        "M": "Included, up to 10,000 URLs",
-        "L": "Included, up to 10,000 URLs",
-        "note": "Up to ten thousand URLs the map is authored from the old estate's patterns and imported, with metadata and canonicals carried across and indexation watched through cut-over. Above that, or where the business runs on its rankings, the map is built from a crawl instead, verified on staging and watched after launch — that is the add-on.",
-        "addon": [
-          "M",
-          "L"
+        "id": "staff",
+        "what": "Staff admin users",
+        "gate": null,
+        "group": "Running the store",
+        "shopify_limit": "5 staff accounts on Grow, 15 on Advanced, unlimited on Plus; Basic has none. Collaborator and POS-only accounts are not counted",
+        "S": "One login per role",
+        "M": "One login per role",
+        "L": "One login per role",
+        "note": "Users, roles and permissions are set up in every pack, one set per role rather than one shared login — per market in Ecommerce Growth. The headcount is a plan gate rather than a licence add-on and can move the store up a plan on its own (rule 11.1), which is why it is counted before the plan is quoted.",
+        "sources": [
+          "https://help.shopify.com/en/manual/your-account/users/users-plan-requirements"
         ],
-        "addon_label": "Above 10,000 URLs, or rankings the business runs on"
+        "verified": {
+          "on": "2026-09-17",
+          "source": "help.shopify.com"
+        }
+      },
+      {
+        "id": "apps",
+        "what": "Apps",
+        "gate": null,
+        "group": "Running the store",
+        "shopify_limit": null,
+        "shopify_fact": false,
+        "$comment": "No Shopify citation, deliberately: which apps a store needs is a recommendation per requirement and a running cost the client carries, not a documented platform ceiling.",
+        "S": "Native first, then an app — installed and owned",
+        "M": "Native first, then an app — installed and owned",
+        "L": "Native first, then an app — installed and owned",
+        "note": "Every pack shortlists from the app registry, installs and configures each app and leaves it with a named owner and its monthly cost — per market in the larger packs, where the number that surprises clients is cost per market rather than cost per app. The subscription is the client’s own running cost from the day it is installed, against the monthly ceiling they set; it is never a Merkle line, which is why there is no quantity to compare."
       },
       {
         "id": "support",
         "what": "After go-live",
         "gate": "post_launch_support",
-        "S": "Hypercare",
-        "M": "Hypercare",
-        "L": "Hypercare",
-        "note": "Written SOPs or a handover into a retainer are quoted on top."
+        "group": "Running the store",
+        "shopify_limit": null,
+        "shopify_fact": false,
+        "$comment": "No Shopify citation, matching the gate: hypercare, training and written SOPs are how Merkle delivers, not something Shopify documents.",
+        "S": "Hypercare, 30 days",
+        "M": "Hypercare, 30 days",
+        "L": "Hypercare, 30 days",
+        "note": "A named channel, a response within one working day and defects triaged with the client, for thirty days after go-live — per market where the launch is phased. Training per role on the day-to-day is in every pack too. Written SOPs or a handover into a retainer are quoted on top.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Written SOPs, or a handover into a retainer"
+      }
+    ],
+    "addons": [
+      {
+        "id": "markets",
+        "gate": "markets",
+        "what": "Each further market",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "store_estate",
+        "gate": "store_estate",
+        "what": "Each further Shopify store",
+        "available_in": [
+          "L"
+        ],
+        "note": "Never an add-on to an S or an M. A second store makes the engagement an Ecommerce Growth outright, because expansion stores share no data: every integration is wired again, every theme deployed again and every app bought again, per store."
+      },
+      {
+        "id": "multi_currency",
+        "gate": "multi_currency",
+        "what": "A second checkout currency",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "b2b",
+        "gate": "b2b",
+        "what": "B2B and wholesale alongside consumer",
+        "description": "Selling wholesale alongside the consumer store: company accounts and locations, price lists per company, quantity rules, payment terms and the B2B templates. The same build whichever pack it sits in, so it is priced the same way in all three rather than folded into the largest. Wholesale only is not this: that is the base of the pack, the same weeks spent differently.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Shopify B2B runs on every plan from Basic, but company-specific price lists, more than three B2B catalogs and B2B deposits or partial payments each need Plus, and a contextual B2B storefront needs Advanced (rule 11.1). Quotes or prices negotiated per buyer are an architecture review, because Shopify has no built-in way to do them (rule 11.2)."
+      },
+      {
+        "id": "integration",
+        "gate": "integration",
+        "what": "Each further system integration",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "storefront_design",
+        "gate": "storefront_design",
+        "what": "Bespoke sections, or a full template set",
+        "description": "The storefront past theme configuration: bespoke sections and blocks built from a key-screens design, or every template built from a mapped design system over one token layer.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "sku_complexity",
+        "gate": "sku_complexity",
+        "what": "5,000 SKUs and above",
+        "description": "A catalogue past what the pack carries. The product model is designed once; the data is handled per thousand — import batching, reconciliation per object, and the share of products that need a human before they load.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "search_merchandising",
+        "gate": "search_merchandising",
+        "what": "Search past a documented Shopify limit",
+        "description": "Search & Discovery taken to its documented limits, or a third-party search app where the filter set or the catalogue goes past them — indexing, the sync that keeps it true, and the merchandising rules moved into it with an owner.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "migration",
+        "gate": "migration",
+        "what": "Migration from Magento, Salesforce Commerce Cloud or a custom platform",
+        "description": "A migration priced by where the data comes from. The light and medium tiers are what Ecommerce Scale and Ecommerce Growth already carry; a bespoke data model with integrations to re-point is quoted on top of any pack.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "retail_pos",
+        "gate": "retail_pos",
+        "what": "Physical stores on Shopify POS",
+        "description": "Each location selling with Shopify POS: hardware, inventory, staff and the in-store test pass — and the omnichannel services that come with it, such as pickup in store, ship from store and in-store returns of online orders.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Up to five locations. Above that it stays in the offer with a named owner and is quoted as a roll-out programme or a rate-carded run team rather than per store (rule 11.22). Shopify allows ten inventory locations per store and 200 on Plus, so past ten it is also a plan decision (rule 11.1)."
+      },
+      {
+        "id": "languages",
+        "gate": "languages",
+        "what": "Each further language",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "seo_continuity",
+        "gate": "seo_continuity",
+        "what": "A redirect estate above 10,000 URLs, or rankings the business runs on",
+        "description": "The redirect map, the metadata and the canonicals carried across a URL change — authored from the old estate’s patterns up to ten thousand URLs, and built from a crawl, verified on staging and watched after launch above that.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "subscriptions",
+        "gate": "subscriptions",
+        "what": "Subscriptions",
+        "description": "Selling on a recurring basis: Shopify Subscriptions with selling plans, the storefront widget, the customer portal and the billing states the support team has to recognise — or a third-party app where prepaid, build-a-box, B2B or international plans are needed, with live contracts carried across without the customer re-entering a card.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Not in any pack, and not a plan question: Shopify Subscriptions runs from Basic. What decides the tier is whether the plans go past what it does."
+      },
+      {
+        "id": "checkout_extensibility",
+        "gate": "checkout_extensibility",
+        "what": "Inside the checkout steps, or backend rules as Functions",
+        "description": "The checkout past what every pack configures: UI extensions and custom fields on the information, shipping and payment steps, or backend logic as Shopify Functions — validation, delivery and payment customisation, order rules.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Blocks on the Thank you and Order status pages are already in Ecommerce Scale and Ecommerce Growth. Inside the checkout steps is Shopify Plus only (rule 11.1), and a fully custom checkout UI is not sold at all (rule 11.6)."
+      },
+      {
+        "id": "analytics_consent",
+        "gate": "analytics_consent",
+        "what": "More destinations, a tag manager or consent",
+        "description": "Measurement past Shopify Analytics and GA4: customer events, the destinations wired through them and consent respected on each — and, at the advanced tier, server-side tagging or a third-party consent platform with the reconciliation that proves the numbers still line up.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "post_launch_support",
+        "gate": "post_launch_support",
+        "what": "Written SOPs, or a handover into a retainer",
+        "description": "The operating model past the hypercare window every pack carries: the runbooks the client’s team runs the store from, an owner named against each, and the handover into a retainer that has to receive it.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "An M or L engagement with no Grow retainer signed is a commercial adjustment (rule 11.11)."
       }
     ],
     "limits": {

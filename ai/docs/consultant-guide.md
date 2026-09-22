@@ -2,7 +2,7 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 2.12.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 2.13.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
@@ -257,7 +257,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplaces/m
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q1.1.8** — How many distinct customer-facing brands does this engagement need a Shopify storefront for? *(required · client)*
-Drives: gate More than one Shopify store · L trigger More than one Shopify store
+Drives: gate More than one Shopify store · L trigger More than one Shopify store · rule 11.29 (STOP)
 
 **Why it matters.** A different brand is not a different market. Expansion stores must be identical to the main brand in name and branding — a genuinely separate brand needs its own Shopify Plus subscription instead, not one of the ten a single contract includes free. This matters even with one launch market: two brands need two stores.
 
@@ -3370,3 +3370,4 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.26 | STOP | The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track | Merkle Arc — not quoted or estimated here; the Arc practice scopes it | Q9.2.6, Q9.2.8, Q9.2.11 |
 | 11.27 | FLAG | One order delivered to more than one address — gifting to several recipients, or a wholesale buyer splitting a single order across branches. Shopify has no way to do this: split shipping divides an order into several shipments when items cannot travel together, but every shipment goes to the same address, and it does not apply to accelerated checkouts or to draft orders that already carry a shipping line | Decide before the build: one order per address, an app that does it, or drop the requirement — and say which in the proposal | Q5.1.15 |
 | 11.28 | FLAG | A presence inside Shopify's Shop app — a Shop Mini. It stays inside Shopify and sells the same store, but it is not theme work: Minis are "immersive, full-screen buyer experiences within the Shop app" built with the Shop Minis React SDK, and a Mini "must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop". Publishing one also needs Manage apps permission in the Partner organisation. None of these offers estimates React Native work | Not included in S, M or L: scope and price the Mini separately, and agree whether it runs in this engagement or after it | Q9.2.12 |
+| 11.29 | STOP | More than one customer-facing brand, each needing its own full template set from a design system (the storefront design gate at its bespoke tier). One design programme repeated per brand is not a pack: Ecommerce Growth prices one. Multibrand on a configured theme, or on a key-screens design, is not this rule — a second brand already forces Ecommerce Growth through the multi-brand store it needs, and that is where it stays | Merkle Arc — a design-system programme per brand, scoped by the Arc practice | Q1.1.8 |

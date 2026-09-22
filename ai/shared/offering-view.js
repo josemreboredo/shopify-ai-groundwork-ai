@@ -64,6 +64,15 @@ function plainRule(c) {
   return when.replace(/_/g, ' ');
 }
 
+/** Every modifier that prices a gate, in the order the schema lists them. */
+const modifiersFor = (gateId) => offering.modifiers.filter((m) => m.gate === gateId);
+
+/** The span a gate's modifiers cover, cheapest tier to dearest. */
+const span = (mods, key) => ({
+  min: Math.min(...mods.map((m) => m[key].min)),
+  max: Math.max(...mods.map((m) => m[key].max)),
+});
+
 /**
  * What a gate costs, for a row that sells it as an add-on.
  *
@@ -71,11 +80,54 @@ function plainRule(c) {
  * @param {boolean} pricing  whether this caller may see Merkle's price
  */
 function addonCost(gateId, pricing) {
-  const mods = offering.modifiers.filter((m) => m.gate === gateId);
+  const mods = modifiersFor(gateId);
   if (!mods.length) return null;
-  const weeks = { min: Math.min(...mods.map((m) => m.effort_weeks.min)), max: Math.max(...mods.map((m) => m.effort_weeks.max)) };
-  const price = { min: Math.min(...mods.map((m) => m.price_add.min)), max: Math.max(...mods.map((m) => m.price_add.max)) };
-  return { effort_weeks: weeks, ...(pricing ? { price_add: money(price) } : {}) };
+  return {
+    effort_weeks: span(mods, 'effort_weeks'),
+    ...(pricing ? { price_add: money(span(mods, 'price_add')) } : {}),
+  };
+}
+
+/**
+ * One add-on service, as a catalogue entry rather than as a table cell.
+ *
+ * A capability no pack includes has no business in a comparison table — three
+ * columns saying "not in the base pack" is a table explaining what it does not
+ * sell. It is an add-on service, and what a reader needs beside it is what it
+ * covers and what it costs, which is the gate's own price so it cannot drift
+ * from what the engine quotes.
+ *
+ * Weeks stay as `{ min, max }` rather than a rendered string: the page decides
+ * whether to print the maximum or the span, and a number formatted in the model
+ * is a decision the page can no longer take.
+ *
+ * @param {object} addon    entry from offering.closed_scope.addons
+ * @param {boolean} pricing whether this caller may see Merkle's price
+ */
+function addonService({ id, gate, what, description, available_in: availableIn, note }, pricing) {
+  const mods = modifiersFor(gate);
+  const [first] = mods;
+  return {
+    id,
+    what,
+    gate,
+    /* A gate priced by one modifier describes itself; a gate priced by tiers
+       needs a line above them, because three tier descriptions with nothing
+       over them is a price list rather than a service. */
+    description: description ?? first?.description ?? null,
+    available_in: availableIn ?? ['S', 'M', 'L'],
+    ...(note ? { note } : {}),
+    ...(mods.length ? { weeks: span(mods, 'effort_weeks') } : {}),
+    ...(mods.length && pricing ? { price: money(span(mods, 'price_add')) } : {}),
+    ...(mods.length > 1 ? {
+      tiers: mods.map((m) => ({
+        label: (m.tier ?? m.id).replace(/_/g, ' '),
+        description: m.description,
+        weeks: m.effort_weeks,
+        ...(pricing ? { price: money(m.price_add) } : {}),
+      })),
+    } : {}),
+  };
 }
 
 /**
@@ -201,19 +253,34 @@ export function offeringView({ pricing = false } = {}) {
        offer decided"; this answers the question a client asks instead — if I
        buy an M, what exactly do I get. `limits` is the machine-readable twin
        the test builds from and has no business on a page, so it is not here. */
-    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, S, M, L, note, addon, addon_label: addonLabel }) => ({
+    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, group, shopify_limit: shopifyLimit, S, M, L, note, addon, addon_label: addonLabel }) => ({
       id,
       what,
-      gate,
+      gate: gate ?? null,
+      /* The section heading the row reads under. Twenty-two rows in one flat
+         list is a scroll, not a comparison; grouped, a reader can find the
+         four rows they came for. */
+      group,
+      /* The documented platform ceiling behind the row, or the fact that
+         Shopify documents none — which is itself the answer a consultant
+         needs in a room, and the one they used to have to guess at. */
+      shopify_limit: shopifyLimit ?? null,
       values: { S, M, L },
       ...(note ? { note } : {}),
-      /* Which packs can buy this, and what it costs there. A capability the
-         client can buy is not a "No", and printing one loses the sale in the
-         room — but an add-on with no price beside it is just a softer no. The
-         cost is the gate's own, so it cannot drift from what the engine
-         quotes. */
+      /* Which packs can buy more of this, and what it costs there. A ceiling
+         the client can buy past is not a refusal, and printing one loses the
+         sale in the room — but an add-on with no price beside it is just a
+         softer no. The cost is the gate's own, so it cannot drift from what
+         the engine quotes. */
       ...(addon?.length ? { addon, ...(addonLabel ? { addon_label: addonLabel } : {}), cost: addonCost(gate, pricing) } : {}),
     })),
+    /* The reading order of the row groups, so the page groups the table the
+       way the schema does rather than re-deriving an order of its own. */
+    closed_scope_groups: offering.closed_scope?.groups ?? [],
+    /* The add-on services catalogue: every gate that can be bought on top of a
+       pack, including the three no pack includes anything of — B2B, Shopify
+       POS and subscriptions — which is why they are no longer rows. */
+    addons: (offering.closed_scope?.addons ?? []).map((a) => addonService(a, pricing)),
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {
       beyond_offers: byResult('STOP'),

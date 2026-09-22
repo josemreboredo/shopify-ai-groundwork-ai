@@ -331,6 +331,29 @@ const EVALUATORS = {
     return `The storefront lives partly outside Shopify: ${why}`;
   },
 
+  /*
+   * One design programme per brand is not a pack.
+   *
+   * A second brand already forces Ecommerce Growth on its own, through the
+   * store it needs (the multi_store trigger): two brands cannot share one
+   * Shopify store, and Shopify's expansion stores must stay "an extension of
+   * the main brand". That is priced, and it stays in the offers. What is not
+   * priced is the design: a full template set from a mapped design system,
+   * built again for a second identity, is the storefront gate's dearest tier
+   * twice over, which no band carries.
+   *
+   * It reads the tier the classifier already decided rather than testing the
+   * Figma answers again. Two places deciding what "bespoke" means is how this
+   * engine once ended up with two classifiers disagreeing, and `weigh()`
+   * classifies before it evaluates exits precisely so a rule can read it.
+   */
+  '11.29': (doc) => {
+    const brands = doc.meta?.client?.brand_count ?? 1;
+    if (brands <= 1) return null;
+    if (doc.offer?.scope_gates?.storefront_design?.tier !== 'bespoke') return null;
+    return `${brands} customer-facing brands, each needing its own full template set from a design system`;
+  },
+
 };
 
 /**

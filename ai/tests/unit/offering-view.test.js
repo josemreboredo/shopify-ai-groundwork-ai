@@ -24,6 +24,27 @@ describe('offering view', () => {
     }
   });
 
+  test('and no price written into prose either, which is how one did leave', () => {
+    /*
+     * The structured fields were gated from the first day and the test above
+     * has held them. A price typed into a row's note is not a field, so it
+     * walked straight past both: "a further market is three quarters of a week
+     * and CHF 8k" shipped inside closed_scope to every signed-in reader,
+     * Merkle or not. Stripping it in the component would have been theatre —
+     * the loader had already serialised it into the page.
+     *
+     * So the assertion is on the payload, not on the fields: nothing that
+     * leaves this function for a non-owner may name the currency at all.
+     * Shopify's own ceilings are numbers too (2,048 variants, 20,000,000
+     * redirects) and must keep working, which is why this anchors on the
+     * currency rather than on digits.
+     */
+    const text = JSON.stringify(offeringView());
+    const money = new RegExp(`${offering.currency}\\s?[\\d.,]`, 'i');
+    const offender = (text.match(new RegExp(`.{0,80}${offering.currency}.{0,80}`, 'i')) ?? [])[0];
+    assert.doesNotMatch(text, money, `a consultant's view names ${offering.currency}: …${offender ?? ''}…`);
+  });
+
   test('an owner sees the price bands, the per-gate additions and the internal notes', () => {
     const view = offeringView({ pricing: true });
     assert.equal(view.offers.find((o) => o.code === 'M').price_band.min, offering.offers.M.price_band.min);
@@ -38,6 +59,68 @@ describe('offering view', () => {
     assert.equal(view.gates.length, offering.scope_gates.length);
     assert.deepEqual(view.routes.map((r) => r.id), ['larger_engagement', 'arc']);
     assert.ok(view.plan_gates.every((g) => /^https:\/\//.test(g.docs)), 'every plan gate cites its Shopify page');
+  });
+});
+
+describe('the comparison table and the add-on catalogue the page reads', () => {
+  /*
+   * Two lists, and the split between them is the whole point. The table holds
+   * only what a pack actually includes something of, so every cell is a
+   * quantity a consultant can quote. Everything a client can buy on top —
+   * including the three capabilities no pack includes at all — is the add-on
+   * catalogue, where a scope description and a cost belong.
+   */
+  const view = offeringView();
+  const priced = offeringView({ pricing: true });
+
+  test('every row carries its group and the Shopify ceiling behind it', () => {
+    assert.ok(view.closed_scope_groups.length, 'the groups are published in reading order');
+    for (const row of view.closed_scope) {
+      assert.ok(view.closed_scope_groups.includes(row.group), `${row.id}: group "${row.group}" is not declared`);
+      assert.ok(Object.hasOwn(row, 'shopify_limit'), `${row.id}: no platform ceiling field at all`);
+      assert.ok(row.values.S && row.values.M && row.values.L, `${row.id}: a pack with nothing said for it`);
+    }
+  });
+
+  test('nothing a pack includes none of is left in the table', () => {
+    const dashed = view.closed_scope.filter((r) => Object.values(r.values).every((v) => v === '—'));
+    assert.deepEqual(dashed.map((r) => r.id), [], 'rows that are add-on services in disguise');
+    // And the three that were: they are in the catalogue instead.
+    const gates = view.addons.map((a) => a.gate);
+    for (const id of ['b2b', 'retail_pos', 'subscriptions']) {
+      assert.ok(gates.includes(id), `${id} is in no pack and is not in the add-on catalogue either`);
+      assert.ok(!view.closed_scope.some((r) => r.gate === id), `${id} is still a comparison row`);
+    }
+  });
+
+  test('every add-on names its scope, its packs and its weeks — as numbers, not as a sentence', () => {
+    for (const a of view.addons) {
+      assert.ok(a.description?.trim(), `${a.id}: an add-on service with no scope description`);
+      assert.ok(a.available_in.length, `${a.id}: nobody can buy it`);
+      assert.equal(typeof a.weeks.max, 'number', `${a.id}: weeks are a string, so the page cannot choose how to print them`);
+      assert.ok(a.weeks.max >= a.weeks.min && a.weeks.min > 0, `${a.id}: ${a.weeks.min}–${a.weeks.max} weeks`);
+      for (const t of a.tiers ?? []) {
+        assert.ok(t.label?.trim() && t.description?.trim(), `${a.id}: a tier with no label or no description`);
+        assert.ok(t.weeks.max >= t.weeks.min, `${a.id} / ${t.label}: weeks run backwards`);
+      }
+    }
+  });
+
+  test('the weeks the page prints span every tier the engine prices', () => {
+    const migration = view.addons.find((a) => a.gate === 'migration');
+    assert.deepEqual(migration.tiers.map((t) => t.label), ['light', 'medium', 'heavy']);
+    assert.equal(migration.weeks.min, Math.min(...migration.tiers.map((t) => t.weeks.min)));
+    assert.equal(migration.weeks.max, Math.max(...migration.tiers.map((t) => t.weeks.max)));
+  });
+
+  test('an add-on costs nothing a consultant can see, and everything an owner can', () => {
+    assert.ok(view.addons.every((a) => a.price === undefined && (a.tiers ?? []).every((t) => t.price === undefined)),
+      'a price band reached a caller who may not see Merkle pricing');
+    assert.ok(priced.addons.every((a) => a.price.min > 0), 'an owner sees what every add-on costs');
+    const b2b = priced.addons.find((a) => a.gate === 'b2b');
+    const mod = offering.modifiers.find((m) => m.id === '+B2B');
+    assert.equal(b2b.price.min, mod.price_add.min, 'the add-on quotes a price the engine does not');
+    assert.equal(b2b.weeks.max, mod.effort_weeks.max);
   });
 });
 

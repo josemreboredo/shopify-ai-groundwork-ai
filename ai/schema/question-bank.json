@@ -870,7 +870,8 @@
       ],
       "feeds": [
         "gate:store_estate",
-        "l_trigger:multi_store"
+        "l_trigger:multi_store",
+        "exit:11.29"
       ],
       "shopify": {
         "native": [

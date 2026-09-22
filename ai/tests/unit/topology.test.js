@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 import { evaluateTopology, managedMarketsVerdict, excludedFromBuild } from '../../engine/topology.js';
 import { evaluateExits } from '../../engine/exits.js';
 import { planRequirements } from '../../engine/plan.js';
-import { storesBeyondTheFirst } from '../../engine/classify.js';
+import { storesBeyondTheFirst, classifyOffer } from '../../engine/classify.js';
 import { approachQualityErrors } from '../../engine/approach.js';
 import { deckErrors } from '../../shared/deck-template.js';
 
@@ -307,5 +307,61 @@ describe('market topology', () => {
     const different = evaluateTopology(engagement({ markets: [stated('CH'), stated('DE', { assortment: 'different' })] }));
     assert.equal(different.recommendation, 'hybrid');
     assert.deepEqual(different.separate_store_markets, ['DE']);
+  });
+});
+
+describe('a second brand: where it stays and where it leaves', () => {
+  /*
+   * Two rules meet on the same answer and they are not the same rule.
+   *
+   * A second customer-facing brand needs its own store — Shopify's expansion
+   * stores must stay "an extension of the main brand" — and that store forces
+   * Ecommerce Growth through the multi_store trigger. Priced, inside the
+   * offers, and that is where a multibrand build stays.
+   *
+   * What leaves is the design. A full template set from a mapped design
+   * system, built again for a second identity, is the storefront gate's
+   * dearest tier twice over, and no band carries it: rule 11.29 routes it to
+   * Merkle Arc. The line is the tier, not the brand count — which is exactly
+   * the distinction that was missing, so these four cases pin it.
+   */
+  const brandDesign = (brands, completeness) => {
+    const doc = engagement({ markets: [stated('CH')], brands });
+    doc.design = { figma: { completeness } };
+    doc.markets.topology = evaluateTopology(doc);
+    doc.offer = classifyOffer(doc);
+    doc.exits = evaluateExits(doc, []);
+    return doc;
+  };
+  const arc = (doc) => (doc.exits.items ?? []).find((i) => i.rule_id === '11.29');
+
+  test('one brand never fires it, whatever the design costs', () => {
+    assert.equal(arc(brandDesign(1, 'all_templates')), undefined, 'one brand with a full design system is an offer, not a programme');
+    assert.equal(arc(brandDesign(1, 'brand_only')), undefined);
+  });
+
+  test('a second brand on a configured theme stays in the offers, as an L', () => {
+    const doc = brandDesign(2, 'brand_only');
+    assert.equal(arc(doc), undefined, 'nothing leaves the offers');
+    assert.equal(doc.offer.code, 'L', 'the store it needs already makes it an L');
+    assert.equal(doc.offer.l_triggers.multi_store.active, true);
+  });
+
+  test('a second brand on a key-screens design also stays — the tier is the line, not the brand', () => {
+    const doc = brandDesign(2, 'key_screens');
+    assert.equal(doc.offer.scope_gates.storefront_design.tier, 'extended');
+    assert.equal(arc(doc), undefined);
+    assert.equal(doc.offer.code, 'L');
+  });
+
+  test('a second brand each with its own full template set goes to Merkle Arc', () => {
+    const doc = brandDesign(2, 'all_templates');
+    assert.equal(doc.offer.scope_gates.storefront_design.tier, 'bespoke');
+    const fired = arc(doc);
+    assert.ok(fired, 'rule 11.29 fires');
+    assert.equal(fired.result, 'STOP');
+    assert.match(fired.evidence, /2 customer-facing brands/);
+    assert.match(fired.destination, /Merkle Arc/, 'and it names Arc as the destination');
+    assert.equal(doc.exits.triggered, true, 'a STOP takes it out of the offers whatever the classification says');
   });
 });

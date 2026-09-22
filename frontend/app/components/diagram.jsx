@@ -579,67 +579,160 @@ export function Lands({ classification, here }) {
 }
 
 /**
- * What each pack gets.
+ * A duration as a ceiling: "Up to 9 weeks".
  *
- * The index had no comparison at all: a scale of durations, a list of doors and
- * a table counting epics, none of which answers "how many markets does an M
- * cover". The honest answer is that the packs do not have per-dimension
- * allowances. They hold the same catalogue of work and differ in one number —
- * the scope-gate weeks the band already carries, 0 in S, 2–8 in M, 9–15 in L —
- * which every dimension draws from.
+ * Every other figure in the comparison is the most that fits in a pack — up to
+ * 3 markets, up to 1 store, up to the band's own ceiling — and weeks were the
+ * one figure printed as a range. Two ways of reading a number in one table is one too
+ * many, and "2–9 weeks" gets heard in a room as "at least two". Where min and
+ * max agree there is no ceiling to state and the figure is printed plainly, so
+ * the word "up to" always means something.
  *
- * So the rows that genuinely differ take three columns, and every capability row
- * spans them. Printing the same sentence in three columns would manufacture a
- * difference the engine does not make, and a consultant would quote from it.
+ * Tolerates a bare number as well as a {min, max}, because the add-on catalogue
+ * is allowed to carry either.
  *
- * Every figure is read from the offering: the capacities from the offers, the
- * rates and tiers from the gates' own modifiers, the ceilings from the exit
- * rules that set them. Nothing in here is typed twice.
- *
- * @param {{ offers: object[], gates: object[], ceilings: object, pricing: boolean,
- *   currency?: string, weeks: Function, band: Function }} props
+ * @param {{min: number, max: number}|number|null|undefined} w
+ * @returns {string|null}
  */
-export function PackTable({ offers, closedScope, pricing, currency, weeks, band, track }) {
+function upToWeeks(w) {
+  if (w === null || w === undefined) return null;
+  const n = typeof w === 'number' ? { min: w, max: w } : w;
+  if (typeof n.max !== 'number') return null;
+  const unit = n.max === 1 ? 'week' : 'weeks';
+  return n.min === n.max ? `${n.max} ${unit}` : `Up to ${n.max} ${unit}`;
+}
+
+/**
+ * A cell is a quantity or it is a dash.
+ *
+ * The table's whole job is the maximum that fits in each pack. It does not
+ * explain what does not fit and it never says "add-on" in a cell — a reader
+ * comparing three columns of prose cannot find the number they came for, and a
+ * cell that sells something is a cell that stops comparing. Everything about
+ * buying more lives in the add-on services below.
+ *
+ * The regexp is a bridge for rows still carrying the older prose values ("No —
+ * one checkout currency", "Not in the base pack — its own scope gate"). Once
+ * every value in the offering is a quantity it matches nothing and this is a
+ * pass-through.
+ */
+const NOT_COVERED = /^(no|none|not\s|n\/a|add[- ]?on)\b/i;
+function quantity(value) {
+  const s = typeof value === 'string' ? value.trim() : '';
+  if (!s || s === '—' || s === '-' || NOT_COVERED.test(s)) return null;
+  return s;
+}
+
+/** A dash a screen reader can read, since the glyph alone announces as nothing. */
+function NotCovered() {
+  return (
+    <>
+      <span className="sr-only">Not included in this pack</span>
+      <span aria-hidden="true">—</span>
+    </>
+  );
+}
+
+/**
+ * What each pack includes, and up to what limit. One table.
+ *
+ * It was three: a scale of durations, an approach table and this one, none of
+ * which a reader could tell apart, and the verdict was "I don't understand any
+ * of them, keep only one". The other two are gone from the index — the scale
+ * still serves an offer's own page, where there is one thing to locate on it.
+ *
+ * What is left has to carry the whole comparison, so it is built to be read
+ * rather than scanned end to end:
+ *
+ *   Sections, not a wall. `group` breaks forty rows into blocks a consultant can
+ *   point at — markets and stores, catalogue, storefront, checkout — so finding
+ *   the answer to the question the client actually asked is a jump, not a read.
+ *
+ *   A cell is a quantity. Where a pack covers none of a row the cell is a dash.
+ *   Included-up-to-a-limit and quoted-on-top are no longer two states of one
+ *   cell competing for the same glance: the second state left the table.
+ *
+ *   The explanation is attached to its row and folded away. Every note used to
+ *   be dumped into a single cell at the bottom — sixteen paragraphs under the
+ *   word "Notes", so the rationale for the SKU ceiling sat four paragraphs from
+ *   the SKU row and nobody read any of it. Each note is now a disclosure on the
+ *   row it belongs to, shut by default.
+ *
+ *   The platform ceiling sits with its subject. `shopify_limit` is Shopify's
+ *   own documented limit, not Merkle's, and a reader needs it beside the row it
+ *   bounds rather than in a fifth column squeezing the three that compare.
+ *
+ * Every figure is read from the offering. Nothing in here is typed twice, and
+ * the fields that have not landed yet — `group`, `shopify_limit` — are absent
+ * rather than fatal.
+ *
+ * @param {{ offers: object[], closedScope?: object[], pricing: boolean,
+ *   currency?: string, track?: Function }} props
+ */
+export function PackTable({ offers, closedScope = [], pricing, currency, track }) {
   if (!offers?.length) return null;
-  const capacity = (o) => o.gate_capacity_weeks;
-  const gateCost = (g) => {
-    if (!g.effort_weeks) return null;
-    const w = `+${weeks(g.effort_weeks)} week${g.effort_weeks.max === 1 ? '' : 's'}`;
-    return pricing && g.price_add ? `${w} · ${band(g.price_add, currency)}` : w;
-  };
+  const cols = offers.length + 1;
+
+  /* How the pack is built, in the column head, because the table that used to
+     say it was the second one a reader could not tell from this. An offer that
+     builds either way has a `tracks` pair and says so — `delivery_track` is
+     `liquid` on all three, so printing it alone put "Online Store · Horizon"
+     under Ecommerce Growth, which is the one offer that is often headless. */
+  const buildsAs = (o) => (o.tracks ? 'Theme or headless' : (track ? track(o.delivery_track) ?? o.delivery_track : null));
+
+  /* Only rows a pack includes something of. A row that is a dash in all three
+     columns tells a reader nothing except that they should stop reading — its
+     subject is an add-on service and it is sold below, rather than un-sold
+     here. This is the contract's own rule, enforced at the last moment in case
+     a row arrives that does not honour it. */
+  const rows = closedScope.filter((r) => offers.some((o) => quantity(r.values?.[o.code])));
+
+  /* Grouped by name in first-appearance order, so the data decides the sections
+     and their order. No `group` yet means one unnamed block, which reads exactly
+     as the table did before the field existed. */
+  const groups = new Map();
+  for (const row of rows) {
+    const name = row.group ?? null;
+    if (!groups.has(name)) groups.set(name, []);
+    groups.get(name).push(row);
+  }
 
   return (
-    <div className="table-scroll" role="region" tabIndex={0} aria-label="What each pack gets, compared">
+    <div className="table-scroll" role="region" tabIndex={0} aria-label="What each pack includes, and up to what limit">
       <table className="compare packs">
+        <caption className="sr-only">
+          What each pack includes, and up to what limit. A dash means the pack includes none of that row;
+          what can be bought on top is listed under Add-on services, after this table.
+        </caption>
         <thead>
           <tr>
-            <th scope="col">What the pack gets</th>
+            <th scope="col">What the pack includes</th>
             {offers.map((o) => (
               <th scope="col" key={o.code}>
                 <span className="pack-code">{o.code}</span>
-                <span className="pack-name">{o.name} · {weeks(o.duration_weeks)} weeks</span>
+                <span className="pack-name">{o.name}</span>
+                <span className="pack-meta">
+                  {upToWeeks(o.duration_weeks)}
+                  {buildsAs(o) ? ` · ${buildsAs(o)}` : ''}
+                </span>
               </th>
             ))}
           </tr>
         </thead>
+        {/* The commercial frame, above the capabilities: how much gated work the
+            price already holds, and — for an owner only — the band itself. Both
+            are ceilings and both are printed as one. */}
         <tbody className="pack-differs">
-          {track ? (
-            <tr>
-              <th scope="row">Approach</th>
-              {offers.map((o) => (
-                <td key={o.code} data-label={o.code}>{track(o.delivery_track) ?? o.delivery_track}</td>
-              ))}
-            </tr>
-          ) : null}
           <tr>
-            <th scope="row">Scope-gate weeks the band already carries</th>
-            {offers.map((o) => (
-              <td key={o.code} data-label={o.code}>
-                <span className="pack-budget">
-                  {capacity(o).max === 0 ? 'None' : `${weeks(capacity(o))} weeks`}
-                </span>
-              </td>
-            ))}
+            <th scope="row">Scope-gate weeks already in the price</th>
+            {offers.map((o) => {
+              const cap = o.gate_capacity_weeks;
+              return (
+                <td key={o.code} data-label={o.code}>
+                  <span className="pack-budget">{!cap || cap.max === 0 ? 'None' : upToWeeks(cap)}</span>
+                </td>
+              );
+            })}
           </tr>
           {pricing && offers.every((o) => o.price_band) ? (
             <tr>
@@ -654,65 +747,139 @@ export function PackTable({ offers, closedScope, pricing, currency, weeks, band,
             </tr>
           ) : null}
         </tbody>
-        <tbody>
-          <tr className="pack-group">
-            <th scope="rowgroup" colSpan={offers.length + 1}>
-              What each pack includes
-              <span className="pack-group-note">
-                Closed. Anything past a row is quoted on top of the pack, never assumed into it — and a test
-                builds an engagement that takes exactly this and checks the engine still calls it that pack.
-              </span>
-            </th>
-          </tr>
-          {/* One row per capability, one cell per pack. This replaced a block
-              that said "the same in every pack" and then printed what each one
-              costs — true, and the wrong question. A client does not ask what a
-              market costs; they ask how many markets they get. */}
-          {closedScope.map((row) => (
-            <tr key={row.id} className="pack-gets">
-              <th scope="row">{row.what}</th>
-              {offers.map((o) => {
-                const value = row.values[o.code] ?? '—';
-                const isAddon = row.addon?.includes(o.code);
-                const no = !isAddon && /^No\b/.test(value);
-                return (
-                  <td key={o.code} data-label={o.code} className={isAddon && !row.addon_label ? 'pack-addon' : no ? 'pack-no' : 'pack-yes'}>
-                    {/* Two different shapes. Where the pack includes nothing of
-                        this and can buy it, the cell is the add-on. Where the
-                        pack includes something AND can buy more, the price has
-                        to sit under the add-on's own name — printed under the
-                        included line it read as the price of what was already
-                        in, which is how "Settings and editor branding" came to
-                        look like it cost CHF 32k. */}
-                    {value}
-                    {isAddon && row.cost ? (
-                      <span className={row.addon_label ? 'pack-addon-extra' : 'pack-addon-cost'}>
-                        <b>Quoted on top{row.addon_label ? `: ${row.addon_label}` : ''}</b>
-                        <span className="pack-addon-cost">
-                          +{weeks(row.cost.effort_weeks)} week{row.cost.effort_weeks.max === 1 ? '' : 's'}
-                          {pricing && row.cost.price_add ? ` · ${band(row.cost.price_add, currency)}` : ''}
-                        </span>
-                      </span>
-                    ) : null}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-          {closedScope.some((r) => r.note) ? (
-            <tr className="pack-notes">
-              <th scope="row">Notes</th>
-              <td colSpan={offers.length}>
-                <ul>
-                  {closedScope.filter((r) => r.note).map((r) => (
-                    <li key={r.id}><strong>{r.what}.</strong> {r.note}</li>
-                  ))}
-                </ul>
-              </td>
-            </tr>
-          ) : null}
-        </tbody>
+        {[...groups].map(([name, groupRows]) => (
+          <tbody key={name ?? 'all'}>
+            {name ? (
+              <tr className="pack-group">
+                <th scope="rowgroup" colSpan={cols}>{name}</th>
+              </tr>
+            ) : null}
+            {groupRows.map((row) => (
+              <tr key={row.id} className="pack-gets">
+                <th scope="row">
+                  <span className="pack-what">{row.what}</span>
+                  {row.shopify_limit ? (
+                    <span className="pack-limit">
+                      <span className="pack-limit-tag">Shopify&rsquo;s limit</span> {row.shopify_limit}
+                    </span>
+                  ) : null}
+                  {row.note ? (
+                    <details className="pack-why">
+                      <summary>What this covers</summary>
+                      <p>{row.note}</p>
+                    </details>
+                  ) : null}
+                </th>
+                {offers.map((o) => {
+                  const value = quantity(row.values?.[o.code]);
+                  return (
+                    <td key={o.code} data-label={o.code} className={value ? 'pack-yes' : 'pack-no'}>
+                      {value ?? <NotCovered />}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        ))}
       </table>
     </div>
+  );
+}
+
+/**
+ * Add-on services: everything buyable on top of a pack — more of what a pack
+ * already holds once its ceiling is reached, and the capabilities no pack
+ * contains at all — with what each covers and what it costs.
+ *
+ * B2B, Subscriptions and Retail/POS were rows in the comparison, which put a
+ * reader in front of three columns of "not in the base pack — its own scope
+ * gate" and then asked them to work out that this meant it was for sale. They
+ * are not pack scope and they are not a comparison; they are a price list, so
+ * they are drawn as one and placed after the table rather than inside it.
+ *
+ * Deliberately not a table. The page's failure was three tables a reader could
+ * not tell apart — a fourth grid under the one that survived would rebuild the
+ * problem. A card carries a heading, a sentence of scope and a cost, which is
+ * what buying one of these actually needs, and it cannot be mistaken for the
+ * comparison above it.
+ *
+ * Costs here are ranges, not ceilings, and that is a deliberate break from the
+ * table above it. A ceiling is the right figure for a pack, which is a closed
+ * thing the client is buying whole. An add-on's floor is a real price a client
+ * pays — "CHF 8k per further market" — and printing it as "up to CHF 86k"
+ * quotes a client the eleventh market for their second one. The price band was
+ * always going to render min–max; weeks read the same way beside it.
+ *
+ * Price is gated twice: the view strips it on the server for anyone who is not
+ * an owner, and nothing here prints it without `pricing`. Weeks are not
+ * commercial and travel to everyone.
+ *
+ * @param {{ addons?: object[], pricing: boolean, currency?: string,
+ *   weeks: Function, band: Function }} props
+ */
+export function AddonList({ addons, pricing, currency, weeks, band }) {
+  if (!addons?.length) return null;
+
+  /** "S, M and L" — where this one can be bought. */
+  const packs = (codes) => {
+    const list = codes ?? [];
+    if (list.length < 2) return list.join('');
+    return `${list.slice(0, -1).join(', ')} and ${list[list.length - 1]}`;
+  };
+  /** "1–8 weeks · CHF 8k–86k", or just the weeks for a reader who may not see price. */
+  const cost = (w, p) => {
+    const parts = [];
+    const span = weeks ? weeks(w) : upToWeeks(w);
+    if (span && span !== '—') parts.push(`${span} week${w?.max === 1 ? '' : 's'}`);
+    if (pricing && p) parts.push(band(p, currency));
+    return parts.length ? parts.join(' · ') : null;
+  };
+
+  return (
+    <ul className="addons">
+      {addons.map((a) => {
+        const headline = cost(a.weeks, a.price);
+        return (
+          <li key={a.id} className="addon">
+            <h3>{a.what}</h3>
+            {a.available_in?.length ? (
+              <p className="addon-where">Bought on top of {packs(a.available_in)}</p>
+            ) : null}
+            {a.description ? <p className="addon-what">{a.description}</p> : null}
+            {a.note ? <p className="addon-note">{a.note}</p> : null}
+            {headline ? (
+              <p className="addon-cost">
+                <span className="addon-cost-label">Adds</span>
+                <span className="addon-cost-figure">{headline}</span>
+              </p>
+            ) : (
+              <p className="addon-cost"><span className="addon-cost-label">Adds</span> <span className="muted">Scoped per engagement</span></p>
+            )}
+            {/* Nine of these are priced by which case the client is in, and
+                every case carries its own paragraph of scope. Printed flat that
+                is three paragraphs a card and the section becomes the wall the
+                table just stopped being — so the breakdown is a disclosure and
+                the headline span above it is what the card shows at rest. */}
+            {a.tiers?.length ? (
+              <details className="addon-tiers">
+                <summary>Priced by case — {a.tiers.length} tiers</summary>
+                <dl>
+                  {a.tiers.map((t, i) => (
+                    <div key={t.label ?? `tier-${i}`}>
+                      <dt>
+                        {t.label ? <span className="addon-tier-name">{t.label}</span> : null}
+                        {t.description ? <span className="addon-tier-what">{t.description}</span> : null}
+                      </dt>
+                      <dd>{cost(t.weeks, t.price) ?? <span className="muted">Quoted per engagement</span>}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
+            ) : null}
+          </li>
+        );
+      })}
+    </ul>
   );
 }
