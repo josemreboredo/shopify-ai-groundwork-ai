@@ -6,7 +6,7 @@ import { discovery, serviceFailure } from '../discovery.server.js';
 import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
 import { EngagementErrorBoundary, EngagementHeader, QuestionCard, Vocabularies } from '../components/question.jsx';
-import { processMeta } from '../../../discovery/service/process.js';
+import { processMeta } from '../../../ai/shared/process.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle(params.client) }];

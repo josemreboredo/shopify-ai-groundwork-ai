@@ -6,12 +6,12 @@
 import { neon } from '@neondatabase/serverless';
 import { data } from 'react-router';
 
-import { createDiscoveryService, ServiceError } from '../../discovery/service/index.js';
-import { createOAuthServer } from '../../discovery/service/oauth.js';
-import { createFileStore } from '../../discovery/service/stores/file-store.js';
-import { createPostgresStore } from '../../discovery/service/stores/postgres-store.js';
-import { createOAuthMemoryStore } from '../../discovery/service/stores/oauth-memory-store.js';
-import { createOAuthPostgresStore } from '../../discovery/service/stores/oauth-postgres-store.js';
+import { createDiscoveryService, ServiceError } from '../../ai/shared/index.js';
+import { createOAuthServer } from '../../ai/shared/oauth.js';
+import { createFileStore } from '../../ai/shared/stores/file-store.js';
+import { createPostgresStore } from '../../ai/shared/stores/postgres-store.js';
+import { createOAuthMemoryStore } from '../../ai/shared/stores/oauth-memory-store.js';
+import { createOAuthPostgresStore } from '../../ai/shared/stores/oauth-postgres-store.js';
 
 let service;
 let oauthServer;

@@ -1,7 +1,7 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { deckToHtml } from '../../../discovery/service/deck-html.js';
-import { annexDeckFromMarkdown } from '../../../discovery/service/pptx.js';
+import { deckToHtml } from '../../../ai/shared/deck-html.js';
+import { annexDeckFromMarkdown } from '../../../ai/shared/pptx.js';
 
 /** The deck in the browser, slide by slide. `?part=annex` previews the annex. */
 export async function loader({ request, params }) {

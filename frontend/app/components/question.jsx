@@ -8,9 +8,9 @@ import { Form, Link, NavLink, isRouteErrorResponse, useParams, useRouteError } f
 
 // From the language module, not the service: service/i18n.js reads the schema
 // to count answer choices, which drags ajv into the browser bundle.
-import { LANGUAGE_NAMES } from '../../../discovery/agents/language.js';
-import { stepsFor, viewsFor, processMeta, processOf } from '../../../discovery/service/process.js';
-import { offerStanding } from '../../../discovery/service/summary.js';
+import { LANGUAGE_NAMES } from '../../../ai/shared/language.js';
+import { stepsFor, viewsFor, processMeta, processOf } from '../../../ai/shared/process.js';
+import { offerStanding } from '../../../ai/shared/summary.js';
 
 export const words = (id) => id.replace(/_/g, ' ');
 

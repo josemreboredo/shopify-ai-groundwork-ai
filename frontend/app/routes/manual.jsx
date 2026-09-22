@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 
 import { originOf } from '../origin.server.js';
-import { connectorUrl } from '../../../discovery/service/project-kit.js';
+import { connectorUrl } from '../../../ai/shared/project-kit.js';
 import { CONNECTOR, PRODUCT, pageTitle } from '../brand.js';
 
 export const meta = () => [

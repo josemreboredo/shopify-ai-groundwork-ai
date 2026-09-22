@@ -413,7 +413,7 @@
       }
     },
     "offer": {
-      "description": "Computed by the discovery engine from discovery/schema/offering.json — never entered by hand.",
+      "description": "Computed by the discovery engine from ai/schema/offering.json — never entered by hand.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -845,7 +845,7 @@
         "topology": {
           "type": "object",
           "additionalProperties": false,
-          "description": "DERIVED by the topology evaluator (never answered): how many stores the markets run on. See discovery/agents/discovery/topology.js.",
+          "description": "DERIVED by the topology evaluator (never answered): how many stores the markets run on. See ai/engine/topology.js.",
           "required": [
             "recommendation",
             "confidence"
@@ -1271,7 +1271,7 @@
           ]
         }
       },
-      "description": "Mainland China discovery inputs (only when CN is a launch market). Not part of the Merkle offering (exit rule 11.20); see discovery/docs/china-mainland.md."
+      "description": "Mainland China discovery inputs (only when CN is a launch market). Not part of the Merkle offering (exit rule 11.20); see ai/docs/china-mainland.md."
     },
     "catalogue": {
       "type": "object",
@@ -3359,7 +3359,7 @@
                           "additionalProperties": {
                             "type": "string"
                           },
-                          "description": "One line per axis of the comparison rubric (discovery/agents/discovery/rubric.js): the same axes on every option, so they can be compared rather than argued."
+                          "description": "One line per axis of the comparison rubric (ai/engine/rubric.js): the same axes on every option, so they can be compared rather than argued."
                         }
                       }
                     }

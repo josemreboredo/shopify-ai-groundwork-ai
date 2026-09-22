@@ -13,10 +13,10 @@
  * @module frontend/app/facts.server
  */
 
-import questionBank from '../../discovery/schema/question-bank.json' with { type: 'json' };
-import offering from '../../discovery/schema/offering.json' with { type: 'json' };
-import { REFERENCE_CHAPTERS } from '../../discovery/service/reference-chapters.js';
-import { SLIDE_LAYOUTS } from '../../discovery/service/deck-html.js';
+import questionBank from '../../ai/schema/question-bank.json' with { type: 'json' };
+import offering from '../../ai/schema/offering.json' with { type: 'json' };
+import { REFERENCE_CHAPTERS } from '../../ai/shared/reference-chapters.js';
+import { SLIDE_LAYOUTS } from '../../ai/shared/deck-html.js';
 
 /**
  * @returns {Array<[string, string]>} count and what it counts, for the stats strip

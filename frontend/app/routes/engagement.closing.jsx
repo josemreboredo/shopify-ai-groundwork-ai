@@ -5,8 +5,8 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';
 import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
-import { ServiceError } from '../../../discovery/service/index.js';
-import { processMeta } from '../../../discovery/service/process.js';
+import { ServiceError } from '../../../ai/shared/index.js';
+import { processMeta } from '../../../ai/shared/process.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
 
 export const meta = ({ data, params }) => [{ title: pageTitle(`${processMeta(data?.engagement?.process).document}`, params.client) }];

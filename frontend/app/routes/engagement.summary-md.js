@@ -1,6 +1,6 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { renderSummaryMarkdown } from '../../../discovery/service/summary.js';
+import { renderSummaryMarkdown } from '../../../ai/shared/summary.js';
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);

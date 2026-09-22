@@ -2,10 +2,10 @@ import { Form, Link, redirect } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { processMeta } from '../../../discovery/service/process.js';
-import { offerStanding, statusOf } from '../../../discovery/service/summary.js';
+import { processMeta } from '../../../ai/shared/process.js';
+import { offerStanding, statusOf } from '../../../ai/shared/summary.js';
 import { PRODUCT, pageTitle } from '../brand.js';
-import { LANGUAGES as SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '../../../discovery/agents/language.js';
+import { LANGUAGES as SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '../../../ai/shared/language.js';
 
 export const meta = () => [{ title: pageTitle('Bids and engagements') }];
 

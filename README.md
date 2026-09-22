@@ -21,7 +21,7 @@ A Shopify engagement runs in two stages, and the repository has one tool for eac
                                               + backlog + completed workbook
 ```
 
-1. **Discovery AI tool** (`discovery/`, in use). The Lead Consultant runs the interview in Claude Code (`/interview`) or
+1. **Discovery AI tool** (`ai/`, in use). The Lead Consultant runs the interview in Claude Code (`/interview`) or
    processes a completed questionnaire (`/discover`). Code — not the model — decides the offer, scope gates, exit rules
    and Shopify plan; the model extracts answers and drafts the approach. Outputs: the engagement record, the Discovery
    Closing Deck, the Jira backlog and the tax and shipping configuration workbook. Engagements beyond the standard
@@ -36,18 +36,20 @@ documentation and App Store candidates, checked at each Shopify Edition.
 
 ```
 shopify-ai-builder/
-├── discovery/                  Discovery AI tool
-│   ├── agents/
-│   │   ├── discovery/          engine: extraction, offer, exit rules, plan benchmark, app signals, approach
-│   │   ├── interview/          consultant-run interview: sessions, next questions, answers, preview
-│   │   ├── discovery-deck/     Discovery Closing Deck data (Lead Consultant draft)
-│   │   ├── backlog/            Jira stories per epic and CSV export
-│   │   └── workbook/           tax and shipping configuration workbook
+├── ai/                         Discovery AI tool
+│   ├── engine/                 shared engine: extraction, offer, exit rules, plan benchmark, app signals, approach
+│   │                           — used by both the bid and engagement paths (docs/adr/0018-ai-folder-layout.md)
+│   ├── bid/                    RFP-only: the clarification questions sent back to a client before a proposal
+│   ├── engagement/             consultant-run interview: sessions, next questions, answers, preview
+│   ├── discovery-deck/         Discovery Closing Deck data (Lead Consultant draft)
+│   ├── backlog/                Jira stories per epic and CSV export
+│   ├── workbook/               tax and shipping configuration workbook
+│   ├── shared/                 service layer both the web app and the Claude connector call (2.0.0)
+│   ├── mcp/                    MCP connectors, one subfolder each — today: merkle-discovery/
 │   ├── schema/                 question bank, offering (internal pricing and rules), App Store registry, labels
 │   ├── scripts/                questionnaire and consultant guide generator, app approvals
 │   ├── docs/                   client questionnaire and consultant guide (generated), deck template and prompt,
 │   │                           mainland China briefing, architecture, validation
-│   ├── service/                shared operations for the web app and the Claude connector (2.0.0)
 │   ├── tests/                  unit tests and engagement fixtures
 │   └── paths.js                repository locations used by the tool
 ├── build/                      Build AI tool
@@ -64,8 +66,8 @@ shopify-ai-builder/
 └── CHANGELOG.md
 ```
 
-More detail: [`discovery/README.md`](discovery/README.md) · [`build/README.md`](build/README.md) ·
-decisions in [`docs/adr/`](docs/adr/README.md) (ADR 0013 explains this layout).
+More detail: [`ai/README.md`](ai/README.md) · [`build/README.md`](build/README.md) ·
+decisions in [`docs/adr/`](docs/adr/README.md) (ADR 0013 explains the tool split, ADR 0018 the `ai/` layout).
 
 ## Getting started
 
@@ -93,9 +95,9 @@ npm test                                        # must pass before every commit
 - **Client data** lives only in `clients/` (gitignored). Engagement records hold no customer personal data; stakeholders
   are recorded by role.
 - **LLM processing** needs the client's consent (questionnaire Q10.5.2); questionnaires are redacted before the model
-  sees them (ADR 0007). Claude Code currently runs on a personal Claude Pro account — move to dentsu's Claude
-  Enterprise before any dentsu / Merkle adoption.
-- **Internal pricing** (offer bands, modifiers, commercial warnings) stays in `discovery/schema/offering.json` and the
+  sees them (ADR 0007). Every execution mode must run under a dentsu Claude Enterprise seat — access to the tool is
+  restricted to consultants who hold one, since the app cannot verify account tier at runtime.
+- **Internal pricing** (offer bands, modifiers, commercial warnings) stays in `ai/schema/offering.json` and the
   deck's consultant-notes section; client-facing documents are checked for leaks (`npm run deck:check`).
 - **Secrets** stay in `.env` (gitignored); see [`docs/conventions/security-gates.md`](docs/conventions/security-gates.md).
 

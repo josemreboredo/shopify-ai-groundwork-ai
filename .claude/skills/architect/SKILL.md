@@ -57,7 +57,7 @@ For each requirement and each decision, confirm the Shopify facts in official so
   privacy) — the toolkit does not cover it, so fetch the page. Plan requirements almost always live here: developer docs
   say "a plan that supports B2B", the help centre names the plan.
 - **apps.shopify.com** for every app (listing URL, pricing, languages, reviews); **changelog.shopify.com** for recent
-  changes. `discovery/schema/question-bank.json` already holds a verified documentation link per question (ADR 0011) —
+  changes. `ai/schema/question-bank.json` already holds a verified documentation link per question (ADR 0011) —
   start there, then confirm on the page.
 - **Delegate breadth:** research several areas in parallel with subagents (markets and tax, B2B and checkout,
   integrations and migration, apps and non-functional), each returning claim → confirmed/contradicted/unconfirmed, exact

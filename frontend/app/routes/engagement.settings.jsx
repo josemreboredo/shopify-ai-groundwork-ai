@@ -3,10 +3,10 @@ import { Form, redirect, useNavigation } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementErrorBoundary, EngagementHeader } from '../components/question.jsx';
-import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
-import { OUTCOMES, outcomesFor } from '../../../discovery/service/outcome.js';
+import { PROCESSES, processMeta } from '../../../ai/shared/process.js';
+import { OUTCOMES, outcomesFor } from '../../../ai/shared/outcome.js';
 import { pageTitle } from '../brand.js';
-import { LANGUAGES, LANGUAGE_NAMES } from '../../../discovery/agents/language.js';
+import { LANGUAGES, LANGUAGE_NAMES } from '../../../ai/shared/language.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Change', params.client) }];
 

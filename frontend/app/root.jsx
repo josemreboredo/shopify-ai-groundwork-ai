@@ -47,7 +47,7 @@ const SECTIONS = [
       /* The product names, not the letters. "Offer S" is a filing code; nobody
          in a client conversation says it, and a consultant looking for what an
          engagement was sold as is looking for the name. They are the names in
-         discovery/schema/offering.json verbatim, pinned there by a test, so the
+         ai/schema/offering.json verbatim, pinned there by a test, so the
          menu cannot drift from the offering the engine runs.
 
          Two words each, which wraps to two lines at footer column width — the

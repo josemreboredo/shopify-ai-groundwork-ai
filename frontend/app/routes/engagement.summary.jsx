@@ -4,8 +4,8 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngineReadout, EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
-import { offerStanding } from '../../../discovery/service/summary.js';
-import { processOf } from '../../../discovery/service/process.js';
+import { offerStanding } from '../../../ai/shared/summary.js';
+import { processOf } from '../../../ai/shared/process.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Where it stands', params.client) }];
 

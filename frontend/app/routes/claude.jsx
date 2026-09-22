@@ -1,6 +1,6 @@
 import { requireUser } from '../auth.server.js';
 import { originOf } from '../origin.server.js';
-import { PROJECT_INSTRUCTIONS, PROJECT_NAME, connectorUrl } from '../../../discovery/service/project-kit.js';
+import { PROJECT_INSTRUCTIONS, PROJECT_NAME, connectorUrl } from '../../../ai/shared/project-kit.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
 
 export const meta = () => [{ title: pageTitle('Claude Project') }];

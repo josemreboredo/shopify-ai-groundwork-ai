@@ -1,7 +1,7 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
-import { ServiceError } from '../../../discovery/service/index.js';
+import { ServiceError } from '../../../ai/shared/index.js';
 import { Radar } from '../components/radar.jsx';
 import { pageTitle } from '../brand.js';
 

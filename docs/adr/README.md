@@ -22,3 +22,4 @@ One file per decision: `NNNN-short-title.md`. Status is **Proposed** until the o
 | [0015](0015-claude-connector-shared-memory.md) | Claude connector: shared memory between Claude Projects and the web app | Accepted |
 | [0016](0016-closing-document-from-claude-project.md) | Discovery Closing Document drafted from the Claude Project | Accepted |
 | [0017](0017-sourced-solution-architecture.md) | Sourced solution architecture in the Discovery Closing Document | Accepted |
+| [0018](0018-ai-folder-layout.md) | `discovery/` reorganised as `ai/`: engine, bid, engagement, shared, mcp | Accepted |

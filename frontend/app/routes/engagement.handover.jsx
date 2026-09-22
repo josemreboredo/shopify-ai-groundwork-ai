@@ -1,6 +1,6 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { ServiceError } from '../../../discovery/service/index.js';
+import { ServiceError } from '../../../ai/shared/index.js';
 import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 

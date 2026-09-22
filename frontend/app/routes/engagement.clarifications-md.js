@@ -1,6 +1,6 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { renderClarificationsMarkdown } from '../../../discovery/service/clarifications-view.js';
+import { renderClarificationsMarkdown } from '../../../ai/shared/clarifications-view.js';
 
 /**
  * The questions as a file. Two versions from one route: the client-facing one by

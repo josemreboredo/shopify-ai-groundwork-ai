@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
-import { offeringView } from '../../../discovery/service/offering-view.js';
-import { scopeCatalogue, scopeTotals } from '../../../discovery/service/scope-view.js';
+import { offeringView } from '../../../ai/shared/offering-view.js';
+import { scopeCatalogue, scopeTotals } from '../../../ai/shared/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
 import { Boundaries, Channels, Lands, OfferScale, PhasePlan, ScopeTable, Storefront, Tracks } from '../components/diagram.jsx';

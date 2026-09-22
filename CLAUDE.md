@@ -25,31 +25,31 @@ workspace for all Shopify client engagements.
 - **Lovelock:** No — this is a client-delivery biota, not a synthetic regime-test
 - **Cadence:** Standard sprint cadence per `gaia/methodology/agile-process.md`
 
-## Repository layout (ADR 0013)
+## Repository layout (ADR 0013, reorganised under `ai/` per ADR 0018)
 
 | Folder | What it is |
 |---|---|
-| `discovery/` | **Discovery AI tool** — interview, discovery engine, deck, Jira backlog, configuration workbook, question bank, offering, app registry, discovery docs and tests |
+| `ai/` | **Discovery AI tool** — the shared engine (`ai/engine/`), the live-conversation path (`ai/engagement/`), the RFP-only path (`ai/bid/`), the service layer (`ai/shared/`), MCP connectors (`ai/mcp/<connector>/`), deck/backlog/workbook generators, question bank, offering, app registry, docs and tests |
 | `build/` | **Build AI tool** (next) — build agents that configure stores and themes from the discovery handover; `build/lwc-library/` tokens and market presets |
 | `contracts/` | The handover between both tools: `engagement.schema.json` |
 | `docs/` | Shared: ADRs, strategy (commercial model), implementation plan, security gates |
 | `clients/` | Client data (gitignored), used by both tools |
-| `frontend/`, `discovery/service/` | **2.0.0 (in progress)** — Lead Consultant web app (`npm run web`, `frontend/README.md`) and discovery service; Claude Projects connector next (ADR 0014). Interim hosting: demo data only |
+| `frontend/`, `ai/shared/` | **2.0.0 (in progress)** — Lead Consultant web app (`npm run web`, `frontend/README.md`) and discovery service; Claude Projects connector next (ADR 0014). Interim hosting: demo data only |
 
 Handover from discovery to build: `clients/<slug>/engagement.json`, `backlog.csv` / `backlog.json` and the completed
-`configuration-workbook.md`. The build tool never reads offer pricing from `discovery/schema/offering.json`.
+`configuration-workbook.md`. The build tool never reads offer pricing from `ai/schema/offering.json`.
 
 ## Engagement contract (ADR 0002)
 
 - `contracts/engagement.schema.json` — one client engagement (`clients/<slug>/engagement.json`, gitignored)
-- `discovery/schema/question-bank.json` — every discovery question and the fields it fills
-- `discovery/schema/offering.json` — S/M/L offers, scope gates, exit rules (internal pricing — never client-facing)
-- `discovery/schema/apps.json` — App Store registry; apps stay `proposed` until a lead consultant approves them after the engagement (`npm run apps -- approve`)
-- `discovery/docs/client-questionnaire.md` (client, no plan information) and `discovery/docs/consultant-guide.md` (Shopify knowledge per question) are **generated** — edit the question bank, then `npm run questionnaire:render`
+- `ai/schema/question-bank.json` — every discovery question and the fields it fills
+- `ai/schema/offering.json` — S/M/L offers, scope gates, exit rules (internal pricing — never client-facing)
+- `ai/schema/apps.json` — App Store registry; apps stay `proposed` until a lead consultant approves them after the engagement (`npm run apps -- approve`)
+- `ai/docs/client-questionnaire.md` (client, no plan information) and `ai/docs/consultant-guide.md` (Shopify knowledge per question) are **generated** — edit the question bank, then `npm run questionnaire:render`
 - Shopify facts (features, plans, apps) come from Shopify documentation with a verification date (ADR 0011); S/M do not assume Shopify Plus
-- Mainland China is not part of the offering: rule 11.20 routes it to a separate China discovery (`discovery/docs/china-mainland.md` — Shopify has no infrastructure in mainland China)
-- Discovery: `/discover <questionnaire.md>` in Claude Code (or `npm run discover` with an API key) → `clients/<slug>/engagement.json` (see `discovery/agents/discovery/README.md`)
-- ⚠ Claude Code mode runs on a personal Claude Pro account for now — raise migrating to dentsu Claude Enterprise before any dentsu / Merkle adoption (ADR 0007)
+- Mainland China is not part of the offering: rule 11.20 routes it to a separate China discovery (`ai/docs/china-mainland.md` — Shopify has no infrastructure in mainland China)
+- Discovery: `/discover <questionnaire.md>` in Claude Code (or `npm run discover` with an API key) → `clients/<slug>/engagement.json` (see `ai/engine/README.md`)
+- Every execution mode (Claude Code, Claude Projects) must run under a dentsu Claude Enterprise seat — a policy control, not a code one (ADR 0007)
 - Interview: `/interview` in Claude Code (consultant-run, any language, answers stored in English) → same pipeline as `/discover`
 - After a STOP the consultant records the route (Q10.5.5): Larger Engagement (Merkle Enterprise Engagement with a dedicated Discovery Phase) drafts the approach, a brief and the client deck — no Jira tickets; or no bid (ADR 0009)
 - Tax and shipping set-up: `npm run workbook -- --client <slug>` → `configuration-workbook.md`, completed by the client after the scope is agreed (ADR 0012)

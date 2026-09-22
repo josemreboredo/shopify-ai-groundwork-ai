@@ -1,4 +1,4 @@
-import { vocabularyExample, vocabularyOptions } from '../../discovery/service/vocabularies.js';
+import { vocabularyExample, vocabularyOptions } from '../../ai/shared/vocabularies.js';
 
 /** Name suggestions only for the countries, currencies and languages the given questions ask for. @param {object[]} questions */
 export function vocabulariesFor(questions) {

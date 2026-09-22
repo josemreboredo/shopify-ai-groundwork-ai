@@ -4,8 +4,8 @@ React Router 7 app for Lead Consultants. The tool's name lives in one place, `ap
 keeps its own name (`Merkle Discovery`) because consultants configured it under that name. Contents: engagement list, live interview with validation, offer, scope gates, exit
 rules, Shopify plan and app signals — and the **Merkle Discovery connector** for Claude Projects (`/mcp`, ADR 0015):
 Claude reads RFPs in a private Project and records answers “to confirm” that you review on the engagement page. Set-up
-steps are on the app's **Claude Project** page; the end-to-end flow for Lead Consultants is the **Manual** page (`/manual`, no sign-in needed). It uses the discovery service (`../discovery/service/`) — the 1.0.0 engine
-unchanged, so code decides. Architecture: [`../discovery/docs/architecture/lc-frontend-2.0.md`](../discovery/docs/architecture/lc-frontend-2.0.md)
+steps are on the app's **Claude Project** page; the end-to-end flow for Lead Consultants is the **Manual** page (`/manual`, no sign-in needed). It uses the discovery service (`../ai/shared/`) — the 1.0.0 engine
+unchanged, so code decides. Architecture: [`../ai/docs/architecture/lc-frontend-2.0.md`](../ai/docs/architecture/lc-frontend-2.0.md)
 (ADR 0014).
 
 > **Interim hosting: demo or anonymised engagements only.** No real client data until the migration to dentsu systems.

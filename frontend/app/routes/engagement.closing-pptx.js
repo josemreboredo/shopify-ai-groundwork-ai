@@ -1,7 +1,7 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { renderDeckPptx } from '../../../discovery/service/deck-render.js';
-import { annexDeckFromMarkdown } from '../../../discovery/service/pptx.js';
+import { renderDeckPptx } from '../../../ai/shared/deck-render.js';
+import { annexDeckFromMarkdown } from '../../../ai/shared/pptx.js';
 
 /**
  * The closing deck as PowerPoint. `?part=annex` renders the annex document with

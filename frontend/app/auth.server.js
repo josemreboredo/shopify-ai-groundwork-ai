@@ -8,7 +8,7 @@
  */
 import { createCookieSessionStorage, redirect } from 'react-router';
 
-import { isOpenSignIn, userFor } from '../../discovery/service/index.js';
+import { isOpenSignIn, userFor } from '../../ai/shared/index.js';
 
 const production = process.env.NODE_ENV === 'production' || Boolean(process.env.VERCEL);
 

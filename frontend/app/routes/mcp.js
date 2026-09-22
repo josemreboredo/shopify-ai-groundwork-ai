@@ -3,7 +3,7 @@
  */
 import { createMcpHandler, withMcpAuth } from 'mcp-handler';
 
-import { registerDiscoveryTools, SERVER_INSTRUCTIONS } from '../../../discovery/service/mcp.js';
+import { registerDiscoveryTools, SERVER_INSTRUCTIONS } from '../../../ai/mcp/merkle-discovery/index.js';
 import { userForLogin } from '../auth.server.js';
 import { discovery, oauth } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';

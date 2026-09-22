@@ -1,6 +1,6 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { clientPart } from '../../../discovery/agents/discovery-deck/build.js';
+import { clientPart } from '../../../ai/discovery-deck/build.js';
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);
