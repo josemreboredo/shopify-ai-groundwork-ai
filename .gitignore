@@ -19,3 +19,6 @@ __pycache__/
 # OS
 .DS_Store
 .vercel
+
+# Claude Code session state — local only
+.claude/scheduled_tasks.lock

@@ -7,7 +7,7 @@
     "frontend"
   ],
   "scripts": {
-    "test": "node --test \"discovery/tests/**/*.test.js\"",
+    "test": "node --test \"discovery/tests/**/*.test.js\" \"frontend/app/**/*.test.js\"",
     "questionnaire:render": "node discovery/scripts/render-questionnaire.js",
     "discover": "node --env-file-if-exists=.env discovery/agents/discovery/cli.js",
     "discover:prepare": "node discovery/agents/discovery/claude-code.js prepare",

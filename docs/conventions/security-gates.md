@@ -59,6 +59,33 @@ Customer data (emails, names, addresses, order history) is GDPR/CCPA PII.
 
 ---
 
+## Gate 6 — Web app hardening (frontend / discovery service)
+
+Applied following the 2026-09-22 Dentsu security review of the codebase.
+
+- **Rate limiting**: sensitive endpoints (`/oauth/token`) use `frontend/app/utils/rate-limiter.js`
+  (10 requests/minute per client IP) to slow brute-force and token-enumeration attempts.
+  Each endpoint must create its own limiter instance — limiters must never share
+  buckets across endpoints.
+- **Security headers**: `frontend/app/root.jsx` exports `headers()` (via
+  `frontend/app/utils/security-headers.js`) setting CSP, `X-Frame-Options: DENY`,
+  `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`, and
+  HSTS in production. `form-action` includes `https://github.com` — it gates not
+  just the form's own target but redirects the submission triggers, and the
+  sign-in form's POST to `/auth/github` 302s to GitHub's OAuth authorize page.
+- **Safe logging**: `discovery/service/safe-log.js` wraps `console.*` and refuses
+  to log (throws) any payload that matches the PII patterns in
+  `discovery/agents/discovery/input.js` (`findPersonalData`) when
+  `NODE_ENV=production`. Use it instead of `console.log`/`console.error` for any
+  log statement that might carry engagement data.
+- **Dependency audit**: run `npm audit` as part of routine maintenance (monthly,
+  or before any release); `npm audit fix` / `--force` for anything with an
+  available non-breaking fix. Test PPTX/deck generation after any `pptxgenjs`
+  version bump — check whether the vulnerable code path (image dimension
+  parsing) is even reachable before forcing a downgrade to "fix" it.
+
+---
+
 ## Incident response
 
 If a mutation is made to the wrong theme or store:
