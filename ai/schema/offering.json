@@ -935,6 +935,25 @@
         "/design/headless/content_source",
         "/design/headless/framework"
       ]
+    },
+    {
+      "id": "multi_store",
+      "label": "More than one Shopify store",
+      "condition": "The engine's derived market topology (ai/engine/topology.js) recommends more than one Shopify store — a hybrid or a full expansion-store estate — because a business fact forces it: a selling entity per market beyond what Plus's own per-market entity assignment covers, its own tax and invoicing footprint, a genuinely different range, a market run by its own local team, a market with its own regulatory requirement, or wholesale run as its own operation. Global reach alone never triggers this: Shopify documents no cap on markets per store, so an engagement selling in many markets from one Shopify Markets set-up stays whichever offer its other gates decide. A second store is a second app estate, a second theme licence and every integration wired again — L-shaped work regardless of market count",
+      "inputs": [
+        "/markets/topology/recommendation",
+        "/markets/topology/separate_store_markets",
+        "/markets/topology/additional_channel_stores"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/markets",
+        "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
+        "https://help.shopify.com/en/manual/markets/customizations/business-entities"
+      ],
+      "verified": {
+        "on": "2026-09-22",
+        "source": "help.shopify.com"
+      }
     }
   ],
   "modifiers": [
@@ -2031,18 +2050,18 @@
         "id": "markets",
         "what": "Markets",
         "gate": "markets",
-        "S": "1",
-        "M": "Up to 3",
-        "L": "Up to 3",
+        "S": "Up to 1 market",
+        "M": "Up to 3 markets",
+        "L": "Up to 3 markets",
         "note": "The most the pack holds with everything else in it taken too. A further market is three quarters of a week and CHF 8k, and a third more where it meets a bespoke template set rather than a configured theme — a market is re-tested and signed off against whatever the pack builds, so it costs more in the larger packs than in the entry one."
       },
       {
         "id": "store_estate",
         "what": "Shopify stores",
         "gate": "store_estate",
-        "S": "One",
-        "M": "One — every market runs from it",
-        "L": "One — every market runs from it",
+        "S": "Up to 1 store",
+        "M": "Up to 1 store",
+        "L": "Up to 1 store",
         "addon": [
           "S",
           "M",
@@ -2080,9 +2099,9 @@
         "id": "integrations",
         "what": "Integrations",
         "gate": "integration",
-        "S": "None",
-        "M": "One",
-        "L": "One",
+        "S": "Up to 0 integrations",
+        "M": "Up to 1 integration",
+        "L": "Up to 3 integrations",
         "note": "Three is the ceiling in every pack: more is a separate discovery (rule 11.7)."
       },
       {

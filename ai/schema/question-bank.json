@@ -2127,6 +2127,7 @@
       "feeds": [
         "gate:markets",
         "gate:store_estate",
+        "l_trigger:multi_store",
         "gate:multi_currency",
         "gate:languages",
         "exit:11.3",

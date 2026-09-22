@@ -582,6 +582,31 @@ const L_TRIGGER_EVALUATORS = {
         : `Headless storefront required: ${h.headless_required === undefined ? 'not recorded' : 'no'}`,
     };
   },
+
+  /*
+   * Global reach alone never forces this — Shopify documents no cap on how
+   * many country or region markets one store can hold (topology.js). What
+   * forces a second store is a business fact the engine already derives:
+   * a different selling entity per market beyond what Plus's own per-market
+   * entity assignment covers, its own tax/invoicing footprint, a genuinely
+   * different range, an independently-run market, a market with its own
+   * regulatory requirement, or wholesale run as its own operation. A store
+   * selling in twelve markets from one Shopify Markets set-up is still this
+   * offering's M; the same reach needing two or more separate stores is L —
+   * a second store means a second app estate, a second theme licence and
+   * every integration wired again, which is L-shaped work regardless of how
+   * many markets sit behind it.
+   */
+  multi_store: (doc) => {
+    const t = doc.markets?.topology;
+    const extra = storesBeyondTheFirst(doc);
+    return {
+      active: extra > 0,
+      evidence: extra > 0
+        ? `${t.recommendation.replace(/_/g, ' ')}: ${extra} store${extra === 1 ? '' : 's'} beyond the first`
+        : t ? 'One store covers every market' : 'Topology not derived yet',
+    };
+  },
 };
 
 /** Whether a gate fires on this document, asked without the offer being decided yet. */

@@ -493,9 +493,12 @@
         "l_triggers": {
           "type": "object",
           "additionalProperties": false,
-          "description": "One trigger. A headless storefront cannot be a Foundation or a Scale at any catalogue size, so it lands in Ecommerce Growth and the delivery track follows the answer. Luxury positioning was never a size and a complete Figma design system is built inside the offers (the storefront design gate, bespoke tier). Content or a front end outside Shopify is not a trigger at all — it is exit rule 11.26 and Merkle Arc.",
+          "description": "One trigger. A headless storefront cannot be a Foundation or a Scale at any catalogue size, so it lands in Ecommerce Growth and the delivery track follows the answer. Luxury positioning was never a size and a complete Figma design system is built inside the offers (the storefront design gate, bespoke tier). Content or a front end outside Shopify is not a trigger at all — it is exit rule 11.26 and Merkle Arc. More than one Shopify store (the engine's own derived market topology, never a client answer) is the other trigger: Shopify documents no market-count cap per store, so global reach alone never forces this — only a topology that genuinely needs a second store does.",
           "properties": {
             "headless": {
+              "$ref": "#/$defs/gate"
+            },
+            "multi_store": {
               "$ref": "#/$defs/gate"
             }
           }

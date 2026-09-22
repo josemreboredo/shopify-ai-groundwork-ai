@@ -136,7 +136,12 @@ describe('classification edge cases', () => {
       ...base(),
       markets: {
         list: [{ code: 'CH', currency: 'CHF', price_strategy: 'base_currency' }],
-        topology: { recommendation: 'expansion_stores', separate_store_markets: ['XX'] },
+        // Six extra stores so the gate weeks overflow even L's own capacity
+        // (9-16 weeks) — with just one extra store this now classifies
+        // straight to L (multi_store trigger) and fits inside L's built-in
+        // capacity with nothing added on top, so the surcharge would not
+        // show up in the price at all.
+        topology: { recommendation: 'expansion_stores', separate_store_markets: ['A', 'B', 'C', 'D', 'E', 'F'] },
       },
       integrations: Array.from({ length: n }, (_, i) => ({ system: `erp-${i}`, category: 'erp' })),
     });
