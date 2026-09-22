@@ -195,6 +195,11 @@
 - [ ] Aucun
 - [ ] Pas encore certain
 
+**Q1.1.8** — Pour combien de marques distinctes, visibles par vos clients, cet engagement a-t-il besoin d’une boutique Shopify ? *(required)*
+*Une marque que deux clients reconnaîtraient comme des noms, logos ou identités différents — pas un marché ni une gamme de produits sous la même marque.*
+
+> Answer:
+
 ### 1.2 Compte Shopify
 
 **Q1.2.1** — Existe-t-il déjà une boutique Shopify ? *(required)*
@@ -506,13 +511,13 @@
 
 ### 3.1 Marchés au lancement
 
-**Q3.1.1** — Dans quels pays vendez-vous au lancement ? Pour chacun : le pays, la devise dans laquelle les clients paient, les langues, l'adresse web utilisée là-bas aujourd'hui, la façon dont les prix sont fixés, laquelle de vos sociétés facture le client, si la gamme est la même que dans votre pays principal, et qui pilote ce pays au quotidien. *(required)*
+**Q3.1.1** — Dans quels pays vendez-vous au lancement ? Pour chacun : le pays, la devise dans laquelle les clients paient, les langues, l'adresse web utilisée là-bas aujourd'hui, la façon dont les prix sont fixés, laquelle de vos sociétés facture le client, si la gamme est la même que dans votre pays principal, qui pilote ce pays au quotidien, et s'il a besoin d'un design de thème propre plutôt que du même design avec un contenu local. *(required)*
 *Why we ask: These rows decide how many Shopify stores your business needs. Countries that share one selling company, one range and one team can run on a single store; countries that differ on those points usually need their own store, which multiplies the build, the running cost and the work of every future change.*
 *Une ligne par pays. Laissez une cellule vide si vous ne savez pas — nous y reviendrons.*
 
-| Code | Currency | Languages | Domain | Price strategy | Domain type | Selling entity | Assortment | Run by |
-|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | |
+| Code | Currency | Languages | Domain | Price strategy | Domain type | Selling entity | Assortment | Run by | Distinct theme design |
+|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | |
 
 **Q3.1.2** — Quels sont les marchés principaux (un ou plusieurs codes pays ou marché) ? *(required)*
 *Les marchés qui portent le chiffre d'affaires et la priorité de lancement, par exemple les États-Unis et l'UE pour une marque mondiale.*

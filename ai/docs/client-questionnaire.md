@@ -195,6 +195,11 @@
 - [ ] None
 - [ ] Not sure yet
 
+**Q1.1.8** — How many distinct customer-facing brands does this engagement need a Shopify storefront for? *(required)*
+*A brand two customers would recognise as different names, logos or identities — not a market or a product line under the same brand.*
+
+> Answer:
+
 ### 1.2 Shopify account
 
 **Q1.2.1** — Is there an existing Shopify store? *(required)*
@@ -506,13 +511,13 @@
 
 ### 3.1 Markets at launch
 
-**Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required)*
+**Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, who runs that country day to day, and whether it needs its own theme design rather than the same design with local content. *(required)*
 *Why we ask: These rows decide how many Shopify stores your business needs. Countries that share one selling company, one range and one team can run on a single store; countries that differ on those points usually need their own store, which multiplies the build, the running cost and the work of every future change.*
 *One row per country. Leave a cell blank if you do not know it — we will come back to it.*
 
-| Code | Currency | Languages | Domain | Price strategy | Domain type | Selling entity | Assortment | Run by |
-|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | |
+| Code | Currency | Languages | Domain | Price strategy | Domain type | Selling entity | Assortment | Run by | Distinct theme design |
+|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | |
 
 **Q3.1.2** — Which are the primary markets (one or more country or market codes)? *(required)*
 *The markets that lead revenue and launch priority, e.g. US and EU for a global brand.*

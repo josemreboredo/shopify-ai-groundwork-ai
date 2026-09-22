@@ -30,6 +30,7 @@
     "Q1.1.5": "1e12665bde34",
     "Q1.1.6": "ec6ff91982c0",
     "Q1.1.7": "717ee016ac92",
+    "Q1.1.8": "14b2c583b63d",
     "Q1.2.1": "80ed02e82a2a",
     "Q1.2.2": "9afe7458d3ae",
     "Q1.2.3": "8ea1dcc6fc49",
@@ -65,7 +66,7 @@
     "Q2.5.2": "cafaa2d1bb57",
     "Q2.5.3": "0edd87c0d6b9",
     "Q2.5.4": "d4d56af4965e",
-    "Q3.1.1": "dd93c5fc6484",
+    "Q3.1.1": "4b55fc6f0a4d",
     "Q3.1.2": "a09ea035d8a0",
     "Q3.1.3": "72097ef71964",
     "Q3.1.4": "24bb069d6bef",
@@ -1023,6 +1024,14 @@
         "limits": "Les canaux de vente standard et le canal headless sont disponibles dès Basic. Les vitrines agentiques (ChatGPT, Google AI Mode et Gemini, Copilot, Meta) sont actives par défaut pour les boutiques éligibles : « agents d’achat IA » relève donc généralement d’une décision sur ce que l’on laisse activé, pas d’un développement."
       }
     },
+    "Q1.1.8": {
+      "text": "Pour combien de marques distinctes, visibles par vos clients, cet engagement a-t-il besoin d’une boutique Shopify ?",
+      "help": "Une marque que deux clients reconnaîtraient comme des noms, logos ou identités différents — pas un marché ni une gamme de produits sous la même marque.",
+      "teach": {
+        "why": "Une marque différente n’est pas un marché différent. Une boutique d’expansion doit être identique à la marque principale en nom et en image de marque — une marque véritablement distincte nécessite à la place son propre abonnement Shopify Plus, et non l’une des dix boutiques qu’un seul contrat inclut gratuitement. Cela s’applique dès un seul marché de lancement : deux marques ont besoin de deux boutiques.",
+        "limits": "Shopify ne documente aucun moyen de faire fonctionner deux marques distinctes sur une seule boutique, ni comme boutiques d’expansion gratuites l’une de l’autre — une boutique d’expansion doit être « une extension de la marque principale » et « identique à la marque principale en matière de nom de boutique et d’autres éléments de marque ». Les seules voies sont de positionner l’une comme extension de l’autre (même nom et même image de marque), ou un accord multi-marques avec son propre abonnement Shopify Plus par marque."
+      }
+    },
     "Q1.2.1": {
       "text": "Existe-t-il déjà une boutique Shopify ?",
       "teach": {
@@ -1380,11 +1389,11 @@
       }
     },
     "Q3.1.1": {
-      "text": "Dans quels pays vendez-vous au lancement ? Pour chacun : le pays, la devise dans laquelle les clients paient, les langues, l'adresse web utilisée là-bas aujourd'hui, la façon dont les prix sont fixés, laquelle de vos sociétés facture le client, si la gamme est la même que dans votre pays principal, et qui pilote ce pays au quotidien.",
+      "text": "Dans quels pays vendez-vous au lancement ? Pour chacun : le pays, la devise dans laquelle les clients paient, les langues, l'adresse web utilisée là-bas aujourd'hui, la façon dont les prix sont fixés, laquelle de vos sociétés facture le client, si la gamme est la même que dans votre pays principal, qui pilote ce pays au quotidien, et s'il a besoin d'un design de thème propre plutôt que du même design avec un contenu local.",
       "help": "Une ligne par pays. Laissez une cellule vide si vous ne savez pas — nous y reviendrons.",
       "teach": {
-        "why": "Fixe tout le périmètre international : marchés, devises, langues, domaines et stratégie de prix. Les colonnes société, gamme et responsable sont ce que le moteur lit pour décider entre une boutique unique avec Markets, des boutiques d'expansion ou une solution hybride — on ne demande jamais au client de choisir la topologie.",
-        "limits": "Shopify ne documente aucune limite au nombre de marchés pays ou région. Les langues publiées sont plafonnées à 20 en dessous de Plus et à 30 sur Plus. Facturer dans une devise locale (et pas seulement l'afficher) exige Shopify Payments ou Adyen ; avec tout autre prestataire, le client est débité dans la devise par défaut de la boutique. La Chine continentale est exclue de cet engagement et orientée vers une discovery Chine distincte."
+        "why": "Fixe tout le périmètre international : marchés, devises, langues, domaines et stratégie de prix. Les colonnes société, gamme, responsable et design de thème sont ce que le moteur lit pour décider entre une boutique unique avec Markets, des boutiques d'expansion ou une solution hybride — on ne demande jamais au client de choisir la topologie.",
+        "limits": "Shopify ne documente aucune limite au nombre de marchés pays ou région. Les langues publiées sont plafonnées à 20 en dessous de Plus et à 30 sur Plus. Facturer dans une devise locale (et pas seulement l'afficher) exige Shopify Payments ou Adyen ; avec tout autre prestataire, le client est débité dans la devise par défaut de la boutique. La personnalisation par marché n'atteint jamais les paramètres du thème (couleurs, typographie) ni les templates Liquid, seulement le contenu des sections et la visibilité des blocs — un marché qui a besoin d'un design réellement différent a besoin de sa propre boutique. La Chine continentale est exclue de cet engagement et orientée vers une discovery Chine distincte."
       }
     },
     "Q3.1.2": {

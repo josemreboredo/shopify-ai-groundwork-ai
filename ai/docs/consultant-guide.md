@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 124 of 306 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 125 of 307 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -255,6 +255,20 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplaces/m
 | Sales channels (Online Store, POS, Shop, Marketplace Connect, Facebook & Instagram, Google & YouTube, TikTok) | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect |
 | Headless channel (Hydrogen / Storefront API) | Basic |  | https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/manage-headless-channels |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q1.1.8** — How many distinct customer-facing brands does this engagement need a Shopify storefront for? *(required · client)*
+Drives: gate More than one Shopify store · L trigger More than one Shopify store
+
+**Why it matters.** A different brand is not a different market. Expansion stores must be identical to the main brand in name and branding — a genuinely separate brand needs its own Shopify Plus subscription instead, not one of the ten a single contract includes free. This matters even with one launch market: two brands need two stores.
+
+**Limits.** Shopify documents no path to running two distinct brands on one store, or as free expansion stores of each other — an expansion store must be 'an extension of the main brand' and 'identical to the main brand with respect to store name and other branding.' The only routes are positioning one brand as an extension of the other (same name and branding), or a multi-brand agreement with its own Shopify Plus subscription per brand.
+
+Sources: https://help.shopify.com/en/manual/organization-settings/expansion-stores
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Expansion stores must be an extension of the main brand | Shopify Plus |  | https://help.shopify.com/en/manual/organization-settings/expansion-stores |
+*Verified 2026-09-22 against help.shopify.com (undefined).*
 
 ### 1.2 Shopify account
 
@@ -679,7 +693,7 @@ Sources: https://help.shopify.com/en/manual/products/inventory/purchase-orders
 
 ### 3.1 Markets at launch
 
-**Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required · client)*
+**Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, who runs that country day to day, and whether it needs its own theme design rather than the same design with local content. *(required · client)*
 Drives: gate Markets · gate More than one Shopify store · L trigger More than one Shopify store · gate Multi-currency · gate Languages · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP) · rule 11.23 (FLAG)
 Who holds this fact: Country manager or commercial lead for the range and the team; the controller for the invoicing company.
 
@@ -687,11 +701,11 @@ Who holds this fact: Country manager or commercial lead for the range and the te
 
 **If they do not know.** Markets with no selling entity are assumed to sell through the headquarters entity (Q1.1.2); a blank assortment is assumed to be the same range as the primary market; a blank owner is assumed to be the central team. Assumption recorded: One selling entity, one range, one team across all markets — the single-store case. Confidence: to_validate. To resolve: Name the invoicing company per country with the controller, and the range owner per country with the commercial lead.
 
-**Why it matters.** Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range and owner columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.
+**Why it matters.** Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range, owner and theme-design columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.
 
-**Limits.** Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Mainland China is excluded from this engagement and routed to a separate China discovery.
+**Limits.** Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Per-market theme customization never reaches theme settings (colours, typography) or Liquid templates, only section content and block visibility — a market that needs an actually different design needs its own store. Mainland China is excluded from this engagement and routed to a separate China discovery.
 
-Sources: https://help.shopify.com/en/manual/markets/getting-started/market-types · https://help.shopify.com/en/manual/international/localization-and-translation · https://help.shopify.com/en/manual/markets/customizations/local-currencies
+Sources: https://help.shopify.com/en/manual/markets/getting-started/market-types · https://help.shopify.com/en/manual/international/localization-and-translation · https://help.shopify.com/en/manual/markets/customizations/local-currencies · https://help.shopify.com/en/manual/markets/customizations/online-store
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|

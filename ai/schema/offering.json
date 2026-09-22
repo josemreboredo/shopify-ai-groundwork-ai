@@ -578,16 +578,20 @@
     {
       "id": "store_estate",
       "label": "More than one Shopify store",
-      "condition": "The requirements cannot be delivered on one store with Shopify Markets, so the engine's topology recommends expansion stores or a hybrid. Shopify includes ten stores per Plus contract at no extra licence cost, which is why this is easy to agree to and expensive to deliver: expansion stores share no data by default, apps are billed per store and theme licences cannot be shared, so every integration is wired again, every theme deployed again and every app bought again, per store",
+      "condition": "The requirements cannot be delivered on one store with Shopify Markets, so the engine's topology recommends expansion stores or a hybrid — or a second customer-facing brand needs its own store outright, regardless of market count. Shopify includes ten stores per Plus contract at no extra licence cost for genuine expansion stores of the same brand; a separate brand needs its own Plus subscription instead, which is why this is easy to agree to and expensive to deliver: expansion stores share no data by default, apps are billed per store and theme licences cannot be shared, so every integration is wired again, every theme deployed again and every app bought again, per store",
       "inputs": [
         "/markets/topology/recommendation",
-        "/markets/topology/separate_store_markets"
+        "/markets/topology/separate_store_markets",
+        "/markets/topology/additional_channel_stores",
+        "/meta/client/brand_count",
+        "/markets/list/*/distinct_theme_design"
       ],
       "modifier": "+Stores",
       "sources": [
         "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
         "https://help.shopify.com/en/manual/markets/customizations/business-entities",
-        "https://help.shopify.com/en/manual/b2b/getting-started/store-type"
+        "https://help.shopify.com/en/manual/b2b/getting-started/store-type",
+        "https://help.shopify.com/en/manual/markets/customizations/online-store"
       ],
       "verified": {
         "on": "2026-09-21",
@@ -939,16 +943,19 @@
     {
       "id": "multi_store",
       "label": "More than one Shopify store",
-      "condition": "The engine's derived market topology (ai/engine/topology.js) recommends more than one Shopify store — a hybrid or a full expansion-store estate — because a business fact forces it: a selling entity per market beyond what Plus's own per-market entity assignment covers, its own tax and invoicing footprint, a genuinely different range, a market run by its own local team, a market with its own regulatory requirement, or wholesale run as its own operation. Global reach alone never triggers this: Shopify documents no cap on markets per store, so an engagement selling in many markets from one Shopify Markets set-up stays whichever offer its other gates decide. A second store is a second app estate, a second theme licence and every integration wired again — L-shaped work regardless of market count",
+      "condition": "The engine's derived market topology (ai/engine/topology.js) recommends more than one Shopify store — a hybrid or a full expansion-store estate — because a business fact forces it: a selling entity per market beyond what Plus's own per-market entity assignment covers, its own tax and invoicing footprint, a genuinely different range, a market run by its own local team, a market needing its own theme design rather than shared content, a market with its own regulatory requirement, wholesale run as its own operation, or more than one customer-facing brand. Global reach alone never triggers this: Shopify documents no cap on markets per store, so an engagement selling in many markets from one Shopify Markets set-up stays whichever offer its other gates decide. A second store is a second app estate, a second theme licence and every integration wired again — L-shaped work regardless of market count",
       "inputs": [
         "/markets/topology/recommendation",
         "/markets/topology/separate_store_markets",
-        "/markets/topology/additional_channel_stores"
+        "/markets/topology/additional_channel_stores",
+        "/meta/client/brand_count",
+        "/markets/list/*/distinct_theme_design"
       ],
       "sources": [
         "https://help.shopify.com/en/manual/markets",
         "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
-        "https://help.shopify.com/en/manual/markets/customizations/business-entities"
+        "https://help.shopify.com/en/manual/markets/customizations/business-entities",
+        "https://help.shopify.com/en/manual/markets/customizations/online-store"
       ],
       "verified": {
         "on": "2026-09-22",
@@ -2068,7 +2075,7 @@
           "L"
         ],
         "addon_label": "Each further store",
-        "note": "Every pack includes one Shopify store, and one store already serves every market in it — different currency, language, domain, prices and catalogue per market, no second store required. A second store is not a licence question — ten come with a Plus contract at no extra cost — it is that a separate store shares no data with the first by default, so every integration is wired again, apps are billed again and the theme is deployed and kept in step again, store by store. Whether a client's requirements need a second store is not a question we ask; the engine derives it from the same market answers (does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, or run under its own team) — a client rarely wants two stores for their own sake, it follows from facts like these."
+        "note": "Every pack includes one Shopify store, and one store already serves every market in it — different currency, language, domain, prices and catalogue per market, no second store required. A second store is usually not a licence question — ten come with a Plus contract at no extra cost — it is that a separate store shares no data with the first by default, so every integration is wired again, apps are billed again and the theme is deployed and kept in step again, store by store. The one case where it is a licence question: a genuinely separate brand, which Shopify does not treat as a free expansion of the first and needs its own Shopify Plus subscription instead. Whether a client's requirements need a second store is not a question we ask; the engine derives it from the same market answers (does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, or need its own theme design) — a client rarely wants two stores for their own sake, it follows from facts like these."
       },
       {
         "id": "multi_currency",
@@ -2283,5 +2290,686 @@
         "checkout": "thank_you_order_status_blocks"
       }
     }
+  },
+  "comparison_table": {
+    "$comment": "Client-facing comparison table for S, M, L packs. Structured for rendering in presentations, docs and web. All prices shown as band only (no internal modifiers). 'up to X' used throughout for actual limits.",
+    "version": "1.0.0",
+    "dimensions": [
+      {
+        "id": "overview",
+        "label": "Overview",
+        "rows": [
+          {
+            "aspect": "Pack name",
+            "S": "Ecommerce Foundation",
+            "M": "Ecommerce Scale",
+            "L": "Ecommerce Growth"
+          },
+          {
+            "aspect": "For whom",
+            "S": "Brands starting ecommerce, or starting it properly",
+            "M": "Brands that already sell and need to scale",
+            "L": "Large brands on enterprise platforms migrating to Shopify"
+          },
+          {
+            "aspect": "Project duration",
+            "S": "4–5 weeks",
+            "M": "6–14 weeks",
+            "L": "13–21 weeks"
+          },
+          {
+            "aspect": "Price band (CHF)",
+            "S": "40,000–65,000",
+            "M": "65,000–145,000",
+            "L": "140,000–230,000+"
+          }
+        ]
+      },
+      {
+        "id": "shopify_store",
+        "label": "Shopify Store & Setup",
+        "rows": [
+          {
+            "aspect": "Shopify plan selected",
+            "S": "Automatically for requirements",
+            "M": "Automatically for requirements",
+            "L": "Automatically for requirements"
+          },
+          {
+            "aspect": "Markets",
+            "S": "1 market",
+            "M": "Up to 3 markets",
+            "L": "Up to 3 markets"
+          },
+          {
+            "aspect": "Channels (B2C/B2B)",
+            "S": "1 channel (B2C or B2B)",
+            "M": "1–2 channels (add B2B as scope gate)",
+            "L": "1–2 channels (add B2B as scope gate)"
+          },
+          {
+            "aspect": "Languages",
+            "S": "Up to 3 (incl. Swiss DE/FR/IT)",
+            "M": "Up to 4 languages",
+            "L": "Up to 6 languages"
+          },
+          {
+            "aspect": "Staging environment",
+            "S": "No",
+            "M": "No",
+            "L": "Yes, with theme release path"
+          },
+          {
+            "aspect": "User roles & permissions",
+            "S": "By role",
+            "M": "By role per market",
+            "L": "Up to multiple roles per market with governance"
+          }
+        ]
+      },
+      {
+        "id": "catalog_content",
+        "label": "Catalogue & Content",
+        "rows": [
+          {
+            "aspect": "Catalogue scope",
+            "S": "Core catalogue, simple",
+            "M": "Up to 4,999 SKUs with complex variants",
+            "L": "Up to 4,999 SKUs, or larger with scope gate"
+          },
+          {
+            "aspect": "Product variants",
+            "S": "Standard variants",
+            "M": "Up to complex variants and bundles",
+            "L": "Up to complex variants, bundles, metaobjects"
+          },
+          {
+            "aspect": "Data sources",
+            "S": "1 source, 1 upload",
+            "M": "Multiple sources with mapping",
+            "L": "Multiple sources with continuous sync"
+          },
+          {
+            "aspect": "Collections & navigation",
+            "S": "Standard collections",
+            "M": "Up to market-specific collections",
+            "L": "Up to advanced navigation structures"
+          },
+          {
+            "aspect": "Search & filters",
+            "S": "Shopify Search & Discovery (native)",
+            "M": "Shopify Search & Discovery (native)",
+            "L": "Shopify Search & Discovery or app beyond limits"
+          },
+          {
+            "aspect": "Legal & policy pages",
+            "S": "Yes, in market language",
+            "M": "Yes, per market",
+            "L": "Yes, per market with compliance review"
+          }
+        ]
+      },
+      {
+        "id": "storefront_design",
+        "label": "Storefront & Design",
+        "rows": [
+          {
+            "aspect": "Theme",
+            "S": "Horizon (default) or alternative per criteria",
+            "M": "Horizon (default) or alternative per criteria",
+            "L": "Horizon (default) or alternative per criteria"
+          },
+          {
+            "aspect": "Templates",
+            "S": "8 standard templates",
+            "M": "8 standard + market-specific",
+            "L": "Up to comprehensive template suite"
+          },
+          {
+            "aspect": "Design system",
+            "S": "No",
+            "M": "No",
+            "L": "Yes, with unified token layer"
+          },
+          {
+            "aspect": "Custom sections/blocks",
+            "S": "None",
+            "M": "Up to 3 bespoke sections",
+            "L": "Up to unlimited (via design system)"
+          },
+          {
+            "aspect": "Responsive testing",
+            "S": "Mobile & desktop",
+            "M": "Mobile & desktop per market",
+            "L": "Mobile, tablet & desktop per template"
+          },
+          {
+            "aspect": "Accessibility (WCAG)",
+            "S": "Level AA measured",
+            "M": "Level AA per market",
+            "L": "Level AA+ with section testing"
+          },
+          {
+            "aspect": "Performance (Core Web Vitals)",
+            "S": "Measured, not promised",
+            "M": "Measured per market",
+            "L": "Measured per template on real data"
+          },
+          {
+            "aspect": "Personalization",
+            "S": "No",
+            "M": "No",
+            "L": "Setup and live at launch"
+          },
+          {
+            "aspect": "A/B testing",
+            "S": "No",
+            "M": "No",
+            "L": "1 test live at launch"
+          }
+        ]
+      },
+      {
+        "id": "payments_checkout",
+        "label": "Payments & Checkout",
+        "rows": [
+          {
+            "aspect": "Checkout type",
+            "S": "Shopify standard checkout",
+            "M": "Shopify standard checkout",
+            "L": "Shopify standard checkout"
+          },
+          {
+            "aspect": "Payment providers",
+            "S": "Up to local providers per market",
+            "M": "Up to local providers per market",
+            "L": "Up to local providers per market"
+          },
+          {
+            "aspect": "Live transactions tested",
+            "S": "Yes",
+            "M": "Yes, per market",
+            "L": "Yes, per market & channel"
+          },
+          {
+            "aspect": "Custom checkout UI",
+            "S": "Not possible",
+            "M": "Not possible",
+            "L": "Not possible (extensions only)"
+          },
+          {
+            "aspect": "B2B payment terms",
+            "S": "No",
+            "M": "Yes, configurable",
+            "L": "Yes, with advanced rules"
+          }
+        ]
+      },
+      {
+        "id": "integrations",
+        "label": "Integrations",
+        "rows": [
+          {
+            "aspect": "ERP/PIM connections",
+            "S": "Scope gate (extra)",
+            "M": "Scope gate (extra)",
+            "L": "Yes, up to several systems"
+          },
+          {
+            "aspect": "OMS/Fulfillment",
+            "S": "Scope gate (extra)",
+            "M": "Scope gate (extra)",
+            "L": "Yes, with reconciliation"
+          },
+          {
+            "aspect": "POS/Retail systems",
+            "S": "Scope gate (extra)",
+            "M": "Scope gate (extra)",
+            "L": "Yes, with inventory sync"
+          },
+          {
+            "aspect": "CRM connections",
+            "S": "Scope gate (extra)",
+            "M": "Scope gate (extra)",
+            "L": "Yes, with event tracking"
+          },
+          {
+            "aspect": "Data migration",
+            "S": "Scope gate (extra)",
+            "M": "Priced by data source",
+            "L": "Yes, enterprise-scale included"
+          },
+          {
+            "aspect": "Reconciliation jobs",
+            "S": "No",
+            "M": "Daily per connection",
+            "L": "Daily with failure modes"
+          },
+          {
+            "aspect": "Monitoring & alerts",
+            "S": "No",
+            "M": "Named owner per system",
+            "L": "Named owner + escalation path"
+          },
+          {
+            "aspect": "External CMS/Frontend",
+            "S": "Scope gate / Merkle Arc",
+            "M": "Scope gate / Merkle Arc",
+            "L": "Merkle Arc (separate engagement)"
+          }
+        ]
+      },
+      {
+        "id": "retail_pos",
+        "label": "POS & In-Store",
+        "rows": [
+          {
+            "aspect": "Shopify POS",
+            "S": "Basic setup",
+            "M": "Multi-location ready",
+            "L": "With advanced permissions"
+          },
+          {
+            "aspect": "POS Pro locations",
+            "S": "Scope gate (extra)",
+            "M": "Scope gate (extra)",
+            "L": "Up to 200 locations possible"
+          },
+          {
+            "aspect": "Inventory locations",
+            "S": "Up to 10 locations",
+            "M": "Multiple per market",
+            "L": "Up to extensive location networks"
+          }
+        ]
+      },
+      {
+        "id": "apps_services",
+        "label": "Apps & Services",
+        "rows": [
+          {
+            "aspect": "App philosophy",
+            "S": "Native Shopify first",
+            "M": "Native Shopify first",
+            "L": "Native Shopify first"
+          },
+          {
+            "aspect": "Apps selected",
+            "S": "Shortlist from registry",
+            "M": "Shortlist per market",
+            "L": "Shortlist per market & channel"
+          },
+          {
+            "aspect": "Setup & ownership",
+            "S": "Named owner per app",
+            "M": "Named owner per app & market",
+            "L": "Named owner per app & market"
+          },
+          {
+            "aspect": "Monthly budget",
+            "S": "Up to agreed ceiling",
+            "M": "Up to agreed ceiling",
+            "L": "Up to optimized per market"
+          },
+          {
+            "aspect": "Post-launch support",
+            "S": "Hypercare 30 days",
+            "M": "Hypercare 30 days",
+            "L": "Hypercare 30 days"
+          }
+        ]
+      },
+      {
+        "id": "content_copy",
+        "label": "Content & Copywriting",
+        "rows": [
+          {
+            "aspect": "Legal texts",
+            "S": "Template or we write",
+            "M": "Template or we write per market",
+            "L": "Template or we write per market"
+          },
+          {
+            "aspect": "Product descriptions",
+            "S": "Client data, we format",
+            "M": "Client data, we format per market",
+            "L": "Client data, we format & enhance"
+          },
+          {
+            "aspect": "Copy production",
+            "S": "Not in base",
+            "M": "Scope gate (extra)",
+            "L": "Scope gate / Separate engagement"
+          },
+          {
+            "aspect": "Photography & video",
+            "S": "Client provides or scope gate",
+            "M": "Client provides or scope gate",
+            "L": "Client provides or scope gate"
+          },
+          {
+            "aspect": "Translations",
+            "S": "Route decided & costed",
+            "M": "Route decided & costed",
+            "L": "Route decided & costed, continuous"
+          },
+          {
+            "aspect": "Metaobjects for content",
+            "S": "No",
+            "M": "No",
+            "L": "Yes, content updates without release"
+          }
+        ]
+      },
+      {
+        "id": "training_handover",
+        "label": "Training & Handover",
+        "rows": [
+          {
+            "aspect": "Training sessions",
+            "S": "1 per role (recorded)",
+            "M": "1 per role per market",
+            "L": "1 per role + release path training"
+          },
+          {
+            "aspect": "SOP documentation",
+            "S": "On request, written",
+            "M": "On request, written per market",
+            "L": "Written + theme release docs"
+          },
+          {
+            "aspect": "Handover notes",
+            "S": "General",
+            "M": "Per market",
+            "L": "Per market + release owner"
+          },
+          {
+            "aspect": "Hypercare",
+            "S": "30 days post-launch",
+            "M": "30 days per market",
+            "L": "30 days per market, rollback tested"
+          }
+        ]
+      },
+      {
+        "id": "localization",
+        "label": "Localization & Multi-Market",
+        "rows": [
+          {
+            "aspect": "Languages included",
+            "S": "DE/FR/IT (Swiss)",
+            "M": "Up to 4 languages",
+            "L": "Up to 6 languages"
+          },
+          {
+            "aspect": "4th language+",
+            "S": "Scope gate (extra)",
+            "M": "Scope gate (extra)",
+            "L": "Included"
+          },
+          {
+            "aspect": "Domain mapping",
+            "S": "1 domain",
+            "M": "Per market",
+            "L": "Per market & channel"
+          },
+          {
+            "aspect": "Market switcher",
+            "S": "No",
+            "M": "Setup if required",
+            "L": "Setup if required"
+          },
+          {
+            "aspect": "Currency support",
+            "S": "1 checkout currency",
+            "M": "Shopify Markets or 1 per store",
+            "L": "Shopify Markets full feature set"
+          },
+          {
+            "aspect": "Tax & duties",
+            "S": "1 market",
+            "M": "Per market",
+            "L": "Per market with compliance review"
+          },
+          {
+            "aspect": "Shipping profile",
+            "S": "1 market",
+            "M": "Per market",
+            "L": "Per market with advanced logic"
+          }
+        ]
+      },
+      {
+        "id": "performance_monitoring",
+        "label": "Performance & Monitoring",
+        "rows": [
+          {
+            "aspect": "Web performance",
+            "S": "Measured, not promised",
+            "M": "Per market measured",
+            "L": "Per template, real data"
+          },
+          {
+            "aspect": "Accessibility target",
+            "S": "WCAG AA",
+            "M": "WCAG AA",
+            "L": "WCAG AA or higher"
+          },
+          {
+            "aspect": "Cross-device testing",
+            "S": "Yes, documented",
+            "M": "Yes, per market",
+            "L": "Yes, per template"
+          },
+          {
+            "aspect": "Analytics setup",
+            "S": "Shopify standard",
+            "M": "Shopify standard",
+            "L": "Full event tracking + consent"
+          }
+        ]
+      },
+      {
+        "id": "migrations",
+        "label": "Migrations",
+        "rows": [
+          {
+            "aspect": "Platform migration",
+            "S": "Scope gate (extra)",
+            "M": "Priced by data source",
+            "L": "Included (enterprise-scale)"
+          },
+          {
+            "aspect": "Customer data",
+            "S": "Scope gate (extra)",
+            "M": "Priced by size",
+            "L": "Included"
+          },
+          {
+            "aspect": "Order history",
+            "S": "Scope gate (extra)",
+            "M": "Priced by size",
+            "L": "Included"
+          },
+          {
+            "aspect": "Content & assets",
+            "S": "Scope gate (extra)",
+            "M": "Priced",
+            "L": "Included"
+          },
+          {
+            "aspect": "Redirect estate",
+            "S": "Scope gate (extra)",
+            "M": "Priced & measured",
+            "L": "Included & monitored"
+          }
+        ]
+      },
+      {
+        "id": "launch_goLive",
+        "label": "Launch & Go-Live",
+        "rows": [
+          {
+            "aspect": "Parallel markets",
+            "S": "1 market only",
+            "M": "Up to phased markets",
+            "L": "Up to phased markets"
+          },
+          {
+            "aspect": "Rollback plan",
+            "S": "Documented",
+            "M": "Per market",
+            "L": "Per market, tested before"
+          },
+          {
+            "aspect": "Payment providers live",
+            "S": "Tested then live",
+            "M": "Per market, tested",
+            "L": "Per market, tested"
+          },
+          {
+            "aspect": "Redirects monitoring",
+            "S": "Hypercare only",
+            "M": "Per market, measured",
+            "L": "Per market, monitored"
+          },
+          {
+            "aspect": "First order",
+            "S": "End-to-end tested",
+            "M": "Per market tested",
+            "L": "Per market & channel tested"
+          }
+        ]
+      }
+    ],
+    "not_included": {
+      "S": [
+        "Migration from another platform (scope gate)",
+        "Client system connections like ERP/PIM/OMS (scope gate)",
+        "2nd market, 2nd currency or 4th language (scope gate per unit)",
+        "Large catalogues with 5,000+ SKUs (scope gate)",
+        "Bespoke sections or full design (scope gate)",
+        "Content production: copy, photos, video",
+        "Store operation after launch (excl. hypercare)"
+      ],
+      "M": [
+        "Headless storefront (that is L)",
+        "Custom checkout UI (only extensions allowed)",
+        "Content production & translations (route defined, words are client's)",
+        "External CMS or frontend (Merkle Arc)",
+        "Integration operation after launch (excl. hypercare)"
+      ],
+      "L": [
+        "Custom checkout UI (only extensions allowed)",
+        "Storefront outside Shopify (Merkle Arc)",
+        "Commerce logic Shopify doesn't support natively",
+        "Content production, photos, video, copy",
+        "Shop Mini (separate engagement)"
+      ]
+    },
+    "scope_gates": [
+      {
+        "name": "Storefront Design",
+        "description": "Custom section design beyond theme configuration",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "tiers": [
+          "extended (S, M)",
+          "bespoke (M, L)"
+        ]
+      },
+      {
+        "name": "Catalogue size",
+        "description": "For 5,000+ SKUs or complex variants",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "tiers": [
+          "standard (500–4,999)",
+          "large (5,000–49,999)",
+          "very_large (50,000+)"
+        ]
+      },
+      {
+        "name": "Migration",
+        "description": "Data and redirects from another platform",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "tiers": [
+          "light (WooCommerce, Shopify)",
+          "medium (Shopware, BigCommerce)",
+          "heavy (Magento, SFCC, custom)"
+        ]
+      },
+      {
+        "name": "Integration",
+        "description": "Connection to ERP, PIM, OMS, POS or CRM",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "per_system": true
+      },
+      {
+        "name": "Multi-Market",
+        "description": "2nd market with own selling entity & tax",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "per_unit": true
+      },
+      {
+        "name": "B2B / Wholesale",
+        "description": "Wholesale channel alongside or instead of B2C",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "name": "Translation",
+        "description": "4th+ language and continuous translation",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "per_unit": true
+      },
+      {
+        "name": "Content Production",
+        "description": "Copy, photography and video",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "name": "Post-Launch Support",
+        "description": "Written SOPs and/or retainer handover",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "tiers": [
+          "standard (SOPs or retainer)",
+          "extended (both + training programme)"
+        ]
+      }
+    ]
   }
 }

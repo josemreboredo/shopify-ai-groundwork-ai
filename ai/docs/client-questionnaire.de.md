@@ -195,6 +195,11 @@
 - [ ] Keine
 - [ ] Noch unklar
 
+**Q1.1.8** — Für wie viele eigenständige, kundenseitig erkennbare Marken benötigt dieses Engagement einen Shopify-Store? *(required)*
+*Eine Marke, die zwei Kundinnen als unterschiedlichen Namen, unterschiedliches Logo oder unterschiedliche Identität erkennen würden — nicht ein Markt oder eine Produktlinie unter derselben Marke.*
+
+> Answer:
+
 ### 1.2 Shopify-Konto
 
 **Q1.2.1** — Gibt es bereits einen Shopify-Shop? *(required)*
@@ -506,13 +511,13 @@
 
 ### 3.1 Märkte zum Launch
 
-**Q3.1.1** — In welche Länder verkaufen Sie zum Launch? Je Land: das Land, die Währung, in der Kundinnen und Kunden zahlen, die Sprachen, die Internetadresse, die dort heute genutzt wird, wie die Preise gebildet werden, welche Ihrer Gesellschaften die Kundschaft fakturiert, ob das Sortiment dem Ihres Hauptmarkts entspricht, und wer dieses Land operativ verantwortet. *(required)*
+**Q3.1.1** — In welche Länder verkaufen Sie zum Launch? Je Land: das Land, die Währung, in der Kundinnen und Kunden zahlen, die Sprachen, die Internetadresse, die dort heute genutzt wird, wie die Preise gebildet werden, welche Ihrer Gesellschaften die Kundschaft fakturiert, ob das Sortiment dem Ihres Hauptmarkts entspricht, wer dieses Land operativ verantwortet, und ob es ein eigenes Theme-Design braucht statt desselben Designs mit lokalen Inhalten. *(required)*
 *Why we ask: These rows decide how many Shopify stores your business needs. Countries that share one selling company, one range and one team can run on a single store; countries that differ on those points usually need their own store, which multiplies the build, the running cost and the work of every future change.*
 *Eine Zeile je Land. Lassen Sie ein Feld leer, wenn Sie es nicht wissen — wir kommen darauf zurück.*
 
-| Code | Currency | Languages | Domain | Price strategy | Domain type | Selling entity | Assortment | Run by |
-|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | |
+| Code | Currency | Languages | Domain | Price strategy | Domain type | Selling entity | Assortment | Run by | Distinct theme design |
+|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | |
 
 **Q3.1.2** — Welches sind die Primärmärkte (ein oder mehrere Länder- oder Marktcodes)? *(required)*
 *Die Märkte, die Umsatz und Launch-Priorität anführen, z. B. USA und EU bei einer globalen Marke.*

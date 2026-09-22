@@ -15,8 +15,8 @@ import { approachQualityErrors } from '../../engine/approach.js';
 import { deckErrors } from '../../shared/deck-template.js';
 
 /** A minimal engagement: one selling entity, markets given row by row. */
-const engagement = ({ markets, entities = ['ACME AG'], hq = 'CH', b2b, shipping, appetite, vat = [], plan = 'basic', payments, catalogue, post_purchase, business, strategy } = {}) => ({
-  meta: { client: { hq_country: hq, legal_entities: entities, business_model: b2b ? 'hybrid' : 'dtc' } },
+const engagement = ({ markets, entities = ['ACME AG'], hq = 'CH', b2b, shipping, appetite, vat = [], plan = 'basic', payments, catalogue, post_purchase, business, strategy, brands = 1 } = {}) => ({
+  meta: { client: { hq_country: hq, legal_entities: entities, business_model: b2b ? 'hybrid' : 'dtc', brand_count: brands } },
   markets: {
     list: markets,
     primary_markets: [markets[0]?.code].filter(Boolean),
@@ -33,7 +33,7 @@ const engagement = ({ markets, entities = ['ACME AG'], hq = 'CH', b2b, shipping,
   ...(shipping ? { shipping } : {}),
 });
 
-const stated = (code, extra = {}) => ({ code, currency: 'EUR', selling_entity: 'ACME AG', assortment: 'same', run_by: 'central', ...extra });
+const stated = (code, extra = {}) => ({ code, currency: 'EUR', selling_entity: 'ACME AG', assortment: 'same', run_by: 'central', distinct_theme_design: false, ...extra });
 const unknown = (code) => ({ code, currency: 'EUR' });
 
 describe('market topology', () => {
@@ -142,6 +142,37 @@ describe('market topology', () => {
     assert.deepEqual(t.additional_channel_stores, ['B2B']);
     doc.markets.topology = t;
     assert.equal(storesBeyondTheFirst(doc), 1);
+  });
+
+  test('5c · a second customer-facing brand needs its own store even with a single market, and each extra brand is its own store', () => {
+    // The regression this guards: expansion stores must stay "an extension of
+    // the main brand" (Shopify's own eligibility rule) — a genuinely separate
+    // brand is not free the way expansion stores are, and nothing about it
+    // depends on how many markets there are.
+    const one = evaluateTopology(engagement({ markets: [stated('CH')], brands: 2 }));
+    assert.notEqual(one, null, 'a second brand is not exempt just because there is one market');
+    assert.equal(one.recommendation, 'hybrid');
+    assert.ok(one.triggers.some((x) => x.criterion === 'distinct_brand'));
+    assert.deepEqual(one.additional_channel_stores, ['Brand']);
+    const doc1 = { markets: { topology: one } };
+    assert.equal(storesBeyondTheFirst(doc1), 1);
+
+    const three = evaluateTopology(engagement({ markets: [stated('CH')], brands: 3 }));
+    assert.deepEqual(three.additional_channel_stores, ['Brand', 'Brand'], 'two extra brands are two stores, not one deduplicated entry');
+    const doc3 = { markets: { topology: three } };
+    assert.equal(storesBeyondTheFirst(doc3), 2);
+  });
+
+  test('5d · a market needing its own theme design (not just content) forces it apart from a shared store', () => {
+    // The regression this guards: per-market customization never reaches
+    // theme settings or Liquid templates, only content — so "we want CH and DE
+    // to look different, not just read different" is a store-separation fact
+    // the engine could not see at all before this criterion existed.
+    const doc = engagement({ markets: [stated('CH'), stated('DE', { distinct_theme_design: true })] });
+    const t = evaluateTopology(doc);
+    assert.equal(t.recommendation, 'hybrid');
+    assert.ok(t.triggers.some((x) => x.criterion === 'distinct_theme_design' && /theme settings/.test(x.evidence)));
+    assert.deepEqual(t.separate_store_markets, ['DE']);
   });
 
   test('6 · an engagement that meets every Managed Markets condition sees it as a live option, with the cost on its own numbers', () => {

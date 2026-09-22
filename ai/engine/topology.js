@@ -49,6 +49,10 @@ export const SOURCES = {
   // what a dedicated store is for.
   b2b_store_type: 'https://help.shopify.com/en/manual/b2b/getting-started/store-type',
   per_market_theme: 'https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets',
+  // Explicit on the ceiling per_market_theme only illustrates: per-market
+  // customization never reaches theme settings (colors, typography) or
+  // Liquid templates, only section content and block visibility/ordering.
+  theme_customization_limits: 'https://help.shopify.com/en/manual/markets/customizations/online-store',
   b2b_plans: 'https://help.shopify.com/en/manual/b2b/getting-started/plan-features',
   managed_markets_requirements: 'https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations',
   managed_markets_overview: 'https://help.shopify.com/en/manual/international/managed-markets/overview',
@@ -209,7 +213,54 @@ const CRITERIA = [
         stated: true,
         broad: false,
         source: SOURCES.b2b_store_type,
-        adds_store: 'B2B',
+        adds_store: ['B2B'],
+      };
+    },
+  },
+  {
+    /*
+     * A different brand is not a different market, and Shopify's own
+     * expansion-store eligibility rules it out of the "free" mechanism this
+     * engine otherwise assumes: an expansion store must be "an extension of
+     * the main brand" and "identical to the main brand with respect to store
+     * name and other branding" (SOURCES.expansion_stores). A genuinely
+     * separate brand needs a multi-brand agreement instead — its own Shopify
+     * Plus subscription, not one of the ten a single Plus contract includes
+     * at no extra licence cost. It can fire with a single market: two brands
+     * sold from the same country still need two stores.
+     */
+    id: 'distinct_brand',
+    weight: 4,
+    label: 'More than one customer-facing brand, each needing its own store and its own Shopify Plus subscription',
+    evaluate(doc) {
+      const count = doc.meta?.client?.brand_count;
+      if (!count || count <= 1) return null;
+      const extra = count - 1;
+      return {
+        markets: [],
+        evidence: `${count} distinct customer-facing brands recorded — Shopify's expansion stores must be "an extension of the main brand" with identical branding, so a genuinely separate brand needs a multi-brand agreement with its own Shopify Plus subscription rather than one of the ten a single Plus contract includes at no extra licence cost`,
+        question_ids: ['Q1.1.8'],
+        stated: true,
+        broad: false,
+        source: SOURCES.expansion_stores,
+        adds_store: Array(extra).fill('Brand'),
+      };
+    },
+  },
+  {
+    id: 'distinct_theme_design',
+    weight: 4,
+    label: "A market needs its own theme design, not just localized content — Shopify's per-market customization never reaches theme settings or templates",
+    evaluate(doc, markets) {
+      const different = markets.filter((m) => m.distinct_theme_design === true);
+      if (!different.length) return null;
+      return {
+        markets: codes(different),
+        evidence: `${different.length} market(s) need a genuinely different theme design, not just localized content (${codes(different).join(', ')}) — Shopify's per-market customization reaches section content and block visibility, never theme settings such as colours and typography, or Liquid templates`,
+        question_ids: ['Q3.1.1'],
+        stated: true,
+        broad: different.length >= Math.ceil(markets.length / 2),
+        source: SOURCES.theme_customization_limits,
       };
     },
   },
@@ -327,6 +378,22 @@ function assumptionsFor(doc, markets) {
       question_id: 'Q6.2.14',
     });
   }
+  if (doc.meta?.client?.brand_count === undefined) {
+    out.push({
+      about: 'Whether this covers more than one customer-facing brand',
+      assumed: 'One brand',
+      impact_if_wrong: 'A second brand needs its own store and its own Shopify Plus subscription — expansion stores must share the main brand',
+      question_id: 'Q1.1.8',
+    });
+  }
+  if (markets.some((m) => m.distinct_theme_design === undefined)) {
+    out.push({
+      about: 'Whether any market needs its own theme design rather than shared content',
+      assumed: 'One theme across every market; only content varies by market',
+      impact_if_wrong: 'A market needing its own theme settings or templates forces a separate store for it',
+      question_id: 'Q3.1.1',
+    });
+  }
   out.push({
     about: 'App requirements that cannot coexist on one store',
     assumed: 'No market needs an app the others cannot live with (apps are installed store-wide)',
@@ -367,6 +434,14 @@ function openInputsFor(doc, markets) {
   if (doc.b2b?.enabled === true && doc.b2b?.own_operation === undefined) {
     out.push({ question_id: 'Q6.2.14', pointer: '/b2b/own_operation', swing: 'medium',
       why_it_matters: 'A wholesale team with its own P&L adds a second store' });
+  }
+  if (doc.meta?.client?.brand_count === undefined) {
+    out.push({ question_id: 'Q1.1.8', pointer: '/meta/client/brand_count', swing: 'high',
+      why_it_matters: 'A second brand needs its own store and its own Shopify Plus subscription, whatever the market count' });
+  }
+  if (markets.some((m) => m.distinct_theme_design === undefined)) {
+    out.push({ question_id: 'Q3.1.1', pointer: '/markets/list/*/distinct_theme_design', swing: 'medium',
+      why_it_matters: "Shopify's per-market customization never reaches theme settings or templates, only content" });
   }
   const rank = { high: 0, medium: 1, low: 2 };
   return out.sort((a, b) => rank[a.swing] - rank[b.swing]);
@@ -491,7 +566,8 @@ function costSignal(doc) {
 export function evaluateTopology(doc) {
   const all = list(doc);
   const b2bOwnOperation = doc.b2b?.enabled === true && doc.b2b?.own_operation === true;
-  if (all.length <= 1 && !b2bOwnOperation) return null;
+  const multiBrand = (doc.meta?.client?.brand_count ?? 1) > 1;
+  if (all.length <= 1 && !b2bOwnOperation && !multiBrand) return null;
   const markets = marketsOf(doc); // mainland China is out of the offering's scope
 
   const triggers = [];
@@ -523,11 +599,13 @@ export function evaluateTopology(doc) {
   const entityOrTax = triggers.filter((t) => ['legal_entity_per_market', 'invoicing_and_tax_footprint'].includes(t.criterion));
   const broad = entityOrTax.some((t) => t._broad);
   const separate = [...new Set(triggers.flatMap((t) => t.markets ?? []))];
-  // A store a channel needs regardless of market count — today just B2B run as
-  // its own operation — is not "beyond the first" because of any market, so it
-  // never belongs in separate_store_markets; it was being computed (adds_store)
-  // and then discarded before this return, pricing it as zero stores.
-  const channelStores = [...new Set(triggers.map((t) => t._adds_store).filter(Boolean))];
+  // Stores a channel needs regardless of market count — B2B run as its own
+  // operation, or brands beyond the first — are not "beyond the first"
+  // because of any market, so they never belong in separate_store_markets;
+  // adds_store was being computed and then discarded before this return,
+  // pricing all of them as zero stores. Not deduplicated: two extra brands
+  // are two stores, not one — each entry in adds_store is its own store.
+  const channelStores = triggers.flatMap((t) => t._adds_store ?? []);
 
   let recommendation;
   if (!triggers.length) recommendation = 'single_store_markets';

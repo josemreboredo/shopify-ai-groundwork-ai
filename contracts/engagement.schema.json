@@ -61,6 +61,11 @@
                 "type": "string"
               },
               "description": "Legal entities that sell (one per country or region); more than one in one store needs Shopify Plus"
+            },
+            "brand_count": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Distinct customer-facing brands this engagement needs a Shopify storefront for. Not a market fact: two brands can share one market, or one brand can span every market. Shopify's expansion-store eligibility requires each store to be an extension of the main brand with identical branding, so a genuinely separate brand needs its own store and its own Shopify Plus subscription — not one of the ten a single Plus contract includes."
             }
           }
         },
@@ -714,6 +719,10 @@
                   "not_sure"
                 ],
                 "description": "Who runs the market day to day: one central team, or a local team that sets its own prices, campaigns and content."
+              },
+              "distinct_theme_design": {
+                "type": "boolean",
+                "description": "Whether this market needs its own theme design — different theme settings (colors, typography) or Liquid templates — rather than the same theme with market-specific content. Shopify's per-market customization never reaches theme settings or templates, only section content and block visibility."
               }
             }
           }

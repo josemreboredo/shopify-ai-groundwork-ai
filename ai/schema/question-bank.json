@@ -858,6 +858,42 @@
       }
     },
     {
+      "id": "Q1.1.8",
+      "subsection": "1.1",
+      "priority": "required",
+      "audience": "client",
+      "answer_type": "integer",
+      "text": "How many distinct customer-facing brands does this engagement need a Shopify storefront for?",
+      "help": "A brand two customers would recognise as different names, logos or identities — not a market or a product line under the same brand.",
+      "maps_to": [
+        "/meta/client/brand_count"
+      ],
+      "feeds": [
+        "gate:store_estate",
+        "l_trigger:multi_store"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Expansion stores must be an extension of the main brand",
+            "plan": "plus",
+            "docs": "https://help.shopify.com/en/manual/organization-settings/expansion-stores"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-22",
+          "source": "help.shopify.com"
+        }
+      },
+      "teach": {
+        "why": "A different brand is not a different market. Expansion stores must be identical to the main brand in name and branding — a genuinely separate brand needs its own Shopify Plus subscription instead, not one of the ten a single contract includes free. This matters even with one launch market: two brands need two stores.",
+        "limits": "Shopify documents no path to running two distinct brands on one store, or as free expansion stores of each other — an expansion store must be 'an extension of the main brand' and 'identical to the main brand with respect to store name and other branding.' The only routes are positioning one brand as an extension of the other (same name and branding), or a multi-brand agreement with its own Shopify Plus subscription per brand.",
+        "sources": [
+          "https://help.shopify.com/en/manual/organization-settings/expansion-stores"
+        ]
+      }
+    },
+    {
       "id": "Q1.2.1",
       "subsection": "1.2",
       "priority": "required",
@@ -2119,7 +2155,7 @@
       "priority": "required",
       "audience": "client",
       "answer_type": "table",
-      "text": "Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day.",
+      "text": "Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, who runs that country day to day, and whether it needs its own theme design rather than the same design with local content.",
       "help": "One row per country. Leave a cell blank if you do not know it — we will come back to it.",
       "maps_to": [
         "/markets/list"
@@ -2159,12 +2195,13 @@
         }
       },
       "teach": {
-        "why": "Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range and owner columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.",
-        "limits": "Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Mainland China is excluded from this engagement and routed to a separate China discovery.",
+        "why": "Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range, owner and theme-design columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.",
+        "limits": "Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Per-market theme customization never reaches theme settings (colours, typography) or Liquid templates, only section content and block visibility — a market that needs an actually different design needs its own store. Mainland China is excluded from this engagement and routed to a separate China discovery.",
         "sources": [
           "https://help.shopify.com/en/manual/markets/getting-started/market-types",
           "https://help.shopify.com/en/manual/international/localization-and-translation",
-          "https://help.shopify.com/en/manual/markets/customizations/local-currencies"
+          "https://help.shopify.com/en/manual/markets/customizations/local-currencies",
+          "https://help.shopify.com/en/manual/markets/customizations/online-store"
         ]
       },
       "why_it_matters": "These rows decide how many Shopify stores your business needs. Countries that share one selling company, one range and one team can run on a single store; countries that differ on those points usually need their own store, which multiplies the build, the running cost and the work of every future change.",
