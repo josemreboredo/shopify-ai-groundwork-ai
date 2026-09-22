@@ -110,13 +110,38 @@ describe('market topology', () => {
     assert.deepEqual(excludedFromBuild(engagement({ markets: [stated('CH'), { code: 'CN' }] })), ['CN']);
   });
 
-  test('5 · a wholesale operation with its own team → hybrid', () => {
-    const t = evaluateTopology(engagement({
+  test('5 · a wholesale operation with its own team → hybrid, and it prices a store — not zero', () => {
+    // The regression this guards: b2b_own_operation fired and the
+    // recommendation said 'hybrid' — correctly, a second store is needed —
+    // but adds_store was computed and then discarded before evaluateTopology
+    // returned, so storesBeyondTheFirst() (classify.js) priced it as zero.
+    const doc = engagement({
       markets: [stated('CH'), stated('DE')],
       b2b: { enabled: true, own_operation: true },
-    }));
+    });
+    const t = evaluateTopology(doc);
     assert.equal(t.recommendation, 'hybrid');
     assert.ok(t.triggers.some((x) => x.criterion === 'b2b_own_operation'));
+    assert.deepEqual(t.additional_channel_stores, ['B2B']);
+    doc.markets.topology = t;
+    assert.equal(storesBeyondTheFirst(doc), 1);
+  });
+
+  test('5b · B2B run as its own operation still needs a second store with a single market', () => {
+    // The regression this guards: evaluateTopology returned null outright
+    // whenever there was one market or none — right for the market-divergence
+    // criteria, which have nothing to compare with one market, but wrong for
+    // b2b_own_operation, which does not depend on market count at all.
+    const doc = engagement({
+      markets: [stated('CH')],
+      b2b: { enabled: true, own_operation: true },
+    });
+    const t = evaluateTopology(doc);
+    assert.notEqual(t, null, 'single-market engagements are not exempt from a B2B-driven second store');
+    assert.equal(t.recommendation, 'hybrid');
+    assert.deepEqual(t.additional_channel_stores, ['B2B']);
+    doc.markets.topology = t;
+    assert.equal(storesBeyondTheFirst(doc), 1);
   });
 
   test('6 · an engagement that meets every Managed Markets condition sees it as a live option, with the cost on its own numbers', () => {

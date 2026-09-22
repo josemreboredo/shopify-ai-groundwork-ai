@@ -84,15 +84,18 @@ export const retailLocations = (doc) => doc.retail?.store_count ?? 0;
  *
  * `separate_store_markets` is the markets the engine could not fit on the main
  * store. A hybrid puts those on their own stores and keeps the rest together; a
- * full expansion recommendation does the same thing more widely. Either way the
- * count is what the engine already worked out, not a number anyone typed.
+ * full expansion recommendation does the same thing more widely.
+ * `additional_channel_stores` is stores a channel needs regardless of market
+ * count — B2B run as its own operation, today the only one; a single-market
+ * business with that answer still needs a second store for it. Either count is
+ * what the engine already worked out, not a number anyone typed.
  *
  * @param {object} doc
  */
 export function storesBeyondTheFirst(doc) {
   const t = doc.markets?.topology;
   if (!t || t.recommendation === 'single_store_markets' || t.recommendation === 'single_store_managed_markets') return 0;
-  return (t.separate_store_markets ?? []).length;
+  return (t.separate_store_markets ?? []).length + (t.additional_channel_stores ?? []).length;
 }
 
 /** Launch markets in the offering's scope (mainland China excluded). @param {object} doc */
@@ -152,7 +155,7 @@ const GATE_EVALUATORS = {
     const t = doc.markets?.topology;
     const extra = storesBeyondTheFirst(doc);
     if (!t || extra <= 0) {
-      return { active: false, evidence: t ? 'One store with Shopify Markets' : 'Topology not derived yet' };
+      return { active: false, evidence: t ? 'One store covers every market' : 'Topology not derived yet' };
     }
     return {
       active: true,
@@ -658,10 +661,22 @@ function modifierFor(gate, evaluated, doc) {
    */
   const surcharges = modifier.per_unit_surcharge ?? [];
   const uplift = surcharges.reduce((a, s) => {
-    const on = s.gate === 'storefront_design'
-      ? STOREFRONT_TIER(doc) === s.tier
-      : ACTIVE_GATE(doc, s.gate);
-    return on ? a + s.add : a;
+    if (s.gate === 'storefront_design') {
+      return STOREFRONT_TIER(doc) === s.tier ? a + s.add : a;
+    }
+    /*
+     * A store surcharge that scales by count, not by whether the gate fired.
+     *
+     * One store re-wiring one integration and one store re-wiring five are not
+     * the same job — every connection is tested and reconciled again in each
+     * store, so five integrations across three extra stores is fifteen
+     * reconciliations, not three. A flat +33% the moment any integration
+     * existed charged the same whether there was one or ten. Uncapped here on
+     * purpose: the modifier's own effort_weeks/price_add band is what bounds
+     * the total, the same as every other modifier.
+     */
+    if (s.per_unit) return a + s.add * (SCALES[s.gate]?.count ?? 0);
+    return ACTIVE_GATE(doc, s.gate) ? a + s.add : a;
   }, 0);
 
   const units = Math.max(scale.count - scale.free, 0);

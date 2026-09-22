@@ -971,7 +971,7 @@
     {
       "id": "+Stores",
       "gate": "store_estate",
-      "description": "Each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again — expansion stores share no data",
+      "description": "Each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again per store — expansion stores share no data, so the more integrations there are, the more this costs per additional store",
       "effort_weeks": {
         "min": 1.5,
         "max": 9
@@ -986,7 +986,8 @@
         {
           "gate": "integration",
           "add": 0.33,
-          "why": "No data is shared between stores, so every connection is wired, tested and reconciled again in each one"
+          "per_unit": true,
+          "why": "No data is shared between stores, so every integration is wired, tested and reconciled again in each one — three integrations across the extra stores is three times the reconciliation work of one, not the same flat add-on regardless of count"
         },
         {
           "gate": "storefront_design",
@@ -2040,15 +2041,15 @@
         "what": "Shopify stores",
         "gate": "store_estate",
         "S": "One",
-        "M": "One, with Shopify Markets",
-        "L": "One, with Shopify Markets",
+        "M": "One — every market runs from it",
+        "L": "One — every market runs from it",
         "addon": [
           "S",
           "M",
           "L"
         ],
         "addon_label": "Each further store",
-        "note": "One store with Shopify Markets covers currency, language, domain, pricing and catalogue per market, and on Plus it routes payments through a different legal entity per market. A second store is not a licence question — ten come with a Plus contract — it is that expansion stores share no data by default, so every integration is wired again in each one, apps are billed per store and theme licences cannot be shared. The engine derives how many the requirements need; nobody is asked to guess."
+        "note": "Every pack includes one Shopify store, and one store already serves every market in it — different currency, language, domain, prices and catalogue per market, no second store required. A second store is not a licence question — ten come with a Plus contract at no extra cost — it is that a separate store shares no data with the first by default, so every integration is wired again, apps are billed again and the theme is deployed and kept in step again, store by store. Whether a client's requirements need a second store is not a question we ask; the engine derives it from the same market answers (does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, or run under its own team) — a client rarely wants two stores for their own sake, it follows from facts like these."
       },
       {
         "id": "multi_currency",

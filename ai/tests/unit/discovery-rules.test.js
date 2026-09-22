@@ -127,6 +127,30 @@ describe('classification edge cases', () => {
     assert.match(offer.scope_gates.integration.evidence, /Yotpo/);
     assert.doesNotMatch(offer.scope_gates.integration.evidence, /Klaviyo/);
   });
+
+  test('+Stores scales its integration surcharge with how many integrations there are, not just whether one exists', () => {
+    // The regression this guards: the surcharge used to be a flat +33% the
+    // moment any integration existed, charging the same whether there was one
+    // or ten — when every integration is in fact re-wired per store.
+    const withStores = (n) => ({
+      ...base(),
+      markets: {
+        list: [{ code: 'CH', currency: 'CHF', price_strategy: 'base_currency' }],
+        topology: { recommendation: 'expansion_stores', separate_store_markets: ['XX'] },
+      },
+      integrations: Array.from({ length: n }, (_, i) => ({ system: `erp-${i}`, category: 'erp' })),
+    });
+    // .min, not .max: once the scope grows enough to saturate M's ceiling
+    // (from the first integration on, here), .max stops moving because it is
+    // the top of the pack's band, not a running total — .min keeps climbing
+    // with the actual computed price underneath it.
+    const price = (n) => classifyOffer(withStores(n)).price_band.min;
+    const zero = price(0);
+    const one = price(1);
+    const three = price(3);
+    assert.ok(one > zero, 'adding the first integration raises the price');
+    assert.ok(three > one, 'a third integration raises it further, past a flat one-time surcharge');
+  });
 });
 
 describe('exit rule edge cases', () => {

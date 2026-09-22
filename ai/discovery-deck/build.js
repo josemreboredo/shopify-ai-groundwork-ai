@@ -593,7 +593,12 @@ function appendixStories(x, backlog) {
 function topology(x, doc) {
   const t = doc.markets?.topology;
   if (!t) return;
-  x.open('topology', { recommendation: t.recommendation, confidence: t.confidence, 'separate-stores': (t.separate_store_markets ?? []).join(', ') || undefined });
+  x.open('topology', {
+    recommendation: t.recommendation,
+    confidence: t.confidence,
+    'separate-stores': (t.separate_store_markets ?? []).join(', ') || undefined,
+    'additional-channel-stores': (t.additional_channel_stores ?? []).join(', ') || undefined,
+  });
   for (const trigger of t.triggers ?? []) {
     x.empty('trigger', { criterion: trigger.criterion, weight: String(trigger.weight ?? ''), markets: (trigger.markets ?? []).join(', ') || undefined, evidence: trigger.evidence, questions: (trigger.question_ids ?? []).join(', ') });
   }

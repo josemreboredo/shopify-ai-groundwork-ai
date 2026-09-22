@@ -477,12 +477,21 @@ function costSignal(doc) {
 /**
  * The topology decision.
  *
+ * "Market topology" undersells what this now decides: b2b_own_operation adds a
+ * store for the wholesale side regardless of how many markets there are, so a
+ * single-market business running B2B as its own operation still needs one.
+ * Skipping this whenever there is one market or none — which is right for the
+ * market-divergence criteria, since they have nothing to compare — used to
+ * skip that one too, silently pricing zero stores for it.
+ *
  * @param {object} doc  Engagement document with markets, meta, b2b and shipping
- * @returns {object|null}  null when the engagement has one market or none
+ * @returns {object|null}  null when there is one market or none, and no B2B
+ *   run as its own operation
  */
 export function evaluateTopology(doc) {
   const all = list(doc);
-  if (all.length <= 1) return null;
+  const b2bOwnOperation = doc.b2b?.enabled === true && doc.b2b?.own_operation === true;
+  if (all.length <= 1 && !b2bOwnOperation) return null;
   const markets = marketsOf(doc); // mainland China is out of the offering's scope
 
   const triggers = [];
@@ -514,6 +523,11 @@ export function evaluateTopology(doc) {
   const entityOrTax = triggers.filter((t) => ['legal_entity_per_market', 'invoicing_and_tax_footprint'].includes(t.criterion));
   const broad = entityOrTax.some((t) => t._broad);
   const separate = [...new Set(triggers.flatMap((t) => t.markets ?? []))];
+  // A store a channel needs regardless of market count — today just B2B run as
+  // its own operation — is not "beyond the first" because of any market, so it
+  // never belongs in separate_store_markets; it was being computed (adds_store)
+  // and then discarded before this return, pricing it as zero stores.
+  const channelStores = [...new Set(triggers.map((t) => t._adds_store).filter(Boolean))];
 
   let recommendation;
   if (!triggers.length) recommendation = 'single_store_markets';
@@ -577,6 +591,12 @@ export function evaluateTopology(doc) {
     // most expensive shape, costed as the cheapest one.
     ...(recommendation === 'hybrid' && separate.length ? { separate_store_markets: separate } : {}),
     ...(recommendation === 'expansion_stores' ? { separate_store_markets: codes(nonPrimary(doc, markets)) } : {}),
+    // Stores a channel needs beyond the market-driven ones — B2B run as its
+    // own operation, today the only one. classify.js's storesBeyondTheFirst()
+    // adds this count to separate_store_markets' length; a market topology
+    // this reads over one market never runs (the guard above), so double-
+    // counting the same market both ways cannot happen.
+    ...(channelStores.length ? { additional_channel_stores: channelStores } : {}),
     managed_markets,
     ...(stated ? { stated_preference: stated } : {}),
     ...(disagreement ? { disagreement } : {}),

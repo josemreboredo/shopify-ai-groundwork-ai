@@ -998,6 +998,13 @@
               },
               "description": "Markets that get their own store: the diverging subset under a hybrid recommendation, or every market under a full expansion-stores recommendation."
             },
+            "additional_channel_stores": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Stores a channel needs regardless of market count — today only 'B2B', when wholesale is run as its own operation. Independent of separate_store_markets; storesBeyondTheFirst() (ai/engine/classify.js) sums both."
+            },
             "managed_markets": {
               "type": "object",
               "additionalProperties": false,
