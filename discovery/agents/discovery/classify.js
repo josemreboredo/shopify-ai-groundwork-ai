@@ -539,12 +539,12 @@ const L_TRIGGER_EVALUATORS = {
   },
 };
 
-/**
- * Compute the `offer` block for an engagement document.
- *
- * @param {object} doc  Engagement document (answers only are read)
- * @returns {object}    Value for doc.offer
- */
+/** Whether a gate fires on this document, asked without the offer being decided yet. */
+const ACTIVE_GATE = (doc, id) => Boolean(GATE_EVALUATORS[id]?.(doc)?.active);
+
+/** The storefront design tier this document asks for, or null. */
+const STOREFRONT_TIER = (doc) => GATE_EVALUATORS.storefront_design?.(doc)?.tier ?? null;
+
 /**
  * The modifier that prices one active gate.
  *
@@ -558,12 +558,6 @@ const L_TRIGGER_EVALUATORS = {
  * @param {object} doc       engagement document
  * @returns {object|null}
  */
-/** Whether a gate fires on this document, asked without the offer being decided yet. */
-const ACTIVE_GATE = (doc, id) => Boolean(GATE_EVALUATORS[id]?.(doc)?.active);
-
-/** The storefront design tier this document asks for, or null. */
-const STOREFRONT_TIER = (doc) => GATE_EVALUATORS.storefront_design?.(doc)?.tier ?? null;
-
 function modifierFor(gate, evaluated, doc) {
   const all = offering.modifiers ?? [];
 
@@ -621,7 +615,6 @@ function modifierFor(gate, evaluated, doc) {
    */
   const surcharges = modifier.per_unit_surcharge ?? [];
   const uplift = surcharges.reduce((a, s) => {
-    const g = evaluated && s.gate === gate.id ? evaluated : doc.offer?.scope_gates?.[s.gate];
     const on = s.gate === 'storefront_design'
       ? STOREFRONT_TIER(doc) === s.tier
       : ACTIVE_GATE(doc, s.gate);
@@ -642,6 +635,12 @@ function modifierFor(gate, evaluated, doc) {
   };
 }
 
+/**
+ * Compute the `offer` block for an engagement document.
+ *
+ * @param {object} doc  Engagement document (answers only are read)
+ * @returns {object}    Value for doc.offer
+ */
 export function classifyOffer(doc) {
   const scope_gates = Object.fromEntries(
     offering.scope_gates.map((g) => [g.id, GATE_EVALUATORS[g.id](doc)]),

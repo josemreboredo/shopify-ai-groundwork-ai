@@ -91,12 +91,6 @@ export function planRequirements(doc) {
 }
 
 /**
- * Lowest plan that covers every requirement, or null when Basic is enough.
- *
- * @param {object} doc
- * @returns {'grow'|'advanced'|'plus'|null}
- */
-/**
  * The lowest plan the requirements force, whatever the client said they wanted.
  *
  * This was internal, so the client-facing slides printed shopify.target_plan —
@@ -112,6 +106,12 @@ export function requiredPlan(doc) {
   return minimumPlan(doc);
 }
 
+/**
+ * Lowest plan that covers every requirement, or null when Basic is enough.
+ *
+ * @param {object} doc
+ * @returns {'grow'|'advanced'|'plus'|null}
+ */
 function minimumPlan(doc) {
   const plans = planRequirements(doc).map((r) => r.plan);
   if (!plans.length) return null;

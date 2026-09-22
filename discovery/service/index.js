@@ -8,6 +8,14 @@
  * review step for answers extracted from documents, and a document register.
  * Storage is an adapter (files locally, Postgres when hosted).
  *
+ * One file, not one per operation: every export here is a thin access-control
+ * and validation wrapper around the same `session` — splitting it by concern
+ * (interview, closing document, clarifications) would mean either passing
+ * that session across module boundaries or re-deriving it, for no reader
+ * benefit, since every operation is reached through `createDiscoveryService`
+ * regardless. Individual functions stay small; this file is long because the
+ * service surface is.
+ *
  * @module discovery/service
  */
 

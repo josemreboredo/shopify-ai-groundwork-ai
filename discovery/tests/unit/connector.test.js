@@ -277,7 +277,7 @@ describe('Discovery Closing Document from the shared engagement', () => {
   }
 
   test('no tool result is too large for an MCP client to take in one piece', async () => {
-    const { svc, store } = await acme();
+    const { svc } = await acme();
     const handler = withMcpAuth(
       createMcpHandler((server) => registerDiscoveryTools(server, { service: svc, userOf: () => lc }), { serverInfo: { name: 'merkle-discovery', version: 'test' } }),
       async () => ({ token: 't', clientId: 'claude', scopes: ['discovery'], extra: { user: lc } }),

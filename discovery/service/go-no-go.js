@@ -50,7 +50,6 @@ const SEVERITY_LABEL = {
  * @param {object} doc  decided engagement
  */
 export function complexityProfile(doc) {
-  const gates = new Map(offering.scope_gates.map((g) => [g.id, g]));
   const fired = doc.exits?.items ?? [];
   const ruleInputs = new Map(offering.exit_rules.map((r) => [r.id, r.inputs ?? []]));
 
@@ -153,13 +152,7 @@ const CAPABILITY = {
 
 const TRACK = { liquid: 'Shopify Online Store (Horizon theme)', hydrogen: 'Headless Hydrogen on Oxygen' };
 
-const money = (band) => (band ? `${band.currency ?? ''} ${Math.round(band.min / 1000)}k–${Math.round(band.max / 1000)}k${band.open_ended ? '+' : ''}`.trim() : null);
 const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`) : null);
-
-const ROUTE = {
-  larger_engagement: 'a Merkle Enterprise Engagement with a dedicated Discovery Phase',
-  arc: 'Merkle Arc',
-};
 
 /**
  * Whether the offer classification is actually the answer.

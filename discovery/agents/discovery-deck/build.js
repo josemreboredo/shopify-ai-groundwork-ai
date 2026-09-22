@@ -47,7 +47,6 @@ const STANDARD_EXCLUSIONS = [
 
 const RESOLUTION_ORDER = ['native', 'app', 'theme', 'custom'];
 const TRACK_LABEL = { liquid: 'Shopify Horizon theme (Liquid)', hydrogen: 'Headless Hydrogen storefront' };
-const PLAN_LABEL = { none: 'None', basic: 'Basic', grow: 'Grow', advanced: 'Advanced', plus: 'Shopify Plus', plus_expansion: 'Shopify Plus (expansion stores)' };
 
 /** Round percentages so they always add up to 100 (largest remainder). */
 export function percentages(counts) {
@@ -587,13 +586,6 @@ function appendixStories(x, backlog) {
 // ─── Build ────────────────────────────────────────────────────────────────────
 
 /**
- * Build the client-safe deck XML.
- *
- * @param {object} doc      Schema-valid engagement
- * @param {object|null} backlog  Parsed backlog.json, if any
- * @returns {{ xml: string, warnings: string[] }}
- */
-/**
  * The derived market topology, as data: the recommendation the writer argues,
  * what fired it, what it rules out, what it assumed and what would change it.
  * The writer never re-derives this — the engine decided it (topology.js).
@@ -663,6 +655,13 @@ const PLAN_RANK_ORDER = ['basic', 'grow', 'advanced', 'plus'];
  *  section reaches them without threading an argument through every section. */
 const STATED = [];
 
+/**
+ * Build the client-safe deck XML.
+ *
+ * @param {object} doc      Schema-valid engagement
+ * @param {object|null} backlog  Parsed backlog.json, if any
+ * @returns {{ xml: string, warnings: string[] }}
+ */
 export function buildDeckXml(doc, backlog = null, { stated = [] } = {}) {
   STATED.length = 0;
   STATED.push(...stated);

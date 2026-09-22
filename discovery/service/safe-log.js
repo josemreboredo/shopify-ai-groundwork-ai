@@ -16,6 +16,5 @@ export function safeLog(level, ...args) {
     const reasons = findPersonalData(text);
     if (reasons.length) throw new Error(`Refusing to log: payload ${reasons.join(', ')}`);
   }
-  // eslint-disable-next-line no-console
   console[level](...args);
 }

@@ -47,15 +47,6 @@ function decisions() {
 const matcher = (input) => new RegExp(`^${input.split('*').map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^/]+')}(/|$)`);
 
 /**
- * Settled means the engine has what it needs and a person has stood behind it.
- *
- * A decision that fired is settled by definition — it read enough to fire. One
- * that did not may simply have had nothing to read, which is the distinction the
- * complexity chart was getting wrong until recently. And an answer still waiting
- * on a human does not count: it is the same precondition step 3 already enforces,
- * because a bid cannot rest on an extraction nobody has checked.
- */
-/**
  * An input the answers have already ruled out.
  *
  * Exit rule 11.26 reads where the editorial content lives and which front end
@@ -85,6 +76,15 @@ function valueAt(doc, pointer) {
   return pointer.replace(/^\//, '').split('/').reduce((node, key) => (node == null ? undefined : node[key]), doc);
 }
 
+/**
+ * Settled means the engine has what it needs and a person has stood behind it.
+ *
+ * A decision that fired is settled by definition — it read enough to fire. One
+ * that did not may simply have had nothing to read, which is the distinction the
+ * complexity chart was getting wrong until recently. And an answer still waiting
+ * on a human does not count: it is the same precondition step 3 already enforces,
+ * because a bid cannot rest on an extraction nobody has checked.
+ */
 function settle(decision, doc, provenance, fired) {
   if (fired.has(decision.id)) return { settled: true, why: 'fired on the answers' };
   const declared = decision.inputs;

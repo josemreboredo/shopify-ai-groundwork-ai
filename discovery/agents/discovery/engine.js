@@ -5,6 +5,13 @@
  *   → approach (LLM, on GO or when a STOP is routed to a Larger Engagement)
  *   → schema validation.
  *
+ * This folder shares its name with one of the two processes the tool runs
+ * ("discovery" vs "rfp", named in `discovery/service/process.js`) but is not
+ * that process's code — `weigh()` and `decide()` here are the shared engine,
+ * called by both the Bid (RFP) and Engagement (discovery) paths alike. See
+ * `discovery/tests/unit/one-engine.test.js`, which exists specifically to
+ * keep the two paths from silently disagreeing again.
+ *
  * @module discovery/engine
  */
 
@@ -113,15 +120,6 @@ export function answerValidator(options) {
   };
 }
 
-/**
- * Deterministic part after extraction: offer, exit rules, GO/STOP, provenance,
- * open items and consultant notes. An open item for the Shopify plan says which
- * answers already require Plus.
- *
- * @param {{ answers: object, provenance: object, openItems: object[], exitCandidates: object[], notes?: object[] }} extraction
- * @param {{ today: string, clientSlug?: string }} options
- * @returns {object}  Engagement without approach content (risks.open_items only)
- */
 /** Who is merchant of record, derived from the topology and the client's tax appetite. */
 function crossBorderModel(doc, topology) {
   if (topology.recommendation === 'single_store_managed_markets') return 'managed_markets';
@@ -159,6 +157,15 @@ export function weigh(doc, exitCandidates = []) {
   return doc;
 }
 
+/**
+ * Deterministic part after extraction: offer, exit rules, GO/STOP, provenance,
+ * open items and consultant notes. An open item for the Shopify plan says which
+ * answers already require Plus.
+ *
+ * @param {{ answers: object, provenance: object, openItems: object[], exitCandidates: object[], notes?: object[] }} extraction
+ * @param {{ today: string, clientSlug?: string }} options
+ * @returns {object}  Engagement without approach content (risks.open_items only)
+ */
 export function decide(extraction, options) {
   /** @type {any} */
   const doc = weigh(assemble(extraction.answers, options), extraction.exitCandidates);

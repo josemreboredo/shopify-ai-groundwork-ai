@@ -40,12 +40,6 @@ const STATE_LABEL = { answered: 'Answered', tbc: 'TBC', skipped: 'Not applicable
 const cell = (s) => String(s ?? '').replace(/\|/g, '/').replace(/\n/g, '<br>');
 
 /**
- * Markdown summary for download or sharing inside Merkle (includes the offer
- * the engine computed — internal, not a client document).
- *
- * @param {ReturnType<import('./index.js').createDiscoveryService>['getSummary'] extends (...a: any) => Promise<infer R> ? R : never} s
- */
-/**
  * How the offer and the route read together.
  *
  * The classification is real — it is what the scope gates say — but an exit rule
@@ -183,6 +177,12 @@ const ROUTE_HEADLINE = {
   arc: 'Merkle Arc',
 };
 
+/**
+ * Markdown summary for download or sharing inside Merkle (includes the offer
+ * the engine computed — internal, not a client document).
+ *
+ * @param {ReturnType<import('./index.js').createDiscoveryService>['getSummary'] extends (...a: any) => Promise<infer R> ? R : never} s
+ */
 export function renderSummaryMarkdown(s) {
   const p = s.preview;
   const lines = [
