@@ -652,6 +652,14 @@ function NotCovered() {
  *   Included-up-to-a-limit and quoted-on-top are no longer two states of one
  *   cell competing for the same glance: the second state left the table.
  *
+ *   A row that is the same in every pack is said once, spanning the three
+ *   columns, instead of three times. More than half of them are, and three
+ *   identical cells read as a comparison that came back empty — they spend
+ *   three columns of attention on one fact and dilute the rows where the packs
+ *   actually differ. Spanning costs nothing: the subject keeps its place in the
+ *   group a reader went looking for it in, and the shape of the row becomes the
+ *   answer to "does the pack matter here".
+ *
  *   The explanation is attached to its row and folded away. Every note used to
  *   be dumped into a single cell at the bottom — sixteen paragraphs under the
  *   word "Notes", so the rationale for the SKU ceiling sat four paragraphs from
@@ -680,6 +688,17 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
      under Ecommerce Growth, which is the one offer that is often headless. */
   const buildsAs = (o) => (o.tracks ? 'Theme or headless' : (track ? track(o.delivery_track) ?? o.delivery_track : null));
 
+  /* A row whose value is the same in every pack is not a comparison; it is one
+     fact about the offering, and three identical cells invite a reader to hunt
+     for a difference that is not there. Compared after `quantity`, so two cells
+     that differ only in prose the table does not print still count as the same.
+     A row where nothing is covered anywhere never reaches this — it has already
+     been filtered out. */
+  const sameEverywhere = (row) => {
+    const first = quantity(row.values?.[offers[0].code]);
+    return Boolean(first) && offers.every((o) => quantity(row.values?.[o.code]) === first);
+  };
+
   /* Only rows a pack includes something of. A row that is a dash in all three
      columns tells a reader nothing except that they should stop reading — its
      subject is an add-on service and it is sold below, rather than un-sold
@@ -701,8 +720,9 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
     <div className="table-scroll" role="region" tabIndex={0} aria-label="What each pack includes, and up to what limit">
       <table className="compare packs">
         <caption className="sr-only">
-          What each pack includes, and up to what limit. A dash means the pack includes none of that row;
-          what can be bought on top is listed under Add-on services, after this table.
+          What each pack includes, and up to what limit. A dash means the pack includes none of that row.
+          A cell marked &ldquo;Every pack&rdquo; spans the three pack columns and holds the same value in
+          all of them. What can be bought on top is listed under Add-on services, after this table.
         </caption>
         <thead>
           <tr>
@@ -770,7 +790,26 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
                     </details>
                   ) : null}
                 </th>
-                {offers.map((o) => {
+                {sameEverywhere(row) ? (
+                  /* More than half these rows hold the same value in all three
+                     packs, and printed three times they read as a comparison
+                     that found no difference — three columns of attention spent
+                     on one fact, diluting the rows where the packs genuinely
+                     differ. Stated once, across the three columns, the table
+                     gets a rhythm a reader can use: three values means choose,
+                     one band means it does not matter which pack you are in.
+                     Nothing moves and nothing hides — the subject stays in the
+                     group the reader looked for it in, which is why several of
+                     these rows exist at all.
+                     The tag is text and carries a trailing space, because an
+                     inline element boundary is not a word boundary in the
+                     accessibility tree: without it this announces as
+                     "Every packUp to 1 store". */
+                  <td colSpan={offers.length} data-label="Every pack" className="pack-yes pack-every">
+                    <span className="pack-every-tag">Every pack</span>{' '}
+                    {quantity(row.values?.[offers[0].code])}
+                  </td>
+                ) : offers.map((o) => {
                   const value = quantity(row.values?.[o.code]);
                   return (
                     <td key={o.code} data-label={o.code} className={value ? 'pack-yes' : 'pack-no'}>

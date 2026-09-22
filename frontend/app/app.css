@@ -1736,6 +1736,25 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .pack-gets td { font-size: 0.95rem; line-height: 1.45; }
 .pack-gets .pack-yes { color: var(--ink); }
 .pack-gets .pack-no { color: var(--line-strong); }
+/* More than half the rows are identical in all three packs. Printed three times
+   they look like a comparison that came back empty, and they dilute the rows a
+   consultant is actually choosing between. Said once, spanning the three
+   columns, they give the table a rhythm that can be read at a glance:
+   three values means the pack matters, one band means it does not. The tag is
+   text, not a shade — the span is a layout cue and layout is not information a
+   screen reader or a printout can be trusted to carry. */
+.pack-gets .pack-every { background: var(--panel); }
+.pack-every-tag {
+  display: inline-block; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted); border: 1px solid var(--line-strong);
+  padding: 1px 6px; margin-right: 9px; vertical-align: 0.08em; white-space: nowrap;
+}
+@media (max-width: 560px) {
+  /* Stacked, the span is gone and only the tag is left to say it — which is the
+     bigger win on a phone: one line instead of the same sentence three times. */
+  .pack-gets .pack-every { background: none; }
+  .pack-gets .pack-every::before { content: none; }
+}
 
 /* ── Add-on services ─────────────────────────────────────────────────────────
    Deliberately not a table. The page's failure was three grids a reader could

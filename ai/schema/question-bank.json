@@ -8653,6 +8653,42 @@
       ]
     },
     {
+      "id": "Q9.1.6",
+      "subsection": "9.1",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "integer",
+      "text": "How many bespoke sections or blocks does the storefront need, beyond the ones the theme already has?",
+      "help": "A section designed and built for you — not one of the theme's own, configured. Count the distinct ones, not how many pages use them.",
+      "maps_to": [
+        "/design/bespoke_sections"
+      ],
+      "feeds": [
+        "gate:storefront_design"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Sections and blocks in a theme",
+            "plan": "basic",
+            "plan_note": "25 sections per template or section group, 50 blocks per section",
+            "docs": "https://shopify.dev/docs/storefronts/themes/architecture/sections"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-23",
+          "source": "shopify.dev"
+        }
+      },
+      "teach": {
+        "why": "The one question here with a count rather than a yes, and it decides how the storefront prices. A handful of bespoke sections is a designed storefront on a theme; past that the work is the full template set and prices as one. Shopify's own ceiling is far higher, so this line is ours, not the platform's.",
+        "limits": "Shopify allows 25 sections per template or section group and 50 blocks per section. A theme's existing sections do not count here; this is only what is designed and built new.",
+        "sources": [
+          "https://shopify.dev/docs/storefronts/themes/architecture/sections"
+        ]
+      }
+    },
+    {
       "id": "Q9.2.1",
       "subsection": "9.2",
       "priority": "required",

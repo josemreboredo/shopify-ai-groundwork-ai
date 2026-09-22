@@ -663,18 +663,27 @@
     {
       "id": "storefront_design",
       "label": "Storefront design",
-      "condition": "The storefront needs more than theme configuration: bespoke sections or blocks from a key-screens design (extended), or a full template set from a mapped design system (bespoke). Horizon with brand tokens is in every offer and does not fire.",
+      "condition": "The storefront needs more than theme configuration: bespoke sections or blocks from a key-screens design (extended), or a full template set from a mapped design system (bespoke). More bespoke sections than the offering builds is the full template set in all but name and prices as the bespoke tier. Horizon with brand tokens is in every offer and does not fire.",
       "inputs": [
         "/design/figma/completeness",
         "/design/custom_design",
         "/design/figma/design_system",
-        "/design/figma/mapped_to_sections"
+        "/design/figma/mapped_to_sections",
+        "/design/bespoke_sections"
       ],
       "modifier": null,
       "modifier_tiers": [
         "extended",
         "bespoke"
       ],
+      "platform_limit": {
+        "what": "Sections per template or section group",
+        "shopify": 25,
+        "shopify_plus": 25,
+        "merkle_line": 3,
+        "source": "https://shopify.dev/docs/storefronts/themes/architecture/sections",
+        "note": "Ours is the tighter number by a long way, and deliberately: the platform's 25 is what a template can hold, while 3 is what an offer builds before the work is a full template set. The engine reads merkle_line from here, so the page, the classifier and this file cannot disagree about it."
+      },
       "sources": [
         "https://shopify.dev/docs/storefronts/themes/architecture",
         "https://shopify.dev/docs/storefronts/themes/architecture/sections",
@@ -1998,6 +2007,11 @@
       "rationale": "The migration effort (data transfer, redirect mapping) is the same whatever the source; strategy.md's four platforms are examples"
     },
     {
+      "question": "M cannot hold a WooCommerce migration and a 10,000-URL redirect estate at the same time",
+      "decision": "Accepted, 2026-09-23. The band is not being recalibrated and the SEO row keeps its 10,000 URLs: an engagement that wants both is quoted on top, the same as any other overflow",
+      "rationale": "Measured, not assumed: the migration alone uses 8.75 of the 9 gate weeks M's band carries, so the redirect estate cannot also come out of it. Two things make this liveable rather than a defect — the overflow is priced correctly when it happens (the engine adds it to the quote rather than swallowing it), and the pair is uncommon enough that narrowing what M promises would cost more deals than it protects. Recorded here because it was found twice: nothing in the closed_scope limits fixture carries an SEO field, so no test holds it, and the next person to measure M's band will find the same 8.75 and think it is new"
+    },
+    {
       "question": "Multi-currency gate has no modifier",
       "decision": "Uses +Markets",
       "rationale": "Multi-currency set-up is Shopify Markets configuration work; it only matters as a modifier when it is the single active gate"
@@ -2657,6 +2671,7 @@
         "languages": 3,
         "b2b": false,
         "storefront": "brand_only",
+        "bespoke_sections": 0,
         "sku_count": 400,
         "integrations": 0,
         "retail_locations": 0,
@@ -2669,6 +2684,7 @@
         "languages": 4,
         "b2b": false,
         "storefront": "key_screens",
+        "bespoke_sections": 3,
         "sku_count": 2000,
         "integrations": 1,
         "retail_locations": 0,

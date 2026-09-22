@@ -2948,6 +2948,11 @@
         "custom_design": {
           "type": "boolean"
         },
+        "bespoke_sections": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How many bespoke sections or blocks the storefront needs beyond the theme's own — sections that are designed and built rather than configured. A handful is the extended design tier; past the line the offering sells, the work is effectively a full template set and prices as the bespoke tier. Shopify's own ceiling is 25 sections per template."
+        },
         "headless_required": {
           "type": "boolean"
         },

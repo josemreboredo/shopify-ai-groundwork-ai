@@ -2191,6 +2191,11 @@
 - [ ] Yes
 - [ ] No
 
+**Q9.1.6** — Combien de sections ou de blocs sur mesure la vitrine nécessite-t-elle, au-delà de ceux que le thème possède déjà ? *(recommended)*
+*Une section conçue et construite pour vous — pas une des sections du thème, simplement configurée. Comptez les sections distinctes, pas le nombre de pages qui les utilisent.*
+
+> Answer:
+
 ### 9.2 Vitrine
 
 **Q9.2.1** — Une vitrine headless est-elle exigée (Hydrogen, un autre framework, ou le front d'une application native) ? *(required)*

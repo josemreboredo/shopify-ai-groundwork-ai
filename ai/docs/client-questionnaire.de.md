@@ -2191,6 +2191,11 @@
 - [ ] Yes
 - [ ] No
 
+**Q9.1.6** — Wie viele eigens gestaltete Abschnitte oder Blöcke braucht der Storefront über die des Themes hinaus? *(recommended)*
+*Ein Abschnitt, der für Sie entworfen und gebaut wird — nicht einer der Abschnitte des Themes, nur konfiguriert. Zählen Sie die unterschiedlichen, nicht wie viele Seiten sie verwenden.*
+
+> Answer:
+
 ### 9.2 Storefront
 
 **Q9.2.1** — Wird ein Headless-Storefront benötigt (Hydrogen, ein anderes Framework oder das Frontend einer nativen App)? *(required)*

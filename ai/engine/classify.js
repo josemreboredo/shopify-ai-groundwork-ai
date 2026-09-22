@@ -13,6 +13,17 @@ import { picked } from './values.js';
 const COUNTED = new Set(offering.integration_definition.counted_categories);
 const NON_MIGRATION_SOURCES = new Set(['none', 'shopify']);
 
+/*
+ * Bespoke sections an offer builds before the work is a full template set.
+ *
+ * Read from the gate rather than written here. The offering page states this
+ * number to a client and the classifier has to enforce the same one — a
+ * second copy in this file is how "up to 3 bespoke sections" came to be
+ * printed for months while the engine counted nothing at all.
+ */
+export const BESPOKE_SECTIONS_INCLUDED = offering.scope_gates
+  .find((g) => g.id === 'storefront_design').platform_limit.merkle_line;
+
 /**
  * How much of a project a migration is, by where the data is coming from.
  *
@@ -334,18 +345,43 @@ const GATE_EVALUATORS = {
    * the same band, and the second is three to five weeks more. Horizon plus
    * tokens is in every offer, so `brand_only` and `none` do not fire.
    */
+  /*
+   * How much of the storefront is designed, and how much of it is configured.
+   *
+   * The count is the part that used to be missing. "Up to 3 bespoke sections"
+   * was printed on the offering page for months and nothing anywhere enforced
+   * it: the gate read three booleans about Figma and no number, so a client
+   * asking for ten bespoke sections classified and priced exactly like one
+   * asking for three. A promise the engine cannot see is a promise it cannot
+   * keep, which is the whole reason this file and that page are tested
+   * against each other.
+   *
+   * Past the line, the tier moves rather than a surcharge accruing: building
+   * more bespoke sections than that is the full template set in all but name,
+   * and it is already priced as one. Shopify's own ceiling (25 sections per
+   * template) sits far above ours and is recorded on the gate, so the page
+   * can say which of the two numbers a reader is looking at.
+   */
   storefront_design: (doc) => {
     const d = doc.design ?? {};
     const completeness = d.figma?.completeness;
+    const sections = d.bespoke_sections ?? 0;
+    const overSectionLine = sections > BESPOKE_SECTIONS_INCLUDED;
     // Bespoke is the full template set, and a mapped design system is the
     // signal that it is meant to be built as theme blocks rather than traced.
-    const bespoke = completeness === 'all_templates' || (d.custom_design === true && d.figma?.design_system === true);
-    const extended = completeness === 'key_screens' || d.custom_design === true;
+    const bespoke = completeness === 'all_templates'
+      || (d.custom_design === true && d.figma?.design_system === true)
+      || overSectionLine;
+    const extended = completeness === 'key_screens' || d.custom_design === true || sections > 0;
     const tier = bespoke ? 'bespoke' : extended ? 'extended' : null;
     const why = bespoke
-      ? completeness === 'all_templates' ? 'a full template set in Figma' : 'bespoke design with a design system'
+      ? completeness === 'all_templates' ? 'a full template set in Figma'
+        : overSectionLine ? `${sections} bespoke sections, past the ${BESPOKE_SECTIONS_INCLUDED} an offer builds`
+          : 'bespoke design with a design system'
       : extended
-        ? completeness === 'key_screens' ? 'key screens designed in Figma' : 'bespoke design elements'
+        ? completeness === 'key_screens' ? 'key screens designed in Figma'
+          : sections > 0 ? `${sections} bespoke section${sections === 1 ? '' : 's'}`
+            : 'bespoke design elements'
         : 'theme configuration only';
     return {
       active: Boolean(tier),

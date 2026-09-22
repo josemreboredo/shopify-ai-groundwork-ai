@@ -8,7 +8,7 @@ import fs   from 'node:fs';
 import path from 'node:path';
 
 import { offering } from '../../schema/index.js';
-import { classifyOffer, IMPLEMENTED_GATES, IMPLEMENTED_TRIGGERS } from '../../engine/classify.js';
+import { classifyOffer, IMPLEMENTED_GATES, IMPLEMENTED_TRIGGERS, BESPOKE_SECTIONS_INCLUDED } from '../../engine/classify.js';
 import { evaluateExits, IMPLEMENTED_RULES, RETAIL_STORES_INCLUDED } from '../../engine/exits.js';
 
 const FIXTURES = path.join(import.meta.dirname, '..', 'fixtures', 'engagements');
@@ -565,6 +565,35 @@ describe('the offer follows the effort, not the gate count', () => {
     const six = classifyOffer({ ...base(), ...langs('de', 'fr', 'it', 'en', 'es', 'pt') });
     assert.ok(six.price_band.max > four.price_band.max,
       `six languages (${six.price_band.max}) must cost more than four (${four.price_band.max})`);
+  });
+
+  test('the bespoke sections an offer builds is a real ceiling, not a sentence on a page', () => {
+    /*
+     * "Up to 3 bespoke sections" was printed on the offering page while the
+     * gate read three booleans about Figma and no number at all: ten sections
+     * classified and priced exactly like three. The claim was found by
+     * checking the page against the classifier rather than by reading it.
+     *
+     * The line is read from the gate's own platform_limit, so this test
+     * follows the offering if the number ever moves — asserting the literal 3
+     * would pass a page that says 3 and an engine that enforces 8.
+     */
+    const at = (n) => classifyOffer({ ...base(), design: { bespoke_sections: n } }).scope_gates.storefront_design;
+    const line = BESPOKE_SECTIONS_INCLUDED;
+
+    assert.equal(at(0).active, false, 'the theme’s own sections are in every offer');
+    assert.equal(at(1).tier, 'extended', 'one designed section is a designed storefront, not a template set');
+    assert.equal(at(line).tier, 'extended', `${line} is the most an offer builds at the extended tier`);
+    assert.equal(at(line + 1).tier, 'bespoke', 'one past the line is the full template set in all but name');
+    assert.match(at(line + 1).evidence, new RegExp(`${line + 1} bespoke sections`), 'and it says so with the number');
+
+    // Past the line costs more, or the tier moved for nothing.
+    const cost = (n) => classifyOffer({ ...base(), design: { bespoke_sections: n } }).price_band.max;
+    assert.ok(cost(line + 1) > cost(line), `${line + 1} sections must cost more than ${line}`);
+
+    // Ours is the tighter number on purpose; Shopify's own ceiling is far above it.
+    const limit = offering.scope_gates.find((g) => g.id === 'storefront_design').platform_limit;
+    assert.ok(limit.merkle_line < limit.shopify, 'the offering sells inside the platform, not at its edge');
   });
 
   test('hiding, renaming or reordering payment methods is a checkout Function, priced like one', () => {

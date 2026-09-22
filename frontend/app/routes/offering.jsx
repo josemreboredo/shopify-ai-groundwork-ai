@@ -108,8 +108,9 @@ export default function Offering({ loaderData }) {
         <h2>What each pack includes, and up to what limit</h2>
         <p className="lede">
           One row per subject the discovery asks about, one column per pack, and the number in the cell is
-          the most that pack holds. A dash means the pack includes none of it — what can be bought on top
-          is the section after this one, with its own scope and its own cost.
+          the most that pack holds. Three values means the packs differ and the choice matters; one value
+          across the three columns means the subject is the same whichever pack you are in. A dash means
+          the pack includes none of it — what can be bought on top is the section after this one.
         </p>
         <PackTable
           offers={view.offers}

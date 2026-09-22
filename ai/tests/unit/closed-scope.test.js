@@ -44,7 +44,10 @@ function engagementAt(limits) {
     // A pack that promises complex variants has to be built with them, or the
     // catalogue gate never fires and the test proves the wrong engagement.
     catalogue: { sku_count: limits.sku_count, variant_options_max: limits.variant_options ?? 1 },
-    design: { figma: { completeness: limits.storefront } },
+    /* A pack that promises N bespoke sections has to be built with N of them,
+       for the same reason as the variants above: the number went unenforced
+       for months precisely because nothing built an engagement that took it. */
+    design: { figma: { completeness: limits.storefront }, ...(limits.bespoke_sections === undefined ? {} : { bespoke_sections: limits.bespoke_sections }) },
     integrations: Array.from({ length: limits.integrations }, (_, i) => ({
       system: `sys${i}`, category: ['erp', 'pim', 'crm'][i], connector: 'custom', status: 'to_build', test_environment: 'available',
     })),

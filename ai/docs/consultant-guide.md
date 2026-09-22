@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 125 of 307 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 126 of 308 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -2965,6 +2965,20 @@ Drives: gate Storefront design
 |---|---|---|
 | Theme with brand customisation | Shortest route to launch; marketing restructures pages in the theme editor; theme app extensions install with no code | Layout is constrained by theme architecture; a distinctive design may need custom sections anyway |
 | Fully custom design | Unconstrained visual and interaction design | Custom sections to build and maintain; every merchant-editable area has to be designed as a setting or it becomes a developer ticket |
+
+**Q9.1.6** — How many bespoke sections or blocks does the storefront need, beyond the ones the theme already has? *(recommended · client)*
+Drives: gate Storefront design
+
+**Why it matters.** The one question here with a count rather than a yes, and it decides how the storefront prices. A handful of bespoke sections is a designed storefront on a theme; past that the work is the full template set and prices as one. Shopify's own ceiling is far higher, so this line is ours, not the platform's.
+
+**Limits.** Shopify allows 25 sections per template or section group and 50 blocks per section. A theme's existing sections do not count here; this is only what is designed and built new.
+
+Sources: https://shopify.dev/docs/storefronts/themes/architecture/sections
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Sections and blocks in a theme | Basic | 25 sections per template or section group, 50 blocks per section | https://shopify.dev/docs/storefronts/themes/architecture/sections |
+*Verified 2026-09-23 against shopify.dev (undefined).*
 
 ### 9.2 Storefront
 

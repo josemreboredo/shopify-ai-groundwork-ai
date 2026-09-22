@@ -2191,6 +2191,11 @@
 - [ ] Yes
 - [ ] No
 
+**Q9.1.6** — How many bespoke sections or blocks does the storefront need, beyond the ones the theme already has? *(recommended)*
+*A section designed and built for you — not one of the theme's own, configured. Count the distinct ones, not how many pages use them.*
+
+> Answer:
+
 ### 9.2 Storefront
 
 **Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required)*
