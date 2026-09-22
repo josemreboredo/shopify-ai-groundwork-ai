@@ -11,11 +11,12 @@
   --muted: #5d5d72;
   --line: #d6d6df;
   --line-soft: #e8e8ed;
+  --line-strong: #8a8a99;
   --panel: #f2f2f4;
   --accent: #0328d1;
   --red: #dd3039;
   --red-ink: #a72532;
-  --ok: #0f7a52;
+  --ok: #0c6342;
   --warn: #8a5a00;
   --stop: var(--red-ink);
   --page: 1280px;
@@ -24,7 +25,15 @@
   color: var(--ink);
   background: #fff;
 }
+/* Colour means one thing at a time.
+   --red is the Merkle mark: wedges, the rule under a heading, the active
+   underline, the focus ring. It is never a state and never a category.
+   State colours a surface, and only these: --ok settled, --warn waiting on a
+   decision, --stop stopped or lost, --line-strong in progress with nothing
+   wrong. Category — a bid against an engagement — is navy against grey,
+   as the process badges draw it. */
 * { box-sizing: border-box; }
+html { overflow-x: clip; }
 body { margin: 0; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: clip; }
 
 /* Type */
@@ -37,14 +46,14 @@ main h2:not(.plain)::before {
   background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: var(--line); }
-a:hover { color: var(--red); text-decoration-color: var(--red); }
+a:hover { color: var(--red-ink); text-decoration-color: var(--red-ink); }
 :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .muted { color: var(--muted); font-size: 0.9rem; }
 .error { color: var(--stop); }
 .errors { color: var(--stop); margin: 10px 0; padding: 10px 12px 10px 28px; background: rgba(221, 48, 57, 0.06); list-style-position: outside; }
 .eyebrow {
   display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red);
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red-ink);
 }
 .eyebrow::before { content: ''; width: 10px; height: 10px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 
@@ -64,6 +73,8 @@ a:hover { color: var(--red); text-decoration-color: var(--red); }
 }
 .topnav a:hover::after, .topnav a:focus-visible::after, .topnav a.active::after { transform: scaleX(1); }
 .topnav a:hover { color: #fff; }
+/* Desktop shows the links themselves; the button only exists on a phone. */
+.menu-toggle { display: none; }
 .user { margin-left: auto; display: flex; gap: 16px; align-items: center; color: rgba(255, 255, 255, 0.75); font-size: 0.78rem; }
 .user .who { letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
 .cta {
@@ -80,7 +91,14 @@ a:hover { color: var(--red); text-decoration-color: var(--red); }
 /* Page shell */
 main { padding: 36px var(--gutter) 64px; max-width: var(--page); margin: 0 auto; }
 main.narrow { --page: 520px; }
-main > p, main > ol li, main > ul li { max-width: 92ch; }
+/* The measure. 92ch rendered at about 101 characters a line, which is half
+   again the width a reader tracks comfortably — and it is why the same vertical
+   rhythm reads loose here and tight on a page set to 68. */
+main p, main ol li, main ul li { max-width: 72ch; }
+/* Measured, not assumed: paragraphs nested in a section escaped the direct-child
+   selector and ran the full 1216px — 96 characters a line against the 74 of the
+   pages that read well. Cells and rows set their own width. */
+main td p, main th p, main .table-scroll p, main .record-cards p { max-width: none; }
 li::marker { color: var(--red); }
 
 /* Black band for the page statement, full bleed as on merkle.com */
@@ -97,6 +115,18 @@ li::marker { color: var(--red); }
 .page-head .page-meta { margin: 16px 0 0; color: rgba(255, 255, 255, 0.55); font-size: 0.8rem; letter-spacing: 0.02em; }
 .page-head:has(.tabs), .page-head:has(.wayfinder) { padding-bottom: 0; }
 
+/* Links on the black bands. They inherited the ink colour — #101223 on #000,
+   about 1.1:1 — so they were present, clickable and invisible. White text with
+   a dimmed underline that turns red on hover keeps the brand's link behaviour
+   without borrowing a colour that cannot carry body text on black. */
+.page-head a, .band.dark a, .signin-hero a, .l-triggers a, .decide a, .site-footer a {
+  color: #fff; text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+.page-head a:hover, .band.dark a:hover, .signin-hero a:hover,
+.l-triggers a:hover, .decide a:hover, .site-footer a:hover {
+  color: #fff; text-decoration-color: var(--red); text-decoration-thickness: 2px;
+}
+
 /* Tabs */
 .tabs { display: flex; gap: 30px; margin: 28px 0 0; border-bottom: 1px solid var(--line); }
 .tabs a {
@@ -112,12 +142,25 @@ li::marker { color: var(--red); }
 
 /* Surfaces */
 .layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr); gap: 28px; align-items: start; }
+/* The engine's reading moved to "Where it stands", so the interview is one
+   column: a table question with eight fields was wrapping at 60% of the screen
+   to leave room for a panel restating what that page says in full. */
+.layout.alone { grid-template-columns: minmax(0, 1fr); }
+.moved { margin: 0 0 16px; padding: 10px 14px; border-left: 3px solid var(--red); background: var(--panel); font-size: 0.95rem; }
+.moved strong { font-weight: 600; }
+
+.engine-readout { background: var(--panel); border-top: 3px solid var(--red); padding: 22px 24px 24px; margin-top: 34px; }
+.engine-readout h2 { margin-top: 0; }
+.engine-readout h3 { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 22px 0 8px; }
+.engine-readout ul { padding-left: 0; list-style: none; margin: 4px 0; }
+.engine-readout li { margin: 5px 0; font-size: 0.9rem; padding-left: 16px; position: relative; }
+.engine-readout li::before { content: ''; position: absolute; left: 0; top: 8px; width: 7px; height: 7px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 .card { border: 1px solid var(--line); border-radius: 0; padding: 26px 28px; margin-bottom: 20px; background: #fff; }
 .card > * + * { margin-top: 14px; }
 .card > p + p { margin-top: 8px; }
 .card > *:first-child { margin-top: 0; }
 .card > *:last-child { margin-bottom: 0; }
-.card p, .card li { max-width: 92ch; }
+.card p, .card li { max-width: 72ch; }
 .card .meta { font-size: 0.74rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
 .card h2 { margin-top: 0; }
 .card .errors { margin: 10px 0; }
@@ -131,6 +174,10 @@ li::marker { color: var(--red); }
 .panel li { margin: 5px 0; font-size: 0.88rem; padding-left: 16px; position: relative; }
 .panel li::before { content: ''; position: absolute; left: 0; top: 8px; width: 7px; height: 7px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 .callout { background: var(--panel); border-left: 3px solid var(--red); padding: 12px 16px; margin: 12px 0; }
+/* The same callout inside the dark page head: --panel is a light grey, so on
+   black it rendered dark text on a dark ground and simply could not be read. */
+.page-head .callout { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.page-head .callout strong { color: #fff; }
 .teach { background: var(--panel); border-left: 3px solid var(--navy); padding: 12px 16px; margin: 12px 0; font-size: 0.92rem; }
 .teach > summary { cursor: pointer; font-weight: 700; }
 .teach table { margin: 8px 0; }
@@ -148,14 +195,15 @@ button.secondary, a.button.secondary { background: transparent; color: #000; fon
 button.secondary:hover, a.button.secondary:hover { background: #000; border-color: #000; color: #fff; }
 button:disabled { opacity: 0.4; cursor: default; }
 button:disabled:hover { background: #000; border-color: #000; }
-button.link {
-  border: none; background: none; color: var(--ink); padding: 0; font-size: 0.9rem; font-weight: 500;
-  letter-spacing: 0; text-transform: none; text-decoration: underline; text-underline-offset: 3px;
-}
-button.link:hover { background: none; color: var(--red); }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 18px 0; }
-input, select, textarea { font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 0; width: 100%; background: #fff; color: var(--ink); }
-input:focus, select:focus, textarea:focus { border-color: #000; outline: none; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08); }
+input, select, textarea { font: inherit; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 0; width: 100%; background: #fff; color: var(--ink); }
+input:focus, select:focus, textarea:focus { border-color: #000; box-shadow: none; }
+/* `input:focus` outranked the global `:focus-visible`, so a keyboard user got a
+   1.14:1 shadow — and on the bordered checkbox, nothing at all. */
+input:focus-visible, select:focus-visible, textarea:focus-visible,
+.table-scroll:focus-visible, .table-input:focus-visible {
+  outline: 2px solid var(--red); outline-offset: 2px;
+}
 input[type='checkbox'], input[type='radio'] { width: auto; accent-color: var(--red); }
 textarea { min-height: 70px; }
 .field { margin: 12px 0; }
@@ -166,14 +214,20 @@ textarea { min-height: 70px; }
 
 /* Data */
 table { border-collapse: collapse; width: 100%; }
+td, .muted, .pre { overflow-wrap: anywhere; }
 th, td { text-align: left; padding: 11px 10px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
 th { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 2px solid #000; }
 tbody tr:hover { background: rgba(0, 0, 0, 0.015); }
 td a { font-weight: 600; }
 .badge {
-  display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 3px 9px; border-radius: 0; border: 1px solid var(--line); color: var(--muted); margin-right: 4px;
+  display: inline-flex; align-items: center; min-height: 22px; white-space: nowrap;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 0; border: 1px solid var(--line-strong); color: var(--muted); margin-right: 4px;
 }
+/* A badge that follows a sentence needs air in front of it. Without this it butts
+   straight against the last word and, being inline-flex on a taller line box,
+   sits over it. */
+.badge:not(:first-child) { margin-left: 8px; }
 .badge.go { color: var(--ok); border-color: var(--ok); background: rgba(15, 122, 82, 0.08); }
 .badge.stop { color: var(--stop); border-color: var(--stop); background: rgba(221, 48, 57, 0.08); }
 .badge.flag, .badge.warn, .badge.provisional { color: var(--warn); border-color: var(--warn); background: rgba(138, 90, 0, 0.08); }
@@ -182,9 +236,29 @@ td a { font-weight: 600; }
 .table-input table { min-width: 100%; margin-bottom: 8px; }
 .table-input td { padding: 4px; min-width: 120px; }
 .table-input th { white-space: nowrap; }
+/* Accordions. Every <details> in the app carries the same marker — + closed,
+   − open, hard right, on the first line — and never the browser's triangle,
+   which is a different shape on every platform and none of them square. It is
+   one rule and not a per-component decision, so a new accordion is marked the
+   moment it is written: the home page's "New" fold was built without one and
+   read as a heading nobody could open.
+   The marker is currentColor at 55%, so it sits correctly on a black band as
+   well as on white, and it turns red with the summary on hover because it is
+   the same word being pointed at. It is positioned out of flow, so a summary
+   can be flex, grid or plain text and the marker lands in the same place. */
 details { margin: 16px 0; }
 main > details { margin: 20px 0; }
-details summary { cursor: pointer; color: var(--ink); font-size: 0.9rem; font-weight: 600; padding: 4px 0; }
+details summary {
+  position: relative; cursor: pointer; color: var(--ink); font-size: 0.9rem; font-weight: 600;
+  padding: 4px 1.9rem 4px 0; list-style: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::after {
+  content: '+'; position: absolute; right: 0; top: 4px;
+  font-size: 1.3em; line-height: 1.3; font-weight: 400; color: inherit; opacity: 0.55;
+}
+details[open] > summary::after { content: '−'; }
+details summary:hover::after, details summary:focus-visible::after { opacity: 1; }
 details summary:hover { color: var(--red); }
 details[open] > summary { margin-bottom: 10px; }
 details.card > summary { font-size: 0.95rem; }
@@ -202,10 +276,54 @@ details.card[open] > summary { margin-bottom: 12px; }
 
 .filter { display: flex; gap: 8px; flex-wrap: wrap; }
 .filter button { font-size: 0.74rem; padding: 8px 16px; }
+.filter button[aria-pressed='true'] { background: var(--ink); color: #fff; border-color: var(--ink); }
 .mode-form { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 .mode-form label { white-space: nowrap; }
 .mode-form select { width: auto; }
 @media (max-width: 760px) { .mode-form { margin-left: 0; width: 100%; } }
+
+/* One card per record, phones only — the table stays the desk instrument. */
+.record-cards { display: none; }
+.record-cards li { border: 1px solid var(--line); border-left: 3px solid var(--line-strong); padding: 14px 16px; background: #fff; }
+.record-cards li.tone-go { border-left-color: var(--ok); }
+.record-cards li.tone-flag { border-left-color: var(--warn); }
+.record-cards li.tone-stop { border-left-color: var(--stop); }
+.record-cards p { margin: 0; }
+.record-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.record-top a { font-size: 1.15rem; font-weight: 700; text-decoration: none; letter-spacing: -0.01em; }
+.record-top a:hover { color: var(--red); }
+.record-what { margin-top: 8px !important; font-size: 0.92rem; }
+.record-progress { margin-top: 6px !important; font-size: 0.92rem; }
+.record-meta { margin-top: 8px !important; color: var(--muted); font-size: 0.8rem; }
+
+/* Submitting only disabled the button, so a slow save looked like a freeze. */
+form[aria-busy='true'] { position: relative; }
+form[aria-busy='true'] button[type='submit'] { opacity: 0.75; }
+button[type='submit'][aria-disabled='true'] { cursor: progress; }
+
+.sections { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.sections a {
+  display: inline-flex; align-items: center; min-height: 34px; padding: 4px 12px;
+  border: 1px solid var(--line-strong); text-decoration: none;
+  font-size: 0.78rem; font-weight: 600; color: var(--muted); background: #fff;
+}
+.sections a.active, .sections a[aria-current='true'] {
+  border-color: #000; color: #fff; background: var(--ink);
+}
+/* A filter that is on says so in words, not only as a chip with a darker edge. */
+.filtered-by {
+  margin: 0 0 16px; padding: 8px 12px; border-left: 3px solid var(--red);
+  background: var(--panel); font-size: 0.92rem;
+}
+.filtered-by strong { letter-spacing: -0.01em; }
+.sections a:hover { border-color: var(--red); color: var(--red-ink); }
+
+.just-recorded > td { background: rgba(12, 99, 66, 0.08); box-shadow: inset 3px 0 0 var(--ok); }
+
+/* The engine's own wording, kept and available, but not the first thing read. */
+.rule-exact { margin-top: 6px; }
+.rule-exact > summary { font-size: 0.78rem; color: var(--muted); cursor: pointer; }
+.rule-exact p, .rule-exact span { font-size: 0.86rem; margin: 6px 0 0; display: block; }
 
 /* Deleting an engagement: out of the way, and it asks for the slug back */
 details.danger { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
@@ -230,7 +348,7 @@ button.destructive:hover { background: #000; border-color: #000; }
 
 /* Pre-filling from the client's documents: the step that has to start in Claude */
 .card.prefill { border-left: 4px solid var(--red); padding-top: 16px; padding-bottom: 16px; }
-details.card.prefill > summary { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; list-style-position: outside; }
+details.card.prefill > summary { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 16px; }
 .prefill-title { font-weight: 700; color: var(--ink); }
 .prefill-status { font-weight: 500; font-size: 0.85rem; }
 details.card.prefill[open] > summary { margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line-soft); }
@@ -241,7 +359,20 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
 .card .small { font-size: 0.8rem; }
 
 /* The offering page */
-.table-scroll { overflow-x: auto; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.table-scroll > table { width: max-content; min-width: 100%; max-width: none; }
+/* A table of sentences has no natural width, so `max-content` let Review render
+   3,103px inside a 1,216px container and put Confirm and Edit off-screen — and
+   the clip on the viewport meant page scroll could not reach them. Prose columns
+   get a measure; the row's actions never leave the screen. */
+.answers-table .row-actions { white-space: nowrap; }
+@media (min-width: 761px) {
+  /* At desk width the table fits the page and the prose columns take a measure,
+     so the row's actions never leave the screen. Below that it goes back to
+     being a scroller, where a capped column only makes it taller. */
+  .table-scroll > .answers-table { width: 100%; table-layout: auto; }
+  .answers-table th, .answers-table td { max-width: 46ch; }
+}
 .chip { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
 .offering .small { font-size: 0.8rem; }
 
@@ -262,12 +393,35 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
 .ticks li::before { content: ''; position: absolute; left: 0; top: 7px; width: 8px; height: 8px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 
 /* 2 — the decision, as four lines on black */
-.decide { list-style: none; counter-reset: q; padding: 0; margin: 32px 0 0; display: grid; gap: 0; }
-.decide li { counter-increment: q; display: grid; grid-template-columns: 44px minmax(0, 1fr) 40px 64px; align-items: center; gap: 12px; padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, 0.16); }
-.decide li::before { content: counter(q, decimal-leading-zero); color: var(--red); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em; }
+/* Four questions, and the rule is that it stops at the first yes. A numbered
+   list shows four equal things; the chain shows the order and the stopping.
+   Drawn on the real list, so the question is inside the picture. */
+.decide { list-style: none; counter-reset: q; padding: 0; margin: 32px 0 0; display: grid; gap: 0; position: relative; }
+.decide li {
+  counter-increment: q; position: relative;
+  display: grid; grid-template-columns: 44px minmax(0, 1fr) 40px 64px; align-items: center; gap: 12px;
+  padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+.decide li::before {
+  content: counter(q, decimal-leading-zero); color: var(--red); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.1em;
+  padding-left: 22px;
+}
+/* the dot on the chain, and the thread on to the next question */
+.decide li::after {
+  content: ''; position: absolute; left: 3px; top: 50%; width: 11px; height: 11px;
+  margin-top: -5.5px; background: var(--red);
+}
+.decide li:not(:last-child) .decide-q::before {
+  content: ''; position: absolute; left: 8px; top: calc(50% + 6px); bottom: -18px; width: 1px;
+  background: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.45) 0 3px, transparent 3px 7px);
+}
 .decide-q { color: #fff; font-size: 1.08rem; }
 .decide-arrow { color: var(--red); font-size: 1.3rem; text-align: center; }
 .decide-a { font-size: 2rem; font-weight: 700; color: #fff; line-height: 1; }
+/* What happens after the ladder has picked the offer. Dimmer than the rule
+   itself, because it is the sentence a consultant reads second. */
+.decide-note { margin: 28px 0 0; max-width: 68ch; color: rgba(255, 255, 255, 0.78); font-size: 0.95rem; line-height: 1.6; }
+.decide-note strong { color: #fff; font-weight: 600; }
 
 /* 3 — the gates as cards */
 .gate-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 24px; }
@@ -291,8 +445,23 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
 .ladder li::before { content: counter(rung); font-size: 0.78rem; font-weight: 700; color: var(--red); letter-spacing: 0.1em; }
 .ladder li span { color: var(--muted); font-size: 0.86rem; }
 table.compare { background: #fff; }
-table.compare th[scope="row"] { vertical-align: top; width: 64px; }
+/* 64px is right for a row header that is the letter S, and wrong for every
+   other one. Left unscoped it also hit the epic table, where the stacked-card
+   rule turns `th` into a block: at 390px all sixteen epic names were squeezed
+   into a 64px box and clipped — "Markets & internationalisation" is 184px of
+   text in it. Measured, both before and after. */
+table.compare.offer-approach th[scope="row"] { vertical-align: top; width: 64px; }
 table.compare td { font-size: 0.9rem; }
+/* The shared scroller sizes a table to its content. Four columns of real
+   sentences have no natural width, so this one rendered 3,440px inside a
+   1,216px container at 1440: half the comparison was off-screen behind a
+   horizontal scrollbar nobody finds. A fixed grid wraps instead, which is the
+   same fix the answers table already carries. Below 560px the stacked-card
+   rule takes over and one offer at a time is the right shape anyway. */
+@media (min-width: 561px) {
+  .table-scroll > .offer-approach { width: 100%; min-width: 0; max-width: 100%; table-layout: fixed; }
+  .offer-approach td { font-size: 0.86rem; line-height: 1.45; }
+}
 .plan-title { margin-top: 40px; }
 .plan-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 16px; }
 .plan-cols > div { background: #fff; padding: 18px 20px; }
@@ -356,7 +525,7 @@ main.signin + .site-footer { margin-top: 0; }
 /* Lead Consultant manual */
 /* Same grid and left edge as every other page; only the reading measure is
    narrower, and it stays aligned left rather than centred. */
-main.manual > *:not(.page-head) { max-width: 860px; }
+main.manual > *:not(.page-head) { max-width: 72ch; }
 main.manual li { margin: 5px 0; }
 main.manual code { background: var(--panel); padding: 1px 5px; font-size: 0.9em; overflow-wrap: anywhere; }
 main.manual h2 { scroll-margin-top: 12px; }
@@ -438,10 +607,15 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   .steps li { grid-template-columns: 52px minmax(0, 1fr); gap: 14px; }
 }
 
+/* Creating is the occasional act. It folds away; the list is the page. */
+.new-record { margin-bottom: 28px; }
+.new-record .doors { margin: 18px 0 0; }
+.new-record .door { border: 1px solid var(--line); border-top-width: 3px; }
+
 /* Two doors: you say what you are doing, nothing asks you to classify a record */
 .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 8px 0 44px; }
 .door { border: 1px solid var(--line); border-top: 3px solid var(--navy); padding: 26px 28px; background: #fff; }
-.door.rfp { border-top-color: var(--red); }
+.door.discovery { border-top-color: var(--line-strong); }
 .door-n { font-size: 0.74rem; letter-spacing: 0.1em; color: var(--muted); margin: 0 0 10px; }
 .door h2 { margin: 0 0 8px; font-size: 1.3rem; }
 .door > p { color: var(--muted); max-width: 46ch; margin: 0 0 20px; }
@@ -467,6 +641,8 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .steps-spine { display: flex; list-style: none; padding: 0; margin: 0; gap: 22px; flex: 1 1 auto; flex-wrap: wrap; }
 .views { margin-left: auto; flex: 0 0 auto; }
 .step-hint { max-width: 22ch; }
+/* Desktop shows the whole spine; the toggle is a phone control. */
+.spine-toggle { display: none; }
 .steps-spine a {
   position: relative; display: grid; grid-template-columns: auto 1fr; column-gap: 8px;
   padding: 10px 0 15px; text-decoration: none; color: rgba(255, 255, 255, 0.55);
@@ -477,8 +653,8 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 }
 .step-label { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .step-hint {
-  grid-column: 2; font-size: 0.74rem; font-weight: 400; letter-spacing: 0; text-transform: none;
-  color: rgba(255, 255, 255, 0.55); margin-top: 3px;
+  grid-column: 2; font-size: 0.82rem; font-weight: 400; letter-spacing: 0; text-transform: none;
+  color: rgba(255, 255, 255, 0.7); margin-top: 3px;
 }
 
 /* Two different things, so two different signals.
@@ -498,11 +674,14 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .steps-spine .current .step-n, .steps-spine a.active .step-n { color: #fff; }
 .steps-spine .current .step-hint, .steps-spine a.active .step-hint { color: rgba(255, 255, 255, 0.72); }
 
-/* The red wedge of the Merkle mark: it marks what is finished. */
-.steps-spine .done .step-n::before {
+/* The red wedge of the Merkle mark: it marks what is finished. Dimmed, it marks
+   a step that is met but still waiting on work earlier in the spine — which is
+   not the same as one nobody has started. */
+.steps-spine .done .step-n::before, .steps-spine .satisfied .step-n::before {
   content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 7px; vertical-align: 1px;
   background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
+.steps-spine .satisfied .step-n::before { background: rgba(221, 48, 57, 0.45); }
 .steps-spine .done a { color: rgba(255, 255, 255, 0.62); }
 
 /* Not steps: reference, and the one place the settings live */
@@ -522,6 +701,164 @@ main.story > section:last-of-type { margin-bottom: 72px; }
   content: ''; position: absolute; left: 0; top: 8px; width: 8px; height: 8px;
   background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
+
+/* The architect's position: one verdict, one why, and the ground under it.
+   It used to be a headline and an unlabelled list in which the sentence that
+   actually answered "why" sat third, weighing the same as "1 document read". */
+.card.position { border-left: 4px solid var(--muted); padding-bottom: 22px; }
+.card.position.go { border-left-color: var(--ok); }
+.card.position.flag { border-left-color: var(--warn); }
+.card.position.stop { border-left-color: var(--red); }
+.card.position .eyebrow { margin: 0 0 10px; }
+h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; text-transform: none; margin: 0 0 16px; max-width: 30ch; }
+/* The one sentence that decides it, set apart from what it rests on. */
+.why-line {
+  margin: 0 0 16px; padding-left: 16px; border-left: 3px solid var(--red);
+  font-size: 1.02rem; line-height: 1.5; max-width: 78ch;
+}
+.grounds { list-style: none; padding: 0; margin: 0 0 20px; }
+.grounds > li { position: relative; padding: 0 0 5px 18px; font-size: 0.9rem; color: var(--muted); max-width: 78ch; }
+.grounds > li::before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 1px; background: var(--muted); }
+.before { border-top: 1px solid var(--line); padding-top: 16px; }
+.before .eyebrow { margin-bottom: 8px; }
+
+/* The standfirst: one answer, the shape of the gap and what blocks it, read in
+   three seconds. Below it the page goes into detail; this part does not. */
+/* What an offer builds, counted. The template list reads as an inventory —
+   numbered, in columns, so the length is visible at a glance rather than as a
+   long scroll. */
+.storefront-scope { margin: 20px 0 0; }
+.templates { margin: 18px 0 14px; padding-left: 20px; columns: 2; column-gap: 40px; display: block; }
+.templates li { break-inside: avoid; margin-bottom: 7px; }
+@media (max-width: 720px) { .templates { columns: 1; } }
+
+/* What the engine quoted, set apart from the rest of the working state: it is
+   the one number on this page that leaves the room, so it does not sit in the
+   run of sections as though it were another count. */
+.quote { border: 1px solid var(--line); border-left: 3px solid var(--red); padding: 20px 24px; margin: 28px 0; }
+.quote h2 { margin-top: 0; }
+.quote > ul { margin-bottom: 8px; }
+.quote > .muted.small { max-width: 78ch; }
+.quote.provisional { border-left-color: var(--line-strong); }
+
+.standfirst { border-top: 3px solid var(--muted); padding: 26px 0 30px; margin-bottom: 8px; }
+.standfirst.go { border-top-color: var(--ok); }
+.standfirst.flag { border-top-color: var(--warn); }
+.standfirst.stop { border-top-color: var(--red); }
+h2.headline-answer {
+  font-size: clamp(1.6rem, 3vw, 2.3rem); line-height: 1.15; letter-spacing: -0.015em;
+  text-transform: none; margin: 0 0 26px; max-width: 24ch;
+}
+.standfirst-body { display: grid; grid-template-columns: minmax(240px, 1fr) 1.4fr; gap: 42px; align-items: start; }
+.dial-n { display: flex; align-items: baseline; gap: 8px; margin: 12px 0 6px; }
+.dial-n strong { font-size: 2.8rem; line-height: 1; letter-spacing: -0.02em; }
+.dial-n span { color: var(--muted); font-size: 1rem; }
+.dial-what { margin: 0; color: var(--muted); font-size: 0.84rem; line-height: 1.45; }
+
+/* What stops it, numbered, each one a place to go */
+.blocks { list-style: none; counter-reset: block; padding: 0; margin: 0; }
+.blocks > li {
+  counter-increment: block; display: grid; grid-template-columns: 2rem 1fr; gap: 4px 10px;
+  padding: 0 0 14px; align-items: baseline;
+}
+.blocks > li::before {
+  content: counter(block); grid-row: 1 / 3; font-size: 0.82rem; font-weight: 700;
+  color: var(--red); font-variant-numeric: tabular-nums;
+}
+.blocks > li > a { font-weight: 600; text-decoration-color: var(--line); }
+.blocks > li > span { grid-column: 2; font-size: 0.86rem; }
+@media (max-width: 900px) { .standfirst-body { grid-template-columns: 1fr; gap: 26px; } }
+
+/* What happened to the bid — the only dataset that is Merkle's own */
+.outcome-form { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px; align-items: end; margin-top: 14px; }
+.outcome-form .field { margin: 0; }
+.outcome-form .field.wide { grid-column: 1 / -1; }
+.outcome-form button { grid-column: 1 / -1; justify-self: start; }
+.also { margin-top: 6px; }
+.also p { margin: 0 0 3px; }
+@media (max-width: 720px) { .outcome-form { grid-template-columns: 1fr; } }
+
+/* The two answers the offer owes whatever its commercial shape */
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 4px 0 8px; }
+.answer { border-left: 3px solid var(--red); padding: 4px 0 4px 18px; }
+.answer-label { margin: 0 0 6px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.answer-value { margin: 0 0 6px; font-size: 1.28rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
+.answer .muted { margin: 0; }
+@media (max-width: 760px) { .answers { grid-template-columns: 1fr; gap: 18px; } }
+
+/* Readiness: countable things, no invented scale */
+/* The same .stats component, on a white surface.
+   It was written for the black statement band — .stats span is white text — so
+   on this page the labels rendered white on white and all a reader saw was a
+   column of numbers over red rules. Every colour it inherits is restated here. */
+.stats.kpis {
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  padding: 20px 0; margin: 0 0 8px;
+}
+.stats.kpis li { gap: 8px; }
+.stats.kpis strong { font-size: 2rem; color: var(--ink); }
+.stats.kpis span {
+  color: var(--muted); font-size: 0.78rem; line-height: 1.35;
+  border-top: 2px solid var(--line); padding-top: 8px;
+}
+.stats.kpis .of { font-size: 0.55em; font-weight: 400; color: var(--muted); }
+@media (max-width: 1000px) { .stats.kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .stats.kpis { grid-template-columns: 1fr; } }
+
+/* The 33 decisions as one bar. Part of a fixed whole, so a bar and not a donut:
+   a donut hides the very segment sizes it exists to compare. */
+.decisions-bar { display: flex; height: 14px; margin: 16px 0 18px; background: var(--panel); border: 1px solid var(--line); }
+.decisions-bar .settled { background: var(--ok); }
+.decisions-bar .rest { background: transparent; }
+
+.points-head { display: flex; align-items: baseline; gap: 10px; margin: 26px 0 4px; font-size: 1rem; }
+.points-head.stop::before { content: ''; width: 9px; height: 9px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
+.points-head.flag::before { content: ''; width: 9px; height: 9px; background: var(--warn); clip-path: polygon(100% 0, 100% 100%, 0 0); }
+table.open-points td { vertical-align: top; }
+table.open-points td:first-child { max-width: 34ch; }
+.no-consequence { margin-top: 5px; font-size: 0.8rem; color: var(--red-ink); font-weight: 600; }
+
+/* What each document actually gave us — this is what answers an upload. */
+.doc-bars { display: grid; gap: 10px; margin-top: 14px; }
+.doc-bar { display: grid; grid-template-columns: minmax(120px, 22ch) 1fr auto; gap: 14px; align-items: center; }
+.doc-bar-name { font-weight: 600; font-size: 0.9rem; }
+.doc-bar-track { background: var(--panel); border: 1px solid var(--line); height: 12px; }
+.doc-bar-track > span { display: block; height: 100%; background: var(--red); }
+.doc-bar-n { font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
+@media (max-width: 720px) { .doc-bar { grid-template-columns: 1fr; gap: 4px; } }
+
+/* What leaves the deal: smaller bid, not a harder one */
+.exclusions { list-style: none; padding: 0; margin: 18px 0 0; }
+.exclusions > li { border-left: 3px solid var(--warn); padding: 2px 0 2px 18px; margin-bottom: 18px; max-width: 84ch; }
+.excl-what { margin: 0 0 6px; font-weight: 700; font-size: 1.02rem; }
+.exclusions p { margin: 0 0 5px; }
+
+/* The shape and the numbers behind it, side by side */
+.profile { display: grid; grid-template-columns: minmax(340px, 0.9fr) 1.1fr; gap: 34px; align-items: start; }
+.profile tr.idle th, .profile tr.idle td { color: var(--muted); }
+@media (max-width: 1080px) { .profile { grid-template-columns: 1fr; } .radar svg { margin: 0 auto; } }
+
+/* Where the complexity sits. Square surfaces, one accent, three rings. */
+.radar { margin: 18px 0 0; }
+.radar svg { width: 100%; max-width: 560px; height: auto; display: block; overflow: visible; }
+.radar-ring, .radar-covered { fill: none; stroke: var(--line-strong); stroke-width: 1; }
+.radar-covered { fill: var(--panel); }
+.radar-spoke { stroke: var(--line-strong); stroke-width: 1; }
+.radar-envelope { fill: none; stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.radar-shape { fill: rgba(221, 48, 57, 0.14); stroke: var(--red); stroke-width: 2; }
+.radar-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; fill: var(--ink); }
+.radar-label.idle { fill: var(--muted); font-weight: 400; }
+.radar-label.beyond { fill: var(--red-ink); }
+/* Nothing said either way — not a zero, and it must not read as one. */
+.radar-label.unknown { fill: var(--warn); font-weight: 700; }
+.radar-unknown { fill: #fff; stroke: var(--warn); stroke-width: 2; stroke-dasharray: 2 2; }
+.radar-key.unknown { background: #fff; border: 2px dashed var(--warn); border-radius: 50%; width: 11px; height: 11px; }
+.radar figcaption { font-size: 0.8rem; color: var(--muted); margin-top: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.radar-key { width: 14px; height: 10px; display: inline-block; }
+.radar-key.covered { background: var(--panel); border: 1px dashed var(--muted); }
+.radar-key.shape { background: rgba(221, 48, 57, 0.14); border: 2px solid var(--red); }
+.radar-key + .radar-key { margin-left: 12px; }
 
 /* The Go/No-Go scorecard, numbered as the meeting numbers it */
 .scorecard { list-style: none; padding: 0; margin: 18px 0 0; counter-reset: none; }
@@ -556,10 +893,11 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .row-actions form { display: inline; }
 button.link {
   background: none; border: 0; padding: 0; cursor: pointer; font: inherit;
+  font-size: 0.9rem; font-weight: 500; letter-spacing: 0; text-transform: none;
   color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px;
 }
-button.link:hover { color: var(--red); text-decoration-color: var(--red); }
-button.link:disabled { color: var(--muted); cursor: default; }
+button.link:hover { background: none; color: var(--red); text-decoration-color: var(--red); }
+button.link:disabled { color: var(--line-strong); cursor: default; }
 
 /* RFP Q&A: every question is asked or assumed, and the list shows which */
 .clarifications > li.q-accepted { border-left: 3px solid var(--ok); padding-left: 18px; }
@@ -567,6 +905,11 @@ button.link:disabled { color: var(--muted); cursor: default; }
 .clarifications > li.q-proposed { border-left: 3px solid var(--red); padding-left: 18px; }
 .decide-actions { display: flex; gap: 10px; margin: 14px 0 0 2.2rem; }
 .decide-actions form { display: inline; }
+
+/* Assuming the shape of the solution is not assuming a detail inside it */
+.shape-warning { margin-top: 16px; padding: 14px 16px; border-left: 3px solid var(--warn); background: rgba(138, 90, 0, 0.05); }
+.shape-warning p { margin: 0 0 6px; max-width: 84ch; }
+.shape-note { margin: 0 0 6px; color: var(--warn); font-size: 0.84rem; font-weight: 600; }
 
 /* What the proposal stands on when nobody could tell us otherwise */
 .assumptions { list-style: none; padding: 0; margin: 18px 0 0; }
@@ -594,16 +937,26 @@ button.link:disabled { color: var(--muted); cursor: default; }
 .clarifications { list-style: none; counter-reset: clarification; padding: 0; margin: 22px 0 0; }
 .clarifications > li { counter-increment: clarification; border-top: 1px solid var(--line); padding: 22px 0 24px; }
 .clarifications > li:last-child { border-bottom: 1px solid var(--line); }
-.clarifications > li > h3 {
-  display: grid; grid-template-columns: 2.2rem 1fr; gap: 4px;
-  margin: 0 0 10px; font-size: 1.12rem; line-height: 1.35; max-width: 68ch;
+/* The question opens and closes. The measure is the page's, not a column of it:
+   the paragraph above ran the full width while the questions wrapped at half of
+   it, which read as two different pages. */
+.clarifications > li > details > summary {
+  display: grid; grid-template-columns: 2.2rem 1fr; gap: 6px 0; align-items: baseline;
+  margin: 0 0 10px;
 }
-.clarifications > li > h3::before { content: counter(clarification); color: var(--red); font-variant-numeric: tabular-nums; }
-.clarifications .why { margin: 0 0 14px 2.2rem; max-width: 68ch; }
+.clarifications > li > details > summary::before {
+  content: counter(clarification); color: var(--red); font-variant-numeric: tabular-nums;
+  font-weight: 700; font-size: 1.12rem;
+}
+.clarifications .q-text { grid-column: 2; margin: 0; font-size: 1.12rem; line-height: 1.35; }
+.clarifications .q-badges { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; }
+.clarifications .q-badges:empty { display: none; }
+.clarifications > li > details[open] > summary { margin-bottom: 14px; }
+.clarifications .why { margin: 0 0 14px 2.2rem; max-width: 72ch; overflow-wrap: anywhere; }
 .clarifications .why strong { color: var(--ink); }
 /* What we would assume is ours: it is set apart so it is never read as part of
    the question, and it is not in the download a consultant sends. */
-.for-us { margin-left: 2.2rem; padding: 12px 16px; background: var(--panel); border-left: 2px solid var(--line); max-width: 68ch; }
+.for-us { margin-left: 2.2rem; padding: 12px 16px; background: var(--panel); border-left: 2px solid var(--line); max-width: 72ch; overflow-wrap: anywhere; }
 .for-us .eyebrow { margin: 0 0 6px; }
 .for-us p { margin: 0; font-size: 0.88rem; }
 .for-us p + p { margin-top: 4px; }
@@ -611,10 +964,22 @@ button.link:disabled { color: var(--muted); cursor: default; }
 /* Footer (merkle.com) */
 .site-footer { position: relative; background: #000; color: #fff; margin-top: 64px; padding: 64px 40px 28px; overflow: hidden; }
 .footer-inner { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; }
-.footer-main { display: flex; flex-direction: column; align-items: flex-start; gap: 34px; }
+/* The content keeps to the left half and the M owns the right, as on merkle.com.
+   Both widths are percentages of .footer-inner, so the lane and the watermark
+   cannot drift into each other at any screen width. */
+/* The lane was sized for four groups. A fifth arrived and the last one
+   wrapped onto a row of its own under the first, leaving a hole the width of
+   three columns. 56% is what five columns need and what the watermark, which
+   starts at 56%, still leaves. */
+.footer-main { display: flex; flex-direction: column; align-items: flex-start; gap: 34px; max-width: 56%; }
 .footer-mark img { display: block; height: 26px; width: auto; }
-.footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; }
-.footer-columns { display: grid; grid-template-columns: repeat(2, minmax(180px, max-content)); column-gap: 120px; row-gap: 22px; }
+.footer-links { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+/* Equal columns, as merkle.com lays them out. They used to be forced onto one
+   row whatever the count: a fifth group arrived and every column dropped to
+   about 105px, which turns a two-word link into three stacked lines. They wrap
+   now, and a column is never narrower than a link. */
+.footer-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 26px 20px; width: 100%; }
+.footer-col-title { margin: 0 0 16px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); }
 .footer-links a { color: #fff; text-decoration: none; font-size: 1.05rem; position: relative; padding-bottom: 4px; }
 .footer-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
 .footer-links a:hover::after, .footer-links a:focus-visible::after { transform: scaleX(1); }
@@ -622,14 +987,19 @@ button.link:disabled { color: var(--muted); cursor: default; }
 .footer-social a { color: #fff; display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--red); border-radius: 12px; transition: background 0.2s ease, color 0.2s ease; }
 .footer-social a:hover, .footer-social a:focus-visible { background: var(--red); color: #fff; }
 .footer-note { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.6); max-width: 62ch; }
-.footer-watermark { position: absolute; right: -8px; top: 26px; width: min(46vw, 660px); height: auto; z-index: 0; pointer-events: none; }
+.footer-watermark { position: absolute; right: -8px; top: 26px; width: 44%; height: auto; z-index: 0; pointer-events: none; }
 .footer-base { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1280px; margin: 40px auto 0; }
 .footer-dentsu img { display: block; height: 14px; width: auto; opacity: 0.9; }
 .footer-copy { margin: 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); }
 
 /* Narrow screens */
+/* The left lane gets tight before the watermark is dropped, so the groups fold
+   into the two columns merkle.com itself uses rather than four cramped ones. */
+@media (max-width: 1100px) {
+  .footer-columns { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 28px; }
+}
 @media (max-width: 900px) {
-  .layout, .inline-form, .summary-grid { grid-template-columns: 1fr; }
+  .layout, .inline-form, .summary-grid { grid-template-columns: minmax(0, 1fr); }
   main { padding: 28px 16px 48px; }
   .page-head { margin: -28px calc(50% - 50vw) 24px; padding: 36px 16px 24px; }
   .panel { position: static; }
@@ -640,16 +1010,744 @@ button.link:disabled { color: var(--muted); cursor: default; }
   .signin-hero h1 { font-size: 2.4rem; }
   .signin-panel { padding: 36px 20px 48px; }
   .site-footer { padding: 44px 16px 24px; }
-  .footer-main { gap: 26px; }
-  .footer-columns { grid-template-columns: 1fr; }
+  .footer-main { gap: 26px; max-width: none; }
+  .footer-columns { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 32px; }
   .footer-watermark { display: none; }
   .footer-base { margin-top: 28px; }
 }
 @media (max-width: 760px) {
   .toc { columns: 1; }
-  .topbar { flex-wrap: wrap; gap: 16px 20px; padding: 14px 16px; }
-  .topnav { gap: 16px; order: 3; width: 100%; }
-  .user { margin-left: auto; }
+  .topbar { flex-wrap: wrap; gap: 14px 16px; padding: 14px 16px; }
+  /* One button instead of three lines of links. The footer keeps the full index. */
+  /* The mark alone: three white rules closed, a white cross open. The 46px box
+     stays for the thumb, it just has nothing drawn around it. */
+  .menu-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; padding: 0; margin-left: -10px; flex: 0 0 auto;
+    background: none; border: 0; color: #fff; cursor: pointer;
+  }
+  .topnav { display: none; }
+  .topnav.open { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; order: 4; width: 100%; padding: 6px 0 4px; }
+  /* One line: the mark, the wordmark, and the way out. The login name goes —
+     a phone header has room for the action, not for who is holding the phone. */
+  .menu-toggle { order: 1; }
+  .brand { order: 2; }
+  .user { order: 3; margin-left: auto; }
+  .topbar > .cta { order: 3; margin-left: auto; }
+  .user .who { display: none; }
+  .topnav.open a { padding: 10px 0; }
+  /* `flex: 0 0 auto` froze these at max-content, so "Change" — the only way to
+     the settings — sat in the clipped region. */
+  .views { flex: 1 1 100%; margin-left: 0; flex-wrap: wrap; gap: 12px 18px; padding-bottom: 8px; }
+  .doors { grid-template-columns: 1fr; gap: 20px; }
+  .record-cards { display: grid; gap: 12px; list-style: none; padding: 0; margin: 14px 0 0; }
+  .record-table { display: none; }
+  /* Closed, the spine is where you are. Open, it is the whole job, labelled —
+     a row of bare numbers told nobody what step four was. */
+  .spine-nav { width: 100%; }
+  .spine-toggle {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 4px 0;
+    background: none; border: 0; color: rgba(255, 255, 255, 0.72); cursor: pointer;
+    font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .spine-caret { width: 8px; height: 8px; border-right: 2px solid var(--red); border-bottom: 2px solid var(--red); transform: rotate(45deg) translate(-2px, -2px); }
+  .spine-toggle[aria-expanded='true'] .spine-caret { transform: rotate(-135deg) translate(-3px, -3px); }
+  .steps-spine { flex-direction: column; align-items: stretch; gap: 0; }
+  .steps-spine li { border-top: 1px solid rgba(255, 255, 255, 0.14); }
+  .steps-spine li:first-child { border-top: 0; }
+  .spine-nav:not(.open) .steps-spine li:not(.current) { display: none; }
+  .steps-spine a { padding: 12px 0; }
+  .step-hint { max-width: none; }
+  .door { padding: 22px 18px; }
+  .row-actions { white-space: normal; }
+  /* State is carried by these, and 10.9px uppercase is not state anyone reads. */
+  .badge, .chip { font-size: 0.78rem; }
+  th, .card .meta, .field > label { font-size: 0.8rem; }
   .pilot { padding: 7px 16px; }
   .tabs { gap: 18px; overflow-x: auto; }
+}
+
+/* Phones, after the 760 block so the narrower rule is the one that survives */
+@media (max-width: 560px) {
+  /* Ten columns of offer comparison in a 358px scroller is a drawing, not a
+     table. One offer per block, each row labelled, reads at any width. */
+  .table-scroll > .compare, .compare tbody, .compare tr, .compare td, .compare th { display: block; }
+  /* The scroller sizes its table to content; a stacked table must not be. */
+  .table-scroll > .compare { width: 100%; min-width: 0; max-width: 100%; }
+  .compare thead { display: none; }
+  .compare tr { border: 1px solid var(--line); padding: 10px 12px; margin-bottom: 10px; }
+  .compare td { border: 0; padding: 4px 0; }
+  .compare td::before { content: attr(data-label) ' '; font-weight: 700; }
+  .footer-columns { grid-template-columns: 1fr; }
+  /* Two columns of 2.4rem numerals in 152px cells with three-line labels. */
+  .stats { grid-template-columns: 1fr; gap: 18px; }
+  .stats strong { font-size: 2rem; }
+}
+
+/* Touch: nothing in the file set a minimum target, so every size was whatever
+   the text happened to be — "Confirm" was a 22px tap target. */
+@media (pointer: coarse) {
+  button.link, .page-head .crumb, .muted-link,
+  .footer-links a, .views a, .steps-spine a {
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .filter button { padding: 12px 18px; }
+  /* Under 16px, iOS zooms on focus and does not zoom back. */
+  .card.start textarea, .card.prefill textarea { font-size: 1rem; }
+}
+
+/* Utilities the accessibility pass needs: a way past sixteen navigation stops,
+   and text that only a screen reader reads. */
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 8px; top: 8px; z-index: 99; background: #000; color: #fff; padding: 10px 16px; text-decoration: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ─── The story pages ────────────────────────────────────────────────────────
+   Measured before this was written: "What this is" ran 2,000 words over seven
+   screens, with eighteen sentences past thirty words — and eight sections in a
+   row were the same two-column grid of text cards. Nothing stood out, so
+   nothing was remembered, and the only element that read fast was the one that
+   was not prose: the numbers.
+
+   So the page reads down, one beat at a time, and the form follows what the
+   content is. A sequence is drawn as a sequence. A comparison lines up row by
+   row. A claim stands alone and its evidence folds underneath. */
+
+/* One beat per screen — but air, not a void.
+   The first pass ran 90px of padding on both sides of every section and then
+   let the heading add its own 34px margin on top, so the gap between the end of
+   one section and the start of the next measured 320px: a screenful of nothing
+   between every two ideas. Linear is not the same as far apart.
+
+   padding-block, not the shorthand: a band brings its own side padding and the
+   shorthand set it to zero, so every black section ran to the window edge. */
+.story > section { padding-block: clamp(34px, 3.4vw, 52px); border-top: 1px solid var(--line-soft); }
+/* Measured at 1440 before this line existed: nine consecutive gaps of 130px
+   between one section's last line and the next section's heading, on a page
+   already 15,175px tall. Linear was right; a screenful of nothing between every
+   two ideas was not, and it is the spacing the owner has objected to twice.
+   Scoped to the offering, because "What this is" is a narrative page whose
+   bands are meant to be crossed slowly. */
+.offering > section { padding-block: clamp(24px, 2.2vw, 34px); }
+/* The padding was never the whole gap. `main.story > section` also carries
+   64px of margin, so the space a reader crossed between two ideas measured
+   31.68 + 64 + 31.68 — and tightening the padding alone moved a third of it.
+   Ten of these on one page is where the slide-deck feeling came from. */
+main.offering > section { margin-bottom: 10px; }
+/* A part is a bigger division than a section, and it is the only place on the
+   page where the extra air earns its keep. */
+main.offering > section.part-start { margin-top: 26px; }
+main.offering > section:first-of-type.part-start { margin-top: 0; }
+/* The section's padding is the space above the heading. The heading's own
+   margin was a second helping of it. */
+.story > section > h2:first-child,
+.story > section > .eyebrow:first-child,
+.story .band-inner > .eyebrow:first-child { margin-top: 0; }
+.story > section > h2 { margin-top: 0; }
+.story > section.band, .story > section.band.dark { padding-block: clamp(38px, 3.8vw, 58px); }
+.story > section:first-of-type { border-top: 0; }
+.story > section.band, .story > section.band.dark { border-top: 0; }
+
+/* The section heading, promoted to a real second level.
+   Measured: every h2 on an offer page rendered at 16px against a lede of
+   18.4px, so the label was smaller than the sentence introducing it and ten of
+   them in a column read as one undifferentiated run. The h1 is 2–2.9rem, this
+   is 1.25–1.65rem, and the wedge grows with it. */
+.offering > section > h2 {
+  font-size: clamp(1.25rem, 2vw, 1.65rem); line-height: 1.15;
+  letter-spacing: -0.015em; text-transform: none;
+  /* The section's own padding is the space above the heading. Setting only
+     margin-bottom here let the base `h2` rule put its 34px back on top, and the
+     gap between two sections measured 113px instead of the 63 the padding
+     describes — the same second helping the comment above this block is about. */
+  margin: 0 0 10px;
+}
+.offering > section > h2:not(.plain)::before {
+  width: 13px; height: 13px; margin-right: 13px; vertical-align: 2px;
+}
+/* And the lede drops behind it. It explains the artefact below; the artefact is
+   what the reader came for, so the explanation stops competing with it. */
+.offering > section > .lede { font-size: 1rem; line-height: 1.5; color: var(--muted); max-width: 76ch; margin: 0; }
+
+/* The parts: a second level over the sections.
+   Ten headings of equal weight are a list, not a hierarchy — there is nowhere
+   for the eye to land and no way to skip three sections at once. The parts are
+   the three questions a consultant actually arrives with, and they are marked
+   the way this system marks a division: a black rule and an uppercase label,
+   never a card, never a second colour. */
+.part {
+  display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap;
+  margin: 0 0 20px; padding-top: 4px;
+  font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.part .part-n { color: var(--red-ink); }
+.part .part-what {
+  font-size: 0.88rem; font-weight: 400; letter-spacing: 0.01em; text-transform: none; color: var(--muted);
+}
+/* The part rule replaces the section's own hairline rather than joining it: two
+   rules 22px apart read as a mistake, not as a division. */
+.offering > section.part-start { border-top: 2px solid var(--ink); }
+.offering > section:first-of-type.part-start { border-top: 0; }
+
+/* Eleven sections over five screens, opened minutes before a call. The parts
+   give the page a shape; this gives it a way in. Same ribbon as the tabs under
+   every other page head, because it is the same gesture. */
+.jump {
+  display: flex; flex-wrap: wrap; gap: 0 26px;
+  margin: 26px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+.jump a {
+  position: relative; padding: 13px 0 12px; text-decoration: none; color: rgba(255, 255, 255, 0.66);
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.jump a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 5px; height: 3px; background: var(--red);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease;
+}
+.jump a:hover, .jump a:focus-visible { color: #fff; }
+.jump a:hover::after, .jump a:focus-visible::after { transform: scaleX(1); }
+.page-head:has(.jump) { padding-bottom: 0; }
+/* There is no sticky header, so this only has to clear the outline the anchor
+   itself draws when it is reached by keyboard. */
+.offering > section[id] { scroll-margin-top: 14px; }
+
+/* The answer, before anything asks for attention. */
+.answer-line {
+  margin: 18px 0 0; max-width: 24ch;
+  font-size: clamp(1.5rem, 3.2vw, 2.15rem); font-weight: 700; line-height: 1.18; letter-spacing: -0.015em;
+}
+.page-head .answer-line { color: #fff; }
+.page-head .lede { max-width: 62ch; }
+
+/* ── Claims: the line is the point, the evidence folds ────────────────────── */
+.claims { list-style: none; counter-reset: claim; padding: 0; margin: 28px 0 0; max-width: 72ch; }
+.claims > li { counter-increment: claim; border-top: 1px solid var(--line); }
+.claims > li:last-child { border-bottom: 1px solid var(--line); }
+.claims > li > details > summary { display: grid; grid-template-columns: 3rem 1fr; padding: 20px 1.9rem 20px 0; margin: 0; }
+.claims > li > details > summary::before {
+  content: counter(claim, decimal-leading-zero); grid-row: 1 / span 2;
+  color: var(--red); font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.claims > li > details > summary::after { top: 22px; }
+.claims .claim { font-size: clamp(1.1rem, 1.9vw, 1.4rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
+.claims .claim-line { grid-column: 2; color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
+.claims p { margin: 0 0 22px 3rem; max-width: 76ch; color: var(--muted); }
+
+/* ── Diagrams ─────────────────────────────────────────────────────────────── */
+/* Drawn at the size it was drawn for. Left to fill the column, a 640-wide
+   viewBox stretches to 1280 and every label doubles with it. */
+.dgm { display: block; width: 100%; max-width: 760px; height: auto; margin: 22px 0; overflow: visible; }
+.dgm-box { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
+.dgm-box rect { fill: none; stroke: var(--line-strong); stroke-width: 1.5; }
+.dgm-solid { fill: var(--ink); stroke: none; }
+.dgm-line { fill: none; stroke: var(--ink); stroke-width: 1.5; color: var(--ink); }
+.dgm-tick { fill: none; stroke: var(--line-strong); stroke-width: 1.5; stroke-dasharray: 3 4; }
+.dgm-dot { fill: var(--red); }
+.dgm-wedge { fill: var(--red); }
+.dgm-label { fill: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+.dgm-label text, text.dgm-label { fill: var(--ink); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+.dgm-sub { fill: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: 0.02em; }
+.dgm-on-solid { fill: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+.dgm-on-solid.dgm-sub { fill: rgba(255, 255, 255, 0.72); font-weight: 500; letter-spacing: 0.02em; }
+/* On the black band the ink lines would vanish. */
+.band.dark .dgm-box rect { stroke: rgba(255, 255, 255, 0.45); }
+.band.dark .dgm-line { stroke: rgba(255, 255, 255, 0.75); color: rgba(255, 255, 255, 0.75); }
+.band.dark .dgm-tick { stroke: rgba(255, 255, 255, 0.3); }
+.band.dark .dgm-solid { fill: var(--red); }
+.band.dark .dgm-label, .band.dark text.dgm-label { fill: #fff; }
+.band.dark .dgm-sub { fill: rgba(255, 255, 255, 0.62); }
+
+/* ── The hands: what the hand-off diagram labels, spelled out ─────────────── */
+.hands { list-style: none; counter-reset: hand; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.hands > li { border-top: 2px solid var(--red); padding-top: 16px; }
+.hands .hand-n { margin: 0; color: var(--red); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; }
+.hands h3 { margin: 6px 0 4px; font-size: 1.12rem; }
+.hands .hand-line { margin: 0 0 12px; color: rgba(255, 255, 255, 0.72); font-size: 0.92rem; }
+.hands ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.hands ul li { color: rgba(255, 255, 255, 0.72); font-size: 0.88rem; }
+
+/* ── The ladder: two paths, rung by rung, with the engine down the middle ─── */
+.paths-rungs { list-style: none; padding: 0; margin: 12px 0 0; counter-reset: rung; }
+.paths-rungs > li {
+  counter-increment: rung;
+  display: grid; grid-template-columns: 8.5rem 1fr 1fr; gap: 0 24px; align-items: stretch;
+  border-top: 1px solid var(--line);
+}
+.paths-rungs > li:last-child { border-bottom: 1px solid var(--line); }
+.rung-stage {
+  margin: 0; padding: 22px 0; align-self: start;
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+.rung-stage::before {
+  content: counter(rung, decimal-leading-zero) ' '; color: var(--red); font-variant-numeric: tabular-nums;
+}
+.rung { padding: 22px 20px; }
+/* The spine: the engine both paths run on, drawn once down the whole ladder. */
+.rung.bid { border-left: 3px solid var(--ink); }
+.rung.discovery { border-left: 1px solid var(--line); }
+.rung.empty { border-left: 1px dashed var(--line); background: repeating-linear-gradient(135deg, transparent 0 7px, var(--line-soft) 7px 8px); }
+.rung.empty p { margin: 0; color: var(--line-strong); }
+.rung h3 { margin: 0 0 6px; font-size: 1rem; }
+.rung p { margin: 0; color: var(--muted); font-size: 0.9rem; max-width: 48ch; }
+.paths-rungs > li.bid-only .rung-stage { color: var(--red-ink); }
+
+/* ── Outputs: named, with who reads them ──────────────────────────────────── */
+.outputs { list-style: none; padding: 0; margin: 28px 0 0; max-width: 72ch; }
+.outputs > li {
+  display: grid; grid-template-columns: 11rem 1fr; gap: 4px 20px; align-items: baseline;
+  padding: 16px 0; border-top: 1px solid var(--line);
+}
+.outputs > li:last-child { border-bottom: 1px solid var(--line); }
+.outputs .badge { grid-row: 1 / span 2; justify-self: start; }
+.outputs strong { font-size: 1.02rem; }
+.outputs .muted { grid-column: 2; }
+
+/* ── Arriving ──────────────────────────────────────────────────────────────
+   Words never fade in. The first version animated opacity from zero on every
+   block in the page, which means the text is invisible until an animation
+   decides otherwise — and a full-page render, a print, or an arrival at an
+   anchor mid-page all skip that animation. Half the page came out blank.
+
+   So prose moves and never disappears, and only the drawings fade: if a
+   drawing never arrives, the sentences beside it still carry the meaning. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .story > section > *, .story .page-head > * {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 38%;
+    }
+    .story .dgm {
+      animation: draw linear both;
+      animation-timeline: view();
+      animation-range: entry 6% entry 52%;
+    }
+  }
+}
+@keyframes rise { from { transform: translateY(16px); } to { transform: none; } }
+@keyframes draw { from { opacity: 0.25; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 900px) {
+  .hands { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  /* On a phone the ladder stacks, so the stage label becomes the heading of
+     its own pair rather than a column nobody can see. */
+  .paths-rungs > li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .rung-stage { padding: 18px 0 6px; }
+  .rung { padding: 0 0 18px 16px; }
+  .rung.discovery { border-left: 1px solid var(--line); margin-top: 8px; }
+  .rung.empty { display: none; }
+  .outputs > li { grid-template-columns: minmax(0, 1fr); }
+  .outputs .badge { grid-row: auto; }
+  .outputs .muted { grid-column: 1; }
+}
+
+/* ─── The offering, split per segment ─────────────────────────────────────────
+   Everything about three offers, seven gates, three triggers, twenty-three exit
+   rules and two routes used to sit on one page. A consultant opens it with one
+   question — is this an M, and what would move it — and had to assemble the
+   answer out of five sections that each described all of them at once. The
+   index is a map now; each segment answers its own question. */
+
+.segments { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 0; }
+.segments > li { border-top: 1px solid var(--line); }
+.segments > li:last-child { border-bottom: 1px solid var(--line); }
+.segments a {
+  display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1.1fr); gap: 4px 24px;
+  align-items: baseline; padding: 24px 2rem 24px 0; position: relative;
+  text-decoration: none; color: inherit;
+}
+.segments a:hover { background: var(--panel); }
+.segments a::after {
+  content: '→'; position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  color: var(--line-strong); font-size: 1.1rem;
+}
+.segments a:hover::after { color: var(--red); transform: translateY(-50%) translateX(4px); transition: transform 120ms ease; }
+.seg-code { grid-row: 1 / span 2; font-size: 2rem; font-weight: 700; line-height: 1; color: var(--red); font-variant-numeric: tabular-nums; }
+.seg-name { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+.seg-when { grid-column: 3; grid-row: 1; color: var(--muted); font-size: 0.9rem; }
+.seg-meta { grid-column: 2 / span 2; color: var(--muted); font-size: 0.82rem; letter-spacing: 0.02em; }
+.segments > li.beyond .seg-code { color: var(--line-strong); }
+
+/* Prev and next: the offers are a progression, so the page after one is the
+   next one up. */
+.seg-next { display: flex; justify-content: space-between; gap: 20px; margin-top: 8px; padding-top: 22px; border-top: 1px solid var(--line); }
+.seg-next a { font-weight: 700; text-decoration: none; }
+.seg-next a:hover { color: var(--red-ink); }
+.seg-next .seg-prev { color: var(--muted); font-weight: 500; }
+
+/* The scope list on a segment page carries weight: it is what the client buys. */
+.ticks.big > li { font-size: 1.02rem; padding-block: 5px; }
+
+@media (max-width: 760px) {
+  .segments a { grid-template-columns: 3.2rem minmax(0, 1fr); padding-right: 1.6rem; }
+  .seg-when, .seg-meta { grid-column: 2; }
+}
+
+/* The one path out of the sourcing rule is a failure, and it is drawn as one. */
+.dgm-fail { fill: none; stroke: var(--red); stroke-width: 1.5; stroke-dasharray: 5 4; color: var(--red); }
+.dgm-fail-box { fill: none; stroke: var(--red); stroke-width: 1.5; }
+.dgm-fail-label { fill: var(--red-ink); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
+
+/* ── The offers on one scale ──────────────────────────────────────────────────
+   S, M and L were three paragraphs with their durations written inside them, so
+   comparing them meant reading three sentences and holding six numbers at once.
+   A range on a shared axis is the same fact, seen instead of worked out. */
+.scale { margin: 22px 0 0; }
+.scale-head, .scale-row { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 1fr); gap: 14px 20px; align-items: center; }
+.scale-head { padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.scale-head span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.scale-row { padding: 14px 0; border-bottom: 1px solid var(--line-soft); }
+.scale-code { font-size: 1.6rem; font-weight: 700; line-height: 1; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+/* --red on the panel grey this row sits on measured 4.12:1 at 9.9px, under the
+   4.5 small text needs. --red-ink is the same mark carrying text, at 6.36:1. */
+.scale-here { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-ink); }
+.scale-row.here { background: var(--panel); }
+.scale-bar { display: block; position: relative; block-size: 26px; }
+.scale-bar .bar {
+  display: flex; align-items: center; justify-content: flex-end; block-size: 26px;
+  background: var(--ink); color: #fff; padding-inline-end: 9px;
+}
+/* The band figure is set in white on this bar, and --line-strong gave it
+   3.4:1 — a number a consultant has to read, printed under the threshold.
+   --muted is the next step down the same neutral and carries white at 6.4:1,
+   while staying lighter than the --ink bar beside it, which is the whole
+   reason the two scales are drawn in different greys. */
+.scale-bar.money .bar { background: var(--muted); }
+.scale-row.here .scale-bar .bar { background: var(--red); }
+.scale-bar b { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; }
+/* The axis belongs to the weeks column, not to the row: spanning the full
+   width put "14 weeks" under the price band, which is a different scale. */
+.scale-axis { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin: 8px 0 0; font-size: 0.72rem; color: var(--muted); }
+.scale-axis span { grid-column: 2; display: flex; justify-content: space-between; }
+.scale-axis i { font-style: normal; }
+/* On the black band the ink bar disappears. */
+.band.dark .scale-bar .bar { background: #fff; color: var(--ink); }
+.band.dark .scale-code { color: #fff; }
+.band.dark .scale-head { border-bottom-color: rgba(255, 255, 255, 0.24); }
+.band.dark .scale-row { border-bottom-color: rgba(255, 255, 255, 0.14); }
+
+@media (max-width: 720px) {
+  .scale-head { display: none; }
+  .scale-row { grid-template-columns: 3.4rem minmax(0, 1fr); }
+  .scale-axis { grid-template-columns: 3.4rem minmax(0, 1fr); }
+}
+
+/* ── What comes out, split by who reads it ───────────────────────────────────
+   Six documents in one list with a badge per row. The split that matters —
+   three go to the client, three never leave — was present and invisible. */
+.outputs-split { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; margin-top: 20px; }
+.output-group { padding: 20px 22px 8px; border-top: 3px solid var(--ink); background: #fff; }
+.output-group.client { border-top-color: var(--red); }
+.output-group.internal { background: var(--panel); border-top-color: var(--line-strong); }
+.output-group h3 { margin: 0 0 4px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.output-group.client h3 { color: var(--red-ink); }
+.output-group ul { list-style: none; padding: 0; margin: 0; }
+.output-group li { padding: 14px 0; border-top: 1px solid var(--line-soft); display: grid; gap: 3px; }
+.output-group li:first-child { border-top: 0; }
+.output-group strong { font-size: 1rem; }
+
+/* A gate priced by tier shows its tiers. Migration is the first: a WooCommerce
+   store and a Magento estate are one gate each and differ by a factor of five,
+   and the page used to print the heavy figure for both. */
+.tiers { list-style: none; padding: 0; margin: 12px 0 0; }
+.tiers > li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--line-soft); }
+.tiers > li strong { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-ink); }
+.tiers .tier-cost { font-size: 0.82rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) {
+  .tiers > li { grid-template-columns: minmax(0, 1fr); }
+  .tiers .tier-cost { justify-self: start; }
+}
+
+/* ── Where the weeks go: the phases of one offer ───────────────────────────── */
+/* A numbered spine, with a bar proportional to the longest phase. The shape is
+   the argument: on Growth the storefront build is four to six of thirteen to
+   twenty weeks, and that is visible before a word is read. */
+.phases { list-style: none; padding: 0; margin: 20px 0 0; counter-reset: phase; }
+.phases > li { counter-increment: phase; border-top: 1px solid var(--line); padding: 18px 0; }
+.phases > li:last-child { border-bottom: 1px solid var(--line); }
+.phase-head { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; gap: 8px 24px; align-items: baseline; }
+.phases h3 { margin: 0; font-size: 1.05rem; }
+.phases h3::before {
+  content: counter(phase, decimal-leading-zero) '  '; color: var(--red);
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; font-variant-numeric: tabular-nums;
+}
+/* The bar and the number are two columns, not two flex items.
+   Measured before this: the bar was a percentage of the whole 208px track, so
+   the longest phase took all of it and pushed its own number outside — 300px of
+   content in a 208px cell at 1440, and at 390 the number landed at x=468 in a
+   390 viewport, where `overflow-x: clip` cut it off. The longest phase was the
+   one phase whose duration could not be read. A fixed column for the number
+   also means the numbers line up, which a ragged right edge never allowed. */
+.phase-weeks {
+  margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) 5.6rem;
+  align-items: center; gap: 12px; white-space: nowrap;
+}
+.phase-n { grid-column: 2; font-variant-numeric: tabular-nums; }
+/* Square, one colour, sized off the longest phase — never a gradient and never
+   a second accent. It reads as a measurement, which is what it is. */
+.phase-bar { display: block; block-size: 10px; background: var(--ink); grid-column: 1; justify-self: start; }
+.phases-total .phase-bar { display: none; }
+.phases-total { border-top: 2px solid var(--red); }
+.phases-total h3::before { content: none; }
+.phase-covers { margin: 8px 0 0; color: var(--muted); font-size: 0.93rem; max-width: 74ch; }
+/* The things handed over. Two columns at desk width so a phase with six
+   deliverables is a block to scan rather than a column to scroll; the red rule
+   on the left is the only accent, and it is the same one the ticks use. */
+.phase-gets {
+  margin: 12px 0 0; padding: 0 0 0 16px; list-style: none;
+  columns: 2; column-gap: 40px; border-left: 2px solid var(--red);
+}
+.phase-gets li {
+  margin: 0 0 7px; color: var(--ink); font-size: 0.93rem; line-height: 1.45;
+  break-inside: avoid; max-width: 52ch;
+}
+.phases-total .phase-gets { display: none; }
+
+/* ── Where this offer stops ───────────────────────────────────────────────── */
+.boundaries { margin: 20px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+.boundary { border-top: 2px solid var(--ink); padding-top: 16px; }
+.boundary.out { border-top-color: var(--red); }
+.boundary h3 { margin: 0 0 12px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.boundary.out h3 { color: var(--red-ink); }
+.boundary ul { margin: 0; padding-left: 18px; display: grid; gap: 9px; }
+/* The quantities, across the full measure rather than in a column: they read as
+   a list somebody will be held to, not as a footnote beside the exclusions. */
+.boundary.assumes { margin-top: 28px; border-top-color: var(--line-strong); }
+.boundary.assumes ul { max-width: 86ch; }
+.boundary li { color: var(--ink); font-size: 0.95rem; line-height: 1.45; max-width: 56ch; }
+
+@media (max-width: 900px) {
+  .phase-gets { columns: 1; }
+  .boundaries { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+}
+
+/* ── Who it sells to ──────────────────────────────────────────────────────── */
+.channels { margin: 20px 0 0; display: grid; gap: 0; }
+.channels > div { display: grid; grid-template-columns: 11rem 1fr; gap: 6px 24px; border-top: 1px solid var(--line); padding: 16px 0; }
+.channels > div:last-child { border-bottom: 1px solid var(--line); }
+.channels dt { margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.channels dd { margin: 0; color: var(--ink); font-size: 0.97rem; max-width: 70ch; }
+
+@media (max-width: 720px) {
+  .phase-head { grid-template-columns: minmax(0, 1fr); }
+  .phase-weeks { margin-top: 4px; }
+  .channels > div { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── What adds up to an overrun ───────────────────────────────────────────── */
+/* An effort STOP belongs to no single dimension, so the complexity chart cannot
+   carry it. A plain ledger can: the build, every gate that added to it, and the
+   total against what the largest offer holds. */
+.outgrew { list-style: none; margin: 16px 0 0; padding: 0; max-width: 46rem; }
+.outgrew > li {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
+  border-bottom: 1px solid var(--line); padding: 11px 0;
+}
+.outgrew-what { color: var(--ink); }
+.outgrew-weeks { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.outgrew-base .outgrew-what { color: var(--muted); }
+.outgrew-total { border-bottom: none; border-top: 2px solid var(--red); margin-top: 4px; font-weight: 700; }
+.outgrew-total .outgrew-weeks { color: var(--ink); }
+
+/* What an offer builds, epic by epic — one table, because these are sold at a
+   fixed price and a consultant reads down a list rather than opening sixteen
+   accordions. The epic is a group header inside the table; the price-deciding
+   column is the third one. */
+.scope-epics { margin: 22px 0 0; }
+.scope-table { margin-top: 24px; }
+/* The shared scroller sizes a table to its content, which for a hundred and
+   eighteen rows of prose is a table several screens wide. This one is a fixed
+   grid that wraps instead: the key and the two right-hand columns are as wide
+   as they need to be, and what the story delivers takes the rest. */
+.table-scroll > .scope-table { width: 100%; min-width: 0; max-width: 100%; table-layout: fixed; }
+.scope-table th[scope="col"] { white-space: nowrap; }
+.scope-table th[scope="col"]:nth-child(1), .scope-row > td:nth-child(1) { width: 8.5rem; }
+.scope-table th[scope="col"]:nth-child(3), .scope-row > td:nth-child(3) { width: 17rem; }
+.scope-table th[scope="col"]:nth-child(4), .scope-row > td:nth-child(4) { width: 6.5rem; }
+.scope-table tbody + tbody .epic-row > th { border-top: 1px solid var(--line-strong); }
+.epic-row > th { text-align: left; padding: 22px 12px 8px 0; width: auto; }
+.epic-name { display: block; font-size: 1.02rem; letter-spacing: -0.01em; }
+/* A sentence, not a column label. It inherited `text-transform: uppercase` and
+   0.08em of tracking from `th` and set neither back, so every one of the sixteen
+   epic summaries was a line of prose in capitals — four wrapped lines of it at
+   390px. */
+.epic-meta {
+  display: block; font-weight: 400; color: var(--muted); font-size: 0.85rem; margin-top: 4px;
+  text-transform: none; letter-spacing: 0; line-height: 1.4;
+}
+.scope-row > td { vertical-align: top; padding: 6px 12px 6px 0; font-size: 0.9rem; }
+.scope-key { color: var(--muted); font-size: 0.78rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Prefixed, because .gate is a card elsewhere on this page set and .answers is a
+   two-column grid: an unprefixed state class here inherited both and broke the
+   row into pieces. */
+/* Three states, told apart by shape before colour.
+   They were green, grey and underlined-black, which separates "always" from
+   "on the answers" by hue alone — and this column is the one thing in the table
+   that decides the price. The square is filled by how certain the story is to
+   be in it: solid always, half when the answers decide, hollow when a gate
+   prices it separately. Colour stays as the second cue, never the only one. */
+.scope-when { font-size: 0.82rem; display: inline-flex; align-items: baseline; gap: 7px; }
+.scope-when::before {
+  content: ''; flex: 0 0 auto; align-self: center; inline-size: 9px; block-size: 9px;
+  border: 1.5px solid currentColor;
+}
+.scope-when.is-always { color: var(--ok); }
+.scope-when.is-always::before { background: currentColor; }
+.scope-when.is-answers { color: var(--muted); }
+.scope-when.is-answers::before { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+.scope-when.is-gated { color: var(--ink); }
+.scope-when.is-gated > .gate-name { border-bottom: 1px solid var(--line-strong); }
+.scope-cost { font-variant-numeric: tabular-nums; font-size: 0.85rem; white-space: nowrap; }
+.decided abbr { border-bottom: 1px dotted var(--line-strong); text-decoration: none; cursor: help; font-size: 0.78rem; color: var(--muted); }
+.decided abbr + abbr { margin-left: 5px; }
+@media (max-width: 560px) {
+  /* The stacked-card rule puts a border round every row; the epic header is a
+     heading in that stack, not a card of its own. */
+  .scope-table .epic-row { border: 0; padding: 18px 0 0; margin-bottom: 0; }
+  .scope-table .epic-row > th { border: 0; padding: 0; }
+  /* A hundred and eighteen stories through the generic stacked-card rule came
+     out as a hundred and eighteen bordered cards of four labelled lines each:
+     "Story", "What it delivers", "In the price when" and "Adds" repeated 472
+     times, set bolder and darker than the content they introduced, on a page
+     measured at 35,987px. The story is one line, the state is under it, and the
+     column labels go — they say nothing the cells do not already say. */
+  .scope-table .scope-row {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 12px;
+    border: 0; border-top: 1px solid var(--line-soft); padding: 9px 0; margin: 0;
+  }
+  .scope-table .scope-row > td { padding: 0; }
+  .scope-table .scope-row > td::before { content: none; }
+  .scope-row > td:nth-child(1) { grid-area: 1 / 1; }
+  .scope-row > td:nth-child(2) { grid-area: 2 / 1 / 3 / -1; }
+  .scope-row > td:nth-child(3) { grid-area: 3 / 1; }
+  .scope-row > td:nth-child(4) { grid-area: 3 / 2; justify-self: end; text-align: right; }
+}
+
+/* ── Does a gate land on top of the offer, or inside it? ──────────────────── */
+/* The question every reader of the epic table arrives with, and it used to be
+   answered in grey type underneath it. Stated first, and marked: red where the
+   weeks are added on top, plain where the band already carries them. */
+.gate-rule {
+  margin: 18px 0 20px; padding: 14px 18px; max-width: 76ch;
+  border-left: 3px solid var(--line-strong); background: var(--paper-2, #f5f5f5);
+  font-size: 0.97rem; line-height: 1.5;
+}
+.gate-rule.on-top { border-left-color: var(--red); }
+/* A stat whose value is a phrase, not a number: it must not tower like one. */
+.stats .stat-words { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+
+/* ── What puts an engagement here ─────────────────────────────────────────────
+   "Is this engagement an M" is the question the consultant opens these pages
+   with, and only the L page answered it — in two paragraphs of prose, under a
+   heading the other two offers did not have. It is the engine's own ladder,
+   the same five rules the index draws, read from one offer's side: the rungs
+   that land here are marked and the rest stay grey, so the answer is the shape
+   of the list rather than a sentence to find in it. */
+.lands { list-style: none; counter-reset: land; padding: 0; margin: 18px 0 0; }
+.lands > li {
+  counter-increment: land; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) 3rem;
+  gap: 14px; align-items: baseline; padding: 13px 12px 13px 0;
+  border-top: 1px solid var(--line-soft); color: var(--muted);
+}
+.lands > li:last-child { border-bottom: 1px solid var(--line-soft); }
+/* --line-strong is a border colour. Carrying text it measured 3.4:1 on white,
+   and the offer letter is 18.4px — just under the 18.66 at which bold counts as
+   large text, so it owes the full 4.5. --muted is the same neutral one step
+   darker, at 6.4:1, and still reads as the quiet row it belongs to. */
+.lands > li::before {
+  content: counter(land, decimal-leading-zero); font-size: 0.78rem; font-weight: 700;
+  color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.lands .land-offer { justify-self: end; font-size: 1.15rem; font-weight: 700; color: var(--muted); line-height: 1; }
+/* The same inset bar the app already uses to say "this row is the one",
+   rather than a fourth way of marking a row. */
+.lands > li.here {
+  color: var(--ink); background: var(--panel); box-shadow: inset 3px 0 0 var(--red); padding-left: 14px;
+}
+.lands > li.here::before, .lands > li.here .land-offer { color: var(--red-ink); }
+.lands > li.here .land-rule { font-weight: 600; }
+.lands-note { margin: 14px 0 0; color: var(--muted); font-size: 0.9rem; max-width: 76ch; }
+@media (max-width: 560px) {
+  .lands > li { grid-template-columns: 2.2rem minmax(0, 1fr); gap: 4px 10px; }
+  .lands .land-offer { grid-column: 2; justify-self: start; font-size: 1rem; }
+}
+
+/* ── What each pack gets ─────────────────────────────────────────────────────
+   The comparison the index was missing. It is built on one fact that has to be
+   said before any cell is read: the three packs contain the same catalogue of
+   work, and differ in how much scope-gate work the band already carries — 0
+   weeks in S, 2–8 in M, 9–15 in L. So the rows that genuinely differ get three
+   columns, and every capability row spans them, because printing the same
+   sentence three times would manufacture a difference the engine does not make.
+   Sameness stated once is a useful fact; sameness repeated forty times is
+   something a consultant will quote from by mistake. */
+/* The shared scroller sizes a table to its content, and these cells are
+   sentences: left to `max-content` this one ran 473px past its container. */
+.table-scroll > .packs { width: 100%; min-width: 0; max-width: 100%; table-layout: fixed; }
+.packs { table-layout: fixed; width: 100%; margin-top: 20px; }
+.packs th[scope="col"] { vertical-align: bottom; padding-bottom: 8px; }
+.packs th[scope="col"]:first-child { width: 12.5rem; }
+.pack-code { display: block; font-size: 1.7rem; line-height: 1; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-transform: none; }
+.pack-name { display: block; margin-top: 5px; font-size: 0.78rem; font-weight: 400; letter-spacing: 0.01em; text-transform: none; color: var(--muted); }
+.packs th[scope="row"] {
+  width: auto; vertical-align: top; color: var(--ink); font-size: 0.9rem; font-weight: 700;
+  text-transform: none; letter-spacing: 0; border-bottom: 1px solid var(--line-soft);
+}
+.packs td { vertical-align: top; font-size: 0.88rem; line-height: 1.45; }
+/* The three rows the packs actually differ on, set in ink; everything below is
+   reference the reader scans rather than compares. */
+.pack-differs td { color: var(--ink); font-weight: 600; }
+.pack-differs .pack-budget { font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+/* A group header inside the table, the same device the scope table uses. */
+.pack-group > th {
+  text-align: left; padding: 26px 12px 8px 0; border-bottom: 2px solid #000;
+  font-size: 0.74rem; letter-spacing: 0.12em;
+}
+.pack-group .pack-group-note { display: block; margin-top: 4px; font-weight: 400; font-size: 0.85rem; letter-spacing: 0; text-transform: none; color: var(--muted); line-height: 1.4; }
+.pack-same { color: var(--muted); }
+.pack-adds { color: var(--ink); font-weight: 600; white-space: nowrap; }
+/* The ceiling is a rule, not a budget, so it is marked rather than run into the
+   sentence — and in the app's own state colours, not in the brand red, because
+   the two ceilings are not the same event. A STOP takes the engagement out of
+   the offers; a WARN keeps it and asks for an owner. */
+.pack-cap { display: block; margin-top: 4px; font-size: 0.82rem; }
+.pack-cap.stop { color: var(--stop); }
+.pack-cap.warn { color: var(--warn); }
+@media (max-width: 560px) {
+  /* The stacked-card rule hides the head row, and with it the S/M/L the three
+     differing rows are read against — so those rows carry their own labels. */
+  .packs th[scope="col"]:first-child, .packs th[scope="row"] { width: auto; }
+  .pack-differs td::before { content: attr(data-label) ' '; font-weight: 700; color: var(--ink); }
+  .pack-group > th { padding-top: 8px; }
+}
+
+/* ── What each pack includes ──────────────────────────────────────────────── */
+/* One row per capability, one cell per pack. "No" is not a failure state and is
+   not drawn as one — it is the boundary that makes the pack a pack — so it is
+   muted rather than red. Red in this system is the mark, never a verdict. */
+.pack-gets th[scope="row"] { font-weight: 600; }
+.pack-gets td { font-size: 0.95rem; line-height: 1.45; }
+.pack-gets .pack-no { color: var(--muted); }
+.pack-notes th[scope="row"] {
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+  vertical-align: top;
+}
+.pack-notes ul { margin: 0; padding-left: 18px; display: grid; gap: 7px; }
+.pack-notes li { font-size: 0.9rem; line-height: 1.45; color: var(--muted); }
+.pack-notes li strong { color: var(--ink); font-weight: 600; }
+/* An add-on is neither a yes nor a no: it is on the price list. Marked with the
+   accent so it reads as available, and carrying its cost so it is not a softer no. */
+.pack-gets .pack-addon { color: var(--ink); }
+.pack-gets .pack-addon::before {
+  content: ''; display: inline-block; inline-size: 8px; block-size: 8px;
+  background: var(--red); margin-inline-end: 8px; vertical-align: 0.05em;
+}
+.pack-addon-cost { display: block; margin-top: 3px; font-size: 0.85rem; color: var(--muted); }
+/* A pack that includes something and can also buy more: the add-on carries its
+   own name, so its price cannot be read as the price of what is already in. */
+.pack-addon-extra { display: block; margin-top: 7px; padding-top: 6px; border-top: 1px dotted var(--line-strong); }
+.pack-addon-extra b { display: block; font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+.pack-addon-extra b::before {
+  content: ''; display: inline-block; inline-size: 7px; block-size: 7px;
+  background: var(--red); margin-inline-end: 7px; vertical-align: 0.05em;
 }

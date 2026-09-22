@@ -32,7 +32,6 @@ import { axesForDecision } from '../discovery/rubric.js';
 import { runCostFor } from '../discovery/economics.js';
 import { challengesFor, topChallenges } from '../discovery/challenge.js';
 import { organisationalProfile } from '../discovery/feasibility.js';
-import { toApproachPayload } from '../discovery/approach.js';
 import { planRequirements, requiredPlan, PLAN_LABEL as PLAN_NAME } from '../discovery/plan.js';
 import { appSignals, appCandidates } from '../discovery/app-signals.js';
 
@@ -496,8 +495,29 @@ function outOfScope(x, doc) {
   const deferred = (doc.approach?.phases ?? []).flatMap((p) => p.sprints.flatMap((s) => s.tasks)).filter((t) => t.deferred).map((t) => t.title);
   x.open('section', { id: 'out-of-scope', n: 13 });
   if (deferred.length) x.list('later-phases', deferred);
-  if ((doc.markets?.list ?? []).some((m) => m.code === 'CN')) x.list('separate-discovery', ['Mainland China — a separate China discovery (selling behind the Great Firewall or through cross-border channels)']);
+  // Mainland China used to sit in this list, beside the boilerplate. A
+  // requirement the client asked for, filed next to "no content translation
+  // unless stated", reads as non-compliance and scores as a gap. It is answered
+  // — see <answered-elsewhere> — and only the onshore build is scoped apart.
   x.list('standard-exclusions', STANDARD_EXCLUSIONS);
+  x.close();
+}
+
+/**
+ * What the client asked for that this build answers with a route rather than
+ * with a Shopify storefront. Not an exclusion, and never written as one: what
+ * Merkle can do comes first, what the platform cannot do second, and where the
+ * rest is scoped third.
+ */
+function answeredElsewhere(x, doc) {
+  if (!(doc.markets?.list ?? []).some((m) => m.code === 'CN')) return;
+  x.open('answered-elsewhere');
+  x.open('requirement', { topic: 'Mainland China', rule: '11.20' });
+  x.field('asked-for', 'Mainland China is one of the launch markets');
+  x.field('what-we-can-do', 'Shopify carries the brand in mainland China and feeds the partner and marketplace channels that sell there');
+  x.field('what-shopify-cannot', 'Shopify has no infrastructure in mainland China, so it cannot be the shop customers buy from inside the country; selling onshore needs a PRC entity, an ICP filing or licence and onshore hosting');
+  x.field('scoped-separately', 'Onshore selling is its own workstream with its own discovery');
+  x.close();
   x.close();
 }
 
@@ -662,6 +682,10 @@ export function buildDeckXml(doc, backlog = null, { stated = [] } = {}) {
   } else {
     for (const section of [risks, nextSteps]) section(x, doc);
   }
+  // On every document that reaches a client. A requirement they asked for has to
+  // be answered whether the engagement is a standard offer or an Enterprise one;
+  // only the short no-bid deck has nobody to answer it to.
+  if (doc.delivery.go || isLarger(doc)) answeredElsewhere(x, doc);
   consultantNotes(x, doc, backlog);
 
   const head = [

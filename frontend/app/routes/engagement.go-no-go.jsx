@@ -1,6 +1,8 @@
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader } from '../components/question.jsx';
+import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
+import { ServiceError } from '../../../discovery/service/index.js';
+import { Radar } from '../components/radar.jsx';
 import { pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Go/No-Go support', params.client) }];
@@ -16,9 +18,23 @@ export const meta = ({ params }) => [{ title: pageTitle('Go/No-Go support', para
 export async function loader({ request, params }) {
   const user = await requireUser(request);
   try {
-    return await discovery().getGoNoGo(user, params.client);
+    return { ...(await discovery().getGoNoGo(user, params.client)), blocked: null };
   } catch (err) {
-    throw serviceFailure(err);
+    // The blockers say which questions are missing and link to them. Rethrowing
+    // sent the architect a bare "Some answers are still missing" on the page a
+    // bid decision is taken from, while two sibling steps listed them.
+    if (!(err instanceof ServiceError)) throw serviceFailure(err);
+    // The engagement itself still loads, so the page keeps its header and its
+    // spine rather than dropping the consultant onto a bare error.
+    // The graceful path needs the record to exist. When it does not, the
+    // fallback threw too and the page 500'd on the way to explaining itself.
+    let engagement;
+    try {
+      ({ engagement } = await discovery().getSummary(user, params.client));
+    } catch {
+      throw serviceFailure(err);
+    }
+    return { engagement, blocked: { error: err.message, errors: err.errors ?? [], blockers: err.blockers ?? [] } };
   }
 }
 
@@ -34,39 +50,160 @@ const TONE = {
 const OWNER = { agent: 'Claude Code agent', developer: 'Developer', consultant: 'Consultant', client: 'Client' };
 const money = (b) => (b ? `${b.currency ?? ''} ${Math.round(b.min / 1000)}k–${Math.round(b.max / 1000)}k${b.open_ended ? '+' : ''}`.trim() : null);
 
+/** "3" or "5–7". */
+const span = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}\u2013${w.max}`) : '—');
+
 export default function GoNoGo({ loaderData }) {
-  const { engagement, go_no_go: g } = loaderData;
+  const { engagement, go_no_go: g, blocked } = loaderData;
+  if (blocked) {
+    return (
+      <main>
+        <EngagementHeader engagement={engagement} eyebrow="Go/No-Go support" />
+        <section className="card start blocked">
+          <p className="question">{blocked.error}</p>
+          <p className="muted">There is nothing for this desk to weigh until these are recorded.</p>
+          <Blockers from={`/engagements/${engagement.client}/go-no-go`} items={blocked.blockers} errors={blocked.errors} client={engagement.client} />
+        </section>
+      </main>
+    );
+  }
   const client = engagement.client;
   const r = g.recommendation;
   const tone = TONE[r.verdict] ?? 'flag';
 
   return (
-    <main>
+    <main id="main">
       <EngagementHeader engagement={engagement} eyebrow="Go/No-Go support" />
 
-      {/* The position */}
-      <section className={`card start ${tone === 'go' ? 'current' : 'blocked'}`}>
-        <div className="start-head">
-          <div>
-            <p className="eyebrow">Solution Architect</p>
-            <p className="question">{r.headline}</p>
-          </div>
-          <span className={`badge ${tone}`}>{r.verdict}</span>
-        </div>
-        <ul className="because">
-          {r.because.map((line) => <li key={line}>{line}</li>)}
-        </ul>
+      {/* The position: the verdict, then one why, then the ground under it */}
+      <section className={`card position ${tone}`}>
+        <p className="eyebrow">Solution Architect · {r.verdict.charAt(0).toUpperCase() + r.verdict.slice(1)}</p>
+        <h2 className="plain verdict">{r.headline}</h2>
+
+        <p className="why-line">{r.why}</p>
+
+        {r.because.length ? (
+          <ul className="grounds">
+            {r.because.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+        ) : null}
+
         {r.before_you_go.length ? (
-          <>
+          <div className="before">
             <p className="eyebrow">Before the price is committed</p>
             <ul className="ticks">{r.before_you_go.map((line) => <li key={line}>{line}</li>)}</ul>
-          </>
+          </div>
         ) : null}
+
         <p className="muted small">
           A recommendation, not the decision. The relationship, the competition and the pipeline are weighed in
           the room, and this desk knows nothing about them.
         </p>
       </section>
+
+      {/* What adds up to an overrun.
+          "Which requirement is outside the offers?" has no answer on an
+          engagement that hit the effort ceiling — none of them is, and the page
+          said "1 requirement" anyway, which sends a consultant looking for
+          something that does not exist. This is the sum itemised: nothing to
+          remove, a list to negotiate. */}
+      {g.outgrew ? (
+        <section>
+          <h2>Why this is bigger than the offer</h2>
+          <p className="muted">
+            Nothing on this list is outside the offers on its own. The offer's band already carries{' '}
+            <strong>{span(g.outgrew.carries)} weeks</strong> of scope-gate work; this engagement asks for more
+            than that, so the excess is quoted on top at the rate of the work that caused it — which is why it
+            is quoted at <strong>{span(g.outgrew.quoted)} weeks</strong> rather than the offer's usual band.
+          </p>
+          <ol className="outgrew">
+            <li className="outgrew-base">
+              <span className="outgrew-what">The build itself</span>
+              <span className="outgrew-weeks">{span(g.outgrew.base)}</span>
+            </li>
+            {g.outgrew.gates.map((x) => (
+              <li key={x.gate}>
+                <span className="outgrew-what">{x.label}</span>
+                <span className="outgrew-weeks">+{span(x.weeks)}</span>
+              </li>
+            ))}
+            <li className="outgrew-total">
+              <span className="outgrew-what">Total</span>
+              <span className="outgrew-weeks">{span(g.outgrew.weeks)} weeks</span>
+            </li>
+          </ol>
+        </section>
+      ) : null}
+
+      {/* Where the complexity sits, before it is read */}
+      {g.profile?.length ? (
+        <section>
+          <h2>Where the complexity sits</h2>
+          <p className="muted">
+            Each axis is one of the seven things that grow a Shopify build. Inside the dashed line is what
+            Merkle’s standard offers cover; anything past it is scoped and priced on its own. An axis marked{' '}
+            <strong>?</strong> is one the documents never mentioned — not one we know does not apply.
+          </p>
+          <div className="profile">
+            <Radar axes={g.profile} />
+            <div className="table-scroll" role="region" tabIndex={0} aria-label="The profile, scrollable table">
+              <table>
+                <thead><tr><th scope="col">Dimension</th><th scope="col">Standing</th><th scope="col">What they asked for</th></tr></thead>
+                <tbody>
+                  {g.profile.map((a) => (
+                    <tr key={a.id} className={a.level === 0 && a.known !== false ? 'idle' : undefined}>
+                      <th scope="row">{a.label}</th>
+                      <td>
+                        <span className={`badge ${a.level === 2 ? 'stop' : a.known === false ? 'flag' : a.level === 1 ? 'go' : ''}`}>{a.standing}</span>
+                        {a.rules.length ? <div className="muted small">{a.rules.map((r) => r.rule_id).join(', ')}</div> : null}
+                      </td>
+                      <td>
+                        {a.also?.length ? (
+                          <div className="also">
+                            {a.also.map((w) => <p key={w.work} className="muted small">{w.topic} — {w.work}</p>)}
+                          </div>
+                        ) : null}
+                        {a.evidence ?? (a.known === false
+                          ? <span className="muted">Nothing in the documents either way — <a href={`/engagements/${client}/clarifications`}>it is in the Q&amp;A</a> ({a.settled_by.join(', ')})</span>
+                          : <span className="muted">—</span>)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Asked for, answered, and answered outside this build. Not an exclusion:
+          a requirement listed as one reads as non-compliance and scores as a gap. */}
+      {g.answered_elsewhere?.length ? (
+        <section>
+          <h2>Answered outside this build</h2>
+          <p className="muted">
+            Nothing they asked for is dropped. Part of it is answered with a route rather than with a Shopify
+            build, and that part is scoped on its own — which is a smaller build here, not a smaller response.
+          </p>
+          <ul className="exclusions">
+            {g.answered_elsewhere.map((x) => (
+              <li key={x.rule_id}>
+                <p className="excl-what">{x.what} <span className="rule-id flag">{x.rule_id}</span></p>
+                <p className="muted small">They asked for it: {x.asked_for}</p>
+                <p><strong>What we can do.</strong> {x.answer}</p>
+                <p><strong>What Shopify cannot.</strong> {x.what_it_cannot}</p>
+                <p className="muted">{x.where_it_goes}. {x.leaves}.</p>
+                {x.work?.length ? (
+                  <>
+                    <p className="muted small"><strong>Answering it is work in this build:</strong></p>
+                    <ul className="ticks">{x.work.map((w) => <li key={w}>{w}</li>)}</ul>
+                  </>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       {/* What the RFP is asking for */}
       {g.capabilities.length ? (
@@ -83,31 +220,14 @@ export default function GoNoGo({ loaderData }) {
         </section>
       ) : null}
 
-      {/* What it would take to build */}
-      <section>
-        <h2>What it would take</h2>
-        {g.scope.applies ? (
-          <ul className="ticks">
-            <li><strong>{g.scope.offer} · {g.scope.name}</strong> — {g.scope.track}</li>
-            <li>{g.scope.weeks} weeks of build{g.scope.band ? `, ${money(g.scope.band)}` : ''}</li>
-            {g.scope.shape.length ? <li>Shaped as {g.scope.shape.map((s) => `${s.stories} ${OWNER[s.owner] ?? s.owner}`).join(', ').toLowerCase()}</li> : null}
-          </ul>
-        ) : (
-          <>
-            <p className="muted">
-              It does not map to S, M or L, so there is no standard scope or price to quote. Pricing it at{' '}
-              <strong>{g.scope.offer}</strong> — what the scope gates classify it as — would sell bespoke work
-              at a standard price.
-            </p>
-            <ul className="ticks">{g.scope.why_not.map((w) => <li key={w}>{w}</li>)}</ul>
-          </>
-        )}
-      </section>
-
-      {/* What could move the margin */}
+      {/* Complexity sources and risks */}
       {g.risks.length ? (
         <section>
-          <h2>What could move the margin</h2>
+          <h2>Complexity sources and risks</h2>
+          <p className="muted">
+            Every rule the requirements fired, worst first — what takes it outside the offers, and what needs a
+            named owner before a build starts.
+          </p>
           <ul className="rules">
             {g.risks.map((x) => (
               <li key={x.rule_id}>
@@ -122,43 +242,14 @@ export default function GoNoGo({ loaderData }) {
         </section>
       ) : null}
 
-      {/* What we would be betting on */}
-      {g.assumptions.length ? (
-        <section>
-          <h2>What we would be betting on ({g.assumptions_total})</h2>
-          <p className="muted">
-            Which of these to settle before the price is committed is decided in{' '}
-            <a href={`/engagements/${client}/clarifications`}>RFP Q&amp;A</a>.
-          </p>
-          <ul className="assumptions">
-            {g.assumptions.map((a, i) => (
-              <li key={`${a.assumed}-${i}`} className={a.source}>
-                <p className="assumed">{a.assumed}</p>
-                <p className="muted">{a.about}</p>
-                {a.impact_if_wrong ? <p className="muted small">If wrong: {a.impact_if_wrong}</p> : null}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-
-      {/* The boundary */}
-      <details className="rules-more">
-        <summary>The rest of the scorecard is not this desk’s ({g.not_ours.length})</summary>
-        <p className="muted">
-          Commercial and relationship ground — the opportunity value, the NPS, the buying centre, whether a
-          pitch team is confirmed. An RFP cannot tell us any of it, and a guess written into a scorecard gets
-          read as a fact.
-        </p>
-        <div className="table-scroll">
-          <table>
-            <thead><tr><th>#</th><th>Question</th><th>Who answers it</th></tr></thead>
-            <tbody>
-              {g.not_ours.map((q) => <tr key={q.n}><td>{q.n}</td><td>{q.ask}</td><td>{q.owner}</td></tr>)}
-            </tbody>
-          </table>
-        </div>
-      </details>
+      <p className="muted small">
+        The rest of Merkle’s Go/No-Go scorecard is commercial and relationship ground — the opportunity value,
+        the NPS, the buying centre, whether a pitch team is confirmed. An RFP cannot tell us any of it, and this
+        desk does not guess at it.
+      </p>
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

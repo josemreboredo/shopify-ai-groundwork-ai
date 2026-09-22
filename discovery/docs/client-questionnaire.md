@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.2.0 · offering 1.3.0
+> **Version:** question bank 1.2.0 · offering 2.12.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
@@ -342,6 +342,7 @@
 - [ ] Not sure yet
 
 **Q2.2.2** — Will subscriptions run on Shopify Subscriptions (Shopify's app) or a third-party subscription app? Name the app if known. *(recommended)*
+*Skip if Q2.2.1 does not include subscription.*
 *Ask if Q2.2.1 includes Subscription.*
 *Shopify Subscriptions: customers skip, pause and cancel in their account; not with bundles or B2B.*
 
@@ -349,6 +350,7 @@
 - Subscription app:
 
 **Q2.2.3** — If you sell bundles: what must they do? *(recommended)*
+*Skip if Q2.2.1 does not include fixed_bundle,multipack,mix_and_match_bundle,bundle,product_set.*
 *Ask if Q2.2.1 includes Fixed bundle, Multipack, Mix and match bundle or Bundle.*
 *Shopify Bundles: up to 30 components; not with subscriptions or pre-orders; no nested bundles.*
 
@@ -364,6 +366,7 @@
 - [ ] Not sure yet
 
 **Q2.2.4** — Which subscription features are needed? *(recommended)*
+*Skip if Q2.2.1 does not include subscription.*
 *Ask if Q2.2.1 includes Subscription.*
 
 *(tick all that apply)*
@@ -379,6 +382,7 @@
 - [ ] Not sure yet
 
 **Q2.2.5** — For pre-orders, when is the customer charged? *(recommended)*
+*Skip if Q2.2.1 does not include pre_order.*
 *Ask if Q2.2.1 includes Pre order.*
 *Pre-orders need a pre-order app; express checkouts (Shop Pay, Apple Pay, Google Pay) are not available for pre-orders.*
 
@@ -1167,6 +1171,12 @@
 - [ ] None
 - [ ] Not sure yet
 
+**Q5.1.15** — Does a single order ever need to go to more than one address — gifts to several recipients, or one wholesale order split across branches? *(recommended)*
+*Different from an order arriving in several parcels, which Shopify does on its own.*
+
+- [ ] Yes
+- [ ] No
+
 ### 5.2 Returns & exchanges
 
 **Q5.2.1** — Summarise the returns policy (window, conditions, who pays return postage). *(recommended)*
@@ -1574,6 +1584,7 @@
 - [ ] Not sure yet
 
 **Q6.2.14** — Is the wholesale side of the business run by its own team, with its own targets or its own profit and loss? *(recommended)*
+*Skip if Q1.1.4 = Direct to consumer (DTC).*
 *Ask if Q1.1.4 is Business to business (B2B), or Q1.1.4 is Hybrid (DTC and B2B).*
 *Why we ask: A wholesale business with its own team, targets and customers usually wants to move at its own pace — its own campaigns, its own releases, its own data. That is the difference between wholesale living alongside the consumer store and wholesale having a store of its own.*
 *We are asking about how the business is organised, not about the website.*
@@ -1682,6 +1693,51 @@
 - [ ] Customer account sign in
 - [ ] Forms popups
 - [ ] POS
+- [ ] None
+- [ ] Not sure yet
+
+### 6.5 Customer service
+
+**Q6.5.1** — Where will customer questions be answered after launch: Shopify Inbox, a helpdesk app, a helpdesk outside Shopify, email only, or nowhere yet? *(required)*
+*Shopify Inbox is free and lives in the admin. A helpdesk such as Gorgias or Zendesk pulls order context in and usually needs a connection built.*
+
+*(tick one)*
+- [ ] Shopify inbox
+- [ ] Helpdesk app
+- [ ] External helpdesk
+- [ ] Email only
+- [ ] None
+- [ ] Not sure yet
+
+**Q6.5.2** — Which helpdesk, if one is named? *(recommended)*
+*The product name, not a person.*
+
+> Answer:
+
+**Q6.5.3** — Where should the storefront contact form deliver: an email inbox, the helpdesk, a CRM, or is there no form? *(required)*
+*Shopify themes ship a contact form that sends email. Anything else is a connection somebody builds and maintains.*
+
+*(tick one)*
+- [ ] Email only
+- [ ] Into the helpdesk
+- [ ] Into a CRM
+- [ ] None
+- [ ] Not sure yet
+
+**Q6.5.4** — Does your team create orders for customers — by phone, in a showroom, or for wholesale buyers? *(required)*
+*In Shopify this is a draft order: staff build the order in the admin and send an invoice to pay.*
+
+- [ ] Yes
+- [ ] No
+
+**Q6.5.5** — Do customers book a slot with you — an in-store appointment, a virtual consultation, or both? *(recommended)*
+*Ask if Q5.6.1 is 1 or more, or Q2.2.1 includes Virtual or Made to order, or Q0.3.1 mentions appointment, booking, consultation, fitting, showroom or reservation.*
+*Booking is not a Shopify feature; it is an App Store category, and the app is what holds the calendar.*
+
+*(tick one)*
+- [ ] In store appointments
+- [ ] Virtual consultations
+- [ ] Both
 - [ ] None
 - [ ] Not sure yet
 
@@ -2024,12 +2080,12 @@
 
 ### 8.1 Connected systems
 
-**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required)*
-*Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status.*
+**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status, and whether it has a test environment we can connect to before go-live. *(required)*
+*Typical ownership: the PIM supplies products, attributes and translations; the ERP supplies prices (including B2B catalogs), inventory per location and order status. Shopify needs no separate instance for staging, so the only environment that has to be arranged is yours: a system with no test environment means integration testing runs against your live one.*
 
-| System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes |
-|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | | |
+| System | Category | Direction | Objects | Frequency | Connector | Middleware | Owner | Status | Daily updates | Latency minutes | Test environment |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| | | | | | | | | | | | |
 
 **Q8.1.2** — Is there a middleware / iPaaS layer, or custom connectors? *(optional)*
 
@@ -2200,6 +2256,14 @@
 - [ ] PIM
 - [ ] Not sure yet
 
+**Q9.2.11** — Which front end: Shopify Hydrogen, or another framework? *(recommended · consultant)*
+*Skip if Q9.2.1 = no.*
+
+*(tick one)*
+- [ ] Hydrogen
+- [ ] Other framework
+- [ ] Not sure yet
+
 **Q9.2.9** — Headless platform features required? *(recommended · consultant)*
 *Skip if Q9.2.1 = no.*
 
@@ -2219,6 +2283,15 @@
 
 - [ ] Yes
 - [ ] No
+
+**Q9.2.12** — Do you want a presence inside Shopify’s Shop app — a Shop Mini? *(recommended)*
+*A full-screen shopping experience inside the Shop app. It is not your own app and not a headless storefront.*
+
+*(tick one)*
+- [ ] Now
+- [ ] Later
+- [ ] No
+- [ ] Not sure yet
 
 ### 9.3 Accessibility
 
@@ -2364,8 +2437,8 @@
 
 > Answer:
 
-**Q10.5.2** — Has the client agreed that answers may be processed by the AI discovery engine (no customer personal data included)? *(required · consultant)*
-*ADR 0007 — the engine refuses to run without recorded consent.*
+**Q10.5.2** — Has the client agreed that their answers may be processed by AI (no customer personal data included)? *(required · consultant)*
+*Nothing else can be recorded until this is Yes, and it has to be true — an RFP arriving in your inbox is not consent to put it through an AI tool. If the client’s process has no such clause, ask, or stop.*
 
 - [ ] Yes
 - [ ] No

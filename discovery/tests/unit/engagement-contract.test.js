@@ -86,7 +86,9 @@ describe('question bank', () => {
       const value = q.skip_if.equals ?? q.skip_if.excludes;
       assert.notEqual(value, undefined, `${q.id}: skip_if needs equals or excludes`);
       const allowed = enumValues(schemaNodeAt(target.maps_to[0]));
-      if (typeof value === 'string') assert.ok(allowed?.includes(value), `${q.id}: ${value} is not a value of ${target.id}`);
+      for (const v of Array.isArray(value) ? value : [value]) {
+        if (typeof v === 'string') assert.ok(allowed?.includes(v), `${q.id}: ${v} is not a value of ${target.id}`);
+      }
     }
   });
 
@@ -133,6 +135,13 @@ describe('offering traceability', () => {
     const modifierIds = new Set(offering.modifiers.map((m) => m.id));
     for (const g of offering.scope_gates) {
       if (g.modifier !== null) assert.ok(modifierIds.has(g.modifier), `gate ${g.id}: unknown modifier ${g.modifier}`);
+      // A gate priced by tier declares no single modifier, so it needs one per
+      // tier instead — otherwise a source platform resolves to nothing and the
+      // gate is silently free.
+      for (const tier of g.modifier_tiers ?? []) {
+        assert.ok(offering.modifiers.some((m) => m.gate === g.id && m.tier === tier),
+          `gate ${g.id}: no modifier for tier ${tier}`);
+      }
     }
     assert.deepEqual(
       [...schemaNodeAt('/offer/modifiers/*').enum].sort(),

@@ -100,14 +100,58 @@ const STEPS = {
       // price the work, what it would cost us to be wrong, and where it lands.
       path: 'go-no-go',
       label: 'Go/No-Go support',
-      done: Boolean(e.go || e.route),
-      hint: e.go ? `Within the offers · ${e.offer?.code ?? ''}`.trim() : e.route ? ROUTE_LABEL[e.route] ?? e.route : 'Evidence for the decision',
+      // The engine has a position from the moment the record exists — an empty
+      // bid is a GO on the smallest offer — so "the engine computed something"
+      // was never the same as "there is a position to take into the room", and
+      // the step marked itself done on a bid nobody had read. It follows the
+      // page's own gates now: nothing read is nothing to assess, and an
+      // extraction nobody has checked is not something to stand behind.
+      done: ((e.documents ?? 0) > 0 || (e.coverage?.required_answered ?? 0) > 0) && (e.to_review ?? 0) === 0 && Boolean(e.go || e.route),
+      // The step used to state the engine's commercial position — "Within the
+      // offers · S" — while the page it links to applies its own gates and could
+      // read "ASK FIRST — part of this cannot be costed at all". Two verdicts,
+      // one step. The page owns the position; the step says whether there is one
+      // to read.
+      // A route beyond the offers is the engine's own classification and the page
+      // says the same thing, so it stays. "Within the offers · S" did not: the
+      // page applies its own gates and can read "ASK FIRST — part of this cannot
+      // be costed at all" beside it. The page owns the position; the step says
+      // whether there is one worth reading.
+      hint: !(e.documents ?? 0) && !(e.coverage?.required_answered ?? 0)
+        ? 'Nothing to assess yet'
+        : e.to_review
+          ? `${e.to_review} to confirm first`
+          : e.route
+            ? ROUTE_LABEL[e.route] ?? e.route
+            : 'The position, and what it rests on',
     },
     {
       path: 'clarifications',
       label: 'RFP Q&A',
-      done: Boolean(e.clarifications_at),
-      hint: e.clarifications_at ? `Prepared ${e.clarifications_at}` : 'What we must ask to price it',
+      // Saved is not decided: the proposal refuses to run while anything is
+      // undecided, so marking this done on the save alone had the spine say
+      // finished while the next step said blocked.
+      done: Boolean(e.clarifications_at) && !e.clarifications_undecided,
+      hint: e.clarifications_undecided
+        ? `${e.clarifications_undecided} still to decide`
+        : e.clarifications_at ? `Prepared ${e.clarifications_at}` : 'What we must ask to price it',
+    },
+    {
+      // The last thing you check before committing to a price. Everything the
+      // proposal will rest on is settled by now — what was confirmed, what the
+      // engine concluded, what is asked and what is assumed — and this is the one
+      // page that shows it together. It was a side view, which is where a
+      // consultant never looks at the moment it matters.
+      path: 'summary',
+      label: 'Check where it stands',
+      // Its own condition. It shared one with "Write the proposal", so the two
+      // flipped together and the spine pointed at the summary for ever — the
+      // step that actually produces the document was never the current one.
+      // The check is passed when nothing is left blocking it — and an empty bid
+      // blocks nothing, which is not the same as being settled: with no document
+      // read there is nothing to confirm, nothing to ask and nothing to check.
+      done: (e.documents ?? 0) > 0 && e.to_review === 0 && !e.clarifications_undecided && Boolean(e.go || e.route),
+      hint: (e.documents ?? 0) ? 'Everything the proposal will rest on, in one page' : 'Nothing to check yet',
     },
     {
       path: 'closing-document',
@@ -153,7 +197,7 @@ const STEPS = {
 /** How a route beyond the offers reads in a step hint. */
 const ROUTE_LABEL = {
   larger_engagement: 'Larger Engagement — a dedicated Discovery Phase',
-  no_bid: 'No bid',
+  arc: 'Merkle Arc',
 };
 
 /**
@@ -179,6 +223,12 @@ export function stepsFor(engagement) {
     hint: s.hint ?? null,
     n: i + 1,
     state: current === -1 || i < current ? 'done' : i === current ? 'current' : 'todo',
+    // A step can meet its own condition while an earlier one does not — a closing
+    // document saved before the interview finished. Progress still stops at the
+    // first unmet step, but "met, and waiting on the work before it" is not the
+    // same as untouched, and a hint reading "Saved 2026-09-18" under a step
+    // styled as never started says two different things at once.
+    satisfied: s.done,
   }));
 }
 
@@ -194,12 +244,13 @@ export function viewsFor(engagement) {
   const e = engagement ?? {};
   const rfp = processOf(e.process) === 'rfp';
   return [
-    // The engine's own working summary is reference in both, never a step.
-    { path: 'summary', label: 'Summary' },
+    // On a bid the summary is the check before the price is committed, so it is a
+    // step. In a discovery it stays what it always was: reference.
+    ...(rfp ? [] : [{ path: 'summary', label: 'Summary' }]),
     // The questions are a step on a bid, where the window closes; in a discovery
     // the consultant is already talking to the client, so they are a view. The
     // handover is the mirror of that: a discovery's last step, a bid's side note.
     ...(rfp ? [{ path: 'handover', label: 'Handover' }] : [{ path: 'clarifications', label: 'Questions to the client' }]),
-    { path: 'settings', label: 'Change' },
+    { path: 'settings', label: 'Settings' },
   ];
 }

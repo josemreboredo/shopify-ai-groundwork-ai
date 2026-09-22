@@ -9,6 +9,7 @@
  */
 
 import { validateEngagement, offering } from '../../schema/index.js';
+import { supported as supportedLanguage } from '../language.js';
 import { hasConsent, redactQuestionnaire, InputRejectedError } from './input.js';
 import { extractAnswers, flattenAnswers } from './extract.js';
 import { isNotSure } from './values.js';
@@ -55,7 +56,7 @@ class EngagementInvalidError extends Error {
  * @param {object} answers
  * @param {{ today: string, clientSlug?: string, source?: 'questionnaire'|'chatbot'|'brief' }} options
  */
-export function assemble(answers, { today, clientSlug, source = 'questionnaire' }) {
+export function assemble(answers, { today, clientSlug, source = 'questionnaire', language }) {
   const { meta = {}, ...rest } = structuredClone(answers);
   // B2B follows the business model unless answered explicitly (question bank 1.1.0: DTC → no B2B; B2B or hybrid → B2B).
   const model = meta.client?.business_model;
@@ -66,6 +67,19 @@ export function assemble(answers, { today, clientSlug, source = 'questionnaire' 
       ...meta,
       client: { ...meta.client, ...(clientSlug ? { slug: clientSlug } : {}) },
       source,
+      // The language the engagement is run in. Everything generated downstream
+      // from engagement.json — the configuration workbook above all — otherwise
+      // has no way to know what language to write the client's copy in.
+      //
+      // Only when the tool still supports it. The app used to offer five
+      // languages and the session accepted any two-letter code, so engagements
+      // exist that are recorded as Italian. Stamping that onto the contract
+      // failed its enum and took the whole engagement down with it — an
+      // engagement that had been valid for months stopped being able to agree
+      // its own scope. An unsupported language means we have no language for
+      // this engagement, which is what an engagement predating the field means
+      // too; the Lead Consultant sets a real one in Settings.
+      ...(supportedLanguage(language) ? { language } : {}),
       created_at: meta.created_at ?? today,
       updated_at: today,
     },
@@ -115,9 +129,24 @@ function crossBorderModel(doc, topology) {
   return 'self_managed_markets';
 }
 
-export function decide(extraction, options) {
-  /** @type {any} */
-  const doc = assemble(extraction.answers, options);
+/**
+ * Everything the engine decides, from an assembled document.
+ *
+ * This was the body of `decide` and the interview preview had its own copy of
+ * two of its four steps. The copy skipped the topology, which is derived here
+ * and nowhere else — so on a multi-market engagement with unresolved topology,
+ * rule 11.23 fired for `decide` and never for the preview. That is one of the
+ * five risks rule 11.3 counts, so the same answers came out GO on one page of
+ * the app and STOP on another, and a consultant had no way to tell which was
+ * the engine.
+ *
+ * There is one of these now. A caller that wants what the engine thinks calls
+ * it; there is no second opinion to drift from.
+ *
+ * @param {any} doc  an assembled engagement
+ * @param {object[]} [exitCandidates]  LLM-detected candidates, added never substituted
+ */
+export function weigh(doc, exitCandidates = []) {
   const topology = evaluateTopology(doc);
   if (topology) {
     // Derived, never answered: the questionnaire asks about the business, the
@@ -125,8 +154,14 @@ export function decide(extraction, options) {
     doc.markets = { ...doc.markets, topology, cross_border_model: crossBorderModel(doc, topology) };
   }
   doc.offer = classifyOffer(doc);
-  doc.exits = evaluateExits(doc, extraction.exitCandidates);
+  doc.exits = evaluateExits(doc, exitCandidates);
   doc.delivery = { ...(doc.delivery ?? {}), go: !doc.exits.triggered };
+  return doc;
+}
+
+export function decide(extraction, options) {
+  /** @type {any} */
+  const doc = weigh(assemble(extraction.answers, options), extraction.exitCandidates);
   if (Object.keys(extraction.provenance).length) doc.provenance = extraction.provenance;
   if (extraction.notes?.length) doc.notes = extraction.notes;
   const plan = planSuggestion(doc);

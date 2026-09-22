@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Form, Link, useNavigation, useRevalidator } from 'react-router';
+import { Form, Link, NavLink, useNavigation, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { questionAction } from '../question-actions.server.js';
 import { vocabulariesFor } from '../vocabularies.server.js';
-import { EngagementHeader, PreviewPanel, QuestionCard, Vocabularies } from '../components/question.jsx';
+import { EngagementErrorBoundary, EngagementHeader, QuestionCard, Vocabularies } from '../components/question.jsx';
 import { processMeta } from '../../../discovery/service/process.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
 
@@ -13,9 +13,10 @@ export const meta = ({ params }) => [{ title: pageTitle(params.client) }];
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);
+  const section = new URL(request.url).searchParams.get('section');
   try {
     const [view, answers] = await Promise.all([
-      discovery().getInterview(user, params.client, { limit: 3 }),
+      discovery().getInterview(user, params.client, { limit: 3, section }),
       discovery().listAnswers(user, params.client),
     ]);
     return { ...view, answers, vocabularies: vocabulariesFor(view.next.questions) };
@@ -140,22 +141,27 @@ If you cannot see any documents in this chat, stop and tell me: either I attach 
             already answer, and records them here with the page and quote they came from. It has to start in
             Claude, because that is where the documents are — this tool cannot reach into your project.
           </p>
+          {/* The button opened a fresh chat — outside the Project, with the
+              connector off — carrying an instruction that begins "read the
+              documents in this project". The order is reversed: the path that
+              works is first, and the one-click path says what it costs. */}
           <ol className="prefill-steps">
-            <li><strong>Pre-fill in Claude</strong> opens a chat with the instruction written — you only press Enter. Attach the RFP in that chat.</li>
-            <li>If the RFP is already in your <strong>Claude Project</strong> for this client, start the chat <em>inside the project</em> instead: copy the instruction and paste it there, or pick <strong>Pre-fill the engagement from the documents</strong> from the {CONNECTOR} connector’s prompts.</li>
+            <li><strong>Copy the instruction</strong>, open your <strong>Claude Project</strong> for this client, and paste it into a chat <em>inside the project</em> — that is where the documents are. Check the {CONNECTOR} connector is on in that chat (<strong>+ → Connectors</strong>); <a href="/claude">how to add it</a>.</li>
+            <li>Or pick <strong>Pre-fill the engagement from the documents</strong> from the connector’s own prompts, which carries the same instruction.</li>
+            <li><strong>Pre-fill in Claude</strong> opens a new chat instead — quicker, but outside your Project, so you have to attach the documents to that chat yourself and turn the connector on in it.</li>
             <li>Come back here. The answers arrive marked <strong>to confirm</strong>, each with its citation; check them and confirm.</li>
           </ol>
         </>
       )}
       <div className="actions">
-        <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(instruction)}`} target="_blank" rel="noreferrer">Pre-fill in Claude</a>
-        <button type="button" className="secondary" onClick={() => { navigator.clipboard?.writeText(instruction); setCopied(true); }}>
+        <button type="button" onClick={() => { navigator.clipboard?.writeText(instruction); setCopied(true); }}>
           {copied ? 'Copied — paste it inside your Claude Project' : 'Copy the instruction'}
         </button>
+        <a className="button secondary" href={`https://claude.ai/new?q=${encodeURIComponent(instruction)}`} target="_blank" rel="noreferrer">Open a new chat instead</a>
       </div>
       <details>
         <summary>The instruction</summary>
-        <textarea readOnly rows={6} value={instruction} />
+        <textarea readOnly rows={6} value={instruction} aria-label="The instruction to paste into Claude" />
       </details>
       <p className="muted small">
         Claude can only read the documents it can see: the ones attached to that chat, or the ones in the project the chat is in.
@@ -168,14 +174,14 @@ If you cannot see any documents in this chat, stop and tell me: either I attach 
 function AnswersReview({ answers, documents, busy }) {
   const toConfirm = answers.filter((a) => a.status === 'tbc');
   const confirmed = answers.filter((a) => a.status !== 'tbc');
-  const head = <thead><tr><th>Question</th><th>Answer</th><th>Recorded</th><th>Status</th></tr></thead>;
+  const head = <thead><tr><th scope="col">Question</th><th scope="col">Answer</th><th scope="col">Recorded</th><th scope="col">Status</th></tr></thead>;
   return (
     <>
       <h2>Answers to confirm ({toConfirm.length})</h2>
       {toConfirm.length ? (
         <>
           <p className="muted">Recorded from documents (e.g. by Claude) or marked to confirm. Check the citation, then confirm — or record a corrected answer to the question.</p>
-          <table>{head}<tbody>{toConfirm.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table>
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="Answers from documents, scrollable table"><table>{head}<tbody>{toConfirm.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table></div>
         </>
       ) : <p className="muted">Nothing to confirm.</p>}
 
@@ -186,7 +192,7 @@ function AnswersReview({ answers, documents, busy }) {
 
       <details>
         <summary>All confirmed answers ({confirmed.length})</summary>
-        <table>{head}<tbody>{confirmed.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table>
+        <div className="table-scroll" role="region" tabIndex={0} aria-label="Answers from documents, scrollable table"><table>{head}<tbody>{confirmed.map((a) => <AnswerRow key={a.pointer} a={a} busy={busy} />)}</tbody></table></div>
       </details>
     </>
   );
@@ -209,24 +215,69 @@ export default function Engagement({ loaderData, actionData }) {
     return () => clearInterval(id);
   }, [revalidator, next.consent_required]);
   return (
-    <main>
+    <main id="main">
       <Vocabularies vocabularies={vocabularies} />
       <EngagementHeader
         language={language}
         engagement={engagement}
         meta={bid
           ? `${documents.length} document${documents.length === 1 ? '' : 's'} read · ${toConfirm} answer${toConfirm === 1 ? '' : 's'} to confirm · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at}`
-          : `${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${next.remaining} questions open${typeof next.remaining_client === 'number' ? ` (${next.remaining_client} for the client)` : ''}`}
+          : `${engagement.mode} interview · ${engagement.language} · owner ${engagement.owner ?? '—'} · updated ${engagement.updated_at} · ${engagement.coverage?.required_answered ?? 0} of ${engagement.coverage?.required_total ?? 0} required answered${next.remaining ? ` · ${next.remaining} questions left in this depth` : ''}`}
       />
-      <div className="layout">
+      <div className="layout alone">
         <div>
-          {next.consent_required ? <p className="error">Record the client's consent for AI processing before any other answer.</p> : null}
+          {next.consent_required ? (
+            <p className="error">Record the client’s consent for AI processing before any other answer.</p>
+          ) : null}
           {!next.consent_required ? <PrefillCard client={engagement.client} documents={documents} toConfirm={toConfirm} process={engagement.process} /> : null}
-          {bid ? (
+          {/* A bid shows documents where a discovery shows questions — but until
+              consent is recorded there are no documents to show and nothing on the
+              page could record it, so a new bid opened on an error with no control
+              anywhere. Consent is a question, and the question card already works:
+              it is the one card a bid renders too. */}
+          {next.consent_required && next.questions.length ? (
+            next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} language={engagement.language} />)
+          ) : bid ? (
             <DocumentsRead client={engagement.client} documents={documentYield} toConfirm={toConfirm} />
           ) : (
             <>
-              {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} />) : (
+              {/* Three cards at a time with no map: a consultant could not say how
+                  much was left, in what, or go back to a part of it. */}
+              {next.sections?.length ? (
+                <nav className="sections" aria-label="Sections with questions open">
+                  <Link
+                    to={`/engagements/${engagement.client}`}
+                    aria-current={next.section ? undefined : 'true'}
+                    className={next.section ? 'secondary' : 'active'}
+                  >
+                    All · {next.remaining} to ask
+                  </Link>
+                  {next.sections.map((sec) => (
+                    <Link
+                      key={sec.id}
+                      to={`/engagements/${engagement.client}?section=${encodeURIComponent(sec.id)}`}
+                      aria-current={next.section === sec.id ? 'true' : undefined}
+                      className={next.section === sec.id ? 'active' : 'secondary'}
+                    >
+                      {sec.id} {sec.title} · {sec.open}
+                    </Link>
+                  ))}
+                </nav>
+              ) : null}
+              {/* A chip with a border was the only sign a filter was on, and the
+                  line under it named a section number rather than the section. */}
+              {next.section ? (
+                <p className="filtered-by">
+                  <strong>Showing only §{next.section} {next.sections.find((x) => x.id === next.section)?.title ?? ''}</strong>
+                  {' — '}{next.questions.length} of {next.in_section} still to ask here, {next.remaining} in this depth in all.{' '}
+                  <Link to={`/engagements/${engagement.client}`}>Show all sections</Link>
+                </p>
+              ) : (
+                <p className="muted small">
+                  Showing {next.questions.length} of {next.remaining} still to ask in this {engagement.mode} depth · {engagement.coverage?.required_answered ?? 0} of {engagement.coverage?.required_total ?? 0} required answered
+                </p>
+              )}
+              {next.questions.length ? next.questions.map((q) => <QuestionCard key={q.id} question={q} actionData={actionData} busy={busy} language={engagement.language} />) : (
                 <section className="card">
                   <p className="question">All questions for this {engagement.mode} interview are answered.</p>
                   <div className="actions">
@@ -244,12 +295,33 @@ export default function Engagement({ loaderData, actionData }) {
           <h2>Consultant notes</h2>
           {notes.length ? <ul>{notes.map((n, i) => <li key={i}>{n.at}: {n.text}</li>)}</ul> : <p className="muted">No notes.</p>}
           <Form method="post" className="actions">
-            <input type="text" name="text" placeholder="Context that is not an answer (no personal data)" />
+            <input type="text" name="text" aria-label="Consultant note" placeholder="Context that is not an answer (no personal data)" />
             <button type="submit" name="intent" value="note" className="secondary" disabled={busy}>Add note</button>
           </Form>
           {actionData?.intent === 'note' && actionData.error ? <ul className="errors">{(actionData.errors?.length ? actionData.errors : [actionData.error]).map((e) => <li key={e}>{e}</li>)}</ul> : null}
 
           {actionData?.ok && actionData.commented ? <p className="muted">Saved as a comment: the question counts as clarified and the comment stays an open point for the offer.</p> : null}
+          {/* Every mode says what it did. Three of the four used to say nothing
+              at all — the card simply vanished. */}
+          {actionData?.ok && actionData.recorded && !actionData.commented ? (
+            <p className="muted" role="status"><strong>{actionData.recorded.id}</strong> recorded as “{actionData.recorded.value}”.</p>
+          ) : null}
+          {/* Only when something actually moved. A line that speaks when nothing
+              happened is the line people stop reading. */}
+          {actionData?.ok && actionData.moved?.length ? (
+            <p className="moved" role="status">
+              That answer {actionData.moved.map((m, i) => (
+                <span key={m}>{i > 0 ? (i === actionData.moved.length - 1 ? ', and ' : ', ') : ''}<strong>{m}</strong></span>
+              ))}.{' '}
+              <Link to={`/engagements/${engagement.client}/summary`}>Where it stands</Link>
+            </p>
+          ) : null}
+          {actionData?.ok && actionData.intent === 'tbc' ? (
+            <p className="muted" role="status"><strong>{actionData.question_id}</strong> marked to check with the client{actionData.note ? `: ${actionData.note}` : ''}.</p>
+          ) : null}
+          {actionData?.ok && actionData.intent === 'skipped' ? (
+            <p className="muted" role="status"><strong>{actionData.question_id}</strong> marked not applicable.</p>
+          ) : null}
 
           {Object.keys(commented).length ? (
             <>
@@ -265,8 +337,10 @@ export default function Engagement({ loaderData, actionData }) {
             </>
           ) : null}
         </div>
-        {bid ? null : <PreviewPanel preview={preview} />}
       </div>
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

@@ -36,6 +36,7 @@ export default [
     points: 3,
     owner: 'agent',
     depends_on: ['LWC-THM-001'],
+    gates: ['analytics_consent'],
     spec_refs: ['/compliance/privacy_regimes', '/compliance/consent_approach', '/compliance/cookie_consent_tool', '/markets/list'],
     security_flags: ['pii'],
     applies: () => true,

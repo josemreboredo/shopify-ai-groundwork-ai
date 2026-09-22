@@ -22,7 +22,7 @@ export default [
     description: (doc) => `Domains: ${listOr(domains(doc), 'to confirm')}. Target launch: ${doc.delivery?.target_launch_date ?? 'to confirm'}.`,
     user_story: 'As the client, I want a rehearsed, minute-by-minute cut-over plan, so that the store goes live without lost orders or downtime.',
     acceptance_criteria: (doc) => [
-      `Given the cut-over plan, when it is rehearsed on the development store${isMigration(doc) ? ' including a full delta migration' : ''}, then every step has an owner, duration, go/no-go check and rollback`,
+      `Given the cut-over plan, when it is rehearsed on the build store${isMigration(doc) ? ' including a full delta migration' : ''}, then every step has an owner, duration, go/no-go check and rollback`,
       `Given DNS for ${listOr(domains(doc), 'the store domain')}, when the domains are connected, then TTLs were lowered 48 hours before, SSL is active, the primary domain per market is set and all other hostnames redirect`,
       ...(isMigration(doc) ? ['Given the old platform, when cut-over starts, then it is frozen for orders and content, the final delta (orders, customers, gift card balances) is imported and reconciled before the password is removed'] : []),
       ...(doc.delivery?.phased_launch ? ['Given a phased launch, when each phase goes live, then its markets, channels or customer groups are enabled in the agreed order with its own go/no-go'] : []),
@@ -47,6 +47,11 @@ export default [
       'Given payments, when readiness is reviewed, then Shopify Payments verification and every provider are in live mode with payouts configured and test mode off',
       `Given apps, when readiness is reviewed, then every installed app is on its paid plan, billed to the client and within ${money(doc.business?.app_cost_ceiling_monthly, 'the agreed app budget')} per month, and development-only apps are removed`,
       'Given staff access, when readiness is reviewed, then agency collaborator access is limited to hypercare needs and client owner, two-step authentication and staff permissions are confirmed',
+      // The build store is a client transfer store: ownership moves to the
+      // client when it goes live, and the store then leaves Merkle's Partner
+      // organisation. Unwritten, it is discovered at the worst moment — with
+      // the billing, the storage limits and the owner account all attached to it.
+      'Given the build store, when it is ready to go live, then ownership is transferred to the client, their billing and plan are in place, and the store leaves the Partner organisation with the agreed collaborator access left behind',
     ],
     gaia_tier: 'T2',
     points: 2,
@@ -55,7 +60,7 @@ export default [
     spec_refs: ['/exits/items', '/business/app_cost_ceiling_monthly', '/payments/providers', '/delivery/decision_maker_confirmed'],
     security_flags: ['production_store', 'payments', 'auth'],
     applies: () => true,
-    agent_prompt: (doc) => `Build the readiness checklist: open exits ${listOr(openExits(doc).map((i) => `${i.rule_id} (${i.destination ?? i.detail ?? 'see engagement'})`), 'none')}; UAT and QA sign-off; payments live (${listOr(doc.payments?.providers, 'providers')}); taxes signed off by finance; legal pages approved; consent banner live; apps on paid plans (${listOr(recommendedApps(doc).map((a) => a.name), 'none shortlisted')}); analytics verified; redirects verified; staff access and two-step authentication; support rota for hypercare. Run the go/no-go meeting and record the decision.`,
+    agent_prompt: (doc) => `Build the readiness checklist: open exits ${listOr(openExits(doc).map((i) => `${i.rule_id} (${i.destination ?? i.detail ?? 'see engagement'})`), 'none')}; UAT and QA sign-off; payments live (${listOr(doc.payments?.providers, 'providers')}); taxes signed off by finance; legal pages approved; consent banner live; apps on paid plans (${listOr(recommendedApps(doc).map((a) => a.name), 'none shortlisted')}); analytics verified; redirects verified; staff access and two-step authentication; support rota for hypercare. Transfer store ownership to the client with their billing and plan in place. Run the go/no-go meeting and record the decision.`,
   },
   {
     key: 'LWC-LCH-003',
@@ -63,7 +68,7 @@ export default [
     title: (doc) => `Train the client team${doc.delivery?.sops_required ? ' and hand over SOPs' : ''}`,
     user_story: 'As a client team member, I want hands-on training and clear operating procedures, so that I can run the store confidently from day one.',
     acceptance_criteria: (doc) => [
-      ...(doc.delivery?.training?.length ? doc.delivery.training : ['Products and collections', 'Orders, returns and refunds', 'Discounts', 'Theme editor content changes']).map((t) => `Given the "${t}" session, when it is delivered, then attendees complete a hands-on exercise on the development store and the recording is shared`),
+      ...(doc.delivery?.training?.length ? doc.delivery.training : ['Products and collections', 'Orders, returns and refunds', 'Discounts', 'Theme editor content changes']).map((t) => `Given the "${t}" session, when it is delivered, then attendees complete a hands-on exercise on the build store and the recording is shared`),
       ...(doc.delivery?.sops_required ? ['Given each recurring operation, when the SOP library is handed over, then every SOP has a purpose, steps with screenshots, owner and review date and is stored in the client\'s knowledge base'] : []),
       'Given training is complete, when the client owner reviews the handover pack, then admin roles, app list, integrations and escalation contacts are documented',
     ],
@@ -71,9 +76,10 @@ export default [
     points: 3,
     owner: 'consultant',
     depends_on: ['LWC-QA-004'],
+    gates: ['post_launch_support'],
     spec_refs: ['/delivery/training', '/delivery/sops_required', '/delivery/admin_roles'],
     applies: () => true,
-    agent_prompt: (doc) => `Prepare training for ${listOr(doc.delivery?.admin_roles, 'the client team')} covering ${listOr(doc.delivery?.training, 'products and collections, orders and returns, discounts and theme editor content changes')}: agenda, hands-on exercises on the development store and recordings. ${doc.delivery?.sops_required ? 'Write SOPs for each recurring operation (from the delivered stories: fraud review, returns, B2B approvals, data-subject requests, promotions, integrations monitoring where applicable) using a single template. ' : ''}Assemble the handover pack. Use test data only in training materials.`,
+    agent_prompt: (doc) => `Prepare training for ${listOr(doc.delivery?.admin_roles, 'the client team')} covering ${listOr(doc.delivery?.training, 'products and collections, orders and returns, discounts and theme editor content changes')}: agenda, hands-on exercises on the build store and recordings. ${doc.delivery?.sops_required ? 'Write SOPs for each recurring operation (from the delivered stories: fraud review, returns, B2B approvals, data-subject requests, promotions, integrations monitoring where applicable) using a single template. ' : ''}Assemble the handover pack. Use test data only in training materials.`,
   },
   {
     key: 'LWC-LCH-004',
@@ -89,6 +95,7 @@ export default [
     points: 3,
     owner: 'consultant',
     depends_on: ['LWC-LCH-001'],
+    gates: ['post_launch_support'],
     spec_refs: ['/delivery/support_model', '/delivery/grow_retainer/signed'],
     security_flags: ['production_store'],
     applies: () => true,

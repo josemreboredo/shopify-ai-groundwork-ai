@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Form, Link, useNavigation } from 'react-router';
+import { Form, Link, useNavigation, useSearchParams } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader } from '../components/question.jsx';
+import { EngagementErrorBoundary, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Review answers', params.client) }];
@@ -33,15 +33,23 @@ export async function action({ request, params }) {
   }
 }
 
-/** Filters on the review table: four of 157 rows are usually the ones that matter. */
-const FILTERS = [['all', 'All'], ['open', 'Open'], ['to_confirm', 'To confirm'], ['answered', 'Answered']];
+/** Filters on the review table: a handful of 157 rows are usually the ones that matter. */
+const FILTERS = [['all', 'All'], ['open', 'Open'], ['to_confirm', 'To confirm'], ['with_client', 'With the client'], ['answered', 'Answered']];
+/* "To confirm" meant two different things — an answer a document produced that
+   no human has accepted, and a question the client still owes us — so the filter
+   counted 92 where the same page's banner counted 90. They are separate states
+   and separate work, so they are separate filters. */
 const MATCH = {
   all: () => true,
   open: (q) => q.state === 'open',
-  to_confirm: (q) => q.to_confirm || q.state === 'tbc',
+  to_confirm: (q) => Boolean(q.to_confirm),
+  with_client: (q) => q.state === 'tbc',
   answered: (q) => q.state === 'answered' || q.state === 'commented',
 };
 
+/* An unmapped state used to throw and take Review with it: the page where a
+   consultant fixes things is the last one that should fall over. */
+const UNKNOWN_STATE = ['', 'Unknown'];
 const STATE = {
   answered: ['go', 'Answered'],
   commented: ['flag', 'Clarified by comment'],
@@ -56,16 +64,26 @@ export default function Review({ loaderData, actionData }) {
   const all = sections.flatMap((s) => s.questions);
   const count = (state) => all.filter((q) => q.state === state).length;
   const waiting = all.filter((q) => q.to_confirm).length;
-  const [filter, setFilter] = useState('all');
+  // Opening the step for confirming three things on a list of 173 unanswered
+  // questions is the default doing the opposite of the job.
+  const [filter, setFilter] = useState(() => (all.some((q) => q.to_confirm) ? 'to_confirm' : 'all'));
+  const [armed, setArmed] = useState(false);
+  // Answering a question landed here with nothing said and nothing marked, so
+  // the only evidence the save worked was finding the row by eye.
+  const [params] = useSearchParams();
+  const recorded = params.get('recorded');
   const shown = (questions) => questions.filter((q) => MATCH[filter](q));
   return (
-    <main>
+    <main id="main">
       <EngagementHeader
         language={language}
         engagement={engagement}
         eyebrow="Review answers"
-        meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} TBC · ${count('skipped')} not applicable · ${count('open')} open`}
+        meta={`${count('answered')} answered · ${count('commented')} by comment · ${count('tbc')} with the client · ${count('skipped')} not applicable · ${count('open')} open`}
       />
+      {recorded ? (
+        <p className="pilot" role="status"><strong>{recorded}</strong> recorded. It is highlighted below.</p>
+      ) : null}
       <p className="muted">
         <strong>Confirm</strong> accepts an answer as it stands; <strong>Edit</strong> changes, clears or reopens
         it. A question that was
@@ -86,13 +104,28 @@ export default function Review({ loaderData, actionData }) {
                 if you have already read the document.
               </p>
             </div>
+          {filter !== 'all' ? (
+            <p className="filtered-by">
+              <strong>Showing only {FILTERS.find(([k]) => k === filter)?.[1]}</strong>
+              {' — '}{all.filter((q) => MATCH[filter](q)).length} of {all.length} questions.{' '}
+              <button type="button" className="link" onClick={() => setFilter('all')}>Show all</button>
+            </p>
+          ) : null}
             <span className="badge flag">{waiting}</span>
           </div>
           <div className="actions">
             <button type="button" className="secondary" onClick={() => setFilter('to_confirm')}>Show only these</button>
-            <Form method="post">
-              <button type="submit" className="secondary" disabled={busy}>Confirm all {waiting}</button>
-            </Form>
+            {/* Accepting ninety extractions as checked by a human is the act the
+                whole governance story rests on, and it was one plain click with
+                no way back. It asks once. */}
+            {armed ? (
+              <Form method="post" onSubmit={() => setArmed(false)}>
+                <button type="submit" disabled={busy}>Yes — record all {waiting} as checked by me</button>
+              </Form>
+            ) : (
+              <button type="button" className="secondary" onClick={() => setArmed(true)} disabled={busy}>Confirm all {waiting}</button>
+            )}
+            {armed ? <button type="button" className="link" onClick={() => setArmed(false)}>Cancel</button> : null}
           </div>
           <p className="muted small">
             Confirming in bulk is recorded as such, so the engagement stays honest about how its answers were checked.
@@ -113,6 +146,7 @@ export default function Review({ loaderData, actionData }) {
               <button
                 key={key}
                 type="button"
+                aria-pressed={filter === key}
                 className={filter === key ? '' : 'secondary'}
                 onClick={() => setFilter(key)}
               >
@@ -128,11 +162,12 @@ export default function Review({ loaderData, actionData }) {
       {sections.filter((section) => shown(section.questions).length).map((section) => (
         <section key={section.title}>
           <h2>{section.title}</h2>
-          <table>
-            <thead><tr><th>#</th><th>Question</th><th>Answer</th><th>Status</th><th /></tr></thead>
+          <div className="table-scroll" role="region" tabIndex={0} aria-label="Answers, scrollable table">
+          <table className="answers-table">
+            <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col">Answer</th><th scope="col">Status</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
             <tbody>
               {shown(section.questions).map((q) => (
-                <tr key={q.id} id={q.id}>
+                <tr key={q.id} id={q.id} className={q.id === recorded ? 'just-recorded' : undefined}>
                   <td>{q.id}</td>
                   <td>{q.text}</td>
                   <td>
@@ -140,7 +175,7 @@ export default function Review({ loaderData, actionData }) {
                     {q.note ? <div className="muted">{q.note}</div> : null}
                   </td>
                   <td>
-                    <span className={`badge ${STATE[q.state][0]}`}>{STATE[q.state][1]}</span>
+                    <span className={`badge ${(STATE[q.state] ?? UNKNOWN_STATE)[0]}`}>{(STATE[q.state] ?? UNKNOWN_STATE)[1]}</span>
                     {q.to_confirm ? <span className="badge flag">to confirm</span> : null}
                   </td>
                   <td className="row-actions">
@@ -156,9 +191,13 @@ export default function Review({ loaderData, actionData }) {
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       ))}
 
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

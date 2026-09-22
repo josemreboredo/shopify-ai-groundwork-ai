@@ -25,6 +25,8 @@
 import { clarificationBrief } from '../agents/discovery/clarifications.js';
 import { statedAssumptions } from './assumptions.js';
 import { selectStories } from '../agents/backlog/select.js';
+import { offering, questionBank } from '../schema/index.js';
+import { answeredAt } from '../agents/discovery/knowledge.js';
 
 const SEVERITY = { STOP: 0, FLAG: 1, WARN: 2 };
 const SEVERITY_LABEL = {
@@ -33,6 +35,106 @@ const SEVERITY_LABEL = {
   WARN: 'Commercial adjustment',
 };
 
+/**
+ * Where the complexity sits, on the engine's own axes.
+ *
+ * Three levels and no invented scale: a dimension is not in play, in play and
+ * inside what Merkle's offers cover, or beyond them. "Beyond" is not a judgement
+ * — an exit rule fired on the same answers the gate reads, and rules and gates
+ * both declare the pointers they read, so the link is structural rather than a
+ * guess at which rule belongs to which subject.
+ *
+ * A chart wants a number per axis, which is exactly where a tool like this
+ * invents one. This is the only scale the engine can actually defend.
+ *
+ * @param {object} doc  decided engagement
+ */
+export function complexityProfile(doc) {
+  const gates = new Map(offering.scope_gates.map((g) => [g.id, g]));
+  const fired = doc.exits?.items ?? [];
+  const ruleInputs = new Map(offering.exit_rules.map((r) => [r.id, r.inputs ?? []]));
+
+  const answeredElsewhereHere = answeredElsewhere(doc);
+  return offering.scope_gates.map((g) => {
+    const state = doc.offer?.scope_gates?.[g.id];
+    const active = Boolean(state?.active);
+    // The rules that read the same answers this gate reads.
+    const rules = fired.filter((i) => (ruleInputs.get(i.rule_id) ?? []).some((input) => (g.inputs ?? []).includes(input)));
+    const beyond = rules.some((r) => r.result === 'STOP');
+    // A gate that did not fire did not necessarily fail to apply. It may have had
+    // nothing to read. "No physical stores" and "nobody said whether there are
+    // physical stores" are different facts, and drawing both at zero told a
+    // reader the document had settled something it never mentioned.
+    const known = active || (g.inputs ?? []).some((pointer) => answeredAt(doc, pointer));
+    return {
+      id: g.id,
+      label: g.label,
+      level: !active ? 0 : beyond ? 2 : 1,
+      known,
+      standing: !known ? 'not known' : !active ? 'not in play' : beyond ? 'beyond the offers' : 'within the offers',
+      evidence: state?.evidence ?? null,
+      // The questions that would settle it — already in the Q&A, since every
+      // unanswered question that feeds a gate is a candidate there.
+      settled_by: known ? [] : questionBank.questions.filter((q) => (q.feeds ?? []).includes(`gate:${g.id}`)).map((q) => q.id),
+      rules: rules.map((r) => ({ rule_id: r.rule_id, result: r.result, evidence: r.evidence })),
+      // A requirement answered with a route rather than a Shopify build is still
+      // work on this dimension, and the chart said nothing about it because it
+      // was filed as a carve-out.
+      also: g.id === 'markets' ? answeredElsewhereHere.flatMap((a) => a.work.map((w) => ({ topic: a.what, work: w }))) : [],
+    };
+  });
+}
+
+/**
+ * Requirements the client asked for that are answered outside this build.
+ *
+ * Nothing the client asked for is excluded. That framing was wrong and it is
+ * commercially expensive: a requirement listed as an exclusion reads as
+ * non-compliance and scores as a gap, while the same requirement answered with a
+ * route reads as the one bidder who understood it. Merkle is not refusing
+ * mainland China — it is saying what can be done there, what cannot, and where
+ * the part that cannot sits instead.
+ *
+ * What is true is narrower than "excluded": Shopify has no infrastructure in
+ * mainland China, so it cannot be the shop customers buy from inside the
+ * country. Everything else — brand presence, feeding partner channels — it can
+ * do. So the answer is an answer, and only the onshore build is scoped
+ * separately.
+ *
+ * @param {object} doc  decided engagement
+ */
+export function answeredElsewhere(doc) {
+  const out = [];
+  const markets = doc.markets?.list ?? [];
+  if (markets.some((m) => m.code === 'CN')) {
+    const rule = (doc.exits?.items ?? []).find((i) => i.rule_id === '11.20');
+    out.push({
+      what: 'Mainland China',
+      rule_id: '11.20',
+      asked_for: rule?.evidence ?? 'Mainland China is a launch market',
+      // What Merkle can do, said first.
+      answer: 'Shopify can carry the brand in mainland China and feed the partner and marketplace channels that sell there.',
+      what_it_cannot: 'It cannot be the shop customers buy from inside the country: Shopify has no infrastructure in mainland China, and selling onshore needs a PRC entity, an ICP filing or licence and onshore hosting.',
+      where_it_goes: 'Only the onshore shop is scoped as its own workstream, with its own discovery',
+      // Not a subtraction. Taking China out of the market count read as though the
+      // requirement had left, and it has not — it is answered differently, and
+      // answering it is work: a brand site that performs behind the Great
+      // Firewall, and a feed into the partner channels that sell there.
+      // China alone read as "1 markets, of which 0 are a Shopify shop".
+      leaves: markets.length === 1
+        ? 'Mainland China is the only market, and it is brand presence feeding partner channels rather than a Shopify shop'
+        : `${markets.length} markets, of which ${markets.length - 1} ${markets.length === 2 ? 'is a Shopify shop' : 'are Shopify shops'} and mainland China is brand presence feeding partner channels`,
+      // Which of the two answers it gets is still open, and the answer decides
+      // the work — so it is complexity, not an absence.
+      work: [
+        'A brand presence that performs in mainland China: fonts, scripts and third-party resources that are blocked or slow behind the Great Firewall',
+        'Feeding the partner and marketplace channels that sell there, if Shopify is to be the master for products, stock and orders',
+      ],
+    });
+  }
+  return out;
+}
+
 /** Scope gates and L triggers read as capabilities the RFP is asking us for. */
 const CAPABILITY = {
   markets: 'Selling into several markets',
@@ -40,8 +142,10 @@ const CAPABILITY = {
   b2b: 'B2B / wholesale',
   integration: 'Integration with the client’s systems',
   migration: 'Migration from another platform',
+  storefront_design: 'A storefront beyond theme configuration',
   sku_complexity: 'A complex catalogue',
   retail_pos: 'Retail / point of sale',
+  languages: 'Storefront in several languages',
   luxury: 'Luxury-grade experience',
   headless: 'Headless storefront',
   figma_design_system: 'A full design system',
@@ -54,7 +158,7 @@ const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`)
 
 const ROUTE = {
   larger_engagement: 'a Merkle Enterprise Engagement with a dedicated Discovery Phase',
-  no_bid: 'no bid',
+  arc: 'Merkle Arc',
 };
 
 /**
@@ -88,6 +192,46 @@ function offerOf(doc) {
 }
 
 /**
+ * The rule that fires on the shape of the whole rather than on any one answer.
+ *
+ * It is the only STOP with no requirement behind it — it reads the scope's size
+ * against what the offer carries and how many delivery risks are still open —
+ * which is why it needs naming here: every sentence that counts requirements
+ * has to leave it out.
+ */
+const EFFORT_RULE = '11.3';
+
+/**
+ * What the scope adds up to, when it is past what the offer's band carries.
+ *
+ * It used to appear only on a STOP, which was the wrong trigger twice over. An
+ * offer now quotes its own overflow — so the case that most needs explaining is
+ * the one that is *not* a STOP: a healthy L quoted at thirty weeks instead of
+ * twenty, where a consultant has to say why in a room. And a STOP is no longer
+ * about size at all, so hanging the ledger off it would have shown the working
+ * for a conclusion it is not the working for.
+ *
+ * @param {object} doc
+ */
+function overflowOf(doc) {
+  const gates = doc.offer?.scope_effort_by_gate ?? [];
+  const capacity = doc.offer?.gate_capacity_weeks;
+  if (!gates.length || !capacity) return null;
+  const total = gates.reduce((a, g) => a + g.weeks.max, 0);
+  if (total <= capacity.max) return null;
+  return {
+    weeks: doc.offer?.scope_effort_weeks ?? null,
+    quoted: doc.offer?.duration_weeks ?? null,
+    carries: capacity,
+    base: offering.offers.S.duration_weeks,
+    gates,
+  };
+}
+
+/** Evidence written as a clause inside a sentence, not as its own. */
+const lower = (text) => (text ? text.charAt(0).toLowerCase() + text.slice(1) : text);
+
+/**
  * Where the architect stands, and the facts he stands on.
  *
  * Read in order, the first thing that stops him is the answer. Percentages are
@@ -97,58 +241,95 @@ function offerOf(doc) {
  *
  * @param {object} doc @param {object} counts
  */
-function recommend({ documents, answered, unconfirmed, openTopics, stops, cannotPrice, assumptions }) {
-  const because = [];
-  const before = [];
+function recommend({ documents, answered, fromDocuments, unconfirmed, openTopics, stops, cannotPrice, assumptions, record = 'bid' }) {
+  // Two different things were being read as one list. The fact that decides the
+  // position, and the facts it rests on. Printed together they read as a wall,
+  // and the sentence that actually answers "why" sat third with nothing marking
+  // it. So: one why, and the ground underneath it.
+  const ground = [];
+  const said = (verdict, headline, why, before = []) => ({ verdict, headline, why, because: [...ground], before_you_go: before });
 
-  if (!documents) {
-    return {
-      verdict: 'nothing to go on',
-      headline: 'Nothing has been read yet.',
-      because: ['No document has been read into this bid, so there is nothing for this desk to assess.'],
-      before_you_go: ['Read the RFP in on the first step.'],
-    };
+  // Nothing read is only nothing to go on when nothing was answered either. A
+  // discovery has no intake step at all, so gating on documents told a record
+  // holding two hundred confirmed answers that there was nothing to assess —
+  // directly above the assessment this page then drew from them.
+  if (!documents && !answered) {
+    return said(
+      'nothing to go on',
+      'Nothing has been read yet.',
+      `Nothing has been recorded against this ${record}, so there is nothing for this desk to assess.`,
+      [record === 'bid' ? 'Read the RFP in on the first step.' : 'Record what the client has told us on the first step.'],
+    );
   }
+  if (!documents) ground.push(`Assessed from the interview — no documents have been read into this ${record}.`);
 
-  because.push(`${documents} document${documents === 1 ? '' : 's'} read, ${answered} answer${answered === 1 ? '' : 's'} taken from ${documents === 1 ? 'it' : 'them'}.`);
+  // `answered` is every required answer from any channel — the web form and the
+  // consultant's own included — so one document beside forty hand-typed answers
+  // read as forty answers taken from the RFP.
+  ground.push(fromDocuments === null || fromDocuments === undefined
+    ? `${documents} document${documents === 1 ? '' : 's'} read; ${answered} required answer${answered === 1 ? '' : 's'} recorded in all.`
+    : `${documents} document${documents === 1 ? '' : 's'} read, ${fromDocuments} answer${fromDocuments === 1 ? '' : 's'} taken from ${documents === 1 ? 'it' : 'them'}; ${answered} required answer${answered === 1 ? '' : 's'} recorded in all.`);
 
   // 1 — nothing else matters until a human has checked what the model read.
   if (unconfirmed) {
-    because.push(`${unconfirmed} of those ${unconfirmed === 1 ? 'is' : 'are'} still unconfirmed: a model read ${unconfirmed === 1 ? 'it' : 'them'} out of the document and nobody has checked ${unconfirmed === 1 ? 'it' : 'them'} yet.`);
-    before.push(`Confirm what it says — ${unconfirmed} answer${unconfirmed === 1 ? '' : 's'} waiting.`);
-    return {
-      verdict: 'not yet',
-      headline: 'I cannot stand behind this until what was read has been confirmed.',
-      because,
-      before_you_go: before,
-    };
+    return said(
+      'not yet',
+      'I cannot stand behind this until what was read has been confirmed.',
+      // Not always a model: a consultant's own "to confirm with the client" lands
+      // here too, and telling them nobody had checked their own note was wrong.
+      `${unconfirmed} answer${unconfirmed === 1 ? '' : 's'} still marked to confirm — read out of a document, or flagged by a consultant as needing the client's word.`,
+      [`Confirm what it says — ${unconfirmed} answer${unconfirmed === 1 ? '' : 's'} waiting.`],
+    );
   }
 
-  because.push('Everything read out of the documents has been confirmed by a person.');
+  ground.push('Everything read out of the documents has been confirmed by a person.');
 
-  // 2 — requirements that put the work outside what Merkle sells as a standard offer.
+  // 2 — what puts the work outside what Merkle sells as a standard offer.
   if (stops.length) {
-    because.push(`${stops.length} requirement${stops.length === 1 ? '' : 's'} put this outside Merkle's standard offers: ${stops.map((s) => s.evidence).join('; ')}.`);
-    return {
-      verdict: 'not a standard bid',
-      headline: 'We can describe this, but not price it as one of our offers.',
-      because,
-      before_you_go: [
-        'Decide the route before pricing: an Enterprise Engagement with its own Discovery Phase, or no bid.',
+    /*
+     * An overrun is not a requirement, and saying it was cost a consultant an
+     * afternoon.
+     *
+     * Every fired STOP used to be counted as "a requirement", which is true of a
+     * custom checkout or a regulated industry — one answer, nameable, and the
+     * client can be asked about it. Rule 11.3 is not one of those. It fires on
+     * the sum of everything, so "1 requirement put this outside our offers"
+     * sent a reader looking for a requirement that does not exist, on an
+     * engagement where the honest answer is that nothing single is out and the
+     * total has outgrown the largest offer.
+     */
+    const named = stops.filter((x) => x.rule_id !== EFFORT_RULE);
+    const overrun = stops.find((x) => x.rule_id === EFFORT_RULE);
+    const why = [];
+    if (named.length) {
+      why.push(`${named.length} requirement${named.length === 1 ? '' : 's'} put this outside Merkle's standard offers: ${named.map((x) => x.evidence).join('; ')}.`);
+    }
+    if (overrun) {
+      why.push(named.length
+        ? `On top of that, the scope as a whole outgrew the offers: ${lower(overrun.evidence)}.`
+        : `No single requirement is outside the offers — what stops the price is the shape of the whole: ${lower(overrun.evidence)}.`);
+    }
+    return said(
+      'not a standard bid',
+      'We can describe this, but not price it as one of our offers.',
+      why.join(' '),
+      [
+        overrun && !named.length
+          ? 'Nothing here is refused, and the scope does not need cutting. What it needs is a Discovery Phase to close the open risks before the scope is committed.'
+          : 'Decide the route before pricing: an Enterprise Engagement with its own Discovery Phase, or no bid.',
         'Anything quoted at S, M or L here would sell bespoke work at a standard price.',
       ],
-    };
+    );
   }
 
   // 3 — things that cannot be costed at all, whatever we assume.
   if (cannotPrice.length) {
-    because.push(`${cannotPrice.length} input${cannotPrice.length === 1 ? '' : 's'} cannot be costed at all until answered: ${cannotPrice.join('; ')}.`);
-    return {
-      verdict: 'ask first',
-      headline: 'Part of this cannot be costed at all from what we were sent.',
-      because,
-      before_you_go: ['Use the Q&A window on the inputs above — there is no assumption that covers them.'],
-    };
+    return said(
+      'ask first',
+      'Part of this cannot be costed at all from what we were sent.',
+      `${cannotPrice.length} input${cannotPrice.length === 1 ? '' : 's'} cannot be costed at all until answered: ${cannotPrice.join('; ')}.`,
+      ['Use the Q&A window on the inputs above — there is no assumption that covers them.'],
+    );
   }
 
   // 4 — open topics that move the price, but that we could assume around.
@@ -159,32 +340,25 @@ function recommend({ documents, answered, unconfirmed, openTopics, stops, cannot
   // and stop meaning anything.
   const shaping = openTopics.filter((t) => t.impact === 'high');
   if (shaping.length > 2) {
-    because.push(`${shaping.length} topics are still open that change the shape of the solution: ${shaping.map((t) => t.title).join(', ')}${openTopics.length > shaping.length ? `, with ${openTopics.length - shaping.length} smaller ones behind them` : ''}.`);
-    return {
-      verdict: 'go, but ask',
-      headline: 'We can price this, and the price would rest on more assumptions than it should.',
-      because,
-      before_you_go: [
+    return said(
+      'go, but ask',
+      'We can price this, and the price would rest on more assumptions than it should.',
+      `${shaping.length} topics are still open that change the shape of the solution: ${shaping.map((t) => t.title).join(', ')}${openTopics.length > shaping.length ? `, with ${openTopics.length - shaping.length} smaller ones behind them` : ''}.`,
+      [
         `Send the questions on the ${shaping.length} topics above before the price is committed.`,
         `Anything left unanswered becomes one of the ${assumptions} assumptions the proposal states.`,
       ],
-    };
+    );
   }
 
-  if (openTopics.length) {
-    because.push(`${openTopics.length} topic${openTopics.length === 1 ? '' : 's'} still open, none of them large: ${openTopics.map((t) => t.title).join(', ')}.`);
-  } else {
-    because.push('Nothing material is still open.');
-  }
-
-  return {
-    verdict: 'go',
-    headline: 'We can put a number on this and stand behind it.',
-    because,
-    before_you_go: assumptions
-      ? [`The proposal will state ${assumptions} assumption${assumptions === 1 ? '' : 's'}. Read them before the price is committed.`]
-      : [],
-  };
+  return said(
+    'go',
+    'We can put a number on this and stand behind it.',
+    openTopics.length
+      ? `${openTopics.length} topic${openTopics.length === 1 ? '' : 's'} still open, none of them large enough to move the shape of the solution.`
+      : 'Nothing material is still open.',
+    assumptions ? [`The proposal will state ${assumptions} assumption${assumptions === 1 ? '' : 's'}. Read them before the price is committed.`] : [],
+  );
 }
 
 /** The capabilities this RFP is asking Merkle for, each with the answer that says so. */
@@ -217,8 +391,10 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
   for (const st of stories) byOwner[st.owner] = (byOwner[st.owner] ?? 0) + 1;
 
   const recommendation = recommend({
+    record: state.record ?? 'bid',
     documents: state.documents ?? 0,
     answered: state.coverage?.required_answered ?? 0,
+    fromDocuments: state.fromDocuments ?? null,
     unconfirmed: state.to_review ?? 0,
     openTopics: brief.topics,
     stops,
@@ -240,6 +416,18 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
     },
     // What the RFP is asking for, from the gates the engine fired.
     capabilities: capabilities(doc),
+    // The same gates as a shape, so where the complexity sits is visible before
+    // it is read.
+    profile: complexityProfile(doc),
+    /* And, when the scope has outgrown the largest offer, what adds up to it.
+       The chart cannot carry this: an overrun belongs to no single dimension,
+       so it showed every gate inside the offers on an engagement that is not.
+       Here it is the sum itemised, heaviest first — the only form of it a
+       consultant can do anything with. */
+    outgrew: overflowOf(doc),
+    // And what the client asked for that is answered outside this build — not a
+    // complexity, and not an exclusion either.
+    answered_elsewhere: answeredElsewhere(doc),
     scope: {
       applies: offer.applies,
       offer: offer.code,

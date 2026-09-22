@@ -1,13 +1,14 @@
 {
-  "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus.",
-  "version": "1.3.0",
-  "currency": "EUR",
+  "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
+  "version": "2.12.0",
+  "currency": "CHF",
   "offers": {
     "S": {
       "name": "Ecommerce Foundation",
+      "for_whom": "A brand starting ecommerce, or starting it properly. There is no store today, or one nobody has really run — the open question is whether the range sells online at all, and the honest way to answer it is a store that does, quickly.",
       "delivery_track": "liquid",
       "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
-      "base_scope": "New Shopify store on the plan the requirements need (Shopify plan benchmark) · Horizon theme · core catalogue · payments · standard checkout",
+      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · Accessibility and Core Web Vitals measured, not promised",
       "price_band": {
         "min": 40000,
         "max": 65000,
@@ -16,36 +17,515 @@
       "duration_weeks": {
         "min": 4,
         "max": 5
-      }
+      },
+      "phases": [
+        {
+          "id": "setup",
+          "name": "Store set-up",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "The store exists, and it is on the right plan for a reason somebody wrote down.",
+          "deliverables": [
+            "A Shopify store on the plan the answers need, with the feature that forced that plan written down",
+            "Staff users and permissions, one set per role rather than one shared login",
+            "The domain connected with SSL, and the redirect from whatever address customers use today",
+            "Tax, duties and the shipping profile configured for the launch market",
+            "Payment providers connected, tested with a real transaction, then switched live"
+          ]
+        },
+        {
+          "id": "template",
+          "name": "Template selection",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "The theme is decided once, on the templates the catalogue needs, rather than defended later.",
+          "deliverables": [
+            "A theme decision with the reason and what it rules out — Horizon unless an answer rules it out",
+            "The template list the catalogue actually needs, mapped against what the theme already ships",
+            "Any gap between the two named before the build, rather than found during it"
+          ]
+        },
+        {
+          "id": "apps",
+          "name": "App selection",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "Native Shopify first. Every app on this store is one somebody chose and owns.",
+          "deliverables": [
+            "An app shortlist from the registry, native Shopify first and an App Store app only where nothing native covers it",
+            "Each app installed, configured, and left with a named owner and its monthly cost",
+            "What was considered and rejected, so the decision can be reopened without starting again"
+          ]
+        },
+        {
+          "id": "design",
+          "name": "Template customisation",
+          "weeks": {
+            "min": 1,
+            "max": 1.5
+          },
+          "covers": "The brand on the theme through settings, so it can be changed after we leave.",
+          "deliverables": [
+            "Brand tokens — colour, typography, spacing, imagery — in theme settings, never hard-coded",
+            "Every template built from the theme’s standard sections, arranged per page type",
+            "A theme editor a merchandiser can actually use: a new page without a developer",
+            "A mobile and a desktop pass on every template, not on the home page alone"
+          ]
+        },
+        {
+          "id": "data",
+          "name": "Catalogue and content",
+          "weeks": {
+            "min": 0.5,
+            "max": 1
+          },
+          "covers": "The catalogue as a customer meets it: findable, filterable and legal.",
+          "deliverables": [
+            "The product model: types, options, variants and the metafields the range needs",
+            "Collections, navigation, search and filters set up against the real catalogue",
+            "Legal and policy pages in place, in the market’s language"
+          ]
+        },
+        {
+          "id": "quality",
+          "name": "Quality and performance",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "Measured on the real store. Nothing in this phase is a promise.",
+          "deliverables": [
+            "An accessibility pass to the agreed target, with what was found and what was fixed",
+            "Core Web Vitals measured on the real catalogue rather than on a demo store",
+            "A cross-browser and cross-device pass, with the results written down"
+          ]
+        },
+        {
+          "id": "launch",
+          "name": "Launch and handover",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "It goes live, and somebody knows how to run it on Monday morning.",
+          "deliverables": [
+            "Cut-over run against a checklist, with the rollback named before it starts",
+            "Payment providers live and one real order taken end to end",
+            "Training on the day-to-day for the people who will run the store",
+            "A handover note: what to watch, and what changes at the next Shopify Edition"
+          ]
+        }
+      ],
+      "channels": {
+        "b2c": "The whole offer, as written: one consumer storefront with the standard checkout.",
+        "b2b": "Not an extra on top of the consumer store — the same weeks spent differently. Company accounts, a price list and quantity rules take the place of the consumer promotion and checkout work, because a wholesale buyer needs neither.",
+        "both": "Two channels in one store, and the second one is a scope gate rather than a base: see Scale."
+      },
+      "storefront": {
+        "templates": [
+          "Home",
+          "Collection",
+          "Product",
+          "Cart",
+          "Search results",
+          "Customer account",
+          "Content pages — about, contact, FAQ",
+          "404 and password"
+        ],
+        "sections": "The theme’s own sections, arranged per template and set with brand tokens. The merchant can add, remove and reorder any of them afterwards.",
+        "bespoke_sections": 0,
+        "note": "None built. A section the theme does not have is the storefront design gate, priced at its extended tier — and one gate keeps this an S with its modifier."
+      },
+      "not_included": [
+        "A migration from another platform — not in the base: it is a scope gate with its own weeks and its own price",
+        "A connection to a client system (ERP, PIM, CRM, OMS, 3PL or POS) — not in the base either. One is a gate with its own price; two or more make this an Ecommerce Scale",
+        "A second market, a second checkout currency or a fourth language — each is a gate, priced per unit rather than absorbed",
+        "A catalogue of 5,000 SKUs or more, or 500 with complex variants, metafields or bundles — not in the base: that is the catalogue gate, priced by size",
+        "Bespoke sections or a full template set designed in Figma — the base configures the theme; designing beyond it is the storefront design gate",
+        "Content production: copy, photography and video are the client’s, or a separate engagement. Nothing here writes them",
+        "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate",
+        "Running costs. The Shopify plan and every app subscription are billed to the client from the day they are installed — this offer selects and configures apps against the agreed monthly ceiling, it does not pay for them"
+      ],
+      "assumes": [
+        "Two rounds of feedback on the template set, then sign-off. A third round is a change request, not a revision",
+        "One launch market, one selling entity and one checkout currency. Swiss DE/FR/IT is in every offer; a fourth language is a gate",
+        "The catalogue loaded once, from one source file the client supplies in an agreed shape. Re-loads after a data change are a change request",
+        "One training session per role, recorded, in the week before launch",
+        "Hypercare for 30 days after go-live: a named channel, a response within one working day, and defects triaged with the client",
+        "One build store and one theme release path. Staging beyond that is a gate",
+        "The build store is transferred to the client at go-live, with their billing and plan in place. Until then it sits in Merkle’s Partner organisation on Basic-plan media storage limits"
+      ],
+      "client_provides": [
+        "One decision-maker for scope, approvals and feedback, available inside the week",
+        "Brand assets: logo, fonts and the imagery the templates need, at the sizes they need",
+        "Product data in a form that can be loaded — a spreadsheet is fine, a PDF is not",
+        "Accounts with the payment providers, and whoever can sign for them",
+        "The text of the legal and policy pages, or approval of the text we draft"
+      ]
     },
     "M": {
       "name": "Ecommerce Scale",
+      "for_whom": "A brand that already sells and cannot scale. The countries, the catalogue and the back office are in place — a PIM, an ERP, an OMS — and what holds the operation back is the storefront in front of them and the wiring behind it.",
       "delivery_track": "liquid",
       "triggered_by": "2 or more scope gates",
-      "base_scope": "Everything in S plus the qualifying gates (markets / B2B / integrations / migration)",
+      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A migration where there is one to run, priced by where the data comes from",
       "price_band": {
         "min": 65000,
-        "max": 100000,
+        "max": 145000,
         "open_ended": false
       },
       "duration_weeks": {
         "min": 6,
-        "max": 9
-      }
+        "max": 14
+      },
+      "phases": [
+        {
+          "id": "setup",
+          "name": "Store set-up and topology",
+          "weeks": {
+            "min": 0.5,
+            "max": 1
+          },
+          "covers": "Foundation, plus the store shape the markets decide rather than the one we prefer.",
+          "deliverables": [
+            "Everything Ecommerce Foundation sets up: the store on the right plan, users and permissions, domain and SSL, tax and the payment providers",
+            "The store topology derived from the business facts and written down with its assumptions — one store with Shopify Markets by default",
+            "The selling entity per market and the tax-registration footprint, agreed before the catalogue is built",
+            "Expansion stores only where the markets genuinely diverge, with what a second store costs to run"
+          ]
+        },
+        {
+          "id": "template",
+          "name": "Template selection",
+          "weeks": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "covers": "The same decision, taken against the wider template set the gates brought.",
+          "deliverables": [
+            "The theme decision taken against the wider template set the gates brought: market pages, B2B templates, deeper catalogue pages",
+            "What the theme covers and what has to be built, separated before the estimate is defended"
+          ]
+        },
+        {
+          "id": "apps",
+          "name": "App selection",
+          "weeks": {
+            "min": 0.5,
+            "max": 1
+          },
+          "covers": "The same shortlist, with the number that surprises clients later: cost per market.",
+          "deliverables": [
+            "A shortlist with a cost per market, not a cost per app — the number that surprises clients later",
+            "Which app is allowed in which market, and what replaces it where it is not",
+            "Each one installed, configured and owned, as in Foundation"
+          ]
+        },
+        {
+          "id": "design",
+          "name": "Template customisation",
+          "weeks": {
+            "min": 1.5,
+            "max": 4
+          },
+          "covers": "Standard sections where they fit, built sections where the gates need them.",
+          "deliverables": [
+            "Brand tokens and every template built from the theme’s standard sections, as in Ecommerce Foundation",
+            "The sections the gated requirements need, built as Online Store 2.0 theme blocks with translatable setting labels and presets",
+            "A market switcher, B2B price display and the catalogue patterns a deep range needs, where those gates fired",
+            "Theme Check and the accessibility checks clean on every block",
+            "Blocks on the Thank you and Order status pages, built as an app extension: order tracking, a survey or a referral after the sale, on any plan except Starter"
+          ]
+        },
+        {
+          "id": "data",
+          "name": "Catalogue, markets and data",
+          "weeks": {
+            "min": 1,
+            "max": 2.5
+          },
+          "covers": "One catalogue across many markets, and the data from wherever it lives today.",
+          "deliverables": [
+            "The product model at scale, with the metafields the range and the integrations both need",
+            "Market catalogues and prices per market, including where a market sells a different range",
+            "Languages published and domains mapped, with the translation route decided and costed",
+            "Duties, tax and the shipping profile per market",
+            "The migration where one fired: catalogue, customers, content and the redirect estate, with what is deliberately not migrated"
+          ]
+        },
+        {
+          "id": "integrations",
+          "name": "Integrations",
+          "weeks": {
+            "min": 1,
+            "max": 2.5
+          },
+          "covers": "Each connection built, reconciled and monitored — not merely connected.",
+          "deliverables": [
+            "Per connection: the data flow, the connector, the field mapping and who owns each side",
+            "A reconciliation job on every connection, because Shopify does not guarantee webhook delivery",
+            "The test environment each one was built against, or the flag saying there was none",
+            "Monitoring and what happens when a connection fails at 2am"
+          ]
+        },
+        {
+          "id": "quality",
+          "name": "Quality, accessibility and performance",
+          "weeks": {
+            "min": 0.5,
+            "max": 1.5
+          },
+          "covers": "The Foundation pass, run per market and per channel instead of once.",
+          "deliverables": [
+            "The accessibility, Core Web Vitals and cross-device passes, run per market and per channel rather than once",
+            "UAT with the client on the flows the gates brought, with the defects triaged and closed",
+            "Performance measured on the market with the worst latency, not the best"
+          ]
+        },
+        {
+          "id": "launch",
+          "name": "Launch and handover",
+          "weeks": {
+            "min": 0.5,
+            "max": 1
+          },
+          "covers": "Live per market, with the old estate redirected and every role trained.",
+          "deliverables": [
+            "Cut-over per market where the launch is phased, each with its own checklist and rollback",
+            "Redirects from the old estate, measured rather than assumed complete",
+            "Training per role, and written SOPs where they were asked for",
+            "A handover note per market owner"
+          ]
+        }
+      ],
+      "channels": {
+        "b2c": "The consumer storefront, at the scale the gates describe: markets, languages, catalogue depth and the systems behind them.",
+        "b2b": "The same, wholesale: company accounts and locations, price lists per company, quantity rules, payment terms and the B2B templates. The consumer-only work is not in it.",
+        "both": "Where +B2B is actually earned. Both storefronts are built, both are tested, and a decision has to be taken per market about which channel sells there."
+      },
+      "storefront": {
+        "templates": [
+          "Home",
+          "Collection",
+          "Product",
+          "Cart",
+          "Search results",
+          "Customer account",
+          "Content pages — about, contact, FAQ",
+          "404 and password",
+          "A template per market where the market genuinely differs",
+          "B2B templates where the second channel sells"
+        ],
+        "sections": "The theme’s own sections as in Foundation, plus the ones the gates that fired actually need — a market switcher, B2B price display, the catalogue patterns a deep range needs — built as Online Store 2.0 blocks so the merchant can still rearrange them.",
+        "bespoke_sections": 3,
+        "note": "Up to three built. Past three, it is the storefront design gate at its extended or bespoke tier, and the weeks come with it rather than out of the band."
+      },
+      "not_included": [
+        "A headless storefront. That is an L trigger: it changes the offer rather than extending this one",
+        "Content production and translation copy — the translation route is decided and costed here, the words are not written here",
+        "Custom checkout UI: Shopify’s checkout is extended through its own extension points or not at all (exit rule 11.6)",
+        "Running the integrations after handover. Hypercare is in; the operating model past it is a gate, or a retainer",
+        "Anything whose content or front end lives outside Shopify — an external CMS or a front end Shopify does not build is Merkle Arc, and no offer here prices it"
+      ],
+      "assumes": [
+        "Everything Ecommerce Foundation assumes, at this size",
+        "Three rounds of feedback on the template set, then sign-off — one more than Foundation, because there are more templates to see",
+        "Each integration built against one non-production environment the client provides, and tested with data the client recognises",
+        "Reconciliation runs daily per connection unless the data says otherwise, and its output goes to a named owner on the client side",
+        "One training session per role per market that has its own day-to-day owner",
+        "Hypercare for 30 days after go-live, per market where the launch is phased"
+      ],
+      "client_provides": [
+        "Everything Ecommerce Foundation needs: a decision-maker, brand assets, loadable product data, payment accounts and the legal text",
+        "System access and, for each system we connect, a non-production environment to build against — without one, integration testing runs against the live system and the schedule stretches",
+        "A named owner per integrated system on the client side",
+        "Market facts: selling entity, tax registrations and who runs each market day to day",
+        "Translated copy, or approval of the translation route and its recurring cost"
+      ]
     },
     "L": {
       "name": "Ecommerce Growth",
-      "delivery_track": "hydrogen",
-      "triggered_by": "Any L trigger (luxury / enterprise brand, headless requirement, full Figma design system) — scope gates do not apply",
-      "base_scope": "Headless Hydrogen storefront · full Figma design system · custom motion + interactions · Storefront API · Oxygen · advanced personalisation",
+      "for_whom": "A brand already selling professionally, on an enterprise platform. Salesforce Commerce Cloud, Adobe Commerce or similar, with the traffic and the operation to match — the move to Shopify has to land on a store that performs at least as well, and is measured to prove it.",
+      "delivery_track": "liquid",
+      "triggered_by": "A headless storefront, or scope that adds up to more than an M can hold — the largest of the three Shopify offers",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · The enterprise migration: the data, the redirect estate and the integrations the old platform was carrying · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
-        "min": 100000,
-        "max": 150000,
+        "min": 140000,
+        "max": 230000,
         "open_ended": true
       },
       "duration_weeks": {
-        "min": 10,
-        "max": 14
+        "min": 13,
+        "max": 21
+      },
+      "phases": [
+        {
+          "id": "setup",
+          "name": "Store set-up and topology",
+          "weeks": {
+            "min": 1.5,
+            "max": 1.5
+          },
+          "covers": "Everything Ecommerce Scale sets up, plus what a build this size needs around it: a staging store, the theme release path, and users and permissions per market",
+          "deliverables": [
+            "The commerce engine on Shopify set up as in Ecommerce Scale: plan, topology, selling entity and tax footprint per market",
+            "A staging store and a theme release path, with who may publish and how a change gets back out again",
+            "Users, roles and permissions per market, agreed before anyone needs them rather than after"
+          ]
+        },
+        {
+          "id": "template",
+          "name": "Section architecture",
+          "weeks": {
+            "min": 1,
+            "max": 2
+          },
+          "covers": "There is no single template to pick. The section architecture for the whole template set is the decision this offer is bought for, and it is written down before a section is built",
+          "deliverables": [
+            "The theme foundation chosen against the template set the catalogue needs — Horizon unless an answer rules it out — with what the choice rules out",
+            "The section and block architecture for every template: what is a section, what is a block, and what the merchant may rearrange",
+            "The decision record behind it — why this foundation, what it costs to keep, and what would force a rebuild"
+          ]
+        },
+        {
+          "id": "apps",
+          "name": "App and service selection",
+          "weeks": {
+            "min": 1,
+            "max": 1.5
+          },
+          "covers": "The longest shortlist of the three offers, decided per market and per channel rather than once for the store",
+          "deliverables": [
+            "The shortlist from the app registry: native Shopify first, an App Store app only where nothing native covers it",
+            "Which app is allowed in which market and on which channel, and what each one costs there",
+            "A running cost per app, so the store has a total cost of ownership and not only a build price"
+          ]
+        },
+        {
+          "id": "design",
+          "name": "Design system and templates",
+          "weeks": {
+            "min": 4,
+            "max": 7
+          },
+          "covers": "The design system built as sections and blocks over one token layer, with every template against it — the largest phase in this offer, and the reason it is this offer",
+          "deliverables": [
+            "One token layer — colour, type, spacing, motion — that every section reads from, so a brand change is a token change",
+            "The design system built as sections and blocks the merchant can still rearrange, not templates traced screen by screen",
+            "Every template against it, with motion and interaction as specified and reduced motion respected",
+            "Blocks on the Thank you and Order status pages, built as an app extension: order tracking, a survey or a referral after the sale, on any plan except Starter"
+          ]
+        },
+        {
+          "id": "data",
+          "name": "Catalogue, content and markets",
+          "weeks": {
+            "min": 2,
+            "max": 3
+          },
+          "covers": "The product model at the size a deep range needs, the content the storefront renders from metaobjects, and the markets behind it",
+          "deliverables": [
+            "The product model at scale: options, metafields, collections, search and filters, on the real catalogue",
+            "Metaobjects for the content the storefront renders, so content changes without a theme release",
+            "Market catalogues and prices, languages and domains, and the migration where one fired — redirect estate included"
+          ]
+        },
+        {
+          "id": "integrations",
+          "name": "Integrations",
+          "weeks": {
+            "min": 1.5,
+            "max": 3
+          },
+          "covers": "Every connection in the register, each with the reconciliation job it needs and the environment it was built against",
+          "deliverables": [
+            "Each connection built: the flow, the connector, the field mapping, and the test environment behind it",
+            "The reconciliation job every connection needs, because webhook delivery is not guaranteed",
+            "A failure mode written down per connection, with the person who is called when it fires"
+          ]
+        },
+        {
+          "id": "quality",
+          "name": "Quality, accessibility and performance",
+          "weeks": {
+            "min": 1,
+            "max": 2
+          },
+          "covers": "Measured per template on the real catalogue, per market and per channel, and signed off by the client rather than by us",
+          "deliverables": [
+            "Accessibility to the agreed target, tested on the sections rather than on a sample of pages",
+            "Core Web Vitals measured per template on the real catalogue, before launch rather than after it",
+            "UAT with the client on the flows the gates brought, and experimentation set up and running at launch"
+          ]
+        },
+        {
+          "id": "launch",
+          "name": "Launch and handover",
+          "weeks": {
+            "min": 1,
+            "max": 1
+          },
+          "covers": "Cut-over, per market where the launch is phased, and the store handed to a team that can actually run it",
+          "deliverables": [
+            "Cut-over per market where the launch is phased, with the rollback proven before the day",
+            "Redirects live and watched, payment providers live, and the checks for the first week agreed",
+            "Training on the day-to-day and on the theme release path, with the owner of the next release agreed in writing"
+          ]
+        }
+      ],
+      "channels": {
+        "b2c": "The consumer storefront at the size the scope describes: every template built out rather than configured.",
+        "b2b": "The same at that size, wholesale: company accounts and locations, price lists per company, quantity rules, payment terms and the B2B templates. The consumer-only work is not in it.",
+        "both": "Both storefronts built and tested, with a decision taken per market about which channel sells there."
+      },
+      "not_included": [
+        "Custom checkout UI. Shopify no longer permits it whatever the rest of the storefront does — Checkout Extensibility is the whole of what is possible",
+        "A storefront whose content or front end lives outside Shopify: an external CMS or PIM, another framework, a native app, several front ends on one backend. Hydrogen with content in Shopify is this offer; the rest is Merkle Arc",
+        "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
+        "Content production, photography and video, and the copy that goes on the templates this offer builds",
+        "A Shop Mini — a presence inside Shopify’s Shop app. It stays inside Shopify, so it is not Merkle Arc; it is React SDK work built against the Shop Minis SDK, which no offer here estimates. It is scoped and priced on its own"
+      ],
+      "assumes": [
+        "Everything Ecommerce Scale assumes, at this size",
+        "Three rounds of feedback on the design system and the template set, then sign-off. Motion and interaction are reviewed once, against the spec",
+        "The design system is delivered as one token layer and the template set built against it — not as per-page designs traced one by one",
+        "Experimentation is set up and one test is live at launch; the roadmap of tests after that is the client’s or a retainer’s",
+        "Training per role, plus one session on the release path for whoever will own it",
+        "Hypercare for 30 days after go-live, with the rollback proven before the day rather than described"
+      ],
+      "client_provides": [
+        "Everything Ecommerce Scale needs, including a non-production environment per connected system",
+        "The design, complete enough to build from: a template set with its states, not a set of key screens",
+        "Whoever can approve a performance and accessibility target and then hold the project to it",
+        "A decision on who owns the store after handover, taken before the build rather than at the end of it"
+      ],
+      "tracks": {
+        "liquid": "One Shopify theme, built out: the design system as sections and blocks over one token layer, every template against it, and the merchant still able to rearrange them. The default, and the right answer more often than it is chosen.",
+        "hydrogen": "Not an extra on top — the same weeks spent differently. There is no theme to select, so the route structure, the rendering strategy and the caching model are the decision instead, and the component layer is owned rather than configured. Content stays in Shopify: metaobjects and metafields through the Storefront API, which is what keeps this a Shopify build. Content or a front end outside Shopify is Merkle Arc."
+      },
+      "storefront": {
+        "templates": [
+          "Home",
+          "Collection",
+          "Product",
+          "Cart",
+          "Search results",
+          "Customer account",
+          "Content pages — about, contact, FAQ",
+          "404 and password",
+          "A template per market where the market genuinely differs",
+          "B2B templates where the second channel sells",
+          "The campaign and editorial templates the content model needs"
+        ],
+        "sections": "The whole template set built against one token layer — as theme sections and blocks on the Liquid track, as owned components on the headless one. Not a count of bespoke sections: the set is the deliverable, which is why the design phase is four to six weeks and the largest in this offer.",
+        "bespoke_sections": null,
+        "note": "The set, not a number. What is still outside it is a design system that is the design source rather than a brand to apply — that is Merkle Arc."
       }
     }
   },
@@ -57,17 +537,22 @@
     },
     {
       "order": 2,
+      "when": "base weeks + active gate modifiers > offers.M.duration_weeks.max",
+      "offer": "L"
+    },
+    {
+      "order": 3,
       "when": "active scope gates >= 2",
       "offer": "M"
     },
     {
-      "order": 3,
+      "order": 4,
       "when": "active scope gates == 1",
       "offer": "S",
       "apply_modifier": true
     },
     {
-      "order": 4,
+      "order": 5,
       "when": "active scope gates == 0",
       "offer": "S"
     }
@@ -80,7 +565,15 @@
       "inputs": [
         "/markets/list"
       ],
-      "modifier": "+Markets"
+      "modifier": "+Markets",
+      "sources": [
+        "https://help.shopify.com/en/manual/markets/getting-started/market-types",
+        "https://help.shopify.com/en/manual/markets/customizations/local-currencies"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "multi_currency",
@@ -90,7 +583,14 @@
         "/markets/list/*/currency",
         "/markets/list/*/price_strategy"
       ],
-      "modifier": "+Markets"
+      "modifier": "+MultiCurrency",
+      "sources": [
+        "https://help.shopify.com/en/manual/markets/customizations/local-currencies"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "b2b",
@@ -102,7 +602,15 @@
         "/b2b/price_lists",
         "/b2b/volume_discounts"
       ],
-      "modifier": "+B2B"
+      "modifier": "+B2B",
+      "sources": [
+        "https://help.shopify.com/en/manual/b2b/getting-started/plan-features",
+        "https://help.shopify.com/en/manual/b2b/getting-started/features"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "integration",
@@ -112,19 +620,94 @@
         "/integrations/*/category",
         "/integrations/*/connector"
       ],
-      "modifier": "+Integration"
+      "modifier": "+Integration",
+      "sources": [
+        "https://shopify.dev/docs/api/usage/limits"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
+    },
+    {
+      "id": "storefront_design",
+      "label": "Storefront design",
+      "condition": "The storefront needs more than theme configuration: bespoke sections or blocks from a key-screens design (extended), or a full template set from a mapped design system (bespoke). Horizon with brand tokens is in every offer and does not fire.",
+      "inputs": [
+        "/design/figma/completeness",
+        "/design/custom_design",
+        "/design/figma/design_system",
+        "/design/figma/mapped_to_sections"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "extended",
+        "bespoke"
+      ],
+      "sources": [
+        "https://shopify.dev/docs/storefronts/themes/architecture",
+        "https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "shopify.dev"
+      }
     },
     {
       "id": "sku_complexity",
-      "label": "SKU complexity",
-      "condition": "sku_count >= 500 AND at least one of: variant_options_max >= 2, custom attributes (metafields) needed, product types include bundle or product_set",
+      "label": "Catalogue size and complexity",
+      "condition": "Either arm fires it: 500 or more SKUs with complexity (two or more variant options, custom attributes, bundles or product sets), or 5,000 SKUs on their own whatever their shape — the point where Shopify stops showing filters on a collection and where the published benchmark moves from days of data work to weeks. Tiered by catalogue size, because the product model is built once and the data is handled per thousand",
       "inputs": [
         "/catalogue/sku_count",
         "/catalogue/variant_options_max",
         "/catalogue/custom_attributes",
         "/catalogue/product_types"
       ],
-      "modifier": "+SKU"
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "large",
+        "very_large"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/products/variants/add-variants",
+        "https://help.shopify.com/en/manual/products/bundles/shopify-bundles"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
+    },
+    {
+      "id": "search_merchandising",
+      "label": "Search and merchandising",
+      "condition": "Filtering and merchandising go past what Shopify Search & Discovery covers. Four documented limits, and the first two are the ones that decide scope: at most 25 filters per store, and a collection of more than 5,000 products shows no filters at all. The other two surface later and are the ones that surprise people — a single filter shows at most 100 values on the storefront, and a search returning more than 100,000 results shows no filters either",
+      "inputs": [
+        "/catalogue/storefront_filters",
+        "/catalogue/sku_count",
+        "/catalogue/collections_estimate",
+        "/catalogue/collection_mode"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "native",
+        "app"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/online-store/storefront-search/search-and-discovery-filters",
+        "https://help.shopify.com/en/manual/online-store/themes/customizing-themes/storefront-filters"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "help.shopify.com"
+      },
+      "platform_limit": {
+        "what": "Filters per store",
+        "shopify": 25,
+        "shopify_plus": 25,
+        "merkle_line": 25,
+        "source": "https://help.shopify.com/en/manual/online-store/storefront-search/search-and-discovery-filters"
+      }
     },
     {
       "id": "migration",
@@ -133,7 +716,20 @@
       "inputs": [
         "/migration/source_platform"
       ],
-      "modifier": "+Migration"
+      "modifier": null,
+      "modifier_tiers": [
+        "light",
+        "medium",
+        "heavy"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/migrating-to-shopify",
+        "https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-woocommerce"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
     },
     {
       "id": "retail_pos",
@@ -144,33 +740,181 @@
         "/retail/pos",
         "/retail/omnichannel"
       ],
-      "modifier": "+Retail"
+      "modifier": "+Retail",
+      "sources": [
+        "https://help.shopify.com/en/manual/sell-in-person/getting-started/identify-your-pos-needs"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      },
+      "platform_limit": {
+        "what": "Inventory locations per store",
+        "shopify": 10,
+        "shopify_plus": 200,
+        "merkle_line": 5,
+        "source": "https://help.shopify.com/en/manual/fulfillment/setup/locations/setup",
+        "note": "Apps that stock inventory — 3PL, dropshipping, custom fulfilment — are treated as locations but do not count toward the limit."
+      }
+    },
+    {
+      "id": "languages",
+      "label": "Languages",
+      "condition": "4 or more distinct languages across the markets — Translate & Adapt auto-translates two, and Swiss DE/FR/IT is included in every offer",
+      "inputs": [
+        "/markets/list/*/languages"
+      ],
+      "modifier": "+Languages",
+      "sources": [
+        "https://help.shopify.com/en/manual/international/localization-and-translation"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      },
+      "platform_limit": {
+        "what": "Published languages per store",
+        "shopify": 20,
+        "shopify_plus": 30,
+        "merkle_line": 6,
+        "source": "https://help.shopify.com/en/manual/international/localization-and-translation"
+      }
+    },
+    {
+      "id": "seo_continuity",
+      "label": "SEO continuity",
+      "condition": "The storefront's URLs change on a business whose traffic comes through search: significant SEO equity to preserve, a redirect estate of 1,000 URLs or more, or custom URL structures where organic is a priority channel. Deliberately independent of the migration gate — a rebuild on Shopify changes every URL without changing the platform. Shopify itself caps a store at 100,000 URL redirects, and 20,000,000 on Plus, so the ceiling that bites here is the work of building the map rather than the platform's",
+      "inputs": [
+        "/migration/seo_equity",
+        "/migration/volumes/redirects",
+        "/marketing/seo/priority_channel",
+        "/marketing/seo/custom_urls"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "large"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "help.shopify.com"
+      },
+      "platform_limit": {
+        "what": "URL redirects per store",
+        "shopify": 100000,
+        "shopify_plus": 20000000,
+        "merkle_line": 10000,
+        "source": "https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect"
+      }
+    },
+    {
+      "id": "subscriptions",
+      "label": "Subscriptions",
+      "condition": "The store sells on a recurring basis: a subscription approach or features are recorded, subscription products are in the catalogue, or live contracts have to be carried across",
+      "inputs": [
+        "/catalogue/subscriptions/approach",
+        "/catalogue/subscriptions/features",
+        "/catalogue/product_types",
+        "/migration/subscriptions"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "advanced"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/products/purchase-options/subscriptions/shopify-subscriptions",
+        "https://help.shopify.com/en/manual/products/purchase-options/subscriptions/shopify-subscriptions/considerations"
+      ],
+      "verified": {
+        "on": "2026-09-17",
+        "source": "question bank citations"
+      }
+    },
+    {
+      "id": "checkout_extensibility",
+      "label": "Checkout extensibility",
+      "condition": "The checkout needs more than its settings and the editor's branding. Three different things, and Shopify gates them differently: the Thank you and Order status pages take UI extensions on every plan except Starter; the information, shipping and payment steps take them only on Shopify Plus; backend logic is Shopify Functions. A fully custom checkout UI is exit rule 11.6, not this gate",
+      "inputs": [
+        "/checkout/customisation",
+        "/checkout/extensions",
+        "/checkout/custom_fields",
+        "/checkout/order_restrictions"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "post_purchase",
+        "in_checkout",
+        "functions"
+      ],
+      "sources": [
+        "https://shopify.dev/docs/api/checkout-ui-extensions/latest",
+        "https://shopify.dev/docs/apps/build/checkout/thank-you-order-status",
+        "https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/upgrade-thank-you-order-status/customization-options"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "shopify.dev"
+      }
+    },
+    {
+      "id": "analytics_consent",
+      "label": "Analytics and consent",
+      "condition": "Measurement beyond what every store already has. Shopify Analytics — the pre-built reports, the dashboard and the ShopifyQL query editor — is on every plan, with more reports the higher the plan, and GA4 connects through the Google & YouTube channel with its ecommerce events tracked automatically. The gate opens past that: a third destination, a tag manager, custom events, server-side tagging or a third-party consent platform",
+      "inputs": [
+        "/marketing/analytics/platforms",
+        "/marketing/analytics/pixels",
+        "/marketing/analytics/server_side",
+        "/marketing/analytics/tag_manager",
+        "/marketing/analytics/custom_events",
+        "/compliance/consent_approach",
+        "/compliance/consent_capture_points"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "advanced"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/reports-and-analytics/shopify-reports",
+        "https://help.shopify.com/en/manual/reports-and-analytics/google-analytics/google-analytics-setup",
+        "https://help.shopify.com/en/manual/promoting-marketing/pixels/custom-pixels/gtm-tutorial"
+      ],
+      "verified": {
+        "on": "2026-09-21",
+        "source": "help.shopify.com"
+      }
+    },
+    {
+      "id": "post_launch_support",
+      "label": "Post-launch support",
+      "condition": "An operating model past go-live: written SOPs the client's team runs the store from, or a handover into a retainer. The hypercare window and launch-day training are in every offer and do not fire it",
+      "inputs": [
+        "/delivery/support_model",
+        "/delivery/sops_required",
+        "/delivery/grow_retainer/signed"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "extended"
+      ],
+      "shopify_fact": false,
+      "$comment": "No Shopify citation, deliberately: written SOPs and a handover into a retainer are how Merkle delivers, not something Shopify documents."
     }
   ],
   "l_triggers": [
     {
-      "id": "luxury",
-      "label": "Luxury / enterprise brand",
-      "condition": "Brand positioning is luxury or enterprise",
-      "inputs": [
-        "/brand/positioning"
-      ]
-    },
-    {
       "id": "headless",
-      "label": "Headless requirement",
-      "condition": "Client requires a headless / custom storefront (Hydrogen, other framework, native app front end)",
+      "label": "Headless storefront",
+      "condition": "A headless storefront is required and it is still a Shopify build: Hydrogen on the Storefront API, with content in Shopify through metaobjects and metafields. A storefront whose content or front end lives outside Shopify is Merkle Arc (exit rule 11.26), not this",
       "inputs": [
-        "/design/headless_required"
-      ]
-    },
-    {
-      "id": "figma_design_system",
-      "label": "Full Figma design system",
-      "condition": "A complete Figma design system covering all templates is the design source",
-      "inputs": [
-        "/design/figma/design_system",
-        "/design/figma/completeness"
+        "/design/headless_required",
+        "/design/headless/content_source",
+        "/design/headless/framework"
       ]
     }
   ],
@@ -178,15 +922,32 @@
     {
       "id": "+Markets",
       "gate": "markets",
-      "description": "2–4 Shopify Markets or multi-currency set-up, Translate & Adapt, geo-routing",
+      "description": "Shopify Markets set-up: geo-routing, Translate & Adapt, tax, duties and payment methods per market, and the checkout tested in each one — three quarters of a week per market beyond the first, and a third more where that market meets a bespoke template set rather than a configured theme",
       "effort_weeks": {
         "min": 1,
-        "max": 1
+        "max": 8
       },
       "price_add": {
         "min": 8000,
-        "max": 12000
-      }
+        "max": 86000
+      },
+      "per_market_weeks": 0.75,
+      "per_market_price": 8000,
+      "$comment": "Only the storefront is surcharged. Languages are already priced per language and integrations per integration, so charging a market for them again would be the redirect estate mistake in another place: the same work billed twice because two rules each think they own it.",
+      "per_unit_surcharge": [
+        {
+          "gate": "storefront_design",
+          "tier": "extended",
+          "add": 0.17,
+          "why": "Bespoke sections are re-tested and signed off in every market, and nothing else charges for that"
+        },
+        {
+          "gate": "storefront_design",
+          "tier": "bespoke",
+          "add": 0.33,
+          "why": "A full template set is re-tested and signed off in every market — the largest surface a further market meets"
+        }
+      ]
     },
     {
       "id": "+B2B",
@@ -202,35 +963,53 @@
       }
     },
     {
-      "id": "+Integration",
-      "gate": "integration",
-      "description": "One ERP / PIM / CRM / 3PL live connection",
-      "effort_weeks": {
-        "min": 1,
-        "max": 2
-      },
-      "price_add": {
-        "min": 10000,
-        "max": 18000
-      }
-    },
-    {
-      "id": "+Migration",
-      "gate": "migration",
-      "description": "Platform migration, redirect mapping, data transfer",
+      "id": "+Design (extended)",
+      "gate": "storefront_design",
+      "tier": "extended",
+      "description": "Bespoke sections and blocks built as Online Store 2.0 theme blocks from a key-screens design: schema, presets, translatable labels, Theme Check",
       "effort_weeks": {
         "min": 1,
         "max": 2
       },
       "price_add": {
         "min": 8000,
-        "max": 15000
+        "max": 18000
       }
     },
     {
-      "id": "+SKU",
+      "id": "+Design (bespoke)",
+      "gate": "storefront_design",
+      "tier": "bespoke",
+      "description": "A full template set from a mapped design system: every template, tokens wired to theme settings, motion and right-to-left where the markets need it",
+      "effort_weeks": {
+        "min": 3,
+        "max": 5
+      },
+      "price_add": {
+        "min": 25000,
+        "max": 45000
+      }
+    },
+    {
+      "id": "+Integration",
+      "gate": "integration",
+      "description": "Each live connection to a counted system — ERP, PIM, CRM, OMS or 3PL",
+      "effort_weeks": {
+        "min": 1,
+        "max": 3
+      },
+      "price_add": {
+        "min": 10000,
+        "max": 30000
+      },
+      "per_integration_weeks": 1,
+      "per_integration_price": 10000
+    },
+    {
+      "id": "+SKU (standard)",
       "gate": "sku_complexity",
-      "description": "500+ SKUs, complex variants or bundles",
+      "tier": "standard",
+      "description": "500 to 4,999 SKUs with complex variants, metafields or bundles: the product model designed once and applied",
       "effort_weeks": {
         "min": 0.5,
         "max": 0.5
@@ -241,17 +1020,300 @@
       }
     },
     {
-      "id": "+Retail",
-      "gate": "retail_pos",
-      "description": "Shopify POS or integrated POS set-up, store locations, pick-up in store, in-store returns — up to 5 stores (more stores: rule 11.22, never a per-store price)",
+      "id": "+SKU (large)",
+      "gate": "sku_complexity",
+      "tier": "large",
+      "description": "5,000 to 49,999 SKUs: the model is the same, the data is not — import batching, reconciliation per object, and the share of products that need a human before they load",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 15000,
+        "max": 25000
+      }
+    },
+    {
+      "id": "+SKU (very large)",
+      "gate": "sku_complexity",
+      "tier": "very_large",
+      "description": "50,000 SKUs and above: catalogue operations in their own right — staged loads, a rehearsal run, and a data owner on the client side",
+      "effort_weeks": {
+        "min": 3,
+        "max": 5
+      },
+      "price_add": {
+        "min": 30000,
+        "max": 50000
+      }
+    },
+    {
+      "id": "+Search (native)",
+      "gate": "search_merchandising",
+      "tier": "native",
+      "description": "Search & Discovery taken to its limits: the filter set designed against the product data that backs it, boosts and synonyms per collection, and a merchandiser who can change them afterwards",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 1
+      },
+      "price_add": {
+        "min": 6000,
+        "max": 11000
+      }
+    },
+    {
+      "id": "+Search (app)",
+      "gate": "search_merchandising",
+      "tier": "app",
+      "description": "Past a documented Shopify limit, so a third-party search app: indexing and re-indexing, the sync that keeps it true, and the merchandising rules moved into it with an owner",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 16000,
+        "max": 28000
+      }
+    },
+    {
+      "id": "+SEO (standard)",
+      "gate": "seo_continuity",
+      "tier": "standard",
+      "description": "The redirect map authored and imported, metadata and canonicals carried across, sitemap and indexation checked through cut-over",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 1
+      },
+      "price_add": {
+        "min": 5000,
+        "max": 10000
+      }
+    },
+    {
+      "id": "+SEO (large)",
+      "gate": "seo_continuity",
+      "tier": "large",
+      "description": "A redirect estate of 10,000 URLs or more, or rankings the business runs on: the map built from a crawl rather than a pattern, verified on staging, and indexation watched after launch",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 15000,
+        "max": 25000
+      }
+    },
+    {
+      "id": "+Subscriptions (standard)",
+      "gate": "subscriptions",
+      "tier": "standard",
+      "description": "Shopify Subscriptions: selling plans, the storefront widget, the customer portal and the billing states the support team has to recognise",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 1
+      },
+      "price_add": {
+        "min": 6000,
+        "max": 12000
+      }
+    },
+    {
+      "id": "+Subscriptions (advanced)",
+      "gate": "subscriptions",
+      "tier": "advanced",
+      "description": "A third-party subscription app, or prepaid, build-a-box, B2B or international plans — and live contracts carried across without the customer re-entering a card, which is where these migrations fail",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 16000,
+        "max": 28000
+      }
+    },
+    {
+      "id": "+Checkout (post-purchase)",
+      "gate": "checkout_extensibility",
+      "tier": "post_purchase",
+      "description": "UI extensions on the Thank you and Order status pages — order tracking, surveys, referrals, an app block after the sale. Available on every plan except Starter, so this needs no Plus",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 1
+      },
+      "price_add": {
+        "min": 6000,
+        "max": 11000
+      }
+    },
+    {
+      "id": "+Checkout (in-checkout)",
+      "gate": "checkout_extensibility",
+      "tier": "in_checkout",
+      "description": "UI extensions and custom fields on the information, shipping and payment steps. Shopify Plus only — on any other plan this is not a scope decision, it is a plan decision",
       "effort_weeks": {
         "min": 1,
+        "max": 2
+      },
+      "price_add": {
+        "min": 11000,
+        "max": 22000
+      }
+    },
+    {
+      "id": "+Checkout (functions)",
+      "gate": "checkout_extensibility",
+      "tier": "functions",
+      "description": "Backend logic as Shopify Functions — validation, delivery or payment customisation, order rules: a deployed app with its own tests and release path, not a setting",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 3
+      },
+      "price_add": {
+        "min": 16000,
+        "max": 32000
+      }
+    },
+    {
+      "id": "+Analytics (standard)",
+      "gate": "analytics_consent",
+      "tier": "standard",
+      "description": "Customer events, the destinations wired through them and consent respected on each — measurement that agrees with Shopify's own numbers",
+      "effort_weeks": {
+        "min": 0.5,
         "max": 1
+      },
+      "price_add": {
+        "min": 5000,
+        "max": 10000
+      }
+    },
+    {
+      "id": "+Analytics (advanced)",
+      "gate": "analytics_consent",
+      "tier": "advanced",
+      "description": "Server-side tagging or a third-party consent platform: consent state carried to every destination, capture points beyond checkout, and the reconciliation that proves the numbers still line up",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 15000,
+        "max": 26000
+      }
+    },
+    {
+      "id": "+Support (standard)",
+      "gate": "post_launch_support",
+      "tier": "standard",
+      "description": "One of the two: written SOPs, or a handover into a retainer — the runbooks and the owner named against each, past the launch-day training every offer carries",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 1
+      },
+      "price_add": {
+        "min": 6000,
+        "max": 11000
+      }
+    },
+    {
+      "id": "+Support (extended)",
+      "gate": "post_launch_support",
+      "tier": "extended",
+      "description": "Both: a documented operating model the client's team runs the store from, handed into a retainer that has to receive it, with a training programme behind it",
+      "effort_weeks": {
+        "min": 1,
+        "max": 2
+      },
+      "price_add": {
+        "min": 12000,
+        "max": 22000
+      }
+    },
+    {
+      "id": "+Retail",
+      "gate": "retail_pos",
+      "description": "Each location selling with Shopify POS: hardware, inventory, staff and the in-store test pass",
+      "effort_weeks": {
+        "min": 1,
+        "max": 5
+      },
+      "price_add": {
+        "min": 8000,
+        "max": 40000
+      },
+      "per_location_weeks": 1,
+      "per_location_price": 8000
+    },
+    {
+      "id": "+Migration (light)",
+      "gate": "migration",
+      "tier": "light",
+      "description": "WooCommerce or Shopify-to-Shopify: catalogue, customers and order history. The redirect estate is the SEO continuity gate, not this one.",
+      "effort_weeks": {
+        "min": 1,
+        "max": 1.5
       },
       "price_add": {
         "min": 8000,
         "max": 12000
       }
+    },
+    {
+      "id": "+Migration (medium)",
+      "gate": "migration",
+      "tier": "medium",
+      "description": "Shopware or BigCommerce: data model differences to map, order history, customer and price-list structures. Redirects are priced by the SEO continuity gate.",
+      "effort_weeks": {
+        "min": 2.5,
+        "max": 4
+      },
+      "price_add": {
+        "min": 18000,
+        "max": 30000
+      }
+    },
+    {
+      "id": "+Migration (heavy)",
+      "gate": "migration",
+      "tier": "heavy",
+      "description": "Magento, Salesforce Commerce Cloud or a custom platform: a bespoke data model to map and integrations to re-point. Redirects are priced by the SEO continuity gate.",
+      "effort_weeks": {
+        "min": 4,
+        "max": 5.5
+      },
+      "price_add": {
+        "min": 30000,
+        "max": 44000
+      }
+    },
+    {
+      "id": "+MultiCurrency",
+      "gate": "multi_currency",
+      "description": "More than one checkout currency: price lists, rounding rules, payout and reconciliation per currency",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 0.5
+      },
+      "price_add": {
+        "min": 4000,
+        "max": 7000
+      }
+    },
+    {
+      "id": "+Languages",
+      "gate": "languages",
+      "description": "Each language beyond the third: translation of products, collections, policies, URL handles, theme and app strings — and again on every release",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 6000,
+        "max": 30000
+      },
+      "per_language_weeks": 0.5,
+      "per_language_price": 6000,
+      "free_languages": 3
     }
   ],
   "integration_definition": {
@@ -298,7 +1360,8 @@
         "/catalogue/combined_listings",
         "/promotions/stacking",
         "/design/ab_testing"
-      ]
+      ],
+      "label": "A requirement needs a higher Shopify plan than the one we are quoting"
     },
     {
       "id": "11.2",
@@ -308,16 +1371,27 @@
       "destination": "B2B architecture review: Shopify B2B draft-order review or a quote app (App Store category \"Pricing quotes\"), before build",
       "inputs": [
         "/b2b/rfq_or_negotiated_pricing"
-      ]
+      ],
+      "label": "B2B needs quotes or prices negotiated per buyer, which Shopify has no built-in way to do"
     },
     {
       "id": "11.3",
       "result": "STOP",
       "status": "canonical",
-      "condition": "More than 5 Shopify Markets at launch",
-      "destination": "Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase",
+      "condition": "Scope has outgrown the gate work this offer's band already carries, AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: the offer quotes its own overflow at the rate of the work that caused it. What cannot be quoted is scope this large that cannot yet be committed to",
+      "destination": "An Enterprise Engagement opening with a dedicated Discovery Phase, to close the open risks before the scope is committed",
       "inputs": [
-        "/markets/list"
+        "/offer/scope_effort_by_gate",
+        "/offer/gate_capacity_weeks",
+        "/offer/scope_effort_weeks"
+      ],
+      "label": "Scope past the offer envelope, with too much about delivering it still open",
+      "reads_rules": [
+        "11.12",
+        "11.14",
+        "11.15",
+        "11.23",
+        "11.24"
       ]
     },
     {
@@ -328,7 +1402,8 @@
       "destination": "Larger Engagement: translation and content operations in the Discovery Phase",
       "inputs": [
         "/markets/list/*/languages"
-      ]
+      ],
+      "label": "More than six languages across the markets"
     },
     {
       "id": "11.5",
@@ -339,17 +1414,19 @@
       "inputs": [
         "/catalogue/variant_options_max",
         "/catalogue/variants_per_product_max"
-      ]
+      ],
+      "label": "More product options or variants than Shopify allows on one product"
     },
     {
       "id": "11.6",
       "result": "STOP",
       "status": "canonical",
       "condition": "Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility)",
-      "destination": "Composable platform",
+      "destination": "Merkle Arc — composable commerce, scoped separately",
       "inputs": [
         "/checkout/customisation"
-      ]
+      ],
+      "label": "A fully custom checkout, which Shopify no longer permits"
     },
     {
       "id": "11.7",
@@ -360,7 +1437,8 @@
       "inputs": [
         "/integrations/*/category",
         "/integrations/*/connector"
-      ]
+      ],
+      "label": "More than three systems connected at launch"
     },
     {
       "id": "11.8",
@@ -370,7 +1448,8 @@
       "destination": "Legal / compliance review",
       "inputs": [
         "/compliance/regulated_industry"
-      ]
+      ],
+      "label": "A regulated industry — pharma, alcohol, firearms, age-restricted, financial or medical"
     },
     {
       "id": "11.9",
@@ -380,7 +1459,8 @@
       "destination": "Security review (threat model mandatory)",
       "inputs": [
         "/payments/pci_scope"
-      ]
+      ],
+      "label": "Card data handled outside Shopify’s own payment pages"
     },
     {
       "id": "11.10",
@@ -390,7 +1470,8 @@
       "destination": "Legal sign-off on data-subject request handling",
       "inputs": [
         "/compliance/gdpr_deletion_workflow"
-      ]
+      ],
+      "label": "Customers must be able to export or delete their data on request"
     },
     {
       "id": "11.11",
@@ -402,29 +1483,32 @@
       "inputs": [
         "/delivery/grow_retainer/signed",
         "/offer/code"
-      ]
+      ],
+      "label": "An M or L engagement with no Grow retainer signed"
     },
     {
       "id": "11.12",
       "result": "FLAG",
       "status": "canonical",
       "condition": "ERP or PIM with no existing Shopify connector and no iPaaS",
-      "destination": "Separate integration scoping track (T3/T4)",
+      "destination": "Integration scoping as its own track, before the build is quoted",
       "inputs": [
         "/integrations/*/category",
         "/integrations/*/connector"
-      ]
+      ],
+      "label": "An ERP or PIM with no ready-made Shopify connector and no integration platform in place"
     },
     {
       "id": "11.13",
       "result": "FLAG",
       "status": "canonical",
       "condition": "fulfilment_locations > 2 AND routing beyond Shopify's native order routing rules (a custom routing Function or the ERP / OMS decides)",
-      "destination": "Multi-location inventory scoping (T3)",
+      "destination": "Multi-location inventory scoped separately",
       "inputs": [
         "/shipping/fulfilment_locations",
         "/shipping/routing_rules"
-      ]
+      ],
+      "label": "More than two fulfilment locations, with routing Shopify cannot do on its own"
     },
     {
       "id": "11.14",
@@ -437,7 +1521,8 @@
         "/migration/historical_orders_required",
         "/migration/volumes",
         "/migration/subscriptions"
-      ]
+      ],
+      "label": "A migration carrying real search traffic or complex history"
     },
     {
       "id": "11.15",
@@ -450,7 +1535,8 @@
         "/delivery/kickoff_date",
         "/meta/created_at",
         "/offer/code"
-      ]
+      ],
+      "label": "Less time to go-live than the offer needs"
     },
     {
       "id": "11.16",
@@ -461,7 +1547,8 @@
       "inputs": [
         "/delivery/decision_maker_confirmed",
         "/delivery/budget_authority_clear"
-      ]
+      ],
+      "label": "No single decision-maker, or unclear budget authority"
     },
     {
       "id": "11.17",
@@ -471,7 +1558,8 @@
       "destination": "Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build",
       "inputs": [
         "/compliance/sensitive_data"
-      ]
+      ],
+      "label": "Sensitive personal data — health, age, biometric or financial"
     },
     {
       "id": "11.18",
@@ -481,7 +1569,8 @@
       "destination": "Deprecation migration scoped as its own workstream (e.g. Scripts to Functions, legacy to customer accounts)",
       "inputs": [
         "/shopify/deprecated_features"
-      ]
+      ],
+      "label": "The existing store runs on Shopify features that are being retired"
     },
     {
       "id": "11.19",
@@ -491,27 +1580,30 @@
       "destination": "B2B architecture review: app or process change before build",
       "inputs": [
         "/b2b/unsupported_needs"
-      ]
+      ],
+      "label": "A B2B requirement Shopify’s own B2B does not support"
     },
     {
       "id": "11.20",
       "result": "FLAG",
       "status": "canonical",
       "condition": "Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope",
-      "destination": "Separate China discovery (questions § 3.5, discovery/docs/china-mainland.md); mainland China excluded from this engagement's scope",
+      "destination": "A separate China discovery — see the China note",
       "inputs": [
         "/markets/list"
-      ]
+      ],
+      "label": "Mainland China is one of the launch markets"
     },
     {
       "id": "11.21",
       "result": "STOP",
       "status": "canonical",
       "condition": "Mainland China is the only launch market — not part of the Merkle offering",
-      "destination": "China discovery (discovery/docs/china-mainland.md)",
+      "destination": "A separate China discovery — see the China note",
       "inputs": [
         "/markets/list"
-      ]
+      ],
+      "label": "Mainland China is the only launch market"
     },
     {
       "id": "11.22",
@@ -522,7 +1614,8 @@
       "internal_note": "Never quote a per-store price: a store with its own line item gets compared to 40 hours. Quote programme and increment, or a rate-carded run team (never shown to the client)",
       "inputs": [
         "/retail/store_count"
-      ]
+      ],
+      "label": "More than five retail stores in scope"
     },
     {
       "id": "11.23",
@@ -535,7 +1628,68 @@
         "/meta/client/legal_entities",
         "/markets/vat_countries",
         "/markets/topology/confidence"
-      ]
+      ],
+      "label": "Several markets, with the legal entities and pricing still unresolved"
+    },
+    {
+      "id": "11.24",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "A system Merkle has to build a connector for has no non-production environment to integrate against (test_environment none). Shopify itself needs no instance ladder — a theme stages as an unpublished theme in the production store and checkout is managed — so the only environment risk on a Shopify build sits on the client side. Without a sandbox, integration testing serialises against the client’s live system and the schedule stretches",
+      "destination": "A named owner on the client side and a decision before the build starts: provide a sandbox, or agree the testing window against production",
+      "inputs": [
+        "/integrations/*/test_environment",
+        "/integrations/*/status",
+        "/integrations/*/owner"
+      ],
+      "label": "A system to be connected has no test environment to build against"
+    },
+    {
+      "id": "11.25",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "A headless storefront on a plan below Shopify Plus. Oxygen storefronts always have a production and a preview environment and custom ones besides, but only one environment can be public: the limit is 1 on Starter, Basic, Grow and Advanced against 25 on Plus. Every other deployment needs a login to the store, which constrains how many review links can run in parallel with client stakeholders",
+      "destination": "A named owner before the build starts: agree who reviews where, or price the Plus plan",
+      "inputs": [
+        "/design/headless_required",
+        "/shopify/target_plan"
+      ],
+      "label": "A headless storefront below Plus, where only one deployment can be public"
+    },
+    {
+      "id": "11.26",
+      "result": "STOP",
+      "status": "canonical",
+      "condition": "The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track",
+      "destination": "Merkle Arc — not quoted or estimated here; the Arc practice scopes it",
+      "inputs": [
+        "/design/headless/content_source",
+        "/design/headless/framework",
+        "/design/headless/reasons"
+      ],
+      "label": "Content or a front end that lives outside Shopify"
+    },
+    {
+      "id": "11.27",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "One order delivered to more than one address — gifting to several recipients, or a wholesale buyer splitting a single order across branches. Shopify has no way to do this: split shipping divides an order into several shipments when items cannot travel together, but every shipment goes to the same address, and it does not apply to accelerated checkouts or to draft orders that already carry a shipping line",
+      "destination": "Decide before the build: one order per address, an app that does it, or drop the requirement — and say which in the proposal",
+      "inputs": [
+        "/shipping/multi_address_orders"
+      ],
+      "label": "One order, more than one delivery address"
+    },
+    {
+      "id": "11.28",
+      "result": "FLAG",
+      "status": "canonical",
+      "condition": "A presence inside Shopify's Shop app — a Shop Mini. It stays inside Shopify and sells the same store, but it is not theme work: Minis are \"immersive, full-screen buyer experiences within the Shop app\" built with the Shop Minis React SDK, and a Mini \"must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop\". Publishing one also needs Manage apps permission in the Partner organisation. None of these offers estimates React Native work",
+      "destination": "Not included in S, M or L: scope and price the Mini separately, and agree whether it runs in this engagement or after it",
+      "inputs": [
+        "/design/shop_mini"
+      ],
+      "label": "A Shop Mini — a build these offers do not price"
     }
   ],
   "routes": [
@@ -547,9 +1701,10 @@
       "description": "The requirements go beyond the S/M/L offers. This is not a refusal and not a pause: Merkle proposes an Enterprise Engagement that opens with a full, consultant-led Discovery Phase — a traditional discovery, run by people rather than by this tool. The approach drafted here is its starting point, and the client deck is produced and shared with the client as it would be for any engagement. What is not produced is the Jira backlog and the Confluence pages: the backlog is defined during that Discovery Phase, and issuing one now would imply a scope nobody has agreed."
     },
     {
-      "id": "no_bid",
-      "label": "No bid",
-      "description": "Merkle does not propose. Only the STOP report is produced."
+      "id": "arc",
+      "label": "Merkle Arc",
+      "proposal": "Merkle Arc — a separate engagement, scoped by the Arc practice",
+      "description": "Beyond these three offers is Arc: Merkle’s enterprise platform for unifying brand design, content and commerce in one architecture — a tokenised design system, a multi-channel component library, GraphQL middleware and its own console, composable and headless without the vendor lock-in. A storefront that is not a Shopify theme, and a design system that is the design source rather than a brand to apply, are Arc’s shape rather than an offer’s. Nothing here quotes it, estimates it or drafts a Shopify approach for it: this engine prices Shopify builds. What goes across is the discovery — every answer, every requirement and the STOP that named the reason."
     }
   ],
   "app_signals": [
@@ -718,6 +1873,14 @@
         "/markets/duties_ddp",
         "/markets/list/*/code"
       ]
+    },
+    {
+      "id": "booking_app",
+      "label": "Appointments and booking",
+      "inputs": [
+        "/service/booking",
+        "/retail/store_count"
+      ]
     }
   ],
   "resolved_questions": [
@@ -768,7 +1931,7 @@
     },
     {
       "question": "What happens after a STOP",
-      "decision": "The lead consultant records delivery.route: larger_engagement drafts the full approach, a brief and the client deck for a Merkle Enterprise Engagement with a dedicated Discovery Phase — no Jira tickets; no_bid produces the STOP report only",
+      "decision": "The lead consultant records delivery.route: larger_engagement drafts the full approach, a brief and the client deck for a Merkle Enterprise Engagement with a dedicated Discovery Phase — no Jira tickets; arc hands the storefront to the Merkle Arc practice, which scopes and prices it, and nothing here quotes or estimates it",
       "rationale": "A STOP means the standard offers do not fit, not that discovery is wasted. The client still needs the findings and a recommended approach; the backlog belongs to the enterprise Discovery Phase"
     },
     {
@@ -811,5 +1974,231 @@
       "decision": "Not part of the offering. When CN is a launch market, 11.20 (FLAG) excludes it from markets, languages, offer, plan and build scope and routes it to a separate China discovery; 11.21 (STOP) when CN is the only market",
       "rationale": "Owner decision 2026-09-17. Research (discovery/docs/china-mainland.md, checked 2026-09-17): Shopify's servers are not in mainland China, proxy set-ups in front of Shopify are unsupported and no public case of Shopify behind the Great Firewall exists; onshore selling needs a PRC entity, ICP and onshore hosting, cross-border selling needs marketplace, customs and product-registration decisions — a China-specific discovery"
     }
-  ]
+  ],
+  "closed_scope": {
+    "$comment": "What each pack sells, closed. Every row is checked against the engine by a test: an engagement that takes exactly what a pack promises must classify as that pack, and its scope gates must fit inside the weeks that pack's band already carries. Anything past a row is quoted on top of the pack, never assumed into it. `limits` is the machine-readable form of the same promise and is what the test builds from.",
+    "rows": [
+      {
+        "id": "markets",
+        "what": "Markets",
+        "gate": "markets",
+        "S": "1",
+        "M": "Up to 3",
+        "L": "Up to 3",
+        "note": "The most the pack holds with everything else in it taken too. A further market is three quarters of a week and CHF 8k, and a third more where it meets a bespoke template set rather than a configured theme — a market is re-tested and signed off against whatever the pack builds, so it costs more in the larger packs than in the entry one."
+      },
+      {
+        "id": "multi_currency",
+        "what": "Multi-currency checkout",
+        "gate": "multi_currency",
+        "S": "No — one checkout currency",
+        "M": "Yes",
+        "L": "Yes"
+      },
+      {
+        "id": "languages",
+        "what": "Languages",
+        "gate": "languages",
+        "S": "Up to 3",
+        "M": "Up to 4",
+        "L": "Up to 6",
+        "note": "Six is the ceiling in every pack: more is a separate discovery (rule 11.4)."
+      },
+      {
+        "id": "storefront_design",
+        "what": "Custom templates",
+        "gate": "storefront_design",
+        "S": "No — theme configured, standard sections",
+        "M": "Yes — bespoke sections from a key-screens design",
+        "L": "Yes — the full template set from a design system"
+      },
+      {
+        "id": "integrations",
+        "what": "Integrations",
+        "gate": "integration",
+        "S": "None",
+        "M": "One",
+        "L": "One",
+        "note": "Three is the ceiling in every pack: more is a separate discovery (rule 11.7)."
+      },
+      {
+        "id": "migration",
+        "what": "Migration from another platform",
+        "gate": "migration",
+        "S": "No — new store, or Shopify to Shopify",
+        "M": "From WooCommerce or Shopify",
+        "L": "From Shopware, BigCommerce, WooCommerce or Shopify",
+        "note": "The tier is set by where the data comes from, because that is what decides the work: WooCommerce and Shopify share a data model, Shopware and BigCommerce do not, and Magento, SFCC and bespoke platforms need the model mapped and every integration re-pointed. The redirect estate is not in here — it is the SEO continuity row, priced once.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Magento, Salesforce Commerce Cloud or a custom platform"
+      },
+      {
+        "id": "b2b",
+        "what": "B2B / wholesale alongside consumer",
+        "gate": "b2b",
+        "S": "Add-on",
+        "M": "Add-on",
+        "L": "Add-on",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Selling wholesale alongside consumer is the same build whichever pack it sits in — company accounts, price lists per company, quantity rules and payment terms — so it is priced the same way in all three rather than folded into the largest. Wholesale only is not this row at all: it is the base of the pack, the same weeks spent differently."
+      },
+      {
+        "id": "catalogue",
+        "what": "Catalogue",
+        "gate": "sku_complexity",
+        "S": "Under 500 SKUs, or simple",
+        "M": "Up to 4,999 SKUs, with complex variants, metafields or bundles",
+        "L": "Up to 4,999 SKUs, with complex variants, metafields or bundles",
+        "note": "Five thousand is not an arbitrary line: above it Shopify shows no filters on a collection, so a catalogue that size brings the search row with it and costs a week more than the catalogue work alone. That is why it is an add-on rather than a bigger pack.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "5,000 SKUs and above"
+      },
+      {
+        "id": "search",
+        "what": "Search and merchandising",
+        "gate": "search_merchandising",
+        "S": "Shopify Search & Discovery",
+        "M": "Shopify Search & Discovery",
+        "L": "Shopify Search & Discovery",
+        "note": "Shopify Search & Discovery is free and in every pack, with its limits designed around rather than discovered: 25 filters per store, no filters at all on a collection above 5,000 products, at most 100 values shown per filter, and no filters on a search returning more than 100,000 results. A catalogue or a filter set that needs more than that needs a search app, which is the add-on — and note that a catalogue above 5,000 SKUs brings this row with it.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Past a documented Shopify limit"
+      },
+      {
+        "id": "retail_pos",
+        "what": "Physical stores on Shopify POS",
+        "gate": "retail_pos",
+        "S": "Add-on",
+        "M": "Add-on",
+        "L": "Add-on",
+        "note": "Five locations is the ceiling; above that it stays in the offer with a named owner (rule 11.22).",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "subscriptions",
+        "what": "Subscriptions",
+        "gate": "subscriptions",
+        "S": "No",
+        "M": "Add-on",
+        "L": "Add-on",
+        "addon": [
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": "checkout",
+        "what": "Checkout",
+        "gate": "checkout_extensibility",
+        "S": "Settings and editor branding",
+        "M": "Settings, branding, and blocks on the Thank you and Order status pages",
+        "L": "Settings, branding, and blocks on the Thank you and Order status pages",
+        "note": "Shopify gates the checkout in three steps and so do we. Blocks on the Thank you and Order status pages run on every plan except Starter, so M and L build them: order tracking, a survey, a referral block after the sale. Blocks and custom fields inside the information, shipping and payment steps need Shopify Plus — on any other plan that is a plan decision before it is a scope one. Backend rules are Shopify Functions. A fully custom checkout UI is not sold at all (rule 11.6).",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Inside the checkout steps (Plus), or backend rules as Functions"
+      },
+      {
+        "id": "analytics",
+        "what": "Analytics and consent",
+        "gate": "analytics_consent",
+        "S": "Shopify Analytics and its reports, plus GA4",
+        "M": "Shopify Analytics and its reports, plus GA4",
+        "L": "Shopify Analytics and its reports, plus GA4",
+        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor, with more reports the higher the Shopify plan. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically. The add-on is what goes past that — a third destination, a tag manager, custom events, server-side tagging or a consent platform.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "More destinations, a tag manager or consent"
+      },
+      {
+        "id": "seo",
+        "what": "SEO continuity",
+        "gate": "seo_continuity",
+        "S": "No redirect estate",
+        "M": "Included, up to 10,000 URLs",
+        "L": "Included, up to 10,000 URLs",
+        "note": "Up to ten thousand URLs the map is authored from the old estate's patterns and imported, with metadata and canonicals carried across and indexation watched through cut-over. Above that, or where the business runs on its rankings, the map is built from a crawl instead, verified on staging and watched after launch — that is the add-on.",
+        "addon": [
+          "M",
+          "L"
+        ],
+        "addon_label": "Above 10,000 URLs, or rankings the business runs on"
+      },
+      {
+        "id": "support",
+        "what": "After go-live",
+        "gate": "post_launch_support",
+        "S": "Hypercare",
+        "M": "Hypercare",
+        "L": "Hypercare",
+        "note": "Written SOPs or a handover into a retainer are quoted on top."
+      }
+    ],
+    "limits": {
+      "S": {
+        "markets": 1,
+        "multi_currency": false,
+        "languages": 3,
+        "b2b": false,
+        "storefront": "brand_only",
+        "sku_count": 400,
+        "integrations": 0,
+        "retail_locations": 0,
+        "migration": null,
+        "checkout": null
+      },
+      "M": {
+        "markets": 3,
+        "multi_currency": true,
+        "languages": 4,
+        "b2b": false,
+        "storefront": "key_screens",
+        "sku_count": 2000,
+        "integrations": 1,
+        "retail_locations": 0,
+        "migration": "woocommerce",
+        "variant_options": 2,
+        "checkout": "thank_you_order_status_blocks"
+      },
+      "L": {
+        "markets": 3,
+        "multi_currency": true,
+        "languages": 6,
+        "b2b": false,
+        "storefront": "all_templates",
+        "sku_count": 2000,
+        "integrations": 1,
+        "retail_locations": 0,
+        "migration": "shopware",
+        "variant_options": 2,
+        "checkout": "thank_you_order_status_blocks"
+      }
+    }
+  }
 }

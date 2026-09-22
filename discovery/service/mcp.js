@@ -13,6 +13,7 @@ import { z } from 'zod';
 import { ServiceError } from './index.js';
 import { deckDataPages } from './closing.js';
 import { renderSummaryMarkdown } from './summary.js';
+import { LANGUAGES } from './i18n.js';
 
 export const SERVER_INSTRUCTIONS = `Merkle Discovery: Shopify discovery engagements shared with the Lead Consultant web app.
 - Interim pilot: demo or anonymised engagements and documents only — no real client data.
@@ -140,7 +141,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     description: 'Create a new discovery engagement owned by you. The first question is always consent for AI processing (Q10.5.2).',
     inputSchema: z.object({
       client: slug,
-      language: z.string().regex(/^[a-z]{2}$/).default('en').describe('Conversation language (ISO 639-1)'),
+      language: z.enum(LANGUAGES).default('en').describe('The language the engagement is run in, and the language every client-facing document is written in'),
       mode: z.enum(['quick', 'standard', 'full']).default('standard').describe('quick: required questions; standard: + recommended; full: everything'),
     }),
     annotations: write,
@@ -280,7 +281,7 @@ export function registerDiscoveryTools(server, { service, userOf }) {
 
   tool('save_clarifications', {
     title: 'Save the clarification questions',
-    description: 'Save the questions to send to the client. One entry per question: "question" (the client-facing text, in their context), "why_we_ask" (the trade-off, with the Shopify source for any platform fact), "covers" (the discovery question ids it answers), "assume_if_unanswered" (what the proposal will state if they do not answer) and "impact_if_wrong" (what that costs us if it turns out wrong).',
+    description: 'Save the questions to send to the client. One entry per question: "question" (the client-facing text, in their context), "why_we_ask" (the trade-off, with the Shopify source for any platform fact), "covers" (the discovery question ids it answers), "assume_if_unanswered" (what the proposal will state if they do not answer) and "impact_if_wrong" (what that costs us if it turns out wrong). Always send the whole list, including questions already saved. Re-saving is safe and is the normal way to add one: a question resting on the same "covers" keeps the Lead Consultant\'s accept or reject and who made it, and only genuinely new ground arrives undecided. Never leave a topic out to protect an earlier triage — that is the one thing this does not need protecting from.',
     inputSchema: z.object({
       client: z.string().describe('Client slug'),
       questions: z.array(z.object({
@@ -323,7 +324,16 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     description: 'Summary computed by the engine (no AI): offer, GO or STOP, scope gates, exit rules, minimum Shopify plan, app signals, open items, all answers by section in words, documents and notes. Returns Markdown for the Lead Consultant (internal, not a client document).',
     inputSchema: z.object({ client: slug }),
     annotations: read,
-  }, async (user, { client }) => ({ markdown: renderSummaryMarkdown(await service.getSummary(user, client)) }));
+    /*
+     * Without the price band, whatever the consultant's role.
+     *
+     * The band reaches a lead consultant reading a screen; it does not reach a
+     * model that goes on to draft a client document from the same context. The
+     * rule this tool has held from the start is that the engine keeps Merkle's
+     * commercial position out of everything it generates, and a connector
+     * transcript is the one place where "internal" and "generated" meet.
+     */
+  }, async (user, { client }) => ({ markdown: renderSummaryMarkdown(await service.getSummary(user, client, { pricing: false })) }));
 
   tool('list_answers', {
     title: 'Recorded answers',

@@ -27,7 +27,7 @@ export default [
     spec_refs: ['/payments/providers', '/payments/local_methods', '/payments/bnpl', '/payments/multi_currency_settlement', '/payments/pci_scope'],
     security_flags: ['payments'],
     applies: () => true,
-    agent_prompt: (doc) => `Configure payments on the development store: ${listOr(doc.payments?.providers, 'Shopify Payments')} as providers${doc.payments?.local_methods?.length ? `, local methods ${list(doc.payments.local_methods)}` : ''}${doc.payments?.bnpl?.length ? `, buy-now-pay-later ${list(doc.payments.bnpl)}` : ''}. Prefer methods available inside Shopify Payments; install a payment app from the Shopify App Store only for methods Shopify Payments does not offer. Set availability per market and currency. PCI scope is ${doc.payments?.pci_scope ?? 'shopify_hosted'} — keep all card handling in Shopify-hosted checkout. The client owner completes KYC/merchant onboarding; never enter or store their banking or identity documents. Run test-mode orders and refunds per method and record results.`,
+    agent_prompt: (doc) => `Configure payments on the build store: ${listOr(doc.payments?.providers, 'Shopify Payments')} as providers${doc.payments?.local_methods?.length ? `, local methods ${list(doc.payments.local_methods)}` : ''}${doc.payments?.bnpl?.length ? `, buy-now-pay-later ${list(doc.payments.bnpl)}` : ''}. Prefer methods available inside Shopify Payments; install a payment app from the Shopify App Store only for methods Shopify Payments does not offer. Set availability per market and currency. PCI scope is ${doc.payments?.pci_scope ?? 'shopify_hosted'} — keep all card handling in Shopify-hosted checkout. The client owner completes KYC/merchant onboarding; never enter or store their banking or identity documents. Run test-mode orders and refunds per method and record results.`,
   },
   {
     key: 'LWC-PAY-002',
@@ -50,6 +50,7 @@ export default [
   },
   {
     key: 'LWC-PAY-003',
+    scope: 'Deliver the agreed checkout requirements with native settings or UI extensions',
     epic: 'checkout',
     title: (doc) => `Deliver ${extensionsOf(doc).length} checkout requirement${extensionsOf(doc).length === 1 ? '' : 's'} with native settings or UI extensions`,
     description: (doc) => `Requirements: ${listOr(extensionsOf(doc), 'to confirm')}.`,
@@ -63,13 +64,15 @@ export default [
     points: 5,
     owner: 'developer',
     depends_on: ['LWC-FND-002', 'LWC-PAY-002'],
+    gates: ['checkout_extensibility'],
     spec_refs: ['/checkout/customisation', '/checkout/extensions', '/checkout/custom_fields'],
     security_flags: ['secrets'],
     applies: (doc) => (doc.checkout?.customisation ?? []).some((c) => ['checkout_step_blocks_or_fields', 'thank_you_order_status_blocks'].includes(c)) && extensionsOf(doc).length > 0,
-    agent_prompt: (doc) => `Requirements: ${listOr(extensionsOf(doc), 'none listed')}. For each, check native options first: ${isB2b(doc) ? 'B2B checkout already has a purchase order number field and company locations store a tax registration ID — do not rebuild these. ' : ''}Scaffold a custom app with Shopify CLI (shopify app init) and add checkout UI extensions with shopify app generate extension, using Polaris checkout components and the latest stable API version. Store values with the applyMetafieldsChange / attribute APIs on the order. Information, shipping and payment step targets require Shopify Plus; Thank you and Order status targets work on all plans. Keep app credentials in the CLI environment only. Validate with shopify app build before deploying to the development store.`,
+    agent_prompt: (doc) => `Requirements: ${listOr(extensionsOf(doc), 'none listed')}. For each, check native options first: ${isB2b(doc) ? 'B2B checkout already has a purchase order number field and company locations store a tax registration ID — do not rebuild these. ' : ''}Scaffold a custom app with Shopify CLI (shopify app init) and add checkout UI extensions with shopify app generate extension, using Polaris checkout components and the latest stable API version. Store values with the applyMetafieldsChange / attribute APIs on the order. Information, shipping and payment step targets require Shopify Plus; Thank you and Order status targets work on all plans. Keep app credentials in the CLI environment only. Validate with shopify app build before deploying to the build store.`,
   },
   {
     key: 'LWC-PAY-004',
+    scope: 'Set up gift cards and store credit',
     epic: 'checkout',
     title: (doc) => `Set up ${[giftCardsInScope(doc) ? 'gift cards' : '', doc.checkout?.store_credit ? 'store credit' : ''].filter(Boolean).join(' and ')}`,
     user_story: 'As a shopper, I want to buy, receive and redeem gift cards and store credit easily, so that gifting and refunds are simple.',
@@ -140,9 +143,43 @@ export default [
     points: 5,
     owner: 'developer',
     depends_on: ['LWC-FND-002', 'LWC-PAY-002'],
+    gates: ['checkout_extensibility'],
     spec_refs: ['/checkout/order_restrictions'],
     security_flags: ['secrets'],
     applies: (doc) => (doc.checkout?.order_restrictions ?? []).some((r) => r !== 'none'),
-    agent_prompt: (doc) => `Rules: ${list((doc.checkout?.order_restrictions ?? []).filter((r) => r !== 'none').map((r) => r.replace(/_/g, ' ')))}. First check whether native settings cover a rule (market exclusions, shipping zones, product availability per market, B2B quantity rules). For the rest, scaffold a Cart and Checkout Validation Function with Shopify CLI in the store's custom app, read thresholds from a metafield on the validation so merchants can change them, return localised error messages, add unit tests with input fixtures and deploy with shopify app deploy to the development store.`,
+    agent_prompt: (doc) => `Rules: ${list((doc.checkout?.order_restrictions ?? []).filter((r) => r !== 'none').map((r) => r.replace(/_/g, ' ')))}. First check whether native settings cover a rule (market exclusions, shipping zones, product availability per market, B2B quantity rules). For the rest, scaffold a Cart and Checkout Validation Function with Shopify CLI in the store's custom app, read thresholds from a metafield on the validation so merchants can change them, return localised error messages, add unit tests with input fixtures and deploy with shopify app deploy to the build store.`,
+  },
+  /*
+   * Accelerated checkout, which the bank asked about (Q4.1.6) and nothing built.
+   *
+   * These buttons are not a toggle. They sit beside Add to cart on the product
+   * page and take the buyer straight past the cart, so anything the cart page
+   * carries — a gift message, an upsell, a delivery date — is skipped, and the
+   * client rarely realises that until after launch. Shopify's own documented
+   * limits are the ones to design against: a buyer can take two of one variant
+   * but not two different variants of the same product, split shipping does not
+   * apply to accelerated checkouts at all, and the buttons order themselves.
+   */
+  {
+    key: 'LWC-PAY-008',
+    epic: 'checkout',
+    title: (doc) => `Enable accelerated checkout${listOr(doc.payments?.accelerated_checkouts, '') ? `: ${list(doc.payments.accelerated_checkouts)}` : ''}`,
+    user_story: 'As a shopper in a hurry, I want to buy from the product page with the payment details I already have, so that I am not filling a form to buy one thing.',
+    description: (doc) => `Requested: ${listOr(doc.payments?.accelerated_checkouts, 'to confirm')}.`,
+    acceptance_criteria: (doc) => [
+      `Given the accelerated methods in scope (${listOr(doc.payments?.accelerated_checkouts, 'to confirm')}), when they are activated, then each appears beside Add to cart and in the Express Checkout section of the checkout`,
+      'Given an accelerated purchase, when the buyer uses a button on the product page, then they go straight to checkout and the cart page is skipped — so anything the cart page carries has been checked against that and either moved or accepted as lost',
+      'Given a buyer who wants two different variants of the same product, when they try an accelerated button, then the team knows this is not possible and the normal path is still obvious on the page',
+      'Given split shipping, when the order would otherwise split, then the team knows it does not apply to accelerated checkouts, and the cases that matter are listed',
+      'Given the buttons, when they render, then the order is left to Shopify rather than forced, because it is chosen per buyer',
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'developer',
+    depends_on: ['LWC-PAY-001'],
+    spec_refs: ['/payments/accelerated_checkouts', '/payments/providers', '/checkout/post_purchase_upsell'],
+    security_flags: ['payments'],
+    applies: (doc) => (doc.payments?.accelerated_checkouts ?? []).some((x) => x !== 'none' && x !== 'not_sure'),
+    agent_prompt: (doc) => `Activate accelerated checkouts (${listOr(doc.payments?.accelerated_checkouts, 'to confirm')}) and show the buttons on the product page. Before sign-off, walk the cart page with the client and list what an accelerated purchase skips — gift messages, upsells, delivery notes — and decide for each whether it moves into checkout or is accepted as lost. Tell them two variants of one product cannot go through an accelerated button, and that split shipping does not apply to these checkouts. Leave button ordering to Shopify. Test each method on a real device.`,
   },
 ];

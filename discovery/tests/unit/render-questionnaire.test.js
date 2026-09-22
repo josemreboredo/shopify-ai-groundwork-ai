@@ -27,7 +27,9 @@ test('Shopify plan requirements stay in the consultant guide, never in the clien
 
 test('the client questionnaire uses neutral wording: no rule numbers, offers, STOP/FLAG or consultant-only STOP questions', () => {
   const client = renderQuestionnaire();
-  assert.doesNotMatch(client, /\b11\.\d+\b|§ 11|Growth \(L\)|standard offers?\b|offer's|\bFLAG\b|\bSTOP\b|scope gate|hard stop|Larger Engagement|Exit-trigger/);
+  // (?<![\d.]) so the offering's own version line — "offering 2.11.0" — is not
+  // read as a rule number. A rule reference never has a digit or a dot in front.
+  assert.doesNotMatch(client, /(?<![\d.])\b11\.\d+\b|§ 11|Growth \(L\)|standard offers?\b|offer's|\bFLAG\b|\bSTOP\b|scope gate|hard stop|Larger Engagement|Exit-trigger/);
   for (const q of questionBank.questions.filter((x) => x.ask_when === 'stop')) assert.ok(!client.includes(`**${q.id}**`), q.id);
   assert.match(renderConsultantGuide(), /## § 11 — Exit rules/);
 });

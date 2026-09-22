@@ -21,7 +21,7 @@ const CONTENTS = [
 
 export default function ManualDiscovery() {
   return (
-    <main className="manual">
+    <main id="main" className="manual">
       <header className="page-head">
         <p className="eyebrow"><Link to="/manual">Manual</Link> · the discovery path</p>
         <h1>Run a discovery</h1>
@@ -55,7 +55,7 @@ export default function ManualDiscovery() {
       <p><strong>Consent first:</strong> question <strong>Q10.5.2</strong> is the client’s agreement to AI processing. Nothing else can be recorded until it is <em>Yes</em>.</p>
 
       <h2 id="interview">2. Interview the client</h2>
-      <p>The step shows the next open questions, up to three at a time, with the Shopify knowledge you need under each one — what the platform does natively, which plan it needs, the documented limits and the source. The panel beside it updates the offer, GO or STOP, exit rules and Shopify plan after every answer.</p>
+      <p>The step shows the next open questions, up to three at a time, with the Shopify knowledge you need under each one — what the platform does natively, which plan it needs, the documented limits and the source. The offer, the scope gates, the exit rules that have fired and the Shopify plan the answers force are on <strong>Where it stands</strong>, recomputed on every visit — the questions keep the whole page.</p>
       <ul>
         <li><strong>Record answer</strong> — the client answered. Tick <em>to confirm with client</em> if it still needs checking.</li>
         <li><strong>TBC</strong> — they don’t know yet; add a comment on what is missing and who owes it.</li>

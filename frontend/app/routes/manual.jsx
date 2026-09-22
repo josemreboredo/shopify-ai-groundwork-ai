@@ -24,7 +24,7 @@ const CONTENTS = [
 export default function Manual({ loaderData }) {
   const { connector } = loaderData;
   return (
-    <main className="manual">
+    <main id="main" className="manual">
       <header className="page-head">
         <p className="eyebrow">How we work</p>
         <h1>Manual</h1>
@@ -65,7 +65,7 @@ export default function Manual({ loaderData }) {
         <section className="door rfp">
           <p className="door-n" aria-hidden="true">01</p>
           <h2>Answer an RFP</h2>
-          <p>A document arrived with a deadline. Information is scarce, the clock is running, and the job is to be chosen. Five steps: read it in, confirm what it says, take a Go/No-Go position, send the questions that change the answer, write the proposal.</p>
+          <p>A document arrived with a deadline. Information is scarce, the clock is running, and the job is to be chosen. Six steps: read it in, confirm what it says, take a Go/No-Go position, send the questions that change the answer, check where it stands, write the proposal.</p>
           <p><Link className="button" to="/manual/bid">The bid manual →</Link></p>
         </section>
         <section className="door discovery">
@@ -79,7 +79,7 @@ export default function Manual({ loaderData }) {
 
       <h2 id="words">The words the tool uses</h2>
       <table>
-        <thead><tr><th>Word</th><th>What it means here</th></tr></thead>
+        <thead><tr><th scope="col">Word</th><th scope="col">What it means here</th></tr></thead>
         <tbody>
           <tr><td><strong>Bid</strong></td><td>One record while Merkle is trying to win the work. Its client document is the <strong>proposal</strong>.</td></tr>
           <tr><td><strong>Engagement</strong></td><td>The same record once the work is Merkle’s. Its client document is the <strong>Discovery Closing Document</strong>.</td></tr>
@@ -87,14 +87,14 @@ export default function Manual({ loaderData }) {
           <tr><td><strong>To confirm</strong></td><td>An answer Claude read out of a document that no human has accepted yet.</td></tr>
           <tr><td><strong>Offer S / M / L</strong></td><td>The engine’s classification of the work, with a price band. Internal — never in a client document.</td></tr>
           <tr><td><strong>Provisional</strong></td><td>A question that decides a scope gate or the Shopify plan is still open, so the offer can still move. Prioritise those questions.</td></tr>
-          <tr><td><strong>Beyond the offers</strong></td><td>Not a refusal. The requirements go past S/M/L, so Merkle proposes a <strong>Larger Engagement</strong> — an Enterprise Engagement opening with a consultant-led Discovery Phase — or does not bid.</td></tr>
+          <tr><td><strong>Merkle Arc</strong></td><td>Not a refusal. The requirements go past S/M/L, or content or a front end lives outside Shopify — so Merkle proposes a <strong>Larger Engagement</strong>, an Enterprise Engagement opening with a consultant-led Discovery Phase, or hands it to <strong>Merkle Arc</strong>, which this tool neither quotes nor estimates. A headless storefront with content in Shopify is not this: that is Ecommerce Growth.</td></tr>
           <tr><td><strong>Exit rule</strong></td><td>A numbered rule (for example 11.20, mainland China) that the engine applies to the answers: STOP, FLAG or WARN, always with the answer that triggered it.</td></tr>
         </tbody>
       </table>
 
       <h2 id="help">Troubleshooting</h2>
       <table>
-        <thead><tr><th>What you see</th><th>What to do</th></tr></thead>
+        <thead><tr><th scope="col">What you see</th><th scope="col">What to do</th></tr></thead>
         <tbody>
           <tr><td>Claude doesn’t see the record or its tools</td><td>Enable <strong>{CONNECTOR}</strong> under + → Connectors in that chat; check the slug; reconnect the connector if Claude asks you to sign in again.</td></tr>
           <tr><td>“Record the client’s consent…”</td><td>Answer Q10.5.2 first. Nothing can be recorded before it.</td></tr>

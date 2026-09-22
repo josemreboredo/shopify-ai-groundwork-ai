@@ -44,9 +44,23 @@ function maximalEngagement() {
     warranty_claims: true,
     platform_preference: 'parcelLab',
   };
+  // Combined listings, personalisation and the customs data every cross-border
+  // product needs: asked in the bank, delivered by nothing until now.
+  doc.catalogue.combined_listings = true;
+  doc.catalogue.personalisation = ['text_engraving', 'file_upload', 'paid_add_ons'];
+  doc.catalogue.customs_data_source = 'in_pim';
+  doc.catalogue.shipping_data_source = 'partial';
+  doc.catalogue.storefront_filters = ['size', 'colour', 'material', 'movement'];
   doc.catalogue.inventory = { ...doc.catalogue.inventory, out_of_stock_behaviour: ['back_in_stock_alert', 'pre_order'], low_stock_alerts: true };
-  doc.shipping = { ...doc.shipping, model: 'hybrid', provider_3pl: 'ShipBob', fulfilment_locations: 3, routing_rules: ['closest_location', 'custom_rule_function'], rates: ['flat', 'free_above_threshold', 'carrier_calculated'], special_rules: ['Hazardous goods'], returns: { ...doc.shipping.returns, window_days: 30, return_rate_pct: 12, label: 'qr_drop_off', shipping_paid_by: 'merchant', exchange_types: ['any_product', 'store_credit_first'], international_returns: true, inspection_required: true, reason_tracking: true, b2b_returns_online: true } };
+  // Accelerated checkout and the delivery methods Q4.1.6 and Q5.1.11 ask about,
+  // neither of which had a story until now.
+  doc.payments = { ...doc.payments, accelerated_checkouts: ['shop_pay', 'apple_pay', 'google_pay'] };
+  doc.shipping = { ...doc.shipping, delivery_methods: ['standard_shipping', 'express', 'local_delivery', 'pickup_in_store', 'pickup_points', 'scheduled_delivery_slots'], model: 'hybrid', provider_3pl: 'ShipBob', fulfilment_locations: 3, routing_rules: ['closest_location', 'custom_rule_function'], rates: ['flat', 'free_above_threshold', 'carrier_calculated'], special_rules: ['Hazardous goods'], returns: { ...doc.shipping.returns, window_days: 30, return_rate_pct: 12, label: 'qr_drop_off', shipping_paid_by: 'merchant', exchange_types: ['any_product', 'store_credit_first'], international_returns: true, inspection_required: true, reason_tracking: true, b2b_returns_online: true } };
   doc.b2b = { ...doc.b2b, volume_discounts: true, payment_terms: ['net_terms'] };
+  // Customer service: the bank had one question on it and that one was about
+  // China, so a client running a helpdesk and taking phone orders was scope
+  // nobody could see.
+  doc.service = { platform: 'helpdesk_app', platform_name: 'Gorgias', contact_form: 'into_the_helpdesk', orders_on_behalf: true, booking: 'both' };
   doc.loyalty = { components: ['points_purchase', 'vip_tiers', 'referral', 'vip_early_access', 'store_credit'], phase: 'launch', app: 'Smile.io', esp_sync: true };
   doc.promotions = { ...doc.promotions, discount_types: ['percentage', 'fixed_amount', 'bogo', 'free_shipping', 'volume_tiered', 'automatic', 'code_based', 'scheduled_sale', 'stackable', 'pos_only'], stacking: 'custom_logic_function', gift_cards: { as_product: true, as_reward: true, format: 'both', expiry: false }, campaigns: { esp_triggered: true, landing_pages: true, countdown_timer: true, market_specific: true } };
   doc.marketing.analytics = { ...doc.marketing.analytics, server_side: true, custom_events: ['size_guide_open'] };
@@ -59,11 +73,51 @@ function maximalEngagement() {
     { system: 'ShipBob', category: '3pl_wms', direction: 'bidirectional', objects: ['orders', 'inventory'], frequency: 'webhook', connector: 'native_app', status: 'to_build' },
   ];
   doc.migration.data = ['products', 'customers', 'orders', 'content', 'redirects', 'reviews', 'gift_cards'];
-  doc.design = { ...doc.design, motion: true, custom_design: true };
+  // Not headless: that is exit rule 11.26 now, and a STOP has no backlog to
+  // build. Every offer is the same Liquid build, one size apart.
+  // Retail and a fourth language: both gates priced work the backlog delivered
+  // nothing for, and the coverage test could not see it because no fixture ever
+  // switched them on.
+  doc.retail = { store_count: 4, pos: 'shopify_pos', countries: ['CH', 'DE'],
+    omnichannel: ['buy_online_pickup_in_store', 'ship_to_customer_from_store', 'in_store_returns_exchanges_of_online_orders', 'endless_aisle_order_in_store', 'store_credit_gift_cards_in_store', 'stock_transfers_counts', 'retail_prices_or_catalogs', 'staff_roles_permissions'] };
+  doc.markets.list = doc.markets.list.map((m, i) => (i === 0 ? { ...m, languages: [...new Set([...(m.languages ?? []), 'en'])] } : m));
+  // Agentic commerce: thirteen questions in the bank and, until the AI epic,
+  // nothing delivering any of them.
+  doc.ai = { sell_through_agents: true, agentic_enrolment: 'per_channel', direct_checkout: 'selected_channels',
+    us_buyers: true, customer_data_sharing: 'approved', catalog_readiness: 'partial', catalog_mapping_needed: true,
+    crawler_policy: 'selective', knowledge_base: true, own_agent_surface: 'later',
+    merchant_ai_tools: ['sidekick', 'shopify_magic', 'semantic_search'], terms_owner: 'Head of Ecommerce' };
+  /* Headless, with content in Shopify.
+     Headless was an L trigger, then an exit, then a trigger again, and this
+     fixture followed it out and not back — so the Hydrogen stories had no
+     engagement to fire on. Content stays in metaobjects, or exit rule 11.26
+     fires and a STOP has no backlog at all. */
+  doc.design = { ...doc.design, motion: true, custom_design: true, headless_required: true,
+    headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects', hosting: 'oxygen', reasons: ['performance'] } };
   doc.compliance = { ...doc.compliance, legal_pages_status: 'needs_drafting', sensitive_data: false, industry_requirements: ['EU General Product Safety Regulation product safety information'] };
   doc.delivery = { ...doc.delivery, support_model: 'hypercare_only', sops_required: true, phased_launch: true };
   doc.offer = classifyOffer(doc);
   doc.exits = evaluateExits(doc);
+  return doc;
+}
+
+/**
+ * The same design ambition on the Liquid track.
+ *
+ * maximalEngagement() switches everything on, which since the effort ceiling
+ * landed makes it an L on Hydrogen — so the theme stories, which all guard on
+ * isLiquidTrack(), could no longer fire from it. A bespoke design, motion and a
+ * right-to-left language are not the preserve of large engagements: a small
+ * store with one market buys exactly that. So they are proven on a small Liquid
+ * engagement, which is where they are actually built.
+ */
+function maximalLiquidEngagement() {
+  const doc = load('foundation-minimal.json');
+  doc.design = { ...doc.design, motion: true, custom_design: true, figma: { ...doc.design?.figma, exists: true, completeness: 'all_templates', mapped_to_sections: true } };
+  doc.markets = { ...doc.markets, rtl_required: true };
+  doc.offer = classifyOffer(doc);
+  doc.exits = evaluateExits(doc);
+  assert.notEqual(doc.offer.delivery_track, 'hydrogen', 'the point of this fixture is the Liquid track');
   return doc;
 }
 
@@ -95,7 +149,7 @@ describe('story definitions', () => {
   });
 
   test('every story fires for at least one engagement and materialises cleanly', () => {
-    const docs = [...GO_FIXTURES, maximalEngagement()];
+    const docs = [...GO_FIXTURES, maximalEngagement(), maximalLiquidEngagement()];
     const fired = new Set(docs.flatMap((doc) => selectStories(doc).map((s) => s.key)));
     const never = STORY_DEFINITIONS.map((d) => d.key).filter((k) => !fired.has(k));
     assert.deepEqual(never, [], 'stories whose guard never fires — extend maximalEngagement() or fix the guard');
@@ -116,6 +170,21 @@ describe('story definitions', () => {
         assert.doesNotMatch(s.title, /Bucherer/i);
       }
     }
+  });
+
+  test('every gate the offering prices has a story carrying it, fixtures or not', () => {
+    // The fixture-based check below can only see gates that happen to fire in
+    // the data it has. retail_pos was priced at one to five weeks and CHF 8-40k
+    // with no story anywhere, and languages had the work but no label, and
+    // neither showed up for exactly that reason: no fixture switched them on.
+    const carried = new Set(STORY_DEFINITIONS.flatMap((s) => s.gates ?? []));
+    const naked = offering.scope_gates.map((g) => g.id).filter((id) => !carried.has(id));
+    assert.deepEqual(naked, [], 'a gate with a price and no story sells work nothing delivers');
+
+    // And the reverse: a label nobody prices is a story pointing at nothing.
+    const priced = new Set(offering.scope_gates.map((g) => g.id));
+    const orphans = [...carried].filter((id) => !priced.has(id));
+    assert.deepEqual(orphans, [], 'a story labelled with a gate the offering does not have');
   });
 
   test('every active scope gate in the fixtures is delivered by at least one story', () => {

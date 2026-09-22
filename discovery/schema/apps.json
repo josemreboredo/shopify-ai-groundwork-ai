@@ -1427,6 +1427,60 @@
       "check": "listing_loaded",
       "by_shopify": false,
       "status": "proposed"
+    },
+    {
+      "handle": "cowlendar",
+      "name": "Appointment Booking Cowlendar",
+      "url": "https://apps.shopify.com/cowlendar",
+      "requirements": [
+        "Appointments and booking (Q6.5.5)"
+      ],
+      "areas": [
+        "booking_app"
+      ],
+      "category": {
+        "name": "Event booking",
+        "url": "https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "appointments-and-bookings",
+      "name": "Easy Appointment Booking App",
+      "url": "https://apps.shopify.com/appointments-and-bookings",
+      "requirements": [
+        "Appointments and booking (Q6.5.5)"
+      ],
+      "areas": [
+        "booking_app"
+      ],
+      "category": {
+        "name": "Event booking",
+        "url": "https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
+    },
+    {
+      "handle": "appointly",
+      "name": "Appointment Booking App Apntly",
+      "url": "https://apps.shopify.com/appointly",
+      "requirements": [
+        "Appointments and booking (Q6.5.5)"
+      ],
+      "areas": [
+        "booking_app"
+      ],
+      "category": {
+        "name": "Event booking",
+        "url": "https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking"
+      },
+      "check": "listing_loaded",
+      "by_shopify": false,
+      "status": "proposed"
     }
   ]
 }

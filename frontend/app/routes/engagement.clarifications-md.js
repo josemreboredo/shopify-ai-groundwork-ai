@@ -9,13 +9,15 @@ import { renderClarificationsMarkdown } from '../../../discovery/service/clarifi
  */
 export async function loader({ request, params }) {
   const user = await requireUser(request);
-  const internal = new URL(request.url).searchParams.get('internal') === '1';
   let saved;
   try {
     saved = await discovery().getClarifications(user, params.client);
   } catch (err) {
     throw serviceFailure(err);
   }
+  // Owners only. `?internal=1` used to be the whole access control, and sign-in
+  // is open to any GitHub account.
+  const internal = new URL(request.url).searchParams.get('internal') === '1' && saved.pricing;
   const markdown = renderClarificationsMarkdown(saved.engagement, saved.clarifications, { internal, assumptions: saved.assumptions });
   const name = `${params.client}-clarification-questions${internal ? '-internal' : ''}.md`;
   return new Response(markdown, {

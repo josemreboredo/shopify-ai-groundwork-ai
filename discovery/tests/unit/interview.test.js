@@ -82,6 +82,59 @@ describe('question selection', () => {
     assert.ok(!toExtraction(noChina).open_items.some((i) => i.question_id?.startsWith('Q3.5.')), 'no China open items without CN');
   });
 
+  test('a topic the client never raised is never asked about, whatever the mode', () => {
+    /*
+     * The question bank works by gateways: one unconditional question asks
+     * whether a subject applies at all, and everything under it waits on the
+     * answer. That is the right shape — you cannot know whether a client has
+     * shops without asking once — but only mainland China was ever held to it
+     * by a test, because China was an incident and the others were not.
+     *
+     * This is the general version. Answer the gateway with "no" and the block
+     * behind it stays shut, in a quick interview and a full one alike. An
+     * engagement that is greenfield, single-market and consumer-only should
+     * never see a migration question, a POS question or a B2B question — and a
+     * consultant who is asked them anyway stops trusting the interview.
+     */
+    const SHUT = [
+      { what: 'retail and POS', gateway: { pointer: '/retail/store_count', value: 0, question_id: 'Q5.6.1' }, prefix: 'Q5.6.' },
+      { what: 'migration', gateway: { pointer: '/migration/source_platform', value: 'none', question_id: 'Q0.5.4' }, prefix: 'Q8.2.' },
+      { what: 'B2B', gateway: { pointer: '/meta/client/business_model', value: 'dtc', question_id: 'Q1.1.4' }, prefix: 'Q6.2.' },
+    ];
+
+    // A catalogue of plain products is asked nothing about subscriptions,
+    // bundles or pre-orders. Each of those was a question that read as an
+    // assumption: "which subscription features are needed" to a client who
+    // sells none reads as Merkle having decided they do.
+    const PLAIN_CATALOGUE = ['Q2.2.2', 'Q2.2.3', 'Q2.2.4', 'Q2.2.5'];
+
+    for (const mode of ['quick', 'full']) {
+      for (const { what, gateway, prefix } of SHUT) {
+        const s = consented(mode);
+        recordAnswer(s, { ...gateway, today: TODAY });
+        const asked = nextQuestions(s, { limit: 500 }).questions.filter((q) => q.id.startsWith(prefix)).map((q) => q.id);
+        assert.deepEqual(asked, [], `${mode}: ${what} answered away and still asked ${asked.join(', ')}`);
+        // And it does not come back as an open item either, which would put it
+        // in the client's Q&A document under another name.
+        const open = toExtraction(s).open_items.filter((i) => i.question_id?.startsWith(prefix));
+        assert.deepEqual(open, [], `${mode}: ${what} is shut and still an open item`);
+      }
+
+      const plain = consented(mode);
+      recordAnswer(plain, { pointer: '/catalogue/product_types', value: ['simple', 'variant'], question_id: 'Q2.2.1', today: TODAY });
+      const asked = nextQuestions(plain, { limit: 500 }).questions.map((q) => q.id).filter((id) => PLAIN_CATALOGUE.includes(id));
+      assert.deepEqual(asked, [], `${mode}: a plain catalogue was asked ${asked.join(', ')}`);
+
+      // And the gate is a gate, not a wall: say you sell bundles and the bundle
+      // question comes back, on a catalogue that names only one of the five
+      // values the schema calls a bundle.
+      const bundles = consented(mode);
+      recordAnswer(bundles, { pointer: '/catalogue/product_types', value: ['simple', 'multipack'], question_id: 'Q2.2.1', today: TODAY });
+      assert.ok(nextQuestions(bundles, { limit: 500 }).questions.some((q) => q.id === 'Q2.2.3'),
+        `${mode}: a multipack is a bundle and the bundle question should be asked`);
+    }
+  });
+
   test('consultant questions come in a wrap-up block after the client questions; the STOP route question opens it', () => {
     const s = consented('quick');
     const qs = () => nextQuestions(s, { limit: 500 }).questions;

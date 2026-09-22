@@ -22,10 +22,29 @@
 
 import { questionBank } from '../../schema/index.js';
 import { answeredQuestions } from './knowledge.js';
-import { runCostFor } from './economics.js';
+import { questionApplies } from '../interview/next.js';
+import { runCostFor, basis } from './economics.js';
+import { writeInLanguage } from '../language.js';
 
 const BY_ID = new Map(questionBank.questions.map((q) => [q.id, q]));
 const SECTION_TITLE = new Map(questionBank.sections.map((s) => [String(s.id), s.title]));
+
+/**
+ * Subjects that are not their parent section.
+ *
+ * Grouping by section puts one question in front of the client per subject, and
+ * mainland China is not the same subject as "which markets do you sell in". It
+ * is excluded from the offer and routed to a separate discovery, so folding it
+ * into a general markets question loses the one question worth asking about it —
+ * which route they intend — inside a question about something else.
+ */
+const OWN_SUBJECT = new Set(['3.5']);
+const SUBJECT_TITLE = new Map([['3.5', 'Mainland China']]);
+
+const subjectOf = (question) => {
+  const sub = String(question.subsection ?? '');
+  return OWN_SUBJECT.has(sub) ? sub : sub.split('.')[0];
+};
 
 /** Which part of the proposal an unknown moves. Nothing else earns a question. */
 const MOVES = {
@@ -69,6 +88,7 @@ function unknowns(doc) {
     if (a.question_id) add(a.question_id, a.impact_if_wrong, { assumed: a.assumed });
   }
 
+
   // Everything the document simply never covered.
   //
   // The three sources above are the engine's own notes, and on a bid two of them
@@ -88,8 +108,23 @@ function unknowns(doc) {
   // questions for a client whose RFP nobody has opened.
   const answered = new Set(answeredQuestions(doc).map((q) => q.id));
   if (answered.size) {
+    // Anything the engine says it cannot cost at all.
+    //
+    // The readiness page blocks a price on these, and the questions that fill
+    // them fed nothing — so the tool said "we cannot price this" and then never
+    // asked the one thing that would unblock it. Nothing reported as uncostable
+    // can sit outside the questions.
+    for (const need of basis(doc).needs ?? []) {
+      add(need.question_id, `Without it the run cost cannot be computed at all — no assumption covers ${need.item}`, { blocks_price: true });
+    }
+
     for (const q of questionBank.questions) {
       if (answered.has(q.id) || out.has(q.id)) continue;
+      // And only where the subject exists for this client. `only_if` is how the
+      // bank says a whole subject does not apply — the mainland China questions
+      // exist only when CN is a launch market — and asking around it puts a
+      // question to a client about something they never mentioned having.
+      if (!questionApplies(q, doc)) continue;
       add(q.id, q.why_it_matters ?? q.teach?.why ?? 'Not covered by the documents');
     }
   }
@@ -120,11 +155,11 @@ export function clarificationTopics(doc, { max = Infinity } = {}) {
     // bid — whose Jira the backlog lives on is a kick-off question, and asking it
     // here says we have not understood what we were sent. It becomes an
     // assumption, or it waits for kick-off.
-    if (!moves.length && unknown.swing !== 'high') continue;
-    const section = String(question.subsection).split('.')[0];
+    if (!moves.length && unknown.swing !== 'high' && !unknown.blocks_price) continue;
+    const section = subjectOf(question);
     const group = groups.get(section) ?? {
       topic: section,
-      title: SECTION_TITLE.get(section) ?? `Section ${section}`,
+      title: SUBJECT_TITLE.get(section) ?? SECTION_TITLE.get(section) ?? `Section ${section}`,
       covers: [],
       moves: new Set(),
       assume_if_unanswered: [],
@@ -138,6 +173,7 @@ export function clarificationTopics(doc, { max = Infinity } = {}) {
       ...(unknown.swing ? { swing: unknown.swing } : {}),
     });
     for (const m of moves) group.moves.add(m);
+    if (unknown.blocks_price) group.moves.add('cost');
     const assumed = unknown.assumed ?? question.unknown_path?.assumption;
     if (assumed && !group.assume_if_unanswered.includes(assumed)) group.assume_if_unanswered.push(assumed);
     const teach = teachOf(question.id);
@@ -207,8 +243,17 @@ export function clarificationBrief(doc, { max = Infinity } = {}) {
   };
 }
 
-/** The instruction the model follows to write them. */
-export const CLARIFICATIONS_PROMPT = `Write Merkle's clarification questions on this RFP, for the client to answer before we submit the proposal.
+/**
+ * The instruction the model follows to write them.
+ *
+ * These questions are the one thing in the tool that is *sent* to the client in
+ * the model's own words, so they are the first place the engagement's language
+ * has to reach. The split inside a question is the split the page already draws:
+ * the question and its "Why we ask" are the client's, and go in the client's
+ * language; what we would assume and what it costs us to be wrong are ours, and
+ * stay in English.
+ */
+const PROMPT = `Write Merkle's clarification questions on this RFP, for the client to answer before we submit the proposal.
 
 These are not discovery questions and this is not a form. They are the first thing this client reads from us: each one has to get the information we need *and* show that we already understand the trade-off it turns on. A long list says we have not read their document.
 
@@ -218,8 +263,19 @@ For each topic you are given:
 - Then, in a short paragraph headed "Why we ask", show the trade-off using the documented limits and options you are given: what changes in the solution depending on the answer, and what it does to the plan, the store count or the running cost. Cite the official Shopify page for any platform fact, exactly as everywhere else.
 - Keep the client-facing part to a question and that paragraph. No sub-questions, no brackets, no jargon the client has not used themselves.
 
+If questions are already saved, write the whole list again including them — re-saving is how a topic gets added. A question that rests on the same discovery questions keeps the Lead Consultant's decision and its author, and only genuinely new ground arrives undecided, so there is nothing to protect by leaving a topic out. Keep an existing question's wording unless you can improve it.
+
 Order the questions by impact, highest first. Never write more than the topics you are given, and drop any topic where you cannot show a real trade-off — a question that does not demonstrate anything is one the client will resent.
 
 For each question also record, for the consultant only: which discovery questions it covers, what we will assume in the proposal if the client does not answer it, and what that costs us if the assumption turns out to be wrong — in scope, in the Shopify plan, in the number of stores or in what it costs to run.
 
 That last one is not paperwork. Anything the Lead Consultant decides not to ask becomes a stated assumption in the proposal, and an assumption with a consequence attached reads as a decision Merkle took deliberately; the same assumption without one reads as a gap, and a client prices gaps down.`;
+
+/** @param {string} [language] the engagement's conversation language */
+export const clarificationsPrompt = (language) => `${writeInLanguage(language, {
+  what: 'The question itself and its "Why we ask" paragraph are sent to the client exactly as you write them',
+  internal: 'Everything you record for the consultant — which discovery questions a question covers, what we would assume if it is not answered, and what that assumption costs if it is wrong —',
+})}${PROMPT}`;
+
+/** The English instruction, for the tests and for an engagement run in English. */
+export const CLARIFICATIONS_PROMPT = clarificationsPrompt('en');

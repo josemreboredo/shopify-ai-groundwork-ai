@@ -18,11 +18,11 @@ export async function loader({ request }) {
 
 export default function Login({ loaderData }) {
   return (
-    <main className="signin">
+    <main id="main" className="signin">
       <section className="signin-hero">
-        <p className="eyebrow">Merkle commerce practice</p>
+        <p className="eyebrow">Merkle commerce practice · Shopify</p>
         <h1>{PRODUCT}</h1>
-        <p>One engine, two ways in. An <strong>RFP</strong> that has to be answered, or a <strong>discovery</strong> to run with a client — the same question bank, the same verified Shopify documentation, the same offer underneath.</p>
+        <p>Shopify bids and discoveries, on one engine. An <strong>RFP</strong> that has to be answered, or a <strong>discovery</strong> to run with a client — the same question bank, the same verified Shopify documentation, the same offer underneath.</p>
         <ul>
           <li>Claude reads the RFP and records what it answers, with the quote behind each one</li>
           <li>A Go/No-Go position on whether the work can be priced and stood behind</li>

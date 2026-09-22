@@ -27,7 +27,14 @@ import { questionBank } from '../../schema/index.js';
 const BY_ID = new Map(questionBank.questions.map((q) => [q.id, q]));
 
 /** A value exists at this pointer in the engagement document. */
-function answeredAt(doc, pointer) {
+/**
+ * Whether an answer actually sits at a pointer. Exported because "no answer
+ * here" and "the answer is no" are different things, and a reader who cannot
+ * tell them apart is being told something the data does not support.
+ *
+ * @param {object} doc @param {string} pointer
+ */
+export function answeredAt(doc, pointer) {
   let node = doc;
   for (const key of pointer.split('/').slice(1)) {
     if (key === '*') return Array.isArray(node) && node.length > 0;

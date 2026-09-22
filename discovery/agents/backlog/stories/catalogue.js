@@ -2,7 +2,7 @@
  * @file catalogue.js — epic "Catalogue & product data" (LWC-CAT-*)
  */
 
-import { hasProductType, isMigration, listOr, count, integrationsOf } from './helpers.js';
+import { hasProductType, isMigration, listOr, count, integrationsOf, markets } from './helpers.js';
 
 const attributes = (doc) => doc.catalogue?.custom_attributes ?? [];
 const namespace = (doc) => `client_${(doc.meta?.client?.slug ?? 'store').split('-')[0].replace(/[^a-z0-9]/g, '')}`;
@@ -39,6 +39,7 @@ export default [
   },
   {
     key: 'LWC-CAT-002',
+    scope: 'Create metafield definitions and filters for the agreed product attributes',
     epic: 'catalogue',
     title: (doc) => `Create metafield definitions and filters for ${attributes(doc).length} product attribute${attributes(doc).length === 1 ? '' : 's'}`,
     description: (doc) => `Attributes: ${listOr(attributes(doc), 'to confirm')}.`,
@@ -127,6 +128,7 @@ export default [
     points: 5,
     owner: 'agent',
     depends_on: ['LWC-CAT-001', 'LWC-PAY-001'],
+    gates: ['subscriptions'],
     spec_refs: ['/catalogue/product_types', '/catalogue/subscription_app'],
     security_flags: ['payments', 'pii'],
     applies: (doc) => hasProductType(doc, 'subscription'),
@@ -207,5 +209,99 @@ export default [
     spec_refs: ['/catalogue/data_source', '/catalogue/sku_count', '/catalogue/custom_attributes'],
     applies: (doc) => !isMigration(doc) && !['erp', 'pim'].includes(doc.catalogue?.data_source),
     agent_prompt: (doc) => `Provide the client with an import template matching the approved product model (Shopify product CSV columns plus metafield columns${attributes(doc).length ? ` for ${listOr(attributes(doc), '')}` : ''}). Validate the returned file (required fields, option consistency, prices, image URLs, handle uniqueness) and send an error report. Import with the Shopify product CSV importer or Matrixify for metafields, updating by handle so re-runs are idempotent. Spot-check 20 products and report counts.`,
+  },
+  /*
+   * Four things the questionnaire asked and nothing delivered.
+   *
+   * Combined listings, personalisation, the customs and shipping data every
+   * product needs before a duty or a carrier rate can be calculated, and the
+   * merchandising half of search — which is product-data work, not page-build
+   * work, and had been folded into the storefront story.
+   */
+  {
+    key: 'LWC-CAT-011',
+    epic: 'catalogue',
+    title: 'Show colour variants as one product with combined listings',
+    user_story: 'As a shopper, I want to see one product and switch colour, so that I am not looking at four near-identical listings.',
+    description: 'Separate products, each with its own SKUs, images and URL, presented to shoppers as one. Shopify calls this a combined listing and it is a Plus-only app.',
+    acceptance_criteria: [
+      'Given colours kept as separate products, when the combined listing is configured, then the storefront shows one product with a colour switch and each colour keeps its own SKUs, images and URL',
+      'Given a shopper switching colour, when the page updates, then the URL changes to that colour’s own product so the link can be shared and indexed',
+      'Given the plan, when combined listings are enabled, then the store is on Shopify Plus, because the app requires it — and if it is not, that is a plan decision taken before the build, not after',
+      'Given SEO, when the listings are published, then canonicals are checked so the group does not compete with itself in search',
+    ],
+    gaia_tier: 'T2',
+    points: 5,
+    owner: 'developer',
+    depends_on: ['LWC-CAT-001'],
+    spec_refs: ['/catalogue/combined_listings', '/shopify/target_plan'],
+    gates: ['sku_complexity'],
+    applies: (doc) => doc.catalogue?.combined_listings === true,
+    agent_prompt: () => 'Configure combined listings so separate colour products present as one. Confirm the store is on Shopify Plus first — the app requires it and exit rule 11.1 exists for this. Keep each colour’s own URL and images, check the colour switch updates the URL, and review canonicals so the group does not compete with itself in search.',
+  },
+  {
+    key: 'LWC-CAT-012',
+    epic: 'catalogue',
+    title: (doc) => `Let shoppers personalise products: ${listOr((doc.catalogue?.personalisation ?? []).filter((x) => x !== 'none' && x !== 'not_sure').map((x) => x.replace(/_/g, ' ')), 'the agreed options')}`,
+    user_story: 'As a shopper, I want to personalise what I buy, so that the product is mine rather than generic.',
+    acceptance_criteria: (doc) => {
+      const p = (doc.catalogue?.personalisation ?? []).filter((x) => x !== 'none' && x !== 'not_sure');
+      return [
+        'Given a personalisable product, when the shopper adds their choices, then those choices travel to the cart, the checkout, the order and the packing slip without being re-typed',
+        ...(p.includes('text_engraving') ? ['Given engraving text, when it is entered, then the character limit and the allowed characters are enforced at entry rather than found at production'] : []),
+        ...(p.includes('file_upload') ? ['Given an uploaded file, when it is attached, then its size and type are validated, it is stored where the client agreed, and it is retrievable against the order'] : []),
+        ...(p.includes('paid_add_ons') ? ['Given a paid add-on, when it is chosen, then the price changes correctly and the add-on is visible as a line on the order'] : []),
+        'Given a personalised order, when it is returned, then the rule for whether it can be is written down and matches the policy pages',
+      ];
+    },
+    gaia_tier: 'T3',
+    points: 5,
+    owner: 'developer',
+    depends_on: ['LWC-CAT-001'],
+    spec_refs: ['/catalogue/personalisation', '/catalogue/variant_options_max'],
+    applies: (doc) => (doc.catalogue?.personalisation ?? []).some((x) => x !== 'none' && x !== 'not_sure'),
+    agent_prompt: (doc) => `Implement product personalisation (${listOr((doc.catalogue?.personalisation ?? []).filter((x) => x !== 'none' && x !== 'not_sure').map((x) => x.replace(/_/g, ' ')), 'to confirm')}). Choices are line item properties so they reach cart, checkout, order and packing slip. Validate at entry — character limits for engraving, size and type for uploads. Agree where uploaded files live and how long they are kept, because that is personal data. Confirm the returns rule for personalised items against the published policy.`,
+  },
+  {
+    key: 'LWC-CAT-013',
+    epic: 'catalogue',
+    title: 'Complete the customs and shipping data on every product',
+    user_story: 'As an operations manager, I want weights, HS codes and country of origin on every product, so that duties and carrier rates are calculated rather than guessed.',
+    description: (doc) => `Customs data lives in: ${doc.catalogue?.customs_data_source ?? 'to confirm'}. Weights and dimensions: ${doc.catalogue?.shipping_data_source ?? 'to confirm'}.`,
+    acceptance_criteria: (doc) => [
+      'Given every product that ships, when the catalogue is audited, then it has a weight, and the ones that do not are listed with an owner rather than defaulted to zero',
+      ...(markets(doc).length > 1 ? ['Given cross-border selling, when a product is checked, then it carries an HS code and a country of origin, because duties cannot be calculated without them'] : []),
+      `Given the source of that data (${doc.catalogue?.customs_data_source ?? 'to confirm'}), when it is agreed, then it is clear whether Shopify holds it, the PIM or ERP does, or it has to be created`,
+      'Given carrier-calculated rates, when they are tested, then the rate returned matches what the carrier would charge for that weight and size',
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'agent',
+    depends_on: ['LWC-CAT-001'],
+    spec_refs: ['/catalogue/customs_data_source', '/catalogue/shipping_data_source', '/markets/list'],
+    applies: (doc) => Boolean(doc.catalogue?.customs_data_source || doc.catalogue?.shipping_data_source) || markets(doc).length > 1,
+    agent_prompt: (doc) => `Audit the catalogue for shipping and customs data: weight and dimensions on everything that ships${markets(doc).length > 1 ? ', plus HS code and country of origin, without which duties cannot be calculated' : ''}. Report counts and a list of products missing each field with a named owner — never default a weight to zero. Confirm whether the data is maintained in Shopify (${doc.catalogue?.shipping_data_source ?? 'to confirm'}) or upstream, and if upstream, that the integration carries it. Test a carrier-calculated rate against the real weight.`,
+  },
+  {
+    key: 'LWC-CAT-014',
+    epic: 'catalogue',
+    title: 'Configure search, filters and merchandising rules',
+    user_story: 'As a merchandiser, I want filters and search that match how customers shop, so that the range is findable without me asking a developer.',
+    description: (doc) => `Filters requested: ${listOr(doc.catalogue?.storefront_filters, 'to confirm')}. Catalogue: ${count(doc.catalogue?.sku_count, 'size to confirm')} SKUs.`,
+    acceptance_criteria: (doc) => [
+      `Given the filters the client asked for (${listOr(doc.catalogue?.storefront_filters, 'to confirm')}), when they are configured, then each one is backed by product data that actually exists on the products it filters`,
+      'Given Search & Discovery, when the filter set is built, then it is within the 25-filter limit, and if the requirement is larger the client has been told before the build rather than after',
+      `Given a collection over 5,000 products, when filters are checked on it, then the team knows they do not show at all above that size${(doc.catalogue?.sku_count ?? 0) >= 5000 ? ' — which this catalogue is large enough to hit' : ''}`,
+      'Given the top searches with no results, when they are reviewed before launch, then synonyms and boosts are set from real terms rather than guesses',
+      'Given merchandising, when it is handed over, then the merchant can change a boost or a synonym without a developer',
+    ],
+    gaia_tier: 'T2',
+    points: 5,
+    owner: 'developer',
+    depends_on: ['LWC-CAT-001', 'LWC-CAT-003'],
+    spec_refs: ['/catalogue/storefront_filters', '/catalogue/sku_count', '/catalogue/collection_mode', '/catalogue/collections_estimate'],
+    gates: ['search_merchandising'],
+    applies: (doc) => (doc.catalogue?.storefront_filters ?? []).length > 0 || (doc.catalogue?.sku_count ?? 0) >= 5000,
+    agent_prompt: (doc) => `Configure Shopify Search & Discovery: filters (${listOr(doc.catalogue?.storefront_filters, 'to confirm')}), boosts and synonyms. Check each filter is backed by product data that exists — a filter is a product-data decision before it is a storefront one. Stay inside the 25-filter limit and flag it early if the requirement is larger. ${(doc.catalogue?.sku_count ?? 0) >= 5000 ? 'This catalogue is large enough that collections may pass 5,000 products, where filters stop showing at all — check the biggest collections and tell the client what that means. ' : ''}Set synonyms from real no-result searches, and hand merchandising over so the client can change it themselves.`,
   },
 ];

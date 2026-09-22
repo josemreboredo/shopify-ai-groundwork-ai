@@ -47,9 +47,15 @@ describe('the step spine follows the Merkle system it is drawn in', () => {
   });
 
   test('every white-alpha text colour clears WCAG AA against black', () => {
-    const alphas = [...spine.matchAll(/(?<prop>color):\s*rgba\(255,\s*255,\s*255,\s*(?<a>[\d.]+)\)/g)]
-      .filter((m) => !/border-color|background/.test(m[0]))
-      .map((m) => Number(m.groups.a));
+    // Line-by-line, because matching on `color:` alone also catches
+    // `border-color:` and `background:` — and filtering on the match itself
+    // could never exclude them, since the match never contains the prefix. The
+    // filter was vacuous, so every border colour was being held to the contrast
+    // bar for body text.
+    const alphas = spine.split('\n')
+      .filter((line) => /(^|[;{\s])color:\s*rgba\(255/.test(line))
+      .flatMap((line) => [...line.matchAll(/(?<![a-z-])color:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/g)])
+      .map((m) => Number(m[1]));
     assert.ok(alphas.length >= 4, 'the spine states its own colours rather than inheriting them');
     for (const a of alphas) {
       assert.ok(contrast(onBlack(a), [0, 0, 0]) >= 4.5, `white at ${a} on black is ${contrast(onBlack(a), [0, 0, 0]).toFixed(2)}:1 — under AA for body text`);
@@ -92,4 +98,18 @@ describe('the step spine follows the Merkle system it is drawn in', () => {
     }
   });
 
+});
+
+describe('a component built for the black band is restated when it is reused on white', () => {
+  test('the KPI strip states its own colours', () => {
+    // .stats was written for the statement band: .stats span is white text. Reused
+    // on the readiness page it rendered white on white, and all a reader saw was a
+    // column of numbers over red rules with no labels at all.
+    const base = css.slice(css.indexOf('.stats {'), css.indexOf('.stats {') + 600);
+    assert.match(base, /\.stats span \{[^}]*color: rgba\(255, 255, 255/, 'the base is for the dark band');
+
+    const kpis = css.slice(css.indexOf('.stats.kpis {'), css.indexOf('.stats.kpis {') + 900);
+    assert.match(kpis, /\.stats\.kpis span \{[^}]*color: var\(--muted\)/, 'and the white-surface variant restates it');
+    assert.match(kpis, /\.stats\.kpis strong \{[^}]*color: var\(--ink\)/);
+  });
 });

@@ -182,7 +182,7 @@ Runtime LLM + client personal data → threat model and test strategy required b
 - [x] Story model v2: `key` (stable, e.g. `LWC-MKT-003`), `epic`, user-story `title`, `description`, `acceptance_criteria[]` (Given/When/Then), `dod`, `gaia_tier`, `points`, `depends_on[]`, `labels` (offer, gate, domain), `component`, `spec_ref` (JSON pointer), `security_flags`, `agent_prompt` (separate)
 - [x] Guards read the engagement schema; prompts are functions of the engagement
 - [ ] Correct Horizon/OS2 content (custom sections, back-in-stock, hreflang, cookie consent incl. CH)
-- [ ] New domains: migration & redirects, shipping & tax, customer accounts & B2B, page builds (home/PDP/PLP/cart/nav), analytics & consent, accessibility & performance, QA/UAT, launch/cutover, training/hypercare
+- [x] New domains: migration & redirects, shipping & tax, customer accounts & B2B, page builds (home/PDP/PLP/cart/nav), analytics & consent, accessibility & performance, QA/UAT, launch/cutover, training/hypercare — 90 stories across 14 epics; every domain on this line has its own epic (verified 2026-09-21)
 - [ ] Sanity check: backlog points vs offer weeks — deferred (needs an agreed velocity; points and duration are shown side by side in `deck-internal-notes.md`)
 - [x] Export 1: Jira CSV import file (`npm run backlog -- --client <slug>`)
 - [ ] Export 2: Jira push via Atlassian Rovo MCP / REST — dry-run default, consultant approval, idempotent upsert by `key` — deferred (CSV first, decision 2026-09-16)

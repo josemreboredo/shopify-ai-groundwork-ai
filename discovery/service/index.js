@@ -19,17 +19,20 @@ import { preview } from '../agents/interview/preview.js';
 import { findPersonalData } from '../agents/discovery/input.js';
 import { questionBank, questionForPointer } from '../schema/index.js';
 import { fieldSpecs, normalizeValue, parseField, parseTable } from './fields.js';
-import { displayValue } from './summary.js';
+import { quote, displayValue } from './summary.js';
 import { approachBrief, closingStatus, deckBrief, deckDataPages, decideFromSession, finaliseEngagement, needsApproach, referencePiece } from './closing.js';
 import { annexWithChapters, selectChapters } from './reference.js';
 import { answerSnapshot, answerChanges, redraftPrompt } from './freshness.js';
 import { deckErrors } from './deck-template.js';
-import { clarificationBrief, clarificationTopics, CLARIFICATIONS_PROMPT } from '../agents/discovery/clarifications.js';
+import { clarificationBrief, clarificationTopics, clarificationsPrompt } from '../agents/discovery/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
+import { whatMoved } from './moved.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
-import { statedAssumptions, triage, clarificationsFreshness } from './assumptions.js';
+import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
-import { coverage, translateHeading, translateQuestion, translateQuestions, translateRows } from './i18n.js';
+import { readiness, openPoints, technicalAnswer } from './readiness.js';
+import { record as recordOutcomeEntry, ledger, OUTCOME_IDS } from './outcome.js';
+import { coverage, LANGUAGES, supportedLanguage, translateHeading, translateQuestion, translateQuestions, translateRows, writtenIn } from './i18n.js';
 import { deckToMarkdown } from './pptx.js';
 
 /**
@@ -120,7 +123,14 @@ function blockersFromErrors(errors) {
     const key = q?.id ?? error;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push(q ? { question_id: q.id, what: q.text, why: error } : { what: error });
+    // The schema's own sentence — "/meta/client must have required property
+    // 'name'" — is where the validator stopped, not where the consultant has to
+    // go. Where the pointer resolves to a question, the question is the whole
+    // message; where it does not, the raw text is all we have, so it is shown
+    // under a sentence a reader can act on rather than as the message itself.
+    out.push(q
+      ? { question_id: q.id, what: q.text, why: null }
+      : { what: 'Something the engine needs has not been recorded', why: error });
   }
   return out;
 }
@@ -152,7 +162,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
   function documentYield(session) {
     const entries = Object.values(session.provenance ?? {});
     return (session.documents ?? []).map((d) => {
-      const from = entries.filter((p) => typeof p.note === 'string' && p.note.startsWith(`Source: ${d.name}`));
+      // Exactly this document. `startsWith` let "RFP.pdf" absorb every answer
+      // cited to "RFP.pdf annex", and nothing on the page could show it.
+      const from = entries.filter((p) => typeof p.note === 'string'
+        && (p.note === `Source: ${d.name}` || p.note.startsWith(`Source: ${d.name},`) || p.note.startsWith(`Source: ${d.name} “`) || p.note.startsWith(`Source: ${d.name} —`)));
       const sections = new Set(from.map((p) => String(p.question_id ?? '').replace(/^Q/, '').split('.')[0]).filter(Boolean));
       return { ...d, answers: from.length, sections: sections.size, to_confirm: from.filter((p) => p.status === 'tbc').length };
     });
@@ -168,14 +181,31 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
    */
   const statedFor = (session, doc) => statedAssumptions(doc, session.closing?.clarifications ?? null);
 
+  /** The outcome record for a session, with the engine's position frozen into it. */
+  function outcomeFor(session, input, meta) {
+    const decided = decideFromSession(session, today());
+    const p = decided.ok ? preview(session, today()) : null;
+    return recordOutcomeEntry(session, input, {
+      ...meta,
+      offer: p ? { code: p.offer?.code, go: p.go, route: p.route } : null,
+      position: decided.ok
+        ? { assumptions: statedFor(session, decided.doc).length, decisions_settled: readiness(decided.doc, { provenance: session.provenance }).decisions.settled }
+        : null,
+    });
+  }
+
   function summary(session) {
     const p = preview(session, today());
     return {
+      // The trading name, collected at Q1.1.1 and never shown: every page of a
+      // record was headed by its URL slug.
+      client_name: session.answers?.meta?.client?.name ?? null,
       client: session.client,
       language: session.language,
       mode: session.mode,
       process: processOf(session.process),
       won: session.won ?? null,
+      outcome: session.outcome?.current ?? null,
       owner: session.owner ?? null,
       started_at: session.started_at,
       updated_at: session.updated_at,
@@ -183,11 +213,20 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       go: p.go,
       route: p.route ?? null,
       coverage: p.coverage,
-      to_review: Object.values(session.provenance).filter((p) => p.status === 'tbc').length,
+      // Questions, not pointers — and the same questions Review lists, not a
+      // second walk over the provenance. Counting the provenance said 91 where
+      // Review's own rows said 90: an entry marked tbc whose question no longer
+      // reads as answered counts in one and not the other. Review is where the
+      // work is done, so Review's rows are the unit everything else reports.
+      to_review: awaitingConfirmation(session),
       // What the step spine reads. It renders on every page, so the counts travel
       // with the engagement rather than costing each page another call.
       documents: (session.documents ?? []).length,
       clarifications_at: session.closing?.clarifications?.saved_at ?? null,
+      // Saved is not decided. The ribbon marked the step done when Claude saved,
+      // while the proposal refused to run until every question was triaged — the
+      // spine said finished and the next step said blocked.
+      clarifications_undecided: (session.closing?.clarifications?.questions ?? []).filter((q) => (q.status ?? 'proposed') === 'proposed').length,
       closing_document_at: session.closing?.document?.saved_at ?? null,
     };
   }
@@ -212,13 +251,42 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
     }
   }
 
+  /**
+   * Questions waiting on a human to accept what was extracted — the rows Review
+   * shows under "to confirm", counted once here so the spine, the status and the
+   * page cannot disagree.
+   *
+   * @param {object} session
+   * @returns {number}
+   */
+  function awaitingConfirmation(session) {
+    let n = 0;
+    for (const q of questionBank.questions) if (questionState(session, q).to_confirm) n += 1;
+    return n;
+  }
+
   /** State of a question in a session. @param {object} session @param {object} q */
   function questionState(session, q) {
     const commented = session.commented ?? {};
     if (q.id in commented) return { state: 'commented', note: commented[q.id] };
     if (q.maps_to.some((p) => isAnswered(session.answers, p))) {
-      const provenance = q.maps_to.map((p) => Object.entries(session.provenance).find(([k]) => k === p || k.startsWith(`${p}/`))?.[1]).find(Boolean);
-      return { state: 'answered', note: provenance?.note ?? '', to_confirm: provenance?.status === 'tbc', via: provenance?.via ?? null };
+      // Every pointer the question fills, not the first one that happens to have
+      // provenance. Fifteen questions fill two or three fields, and reading the
+      // row's state off one of them made a question with one field confirmed and
+      // two waiting render as "Answered", with no Confirm button, hidden from the
+      // to-confirm filter and out of the bulk card — while the counter that feeds
+      // the spine kept counting the two. Nothing on any screen named the
+      // question, and nothing could clear it.
+      const entries = q.maps_to.flatMap((p) => Object.entries(session.provenance)
+        .filter(([k]) => k === p || k.startsWith(`${p}/`))
+        .map(([, v]) => v));
+      const first = entries.find(Boolean);
+      return {
+        state: 'answered',
+        note: first?.note ?? '',
+        to_confirm: entries.some((e) => e?.status === 'tbc'),
+        via: first?.via ?? null,
+      };
     }
     if (q.id in session.tbc) return { state: 'tbc', note: session.tbc[q.id] };
     if (q.id in session.skipped) return { state: 'skipped', note: session.skipped[q.id] };
@@ -279,15 +347,22 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.owner = user.login;
       session.documents = [];
       // Same message whether or not the owner can see it: slugs of other consultants' clients are not revealed.
-      if (await store.get(session.client)) throw new ServiceError(409, `The client slug ${session.client} is not available — choose another one`);
+      if (await store.get(session.client)) {
+        throw new ServiceError(409, `You already have a record called ${session.client}`, [], [{
+          question_id: null,
+          what: `Open ${session.client}`,
+          why: 'Names are how records are addressed, so two cannot share one. Open the one that exists, or start this under another name.',
+          href: `/engagements/${session.client}`,
+        }]);
+      }
       await store.create(session);
       return { client: session.client };
     },
 
     /** @param {User} user @param {string} client @param {{ limit?: number }} [options] */
-    async getInterview(user, client, { limit = 3 } = {}) {
+    async getInterview(user, client, { limit = 3, section = null } = {}) {
       const session = await load(user, client);
-      const next = nextQuestions(session, { limit });
+      const next = nextQuestions(session, { limit, section });
       return {
         engagement: summary(session),
         language: coverage(session.language),
@@ -344,10 +419,25 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         records.set(spec.root, group);
       }
 
+      const before = preview(session, today());
       const draft = structuredClone(session);
       applyAnswers(draft, question, records, { user, via: 'web', source, status, note });
       await store.save(draft);
-      return { ok: true, preview: preview(draft, today()) };
+      // In the words it was stored as, so the page can say it back. Recording an
+      // answer made the card disappear and said nothing, which made a mis-click
+      // on a select invisible until somebody found it in Review.
+      const stored = reviewSections(draft, { includeOpen: false })
+        .flatMap((sec) => sec.questions)
+        .find((q) => q.id === question.id);
+      const after = preview(draft, today());
+      return {
+        ok: true,
+        preview: after,
+        recorded: stored ? { id: stored.id, value: stored.value, state: stored.state } : null,
+        // What this answer changed — said once, where the consultant is looking,
+        // instead of left for them to notice in a column nobody watches.
+        moved: whatMoved(before, after),
+      };
     },
 
     /**
@@ -475,7 +565,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       }
       session.updated_at = today();
       await store.save(session);
-      return { ok: true, confirmed: waiting.length };
+      return { ok: true, confirmed: new Set(waiting.map(([, p]) => p.question_id).filter(Boolean)).size };
     },
 
     /**
@@ -554,12 +644,43 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
      *
      * @param {User} user @param {string} client
      */
-    async getSummary(user, client) {
+    async getSummary(user, client, { pricing = user.role === 'owner' } = {}) {
       const session = await load(user, client);
+      const decided = decideFromSession(session, today());
+      const saved = session.closing?.clarifications ?? null;
+      const brief = decided.ok ? clarificationBrief(decided.doc) : { topics: [], cannot_price_until_answered: [] };
       return {
         engagement: summary(session),
         preview: preview(session, today()),
+        // What is left before this can be priced, and what each gap costs. Not
+        // the same question step 3 answers: that one is a position taken once in
+        // a room, this is a work state re-answered on every upload.
+        readiness: decided.ok
+          ? readiness(decided.doc, {
+            process: processOf(session.process),
+            provenance: session.provenance,
+            toReview: summary(session).to_review,
+            triage: triage(saved),
+            openTopics: brief.topics,
+            cannotPrice: brief.cannot_price_until_answered,
+            assumptions: statedAssumptions(decided.doc, saved),
+            documents: documentYield(session),
+          })
+          : null,
+        // When the engine cannot weigh the answers yet, what is missing — named
+        // and linked, as every other blocked page in the app now does.
+        blocked: decided.ok ? null : { errors: decided.errors, blockers: blockersFromErrors(decided.errors) },
+        // What the engine quoted, and the arithmetic behind it. The page has
+        // warned that it carries the price band since long before it did.
+        quote: decided.ok
+          ? quote(decided.doc, { pricing, provisional: preview(session, today()).offer.provisional === true })
+          : null,
+        // What the offer owes the client whatever its commercial shape: what it
+        // would be built on, and which plan the requirements force.
+        technical: decided.ok ? technicalAnswer(decided.doc) : null,
         open_items: openItems(session).map((i) => ({ ...i, question: questionById(i.question_id)?.text ?? null })),
+        // What is open, grouped by what it costs rather than by where it came from.
+        open_points: decided.ok ? openPoints(brief.topics, statedAssumptions(decided.doc, saved), brief.cannot_price_until_answered) : { blocks_a_price: [], priced_on_an_assumption: [] },
         sections: reviewSections(session, { includeOpen: false }),
         documents: session.documents ?? [],
         notes: session.notes,
@@ -596,10 +717,29 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         );
       }
       const document = processMeta(session.process).document;
+
+      // A bid does not get written while questions are still waiting on a human.
+      // Every one of them is either asked or assumed — that is the rule the whole
+      // Q&A step rests on — and a proposal drafted mid-triage states neither: the
+      // undecided ones are silently absent from the questions and from the
+      // assumptions, which is the outcome the step exists to prevent.
+      const undecided = (session.closing?.clarifications?.questions ?? []).filter((q) => (q.status ?? 'proposed') === 'proposed');
+      if (processOf(session.process) === 'rfp' && undecided.length) {
+        throw new ServiceError(
+          409,
+          `${undecided.length} question${undecided.length === 1 ? ' is' : 's are'} still waiting on you`,
+          undecided.map((q) => q.question),
+          [{
+            what: 'Decide each question in RFP Q&A — ask it, or state it as an assumption',
+            why: 'Anything left undecided reaches the client as neither: it is not in the questions you send and it is not in the assumptions the proposal states. Deciding takes one click each, and rejecting is a decision, not a gap.',
+          }],
+        );
+      }
+
       if (needsApproach(doc)) return { status, step: 'approach', document, ...approachBrief(doc) };
       const final = finaliseEngagement(doc, null);
       if (!final.ok) throw new ServiceError(400, 'Engagement not valid', final.errors);
-      return { status, step: 'document', document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }) };
+      return { status, step: 'document', document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process, language: session.language }) };
     },
 
     /**
@@ -614,13 +754,21 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const decided = decideFromSession(session, today());
       if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
       const brief = clarificationBrief(decided.doc);
+      // No topics means one of two opposite things, and treating both as "read
+      // the RFP in first" left a well-answered bid unable to finish its own
+      // step: nothing to ask, and a page telling you to go and read documents
+      // you had already read.
       if (!brief.topics.length) {
-        throw new ServiceError(409, 'Nothing worth asking the client yet', [], [{
-          what: 'Pre-fill the engagement from the RFP first',
-          why: 'The engine only asks about unknowns that move the offer, the plan, the store topology, the cost or the risk. With nothing recorded yet it has nothing to weigh — read the documents in, then come back.',
-        }]);
+        const read = (session.documents ?? []).length > 0 || Object.keys(session.provenance ?? {}).length > 0;
+        if (!read) {
+          throw new ServiceError(409, 'Nothing worth asking the client yet', [], [{
+            what: 'Pre-fill the engagement from the RFP first',
+            why: 'The engine only asks about unknowns that move the offer, the plan, the store topology, the cost or the risk. With nothing recorded yet it has nothing to weigh — read the documents in, then come back.',
+          }]);
+        }
+        return { instructions: clarificationsPrompt(session.language), ...brief, settled: true };
       }
-      return { instructions: CLARIFICATIONS_PROMPT, ...brief };
+      return { instructions: clarificationsPrompt(session.language), ...brief };
     },
 
     /**
@@ -664,16 +812,24 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
           // decides what is actually sent, because it is their name on the mail.
           questions: list.map((q, i) => {
             const kept = decidedBefore(q.covers);
+            // The question's own fields first, so a payload cannot carry a status
+            // or a decider past the lines that compute them. Zod strips unknown
+            // keys on the connector today, and the guarantee should not rest on
+            // that: a forged `accepted` is a question sent to a client.
             return {
+              ...q,
               id: `q${i + 1}`,
               status: kept?.status ?? 'proposed',
               ...(kept ? { decided_at: kept.decided_at, decided_by: kept.decided_by, carried_over: true } : {}),
-              ...q,
             };
           }),
           saved_at: today(),
           by: user.login,
           via,
+          // Which language the model was told to write in. Without it a saved
+          // document cannot say what language it is, and the engagement's
+          // language can be corrected afterwards.
+          language: session.language ?? 'en',
         },
       };
       session.updated_at = today();
@@ -696,9 +852,16 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       return {
         engagement: summary(session),
         clarifications: saved,
+        // The internal copy carries what we would assume and who decided it.
+        // It is a download, and a download leaves the building.
+        pricing: user.role === 'owner',
         triage: triage(saved),
         // The questions are a snapshot and the engagement moves under them.
         freshness: clarificationsFreshness(topics, saved),
+        // And the ones we sent have to come home. Each carries the discovery
+        // questions it covers, so a reply is checkable rather than remembered.
+        replies: decided.ok ? repliesReceived(decided.doc, saved) : { asked: 0, back: 0, waiting: [], rows: [] },
+        reply_prompt: decided.ok ? replyPrompt(client, repliesReceived(decided.doc, saved).rows) : null,
         // What the proposal will state because nobody told us otherwise — from the
         // engine, and from every question the consultant decided not to ask.
         assumptions: statedAssumptions(decided.ok ? decided.doc : null, saved),
@@ -720,18 +883,37 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const session = await load(user, client);
       const decided = decideFromSession(session, today());
       if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
-      if (String(section ?? '').startsWith('deck:data')) {
+      // Exactly this section, or its numbered pages. `startsWith` also matched
+      // anything beginning with it, so "deck:dataX" fell into the deck branch.
+      if (/^deck:data(:\d+)?$/.test(String(section ?? ''))) {
         // The deck data is built from the approach as saved, so it needs one first.
         const approach = session.closing?.approach?.payload;
         if (!approach) throw new ServiceError(409, 'Save the approach first — the deck data is built from it', [], [{ what: 'Draft and save the approach with save_approach' }]);
         const final = finaliseEngagement(decided.doc, approach);
         if (!final.ok) throw new ServiceError(400, 'The saved approach no longer fits the answers — draft it again', final.errors);
-        const pages = deckDataPages(deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }).deck_xml);
+        const pages = deckDataPages(deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process, language: session.language }).deck_xml);
         const n = Number(String(section).split(':')[2] ?? 1);
         if (!Number.isInteger(n) || n < 1 || n > pages.length) throw new ServiceError(404, `${section}: there are ${pages.length} pages of deck data`);
         return { section, page: n, of: pages.length, deck_xml: pages[n - 1] };
       }
       return referencePiece(decided.doc, section);
+    },
+
+    /**
+     * The consultant has just sent the drafting instruction to Claude. Drafting
+     * happens in another application and can take three quarters of an hour, and
+     * the page said "Not generated yet" throughout — identical to never having
+     * pressed the button. Recording the moment is what lets it say which of the
+     * two a reader is looking at.
+     *
+     * @param {User} user @param {string} client
+     */
+    async noteDraftRequested(user, client) {
+      const session = await load(user, client);
+      session.closing = { ...session.closing, requested: { at: new Date().toISOString(), by: user.login } };
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, requested_at: session.closing.requested.at };
     },
 
     /**
@@ -750,7 +932,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.closing = { ...session.closing, approach: { payload: approach, saved_at: today(), by: user.login, via } };
       session.updated_at = today();
       await store.save(session);
-      return { status: closingStatus(decided.doc), step: 'document', document: processMeta(session.process).document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process }) };
+      return { status: closingStatus(decided.doc), step: 'document', document: processMeta(session.process).document, ...deckBrief(final.engagement, { assumptions: statedFor(session, decided.doc), process: session.process, language: session.language }) };
     },
 
     /**
@@ -793,8 +975,8 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       session.closing = {
         ...session.closing,
         document: { markdown: `${text}
-`, ...(deck ? { deck } : {}), ...(annexText ? { annex: `${annexText}\n` } : {}), version, saved_at: today(), by: user.login, via, answers: answerSnapshot(session) },
-        history: [...(previous ? [{ version: previous.version ?? '1.0', saved_at: previous.saved_at, by: previous.by, via: previous.via, markdown: previous.markdown, ...(previous.deck ? { deck: previous.deck } : {}), ...(previous.annex ? { annex: previous.annex } : {}) }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
+`, ...(deck ? { deck } : {}), ...(annexText ? { annex: `${annexText}\n` } : {}), version, saved_at: today(), by: user.login, via, language: session.language ?? 'en', answers: answerSnapshot(session) },
+        history: [...(previous ? [{ version: previous.version ?? '1.0', saved_at: previous.saved_at, by: previous.by, via: previous.via, language: previous.language, markdown: previous.markdown, ...(previous.deck ? { deck: previous.deck } : {}), ...(previous.annex ? { annex: previous.annex } : {}) }] : []), ...(session.closing?.history ?? [])].slice(0, 5),
       };
       session.updated_at = today();
       await store.save(session);
@@ -816,6 +998,15 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       return {
         version: doc.version ?? '1.0',
         saved_at: doc.saved_at,
+        // The PowerPoint titles itself after the process, and the route was
+        // reading it off an `engagement` key this never returned — so every
+        // PowerPoint download threw. Nothing covered it, which is how 412 tests
+        // passed over it.
+        process: processOf(session.process),
+        // Merkle's commercial position lives in the consultant notes, and a
+        // download is a file that leaves the building. Only an owner gets the
+        // whole document; everyone else gets the client part.
+        pricing: user.role === 'owner',
         deck: doc.deck ?? null,
         markdown: doc.markdown,
         annex: doc.annex ? annexWithChapters(doc.annex, engagement) : null,
@@ -850,10 +1041,16 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       const doc = session.closing?.document;
       return {
         freshness: { ...freshness, redraft_prompt: redraftPrompt(client, freshness.changes, processMeta(session.process).document) },
+        // The consultant-notes section of a saved document holds the price band
+        // and the commercial warnings, and the Markdown download returned it whole.
+        pricing: user.role === 'owner',
         version: doc?.version ?? (doc ? '1.0' : null),
         engagement: summary(session),
         approach: session.closing?.approach ? { saved_at: session.closing.approach.saved_at, by: session.closing.approach.by, via: session.closing.approach.via } : null,
         document: session.closing?.document ?? null,
+        // When the instruction was last sent to Claude, so the page can tell
+        // "still working" from "nobody ever pressed Enter".
+        requested: session.closing?.requested ?? null,
         history: (session.closing?.history ?? []).map(({ saved_at, by, via, version }) => ({ saved_at, by, via, version: version ?? '1.0' })),
       };
     },
@@ -875,6 +1072,50 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       await store.save(session);
       const open = nextQuestions(session, { limit: 500 });
       return { ok: true, mode, was: before, remaining: open.remaining };
+    },
+
+    /**
+     * What language this engagement is run in, how much of the question bank
+     * exists in it, and what the model has already written — in which language.
+     *
+     * @param {User} user @param {string} client
+     */
+    async languageState(user, client) {
+      const session = await load(user, client);
+      return writtenIn(session);
+    },
+
+    /**
+     * Correct the language the engagement is run in.
+     *
+     * There was no way to do this, and an engagement created in the wrong
+     * language stayed in it for ever — asked in English, and every document
+     * written in English, on a record labelled French.
+     *
+     * It is always allowed, because refusing a correction leaves a record
+     * permanently wrong, which is worse than the mismatch it avoids. Nothing
+     * recorded moves: answers are held in English whatever language the
+     * questions were asked in, and a quotation from the client's own RFP is
+     * theirs and is never touched. The questions simply re-render.
+     *
+     * What does not move is anything the model already wrote — the clarification
+     * questions, which may already be in the client's inbox, and every saved
+     * version of the document. Those keep the language they were written in, so
+     * the caller is told exactly which ones are now out of step rather than
+     * finding out from a client.
+     *
+     * @param {User} user @param {string} client @param {{ language: string }} input
+     */
+    async setLanguage(user, client, { language }) {
+      const session = await load(user, client);
+      if (!supportedLanguage(language)) {
+        throw new ServiceError(400, `language must be one of ${LANGUAGES.join(', ')} (got ${language || 'nothing'})`);
+      }
+      const was = session.language ?? 'en';
+      session.language = language;
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, language, was, written_in: writtenIn(session), coverage: coverage(language) };
     },
 
     /**
@@ -917,6 +1158,10 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       }
       session.process = 'discovery';
       session.won = { at: today(), from: 'rfp', by: user.login };
+      // One event, one record. Winning by this button and recording the outcome
+      // "won" were two separate writes that never met, so the ledger — whose
+      // entire purpose is counting wins — missed every bid won this way.
+      session.outcome = outcomeFor(session, { outcome: 'won' }, { by: user.login, at: today() });
       session.updated_at = today();
       await store.save(session);
       return { ok: true, process: 'discovery', won_at: session.won.at };
@@ -940,7 +1185,7 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         // extracted, so the confirmation count from Review goes in with it.
         go_no_go: goNoGoView(
           decided.doc,
-          { coverage: p.coverage, to_review: summary(session).to_review, documents: (session.documents ?? []).length },
+          { coverage: p.coverage, to_review: summary(session).to_review, documents: (session.documents ?? []).length, record: processMeta(session.process).record.toLowerCase() },
           session.closing?.clarifications ?? null,
           { pricing: user.role === 'owner' },
         ),
@@ -962,7 +1207,19 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (!decided.ok) throw new ServiceError(400, 'Some answers are still missing', decided.errors, blockersFromErrors(decided.errors));
       const final = finaliseEngagement(decided.doc, session.closing?.approach?.payload ?? null);
       const doc = final.ok ? final.engagement : decided.doc;
-      return { engagement: summary(session), handover: handoverView(doc) };
+      // What the backlog does not rest on. It is built from the answers that
+      // exist, so on an unfinished discovery it is a complete-looking artefact
+      // resting on questions nobody asked — and the page said "ready" with
+      // nothing to the contrary. Delivery opens this on day one.
+      const e = summary(session);
+      const rests_on = {
+        required_answered: e.coverage?.required_answered ?? 0,
+        required_total: e.coverage?.required_total ?? 0,
+        to_review: e.to_review ?? 0,
+        closing_document_at: e.closing_document_at ?? null,
+        assumptions: statedFor(session, decided.doc).length,
+      };
+      return { engagement: e, handover: { ...handoverView(doc), rests_on } };
     },
 
     /**
@@ -1002,14 +1259,105 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (!saved?.questions?.length) throw new ServiceError(409, 'There are no questions to decide on yet');
       if (!['accepted', 'rejected', 'proposed'].includes(status)) throw new ServiceError(400, `status must be accepted, rejected or proposed (got ${status})`);
       if (!all && !saved.questions.some((q) => q.id === id)) throw new ServiceError(404, `No question ${id}`);
-      saved.questions = saved.questions.map((q) => (all || q.id === id
-        ? { ...q, status, decided_at: today(), decided_by: user.login }
+      // Which of these decide the shape of the solution rather than a detail
+      // inside one. Assuming an answer to "is this headless" is assuming the
+      // size of the engagement, and the tool used to let that happen in one
+      // silent click.
+      const decided = decideFromSession(session, today());
+      const shaping = shapeChangingIds(decided.ok ? clarificationTopics(decided.doc) : []);
+
+      // "All" means all the undecided ones. It used to mean every question, so
+      // deciding the rest in one click silently reversed a rejection already
+      // taken and deleted the assumption it had created — with its consequence,
+      // its owner and its date — and said nothing.
+      const touches = (q) => (all ? (q.status ?? 'proposed') === 'proposed' : q.id === id);
+      saved.questions = saved.questions.map((q) => (touches(q)
+        ? { ...q, status, decided_at: today(), decided_by: user.login, ...(changesShape(q, shaping) ? { shape_changing: true } : {}) }
         : q));
       session.closing = { ...session.closing, clarifications: saved };
       session.updated_at = today();
       await store.save(session);
       const count = (s) => saved.questions.filter((q) => q.status === s).length;
-      return { ok: true, accepted: count('accepted'), rejected: count('rejected'), proposed: count('proposed') };
+      // Not a refusal — it is the consultant's decision — but it is not allowed
+      // to be silent. A price built on a guess about the offer size is a
+      // different commercial object from one built on a guess about a detail.
+      const assumedShape = saved.questions.filter((q) => q.status === 'rejected' && q.shape_changing);
+      return {
+        ok: true,
+        accepted: count('accepted'),
+        rejected: count('rejected'),
+        proposed: count('proposed'),
+        ...(assumedShape.length ? {
+          warning: `${assumedShape.length} of the questions you decided not to ask change the shape of the solution, not a detail inside it. The proposal will state an assumption about what Merkle is being asked to build, and the offer size rests on it.`,
+          shape_assumed: assumedShape.map((q) => q.question),
+        } : {}),
+      };
+    },
+
+    /**
+     * Record what happened to a bid.
+     *
+     * Winning had a button and nothing else did — not a loss, not a submission,
+     * not a decision to walk away. So the one dataset only Merkle can accumulate
+     * was thrown away on every engagement, and the price bands stayed calibrated
+     * on nothing because nothing was ever recorded to calibrate them against.
+     *
+     * The engine's own position is frozen with it, because the question a year
+     * from now is what it said at the time.
+     *
+     * @param {User} user @param {string} client
+     * @param {{ outcome: string, submitted_price?: number, currency?: string, note?: string }} input
+     */
+    async recordOutcome(user, client, { outcome, submitted_price, currency, note }) {
+      const session = await load(user, client);
+      if (!OUTCOME_IDS.includes(outcome)) throw new ServiceError(400, `outcome must be one of ${OUTCOME_IDS.join(', ')} (got ${outcome})`);
+      // This is the calibration dataset. "abc" became NaN, passed the
+      // `!== undefined` guard and was stored as null — a silent hole in the one
+      // record that exists to be counted later.
+      if (submitted_price !== undefined && submitted_price !== null
+        && (!Number.isFinite(submitted_price) || submitted_price < 0)) {
+        throw new ServiceError(400, 'The price submitted has to be a number', [`got ${JSON.stringify(submitted_price)}`]);
+      }
+      const decided = decideFromSession(session, today());
+      const p = decided.ok ? preview(session, today()) : null;
+      const saved = session.closing?.clarifications ?? null;
+      // Recording a win on a bid is the same event as pressing "we won it": the
+      // record becomes an engagement, whichever door it came through.
+      if (outcome === 'won' && processOf(session.process) === 'rfp') {
+        session.process = 'discovery';
+        session.won = { at: today(), from: 'rfp', by: user.login };
+      }
+      session.outcome = recordOutcomeEntry(session, { outcome, submitted_price, currency, note }, {
+        by: user.login,
+        at: today(),
+        offer: p ? { code: p.offer?.code, go: p.go, route: p.route } : null,
+        position: decided.ok
+          ? (() => {
+            const state = { provenance: session.provenance, process: processOf(session.process) };
+            const r = readiness(decided.doc, state);
+            return {
+              verdict: goNoGoView(decided.doc, { coverage: p?.coverage, to_review: summary(session).to_review, documents: (session.documents ?? []).length }, saved).recommendation.verdict,
+              assumptions: statedAssumptions(decided.doc, saved).length,
+              decisions_settled: r.decisions.settled,
+            };
+          })()
+          : null,
+      });
+      session.updated_at = today();
+      await store.save(session);
+      return { ok: true, ...session.outcome };
+    },
+
+    /** What the ledger can say across every engagement, and what it cannot say yet. */
+    async getLedger(user) {
+      if (!user) throw new ServiceError(401, 'Sign in first');
+      const sessions = (await store.list()).filter((s) => allowed(user, s));
+      return ledger(sessions.map((s) => ({
+        client: s.client,
+        process: processOf(s.process),
+        outcome: s.outcome?.current ?? null,
+        history: s.outcome?.history ?? [],
+      })));
     },
 
     /** @param {User} user @param {string} client @param {{ question_id: string, as: 'tbc'|'skipped'|'commented', note?: string }} input */

@@ -54,7 +54,7 @@ function hasOpenStop(session) {
  * @param {object} cond  { pointer, equals | not_equals | in | includes_any | min | count_min | matches }
  * @param {object} answers
  */
-function conditionMet(cond, answers) {
+export function conditionMet(cond, answers) {
   const values = valuesAt(answers, cond.pointer).flat();
   if (!values.length) return false;
   if ('equals' in cond) return values.includes(cond.equals);
@@ -69,6 +69,20 @@ function conditionMet(cond, answers) {
 
 /** True when a question has no `ask_if`, or any of its conditions holds. @param {object} q @param {object} answers */
 const isRelevant = (q, answers) => !q.ask_if || q.ask_if.some((c) => conditionMet(c, answers));
+
+/**
+ * Whether a question applies at all to these answers.
+ *
+ * `only_if` is how the bank says "this subject does not exist for this client" —
+ * the twenty-one mainland China questions only exist when CN is a launch market.
+ * The interview has always respected it; anything else that decides what to ask
+ * has to respect it too, or it puts a question about a subject the client does
+ * not have.
+ *
+ * @param {object} q @param {object} answers
+ */
+export const questionApplies = (q, answers) => (!q.only_if || q.only_if.some((c) => conditionMet(c, answers)))
+  && isRelevant(q, answers);
 
 /**
  * Whether a question belongs to the session's interview: its priority is in the
@@ -104,7 +118,14 @@ function isSkippedByRule(question, answers) {
   const value = valuesAt(answers, target.maps_to[0])[0];
   if (value === undefined) return false;
   if ('equals' in rule) return Array.isArray(value) ? value.length === 1 && value[0] === rule.equals : value === rule.equals;
-  if ('excludes' in rule) return Array.isArray(value) && !value.includes(rule.excludes);
+  /* `excludes` takes one value or several, and several means none of them.
+     A bundle is five values in the schema — fixed_bundle, multipack,
+     mix_and_match_bundle, bundle, product_set — so a single exclusion would
+     have shut the bundle question on a catalogue that sells multipacks. */
+  if ('excludes' in rule) {
+    const without = Array.isArray(rule.excludes) ? rule.excludes : [rule.excludes];
+    return Array.isArray(value) && !without.some((v) => value.includes(v));
+  }
   return false;
 }
 
@@ -157,7 +178,7 @@ export function describeQuestion(q) {
  * @param {{ limit?: number }} [options]
  * @returns {{ questions: object[], remaining: number }}
  */
-export function nextQuestions(session, { limit = 3 } = {}) {
+export function nextQuestions(session, { limit = 3, section = null } = {}) {
   if (!hasConsent(session.answers)) {
     return { questions: [describeQuestion(BY_ID.get(CONSENT_QUESTION))], remaining: 1, consent_required: true };
   }
@@ -178,8 +199,32 @@ export function nextQuestions(session, { limit = 3 } = {}) {
       (b.q.feeds?.length ? 1 : 0) - (a.q.feeds?.length ? 1 : 0) ||
       a.index - b.index);
 
-  const questions = open.slice(0, limit).map(({ q }) => ({ ...describeQuestion(q), block: wrapUp(q) ? 'consultant_wrap_up' : 'client' }));
-  return { questions, remaining: open.length, remaining_client: open.filter(({ q }) => !wrapUp(q)).length };
+  // Where the work sits, so a consultant can see the shape of what is left and
+  // go to a part of it. Three cards at a time with no map made "how far through
+  // am I" unanswerable and "go back to markets" impossible.
+  const bySection = new Map();
+  for (const { q } of open) {
+    const sec = SECTION_OF.get(q.subsection);
+    const entry = bySection.get(sec.id) ?? { id: sec.id, title: sec.title, open: 0 };
+    entry.open += 1;
+    bySection.set(sec.id, entry);
+  }
+  const sections = sectionOrder
+    .map((id) => bySection.get(id))
+    .filter(Boolean);
+
+  const inSection = section
+    ? open.filter(({ q }) => SECTION_OF.get(q.subsection).id === section)
+    : open;
+  const questions = inSection.slice(0, limit).map(({ q }) => ({ ...describeQuestion(q), block: wrapUp(q) ? 'consultant_wrap_up' : 'client' }));
+  return {
+    questions,
+    remaining: open.length,
+    remaining_client: open.filter(({ q }) => !wrapUp(q)).length,
+    sections,
+    section: section ?? null,
+    in_section: section ? inSection.length : null,
+  };
 }
 
 /**

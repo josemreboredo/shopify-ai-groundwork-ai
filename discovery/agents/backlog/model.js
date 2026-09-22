@@ -12,15 +12,17 @@
  * (LWC-<prefix>-NNN); keys are never reused or renumbered.
  */
 export const EPICS = [
-  { id: 'foundation',   prefix: 'FND', name: 'Store foundation',               summary: 'Shopify Plus store set-up, users, apps baseline and environments.' },
+  { id: 'foundation',   prefix: 'FND', name: 'Store foundation',               summary: 'Build store on the quoted plan, users, apps baseline and environments.' },
   { id: 'theme',        prefix: 'THM', name: 'Storefront & theme',             summary: 'Horizon theme, brand tokens and page templates.' },
   { id: 'catalogue',    prefix: 'CAT', name: 'Catalogue & product data',       summary: 'Product model, metafields, collections, search and filters.' },
   { id: 'markets',      prefix: 'MKT', name: 'Markets & internationalisation', summary: 'Shopify Markets, currencies, languages, domains and duties.' },
   { id: 'checkout',     prefix: 'PAY', name: 'Payments & checkout',            summary: 'Payment providers, checkout configuration and extensions.' },
   { id: 'shipping',     prefix: 'SHP', name: 'Shipping, tax & returns',        summary: 'Delivery profiles, rates, tax set-up, returns and notifications.' },
+  { id: 'retail',       prefix: 'RTL', name: 'Retail & POS',                  summary: 'Locations, Shopify POS, pickup in store, ship from store, in-store returns and stock across the estate.' },
   { id: 'customers',    prefix: 'CUS', name: 'Customers & B2B',                summary: 'Customer accounts, B2B companies, price lists and payment terms.' },
   { id: 'promotions',   prefix: 'PRM', name: 'Promotions & loyalty',           summary: 'Discounts, coupons, gift cards and loyalty programme.' },
   { id: 'marketing',    prefix: 'MKG', name: 'Marketing & analytics',          summary: 'SEO, tracking, email platform and reviews.' },
+  { id: 'ai',           prefix: 'AI',  name: 'AI & agentic commerce',        summary: 'Selling inside AI assistants, Shopify Catalog readiness, crawler policy, the knowledge base and merchant AI tools.' },
   { id: 'integrations', prefix: 'INT', name: 'Integrations',                   summary: 'ERP, PIM, CRM, 3PL and other system connections.' },
   { id: 'migration',    prefix: 'MIG', name: 'Data migration',                 summary: 'Products, customers, orders, content and redirects from the current platform.' },
   { id: 'compliance',   prefix: 'CMP', name: 'Privacy & compliance',           summary: 'Cookie consent, legal pages, data-subject requests.' },
@@ -40,7 +42,7 @@ export const OWNERS = ['consultant', 'agent', 'designer', 'developer', 'client']
 
 /** Definition of Done applied to every story (Gaia DoD, Shopify lens). */
 export const DEFINITION_OF_DONE = [
-  'Acceptance criteria met and demonstrated on the development store',
+  'Acceptance criteria met and demonstrated on the build store',
   'Consultant approved the plan before any store mutation (T2+)',
   'Theme Check / automated tests pass; no hard-coded brand values or secrets',
   'Works on mobile and desktop; WCAG 2.1 AA checks pass for changed UI',
@@ -54,6 +56,11 @@ export const DEFINITION_OF_DONE = [
  * @property {string}   key                 LWC-<PREFIX>-NNN, stable
  * @property {string}   epic                EPICS id
  * @property {string|Dyn} title             Short Jira summary
+ * @property {string}   [scope]             Catalogue label: what this story is when no
+ *                                          engagement is in front of it, for the offering
+ *                                          pages. Only needed where a dynamic title reads
+ *                                          badly without answers ("Configure Shopify Markets
+ *                                          for "), and a test says which those are.
  * @property {string|Dyn} user_story        "As a …, I want …, so that …"
  * @property {string|Dyn} [description]
  * @property {string[]|Dyn} acceptance_criteria  Given / When / Then statements

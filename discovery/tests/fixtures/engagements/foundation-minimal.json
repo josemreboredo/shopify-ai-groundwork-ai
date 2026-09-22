@@ -110,34 +110,62 @@
       "migration": {
         "active": false,
         "evidence": "Q0.5.4: greenfield, no source platform."
+      },
+      "storefront_design": {
+        "active": false,
+        "evidence": "Storefront design: theme configuration only — Horizon with brand tokens is in every offer"
+      },
+      "retail_pos": {
+        "active": false,
+        "evidence": "No retail stores"
+      },
+      "languages": {
+        "active": false,
+        "evidence": "1 distinct language(s): de"
+      },
+      "seo_continuity": {
+        "active": false,
+        "evidence": "Q0.5.4: greenfield — no URLs to carry across."
+      },
+      "subscriptions": {
+        "active": false,
+        "evidence": "Q2.2.1: simple products only."
+      },
+      "checkout_extensibility": {
+        "active": false,
+        "evidence": "Q4.2.1: checkout settings and editor branding only."
+      },
+      "analytics_consent": {
+        "active": false,
+        "evidence": "Q7.2.1 / Q7.2.3: GA4 and a Meta pixel — what every offer carries."
+      },
+      "post_launch_support": {
+        "active": false,
+        "evidence": "Q10.3.3: hypercare only, and hypercare is in every offer."
       }
     },
-    "l_triggers": {
-      "luxury": {
-        "active": false,
-        "evidence": "Q1.3.1: mid-market positioning."
-      },
-      "headless": {
-        "active": false,
-        "evidence": "Q9.2.1: no headless requirement."
-      },
-      "figma_design_system": {
-        "active": false,
-        "evidence": "Q9.1.1: no Figma file."
-      }
-    },
+    "l_triggers": {},
     "modifiers": [],
     "price_band": {
       "min": 40000,
       "max": 65000,
-      "currency": "EUR",
+      "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
       "min": 4,
       "max": 5
     },
-    "rationale": "No scope gate and no L trigger is active, so the engagement classifies as S — Ecommerce Foundation with no modifiers."
+    "rationale": "No scope gate and no L trigger is active, so the engagement classifies as S — Ecommerce Foundation with no modifiers.",
+    "scope_effort_weeks": {
+      "min": 4,
+      "max": 5
+    },
+    "gate_capacity_weeks": {
+      "min": 0,
+      "max": 0
+    },
+    "scope_effort_by_gate": []
   },
   "markets": {
     "primary_markets": [

@@ -137,6 +137,7 @@ export default [
     owner: 'agent',
     depends_on: ['LWC-THM-001'],
     spec_refs: ['/shipping/notifications/custom', '/shipping/notifications/sender', '/marketing/esp/platform'],
+    gates: ['languages'],
     applies: (doc) => doc.shipping?.notifications?.custom === true,
     agent_prompt: (doc) => `Customise Shopify notification templates (Settings > Notifications): brand settings (logo, accent colour) first, then Liquid template edits only where needed. Translate notification content per language with Translate & Adapt or the agreed method. Sender: ${doc.shipping?.notifications?.sender ?? 'shopify'} — ${doc.shipping?.notifications?.sender === 'esp' || doc.shipping?.notifications?.sender === 'mixed' ? `list which transactional messages ${doc.marketing?.esp?.platform ?? 'the ESP'} sends and disable those in Shopify to avoid duplicates. ` : ''}Send test notifications and check rendering in major email clients.`,
   },
@@ -243,5 +244,41 @@ export default [
     security_flags: ['pii'],
     applies: (doc) => doc.post_purchase?.warranty_claims === true,
     agent_prompt: (doc) => `Warranty, repair and servicing claims must be opened online. First check whether ${doc.shipping?.returns?.solution ?? doc.post_purchase?.platform_preference ?? 'the chosen returns or post-purchase platform'} supports warranty or repair flows; otherwise design a claim form in customer accounts backed by a helpdesk app or a metaobject-based claim record with Shopify Flow notifications. Present the options with pros, cons and Gaia tier for consultant approval. Photos and customer details are personal data: store them only where the retention policy allows.`,
+  },
+  /*
+   * The delivery methods the bank asks for in Q5.1.11 and nothing delivered.
+   *
+   * Two of the enum values carry limits worth knowing before they are promised.
+   * Pickup points are native but only in France, Italy, Spain and the UK.
+   * Scheduled delivery slots are not native at all — that is the delivery
+   * scheduling app signal, and it climbs the ladder like any other app.
+   */
+  {
+    key: 'LWC-SHP-011',
+    scope: 'Offer the delivery methods the client sells on',
+    epic: 'shipping',
+    title: (doc) => `Offer the delivery methods the client sells on: ${listOr((doc.shipping?.delivery_methods ?? []).filter((m) => m !== 'none' && m !== 'not_sure').map((m) => m.replace(/_/g, ' ')), 'to confirm')}`,
+    user_story: 'As a shopper, I want the delivery choice that suits me, so that I am not forced into a courier slot I will miss.',
+    description: (doc) => `Methods requested: ${listOr((doc.shipping?.delivery_methods ?? []).filter((m) => m !== 'none' && m !== 'not_sure').map((m) => m.replace(/_/g, ' ')), 'to confirm')}.`,
+    acceptance_criteria: (doc) => {
+      const m = (doc.shipping?.delivery_methods ?? []);
+      return [
+        'Given each method the client sells on, when a shopper reaches checkout, then it appears only where it is actually available and is named in words the shopper recognises',
+        ...(m.includes('pickup_points') ? ['Given pickup points, when they are enabled, then the markets they are offered in are France, Italy, Spain and the UK, because that is where Shopify supports them natively — and any other market has an answer of its own'] : []),
+        ...(m.includes('scheduled_delivery_slots') ? ['Given scheduled delivery slots, when they are set up, then it is through the chosen app, because Shopify has no native slot booking, and the app’s cost and owner are recorded'] : []),
+        ...(m.includes('local_delivery') ? ['Given local delivery, when it is configured, then the distance or postcode area per location is the client’s own and is testable from an address they recognise'] : []),
+        'Given an order that cannot be fulfilled in one shipment, when it is placed, then Shopify splits it automatically and the shopper picks a shipping option per shipment — and the team knows they cannot choose how it splits',
+      ];
+    },
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'developer',
+    depends_on: ['LWC-SHP-001'],
+    spec_refs: ['/shipping/delivery_methods', '/shipping/fulfilment_locations', '/markets/list'],
+    applies: (doc) => (doc.shipping?.delivery_methods ?? []).some((x) => x !== 'none' && x !== 'not_sure'),
+    agent_prompt: (doc) => {
+      const m = (doc.shipping?.delivery_methods ?? []);
+      return `Configure delivery methods: ${listOr(m.filter((x) => x !== 'none' && x !== 'not_sure').map((x) => x.replace(/_/g, ' ')), 'to confirm')}.${m.includes('pickup_points') ? ' Pickup points are native only in France, Italy, Spain and the UK — confirm which markets in scope are covered and agree what the others get instead.' : ''}${m.includes('scheduled_delivery_slots') ? ' Scheduled slots need an app; shortlist one from the registry with its cost and a named owner rather than assuming native support.' : ''} Test each method from a real address per market, and check that an order needing two shipments splits and prices per shipment.`;
+    },
   },
 ];

@@ -127,7 +127,7 @@ describe('the annex becomes its own deck', () => {
 
 ## Consultant notes
 
-- Internal only: price band EUR 65,000–100,000
+- Internal only: price band CHF 65,000–135,000
 `;
 
   test('sections become dividers, bullets and tables become slides', () => {

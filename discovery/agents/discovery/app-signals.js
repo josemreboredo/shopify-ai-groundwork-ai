@@ -135,6 +135,15 @@ export function appSignals(doc) {
       ...(has(catalogue.subscriptions?.features, 'international_subscriptions') && doc.markets?.cross_border_model === 'managed_markets' ? ['International subscriptions under Managed Markets (domestic only)'] : []),
     ],
     b2b_quote_app: doc.b2b?.rfq_or_negotiated_pricing === true ? ['B2B quotes or prices negotiated per buyer (no built-in RFQ)'] : [],
+    /* Booking has no native Shopify feature at all — appointments and services
+       are an App Store category — so wanting it is always an app decision. */
+    booking_app: (() => {
+      const b = doc.service?.booking;
+      if (!b || b === 'none' || b === 'not_sure') return [];
+      const where = b === 'both' ? 'in-store appointments and virtual consultations' : b.replace(/_/g, ' ');
+      const stores = doc.retail?.store_count ?? 0;
+      return [`Booking for ${where}${stores ? ` across ${stores} location(s)` : ''} (Shopify has no native booking)`];
+    })(),
     loyalty_app: loyalty.length ? [`Loyalty programme: ${loyalty.join(', ').replace(/_/g, ' ')} (no native points programme)`] : [],
     reviews_app: isNamedApp(doc.marketing?.reviews?.app) || doc.marketing?.reviews?.ugc === true ? ['Product reviews or user-generated content (no native reviews app)'] : [],
     translation_app: [

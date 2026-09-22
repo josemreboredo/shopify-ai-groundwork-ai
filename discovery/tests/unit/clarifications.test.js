@@ -13,10 +13,11 @@ import fs from 'node:fs';
 
 import { clarificationTopics, clarificationBrief } from '../../agents/discovery/clarifications.js';
 import { renderClarificationsMarkdown } from '../../service/clarifications-view.js';
-import { clarificationsFreshness } from '../../service/assumptions.js';
+import { clarificationsFreshness, repliesReceived, replyPrompt, statedAssumptions, shapeChangingIds, changesShape } from '../../service/assumptions.js';
 import { createDiscoveryService, ServiceError } from '../../service/index.js';
 import { createMemoryStore } from '../../service/stores/memory-store.js';
 import { questionBank } from '../../schema/index.js';
+import { conditionMet } from '../../agents/interview/next.js';
 
 const TODAY = '2026-09-20';
 const consultant = { login: 'lc-one', role: 'consultant' };
@@ -170,7 +171,15 @@ describe('clarification questions (RFP)', () => {
     assert.equal(saved.clarifications.questions.length, 1);
     assert.equal(saved.clarifications.by, 'lc-one');
     assert.equal(saved.clarifications.saved_at, TODAY);
-    assert.match(renderClarificationsMarkdown(saved.engagement, saved.clarifications), /Why we ask/);
+    // Saved is not sent. The fixture carries status: 'accepted' and the service
+    // ignores it — a payload that could set its own status is a question in
+    // front of a client on an approval nobody gave.
+    assert.equal(saved.clarifications.questions[0].status, 'proposed');
+    assert.ok(!/Why we ask/.test(renderClarificationsMarkdown(saved.engagement, saved.clarifications)), 'nothing to send yet');
+
+    await svc.decideClarifications(consultant, 'demo-client', { id: 'q1', status: 'accepted' });
+    const decided = await svc.getClarifications(consultant, 'demo-client');
+    assert.match(renderClarificationsMarkdown(decided.engagement, decided.clarifications), /Why we ask/);
   });
 
   test('an engagement with nothing recorded is told to read the RFP in first, not handed an empty list', async () => {
@@ -342,5 +351,254 @@ describe('the questions are a snapshot, and the engagement moves under them', ()
     await svc.saveClarifications(consultant, 'a-bid', { questions: [q('One catalogue?', ['Q3.4.13', 'Q6.2.14'])] });
     const { clarifications } = await svc.getClarifications(consultant, 'a-bid');
     assert.equal(clarifications.questions[0].status, 'proposed', 'it covers something nobody ruled on');
+  });
+});
+
+describe('the questions come home', () => {
+  const asked = (covers) => ({ id: 'q1', status: 'accepted', question: 'One catalogue?', covers, assume_if_unanswered: 'one store', impact_if_wrong: 'a second store' });
+
+  test('a question is answered when every discovery question it covers is', () => {
+    const doc = acme();
+    // Q3.1.1 is answered in the fixture; Q10.5.9 is not.
+    const r = repliesReceived(doc, { questions: [asked(['Q3.1.1']), { ...asked(['Q10.5.9']), id: 'q2' }] });
+    assert.equal(r.asked, 2);
+    assert.equal(r.back, 1);
+    assert.deepEqual(r.waiting.map((w) => w.id), ['q2']);
+    assert.deepEqual(r.rows.find((x) => x.id === 'q2').outstanding, ['Q10.5.9']);
+  });
+
+  test('half an answer is not an answer', () => {
+    const r = repliesReceived(acme(), { questions: [asked(['Q3.1.1', 'Q10.5.9'])] });
+    assert.equal(r.back, 0);
+    assert.equal(r.rows[0].partial, true, 'and it says so rather than rounding either way');
+  });
+
+  test('only what was accepted is waited on — a rejected question was never sent', () => {
+    const r = repliesReceived(acme(), { questions: [{ ...asked(['Q10.5.9']), status: 'rejected' }] });
+    assert.equal(r.asked, 0);
+  });
+
+  test('the instruction names each outstanding question and what it fills', () => {
+    const r = repliesReceived(acme(), { questions: [{ ...asked(['Q10.5.9']), question: 'Who invoices?' }] });
+    const prompt = replyPrompt('ricola', r.rows);
+    assert.match(prompt, /Who invoices\?/);
+    assert.match(prompt, /fills Q10\.5\.9/);
+    assert.match(prompt, /register_document/);
+    assert.match(prompt, /a guess recorded here becomes a number in the proposal/);
+  });
+
+  test('with nothing outstanding it says so instead of asking for a reply', () => {
+    const r = repliesReceived(acme(), { questions: [asked(['Q3.1.1'])] });
+    assert.match(replyPrompt('ricola', r.rows), /has been answered/);
+  });
+
+  test('an assumption retires when the client answers it anyway', () => {
+    const doc = acme();
+    const rejected = { id: 'q1', status: 'rejected', question: 'Who invoices?', assume_if_unanswered: 'one entity', impact_if_wrong: 'expansion stores' };
+    // Clients volunteer things, and an assumption nobody needs to make any more
+    // must not be stated to them as though we still did.
+    const stillOpen = statedAssumptions(doc, { questions: [{ ...rejected, covers: ['Q10.5.9'] }] });
+    assert.ok(stillOpen.some((a) => a.assumed === 'one entity'));
+    const nowAnswered = statedAssumptions(doc, { questions: [{ ...rejected, covers: ['Q3.1.1'] }] });
+    assert.ok(!nowAnswered.some((a) => a.assumed === 'one entity'));
+  });
+});
+
+describe('the proposal waits for the triage', () => {
+  test('a bid with questions still waiting is refused, and told what to do', async () => {
+    const store = createMemoryStore();
+    const svc = createDiscoveryService({ store, today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-bid', { questions: [QUESTION, { ...QUESTION, question: 'And B2B?' }] });
+
+    // An undecided question reaches the client as neither: not in the questions
+    // sent, not in the assumptions stated. That is the outcome the step exists
+    // to prevent, so the proposal does not get written around it.
+    await assert.rejects(
+      svc.prepareClosingDocument(consultant, 'a-bid'),
+      (err) => err instanceof ServiceError
+        && (err.status === 409 ? /still waiting on you/.test(err.message) : err.status === 400),
+    );
+  });
+
+  test('a discovery is never gated on it — it has no Q&A step', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-discovery', language: 'en', mode: 'quick', process: 'discovery' });
+    await svc.answerQuestion(consultant, 'a-discovery', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-discovery', { questions: [QUESTION] });
+    await assert.rejects(
+      svc.prepareClosingDocument(consultant, 'a-discovery'),
+      (err) => err instanceof ServiceError && err.status === 400 && !/still waiting on you/.test(err.message),
+      'it stops for missing answers, never for an untriaged question list',
+    );
+  });
+});
+
+describe('mainland China is asked about, not only excluded', () => {
+  const withChina = () => {
+    const doc = acme();
+    doc.markets.list.push({ code: 'CN', name: 'China' });
+    doc.exits.items.push({ rule_id: '11.20', result: 'FLAG', evidence: 'Mainland China (CN) is a launch market' });
+    return doc;
+  };
+
+  test('the route questions can reach the Q&A at all', () => {
+    // All 21 China questions fed nothing, so by construction none of them could
+    // ever be asked. The offering excludes mainland China, but which route the
+    // client intends decides whether that is a carve-out or a second engagement,
+    // and the tool would never have put the question.
+    const covered = new Set(clarificationTopics(withChina()).flatMap((t) => t.covers.map((c) => c.question_id)));
+    assert.ok(covered.has('Q3.5.1'), 'cross-border or onshore');
+    assert.ok(covered.has('Q3.5.6'), 'and what Shopify’s role would be');
+  });
+
+  test('it is its own subject, not folded into "which markets do you sell in"', () => {
+    const topics = clarificationTopics(withChina());
+    const china = topics.find((t) => t.title === 'Mainland China');
+    assert.ok(china, 'one question per subject, and this is not the markets subject');
+    assert.deepEqual(china.covers.map((c) => c.question_id).sort(), ['Q3.5.1', 'Q3.5.6']);
+    const markets = topics.find((t) => t.title === 'Markets & internationalisation');
+    assert.ok(!markets.covers.some((c) => c.question_id.startsWith('Q3.5')), 'and it does not appear in both');
+  });
+
+  test('the nineteen that belong to the separate China discovery stay out of the bid', () => {
+    const covered = new Set(clarificationTopics(withChina()).flatMap((t) => t.covers.map((c) => c.question_id)));
+    const inBid = [...covered].filter((id) => id.startsWith('Q3.5'));
+    assert.deepEqual(inBid.sort(), ['Q3.5.1', 'Q3.5.6'], 'ICP filings and bonded warehouses are not a bid question');
+  });
+
+  test('no China in the markets, no China topic', () => {
+    assert.ok(!clarificationTopics(acme()).some((t) => t.title === 'Mainland China'));
+  });
+});
+
+describe('a question about a subject the client does not have is never asked', () => {
+  test('conditional questions follow the same rule the interview follows', () => {
+    // `only_if` is how the bank says a whole subject does not exist for this
+    // client. Widening the sources to every unanswered question walked straight
+    // past it, and the moment a conditional question had feeds it leaked.
+    const byId = new Map(questionBank.questions.map((q) => [q.id, q]));
+    const asked = new Set(clarificationTopics(acme()).flatMap((t) => t.covers.map((c) => c.question_id)));
+    const leaking = [...asked].filter((id) => {
+      const q = byId.get(id);
+      return q?.only_if && !q.only_if.some((c) => conditionMet(c, acme()));
+    });
+    assert.deepEqual(leaking, [], 'no question whose condition does not hold');
+  });
+
+  test('and the same question is asked once the condition does hold', () => {
+    const doc = acme();
+    doc.markets.list.push({ code: 'CN', name: 'China' });
+    const asked = new Set(clarificationTopics(doc).flatMap((t) => t.covers.map((c) => c.question_id)));
+    assert.ok(asked.has('Q3.5.1'), 'China is in the markets, so the route question applies');
+  });
+});
+
+describe('assuming the shape of the solution is not assuming a detail', () => {
+  const bid = async (questions) => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    await svc.saveClarifications(consultant, 'a-bid', { questions });
+    return svc;
+  };
+  const q = (question, covers) => ({ question, why_we_ask: 'the trade-off', covers, assume_if_unanswered: 'we assume', impact_if_wrong: 'it costs' });
+
+  test('the questions that decide whether there is an engagement at all are tagged', () => {
+    // "Should the whole site run on Shopify, or should the shop sit behind a
+    // separate content platform" is not a detail. It used to feed an L trigger,
+    // which decided the offer outright; it now feeds exit rule 11.26, which
+    // decides whether these offers apply at all.
+    const byId = new Map(questionBank.questions.map((x) => [x.id, x]));
+    assert.deepEqual(byId.get('Q9.2.1').feeds, ['l_trigger:headless', 'exit:11.25']);
+    assert.deepEqual(byId.get('Q9.2.8').feeds, ['exit:11.26', 'l_trigger:headless'], 'where the content lives is the line, not whether it is headless');
+    assert.deepEqual(byId.get('Q9.1.3').feeds, ['gate:storefront_design']);
+  });
+
+  test('the rule is a set of question ids, and only the high topics are in it', () => {
+    const topics = clarificationTopics(acme());
+    const ids = shapeChangingIds(topics);
+    const high = topics.filter((t) => t.impact === 'high');
+    assert.ok(high.length, 'the fixture has some');
+    for (const t of high) for (const c of t.covers) assert.ok(ids.has(c.question_id));
+    for (const t of topics.filter((x) => x.impact !== 'high')) {
+      for (const c of t.covers) {
+        if (!high.some((h) => h.covers.some((x) => x.question_id === c.question_id))) {
+          assert.ok(!ids.has(c.question_id), `${c.question_id} is a detail`);
+        }
+      }
+    }
+  });
+
+  test('a question resting on one of them changes the shape; one that does not, does not', () => {
+    const ids = shapeChangingIds(clarificationTopics(acme()));
+    const [anyShaping] = [...ids];
+    assert.equal(changesShape({ covers: [anyShaping] }, ids), true);
+    assert.equal(changesShape({ covers: ['Q7.3.4'] }, ids), false);
+    assert.equal(changesShape({ covers: [] }, ids), false, 'a question resting on nothing shapes nothing');
+  });
+
+  test('a detail is rejected without ceremony', async () => {
+    const svc = await bid([q('A detail', ['Q7.3.4'])]);
+    const result = await svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'rejected' });
+    assert.equal(result.rejected, 1);
+    assert.ok(!result.warning, 'or the warning stops meaning anything');
+  });
+
+  test('accepting one never warns — it is being asked, not assumed', async () => {
+    const doc = acme();
+    const shaping = clarificationTopics(doc).find((t) => t.impact === 'high');
+    const svc = await bid([q('The one that shapes it', shaping.covers.map((c) => c.question_id))]);
+    const result = await svc.decideClarifications(consultant, 'a-bid', { id: 'q1', status: 'accepted' });
+    assert.ok(!result.warning);
+  });
+
+  test('the assumption it creates carries which kind it was', () => {
+    // The proposal has to be able to say whether Merkle guessed at a detail or
+    // at what it is being asked to build.
+    // On a question still open — an assumption about something the client has
+    // since answered retires, which is its own rule.
+    const rejected = { status: 'rejected', question: 'Headless or one storefront?', assume_if_unanswered: 'One Shopify storefront', impact_if_wrong: 'a second build stream', covers: ['Q10.5.9'], shape_changing: true, decided_by: 'lc-one' };
+    const [a] = statedAssumptions(acme(), { questions: [rejected] });
+    assert.equal(a.shape_changing, true);
+    assert.equal(a.impact_if_wrong, 'a second build stream');
+    assert.equal(a.owner, 'lc-one');
+  });
+
+});
+
+describe('adding a topic does not cost the triage', () => {
+  test('ten decided, one added: the ten keep their verdicts', async () => {
+    // Claude refused to add a topic because re-saving "may reset your accepted
+    // and rejected triage". It does not — but nothing in the tool told it so,
+    // and a model protecting work the tool already protects is a model that
+    // leaves a topic unasked.
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(consultant, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    const q = (question, covers) => ({ question, why_we_ask: 'w', covers, assume_if_unanswered: 'a', impact_if_wrong: 'i' });
+
+    const ten = Array.from({ length: 10 }, (_, i) => q(`Question ${i + 1}`, [`Q${i + 1}.1.1`]));
+    await svc.saveClarifications(consultant, 'a-bid', { questions: ten });
+    for (let i = 1; i <= 10; i += 1) {
+      await svc.decideClarifications(consultant, 'a-bid', { id: `q${i}`, status: i <= 7 ? 'accepted' : 'rejected' });
+    }
+
+    await svc.saveClarifications(consultant, 'a-bid', {
+      questions: [...ten.map((x, i) => q(`Question ${i + 1}, better worded`, x.covers)), q('Mainland China', ['Q3.5.1', 'Q3.5.6'])],
+    });
+
+    const { triage: t } = await svc.getClarifications(consultant, 'a-bid');
+    assert.equal(t.accepted.length, 7);
+    assert.equal(t.rejected.length, 3);
+    assert.deepEqual(t.proposed.map((x) => x.question), ['Mainland China'], 'only the new ground waits on a decision');
+    assert.match(t.accepted[0].question, /better worded/, 'and the better wording wins');
+  });
+
+  test('the connector says so, or the model keeps guessing', async () => {
+    const { CLARIFICATIONS_PROMPT } = await import('../../agents/discovery/clarifications.js');
+    assert.match(CLARIFICATIONS_PROMPT, /re-saving is how a topic gets added/i);
+    assert.match(CLARIFICATIONS_PROMPT, /keeps the Lead Consultant's decision/i);
   });
 });

@@ -1057,6 +1057,12 @@
 - [ ] None
 - [ ] Not sure yet
 
+**Q5.1.15** — Does a single order ever need to go to more than one address — gifts to several recipients, or one wholesale order split across branches? *(recommended)*
+*Different from an order arriving in several parcels, which Shopify does on its own.*
+
+- [ ] Yes
+- [x] No
+
 ### 5.2 Returns & exchanges
 
 **Q5.2.1** — Summarise the returns policy (window, conditions, who pays return postage). *(recommended)*
@@ -1557,6 +1563,49 @@
 - [ ] forms popups
 - [ ] pos
 - [ ] none
+
+### 6.5 Customer service
+
+**Q6.5.1** — Where will customer questions be answered after launch: Shopify Inbox, a helpdesk app, a helpdesk outside Shopify, email only, or nowhere yet? *(required)*
+*Shopify Inbox is free and lives in the admin. A helpdesk such as Gorgias or Zendesk pulls order context in and usually needs a connection built.*
+
+*(tick one)*
+- [x] helpdesk app
+- [ ] shopify inbox
+- [ ] external helpdesk
+- [ ] email only
+- [ ] none
+
+**Q6.5.2** — Which helpdesk, if one is named? *(recommended)*
+*The product name, not a person.*
+
+> Answer: Gorgias
+
+**Q6.5.3** — Where should the storefront contact form deliver: an email inbox, the helpdesk, a CRM, or is there no form? *(required)*
+*Shopify themes ship a contact form that sends email. Anything else is a connection somebody builds and maintains.*
+
+*(tick one)*
+- [x] into the helpdesk
+- [ ] email only
+- [ ] into a crm
+- [ ] none
+
+**Q6.5.4** — Does your team create orders for customers — by phone, in a showroom, or for wholesale buyers? *(required)*
+*In Shopify this is a draft order: staff build the order in the admin and send an invoice to pay.*
+
+- [x] Yes
+- [ ] No
+
+**Q6.5.5** — Do customers book a slot with you — an in-store appointment, a virtual consultation, or both? *(recommended)*
+*Ask if Q5.6.1 is 1 or more, or Q2.2.1 includes Virtual or Made to order, or Q0.3.1 mentions appointment, booking, consultation, fitting, showroom or reservation.*
+*Booking is not a Shopify feature; it is an App Store category, and the app is what holds the calendar.*
+
+*(tick one)*
+- [ ] in store appointments
+- [x] virtual consultations
+- [ ] both
+- [ ] none
+- [ ] not sure yet
 
 ---
 
@@ -2067,6 +2116,14 @@ Managing Director, with the Finance Controller informed.
 - [ ] pim
 - [ ] undecided
 
+**Q9.2.11** — Which front end: Shopify Hydrogen, or another framework? *(recommended · consultant)*
+*Skip if Q9.2.1 = no.*
+
+*(tick one)*
+- [ ] hydrogen
+- [ ] other framework
+- [ ] undecided
+
 **Q9.2.9** — Headless platform features required? *(recommended · consultant)*
 *Skip if Q9.2.1 = no.*
 
@@ -2084,6 +2141,15 @@ Managing Director, with the Finance Controller informed.
 
 - [ ] Yes
 - [ ] No
+
+**Q9.2.12** — Do you want a presence inside Shopify’s Shop app — a Shop Mini? *(recommended)*
+*A full-screen shopping experience inside the Shop app. It is not your own app and not a headless storefront.*
+
+*(tick one)*
+- [ ] now
+- [x] later
+- [ ] no
+- [ ] not sure yet
 
 ### 9.3 Accessibility
 

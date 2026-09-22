@@ -36,7 +36,7 @@ export async function action({ request }) {
 export default function Authorize({ loaderData }) {
   const { user, params, client, redirectHost } = loaderData;
   return (
-    <main className="narrow">
+    <main id="main" className="narrow">
       <h1>Connect {client.name}</h1>
       <p><strong>{client.name}</strong> wants to use {CONNECTOR} as <strong>{user.login}</strong> ({user.role}).</p>
       <ul>

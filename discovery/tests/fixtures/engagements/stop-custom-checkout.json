@@ -94,34 +94,92 @@
       "migration": {
         "active": false,
         "evidence": "Q0.5.4: greenfield, no source platform."
+      },
+      "storefront_design": {
+        "active": true,
+        "tier": "extended",
+        "evidence": "Storefront design: key screens designed in Figma"
+      },
+      "retail_pos": {
+        "active": false,
+        "evidence": "No retail stores"
+      },
+      "languages": {
+        "active": false,
+        "evidence": "1 distinct language(s): en"
+      },
+      "seo_continuity": {
+        "active": false,
+        "evidence": "Q7.1.1: organic is not a priority channel, and no redirect estate is recorded."
+      },
+      "subscriptions": {
+        "active": false,
+        "evidence": "Q2.2.1: no subscription products in the catalogue."
+      },
+      "checkout_extensibility": {
+        "active": false,
+        "evidence": "Q4.2.1: a fully custom checkout UI — exit rule 11.6, not a priced gate."
+      },
+      "analytics_consent": {
+        "active": false,
+        "evidence": "Q7.2.1: no analytics destinations recorded."
+      },
+      "post_launch_support": {
+        "active": false,
+        "evidence": "Q10.3.3: not recorded."
       }
     },
-    "l_triggers": {
-      "luxury": {
-        "active": false,
-        "evidence": "Q1.3.1: premium positioning."
-      },
-      "headless": {
-        "active": false,
-        "evidence": "Q9.2.1: no headless requirement."
-      },
-      "figma_design_system": {
-        "active": false,
-        "evidence": "Q9.1.2 / Q9.1.3: key screens only, no design system."
-      }
-    },
-    "modifiers": [],
+    "l_triggers": {},
+    "modifiers": [
+      "+Markets",
+      "+MultiCurrency",
+      "+Design (extended)"
+    ],
     "price_band": {
-      "min": 65000,
-      "max": 100000,
-      "currency": "EUR",
+      "min": 70000,
+      "max": 145000,
+      "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
-      "min": 6,
+      "min": 6.5,
+      "max": 14
+    },
+    "rationale": "Three scope gates are active (markets, multi-currency, storefront design) and they add up to 2.5–3.5 weeks, inside the Ecommerce Scale ceiling, so the engagement classifies as M. Half a week of gate overflow is quoted on top of the band; delivery is blocked by exit 11.6.",
+    "scope_effort_weeks": {
+      "min": 6.5,
+      "max": 8.5
+    },
+    "gate_capacity_weeks": {
+      "min": 2,
       "max": 9
     },
-    "rationale": "Two scope gates are active (markets, multi-currency) and no L trigger applies, so the engagement classifies as M — Ecommerce Scale; delivery is blocked by exit 11.6."
+    "scope_effort_by_gate": [
+      {
+        "gate": "storefront_design",
+        "label": "Storefront design",
+        "weeks": {
+          "min": 1,
+          "max": 2
+        }
+      },
+      {
+        "gate": "markets",
+        "label": "Markets",
+        "weeks": {
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "gate": "multi_currency",
+        "label": "Multi-currency",
+        "weeks": {
+          "min": 0.5,
+          "max": 0.5
+        }
+      }
+    ]
   },
   "markets": {
     "primary_markets": [

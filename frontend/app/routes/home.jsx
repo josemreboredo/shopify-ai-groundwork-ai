@@ -2,8 +2,10 @@ import { Form, Link, redirect } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { PROCESSES, processMeta } from '../../../discovery/service/process.js';
+import { processMeta } from '../../../discovery/service/process.js';
+import { offerStanding, statusOf } from '../../../discovery/service/summary.js';
 import { PRODUCT, pageTitle } from '../brand.js';
+import { LANGUAGES as SUPPORTED_LANGUAGES, LANGUAGE_NAMES } from '../../../discovery/agents/language.js';
 
 export const meta = () => [{ title: pageTitle('Bids and engagements') }];
 
@@ -29,46 +31,77 @@ export async function action({ request }) {
   return redirect(`/engagements/${client}`);
 }
 
-const LANGUAGES = ['en', 'de', 'fr', 'it', 'es'];
+// The languages the tool can actually run an engagement in. The list used to be
+// written here by hand and carried two the questionnaire has no words for, so a
+// consultant could start an Italian engagement and be asked everything in English.
+const LANGUAGES = SUPPORTED_LANGUAGES.map((code) => [code, LANGUAGE_NAMES[code]]);
 
+/**
+ * Where a record is in its own process — a different axis from the offer.
+ *
+ * This used to repeat the offer's own verdict, so the row read "M · Ecommerce
+ * Scale" under Offer and "Larger Engagement" under Status: an answer beside the
+ * rule that superseded it, in two columns pretending to say different things.
+ * The offer says what commercial shape this is; this says how far along it is,
+ * and a bid and an engagement are not far along the same thing.
+ */
 function Status({ e }) {
-  if (e.go) return <span className="badge go">GO</span>;
-  // Beyond the offers is not a refusal: only "No bid" reads as one.
-  if (e.route === 'larger_engagement') return <span className="badge flag">Larger Engagement</span>;
-  if (e.route === 'no_bid') return <span className="badge stop">No bid</span>;
-  return <span className="badge flag">Beyond offers · route needed</span>;
+  const s = statusOf(e);
+  return <span className={`badge ${s.tone}`}>{s.label}</span>;
+}
+
+/**
+ * What is left to say once the status badge has spoken. The badge already
+ * carries the count it is about — the answers to confirm, or how far the
+ * interview has got — so repeating it under the badge is noise, not detail.
+ */
+function progressUnder(e) {
+  const { id } = statusOf(e);
+  if (id === 'to_confirm' || id === 'reviewing' || id === 'questions_to_decide') return null;
+  const c = e.coverage ?? {};
+  if (!c.required_total) return null;
+  if (id === 'interviewing') return c.required_tbc ? `${c.required_tbc} TBC` : null;
+  return `${c.required_answered} of ${c.required_total} required${c.required_tbc ? ` · ${c.required_tbc} with the client` : ''}`;
 }
 
 export default function Home({ loaderData, actionData }) {
   const { engagements } = loaderData;
   return (
-    <main>
+    <main id="main">
       <header className="page-head">
-        <p className="eyebrow">{PRODUCT}</p>
+        <p className="eyebrow">{PRODUCT} · Shopify</p>
         <h1>What are you working on?</h1>
         <p className="lede">
-          One engine, two ways in. An RFP that has to be answered, or a discovery to run with a client —
-          the same question bank, the same Shopify documentation, the same offer underneath.
+          Shopify bids and discoveries, on one engine. An RFP that has to be answered, or a discovery to
+          run with a client — the same question bank, the same verified Shopify documentation, the same
+          offer and the same scope gates underneath.
         </p>
       </header>
 
-      {/* Two doors. You say what you are doing; nothing asks you to classify a record. */}
+      {/* Creating one is the occasional act; opening one is the daily one. The
+          forms took the whole top of the page for the thing you do least, so
+          they fold away and the list comes first. */}
+      <details className="card prefill new-record" open={engagements.length === 0}>
+        <summary>
+          <span className="prefill-title">New — start a bid or a discovery</span>
+          <span className="muted prefill-status">{engagements.length} open · start another</span>
+        </summary>
       <div className="doors">
         <section className="door rfp">
           <p className="door-n" aria-hidden="true">01</p>
-          <h2>Answer an RFP</h2>
-          <p>A document arrived with a deadline. Read it in, confirm what it says, send the few questions that change the answer, and write the proposal.</p>
+          <h2>Answer a new RFP</h2>
+          <p>A Shopify RFP arrived with a deadline. Read it in, confirm what it says, send the few questions that change the answer, and write the proposal.</p>
           <Form method="post" className="door-form">
             <input type="hidden" name="process" value="rfp" />
             <input type="hidden" name="mode" value="standard" />
             <div className="field">
               <label htmlFor="rfp-client">Client</label>
-              <input id="rfp-client" name="client" placeholder="la-prairie" pattern="[a-z0-9][a-z0-9-]*" required />
+              <input id="rfp-client" name="client" placeholder="client-a" pattern="[a-z0-9][a-z0-9-]*" required />
             </div>
             <div className="field">
               <label htmlFor="rfp-language">Language</label>
               <select id="rfp-language" name="language" defaultValue="en">
-                {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+                {LANGUAGES.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
               </select>
             </div>
             <button type="submit">Start a bid</button>
@@ -77,18 +110,18 @@ export default function Home({ loaderData, actionData }) {
 
         <section className="door discovery">
           <p className="door-n" aria-hidden="true">02</p>
-          <h2>Run a discovery</h2>
-          <p>A client is engaged and the work needs scoping. Work through the questions with them, then write the closing document and the delivery backlog.</p>
+          <h2>Run a new discovery</h2>
+          <p>A client is engaged and the Shopify build needs scoping. Work through the questions with them, then write the closing document and the delivery backlog.</p>
           <Form method="post" className="door-form">
             <input type="hidden" name="process" value="discovery" />
             <div className="field">
               <label htmlFor="d-client">Client</label>
-              <input id="d-client" name="client" placeholder="acme-watches" pattern="[a-z0-9][a-z0-9-]*" required />
+              <input id="d-client" name="client" placeholder="demo-brand" pattern="[a-z0-9][a-z0-9-]*" required />
             </div>
             <div className="field">
               <label htmlFor="d-language">Language</label>
               <select id="d-language" name="language" defaultValue="en">
-                {LANGUAGES.map((l) => <option key={l} value={l}>{l}</option>)}
+                {LANGUAGES.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
               </select>
             </div>
             <div className="field">
@@ -103,22 +136,67 @@ export default function Home({ loaderData, actionData }) {
           </Form>
         </section>
       </div>
-      {actionData?.error ? <p className="error">{actionData.error}</p> : null}
+      </details>
+      {/* The message sat 270px below the field that caused it, in a word the
+          field does not use, and said nothing about the record already there. */}
+      {actionData?.error ? (
+        <div className="card blocked">
+          <p className="question">{actionData.error}</p>
+          {actionData.blockers?.length ? (
+            actionData.blockers.map((b) => (
+              <p key={b.what}>
+                <span className="muted">{b.why}</span>{' '}
+                {b.href ? <Link className="button secondary" to={b.href}>{b.what}</Link> : null}
+              </p>
+            ))
+          ) : null}
+        </div>
+      ) : null}
 
       <h2>Open now</h2>
-      {engagements.length === 0 ? <p className="muted">Nothing open yet.</p> : (
+      {engagements.length === 0 ? (
+        <p className="muted">Nothing open yet — start a bid or a discovery above.</p>
+      ) : (
+        <>
+        {/* A phone is not scanning a portfolio, it is finding one record and
+            opening it: who, where it stands, what is waiting on me. Nine columns
+            are a desk instrument, so below 760px this list replaces them. */}
+        <ul className="record-cards">
+          {engagements.map((e) => (
+            <li key={e.client} className={`tone-${statusOf(e).tone || 'none'}`}>
+              <p className="record-top">
+                <Link to={`/engagements/${e.client}`}>{e.client}</Link>
+                <Status e={e} />
+              </p>
+              <p className="record-what">
+                <span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span>
+                {' '}{offerStanding(e).short}
+                {offerStanding(e).applies && e.offer.provisional ? <span className="muted small"> · provisional</span> : null}
+              </p>
+              {/* The badge above now states the headline — "91 to confirm",
+                  "Interviewing — 61 of 85" — so the card said it twice. This line
+                  carries only what the badge did not. */}
+              {progressUnder(e) ? <p className="record-progress">{progressUnder(e)}</p> : null}
+              <p className="record-meta">{e.mode} · {e.owner ?? '—'} · {e.updated_at}</p>
+            </li>
+          ))}
+        </ul>
+        <div className="table-scroll record-table" role="region" tabIndex={0} aria-label="Bids and engagements, scrollable table">
         <table>
           <thead>
-            <tr><th>Client</th><th>What</th><th>Offer</th><th>Status</th><th>Required answered</th><th>To confirm</th><th>Mode</th><th>Owner</th><th>Updated</th></tr>
+            <tr><th scope="col">Client</th><th scope="col">Type</th><th scope="col">Offer</th><th scope="col">Status</th><th scope="col">Required answered</th><th scope="col">To confirm</th><th scope="col">Depth</th><th scope="col">Owner</th><th scope="col">Updated</th></tr>
           </thead>
           <tbody>
             {engagements.map((e) => (
               <tr key={e.client}>
                 <td><Link to={`/engagements/${e.client}`}>{e.client}</Link></td>
                 <td><span className={`badge process-${e.process}`}>{processMeta(e.process).record}</span></td>
-                <td>{e.offer.code} · {e.offer.name}{e.offer.provisional ? <> <span className="badge provisional">provisional</span></> : null}</td>
+                <td>
+                  {offerStanding(e).short}
+                  {offerStanding(e).applies && e.offer.provisional ? <div className="muted small">provisional</div> : null}
+                </td>
                 <td><Status e={e} /></td>
-                <td>{e.coverage.required_answered} / {e.coverage.required_total}{e.coverage.required_tbc ? ` (${e.coverage.required_tbc} TBC)` : ''}</td>
+                <td>{e.coverage.required_answered} / {e.coverage.required_total}{e.coverage.required_tbc ? ` (${e.coverage.required_tbc} with the client)` : ''}</td>
                 <td>{e.to_review ? <span className="badge flag">{e.to_review}</span> : '—'}</td>
                 <td>{e.mode}</td>
                 <td>{e.owner ?? '—'}</td>
@@ -127,6 +205,8 @@ export default function Home({ loaderData, actionData }) {
             ))}
           </tbody>
         </table>
+        </div>
+        </>
       )}
     </main>
   );

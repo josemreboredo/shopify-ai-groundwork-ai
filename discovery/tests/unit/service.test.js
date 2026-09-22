@@ -424,3 +424,55 @@ describe('confirming what was read out of the documents', () => {
     await rejects(svc.confirmAllAnswers(lc, 'a-bid'), 409);
   });
 });
+
+describe('a question that fills several fields', () => {
+  const lc = { login: 'lc-one', role: 'consultant' };
+  const TODAY_M = '2026-09-20';
+
+  async function partlyConfirmed() {
+    const store = createMemoryStore();
+    const svc = createDiscoveryService({ store, today: () => TODAY_M });
+    await svc.startInterview(lc, { client: 'a-bid', language: 'en', mode: 'quick', process: 'rfp' });
+    await svc.answerQuestion(lc, 'a-bid', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    // Q1.2.2 fills three fields; fifteen questions in the bank fill more than one.
+    await svc.recordAnswers(lc, 'a-bid', [{
+      question_id: 'Q1.2.2',
+      values: { '/shopify/store_url': 'https://x.myshopify.com', '/shopify/current_plan': 'basic', '/shopify/current_theme': 'Dawn' },
+      evidence: { document: 'RFP.pdf', location: 'p.2' },
+    }]);
+    const session = await store.get('a-bid');
+    const [first] = Object.entries(session.provenance).filter(([, p]) => p.question_id === 'Q1.2.2');
+    await svc.confirmAnswer(lc, 'a-bid', { pointer: first[0] });
+    return { svc, store };
+  }
+
+  test('with one field confirmed and two waiting, the row can still be confirmed', async () => {
+    // It used to read the row's state off whichever pointer came first, so this
+    // rendered as "Answered" with no Confirm button, out of the to-confirm
+    // filter and out of the bulk card — while the counter feeding the spine kept
+    // counting the two. No screen named the question and nothing could clear it.
+    const { svc } = await partlyConfirmed();
+    const review = await svc.reviewQuestions(lc, 'a-bid');
+    const row = review.sections.flatMap((s) => s.questions).find((q) => q.id === 'Q1.2.2');
+    assert.equal(row.state, 'answered');
+    assert.equal(row.to_confirm, true, 'any field still waiting keeps the row confirmable');
+  });
+
+  test('and confirming the row clears every field it filled', async () => {
+    const { svc } = await partlyConfirmed();
+    const result = await svc.confirmAnswer(lc, 'a-bid', { question_id: 'Q1.2.2' });
+    assert.equal(result.confirmed, 2, 'the two that were still waiting');
+    assert.equal((await svc.getSummary(lc, 'a-bid')).engagement.to_review, 0);
+  });
+
+  test('the counter counts questions, which is what a consultant acts on', async () => {
+    const { svc } = await partlyConfirmed();
+    // Three counts of two different units used to disagree on one screen: the
+    // spine said 3, Review said 1, and confirming reported 3.
+    const engagement = (await svc.getSummary(lc, 'a-bid')).engagement;
+    const review = await svc.reviewQuestions(lc, 'a-bid');
+    const waiting = review.sections.flatMap((s) => s.questions).filter((q) => q.to_confirm).length;
+    assert.equal(engagement.to_review, waiting, 'the spine and the table agree');
+    assert.equal(engagement.to_review, 1);
+  });
+});

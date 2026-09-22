@@ -104,6 +104,15 @@
               "$ref": "#/$defs/date"
             }
           }
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "en",
+            "de",
+            "fr"
+          ],
+          "description": "The language the engagement is run in, and the language every client-facing document generated from it is written in. Stamped from the interview session; absent on engagements produced before it existed."
         }
       }
     },
@@ -443,7 +452,13 @@
             "integration": {
               "$ref": "#/$defs/gate"
             },
+            "storefront_design": {
+              "$ref": "#/$defs/gate"
+            },
             "sku_complexity": {
+              "$ref": "#/$defs/gate"
+            },
+            "search_merchandising": {
               "$ref": "#/$defs/gate"
             },
             "migration": {
@@ -451,20 +466,33 @@
             },
             "retail_pos": {
               "$ref": "#/$defs/gate"
+            },
+            "languages": {
+              "$ref": "#/$defs/gate"
+            },
+            "seo_continuity": {
+              "$ref": "#/$defs/gate"
+            },
+            "subscriptions": {
+              "$ref": "#/$defs/gate"
+            },
+            "checkout_extensibility": {
+              "$ref": "#/$defs/gate"
+            },
+            "analytics_consent": {
+              "$ref": "#/$defs/gate"
+            },
+            "post_launch_support": {
+              "$ref": "#/$defs/gate"
             }
           }
         },
         "l_triggers": {
           "type": "object",
           "additionalProperties": false,
+          "description": "One trigger. A headless storefront cannot be a Foundation or a Scale at any catalogue size, so it lands in Ecommerce Growth and the delivery track follows the answer. Luxury positioning was never a size and a complete Figma design system is built inside the offers (the storefront design gate, bespoke tier). Content or a front end outside Shopify is not a trigger at all — it is exit rule 11.26 and Merkle Arc.",
           "properties": {
-            "luxury": {
-              "$ref": "#/$defs/gate"
-            },
             "headless": {
-              "$ref": "#/$defs/gate"
-            },
-            "figma_design_system": {
               "$ref": "#/$defs/gate"
             }
           }
@@ -473,12 +501,33 @@
           "type": "array",
           "items": {
             "enum": [
-              "+Markets",
+              "+Analytics (advanced)",
+              "+Analytics (standard)",
               "+B2B",
+              "+Checkout (functions)",
+              "+Checkout (in-checkout)",
+              "+Checkout (post-purchase)",
+              "+Design (bespoke)",
+              "+Design (extended)",
               "+Integration",
-              "+Migration",
-              "+SKU",
-              "+Retail"
+              "+Languages",
+              "+Markets",
+              "+Migration (heavy)",
+              "+Migration (light)",
+              "+Migration (medium)",
+              "+MultiCurrency",
+              "+Retail",
+              "+SEO (large)",
+              "+SEO (standard)",
+              "+SKU (large)",
+              "+SKU (standard)",
+              "+SKU (very large)",
+              "+Search (app)",
+              "+Search (native)",
+              "+Subscriptions (advanced)",
+              "+Subscriptions (standard)",
+              "+Support (extended)",
+              "+Support (standard)"
             ]
           },
           "uniqueItems": true
@@ -511,6 +560,77 @@
         },
         "rationale": {
           "type": "string"
+        },
+        "gate_capacity_weeks": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Weeks of scope gates this offer's band already contains. L is the last offer: when the gates exceed this there is nothing to promote to, so the excess is added to the quoted band and duration.",
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "min",
+            "max"
+          ]
+        },
+        "scope_effort_weeks": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Weeks the base offer plus the active scope gates add up to. The offer is chosen from this, not from the number of gates: a Magento migration and a 500-SKU catalogue are one gate each and differ by an order of magnitude.",
+          "properties": {
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "min",
+            "max"
+          ]
+        },
+        "scope_effort_by_gate": {
+          "type": "array",
+          "description": "The scope effort itemised by gate, heaviest first. The total alone cannot be acted on: a scope that has outgrown the largest offer needs to say where the weeks are.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gate",
+              "label",
+              "weeks"
+            ],
+            "properties": {
+              "gate": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "weeks": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "min",
+                  "max"
+                ],
+                "properties": {
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -1748,6 +1868,10 @@
             "shipping_app"
           ]
         },
+        "multi_address_orders": {
+          "type": "boolean",
+          "description": "One order delivered to more than one address. Shopify cannot do this: split shipping divides an order into several shipments but they all go to a single address (exit rule 11.27)."
+        },
         "dangerous_goods": {
           "type": "array",
           "uniqueItems": true,
@@ -2108,6 +2232,52 @@
         "own_operation": {
           "type": "boolean",
           "description": "The wholesale business is run by its own team, with its own targets or P&L."
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Customer service: where a shopper's question lands and who answers it. Nothing here was asked before, so a client running a helpdesk and taking orders by phone was undiscovered scope.",
+      "properties": {
+        "platform": {
+          "enum": [
+            "shopify_inbox",
+            "helpdesk_app",
+            "external_helpdesk",
+            "email_only",
+            "none",
+            "not_sure"
+          ],
+          "description": "Where customer conversations are handled after launch"
+        },
+        "platform_name": {
+          "type": "string",
+          "description": "The named helpdesk, e.g. Gorgias or Zendesk. Never a person."
+        },
+        "contact_form": {
+          "enum": [
+            "email_only",
+            "into_the_helpdesk",
+            "into_a_crm",
+            "none",
+            "not_sure"
+          ],
+          "description": "Where the storefront contact form delivers"
+        },
+        "orders_on_behalf": {
+          "type": "boolean",
+          "description": "Staff create orders for customers (phone, showroom, wholesale) using draft orders"
+        },
+        "booking": {
+          "enum": [
+            "in_store_appointments",
+            "virtual_consultations",
+            "both",
+            "none",
+            "not_sure"
+          ],
+          "description": "Customers book a slot — an in-store appointment, a virtual consultation, or both. Shopify has no native booking; it is an App Store category."
         }
       }
     },
@@ -2621,6 +2791,14 @@
           "latency_minutes": {
             "type": "integer",
             "minimum": 0
+          },
+          "test_environment": {
+            "enum": [
+              "available",
+              "none",
+              "not_sure"
+            ],
+            "description": "Whether this system has a non-production environment Merkle can integrate against before go-live."
           }
         }
       }
@@ -2734,6 +2912,15 @@
         "headless_required": {
           "type": "boolean"
         },
+        "shop_mini": {
+          "enum": [
+            "now",
+            "later",
+            "no",
+            "not_sure"
+          ],
+          "description": "A Shop Mini: a full-screen experience inside Shopify's Shop app, built with the Shop Minis React SDK. Not a headless storefront and not a standalone app — a Mini works only inside Shop."
+        },
         "theme_preference": {
           "type": "string"
         },
@@ -2841,6 +3028,14 @@
                 "not_sure"
               ]
             },
+            "framework": {
+              "enum": [
+                "hydrogen",
+                "other_framework",
+                "not_sure"
+              ],
+              "description": "Which front end. Hydrogen is Shopify's own, on the Storefront API and hosted on Oxygen; anything else is a front end Shopify does not build, and with an external CMS it is what takes an engagement to Merkle Arc (11.26)."
+            },
             "features": {
               "type": "array",
               "uniqueItems": true,
@@ -2875,9 +3070,9 @@
         "route": {
           "enum": [
             "larger_engagement",
-            "no_bid"
+            "arc"
           ],
-          "description": "Consultant decision after a STOP: larger_engagement = Merkle Enterprise Engagement with a dedicated Discovery Phase (outside the S/M/L offers); no_bid = Merkle does not propose. Ignored on GO."
+          "description": "Consultant decision after a STOP: larger_engagement = Merkle Enterprise Engagement with a dedicated Discovery Phase (outside the S/M/L offers); arc = Merkle Arc, a separate engagement scoped by the Arc practice and neither quoted nor estimated here. Deciding not to bid is recorded on the outcome ledger, not as a route. Ignored on GO."
         },
         "kickoff_date": {
           "$ref": "#/$defs/date"
@@ -3914,6 +4109,26 @@
         },
         "evidence": {
           "type": "string"
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "advanced",
+            "app",
+            "bespoke",
+            "extended",
+            "functions",
+            "heavy",
+            "in_checkout",
+            "large",
+            "light",
+            "medium",
+            "native",
+            "post_purchase",
+            "standard",
+            "very_large"
+          ],
+          "description": "How much of a project this gate is. Set for migration, from the source platform: WooCommerce is light, Shopware medium, Magento or a custom platform heavy — the published DACH durations differ by a factor of two. Set for SEO continuity from the size of the redirect estate: standard is a map authored and imported, large is one built from a crawl."
         }
       }
     }

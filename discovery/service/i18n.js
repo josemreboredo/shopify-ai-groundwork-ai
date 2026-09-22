@@ -14,22 +14,65 @@
  * @module discovery/service/i18n
  */
 
+import { createHash } from 'node:crypto';
+
 import de from '../schema/translations/de.json' with { type: 'json' };
 import fr from '../schema/translations/fr.json' with { type: 'json' };
 import { questionBank } from '../schema/index.js';
+import { describeQuestion } from '../agents/interview/next.js';
+// The list of languages and their names belong with the prompts that write in
+// them, and the agents may not import the service — so they live there and are
+// re-exported here, where the rest of the app already looks for them.
+import { LANGUAGES, LANGUAGE_NAMES, supported, writtenIn } from '../agents/language.js';
 
 /** Translations by language code. English is the source, so it has no file. */
 export const TRANSLATIONS = { de, fr };
 
-/** Languages an engagement can be run in. */
-export const LANGUAGES = ['en', ...Object.keys(TRANSLATIONS)];
+export { LANGUAGES, LANGUAGE_NAMES, supported as supportedLanguage, writtenIn };
 
-/** Language names, in the language itself — for the consultant's language notice. */
-export const LANGUAGE_NAMES = { en: 'English', de: 'Deutsch', fr: 'Français', it: 'Italiano', es: 'Español' };
+/**
+ * The English a translation was made from, as a short digest.
+ *
+ * A translation cannot tell that its source has moved. Q8.1.1 gained a column
+ * and a sentence of help; German and French kept the eight-column version, and
+ * nothing failed — a German client was handed a questionnaire asking for less
+ * than the schema holds. So every translated question records the digest of the
+ * English it was written against, and a test compares. Only the four strings a
+ * translator is responsible for are in it: a new Shopify source or plan note on
+ * the same question does not make the German wrong.
+ *
+ * @param {object} q  a question from the bank
+ * @returns {string}
+ */
+export function sourceDigest(q) {
+  const teach = q.teach ?? {};
+  const parts = [q.text ?? '', q.help ?? '', teach.why ?? '', teach.limits ?? ''];
+  return createHash('sha256').update(parts.join('\u0000')).digest('hex').slice(0, 12);
+}
 
 /** @param {string} [language] */
 export function translationFor(language) {
   return TRANSLATIONS[String(language ?? '').toLowerCase()] ?? null;
+}
+
+/**
+ * Every answer value a consultant is ever shown a choice for. The allowed values
+ * live in the engagement schema rather than on the question, so this is the only
+ * way to count them — and it is computed once, because `coverage` runs on every
+ * page that shows the language notice.
+ */
+let shownChoices;
+function choices() {
+  if (!shownChoices) {
+    const seen = new Set();
+    for (const q of questionBank.questions) {
+      try {
+        for (const value of Object.keys(describeQuestion(q).option_labels ?? {})) seen.add(value);
+      } catch { /* a question the schema cannot describe shows no choices */ }
+    }
+    shownChoices = [...seen];
+  }
+  return shownChoices;
 }
 
 /**
@@ -42,7 +85,24 @@ export function coverage(language) {
   const t = translationFor(language);
   const of = questionBank.questions.length;
   const questions = t ? questionBank.questions.filter((q) => t.questions?.[q.id]?.text).length : 0;
-  return { language: language ?? 'en', translated: Boolean(t), questions, of, complete: Boolean(t) && questions === of };
+  // A question is not translated when its answers are not. Counting only the
+  // question text said "complete" on a questionnaire whose every choice — Yes,
+  // In house, Not sure yet — was still English, and the notice that would have
+  // admitted it disappeared at the same moment.
+  const shown = choices();
+  const answers = t ? shown.filter((v) => t.options?.[v]).length : 0;
+  return {
+    language: language ?? 'en',
+    translated: Boolean(t),
+    questions,
+    of,
+    // What a consultant picks from. The remainder is deliberate: a payment
+    // method, a platform or a standard keeps its own name in every language,
+    // and the count says so rather than implying an unfinished job.
+    answers,
+    answers_of: shown.length,
+    complete: Boolean(t) && questions === of,
+  };
 }
 
 const text = (value) => (typeof value === 'string' && value.trim() ? value : null);

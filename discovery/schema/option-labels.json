@@ -62,7 +62,7 @@
     "tiktok": "TikTok", "sms": "SMS", "whatsapp": "WhatsApp", "utm": "UTM parameters", "bogo": "Buy one, get one (BOGO)", "ugc": "User-generated content",
     "pos_only": "POS only", "sales_channel_pos_only": "POS only", "b2b_company": "B2B company", "vip_tiers": "VIP tiers", "vip_early_access": "VIP early access",
     "ipaas": "iPaaS", "native_app": "Native app", "shopify_admin": "Shopify admin", "shopify_hosted": "Shopify-hosted checkout", "third_party_hosted": "Third-party hosted payment page", "custom_card_handling": "Custom card handling",
-    "larger_engagement": "Larger Engagement", "no_bid": "No bid", "merkle": "Merkle", "phase_2": "Phase 2",
+    "larger_engagement": "Larger Engagement", "arc": "Merkle Arc", "no_bid": "No bid", "merkle": "Merkle", "phase_2": "Phase 2",
     "prepaid_label": "Prepaid label", "qr_drop_off": "QR code drop-off",
     "try_before_you_buy": "Try before you buy", "ship_from_store": "Ship from store", "buy_online_pickup_in_store": "Buy online, pick up in store",
     "in_store_returns_exchanges_of_online_orders": "In-store returns and exchanges of online orders", "endless_aisle_order_in_store": "Endless aisle (order in store)",

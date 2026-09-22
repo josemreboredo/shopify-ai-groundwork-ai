@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { pageTitle } from '../brand.js';
+import { SourcingRule } from '../components/diagram.jsx';
 
 export const meta = () => [
   { title: pageTitle('How it works') },
@@ -56,7 +57,7 @@ const LIMITS = [
 
 export default function HowItWorks() {
   return (
-    <main className="story">
+    <main id="main" className="story">
       <header className="page-head">
         <p className="eyebrow">How it works</p>
         <h1>Every recommendation, traceable</h1>
@@ -68,6 +69,7 @@ export default function HowItWorks() {
       </header>
 
       <section>
+        <h2 className="sr-only">The mechanism, in four moves</h2>
         <div className="flow">
           {FLOW.map(([n, title, line]) => (
             <article key={n}>
@@ -80,46 +82,21 @@ export default function HowItWorks() {
         <p className="rule-line">No answer behind it, or no source under it — nothing is produced.</p>
       </section>
 
-      {/* The same four steps, whichever way the information arrives */}
-      <section className="band">
-        <div className="band-inner">
-          <p className="eyebrow">Two ways in</p>
-          <h2 className="plain">The same four steps, whether the client is answering us or we are answering them</h2>
-          <div className="grid-2">
-            <article className="card">
-              <h3>A bid — an RFP arrives</h3>
-              <p>
-                Read the RFP · confirm what it says · Go/No-Go support · RFP Q&amp;A · write the proposal.
-              </p>
-              <p>
-                The document is read in and every answer it already contains is recorded with the section and
-                the sentence it came from. Before anything is priced, the tool states whether this work can be
-                priced and stood behind at all. The engine then names the handful of things still missing that
-                would change the solution, and those become the questions Merkle sends back inside the window,
-                each one showing the trade-off it turns on. What is never answered is stated as an assumption
-                in the proposal rather than quietly guessed. A bid that is won becomes the engagement, in the
-                same record.
-              </p>
-            </article>
-            <article className="card">
-              <h3>A discovery — the work is won</h3>
-              <p>
-                Interview the client · review and confirm · agree the scope · hand over to delivery.
-              </p>
-              <p>
-                The same questions are worked through with the client directly, in their language, over as many
-                sessions as it takes. The engine keeps the live list of what is still open. Nothing has to be
-                persuaded here and everything has to be exact, so the path does not end at the client document:
-                it ends at the Jira backlog and the configuration workbook the build team opens on day one.
-              </p>
-            </article>
-          </div>
-          <p className="muted">
-            One engine underneath: the same question bank, the same scope gates, the same verified Shopify
-            documentation, the same offer — and a test pins that the same answers give the same result either
-            way. Only the order of the steps and what comes out at the end differ.
-          </p>
-        </div>
+      {/* The two paths used to be re-described here, in a 102-word paragraph
+          and a 65-word one — the two densest on the site. "What this is" now
+          shows them as a ladder, aligned stage by stage, which is the job this
+          section was doing badly. A page should not explain twice. */}
+      <section>
+        <h2>The rule, in one picture</h2>
+        <p className="lede">
+          A claim needs two things under it: a page from Shopify that says so, and an answer from the client
+          that it rests on. Missing either, the engine rejects the draft. It does not soften it.
+        </p>
+        <SourcingRule />
+        <p className="muted">
+          The same engine runs a bid and a discovery. Only the order of the steps differs, and a test pins that
+          the same answers give the same result either way — <Link to="/about">the two paths, stage by stage</Link>.
+        </p>
       </section>
 
       <section className="band dark">

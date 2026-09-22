@@ -3,11 +3,12 @@ import { Form, useNavigation, useRevalidator } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
-import { EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
+import { EngagementErrorBoundary, Blockers, EngagementHeader, WithQuestionLinks } from '../components/question.jsx';
 import { ServiceError } from '../../../discovery/service/index.js';
+import { processMeta, processOf } from '../../../discovery/service/process.js';
 import { pageTitle } from '../brand.js';
 
-export const meta = ({ params }) => [{ title: pageTitle('RFP Q&A', params.client) }];
+export const meta = ({ data, params }) => [{ title: pageTitle(processOf(data?.engagement?.process) === 'rfp' ? 'RFP Q&A' : 'Questions to the client', params.client) }];
 
 /**
  * What Merkle sends back after reading an RFP. The engine has already chosen the
@@ -72,17 +73,19 @@ function Decide({ id, status, busy }) {
 }
 
 export default function Clarifications({ loaderData, actionData }) {
-  const { engagement, clarifications, triage, assumptions, documents, readiness, freshness } = loaderData;
+  const { engagement, clarifications, triage, assumptions, documents, readiness, freshness, replies, reply_prompt: replyPrompt } = loaderData;
   const client = engagement.client;
   const busy = useNavigation().state !== 'idle';
   const questions = clarifications?.questions ?? [];
   const saved = questions.length > 0;
+  const rfp = processOf(engagement.process) === 'rfp';
+  const words = processMeta(engagement.process);
 
-  const prompt = `Write Merkle's questions on the RFP for ${client}.
+  const prompt = `Write Merkle's questions to the client for ${client}.
 
 Call prepare_clarifications and read the topics the engine chose — the unknowns that move the offer, the Shopify plan, the store topology, the cost or the risk. Check every Shopify fact in the official documentation before you state it. Then write one question per topic, each opening in the client's own words and followed by a short "Why we ask" that shows the trade-off, and save them with save_clarifications.
 
-Write every question we need answered to price this properly — the Lead Consultant decides which are actually sent, and anything not asked becomes a stated assumption in the proposal. Tell me what you saved and what each question is for.`;
+Write every question we need answered to price this properly — the Lead Consultant decides which are actually sent, and anything not asked becomes a stated assumption in the ${words.document.toLowerCase()}. Tell me what you saved and what each question is for.`;
 
   // While Claude is writing them, the page picks them up by itself.
   const revalidator = useRevalidator();
@@ -95,10 +98,10 @@ Write every question we need answered to price this properly — the Lead Consul
   }, [revalidator, saved]);
 
   return (
-    <main>
+    <main id="main">
       <EngagementHeader
         engagement={engagement}
-        eyebrow="RFP Q&A"
+        eyebrow={rfp ? 'RFP Q&A' : 'Questions to the client'}
         meta={saved ? `${triage.accepted.length} to ask · ${triage.rejected.length} assumed · ${triage.proposed.length} to decide` : null}
       />
 
@@ -115,7 +118,7 @@ Write every question we need answered to price this properly — the Lead Consul
               {readiness.ok && !saved
                 ? `The engine found ${readiness.topics.length} topic${readiness.topics.length > 1 ? 's' : ''} that have to be settled before this can be priced. Claude writes a question for each; you decide which are actually asked.`
                 : saved
-                  ? 'Every question here is one the proposal needs an answer to. Ask it, or decide not to and it becomes a stated assumption — there is no third option, and nothing is dropped.'
+                  ? `Every question here is one the ${words.document.toLowerCase()} needs an answer to. Ask it, or decide not to and it becomes a stated assumption — there is no third option, and nothing is dropped.`
                   : readiness.error}
             </p>
           </div>
@@ -131,19 +134,16 @@ Write every question we need answered to price this properly — the Lead Consul
             {!saved ? <span className="muted">This page updates itself when Claude saves.</span> : null}
           </div>
         ) : (
-          <ul className="blockers">
-            {(readiness.blockers ?? []).map((b) => (
-              <li key={b.what}>
-                <strong>{b.what}</strong>
-                <p className="muted"><WithQuestionLinks text={b.why} client={client} /></p>
-              </li>
-            ))}
-            {!(readiness.blockers ?? []).length && readiness.errors.map((e) => (
-              <li key={e}><p className="muted"><WithQuestionLinks text={e} client={client} /></p></li>
-            ))}
-          </ul>
+          <Blockers from={`/engagements/${client}/clarifications`} items={readiness.blockers} errors={readiness.errors} client={client} />
         )}
         {actionData?.error ? <p className="error">{actionData.error}</p> : null}
+        {actionData?.warning ? (
+          <div className="shape-warning">
+            <p className="eyebrow">This one is not a detail</p>
+            <p>{actionData.warning}</p>
+            <ul className="ticks">{(actionData.shape_assumed ?? []).map((q) => <li key={q}>{q}</li>)}</ul>
+          </div>
+        ) : null}
       </section>
 
       {/* The questions are a snapshot and the engagement moves under them: answers
@@ -171,7 +171,33 @@ Write every question we need answered to price this properly — the Lead Consul
         </section>
       ) : null}
 
-      {/* 2 — the triage */}
+      {/* 2 — and back again. The questions left the building and nothing used to
+          bring the answers home. */}
+      {triage.accepted.length ? (
+        <section className={`card start ${replies.all_back ? 'current' : 'none'}`}>
+          <div className="start-head">
+            <div>
+              <p className="question">
+                {replies.all_back ? `All ${replies.asked} answered` : `${replies.back} of ${replies.asked} answered`}
+              </p>
+              <p className="muted">
+                {replies.all_back
+                  ? 'Everything Merkle asked has come back and is recorded against the questions it fills.'
+                  : 'When the client replies, read it in here. Each question names the discovery questions it fills, so the answers land where they belong instead of being typed in from memory — and anything the reply does not cover stays a stated assumption.'}
+              </p>
+            </div>
+            <span className={`badge ${replies.all_back ? 'go' : 'flag'}`}>{replies.back}/{replies.asked}</span>
+          </div>
+          {!replies.all_back && replies.asked ? (
+            <div className="actions">
+              <a className="button" href={`https://claude.ai/new?q=${encodeURIComponent(replyPrompt)}`} target="_blank" rel="noreferrer">Read the client’s reply in Claude</a>
+              <button type="button" className="secondary" onClick={() => navigator.clipboard?.writeText(replyPrompt)}>Copy the instruction</button>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
+      {/* 3 — the triage */}
       {saved ? (
         <section>
           <div className="section-head">
@@ -203,15 +229,33 @@ Write every question we need answered to price this properly — the Lead Consul
           <ol className="clarifications">
             {questions.map((q) => (
               <li key={q.id} className={`q-${q.status ?? 'proposed'}`}>
-                <h3>{q.question}</h3>
-                <p className="why"><strong>Why we ask.</strong> {q.why_we_ask}</p>
-                <div className="for-us">
-                  <p className="eyebrow">For us — not sent</p>
-                  {(q.covers ?? []).length ? (
-                    <p className="muted">Covers <WithQuestionLinks text={(q.covers ?? []).join(', ')} client={client} /></p>
-                  ) : null}
-                  <p className="muted">If we don’t ask it, the proposal assumes: {q.assume_if_unanswered}</p>
-                </div>
+                {/* The question is what you scan; the reasoning is what you open.
+                    Ten lines of "Why we ask" on every one of eleven made the page
+                    a wall you had to read to triage. Still to decide opens by
+                    itself — that is the one waiting on you. */}
+                <details open={(q.status ?? 'proposed') === 'proposed'}>
+                  <summary>
+                    <h3 className="q-text">{q.question}</h3>
+                    <span className="q-badges">
+                      {q.status === 'accepted' && replies.rows.find((r) => r.id === q.id)?.answered
+                        ? <span className="badge go">answered</span>
+                        : null}
+                      {q.shape_changing ? <span className="badge flag">changes the shape</span> : null}
+                    </span>
+                  </summary>
+                  <p className="why"><strong>Why we ask.</strong> {q.why_we_ask}</p>
+                  <div className="for-us">
+                    <p className="eyebrow">For us — not sent</p>
+                    {q.shape_changing ? (
+                      <p className="shape-note">Changes the shape of the solution, not a detail inside it — assuming it is assuming the size of the engagement.</p>
+                    ) : null}
+                    {(q.covers ?? []).length ? (
+                      <p className="muted">Covers <WithQuestionLinks text={(q.covers ?? []).join(', ')} client={client} /></p>
+                    ) : null}
+                    <p className="muted">If we don’t ask it, the {words.document.toLowerCase()} assumes: {q.assume_if_unanswered}</p>
+                  </div>
+                </details>
+                {/* Outside the fold: you can decide without opening it. */}
                 <Decide id={q.id} status={q.status ?? 'proposed'} busy={busy} />
               </li>
             ))}
@@ -222,11 +266,11 @@ Write every question we need answered to price this properly — the Lead Consul
       {/* 3 — what the proposal will stand on */}
       {assumptions.length ? (
         <section>
-          <h2>What the proposal will assume ({assumptions.length})</h2>
+          <h2>What the {words.document.toLowerCase()} will assume ({assumptions.length})</h2>
           <p className="muted">
             Everything nobody could tell us otherwise — what the engine had to assume to recommend anything, and
-            every question you decided not to ask. This is where a bid loses money, so it is written down rather
-            than carried in somebody’s head, and it goes into the proposal as a stated assumption.
+            every question you decided not to ask. This is where money is lost, so it is written down rather
+            than carried in somebody’s head, and it goes into the {words.document.toLowerCase()} as a stated assumption.
           </p>
           <ul className="assumptions">
             {assumptions.map((a, i) => (
@@ -254,3 +298,6 @@ Write every question we need answered to price this properly — the Lead Consul
     </main>
   );
 }
+
+// The record survives a page that does not.
+export const ErrorBoundary = EngagementErrorBoundary;

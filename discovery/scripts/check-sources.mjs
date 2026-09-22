@@ -44,6 +44,14 @@ export function citedSources() {
     for (const n of q.shopify?.native ?? []) if (n.docs) add(n.docs, q.id);
     for (const e of q.shopify?.extension_points ?? []) if (e.docs) add(e.docs, q.id);
   }
+  // The offering cites Shopify too, and for a while nothing checked it: the
+  // gates carry the thresholds a price is argued from, so a page that moved
+  // under one of them is worth more than a page that moved under a question.
+  const offering = JSON.parse(fs.readFileSync(path.join(ROOT, 'discovery/schema/offering.json'), 'utf8'));
+  for (const g of offering.scope_gates ?? []) for (const u of g.sources ?? []) add(u, `gate:${g.id}`);
+  for (const t of offering.l_triggers ?? []) for (const u of t.sources ?? []) add(u, `trigger:${t.id}`);
+  for (const r of offering.exit_rules ?? []) for (const u of r.sources ?? []) add(u, `rule:${r.id}`);
+
   const refDir = path.join(ROOT, 'discovery/docs/reference');
   for (const file of fs.readdirSync(refDir).filter((f) => f.endsWith('.md'))) {
     for (const m of fs.readFileSync(path.join(refDir, file), 'utf8').matchAll(/https:\/\/[^\s)\]—]+/g)) add(m[0], file.replace('.md', ''));

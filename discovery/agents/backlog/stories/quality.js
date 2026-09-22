@@ -68,7 +68,7 @@ export default [
     depends_on: ['LWC-THM-006', 'LWC-PAY-001', 'LWC-SHP-001'],
     spec_refs: ['/markets/list', '/payments/providers', '/shipping/rates'],
     applies: () => true,
-    agent_prompt: (doc) => `Write the test plan: journeys (browse, search, filter, product, cart, checkout, account, returns), markets ${listOr(markets(doc).map((m) => `${m.code}/${m.currency ?? '?'}`), 'primary')}, languages ${listOr(languages(doc), 'default')}, payment methods ${listOr(doc.payments?.providers, 'configured')}, devices and browsers. Automate smoke tests with Playwright against the development store (no real card data; use Shopify test mode). Execute manually where automation is not worth it, log defects with severity and retest. Sign-off requires zero open severity 1/2 defects.`,
+    agent_prompt: (doc) => `Write the test plan: journeys (browse, search, filter, product, cart, checkout, account, returns), markets ${listOr(markets(doc).map((m) => `${m.code}/${m.currency ?? '?'}`), 'primary')}, languages ${listOr(languages(doc), 'default')}, payment methods ${listOr(doc.payments?.providers, 'configured')}, devices and browsers. Automate smoke tests with Playwright against the build store (no real card data; use Shopify test mode). Execute manually where automation is not worth it, log defects with severity and retest. Sign-off requires zero open severity 1/2 defects.`,
   },
   {
     key: 'LWC-QA-004',
@@ -90,6 +90,7 @@ export default [
   },
   {
     key: 'LWC-QA-005',
+    scope: 'Run multi-market and B2B regression tests',
     epic: 'quality',
     title: (doc) => `Run ${[gate(doc, 'markets') ? 'multi-market' : '', isB2b(doc) ? 'B2B' : ''].filter(Boolean).join(' and ')} regression tests`,
     user_story: 'As the delivery team, I want the context-dependent behaviour tested explicitly, so that buyers never see the wrong prices, currency or catalogue.',
@@ -109,6 +110,7 @@ export default [
   },
   {
     key: 'LWC-QA-006',
+    scope: 'Test every integration end to end and set up monitoring',
     epic: 'quality',
     title: (doc) => `Test ${list(countedIntegrations(doc).map((i) => i.system))} end to end and set up monitoring`,
     user_story: 'As an operations manager, I want integrations proven with real-world scenarios and monitored after launch, so that data problems are caught before customers notice.',
@@ -124,6 +126,6 @@ export default [
     spec_refs: ['/integrations/*/system', '/integrations/*/frequency', '/integrations/*/owner'],
     gates: ['integration'],
     applies: (doc) => gate(doc, 'integration') && countedIntegrations(doc).length > 0,
-    agent_prompt: (doc) => `Write and run end-to-end scenario tests for ${list(countedIntegrations(doc).map((i) => `${i.system} (${i.frequency ?? 'frequency to confirm'})`))} on the development store with sandbox instances of each system. Include failure scenarios and a peak-volume run. Set up monitoring and alerting (connector dashboard or logging platform) with named owners, and write the integration runbook. Logs must not contain personal data or secrets.`,
+    agent_prompt: (doc) => `Write and run end-to-end scenario tests for ${list(countedIntegrations(doc).map((i) => `${i.system} (${i.frequency ?? 'frequency to confirm'})`))} on the build store with sandbox instances of each system. Include failure scenarios and a peak-volume run. Set up monitoring and alerting (connector dashboard or logging platform) with named owners, and write the integration runbook. Logs must not contain personal data or secrets.`,
   },
 ];

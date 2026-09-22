@@ -9,6 +9,17 @@
  */
 
 import { REFERENCE_CHAPTERS } from './reference-chapters.js';
+import { countedIntegrations } from '../agents/discovery/classify.js';
+
+/** Answers that mean the checkout is being changed rather than configured. @param {object} doc */
+function touchesCheckout(doc) {
+  const c = doc.checkout ?? {};
+  const real = (list) => (list ?? []).filter((x) => x !== 'none' && x !== 'not_sure');
+  return real(c.customisation).some((x) => x !== 'branding_in_editor')
+    || real(c.extensions).length > 0
+    || (c.custom_fields ?? []).length > 0
+    || real(c.order_restrictions).some((r) => r !== 'block_countries');
+}
 
 /** Topics an engagement needs, from what the answers say. @param {object} doc  Decided or finalised engagement */
 export function topicsFor(doc) {
@@ -22,6 +33,16 @@ export function topicsFor(doc) {
     ...(crossBorder ? ['markets', 'cross_border'] : []),
     ...(doc?.b2b?.enabled ? ['b2b'] : []),
     ...(doc?.migration?.source_platform && doc.migration.source_platform !== 'none' ? ['migration'] : []),
+    /* Which API, what a call costs and what the quarterly version cycle commits
+       the client to. It matters where there is a system to connect, and on a
+       headless build where the storefront is an API consumer too — not on a
+       theme engagement with nothing behind it. */
+    ...(countedIntegrations(doc ?? {}).length || doc?.design?.headless_required === true ? ['integrations'] : []),
+    /* Anything past the checkout's own settings is an app that has to be built,
+       deployed and owned — and on a non-Plus plan a Function cannot live in a
+       custom app at all. It is also where a Plus client's existing Scripts
+       surface, and those stop executing on 30 June 2026. */
+    ...(touchesCheckout(doc ?? {}) ? ['checkout'] : []),
   ]);
 }
 

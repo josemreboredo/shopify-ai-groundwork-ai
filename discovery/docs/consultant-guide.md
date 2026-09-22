@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 1.3.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 2.12.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 121 of 298 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 124 of 306 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -272,7 +272,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplaces/m
 **Why it matters.** The current plan and theme set the baseline: which features the client already has, whether the theme is a supported Online Store 2.0 theme or a customised legacy one, and how much of the existing build can be carried forward.
 
 **Q1.2.3** — Which Shopify plan will the new store run on (if already decided)? *(required · client)*
-Drives: rule 11.1 (STOP)
+Drives: rule 11.1 (STOP) · rule 11.25 (FLAG)
 
 **Why it matters.** The plan is the hardest constraint in a Shopify project — several features are plan-gated, not build-gated. Recommend it from the requirements, then check the client's assumption against it; a mismatch is a STOP, not a detail.
 
@@ -328,7 +328,7 @@ Sources: https://help.shopify.com/en/manual/your-account/users/users-plan-requir
 ### 1.3 Brand & positioning
 
 **Q1.3.1** — How would you describe the brand's positioning: value, mid-market, premium, luxury or enterprise? *(required · client)*
-Drives: L trigger Luxury / enterprise brand
+Drives: gate Storefront design
 
 **Why it matters.** Positioning sets the design depth and the solution approach. Luxury and enterprise positioning triggers the L offer: bespoke design, more front-end build and a longer review cycle, rather than a configured theme.
 
@@ -370,12 +370,12 @@ Drives: L trigger Luxury / enterprise brand
 ### 2.1 Catalogue size & variants
 
 **Q2.1.1** — How many active SKUs are in the catalogue (approximate)? *(required · client)*
-Drives: gate SKU complexity
+Drives: gate Catalogue size and complexity
 
 **Why it matters.** Catalogue size sets the build and migration effort and feeds the SKU complexity scope gate: 500 SKUs or more, combined with multiple variant options, custom attributes or bundles, adds the +SKU modifier to the offer.
 
 **Q2.1.2** — What is the maximum number of variant options on a product (e.g. size, colour, material = 3)? *(required · client)*
-Drives: rule 11.5 (FLAG) · gate SKU complexity
+Drives: rule 11.5 (FLAG) · gate Catalogue size and complexity
 
 **Why it matters.** Shopify models a product with at most three options (for example size, colour, material). A fourth option means the product model has to change, so this answer decides the data model before anything is priced or migrated.
 
@@ -427,7 +427,7 @@ Sources: https://help.shopify.com/en/manual/products/combined-listings-app
 ### 2.2 Product types
 
 **Q2.2.1** — Which product types exist in the catalogue? *(required · client)*
-Drives: gate SKU complexity · app signal Bundles beyond Shopify Bundles · app signal Pre-orders
+Drives: gate Catalogue size and complexity · app signal Bundles beyond Shopify Bundles · app signal Pre-orders · gate Subscriptions
 
 **Why it matters.** Product types decide what is native and what needs an app. Fixed bundles, multipacks, subscriptions and gift cards are native from Basic; mix-and-match bundles and pre-orders need apps. It also feeds the SKU complexity gate.
 
@@ -445,7 +445,7 @@ If native is not enough: [Product bundles](https://apps.shopify.com/categories/m
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q2.2.2** — Will subscriptions run on Shopify Subscriptions (Shopify's app) or a third-party subscription app? Name the app if known. *(recommended · client)*
-Drives: app signal Subscriptions beyond Shopify Subscriptions
+Drives: app signal Subscriptions beyond Shopify Subscriptions · gate Subscriptions
 Quick interview: ask if Q2.2.1 includes Subscription
 
 **Why it matters.** Shopify's own Subscriptions app is free and lets customers skip, pause and cancel from their account, but it does not work with bundles, B2B or draft orders and supports a limited set of gateways. Those exclusions decide whether a paid app enters the cost model.
@@ -485,7 +485,7 @@ Build with: Cart Transform Function
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q2.2.4** — Which subscription features are needed? *(recommended · client)*
-Drives: app signal Subscriptions beyond Shopify Subscriptions
+Drives: app signal Subscriptions beyond Shopify Subscriptions · gate Subscriptions
 Quick interview: ask if Q2.2.1 includes Subscription
 
 **Why it matters.** Feature by feature is how you test whether Shopify Subscriptions is enough. Anything it does not cover raises the subscriptions_app signal and adds an app licence, a data migration of existing subscribers and integration work to the backlog.
@@ -550,7 +550,7 @@ If native is not enough: [Custom products](https://apps.shopify.com/categories/s
 | Manual collections | Full merchandising control and exact ordering, with no dependency on data quality. | Every new product has to be placed by hand, which does not scale with a large catalogue. |
 
 **Q2.3.3** — Which product attributes go beyond Shopify's standard fields (technical specs, certifications, fit guides, ingredients)? *(required · client)*
-Drives: gate SKU complexity
+Drives: gate Catalogue size and complexity
 
 **Why it matters.** Anything beyond Shopify's standard product fields becomes metafields and metaobjects, and category attributes come from the Standard Product Taxonomy. This list drives the data model, the storefront filters, the Google and Meta feeds, and the SKU complexity gate.
 
@@ -569,6 +569,7 @@ Sources: https://shopify.dev/docs/apps/build/metaobjects/metaobject-limits · ht
 **Why it matters.** Where product data is mastered decides the integration work: a PIM or ERP as the source means Shopify is a target system and needs a sync for products, prices and stock, rather than merchants editing in the admin.
 
 **Q2.3.5** — Which attributes should shoppers filter by on collection and search pages? *(recommended · client)*
+Drives: gate Search and merchandising
 
 **Why it matters.** Filters are built from product data — options, metafields and taxonomy attributes — so the filter list is really a data requirement. It also decides whether native Search & Discovery is enough or a search app enters the cost model.
 
@@ -577,16 +578,15 @@ Sources: https://shopify.dev/docs/apps/build/metaobjects/metaobject-limits · ht
 | Native Search & Discovery | First-party, no licence fee, configured in the admin. | Capped at 25 filters and unavailable on collections over 5,000 products. |
 | Search and filter app | Handles large collections, more filters and merchandising rules on search results. | Monthly licence, a catalogue index to keep in sync, and theme integration work. |
 
-**Limits.** Shopify Search & Discovery supports up to 25 filters, and filters do not work on collections of more than 5,000 products.
+**Limits.** Search & Discovery shows at most 25 filters per store and 100 values per filter, and each source can be used once. Two ceilings decide whether it is enough at all: a collection over 5,000 products shows no filters, and search results over 100,000 show none either. Filters come from product options, metafields and the standard attributes taxonomy, so the filter set is a product-data decision before it is a storefront one.
 
 Sources: https://help.shopify.com/en/manual/online-store/search-and-discovery/filters
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Search & Discovery filters | Basic | Up to 25 filters; no filters on collections over 5,000 products | https://help.shopify.com/en/manual/online-store/search-and-discovery/filters |
-
-If native is not enough: App Store — [Algolia AI Search & Discovery](https://apps.shopify.com/algolia-search), [Boost AI Search & Filter](https://apps.shopify.com/product-filter-search), [Searchanise Search & Filter](https://apps.shopify.com/searchanise), [Klevu ‑ AI Search & Discovery](https://apps.shopify.com/klevu-smart-search)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+| Search & Discovery: storefront filters, up to 25 per store | Basic |  | https://help.shopify.com/en/manual/online-store/search-and-discovery/filters |
+| Predictive search, product boosts and synonyms | Basic |  | https://help.shopify.com/en/manual/online-store/search-and-discovery |
+*Verified 2026-09-21 against help.shopify.com (Spring '26).*
 
 ### 2.4 Pricing
 
@@ -680,7 +680,7 @@ Sources: https://help.shopify.com/en/manual/products/inventory/purchase-orders
 ### 3.1 Markets at launch
 
 **Q3.1.1** — Which countries do you sell to at launch? For each: the country, the currency customers pay in, the languages, the web address customers use there today, how prices are set, which of your companies invoices the customer, whether the range is the same as in your main country, and who runs that country day to day. *(required · client)*
-Drives: gate Markets · gate Multi-currency · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP) · rule 11.23 (FLAG)
+Drives: gate Markets · gate Multi-currency · gate Languages · rule 11.3 (STOP) · rule 11.4 (STOP) · rule 11.1 (STOP) · app signal Translation beyond Translate & Adapt · rule 11.20 (FLAG) · rule 11.21 (STOP) · rule 11.23 (FLAG)
 Who holds this fact: Country manager or commercial lead for the range and the team; the controller for the invoicing company.
 
 **What a usable answer looks like.** One row per launch country, with the invoicing company named even when it is the same everywhere, and the range marked same, subset or different. A vague answer sounds like "Europe" or "the usual countries". The follow-up that sharpens it: "which company name appears on the invoice a customer in that country receives?"
@@ -795,7 +795,7 @@ Quick interview: ask if Q3.1.1 has 3+ languages
 | A translation app (for example Weglot, Langify, Transcy) | More languages, translation memory, glossaries and review workflows; usually covers app and theme strings Translate & Adapt misses | A monthly cost that scales with words and languages; another dependency in the theme and in checkout-adjacent content; quality still needs review |
 | Human or agency translation loaded into Shopify | Brand-quality copy, transcreation for each market, full control of tone and legal wording | Slowest and most expensive; needs an owner for every content change; without an app the loading and re-loading is manual work forever |
 
-**Limits.** Translate & Adapt covers products, collections, blog posts, policies and pages, but does not auto-translate policies or URL handles. Checkout is pre-translated by Shopify. Published languages are capped at 20 below Plus and 30 on Plus. Six or more languages is a stop rule — translation and content operations move to a Discovery Phase.
+**Limits.** Translate & Adapt covers products, collections, blog posts, policies and pages, but does not auto-translate policies or URL handles. Checkout is pre-translated by Shopify. Published languages are capped at 20 below Plus and 30 on Plus. The fourth language and beyond is priced as scope — the first three are in every offer, because a Swiss engagement is DE/FR/IT. More than six is a stop rule: translation and content operations move to a Discovery Phase.
 
 Sources: https://help.shopify.com/en/manual/international/translate-adapt-app · https://help.shopify.com/en/manual/international/localization-and-translation · https://apps.shopify.com/categories/store-design-internationalization
 
@@ -1026,6 +1026,7 @@ Sources: https://help.shopify.com/en/manual/international/managed-markets/requir
 ### 3.5 Mainland China
 
 **Q3.5.1** — Do you want to sell to mainland China cross-border (from outside China) or onshore, behind the Great Firewall? *(required · client)*
+Drives: rule 11.20 (FLAG)
 Asked only if the launch markets include mainland China (CN)
 
 **Why it matters.** Shopify's servers are not located in mainland China, and selling onshore needs a PRC entity, an ICP filing or licence and local hosting. This answer routes China to a separate discovery — it is outside this engagement's scope.
@@ -1082,6 +1083,7 @@ Asked only if the launch markets include mainland China (CN)
 Sources: https://help.shopify.com/en/manual/intro-to-shopify/initial-setup/sell-in-china/china-getting-started-to-do
 
 **Q3.5.6** — What is Shopify's role for mainland China? *(optional · consultant)*
+Drives: rule 11.20 (FLAG)
 Asked only if the launch markets include mainland China (CN)
 
 **Why it matters.** Even where China sells through local channels, Shopify can stay the global master for products, inventory and orders. This answer defines the integration surface between this engagement and the separate China workstream.
@@ -1323,7 +1325,7 @@ Build with: Payment Customization Function (public apps: all plans; custom apps:
 ### 4.2 Checkout
 
 **Q4.2.1** — Which checkout changes are needed? *(required · client)*
-Drives: rule 11.1 (STOP) · rule 11.6 (STOP)
+Drives: rule 11.1 (STOP) · rule 11.6 (STOP) · gate Checkout extensibility
 
 **Why it matters.** This is the plan question in disguise. Thank-you and order-status extensions run on every plan; anything touching the information, shipping or payment steps, or restyling through the Checkout Branding API, is Plus. A fully custom checkout UI is not possible at all.
 
@@ -1341,6 +1343,7 @@ Build with: Checkout UI extensions · Shopify Functions (public apps: all plans;
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q4.2.2** — Which checkout extensions are needed? *(optional · consultant)*
+Drives: gate Checkout extensibility
 
 **Why it matters.** Names the actual extension points so the work is estimable: UI extensions for what the buyer sees, and Functions for delivery options, payment rules, cart and checkout validation and pickup points. Each Function is an app to build, review and maintain.
 
@@ -1357,6 +1360,7 @@ Build with: Delivery Customization Function · Payment Customization Function ·
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q4.2.3** — Which custom checkout fields are needed (company, VAT number, PO number, delivery instructions)? *(optional · client)*
+Drives: gate Checkout extensibility
 
 **Why it matters.** Extra fields - company, VAT number, PO number, delivery instructions - are checkout UI extensions, so where they sit decides the plan: on the information, shipping or payment steps they are Plus, on the thank-you page they are not.
 
@@ -1401,6 +1405,7 @@ Sources: https://help.shopify.com/en/manual/payments/fraud-prevention/fraud-cont
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q4.3.2** — Which order restrictions are needed? *(optional · client)*
+Drives: gate Checkout extensibility
 
 **Why it matters.** Splits the answer into free and paid. Blocking whole countries is native through markets and shipping zones; anything conditional - order value, quantity, product mix, customer type - is a Cart and Checkout Validation Function, which means an app.
 
@@ -1579,6 +1584,15 @@ Sources: https://help.shopify.com/en/manual/compliance/legal/shipping-dangerous-
 |---|---|---|---|
 | Shipping dangerous goods (merchant responsibility; restricted with Shopify Shipping labels) | Basic | USPS and FedEx labels bought in Shopify don't support hazardous materials | https://help.shopify.com/en/manual/compliance/legal/shipping-dangerous-goods |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q5.1.15** — Does a single order ever need to go to more than one address — gifts to several recipients, or one wholesale order split across branches? *(recommended · client)*
+Drives: rule 11.27 (FLAG)
+
+**Why it matters.** Shopify cannot deliver one order to more than one address. Asked late, it becomes a change request in UAT; asked now, the answer is one order per address, an app, or dropping it — and all three are cheaper than discovering it.
+
+**Limits.** Split shipping divides an order into several shipments when items cannot travel together — a preorder line, a subscription, stock in different locations, different shipping profiles — and the customer picks a shipping option per shipment. Every shipment still goes to one address, the customer cannot choose how the order splits, and split shipping does not apply to accelerated checkouts or to draft orders that already carry a shipping line.
+
+Sources: https://help.shopify.com/en/manual/checkout-settings/split-shipping
 
 ### 5.2 Returns & exchanges
 
@@ -2230,7 +2244,7 @@ If native is not enough: [Loyalty and rewards](https://apps.shopify.com/categori
 **Why it matters.** The regimes set the compliance baseline for everything else in this section: consent before tracking, opt-out pages, how data-subject requests are handled, and what legal must sign off. Ask it before the consent and data questions, not after.
 
 **Q6.4.2** — Cookie consent: Shopify's cookie banner or a consent management platform? Name the tool if known. *(recommended · client)*
-Drives: app signal Consent management platform
+Drives: app signal Consent management platform · gate Analytics and consent
 Quick interview: ask if Q6.4.1 includes GDPR (EU), UK GDPR, Swiss nFADP or CCPA (US)
 
 **Why it matters.** Whichever banner is used, the consent decision must reach Shopify through the Customer Privacy API — otherwise Shopify's own tracking and the installed apps never learn it. Shopify's native cookie banner does that already; a third-party platform has to be integrated.
@@ -2278,8 +2292,50 @@ Sources: https://help.shopify.com/en/manual/privacy-and-security/privacy/process
 **Why it matters.** US state privacy laws can require a "Do not sell or share my personal information" page. Shopify's native opt-out page honours Global Privacy Control signals, so this is usually configuration rather than build — but it must be asked, decided and evidenced.
 
 **Q6.4.7** — Where do you collect marketing consent? *(optional · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** Every point where consent is captured — newsletter form, checkout, account creation, pop-up, in store — is a point where the record must be created and carried. The list shows which integrations must write consent back, and where an audit would find gaps.
+
+### 6.5 Customer service
+
+**Q6.5.1** — Where will customer questions be answered after launch: Shopify Inbox, a helpdesk app, a helpdesk outside Shopify, email only, or nowhere yet? *(required · client)*
+
+**Why it matters.** Where a question lands decides whether anything has to be integrated at all. A helpdesk outside Shopify needs order and customer context sent to it, which is an integration with a cost; Shopify Inbox needs none.
+
+**Limits.** A helpdesk outside Shopify counts as an integration only when the connector is custom-built — an App Store app with a native connector is an app.
+
+Sources: https://help.shopify.com/en/manual/shopify-inbox
+
+**Q6.5.2** — Which helpdesk, if one is named? *(recommended · client)*
+
+**Why it matters.** Named early, it can be checked against the App Store registry for a native connector before anyone assumes a custom build.
+
+Sources: https://apps.shopify.com/categories/store-management-support
+
+**Q6.5.3** — Where should the storefront contact form deliver: an email inbox, the helpdesk, a CRM, or is there no form? *(required · client)*
+
+**Why it matters.** The theme contact form sends email and nothing else. If it has to open a case or create a CRM record, that is build work and it is routinely assumed rather than scoped.
+
+**Q6.5.4** — Does your team create orders for customers — by phone, in a showroom, or for wholesale buyers? *(required · client)*
+
+**Why it matters.** Ordering on behalf of a customer is a real workflow with permissions, payment and tax consequences, and it is invisible on the storefront. Unasked, it arrives after launch as a change request.
+
+**Limits.** Draft orders are created in the admin or through the API; the customer pays by invoice link. Staff need the right permission, and the order still has to pick up the correct market prices and tax.
+
+Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/create-orders
+
+**Q6.5.5** — Do customers book a slot with you — an in-store appointment, a virtual consultation, or both? *(recommended · client)*
+Drives: app signal Appointments and booking
+Quick interview: ask if Q5.6.1 is 1 or more, or Q2.2.1 includes Virtual or Made to order, or Q0.3.1 mentions appointment, booking, consultation, fitting, showroom or reservation
+
+**Why it matters.** A boutique appointment or a fitting is a real part of how some brands sell, and Shopify has nothing native for it — so it is an app with a licence, a calendar owner and a place in the staff’s day, decided on the ladder like any other app rather than assumed into the theme.
+
+**Limits.** No native Shopify booking feature: appointments and services are an App Store category. Multi-location scheduling, staff portals, deposits and reminders differ by app, so the shortlist is made against what this client actually needs.
+
+Sources: https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking
+
+If native is not enough: [Event booking](https://apps.shopify.com/categories/selling-products-digital-goods-and-services-event-booking) — [Appointment Booking Cowlendar](https://apps.shopify.com/cowlendar), [Easy Appointment Booking App](https://apps.shopify.com/appointments-and-bookings), [Appointment Booking App Apntly](https://apps.shopify.com/appointly)
+*Verified 2026-09-21 against apps.shopify.com (Spring '26).*
 
 ---
 
@@ -2288,10 +2344,12 @@ Sources: https://help.shopify.com/en/manual/privacy-and-security/privacy/process
 ### 7.1 SEO
 
 **Q7.1.1** — Is organic search a significant traffic channel? *(recommended · client)*
+Drives: gate SEO continuity
 
 **Why it matters.** If organic traffic carries the business, URL structure, redirects, metadata and page speed become build tasks with a budget rather than good intentions. If search is a minor channel, that effort is better spent elsewhere.
 
 **Q7.1.2** — Are custom URL structures needed? *(optional · client)*
+Drives: gate SEO continuity
 
 **Why it matters.** Tell us early if the brand depends on a particular URL pattern. What a platform can and cannot change has to be checked against the documentation before the content plan assumes it, and it sizes the redirect work on migration.
 
@@ -2315,11 +2373,12 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 ### 7.2 Analytics & tracking
 
 **Q7.2.1** — Which analytics platforms do you use (GA4, Adobe, other)? *(recommended · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** Every analytics platform on Shopify is wired through the same event layer, but each needs its own setup, consent handling and test pass. The list sizes that work and tells us which numbers the client will judge the launch by.
 
 **Q7.2.2** — Is server-side tracking needed? *(recommended · client)*
-Drives: app signal Server-side tracking beyond Shopify
+Drives: app signal Server-side tracking beyond Shopify · gate Analytics and consent
 Quick interview: ask if Q0.2.6 is 500 or more, or Q0.1.1 mentions conversion, tracking, attribution, advert, ads, roas or acquisition
 
 **Why it matters.** Shopify's customer events cover storefront and checkout with consent, and the Facebook & Instagram and Google & YouTube apps already send events server-side. Anything beyond that needs a tracking app or build work, and sharing customer data with ad platforms triggers the PII gate.
@@ -2341,14 +2400,17 @@ If native is not enough: App Store — [Elevar Conversion Tracking](https://apps
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q7.2.3** — Which advertising pixels are needed (Meta, TikTok, Pinterest, Google Ads)? *(recommended · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** Each advertising pixel is a separate install, a separate consent case and a separate test. The list decides how much tracking work the build carries and which conversion numbers marketing will reconcile after launch.
 
 **Q7.2.4** — Is a tag manager already configured? *(recommended · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** This matters more on Shopify than elsewhere: a tag manager runs as a custom pixel inside Shopify's sandbox, and scripts in checkout are no longer possible. An existing container has to be rebuilt to that model, not pasted across.
 
 **Q7.2.5** — Which custom events must be tracked beyond standard ecommerce events? *(recommended · client)*
+Drives: gate Analytics and consent
 
 **Why it matters.** Standard storefront and checkout events come from Shopify's customer events. Anything else — configurator steps, wishlist adds, quiz completions, store locator use — is code someone writes and tests in a pixel. Listing them now puts a price on them.
 
@@ -2760,8 +2822,8 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 
 ### 8.1 Connected systems
 
-**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status. *(required · client)*
-Drives: gate Integration · rule 11.7 (STOP) · rule 11.12 (FLAG)
+**Q8.1.1** — List every system that exchanges product, inventory, order, customer or financial data with the store. For each: system, category, direction, data objects, frequency, connector (native app / iPaaS / custom / none), owner, status, and whether it has a test environment we can connect to before go-live. *(required · client)*
+Drives: gate Integration · rule 11.7 (STOP) · rule 11.12 (FLAG) · rule 11.24 (FLAG)
 
 **Why it matters.** This table decides the integration architecture - native connector, iPaaS or custom app - and the API surface each flow needs. It is also the count behind the STOP: more than three integrations at launch is a Discovery Phase, not a build sprint.
 
@@ -2805,7 +2867,7 @@ Sources: https://shopify.dev/docs/apps/build/apis/graphql-admin/bulk-operations/
 Sources: https://help.shopify.com/en/manual/migrating-to-shopify · https://help.shopify.com/en/manual/customers/import-export-customers · https://help.shopify.com/en/manual/customers/customer-accounts/new-customer-accounts/customer-experience · https://help.shopify.com/en/manual/migrating-to-shopify/migrating-from-woocommerce
 
 **Q8.2.3** — Approximate volumes: products, customers, orders, URL redirects. *(required · client)*
-Drives: rule 11.14 (FLAG)
+Drives: rule 11.14 (FLAG) · gate SEO continuity
 
 **Why it matters.** Volumes decide the route: CSV, a migration app, or scripted bulk imports. Redirect count matters most, because redirects are what carry the client's search traffic across - and Shopify caps them at 100,000, or 20,000,000 on Plus.
 
@@ -2828,7 +2890,7 @@ Drives: rule 11.14 (FLAG)
 Sources: https://shopify.dev/docs/api/admin-graphql/latest/mutations/ordercreate · https://help.shopify.com/en/manual/migrating-to-shopify/csv-migration · https://help.shopify.com/en/partners/manage-clients-stores/migrating-clients
 
 **Q8.2.5** — How much SEO equity (rankings, backlinks) must be preserved? *(required · consultant)*
-Drives: rule 11.14 (FLAG)
+Drives: rule 11.14 (FLAG) · gate SEO continuity
 
 **Why it matters.** Sets whether migration rides along with the build sprint or needs its own track. Shopify generates sitemap.xml automatically, but rankings survive on the redirects you author - and reindexing takes 48 to 72 hours, sometimes a few weeks.
 
@@ -2837,7 +2899,7 @@ Drives: rule 11.14 (FLAG)
 Sources: https://help.shopify.com/en/manual/migrating-to-shopify/considerations · https://help.shopify.com/en/manual/intro-to-shopify/initial-setup/new-to-shopify-checklists/migrating-to-shopify-checklist · https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect
 
 **Q8.2.6** — Must active subscriptions move to the new store without customers re-entering cards? *(required · client)*
-Drives: rule 11.14 (FLAG)
+Drives: rule 11.14 (FLAG) · gate Subscriptions
 
 **Why it matters.** Active subscriptions are the hardest thing to move: the contract, the stored payment credential and the billing schedule all have to survive together. If they cannot, every subscriber re-enters a card, which is a churn event rather than a task.
 
@@ -2850,27 +2912,28 @@ Drives: rule 11.14 (FLAG)
 ### 9.1 Design input
 
 **Q9.1.1** — Is there a Figma file or design mockup for the new store? *(required · client)*
-Drives: L trigger Full Figma design system
+Drives: gate Storefront design
 
 **Why it matters.** Decides whether design is an input or a work package. No Figma means design effort sits inside the engagement; a complete Figma design system covering every template is an L trigger, because implementing someone else's system costs more, not less.
 
 Sources: https://shopify.dev/docs/storefronts/themes/architecture
 
 **Q9.1.2** — How complete is it — brand only, key screens, or every template? *(required · client)*
-Drives: L trigger Full Figma design system
+Drives: gate Storefront design
 
 **Why it matters.** Completeness is the estimate. Brand only means the theme's own sections carry the design. Key screens mean you interpolate the rest. Every template means matching each one in Liquid, which is where a theme build turns into a custom build.
 
 Sources: https://shopify.dev/docs/storefronts/themes/architecture
 
 **Q9.1.3** — Does the Figma file contain a full design system (tokens and components)? *(required · client)*
-Drives: L trigger Full Figma design system
+Drives: gate Storefront design
 
 **Why it matters.** Tokens and components map onto theme settings and theme blocks, which are defined at theme level and reused across sections. A file of flat screens does not, and each screen then becomes bespoke Liquid - the difference between configuring a theme and writing one.
 
 Sources: https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-blocks/quick-start?framework=liquid
 
 **Q9.1.4** — Is the design mapped to Shopify sections and blocks? *(optional · consultant)*
+Drives: gate Storefront design
 
 **Why it matters.** A design already mapped to sections and blocks is buildable as a theme. One that is not usually hides layouts the merchant could never rebuild in the theme editor. Ask early - remapping after design sign-off is rework on both sides.
 
@@ -2879,6 +2942,7 @@ Sources: https://shopify.dev/docs/storefronts/themes/architecture/blocks/theme-b
 Sources: https://help.shopify.com/en/manual/online-store/themes/theme-structure/extend
 
 **Q9.1.5** — Is a fully custom design required, rather than a theme with brand customisation? *(recommended · client)*
+Drives: gate Storefront design
 
 **Why it matters.** Separates brand customisation of a current-generation theme from a bespoke build. Theme architecture constrains layout; going outside it means custom sections. If the design cannot be expressed in theme architecture at all, that is a headless argument, not a styling one.
 
@@ -2890,7 +2954,7 @@ Sources: https://help.shopify.com/en/manual/online-store/themes/theme-structure/
 ### 9.2 Storefront
 
 **Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required · client)*
-Drives: L trigger Headless requirement
+Drives: L trigger Headless storefront · rule 11.25 (FLAG)
 
 **Why it matters.** The largest architectural decision in the questionnaire. The commerce engine is identical either way; what changes is who owns the presentation layer. Headless removes the theme editor, so marketing can no longer restructure pages without a release.
 
@@ -2944,6 +3008,7 @@ If native is not enough: [Wishlists](https://apps.shopify.com/categories/marketi
 Sources: https://help.shopify.com/en/manual/online-store/web-performance/web-performance-reports
 
 **Q9.2.6** — Why headless? *(required · client)*
+Drives: rule 11.26 (STOP)
 
 **Why it matters.** Tests the reason against the architecture. A front end serving more than the store, a design that theme architecture cannot express, or an existing CMS as source of truth are real reasons. Speed and 'modern stack' usually are not.
 
@@ -2970,6 +3035,7 @@ Sources: https://shopify.dev/docs/storefronts/headless/hydrogen/environments · 
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q9.2.8** — Where is editorial content managed for the headless storefront? *(recommended · client)*
+Drives: rule 11.26 (STOP) · L trigger Headless storefront
 
 **Why it matters.** Headless removes the theme editor, so somebody has to own content editing: whatever you build inside the storefront, or a separate CMS the client licenses and you integrate. Decide it before the build, not after launch when marketing asks.
 
@@ -2981,6 +3047,25 @@ Sources: https://shopify.dev/docs/storefronts/headless/hydrogen/environments · 
 **Limits.** A CMS is a licence, an integration and a second publishing workflow, and it adds a preview and cache story on the storefront side.
 
 Sources: https://shopify.dev/docs/storefronts/headless
+
+**Q9.2.11** — Which front end: Shopify Hydrogen, or another framework? *(recommended · consultant)*
+Drives: rule 11.26 (STOP) · L trigger Headless storefront
+
+**Why it matters.** This is the line between a Shopify engagement and a composable one. Hydrogen is Shopify’s own framework on the Storefront API, and with content in metaobjects it is still a Shopify build. Another framework, a native app, or several front ends on one backend is Merkle Arc, and these offers do not price it.
+
+| Option | Pros | Cons |
+|---|---|---|
+| Shopify Hydrogen | Stays inside the offers, and inside Shopify: one system, the Storefront API, Oxygen hosting included, and content in metaobjects beside the products it sells. | React and a deployment pipeline to own; the theme editor is gone, so editors get whatever editing experience is built for them. |
+| Another framework, a native app, or several front ends | Whatever the brand already runs on, and one backend behind several experiences. | Not a Shopify build: it goes to Merkle Arc, which scopes and prices it separately. Nothing in these offers estimates it. |
+
+**Limits.** Hydrogen needs the Storefront API on any plan, and Oxygen is included from Basic upward. Below Plus only one Oxygen environment can be public, so parallel stakeholder review links need a store login.
+
+Sources: https://shopify.dev/docs/storefronts/headless/hydrogen · https://shopify.dev/docs/storefronts/headless/hydrogen/environments
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Hydrogen on the Storefront API | Basic |  | https://shopify.dev/docs/storefronts/headless/hydrogen |
+*Verified 2026-09-20 against shopify.dev (Spring '26).*
 
 **Q9.2.9** — Headless platform features required? *(recommended · consultant)*
 
@@ -3011,6 +3096,25 @@ Sources: https://help.shopify.com/en/manual/markets/rollouts
 
 If native is not enough: App Store — [Shoplift ‑ CRO & A/B Testing](https://apps.shopify.com/shoplift)
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q9.2.12** — Do you want a presence inside Shopify’s Shop app — a Shop Mini? *(recommended · client)*
+Drives: rule 11.28 (FLAG)
+
+**Why it matters.** Wanting to be on a phone does not mean building an app. A Shop Mini reaches Shop’s buyers without a storefront of your own and without leaving Shopify; a standalone native app is the Storefront API plus Checkout Kit, which is a headless build and a different engagement.
+
+| Option | Pros | Cons |
+|---|---|---|
+| Shop Mini | Reaches Shop’s buyers, stays inside Shopify, and the commerce engine is the store you already have. | Lives only inside Shop — no icon on a home screen and no presence outside that app. |
+| Your own native app | Your brand on the home screen, your notifications, your rules. | Storefront API plus Checkout Kit: a headless build, which leaves these offers and is scoped by Merkle Arc. |
+
+**Limits.** A Mini "must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop." It is built with the Shop Minis React SDK, so it is React Native work rather than theme work.
+
+Sources: https://shopify.dev/docs/api/shop-minis · https://shopify.dev/docs/storefronts/headless/mobile-apps
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shop Minis React SDK | Basic |  | https://shopify.dev/docs/api/shop-minis |
+*Verified 2026-09-21 against shopify.dev (Spring '26).*
 
 ### 9.3 Accessibility
 
@@ -3114,6 +3218,7 @@ Drives: rule 11.16 (FLAG)
 **Why it matters.** This decides how much handover you build and price. Training on products, orders, discounts and reports is real delivery work — sessions, materials, recordings. Anything not listed here is outside scope and returns later as support tickets.
 
 **Q10.3.2** — Are written SOPs required? *(optional · client)*
+Drives: gate Post-launch support
 
 **Why it matters.** Written standard operating procedures are a deliverable in their own right: someone drafts, reviews and maintains them. Asking now stops them appearing as an unplanned request in the final sprint.
 
@@ -3123,6 +3228,7 @@ Drives: rule 11.16 (FLAG)
 | No written SOPs | Lighter handover; live training and recordings may be enough for a small team. | Knowledge stays with individuals, and every change becomes a question for the retainer. |
 
 **Q10.3.3** — What post-launch support model is expected? *(recommended · client)*
+Drives: gate Post-launch support
 
 **Why it matters.** This shapes everything after go-live: who fixes a broken checkout at the weekend, who loads next season's collection. The expected model drives the retainer conversation and decides what team stays in place after launch.
 
@@ -3192,7 +3298,7 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 
 **Why it matters.** The named consultant owns the engagement record. Every artefact the tool produces — engagement file, deck, backlog, closing document — carries this name, so each answer and judgement can be traced back to a person.
 
-**Q10.5.2** — Has the client agreed that answers may be processed by the AI discovery engine (no customer personal data included)? *(required · consultant)*
+**Q10.5.2** — Has the client agreed that their answers may be processed by AI (no customer personal data included)? *(required · consultant)*
 
 **Why it matters.** Under ADR 0007 the engine refuses to run without recorded consent. Nothing is processed, stored or generated until the client has agreed to AI processing. Record it explicitly, and keep customer personal data out of the answers regardless.
 
@@ -3206,14 +3312,14 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 
 **Why it matters.** Components let the generated tickets land inside the client's existing Jira structure rather than as a flat list. It is the difference between a backlog the delivery team can use on day one and one somebody has to sort first.
 
-**Q10.5.5** — Discovery hit a STOP. How will Merkle proceed: Larger Engagement or no bid? *(recommended · consultant · only on STOP)*
+**Q10.5.5** — The requirements go beyond the S, M and L offers. How will Merkle proceed: a Larger Engagement, or Merkle Arc? *(recommended · consultant · only on STOP)*
 
-**Why it matters.** After a STOP the engagement cannot continue as a standard offer, and the tool must know which output to produce. Larger Engagement drafts the approach, brief and client deck with no Jira tickets; no bid produces the STOP report only.
+**Why it matters.** After a STOP the engagement cannot continue as a standard offer, and the tool must know which output to produce. Larger Engagement drafts the approach, brief and client deck with no Jira tickets. Merkle Arc hands the storefront build to the Arc practice with the discovery behind it; this engine prices Shopify builds and does not price Arc.
 
 | Option | Pros | Cons |
 |---|---|---|
 | Larger Engagement | Keeps the client; the blocker gets a dedicated Discovery Phase with the right people and budget. | Longer sales cycle, no Jira tickets and no delivery start now; needs a Merkle Enterprise Engagement to be viable. |
-| No bid | Honest and quick, with no effort sunk into an engagement that cannot be delivered as scoped. | The opportunity ends here and only the STOP report is produced. |
+| Merkle Arc | Keeps the work inside Merkle, where a tokenised design system and a component library already exist. The commerce engine can still be Shopify. | A different practice, a different rate card and a different timeline. The S, M and L bands do not apply and nothing here estimates it. |
 
 ---
 
@@ -3223,24 +3329,29 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 |---|---|---|---|---|
 | 11.1 | STOP | A required Shopify feature needs a higher plan than the target plan, per Shopify's plan documentation (Plus: company-specific or more than 3 B2B catalogs, B2B deposits and partial payments, checkout step extensions / Checkout Branding API, expansion stores, several legal entities, combined listings, Multipass sign-in, more than 10 locations, more than 20 languages, several product discounts on one item; Advanced: B2B contextual experience, per-market customisation, carrier-calculated rates, multi-currency payouts, more than 5 staff users; Grow: A/B testing with Rollouts). Shopify B2B itself runs on every plan from Basic. A fully custom checkout UI is handled by 11.6, not here | Confirm the plan the requirements need, or remove the feature from scope | Q1.1.6, Q1.2.3, Q1.2.6, Q2.1.4, Q3.1.1, Q3.1.7, Q4.1.4, Q4.2.1, Q5.1.3, Q5.1.6, Q6.1.4, Q6.2.3, Q6.2.5, Q6.2.10, Q6.2.11, Q7.5.2, Q9.2.10 |
 | 11.2 | FLAG | B2B requires request-for-quote or prices negotiated per buyer (Shopify has no built-in RFQ) | B2B architecture review: Shopify B2B draft-order review or a quote app (App Store category "Pricing quotes"), before build | Q6.2.6 |
-| 11.3 | STOP | More than 5 Shopify Markets at launch | Larger Engagement: market roll-out waves and Markets architecture in the Discovery Phase | Q3.1.1 |
+| 11.3 | STOP | Scope has outgrown the gate work this offer's band already carries, AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: the offer quotes its own overflow at the rate of the work that caused it. What cannot be quoted is scope this large that cannot yet be committed to | An Enterprise Engagement opening with a dedicated Discovery Phase, to close the open risks before the scope is committed | Q3.1.1 |
 | 11.4 | STOP | More than 6 distinct languages across all markets | Larger Engagement: translation and content operations in the Discovery Phase | Q3.1.1 |
 | 11.5 | FLAG | More than 3 variant options per product (Shopify limit), or more than 2,048 variants on one product | Product model review: combined listings, a product options app for non-stock options, or splitting products | Q2.1.2, Q2.1.3 |
-| 11.6 | STOP | Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility) | Composable platform | Q4.2.1 |
+| 11.6 | STOP | Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility) | Merkle Arc — composable commerce, scoped separately | Q4.2.1 |
 | 11.7 | STOP | More than 3 integrations at launch (counted per integration_definition) | Larger Engagement: integration architecture in the Discovery Phase | Q8.1.1 |
 | 11.8 | STOP | Regulated industry (pharma, alcohol, firearms, age-restricted, financial products, medical devices) | Legal / compliance review | Q1.1.3, Q10.4.1 |
 | 11.9 | STOP | PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data) | Security review (threat model mandatory) | Q4.1.5 |
 | 11.10 | FLAG | GDPR / CCPA data export or deletion workflow required | Legal sign-off on data-subject request handling | Q6.4.5 |
 | 11.11 | WARN | Grow retainer not signed on an M or L engagement | Grow retainer to be signed before delivery starts; otherwise commercial adjustment | Q10.3.4 |
-| 11.12 | FLAG | ERP or PIM with no existing Shopify connector and no iPaaS | Separate integration scoping track (T3/T4) | Q8.1.1 |
-| 11.13 | FLAG | fulfilment_locations > 2 AND routing beyond Shopify's native order routing rules (a custom routing Function or the ERP / OMS decides) | Multi-location inventory scoping (T3) | Q5.1.3, Q5.1.4 |
+| 11.12 | FLAG | ERP or PIM with no existing Shopify connector and no iPaaS | Integration scoping as its own track, before the build is quoted | Q8.1.1 |
+| 11.13 | FLAG | fulfilment_locations > 2 AND routing beyond Shopify's native order routing rules (a custom routing Function or the ERP / OMS decides) | Multi-location inventory scoped separately | Q5.1.3, Q5.1.4 |
 | 11.14 | FLAG | Migration with significant SEO equity or complex historical data | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5, Q8.2.6 |
 | 11.15 | FLAG | Weeks from kick-off (delivery.kickoff_date, else meta.created_at) to target go-live are fewer than the offer's minimum duration_weeks | Re-scope to an MVP-first delivery before any sprint begins | Q10.1.1 |
 | 11.16 | FLAG | No single decision-maker, or budget approval authority is unclear | Named client decision-maker and budget owner confirmed before the statement of work is signed | Q10.2.2, Q10.2.3 |
 | 11.17 | FLAG | Sensitive personal data is collected (health, age, biometric or financial data; special-category data under GDPR art. 9) | Data protection impact assessment and legal sign-off on data minimisation, storage location and consent before build | Q6.4.4 |
 | 11.18 | FLAG | Existing Shopify store uses retired or deprecated features (Shopify Scripts, checkout.liquid / additional scripts, online store script tags, legacy customer accounts, Stocky, Geolocation app) | Deprecation migration scoped as its own workstream (e.g. Scripts to Functions, legacy to customer accounts) | Q1.2.5 |
 | 11.19 | FLAG | B2B requirement that Shopify B2B does not support (subscriptions, local delivery or pickup points, express checkouts, more than 500 line items, gift cards) | B2B architecture review: app or process change before build | Q6.2.12 |
-| 11.20 | FLAG | Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope | Separate China discovery (questions § 3.5, discovery/docs/china-mainland.md); mainland China excluded from this engagement's scope | Q3.1.1 |
-| 11.21 | STOP | Mainland China is the only launch market — not part of the Merkle offering | China discovery (discovery/docs/china-mainland.md) | Q3.1.1 |
+| 11.20 | FLAG | Mainland China (CN) is a launch market. Selling onshore behind the Great Firewall needs a PRC entity, an ICP filing or licence and onshore hosting, and Shopify has no infrastructure in mainland China; cross-border routes (marketplaces, mini-programs, a Hong Kong store) have their own customs and product rules. Not part of the Merkle offering: CN is excluded from this engagement's markets, languages, offer, plan and build scope | A separate China discovery — see the China note | Q3.1.1, Q3.5.1, Q3.5.6 |
+| 11.21 | STOP | Mainland China is the only launch market — not part of the Merkle offering | A separate China discovery — see the China note | Q3.1.1 |
 | 11.22 | WARN | More than 5 retail stores in scope | Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team | Q5.6.1 |
 | 11.23 | FLAG | More than one market AND the topology inputs are materially unresolved: more than one legal entity recorded with no per-market entity mapping, or the assortment relationship per market unknown, or the invoicing and tax-registration footprint unknown. Fires on missing facts, not on a missing decision — the engine still recommends a topology. | Market topology and legal-entity mapping workshop before the solution architecture is baselined. | Q1.1.6, Q3.1.1 |
+| 11.24 | FLAG | A system Merkle has to build a connector for has no non-production environment to integrate against (test_environment none). Shopify itself needs no instance ladder — a theme stages as an unpublished theme in the production store and checkout is managed — so the only environment risk on a Shopify build sits on the client side. Without a sandbox, integration testing serialises against the client’s live system and the schedule stretches | A named owner on the client side and a decision before the build starts: provide a sandbox, or agree the testing window against production | Q8.1.1 |
+| 11.25 | FLAG | A headless storefront on a plan below Shopify Plus. Oxygen storefronts always have a production and a preview environment and custom ones besides, but only one environment can be public: the limit is 1 on Starter, Basic, Grow and Advanced against 25 on Plus. Every other deployment needs a login to the store, which constrains how many review links can run in parallel with client stakeholders | A named owner before the build starts: agree who reviews where, or price the Plus plan | Q1.2.3, Q9.2.1 |
+| 11.26 | STOP | The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track | Merkle Arc — not quoted or estimated here; the Arc practice scopes it | Q9.2.6, Q9.2.8, Q9.2.11 |
+| 11.27 | FLAG | One order delivered to more than one address — gifting to several recipients, or a wholesale buyer splitting a single order across branches. Shopify has no way to do this: split shipping divides an order into several shipments when items cannot travel together, but every shipment goes to the same address, and it does not apply to accelerated checkouts or to draft orders that already carry a shipping line | Decide before the build: one order per address, an app that does it, or drop the requirement — and say which in the proposal | Q5.1.15 |
+| 11.28 | FLAG | A presence inside Shopify's Shop app — a Shop Mini. It stays inside Shopify and sells the same store, but it is not theme work: Minis are "immersive, full-screen buyer experiences within the Shop app" built with the Shop Minis React SDK, and a Mini "must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop". Publishing one also needs Manage apps permission in the Partner organisation. None of these offers estimates React Native work | Not included in S, M or L: scope and price the Mini separately, and agree whether it runs in this engagement or after it | Q9.2.12 |
