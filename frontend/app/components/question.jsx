@@ -497,9 +497,9 @@ export function EngineReadout({ preview }) {
       )}
 
       <h3>What grows the build</h3>
-      <ul>{Object.entries(preview.scope_gates).map(([id, state]) => <li key={id}>{words(id)}: {state}</li>)}</ul>
+      <ul>{Object.entries(preview.scope_gates).map(([id, g]) => <li key={id}>{words(id)}: {g.state}{g.evidence ? <span className="muted"> — {g.evidence}</span> : null}</li>)}</ul>
       <h3>What would make it an L</h3>
-      <ul>{Object.entries(preview.l_triggers).map(([id, state]) => <li key={id}>{words(id)}: {state}</li>)}</ul>
+      <ul>{Object.entries(preview.l_triggers).map(([id, g]) => <li key={id}>{words(id)}: {g.state}{g.evidence ? <span className="muted"> — {g.evidence}</span> : null}</li>)}</ul>
 
       <h3>What the answers have triggered</h3>
       {preview.exit_rules.length ? (

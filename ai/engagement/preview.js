@@ -32,13 +32,20 @@ export function preview(session, today) {
   const doc = weigh(assemble(session.answers, { today, clientSlug: session.client, source: 'chatbot' }));
   const exits = doc.exits;
 
+  // Active/inactive/unknown alone lost the one thing that actually explains a
+  // gate — how many stores, markets or integrations it fired on. "store estate:
+  // active" said nothing a consultant could act on; the evidence the engine
+  // already computed (down to the store count) just never left this function.
   const state = (definitions, computed) => Object.fromEntries(definitions.map((d) => [
     d.id,
-    anyInputKnown(session.answers, d.inputs) ? (computed[d.id].active ? 'active' : 'inactive') : 'unknown',
+    {
+      state: anyInputKnown(session.answers, d.inputs) ? (computed[d.id].active ? 'active' : 'inactive') : 'unknown',
+      evidence: computed[d.id]?.evidence ?? null,
+    },
   ]));
   const gates = state(offering.scope_gates, doc.offer.scope_gates);
   const lTriggers = state(offering.l_triggers, doc.offer.l_triggers);
-  const unknown = [...Object.values(gates), ...Object.values(lTriggers)].filter((s) => s === 'unknown').length;
+  const unknown = [...Object.values(gates), ...Object.values(lTriggers)].filter((s) => s.state === 'unknown').length;
 
   const required = questionBank.questions.filter((q) => q.priority === 'required');
   const requiredIds = new Set(required.map((q) => q.id));

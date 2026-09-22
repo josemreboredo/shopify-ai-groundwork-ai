@@ -148,6 +148,7 @@ const CAPABILITY = {
   luxury: 'Luxury-grade experience',
   headless: 'Headless storefront',
   figma_design_system: 'A full design system',
+  multi_store: 'More than one Shopify store',
 };
 
 const TRACK = { liquid: 'Shopify Online Store (Horizon theme)', hydrogen: 'Headless Hydrogen on Oxygen' };

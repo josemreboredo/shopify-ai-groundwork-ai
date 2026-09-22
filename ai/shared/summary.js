@@ -67,7 +67,7 @@ export function offerStanding(p) {
   // there is no classification to report.
   const c = p.coverage ?? {};
   const gates = { ...(p.scope_gates ?? {}), ...(p.l_triggers ?? {}) };
-  const known = Object.values(gates).filter((v) => v !== 'unknown').length;
+  const known = Object.values(gates).filter((v) => v.state !== 'unknown').length;
   if (!(c.required_answered ?? 0) || (Object.keys(gates).length > 0 && known === 0)) {
     return {
       applies: false,
@@ -220,8 +220,8 @@ export function renderSummaryMarkdown(s) {
     '',
     '## Scope gates and L triggers',
     '',
-    ...Object.entries(p.scope_gates).map(([id, state]) => `- ${id.replace(/_/g, ' ')}: ${state}`),
-    ...Object.entries(p.l_triggers).map(([id, state]) => `- L trigger ${id.replace(/_/g, ' ')}: ${state}`),
+    ...Object.entries(p.scope_gates).map(([id, g]) => `- ${id.replace(/_/g, ' ')}: ${g.state}${g.evidence ? ` — ${g.evidence}` : ''}`),
+    ...Object.entries(p.l_triggers).map(([id, g]) => `- L trigger ${id.replace(/_/g, ' ')}: ${g.state}${g.evidence ? ` — ${g.evidence}` : ''}`),
     '',
     '## Exit rules',
     '',

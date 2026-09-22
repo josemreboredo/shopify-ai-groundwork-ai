@@ -218,14 +218,14 @@ describe('preview', () => {
   test('gates are unknown until answered, then the offer updates', () => {
     const s = consented();
     let p = preview(s, TODAY);
-    assert.equal(p.scope_gates.markets, 'unknown');
+    assert.equal(p.scope_gates.markets.state, 'unknown');
     assert.equal(p.offer.provisional, true);
 
     recordAnswer(s, { pointer: '/markets/list', value: [{ code: 'DE', currency: 'EUR', languages: ['de'], price_strategy: 'base_currency' }, { code: 'AT', currency: 'EUR', languages: ['de'], price_strategy: 'manual' }], question_id: 'Q3.1.1', today: TODAY });
     recordAnswer(s, { pointer: '/meta/client/business_model', value: 'hybrid', question_id: 'Q1.1.4', today: TODAY });
     p = preview(s, TODAY);
-    assert.equal(p.scope_gates.markets, 'active');
-    assert.equal(p.scope_gates.b2b, 'active');
+    assert.equal(p.scope_gates.markets.state, 'active');
+    assert.equal(p.scope_gates.b2b.state, 'active');
     assert.equal(p.offer.code, 'M');
   });
 
