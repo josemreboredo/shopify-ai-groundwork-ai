@@ -1177,7 +1177,7 @@ export function AddonList({ addons, pricing, currency, weeks, band }) {
       {addons.map((a) => {
         const headline = a.per_unit
           ? [`${a.per_unit.from ? 'from ' : ''}+${a.per_unit.weeks} week${a.per_unit.weeks === 1 ? '' : 's'} per ${a.per_unit.noun}`,
-            ...(pricing && a.per_unit.price ? [`${currency} ${Math.round(a.per_unit.price / 100) / 10}k per ${a.per_unit.noun}`] : [])].join(' · ')
+            ...(pricing && a.per_unit.price ? [`${a.per_unit.from ? 'from ' : ''}${currency} ${Math.round(a.per_unit.price / 100) / 10}k per ${a.per_unit.noun}`] : [])].join(' · ')
           : cost(a.weeks, a.price);
         return (
           <li key={a.id} className="addon">

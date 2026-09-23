@@ -22,7 +22,10 @@ export const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w
 const k = (n) => `${Math.round(n / 1000)}k`;
 
 /** "EUR 40k–65k". Internal: the engine keeps these out of anything client-facing. */
-export const band = (b, currency) => (b ? `${currency ?? ''} ${k(b.min)}–${k(b.max)}${b.open_ended ? '+' : ''}`.trim() : null);
+// A fixed price is one figure: "CHF 5k", not "CHF 5k–5k".
+export const band = (b, currency) => (b
+  ? `${currency ?? ''} ${b.min === b.max ? k(b.min) : `${k(b.min)}–${k(b.max)}`}${b.open_ended ? '+' : ''}`.trim()
+  : null);
 
 /**
  * The segment a URL asks for, or null.
