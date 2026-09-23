@@ -1,0 +1,55 @@
+{
+  "$comment": [
+    "Gaia Gate 5 — declared MCP scope for the shopify-ai-groundwork-ai biota.",
+    "",
+    "DRAFT — awaiting dual-control sign-off (Methodology Steward + Security Engineer)",
+    "per gaia/methodology/master-security.md § Gate 5. Until both approvals are",
+    "recorded below, treat this file as a proposal.",
+    "",
+    "READ THIS BEFORE RELYING ON IT: the Gate 5 hook reads `allowed_mcps` and",
+    "nothing else. The `status` and `approvals` fields below are documentation, not",
+    "enforcement — the moment this file exists, MCP calls to the listed server are",
+    "permitted. That is a property of the hook, not of this file, and it is worth",
+    "knowing before anyone treats 'draft' as a safety margin.",
+    "",
+    "Why it exists: the Lead Consultant app is the system of record for discovery",
+    "engagements, and the Merkle Discovery connector is the only way to read one",
+    "from a Claude session. Without a declared scope the regime is fail-closed, so",
+    "every question about a live engagement can only be answered from reproductions.",
+    "",
+    "Scope is one server and read-only intent. The connector also exposes write",
+    "tools (record_answers, save_closing_document, save_approach, mark_questions).",
+    "Those are NOT declared here: an engagement is edited by a consultant in the web",
+    "app, where the change has an author and a review step. A model writing into the",
+    "system of record has neither.",
+    "",
+    "ADR 0007 is resolved. The pilot restriction to demo or anonymised engagements",
+    "existed because the tool ran on a personal Claude account; it now runs on dentsu",
+    "Claude Enterprise. The ADR itself still says otherwise and should be updated to",
+    "record the migration — see docs/handover-offering-and-questionnaire.md § 7."
+  ],
+  "biota": "shopify-ai-groundwork-ai",
+  "status": "draft",
+  "approvals": {
+    "methodology_steward": null,
+    "security_engineer": null
+  },
+  "allowed_mcps": {
+    "Merkle_Discovery": {
+      "$comment": "The Lead Consultant app (ADR 0014). Reads only; see the note above on writes.",
+      "host": "shopify-ai-builder-two.vercel.app",
+      "intent": "read",
+      "tools": [
+        "list_engagements",
+        "get_preview",
+        "get_summary",
+        "get_interview",
+        "get_clarifications",
+        "get_closing_document",
+        "get_reference",
+        "list_answers",
+        "find_questions"
+      ]
+    }
+  }
+}

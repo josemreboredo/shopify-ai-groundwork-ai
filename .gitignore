@@ -1,5 +1,11 @@
 # Gaia internal memory — local only, not project source
-.gaia/
+# Gaia biota state. The allowlist is the exception and it is deliberate: Gate 5
+# requires it to carry Steward + Sec dual sign-off, and a signature needs one
+# artefact and a review trail — two uncoordinated copies on two machines are
+# neither. The audit log stays out: it is evidence, and merging two machines'
+# histories destroys the property that makes it evidence.
+.gaia/*
+!.gaia/mcp-allowlist.json
 
 # Environment / secrets (covers .env, .env.local, .envx, …)
 .env*

@@ -150,11 +150,21 @@ the other machine cannot merge — it turns every pending commit into a conflict
 machine's work in flight. Check `git status` before believing a failure is
 yours, and re-run on a clean tree before reporting one.
 
-**What does not travel.** `.gaia/` and `.env` are gitignored, so each machine
-has its own. That means each machine has its **own Gate 5 allowlist and its own
-audit log**, and neither can see the other's — which is finding 3 of the Track C
-proposal, not a feature. Until it is resolved, treat the MCP scope on your
-machine as local and do not assume the other machine has the same.
+**The Gate 5 allowlist is versioned; everything else in `.gaia/` is not.**
+`.gaia/mcp-allowlist.json` is in the repository because Gate 5 requires it to
+carry Steward + Sec dual sign-off, and a signature needs one artefact and a
+review trail — two uncoordinated copies on two machines are neither. Change it
+the way you would change any other control: as a reviewable commit, not as a
+local edit.
+
+The **audit log stays out**, deliberately. It is evidence of what this biota
+reached out to, and merging two machines' histories destroys the property that
+makes it evidence. If you need the whole picture, collect both logs; do not
+merge them.
+
+`.gaia/memory/` and `.env` also stay local, so each machine has its own. Memory
+is an open question in the Track C proposal — a learning recorded on one machine
+does not reach the other, and nothing says so.
 
 **The two accounts are not equivalent.** ADR 0007 restricted this biota to demo
 or anonymised engagements because it ran on a personal Claude account. The
