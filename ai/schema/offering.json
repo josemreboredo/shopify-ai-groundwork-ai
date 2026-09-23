@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.17.0",
+  "version": "2.18.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -359,15 +359,15 @@
       "delivery_track": "liquid",
       "build_label": "Custom Liquid · Hydrogen",
       "triggered_by": "A headless storefront, or scope that adds up to more than an M can hold — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to two Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them — the replatform itself is quoted on its own, because a migration is a project with its own shape rather than a line inside a band · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them — the replatform itself is quoted on its own, because a migration is a project with its own shape rather than a line inside a band · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 140000,
-        "max": 240000,
+        "max": 260000,
         "open_ended": true
       },
       "duration_weeks": {
         "min": 13,
-        "max": 22
+        "max": 24
       },
       "phases": [
         {
@@ -375,7 +375,7 @@
           "name": "Store set-up and topology",
           "weeks": {
             "min": 1.5,
-            "max": 1.5
+            "max": 2.5
           },
           "covers": "Everything Ecommerce Scale sets up, plus what a build this size needs around it: a staging store, the theme release path, and users and permissions per market",
           "deliverables": [
@@ -417,7 +417,7 @@
           "name": "Design system and templates",
           "weeks": {
             "min": 4,
-            "max": 8
+            "max": 8.5
           },
           "covers": "The design system built as sections and blocks over one token layer, with every template against it — the largest phase in this offer, and the reason it is this offer",
           "deliverables": [
@@ -447,7 +447,7 @@
           "name": "Integrations",
           "weeks": {
             "min": 1.5,
-            "max": 3
+            "max": 3.5
           },
           "covers": "Every connection in the register, each with the reconciliation job it needs and the environment it was built against",
           "deliverables": [
@@ -2136,7 +2136,7 @@
         "shopify_limit": "One store per subscription; a Plus contract carries ten — one main store and nine expansion stores, each of which must be identical to the main brand",
         "S": "Up to 1 store",
         "M": "Up to 1 store",
-        "L": "Up to 2 stores",
+        "L": "Up to 3 stores",
         "note": "One store already serves every market in the pack — a different currency, language, domain, price and catalogue per market, no second store required. Needing a second store is not an add-on chosen from S or M: it makes the engagement an Ecommerce Growth outright, whichever pack the rest of the answers would have meant, because expansion stores share no data, so every integration is wired again, every theme deployed again and every app bought again, per store. Whether the requirements need one is not a question we ask: the engine derives it from the market answers — does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, need its own theme design, or belong to a second brand.",
         "addon": [
           "L"
@@ -2725,7 +2725,7 @@
         "migration": null,
         "variant_options": 2,
         "checkout": "checkout_step_blocks_or_fields",
-        "stores": 2,
+        "stores": 3,
         "analytics_custom_events": true
       }
     }

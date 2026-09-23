@@ -322,13 +322,17 @@ describe('the offer follows the effort, not the gate count', () => {
   });
 
   test('an L carries the gates that outgrow its own band, not M\u2019s', () => {
-    // The envelope is each band's own arithmetic: an M of 6-13 over an S of 4-5
-    // holds two to eight weeks of gates, an L of 13-20 holds nine to fifteen.
-    // Charging an L for gates its band was sized for would be the same error as
-    // absorbing the ones it was not.
+    /* The envelope is each band's own arithmetic — its own duration less an S —
+       so it moves when a band does and this test reads it from the schema
+       rather than naming weeks that go stale. Charging an L for gates its band
+       was sized for would be the same error as absorbing the ones it was not.
+       The engagement has to stay heavier than whatever L carries: when L grew
+       to three stores and 24 weeks this one fitted inside it by three quarters
+       of a week, and the test that proves overflow stopped proving anything. */
     const answers = {
       ...base(),
-      ...markets('CH', 'DE', 'FR', 'IT', 'ES', 'NL'),
+      ...markets('CH', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'PL'),
+      catalogue: { sku_count: 20000, variant_options_max: 3 },
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },
       retail: { store_count: 4, pos: 'shopify_pos' },

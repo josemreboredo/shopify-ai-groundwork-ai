@@ -23,11 +23,16 @@ const load = (name) => JSON.parse(fs.readFileSync(path.join(FIXTURES, name), 'ut
 /** An engagement whose gates outgrow the weeks its band already holds. */
 function overflowing() {
   const doc = load('foundation-minimal.json');
-  doc.markets = { list: ['CH', 'DE', 'FR', 'IT', 'ES', 'NL'].map((code) => ({ code, currency: code === 'CH' ? 'CHF' : 'EUR', price_strategy: 'base_currency' })) };
+  /* This has to outgrow whatever L carries, and L now carries three stores
+     and 24 weeks. Eight markets in six languages over a 20,000-SKU
+     catalogue clears it by nearly six weeks, so a band moving by one does
+     not quietly stop this testing anything. */
+  doc.markets = { list: ['CH', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'PL'].map((code) => ({ code, currency: code === 'CH' ? 'CHF' : 'EUR', price_strategy: 'base_currency', languages: ['de', 'fr', 'it', 'en', 'es', 'nl'] })) };
+  doc.catalogue = { sku_count: 20000, variant_options_max: 3 };
   doc.migration = { source_platform: 'magento' };
   doc.b2b = { enabled: true };
   doc.retail = { store_count: 4, pos: 'shopify_pos' };
-  doc.integrations = [{ category: 'erp', connector: 'custom' }, { category: 'pim', connector: 'custom' }, { category: '3pl_wms', connector: 'custom' }];
+  doc.integrations = [{ category: 'erp', connector: 'custom' }, { category: 'pim', connector: 'custom' }, { category: '3pl_wms', connector: 'custom' }];   // the integration gate caps at three weeks, so more does nothing
   doc.offer = classifyOffer(doc);
   return doc;
 }
