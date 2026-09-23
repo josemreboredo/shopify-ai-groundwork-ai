@@ -36,6 +36,7 @@ import { findLeaks } from '../discovery-deck/build.js';
 import { clarificationBrief, clarificationTopics, clarificationsPrompt } from '../bid/clarifications.js';
 import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { whatMoved } from './moved.js';
+import { estimateStage, estimateSnapshot, reestimate } from './estimate.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
 import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
@@ -201,6 +202,25 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         ? { assumptions: statedFor(session, decided.doc).length, decisions_settled: readiness(decided.doc, { provenance: session.provenance }).decisions.settled }
         : null,
     });
+  }
+
+  /**
+   * The estimate's stage, and — once a bid has been won — what moved since the
+   * RFP estimate it was won on.
+   *
+   * @param {object} session
+   * @param {() => object} decide  the engine's decision, run only when there is an RFP estimate to compare
+   * @param {{ pricing: boolean }} options
+   */
+  function estimateOf(session, decide, { pricing }) {
+    const p = preview(session, today());
+    const stage = estimateStage({ process: processOf(session.process), coverage: p.coverage, toReview: awaitingConfirmation(session), provisional: p.offer.provisional === true });
+    const rfp = processOf(session.process) === 'discovery' ? (session.estimates ?? []).findLast((e) => e.stage === 'rfp') : null;
+    const decided = rfp ? decide() : null;
+    const since = decided?.ok
+      ? reestimate(rfp, estimateSnapshot(decided.doc.offer, { at: today(), stage: stage.stage }), { pricing })
+      : null;
+    return { ...stage, since_rfp: since };
   }
 
   function summary(session) {
@@ -377,6 +397,8 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         language: coverage(session.language),
         next: { ...next, questions: translateQuestions(next.questions, session.language).map((q) => ({ ...q, inputs: fieldSpecs(q) })) },
         preview: preview(session, today()),
+        // Never priced: this travels to the connector as well as to the page.
+        estimate: estimateOf(session, () => decideFromSession(session, today()), { pricing: false }),
         notes: session.notes,
         document_yield: documentYield(session),
         tbc: session.tbc,
@@ -684,6 +706,8 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         quote: decided.ok
           ? quote(decided.doc, { pricing, provisional: preview(session, today()).offer.provisional === true })
           : null,
+        // Which stage the estimate stands at, and what moved since the RFP.
+        estimate: estimateOf(session, () => decided, { pricing }),
         // What the offer owes the client whatever its commercial shape: what it
         // would be built on, and which plan the requirements force.
         technical: decided.ok ? technicalAnswer(decided.doc) : null,
@@ -1172,6 +1196,12 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
       if (processOf(session.process) !== 'rfp') {
         throw new ServiceError(409, 'Only a bid can be won — this is already an engagement');
       }
+      /* The estimate the bid was won on, kept before anything moves it. After
+         discovery the question a client asks is what changed since the RFP —
+         "the same M, plus a second store" — and that needs the RFP's own
+         number to measure against, not a recollection of it. */
+      const decided = decideFromSession(session, today());
+      if (decided.ok) session.estimates = [...(session.estimates ?? []), estimateSnapshot(decided.doc.offer, { at: today(), stage: 'rfp' })];
       session.process = 'discovery';
       session.won = { at: today(), from: 'rfp', by: user.login };
       // One event, one record. Winning by this button and recording the outcome

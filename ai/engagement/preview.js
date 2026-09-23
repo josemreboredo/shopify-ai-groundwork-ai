@@ -58,6 +58,8 @@ export function preview(session, today) {
     offer: {
       code: doc.offer.code,
       name: doc.offer.name,
+      // What goes past the pack, by name: "an M plus a further store".
+      addons: (doc.offer.addons ?? []).map((a) => a.label),
       provisional: unknown > 0,
       ...(unknown > 0 ? { unknown_gates_or_triggers: unknown } : {}),
     },

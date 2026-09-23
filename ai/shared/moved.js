@@ -16,6 +16,11 @@
 
 const words = (id) => String(id ?? '').replace(/_/g, ' ');
 
+/* The preview reports each gate as { state, evidence }; older callers passed the
+   bare state. Compared as strings, the object form never matched, so the
+   interview never once said "put markets in scope". */
+const stateOf = (v) => (typeof v === 'string' ? v : v?.state);
+
 /**
  * @param {object} before  the engine's preview before the answer
  * @param {object} after   the engine's preview after it
@@ -43,10 +48,18 @@ export function whatMoved(before, after) {
   // A gate going active is the thing that grows a build, and it is the change a
   // consultant most needs to hear while the client is still in the room.
   for (const [id, state] of Object.entries(after.scope_gates ?? {})) {
-    if (state === 'active' && before.scope_gates?.[id] !== 'active') moved.push(`put ${words(id)} in scope`);
+    if (stateOf(state) === 'active' && stateOf(before.scope_gates?.[id]) !== 'active') moved.push(`put ${words(id)} in scope`);
   }
   for (const [id, state] of Object.entries(after.l_triggers ?? {})) {
-    if (state === 'active' && before.l_triggers?.[id] !== 'active') moved.push(`made ${words(id)} an L trigger`);
+    if (stateOf(state) !== 'active' || stateOf(before.l_triggers?.[id]) === 'active') continue;
+    // Only a headless storefront names the pack; a further store is an add-on.
+    moved.push(id === 'headless' ? 'made a headless storefront an L trigger' : `recorded ${words(id)} for the approach`);
+  }
+
+  // What now goes past the pack, by name — the re-estimate a client can follow.
+  const had = new Set(before.offer?.addons ?? []);
+  for (const label of after.offer?.addons ?? []) {
+    if (!had.has(label) && after.offer?.name) moved.push(`added ${label.charAt(0).toLowerCase()}${label.slice(1)} on top of ${after.offer.name}`);
   }
 
   const fired = new Set((before.exit_rules ?? []).map((r) => r.rule));

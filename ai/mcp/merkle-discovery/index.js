@@ -59,8 +59,11 @@ const compactQuestion = (q) => ({
  *
  * @param {object} p
  */
-const compactPreview = (p) => ({
+const compactPreview = (p, estimate) => ({
   offer: p.offer,
+  // The stage the estimate stands at, and what moved since the RFP — weeks and
+  // gates only: the connector never carries Merkle's price band.
+  ...(estimate ? { estimate } : {}),
   go: p.go,
   route: p.route ?? null,
   scope_gates: p.scope_gates,
@@ -246,7 +249,10 @@ export function registerDiscoveryTools(server, { service, userOf }) {
     description: "The engine's current view: offer (provisional while gates are unknown), GO or STOP and route, scope gates, exit rules with evidence, minimum Shopify plan, coverage and app signals.",
     inputSchema: z.object({ client: slug }),
     annotations: read,
-  }, async (user, { client }) => compactPreview((await service.getInterview(user, client, { limit: 1 })).preview));
+  }, async (user, { client }) => {
+    const v = await service.getInterview(user, client, { limit: 1 });
+    return compactPreview(v.preview, v.estimate);
+  });
 
   tool('prepare_closing_document', {
     title: 'Start the Discovery Closing Document',

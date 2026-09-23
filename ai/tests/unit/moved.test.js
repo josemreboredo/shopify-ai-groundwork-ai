@@ -45,6 +45,20 @@ describe('what an answer moved', () => {
     ]);
   });
 
+  test('it reads the gates in the shape the preview reports them', () => {
+    // { state, evidence } is what preview() returns; the bare string never met it.
+    const was = { ...base, scope_gates: { markets: { state: 'unknown', evidence: null } }, l_triggers: { headless: { state: 'inactive' } } };
+    const now = { ...was, scope_gates: { markets: { state: 'active', evidence: '3 markets' } }, l_triggers: { headless: { state: 'active' } } };
+    assert.deepEqual(whatMoved(was, now), ['put markets in scope', 'made a headless storefront an L trigger']);
+  });
+
+  test('what goes past the pack is named as it arrives', () => {
+    const was = after({ offer: { code: 'M', name: 'Ecommerce Scale', addons: [] } });
+    const now = after({ offer: { code: 'M', name: 'Ecommerce Scale', addons: ['Each further Shopify store'] } });
+    assert.deepEqual(whatMoved(was, now), ['added each further Shopify store on top of Ecommerce Scale']);
+    assert.deepEqual(whatMoved(now, now), [], 'and only once');
+  });
+
   test('going beyond the offers is reported as the route, not as a lost offer', () => {
     const moved = whatMoved(base, after({ go: false, route: 'larger_engagement' }));
     assert.deepEqual(moved, ['took it beyond the standard offers — larger engagement']);

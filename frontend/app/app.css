@@ -2162,3 +2162,12 @@ h3.sub {
   text-transform: none; letter-spacing: 0; font-weight: 400;
 }
 .epic-stories th[scope="col"] { font-size: var(--t-micro); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+
+/* Which stage an estimate stands at — RFP, discovery, closed — said before the
+   numbers, because the same number means something different at each. */
+.estimate-stage { margin: var(--s-2) 0 var(--s-4); max-width: 72ch; }
+.estimate-stage strong { color: var(--ink); }
+/* What moved since the RFP estimate: the same ledger as the go/no-go page, so a
+   re-estimate reads as the project it was plus what discovery found. */
+.since-rfp { margin-top: var(--s-6); }
+.since-rfp h3 { margin-bottom: var(--s-2); }

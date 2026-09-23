@@ -50,7 +50,7 @@ const money = (b) => `${b.currency} ${Math.round(b.min / 1000)}k\u2013${Math.rou
  *
  * @param {{ q: object }} props
  */
-function Quote({ q }) {
+function Quote({ q, estimate }) {
   // Outside the offers there is no band to show, and inventing one is the error
   // this tool keeps having to unlearn. Which offer it would have been still
   // helps, and so does what the scope came to.
@@ -73,6 +73,18 @@ function Quote({ q }) {
   return (
     <section className={`quote${q.provisional ? ' provisional' : ''}`}>
       <h2>What the engine quotes</h2>
+      {estimate ? (
+        <p className="estimate-stage">
+          <strong>{estimate.label}.</strong> {estimate.line}
+          {estimate.stage !== 'closed' && (estimate.to_confirm || estimate.required_open || estimate.required_tbc)
+            ? ` ${[
+              estimate.to_confirm ? `${estimate.to_confirm} answer${estimate.to_confirm === 1 ? '' : 's'} to confirm` : null,
+              estimate.required_open ? `${estimate.required_open} required open` : null,
+              estimate.required_tbc ? `${estimate.required_tbc} to be confirmed by the client` : null,
+            ].filter(Boolean).join(' · ')}.`
+            : ''}
+        </p>
+      ) : null}
       <ul className="stats kpis">
         <li><strong>{q.code}</strong><span>{q.name} · {q.track === 'hydrogen' ? 'headless, Hydrogen on Oxygen' : 'Shopify theme'}</span></li>
         <li><strong>{span(q.weeks)}</strong><span>weeks, end to end</span></li>
@@ -92,7 +104,43 @@ function Quote({ q }) {
           up to rather than a position to take into a room.
         </p>
       ) : null}
+      <SinceRfp since={estimate?.since_rfp} />
     </section>
+  );
+}
+
+/**
+ * What moved since the estimate the bid was won on.
+ *
+ * Discovery finds what the RFP could not say — two stores where it assumed one —
+ * and the client's question is what that did to the number. The answer is the
+ * same project with the difference itemised, gate by gate.
+ *
+ * @param {{ since: object|null|undefined }} props
+ */
+function SinceRfp({ since }) {
+  if (!since) return null;
+  const signed = (w) => (w.min === w.max ? `${w.max > 0 ? '+' : ''}${w.max}` : `${w.min > 0 ? '+' : ''}${w.min} to ${w.max > 0 ? '+' : ''}${w.max}`);
+  const chf = (p) => `CHF ${p.max >= 0 ? '+' : ''}${Math.round(p.min / 1000)}k${p.min === p.max ? '' : ` to ${p.max >= 0 ? '+' : ''}${Math.round(p.max / 1000)}k`}`;
+  return (
+    <div className="since-rfp">
+      <h3>Since the RFP estimate of {since.since.at}</h3>
+      <p className="answer-line">{since.headline}.</p>
+      {since.moved.length ? (
+        <ol className="outgrew">
+          {since.moved.map((m) => (
+            <li key={m.gate}>
+              <span className="outgrew-what">{m.label} <em>· {m.change}</em></span>
+              <span className="outgrew-weeks">{signed(m.weeks)} wk{m.price ? ` · ${chf(m.price)}` : ''}</span>
+            </li>
+          ))}
+          <li className="outgrew-total">
+            <span className="outgrew-what">The estimate moved by</span>
+            <span className="outgrew-weeks">{signed(since.weeks)} wk{since.price ? ` · ${chf(since.price)}` : ''}</span>
+          </li>
+        </ol>
+      ) : <p className="muted">Nothing the RFP estimate was built on has moved.</p>}
+    </div>
   );
 }
 
@@ -208,7 +256,7 @@ export default function Summary({ loaderData }) {
       {/* 2 — what the engine quoted, which this page promised and never carried.
              Survivable while the band was simply the offer's; not once gates
              started being quoted past the envelope a band already holds. */}
-      {q ? <Quote q={q} /> : null}
+      {q ? <Quote q={q} estimate={loaderData.estimate} /> : null}
 
       {/* 3 — the two answers the offer owes whatever its commercial shape */}
       {t ? (

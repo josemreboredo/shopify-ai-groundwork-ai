@@ -14,6 +14,8 @@ import { processOf, processMeta, stepsFor, viewsFor, PROCESSES, PROCESS_IDS } fr
 import { createDiscoveryService, ServiceError } from '../../shared/index.js';
 import { createMemoryStore } from '../../shared/stores/memory-store.js';
 import { preview } from '../../engagement/preview.js';
+import { recordAnswer } from '../../engagement/answer.js';
+import { estimateStage } from '../../shared/estimate.js';
 
 const TODAY = '2026-09-20';
 const consultant = { login: 'lc-one', role: 'consultant' };
@@ -223,6 +225,59 @@ describe('one engine, two processes', () => {
     const kept = await svc.getClarifications(consultant, 'ricola-test');
     assert.equal(kept.clarifications.questions.length, 1, 'the questions sent to the client survive the win');
     assert.equal(kept.documents[0].name, 'RFP-2024.pdf', 'so does the RFP itself');
+  });
+
+  test('a won bid keeps the estimate it was won on, and discovery re-estimates against it', async () => {
+    /* The RFP estimated one store; discovery finds a second brand, which needs
+       a store of its own. The re-estimate has to read as the same pack with a
+       store more — not as a different project with no working behind it. */
+    const store = createMemoryStore();
+    const svc = createDiscoveryService({ store, today: () => TODAY });
+    const owner = { login: 'lc-one', role: 'owner' };
+    await consented(svc, 'two-brands', 'rfp');
+    const put = async (pointer, value, question_id) => {
+      const s = await store.get('two-brands');
+      const r = recordAnswer(s, { pointer, value, question_id, source: 'client', status: 'confirmed', today: TODAY });
+      assert.ok(r.ok, JSON.stringify(r.errors));
+      await store.save(s);
+    };
+    await put('/meta/client/name', 'Two Brands AG', 'Q1.1.1');
+    await put('/markets/list', ['CH', 'DE', 'AT'].map((code) => ({ code, currency: code === 'CH' ? 'CHF' : 'EUR', languages: ['de'], price_strategy: 'base_currency' })), 'Q3.1.1');
+    await put('/migration/source_platform', 'magento', 'Q0.5.4');
+
+    const rfp = await svc.getSummary(owner, 'two-brands', { pricing: true });
+    assert.equal(rfp.estimate.stage, 'rfp');
+    assert.equal(rfp.estimate.since_rfp, null, 'nothing to compare against before the bid is won');
+    await svc.markBidWon(owner, 'two-brands');
+    await put('/meta/client/brand_count', 2, 'Q1.1.8');
+
+    const after = await svc.getSummary(owner, 'two-brands', { pricing: true });
+    assert.equal(after.estimate.stage, 'discovery');
+    const since = after.estimate.since_rfp;
+    assert.equal(since.from.code, since.to.code, 'the same pack');
+    assert.deepEqual(since.addons_added, ['Each further Shopify store']);
+    assert.match(since.headline, /^Still Ecommerce Scale, plus each further Shopify store/);
+    const store2 = since.moved.find((m) => m.gate === 'store_estate');
+    assert.equal(store2.change, 'added');
+    // The list adds up to the quote's own move, weeks and francs.
+    const sum = (k, f) => since.moved.reduce((a, m) => a + m[f][k], 0);
+    assert.equal(sum('max', 'weeks'), since.weeks.max);
+    assert.ok(Math.abs(sum('max', 'price') - since.price.max) <= 1000, 'priced at the one rate');
+    assert.ok(since.price.max > 0 && since.price.max < 40000, `a store, not the next pack: CHF ${since.price.max}`);
+
+    // The connector sees the same stage and the same move, without a franc.
+    const interview = await svc.getInterview(owner, 'two-brands');
+    assert.equal(interview.estimate.since_rfp.headline, since.headline);
+    assert.doesNotMatch(JSON.stringify(interview.estimate), /price/);
+  });
+
+  test('the stage says how much of the scope is known', () => {
+    const coverage = (open, tbc) => ({ required_open: open, required_tbc: tbc });
+    assert.equal(estimateStage({ process: 'rfp', coverage: coverage(0, 0), toReview: 0, provisional: false }).stage, 'rfp');
+    assert.equal(estimateStage({ process: 'discovery', coverage: coverage(3, 0), toReview: 0, provisional: false }).stage, 'discovery');
+    assert.equal(estimateStage({ process: 'discovery', coverage: coverage(0, 0), toReview: 2, provisional: false }).stage, 'discovery', 'unconfirmed answers keep it open');
+    assert.equal(estimateStage({ process: 'discovery', coverage: coverage(0, 0), toReview: 0, provisional: true }).stage, 'discovery', 'so does a gate nobody answered');
+    assert.equal(estimateStage({ process: 'discovery', coverage: coverage(0, 0), toReview: 0, provisional: false }).stage, 'closed');
   });
 
   test('only a bid can be won, and a record made a bid again is no longer won', async () => {
