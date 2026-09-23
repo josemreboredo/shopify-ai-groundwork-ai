@@ -209,8 +209,8 @@
       },
       "post_launch_support": {
         "active": true,
-        "tier": "extended",
-        "evidence": "Q10.3.3: retainer; Q10.3.2: written SOPs required."
+        "tier": "standard",
+        "evidence": "Q10.3.2: written SOPs required; Q10.3.3: retainer, with the Grow retainer signed (Q10.3.4), so its handover is part of the retainer."
       }
     },
     "l_triggers": {
@@ -233,7 +233,7 @@
       "+SEO (standard)",
       "+Checkout (in-checkout)",
       "+Analytics (standard)",
-      "+Support (extended)"
+      "+Support (standard)"
     ],
     "addons": [
       {
@@ -249,34 +249,34 @@
       },
       {
         "gate": "seo_continuity",
-        "label": "A redirect estate above 10,000 URLs, or rankings the business runs on",
+        "label": "SEO continuity: a redirect estate of 1,000 URLs or more, or rankings the business runs on",
         "tier": "standard"
       },
       {
         "gate": "checkout_extensibility",
-        "label": "Inside the checkout steps, or backend rules as Functions",
+        "label": "Blocks after the sale, inside the checkout steps, or Functions",
         "tier": "in_checkout"
       },
       {
         "gate": "post_launch_support",
-        "label": "Written SOPs, or a handover into a retainer",
-        "tier": "extended"
+        "label": "Written SOPs, a handover into a retainer, or a longer hypercare",
+        "tier": "standard"
       }
     ],
     "price_band": {
-      "min": 140000,
-      "max": 207000,
+      "min": 135000,
+      "max": 196000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
-      "min": 13.5,
-      "max": 18.5
+      "min": 13,
+      "max": 17.5
     },
-    "rationale": "Ten scope gates are active and they bring the build to 13.5–18.5 weeks. The engagement is named Ecommerce Scale, the largest pack whose floor the quote reaches, with what goes past its promise as add-ons: B2B alongside consumer, a second integration, SEO continuity, blocks inside the checkout steps and extended post-launch support. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The quote is the Foundation base plus each gate at its own weeks and price.",
+    "rationale": "Ten scope gates are active and they bring the build to 13–17.5 weeks. The engagement is named Ecommerce Scale, the largest pack whose floor the quote reaches, with what goes past its promise as add-ons: B2B alongside consumer, a second integration, SEO continuity, blocks inside the checkout steps and written SOPs after launch. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The quote is the Foundation base plus each gate at its own weeks and price.",
     "scope_effort_weeks": {
-      "min": 13.5,
-      "max": 18.5
+      "min": 13,
+      "max": 17.5
     },
     "gate_capacity_weeks": {
       "min": 2,
@@ -294,14 +294,6 @@
       {
         "gate": "checkout_extensibility",
         "label": "Checkout extensibility",
-        "weeks": {
-          "min": 1,
-          "max": 2
-        }
-      },
-      {
-        "gate": "post_launch_support",
-        "label": "Post-launch support",
         "weeks": {
           "min": 1,
           "max": 2
@@ -342,6 +334,14 @@
       {
         "gate": "analytics_consent",
         "label": "Analytics and consent",
+        "weeks": {
+          "min": 0.5,
+          "max": 1
+        }
+      },
+      {
+        "gate": "post_launch_support",
+        "label": "Post-launch support",
         "weeks": {
           "min": 0.5,
           "max": 1

@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.5.0 · offering 2.20.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.6.0 · offering 2.20.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 128 of 314 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 128 of 315 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -3321,6 +3321,11 @@ Drives: rule 11.11 (WARN)
 **Q10.3.6** — Will the client re-verify apps and Shopify features at each Shopify Edition after launch? *(optional · consultant)*
 
 **Why it matters.** Shopify announces platform changes at each Edition, and the apps and features the store depends on can change. Someone has to re-verify them. A no here means nobody is watching the store drift — which usually becomes retainer work.
+
+**Q10.3.7** — Should hypercare after go-live run thirty days instead of fifteen? *(recommended · client)*
+Drives: gate Post-launch support
+
+**Why it matters.** Fifteen days is the market floor and covers most launches. A replatform with a large catalogue, or a launch into several markets at once, often needs the first full month-end inside hypercare — that is what the longer window buys.
 
 ### 10.4 Legal & regulated industries
 

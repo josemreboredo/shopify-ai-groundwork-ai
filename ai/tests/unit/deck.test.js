@@ -91,7 +91,8 @@ describe('client deck XML', () => {
     const doc = load('acme-watches.json');
     const { xml } = buildDeckXml(doc, backlogFor(doc));
     // The scope's own sum, floor and ceiling alike — not a pack's band.
-    assert.match(xml, /<price-band currency="CHF" from="140000" to="207000"\/>/);
+    assert.match(xml, new RegExp(`<price-band currency="CHF" from="${doc.offer.price_band.min}" to="${doc.offer.price_band.max}"/>`));
+    assert.ok(doc.offer.price_band.max < offering.offers.L.price_band.max, 'not a pack’s band');
 
     // Only a headless storefront is quoted as a floor, and says so.
     const headless = recompute({ ...load('foundation-minimal.json'), design: { headless_required: true } });

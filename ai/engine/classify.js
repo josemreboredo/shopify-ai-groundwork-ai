@@ -614,15 +614,23 @@ const GATE_EVALUATORS = {
     // backlog has always had the story. What is not carried is the operating
     // model past it — runbooks written to be handed over, or a retainer that
     // has to receive something.
-    const retainer = model === 'retainer';
-    const active = retainer || sops;
-    const tier = active ? (retainer && sops ? 'extended' : 'standard') : null;
+    //
+    // A handover into a signed Grow retainer is part of that retainer: pricing
+    // it here charged the client for agreeing to the retainer, and could tip a
+    // Foundation into the next budget for doing so. And fifteen days of
+    // hypercare is in every offer; thirty is priced.
+    const signed = d.grow_retainer?.signed === true;
+    const retainer = model === 'retainer' && !signed;
+    const longer = d.hypercare_extended === true;
+    const parts = [retainer, sops, longer].filter(Boolean).length;
+    const active = parts > 0;
+    const tier = active ? (parts >= 2 ? 'extended' : 'standard') : null;
     return {
       active,
       ...(tier ? { tier } : {}),
       evidence: active
-        ? `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'}${sops ? ', written SOPs required' : ''}`
-        : `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'} — hypercare and handover are in every offer`,
+        ? `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'}${sops ? ', written SOPs required' : ''}${longer ? ', hypercare extended to thirty days' : ''}`
+        : `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'}${model === 'retainer' && signed ? ' — the handover is part of the signed Grow retainer' : ''} — hypercare and handover are in every offer`,
     };
   },
 };

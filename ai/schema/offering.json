@@ -1074,11 +1074,12 @@
     {
       "id": "post_launch_support",
       "label": "Post-launch support",
-      "condition": "An operating model past go-live: written SOPs the client's team runs the store from, or a handover into a retainer. The hypercare window and launch-day training are in every offer and do not fire it",
+      "condition": "An operating model past go-live: written SOPs the client’s team runs the store from, a handover into a retainer other than a signed Grow retainer, or hypercare extended to thirty days. The fifteen-day hypercare window and launch-day training are in every offer and do not fire it; the handover into a signed Grow retainer is part of that retainer, not priced here",
       "inputs": [
         "/delivery/support_model",
         "/delivery/sops_required",
-        "/delivery/grow_retainer/signed"
+        "/delivery/grow_retainer/signed",
+        "/delivery/hypercare_extended"
       ],
       "modifier": null,
       "modifier_tiers": [
@@ -1490,7 +1491,7 @@
       "id": "+Support (standard)",
       "gate": "post_launch_support",
       "tier": "standard",
-      "description": "One of the two: written SOPs, or a handover into a retainer — the runbooks and the owner named against each, past the launch-day training every offer carries",
+      "description": "One of three: written SOPs, a handover into a retainer that is not the Grow retainer, or hypercare extended from fifteen to thirty days — each with its owner named, past the launch-day training every offer carries",
       "effort_weeks": {
         "min": 0.5,
         "max": 1
@@ -1504,7 +1505,7 @@
       "id": "+Support (extended)",
       "gate": "post_launch_support",
       "tier": "extended",
-      "description": "Both: a documented operating model the client's team runs the store from, handed into a retainer that has to receive it, with a training programme behind it",
+      "description": "Two or more of them: a documented operating model the client’s team runs the store from, a handover into a retainer that has to receive it, a longer hypercare window, with a training programme behind it",
       "effort_weeks": {
         "min": 1,
         "max": 2
@@ -2679,7 +2680,7 @@
           "M",
           "L"
         ],
-        "addon_label": "Written SOPs, or a handover into a retainer"
+        "addon_label": "Written SOPs, a handover into a retainer, or hypercare extended to thirty days"
       }
     ],
     "addons": [
@@ -2861,14 +2862,14 @@
       {
         "id": "post_launch_support",
         "gate": "post_launch_support",
-        "what": "Written SOPs, or a handover into a retainer",
-        "description": "The operating model past the hypercare window every pack carries: the runbooks the client’s team runs the store from, an owner named against each, and the handover into a retainer that has to receive it.",
+        "what": "Written SOPs, a handover into a retainer, or a longer hypercare",
+        "description": "The operating model past the hypercare window every pack carries: the runbooks the client’s team runs the store from, an owner named against each, the handover into a retainer that has to receive it, or hypercare extended from fifteen to thirty days.",
         "available_in": [
           "S",
           "M",
           "L"
         ],
-        "note": "An M or L engagement with no Grow retainer signed is a commercial adjustment (rule 11.11)."
+        "note": "The Grow retainer itself is offered with every pack after launch, its price kept open; the handover into it, once signed, is part of it."
       }
     ],
     "limits": {

@@ -2311,6 +2311,11 @@ Answer: merchandising, customer service, finance
 - [ ] Yes
 - [ ] No
 
+**Q10.3.7** — Should hypercare after go-live run thirty days instead of fifteen? *(recommended)*
+*Every offer includes fifteen days of hypercare: a named channel, a response within one working day, and defects triaged with you. Thirty days is priced on top.*
+
+Answer: No
+
 ### 10.4 Legal & regulated industries
 
 **Q10.4.1** — Is the business in a regulated industry (pharma, alcohol, firearms, age-restricted goods, financial products, medical devices)? If yes, which? *(required)*

@@ -316,7 +316,8 @@
     "Q3.4.14": "fa00298a9d03",
     "Q7.3.3": "4f3d3c5c6547",
     "Q7.6.8": "2f68b27508c0",
-    "Q10.2.4": "5dc23518880b"
+    "Q10.2.4": "5dc23518880b",
+    "Q10.3.7": "eeffab73cd34"
   },
   "sections": {
     "0": "Objectifs business",
@@ -3841,6 +3842,13 @@
       "help": "Des rôles, pas des noms. Chaque rôle reçoit ses propres droits plutôt qu’un identifiant partagé.",
       "teach": {
         "why": "Les comptes du personnel et leurs droits sont configurés par rôle avant le lancement. Un identifiant de propriétaire partagé, c’est ainsi qu’une commande est remboursée par la mauvaise personne et que personne ne peut dire qui a changé un prix."
+      }
+    },
+    "Q10.3.7": {
+      "text": "L’hypercare après la mise en ligne doit-elle durer trente jours au lieu de quinze ?",
+      "help": "Chaque offre comprend quinze jours d’hypercare : un canal désigné, une réponse sous un jour ouvré et les défauts triés avec vous. Trente jours sont facturés en plus.",
+      "teach": {
+        "why": "Quinze jours, c’est le standard du marché et cela couvre la plupart des lancements. Une migration avec un grand catalogue, ou un lancement dans plusieurs marchés à la fois, a souvent besoin de la première clôture mensuelle complète pendant l’hypercare — c’est ce que la fenêtre plus longue achète."
       }
     }
   },

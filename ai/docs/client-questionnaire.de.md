@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.5.0 · offering 2.20.0
+> **Version:** question bank 1.6.0 · offering 2.20.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -2453,6 +2453,12 @@
 > Answer:
 
 **Q10.3.6** — Wird der Kunde Apps und Shopify-Funktionen nach dem Launch bei jeder Shopify Edition neu prüfen? *(optional · consultant)*
+
+- [ ] Yes
+- [ ] No
+
+**Q10.3.7** — Soll die Hypercare nach dem Go-live dreissig statt fünfzehn Tage dauern? *(recommended)*
+*Jedes Angebot enthält fünfzehn Tage Hypercare: einen benannten Kanal, eine Antwort innert eines Arbeitstags und die Triage der Fehler mit Ihnen. Dreissig Tage werden zusätzlich berechnet.*
 
 - [ ] Yes
 - [ ] No

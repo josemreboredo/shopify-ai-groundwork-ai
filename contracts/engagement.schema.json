@@ -3226,6 +3226,10 @@
         "sops_required": {
           "type": "boolean"
         },
+        "hypercare_extended": {
+          "type": "boolean",
+          "description": "Hypercare after go-live extended from fifteen to thirty days (Q10.3.7), priced by the post-launch support gate."
+        },
         "admin_roles": {
           "$ref": "#/$defs/strings"
         },

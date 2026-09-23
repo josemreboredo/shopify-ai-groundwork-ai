@@ -751,6 +751,16 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.deepEqual(model('b2b').price_band, model('dtc').price_band);
   });
 
+  test('after launch: a signed Grow retainer receives its handover free, and a longer hypercare is priced', () => {
+    const support = (delivery) => classifyOffer({ ...base(), delivery }).scope_gates.post_launch_support;
+    assert.equal(support({ support_model: 'hypercare_only' }).active, false, 'fifteen days of hypercare is in every offer');
+    assert.equal(support({ support_model: 'retainer' }).tier, 'standard', 'a handover into a retainer not yet signed is work');
+    assert.equal(support({ support_model: 'retainer', grow_retainer: { signed: true } }).active, false,
+      'the handover into a signed Grow retainer is part of the retainer, not a charge for agreeing to it');
+    assert.equal(support({ hypercare_extended: true }).tier, 'standard', 'thirty days instead of fifteen is priced');
+    assert.equal(support({ hypercare_extended: true, sops_required: true }).tier, 'extended');
+  });
+
   test('the large SEO tier starts above ten thousand URLs, as its name says', () => {
     const seo = (redirects) => classifyOffer({ ...base(), migration: { volumes: { redirects } } }).scope_gates.seo_continuity;
     assert.equal(seo(999).active, false, 'below a thousand the redirects are part of the launch');

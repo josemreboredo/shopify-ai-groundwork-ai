@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.5.0 · offering 2.20.0
+> **Version:** question bank 1.6.0 · offering 2.20.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -2453,6 +2453,12 @@
 > Answer:
 
 **Q10.3.6** — Le client revérifiera-t-il applications et fonctionnalités Shopify à chaque Shopify Edition après le lancement ? *(optional · consultant)*
+
+- [ ] Yes
+- [ ] No
+
+**Q10.3.7** — L’hypercare après la mise en ligne doit-elle durer trente jours au lieu de quinze ? *(recommended)*
+*Chaque offre comprend quinze jours d’hypercare : un canal désigné, une réponse sous un jour ouvré et les défauts triés avec vous. Trente jours sont facturés en plus.*
 
 - [ ] Yes
 - [ ] No

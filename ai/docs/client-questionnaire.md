@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.5.0 · offering 2.20.0
+> **Version:** question bank 1.6.0 · offering 2.20.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
@@ -2453,6 +2453,12 @@
 > Answer:
 
 **Q10.3.6** — Will the client re-verify apps and Shopify features at each Shopify Edition after launch? *(optional · consultant)*
+
+- [ ] Yes
+- [ ] No
+
+**Q10.3.7** — Should hypercare after go-live run thirty days instead of fifteen? *(recommended)*
+*Every offer includes fifteen days of hypercare: a named channel, a response within one working day, and defects triaged with you. Thirty days is priced on top.*
 
 - [ ] Yes
 - [ ] No

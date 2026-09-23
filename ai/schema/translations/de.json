@@ -316,7 +316,8 @@
     "Q3.4.14": "fa00298a9d03",
     "Q7.3.3": "4f3d3c5c6547",
     "Q7.6.8": "2f68b27508c0",
-    "Q10.2.4": "5dc23518880b"
+    "Q10.2.4": "5dc23518880b",
+    "Q10.3.7": "eeffab73cd34"
   },
   "sections": {
     "0": "Geschäftsziele",
@@ -3841,6 +3842,13 @@
       "help": "Rollen, keine Namen. Jede Rolle erhält eigene Berechtigungen statt eines gemeinsamen Logins.",
       "teach": {
         "why": "Mitarbeiterkonten und Berechtigungen werden vor dem Launch pro Rolle eingerichtet. Ein geteiltes Inhaber-Login ist der Weg, auf dem Bestellungen von der falschen Person erstattet werden und niemand sagen kann, wer einen Preis geändert hat."
+      }
+    },
+    "Q10.3.7": {
+      "text": "Soll die Hypercare nach dem Go-live dreissig statt fünfzehn Tage dauern?",
+      "help": "Jedes Angebot enthält fünfzehn Tage Hypercare: einen benannten Kanal, eine Antwort innert eines Arbeitstags und die Triage der Fehler mit Ihnen. Dreissig Tage werden zusätzlich berechnet.",
+      "teach": {
+        "why": "Fünfzehn Tage sind der Marktstandard und decken die meisten Launches ab. Ein Replatforming mit grossem Katalog oder ein Launch in mehreren Märkten zugleich braucht oft den ersten vollen Monatsabschluss innerhalb der Hypercare — das kauft das längere Fenster."
       }
     }
   },
