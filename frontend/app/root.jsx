@@ -74,8 +74,9 @@ const SECTIONS = [
       { to: '/about', label: 'What this is', header: true },
       { to: '/how-it-works', label: 'How it works', header: true },
       /* How a figure is built, beside how the tool works: the question a
-         consultant is asked in the room right after the figure itself. */
-      { to: '/offering/estimation', label: 'How we estimate', signedIn: true, header: true },
+         consultant is asked in the room right after the figure itself. In the
+         footer only; the offering pages reach it from their tabs. */
+      { to: '/offering/estimation', label: 'How we estimate', signedIn: true },
     ],
   },
 ];
