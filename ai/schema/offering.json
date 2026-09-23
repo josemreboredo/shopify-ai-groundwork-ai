@@ -347,7 +347,9 @@
         "A named owner per integrated system on the client side",
         "Market facts: selling entity, tax registrations and who runs each market day to day",
         "Translated copy, or approval of the translation route and its recurring cost"
-      ]
+      ],
+      "most_common": true,
+      "$comment": "Marked as the common case, and it has to stay earned: if the engine stops classifying most engagements as M, the label is a claim the offering cannot support and should move."
     },
     "L": {
       "name": "Ecommerce Growth",

@@ -1813,3 +1813,11 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    grey, so this stays in ink — `.band.dark` is a different surface. */
 .ladder-note { margin: 26px 0 0; color: var(--muted); font-size: 0.92rem; }
 .ladder-note a { color: var(--ink); }
+
+/* The offer most engagements land on. One red rule and a label — the same mark
+   the rest of the page uses for emphasis, never a second accent or a badge. */
+.stats .stat-common { border-top-color: var(--red); }
+.stat-flag {
+  display: block; margin-top: 6px; font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-ink);
+}

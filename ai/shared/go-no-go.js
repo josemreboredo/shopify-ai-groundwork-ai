@@ -355,6 +355,59 @@ function recommend({ documents, answered, fromDocuments, unconfirmed, openTopics
   );
 }
 
+/**
+ * Add-ons this engagement has not bought.
+ *
+ * Every one of these is already priced in the offering and none of them
+ * surfaces anywhere a consultant reads before a client call, so the only ones
+ * ever sold are the ones the client asks for by name. Split by whether the
+ * answers closed the subject or nobody raised it, because those are two
+ * different conversations: "you said no" is settled, and "nobody asked" is an
+ * hour of a consultant's time that pays for itself.
+ *
+ * @param {object} doc
+ * @param {boolean} pricing  whether this caller may see Merkle's price
+ */
+function notTaken(doc, pricing) {
+  const rows = offering.closed_scope?.rows ?? [];
+  const mods = offering.modifiers ?? [];
+  const asked = [];
+  const closed = [];
+
+  for (const row of rows) {
+    if (!row.addon?.length) continue;
+    const state = doc.offer?.scope_gates?.[row.gate];
+    if (state?.active) continue;
+
+    const forGate = mods.filter((m) => m.gate === row.gate);
+    if (!forGate.length) continue;
+    const price = {
+      min: Math.min(...forGate.map((m) => m.price_add.min)),
+      max: Math.max(...forGate.map((m) => m.price_add.max)),
+    };
+    const weeks = {
+      min: Math.min(...forGate.map((m) => m.effort_weeks.min)),
+      max: Math.max(...forGate.map((m) => m.effort_weeks.max)),
+    };
+    const gate = offering.scope_gates.find((g) => g.id === row.gate);
+    const known = (gate?.inputs ?? []).some((pointer) => answeredAt(doc, pointer));
+    const entry = {
+      id: row.id,
+      what: row.what,
+      gate: row.gate,
+      evidence: state?.evidence ?? null,
+      effort_weeks: weeks,
+      ...(pricing ? { price_add: { ...price, currency: offering.currency } } : {}),
+      // The questions that would settle it, which are already in the Q&A.
+      settled_by: known ? [] : questionBank.questions.filter((q) => (q.feeds ?? []).includes(`gate:${row.gate}`)).map((q) => q.id),
+    };
+    (known ? closed : asked).push(entry);
+  }
+
+  const byValue = (a, b) => (b.effort_weeks.max - a.effort_weeks.max);
+  return { nobody_asked: asked.sort(byValue), ruled_out: closed.sort(byValue) };
+}
+
 /** The capabilities this RFP is asking Merkle for, each with the answer that says so. */
 function capabilities(doc) {
   const gates = Object.entries(doc.offer?.scope_gates ?? {}).filter(([, g]) => g.active);
@@ -422,6 +475,11 @@ export function goNoGoView(doc, state, clarifications, { pricing = false } = {})
     // And what the client asked for that is answered outside this build — not a
     // complexity, and not an exclusion either.
     answered_elsewhere: answeredElsewhere(doc),
+    // What this engagement has not bought, and which of it nobody has asked
+    // about. The second list is the conversation: a dimension the answers rule
+    // out is closed, but one nobody raised is an add-on priced on the sheet
+    // that no consultant will think to mention.
+    not_taken: notTaken(doc, pricing),
     scope: {
       applies: offer.applies,
       offer: offer.code,

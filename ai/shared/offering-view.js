@@ -143,6 +143,10 @@ export function offeringView({ pricing = false } = {}) {
        nothing about which brand is sitting across the table. */
     for_whom: o.for_whom ?? null,
     delivery_track: o.delivery_track,
+    /* The middle offer carries a label, and it is not decoration: most engagements
+       land here, and a consultant who cannot say which one is usual ends up
+       presenting three equals and letting the client pick the cheapest. */
+    ...(o.most_common ? { most_common: true } : {}),
     triggered_by: o.triggered_by,
     base_scope: o.base_scope.split(' · '),
     duration_weeks: o.duration_weeks,

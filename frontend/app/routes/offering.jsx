@@ -43,9 +43,16 @@ export default function Offering({ loaderData }) {
         </p>
         <ul className="stats">
           {view.offers.map((o) => (
-            <li key={o.code}>
+            <li key={o.code} className={o.most_common ? 'stat-common' : undefined}>
               <strong>{o.code}</strong>
-              <span>{o.name} · {weeks(o.duration_weeks)} weeks{view.pricing && o.price_band ? ` · ${band(o.price_band, currency)}` : ''}</span>
+              <span>
+                {o.name} · {weeks(o.duration_weeks)} weeks{view.pricing && o.price_band ? ` · ${band(o.price_band, currency)}` : ''}
+                {/* Three offers presented as equals leave the reader to pick,
+                    and a reader with no signal picks the cheapest. Most
+                    engagements land here; saying so is the difference between a
+                    list and a recommendation. */}
+                {o.most_common ? <b className="stat-flag">Most engagements land here</b> : null}
+              </span>
             </li>
           ))}
         </ul>

@@ -129,6 +129,51 @@ describe('go/no-go support', () => {
   });
 });
 
+describe('the add-ons this engagement has not bought', () => {
+  /*
+   * Thirteen rows of the pack table are add-ons with a price on them, and until
+   * now not one of them surfaced anywhere a consultant reads before a client
+   * call. The only ones ever sold were the ones the client asked for by name,
+   * which is the opposite of how an add-on is supposed to work.
+   *
+   * The split is the whole point. "You said no" is settled and belongs out of
+   * the way; "nobody asked" is an hour of a consultant's time that pays for
+   * itself, and it carries the questions that would settle it because those are
+   * already in the Q&A.
+   */
+  test('a subject the answers closed is separated from one nobody raised', () => {
+    const v = view({}, 'foundation-minimal', { pricing: true });
+    const asked = v.not_taken.nobody_asked.map((x) => x.id);
+    const closed = v.not_taken.ruled_out.map((x) => x.id);
+    assert.ok(asked.length, 'a thin engagement has subjects nobody raised');
+    assert.ok(closed.length, 'and subjects its answers closed');
+    assert.deepEqual(asked.filter((id) => closed.includes(id)), [], 'a row is in one list or the other, never both');
+  });
+
+  test('nothing already bought is offered back', () => {
+    const v = view({}, 'acme-watches', { pricing: true });
+    const active = Object.entries(JSON.parse(JSON.stringify(fixture('acme-watches').offer.scope_gates)))
+      .filter(([, g]) => g.active).map(([id]) => id);
+    for (const x of [...v.not_taken.nobody_asked, ...v.not_taken.ruled_out]) {
+      assert.ok(!active.includes(x.gate), `${x.what} is already in this engagement and is being offered again`);
+    }
+  });
+
+  test('one nobody raised names the questions that would settle it', () => {
+    for (const x of view({}, 'foundation-minimal', { pricing: true }).not_taken.nobody_asked) {
+      assert.ok(x.settled_by.length, `${x.what}: nobody asked and nothing says what would`);
+    }
+  });
+
+  test('the price is behind the pricing gate, like every other number in here', () => {
+    const open = view({}, 'foundation-minimal').not_taken;
+    for (const x of [...open.nobody_asked, ...open.ruled_out]) {
+      assert.equal(x.price_add, undefined, `${x.what} shows Merkle's price to a caller who may not see it`);
+      assert.ok(x.effort_weeks, 'the weeks are not pricing and stay');
+    }
+  });
+});
+
 describe('a scope that outgrew the offers', () => {
   /** An engagement whose gates add up past what the largest offer holds. */
   const outgrown = () => {
