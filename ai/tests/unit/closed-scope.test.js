@@ -40,6 +40,17 @@ function engagementAt(limits) {
         price_strategy: 'base_currency',
         languages,
       })),
+      /* The store estate is read off the derived topology, never off a count,
+         so a pack that promises N stores has to be built with a topology that
+         produces N — otherwise the gate never fires and the test proves a
+         cheaper engagement than the one the pack sells. */
+      topology: (limits.stores ?? 1) > 1
+        ? {
+            recommendation: 'expansion_stores',
+            separate_store_markets: CODES.slice(1, limits.stores),
+            additional_channel_stores: [],
+          }
+        : { recommendation: 'single_store_markets', separate_store_markets: [], additional_channel_stores: [] },
     },
     // A pack that promises complex variants has to be built with them, or the
     // catalogue gate never fires and the test proves the wrong engagement.
@@ -55,6 +66,10 @@ function engagementAt(limits) {
     migration: limits.migration ? { source_platform: limits.migration, seo_equity: 'none' } : {},
     // A pack that promises checkout blocks has to be built with them.
     checkout: limits.checkout ? { customisation: [limits.checkout] } : {},
+    /* And a pack that promises measurement past GA4's own events has to be
+       built with some, or the analytics gate never fires and the test proves a
+       pack that sells less than this one does. */
+    marketing: { analytics: limits.analytics_custom_events ? { custom_events: ['market_view', 'app_event'] } : {} },
   };
 }
 
