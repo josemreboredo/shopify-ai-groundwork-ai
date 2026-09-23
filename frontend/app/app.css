@@ -1553,7 +1553,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .scope-table th[scope="col"]:nth-child(3), .scope-row > td:nth-child(3) { width: 17rem; }
 .scope-table th[scope="col"]:nth-child(4), .scope-row > td:nth-child(4) { width: 6.5rem; }
 .scope-table tbody + tbody .epic-row > th { border-top: 1px solid var(--line-strong); }
-.epic-row > th { text-align: left; padding: 22px 12px 8px 0; width: auto; }
+.epic-row > th { text-align: left; padding: 0 12px 0 0; width: auto; }
 .epic-name { display: block; font-size: 1.02rem; letter-spacing: -0.01em; }
 /* A sentence, not a column label. It inherited `text-transform: uppercase` and
    0.08em of tracking from `th` and set neither back, so every one of the sixteen
@@ -1865,3 +1865,28 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    wrapper gives the overflow back. Measured, not assumed: 0 px of horizontal
    overflow at 1440 and at 390. */
 .table-scroll:has(> table.packs) { overflow: visible; }
+
+/* ── The backlog, one epic at a time ──────────────────────────────────────── */
+/* Sixteen epics with their stories inline came to 6,310px — forty-four per cent
+   of the offer page, in front of the four sections a consultant opens it for.
+   The counts in the summary answer "how many"; the stories answer "which", and
+   only one of those is worth the height by default. */
+/* One layer of spacing, not three. The row started at 148px for two lines of
+   text because the cell padded it (30px), the shared `details` rule added its
+   own margin (32px) and the summary padded it again (36px) — 98px of space
+   around 46px of content. The summary owns the row's height; the cell and the
+   details give theirs up. */
+.epic-row > th > details { margin: 0; }
+.epic-row > th > details > summary { padding: 16px 1.9rem 16px 0; position: relative; cursor: pointer; }
+.epic-row > th > details > summary::after { top: 14px; }
+.epic-row > th > details > summary::-webkit-details-marker { display: none; }
+.epic-row > th > details[open] { padding-bottom: 12px; }
+/* The stories table lives inside a `th` now, so it inherited that cell's
+   uppercase and 0.08em of tracking and set every one of the 118 story labels,
+   and every "the answers say so", in capitals. Same inheritance the epic
+   summary hit; the header row below sets its own case back. */
+.epic-stories {
+  width: 100%; margin: 4px 0 8px;
+  text-transform: none; letter-spacing: 0; font-weight: 400;
+}
+.epic-stories th[scope="col"] { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }

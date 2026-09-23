@@ -477,15 +477,11 @@ export function ScopeTable({ catalogue, totals, capacity }) {
       </ul>
 
       <div className="table-scroll" role="region" tabIndex={0} aria-label="What this offer builds, story by story">
+        {/* No column header out here. Every row of the outer table is one cell
+            spanning four, so "Story · What it delivers · In the price when ·
+            Adds" announced four columns that do not appear until an epic is
+            opened — and the opened epic brings its own header. */}
         <table className="compare scope-table">
-          <thead>
-            <tr>
-              <th scope="col">Story</th>
-              <th scope="col">What it delivers</th>
-              <th scope="col">In the price when</th>
-              <th scope="col">Adds</th>
-            </tr>
-          </thead>
           {catalogue.map((epic) => {
             /* The weeks are printed on the first story of a gate and on no other:
                a gate adds its cost once however many stories it carries, and a
@@ -500,31 +496,51 @@ export function ScopeTable({ catalogue, totals, capacity }) {
             return (
               <tbody key={epic.id}>
                 <tr className="epic-row">
-                  {/* A group header, not a data row: the epic, what it covers and
-                      how its stories divide, before the stories themselves. */}
+                  {/* Each epic opens on demand. Inline, the sixteen of them came
+                      to six thousand pixels — forty-four per cent of the page —
+                      which buries the four sections a consultant actually
+                      arrived for. The counts are the summary: a reader who wants
+                      the stories opens the epic, and one who wants to know how
+                      many there are never has to. */}
                   <th scope="rowgroup" colSpan={4}>
-                    <span className="epic-name">{epic.name}</span>
-                    <span className="epic-meta">
-                      {epic.summary} · {epic.always.length} always · {epic.conditional.length} on the answers · {gated.length} gated
-                    </span>
+                    <details>
+                      <summary>
+                        <span className="epic-name">{epic.name}</span>
+                        <span className="epic-meta">
+                          {epic.summary} · {epic.always.length} always · {epic.conditional.length} on the answers · {gated.length} gated
+                        </span>
+                      </summary>
+                      <table className="compare epic-stories">
+                        <thead>
+                          <tr>
+                            <th scope="col">Story</th>
+                            <th scope="col">What it delivers</th>
+                            <th scope="col">In the price when</th>
+                            <th scope="col">Adds</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {rows.map((st) => (
+                            <tr key={st.key} className={`scope-row scope-${st.when}`}>
+                              <td data-label="Story"><span className="scope-key">{st.key}</span></td>
+                              <td data-label="What it delivers">{st.label}</td>
+                              <td data-label="In the price when">
+                                {st.when === 'always' ? <span className="scope-when is-always">Always</span> : null}
+                                {st.when === 'answers' ? <><span className="scope-when is-answers">The answers say so</span> <Decided questions={st.decided_by} /></> : null}
+                                {st.when === 'gate' ? <span className="scope-when is-gated">{st.gate.label} gate</span> : null}
+                              </td>
+                              <td data-label="Adds">
+                                {st.when === 'gate' && st.firstOfGate && gateWeeks(st.gate.effort_weeks)
+                                  ? <span className="scope-cost">{gateWeeks(st.gate.effort_weeks)}</span>
+                                  : <span className="muted">{st.when === 'gate' ? '\u21b3 same gate' : '\u2014'}</span>}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </details>
                   </th>
                 </tr>
-                {rows.map((s) => (
-                  <tr key={s.key} className={`scope-row scope-${s.when}`}>
-                    <td data-label="Story"><span className="scope-key">{s.key}</span></td>
-                    <td data-label="What it delivers">{s.label}</td>
-                    <td data-label="In the price when">
-                      {s.when === 'always' ? <span className="scope-when is-always">Always</span> : null}
-                      {s.when === 'answers' ? <><span className="scope-when is-answers">The answers say so</span> <Decided questions={s.decided_by} /></> : null}
-                      {s.when === 'gate' ? <span className="scope-when is-gated"><span className="gate-name">{s.gate.label} gate</span></span> : null}
-                    </td>
-                    <td data-label="Adds">
-                      {s.when === 'gate' && s.firstOfGate && gateWeeks(s.gate.effort_weeks)
-                        ? <span className="scope-cost">{gateWeeks(s.gate.effort_weeks)}</span>
-                        : <span className="muted">{s.when === 'gate' ? '↳ same gate' : '—'}</span>}
-                    </td>
-                  </tr>
-                ))}
               </tbody>
             );
           })}
