@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.2.0 · offering 2.19.0
+> **Version:** question bank 1.3.0 · offering 2.20.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -2302,6 +2302,11 @@
 - [ ] Plus tard
 - [ ] Non
 - [ ] Pas encore certain
+
+**Q9.2.13** — Au-delà de la première, combien de vitrines ont besoin d’un design véritablement différent — une autre mise en page et une autre structure de pages, et non d’un autre contenu, d’autres images ou d’autres traductions ? *(recommended)*
+*Le contenu, les images et les traductions par marché sont inclus dans chaque offre. Un design différent, c’est un second thème, et ce n’est pas la même chose : la personnalisation par marché de Shopify ne va pas plus loin que le contenu des sections et la visibilité des blocs — jamais les réglages du thème, jamais les templates Liquid. Répondez 0 si un seul design sert tous les marchés et tous les stores.*
+
+> Answer:
 
 ### 9.3 Accessibilité
 

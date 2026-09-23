@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.19.0",
+  "version": "2.20.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -702,6 +702,24 @@
       }
     },
     {
+      "id": "theme_design",
+      "label": "A second storefront design",
+      "condition": "A market, channel or store needs a genuinely different storefront design — a different layout and page structure — rather than different content, imagery or translations. One design serves every market and every store in every pack, because Shopify's per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates: a genuinely different design is a second theme. The design system is not rebuilt — the second set is drawn against the same token layer — so this is the template work again, not the programme again. More than one customer-facing brand, each with its own full design system, is not this: that is Merkle Arc (rule 11.29).",
+      "inputs": [
+        "/design/extra_theme_designs"
+      ],
+      "modifier": "+Theme design",
+      "sources": [
+        "https://help.shopify.com/en/manual/markets/customizations/online-store",
+        "https://shopify.dev/docs/storefronts/themes/architecture",
+        "https://help.shopify.com/en/manual/organization-settings/expansion-stores"
+      ],
+      "verified": {
+        "on": "2026-09-23",
+        "source": "help.shopify.com"
+      }
+    },
+    {
       "id": "sku_complexity",
       "label": "Catalogue size and complexity",
       "condition": "Either arm fires it: 500 or more SKUs with complexity (two or more variant options, custom attributes, bundles or product sets), or 5,000 SKUs on their own whatever their shape — the point where Shopify stops showing filters on a collection and where the published benchmark moves from days of data work to weeks. Tiered by catalogue size, because the product model is built once and the data is handled per thousand",
@@ -1091,6 +1109,21 @@
         "min": 25000,
         "max": 45000
       }
+    },
+    {
+      "id": "+Theme design",
+      "gate": "theme_design",
+      "description": "Each storefront design beyond the first: every template drawn and built again against the same token layer, its own theme installed, configured and Theme Checked, and kept in step with the first on every release. Priced between the two storefront-design tiers on purpose — more than the bespoke sections of a key-screens design, less than a full template set from a design system, because the system itself is not built twice",
+      "effort_weeks": {
+        "min": 2,
+        "max": 8
+      },
+      "price_add": {
+        "min": 17000,
+        "max": 70000
+      },
+      "per_theme_weeks": 2,
+      "per_theme_price": 17000
     },
     {
       "id": "+Integration",
@@ -2294,7 +2327,7 @@
       {
         "id": "themes",
         "what": "Theme designs",
-        "gate": null,
+        "gate": "theme_design",
         "group": "Storefront",
         "shopify_limit": "Per-market theme customization reaches section content and block visibility only — never theme settings such as colour and typography, and never Liquid templates",
         "S": "Up to 1",
@@ -2307,7 +2340,13 @@
         "verified": {
           "on": "2026-09-17",
           "source": "help.shopify.com"
-        }
+        },
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Each further storefront design"
       },
       {
         "id": "checkout",
@@ -2568,6 +2607,17 @@
           "M",
           "L"
         ]
+      },
+      {
+        "id": "theme_design",
+        "gate": "theme_design",
+        "what": "Each further storefront design",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "One design serves every market and every store in every pack: per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates, so a genuinely different layout is a second theme. The design system is not built twice — the second set is drawn against the same token layer — which is what keeps this an add-on. More than one brand, each with its own full design system, is Merkle Arc instead (rule 11.29)."
       },
       {
         "id": "sku_complexity",

@@ -1,6 +1,6 @@
 {
   "$comment": "Single question list (implementation plan §1.3). Drives discovery/docs/client-questionnaire.md and discovery/docs/consultant-guide.md (npm run questionnaire:render), the discovery engine prompt mapping and the consultant interview. maps_to = JSON pointers into contracts/engagement.schema.json ('*' = every array item). feeds = gate:<id> | l_trigger:<id> | exit:<rule id> | app:<app signal id> from discovery/schema/offering.json. ask_when = \"stop\": asked only while an exit rule STOP is open. only_if = conditions on earlier answers without which the question does not apply in any mode (e.g. the mainland China questions). ask_if = conditions on earlier answers (any one is enough: equals, not_equals, in, includes_any, min, count_min, matches) that make a question feeding only app signals relevant in a quick interview. shopify = Shopify knowledge for the consultant (native features with minimum plan and docs, App Store category, app handles from discovery/schema/apps.json, extension points), never rendered in the client questionnaire. Enum options are read from the schema, never duplicated here.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "sections": [
     {
       "id": "0",
@@ -9143,6 +9143,39 @@
           "https://shopify.dev/docs/api/shop-minis",
           "https://shopify.dev/docs/storefronts/headless/mobile-apps"
         ]
+      }
+    },
+    {
+      "id": "Q9.2.13",
+      "subsection": "9.2",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "integer",
+      "text": "Beyond the first, how many storefronts need a genuinely different design — a different layout and page structure, rather than different content, imagery or translations?",
+      "help": "Different content, imagery and translations per market are in every offer. A different design is a second theme, and that is a different thing: Shopify's per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates. Answer 0 if one design serves every market and store.",
+      "maps_to": [
+        "/design/extra_theme_designs"
+      ],
+      "feeds": [
+        "gate:theme_design"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Per-market theme customization",
+            "plan": "advanced",
+            "plan_note": "Reaches section content and block visibility only — never theme settings or Liquid templates",
+            "docs": "https://help.shopify.com/en/manual/markets/customizations/online-store"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-23",
+          "source": "help.shopify.com",
+          "edition": "Spring '26"
+        }
+      },
+      "teach": {
+        "why": "Separates the cheap axis from the expensive one. Content, imagery and translation per market are settings on one theme and are included. A genuinely different design is a second theme to build, deploy and keep in step on every release. More than one brand, each with its own design system, is Merkle Arc instead (rule 11.29)."
       }
     },
     {

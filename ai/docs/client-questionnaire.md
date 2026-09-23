@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.2.0 · offering 2.19.0
+> **Version:** question bank 1.3.0 · offering 2.20.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
@@ -2302,6 +2302,11 @@
 - [ ] Later
 - [ ] No
 - [ ] Not sure yet
+
+**Q9.2.13** — Beyond the first, how many storefronts need a genuinely different design — a different layout and page structure, rather than different content, imagery or translations? *(recommended)*
+*Different content, imagery and translations per market are in every offer. A different design is a second theme, and that is a different thing: Shopify's per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates. Answer 0 if one design serves every market and store.*
+
+> Answer:
 
 ### 9.3 Accessibility
 

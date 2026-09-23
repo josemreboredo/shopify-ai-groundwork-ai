@@ -405,6 +405,23 @@ describe('the closed scope each pack sells', () => {
     }
   });
 
+  /* Per-unit modifiers clamp to their own band, and a band set too tight
+     silently cancels the per-unit price: markets once quoted four and fourteen
+     identically, and nothing could see it. A second design and a fourth must
+     not cost the same, so the band has to carry at least three of whatever the
+     unit is. */
+  test('a per-unit modifier can charge for more than one unit before its band clamps', () => {
+    const perUnit = offering.modifiers.filter((m) => Object.keys(m).some((k) => /^per_\w+_weeks$/.test(k)));
+    assert.ok(perUnit.length, 'no per-unit modifier found — has the mechanism been renamed?');
+    for (const m of perUnit) {
+      const key = Object.keys(m).find((k) => /^per_\w+_weeks$/.test(k));
+      const unit = m[key];
+      const units = m.effort_weeks.max / unit;
+      assert.ok(units >= 3,
+        `${m.id}: ${m.effort_weeks.max} weeks at ${unit} a unit clamps after ${units} — the third unit is free`);
+    }
+  });
+
   test('a ceiling quoted in a row is the ceiling a rule actually enforces', () => {
     const byId = new Map(offering.exit_rules.map((r) => [r.id, r]));
     for (const row of rows) {

@@ -463,6 +463,9 @@
             "storefront_design": {
               "$ref": "#/$defs/gate"
             },
+            "theme_design": {
+              "$ref": "#/$defs/gate"
+            },
             "sku_complexity": {
               "$ref": "#/$defs/gate"
             },
@@ -536,6 +539,7 @@
               "+Search (app)",
               "+Search (native)",
               "+Stores",
+              "+Theme design",
               "+Subscriptions (advanced)",
               "+Subscriptions (standard)",
               "+Support (extended)",
@@ -2947,6 +2951,11 @@
         },
         "custom_design": {
           "type": "boolean"
+        },
+        "extra_theme_designs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How many storefronts need a genuinely different design beyond the first \u2014 a different layout and page structure, not different content, imagery or translations. Per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates, so a genuinely different design is a second theme to build, deploy and keep in step. A design-system programme per brand is not this: that is Merkle Arc (rule 11.29)."
         },
         "bespoke_sections": {
           "type": "integer",

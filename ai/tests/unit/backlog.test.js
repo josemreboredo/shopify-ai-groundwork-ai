@@ -57,6 +57,9 @@ function maximalEngagement() {
   doc.payments = { ...doc.payments, accelerated_checkouts: ['shop_pay', 'apple_pay', 'google_pay'] };
   doc.shipping = { ...doc.shipping, delivery_methods: ['standard_shipping', 'express', 'local_delivery', 'pickup_in_store', 'pickup_points', 'scheduled_delivery_slots'], model: 'hybrid', provider_3pl: 'ShipBob', fulfilment_locations: 3, routing_rules: ['closest_location', 'custom_rule_function'], rates: ['flat', 'free_above_threshold', 'carrier_calculated'], special_rules: ['Hazardous goods'], returns: { ...doc.shipping.returns, window_days: 30, return_rate_pct: 12, label: 'qr_drop_off', shipping_paid_by: 'merchant', exchange_types: ['any_product', 'store_credit_first'], international_returns: true, inspection_required: true, reason_tracking: true, b2b_returns_online: true } };
   doc.b2b = { ...doc.b2b, volume_discounts: true, payment_terms: ['net_terms'] };
+  // A second storefront design: one market that needs a different layout
+  // rather than different content, which is a second theme to keep in step.
+  doc.design = { ...doc.design, extra_theme_designs: 1 };
   // Customer service: the bank had one question on it and that one was about
   // China, so a client running a helpdesk and taking phone orders was scope
   // nobody could see.

@@ -2161,6 +2161,11 @@ Managing Director, with the Finance Controller informed.
 - [ ] no
 - [ ] not sure yet
 
+**Q9.2.13** — Beyond the first, how many storefronts need a genuinely different design — a different layout and page structure, rather than different content, imagery or translations? *(recommended)*
+*Different content, imagery and translations per market are in every offer. A different design is a second theme, and that is a different thing: Shopify’s per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates. Answer 0 if one design serves every market and store.*
+
+Answer: 0
+
 ### 9.3 Accessibility
 
 **Q9.3.1** — Which accessibility standard applies? *(required)*

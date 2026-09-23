@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 2.19.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.3.0 · offering 2.20.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 126 of 308 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 127 of 309 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -3144,6 +3144,16 @@ Sources: https://shopify.dev/docs/api/shop-minis · https://shopify.dev/docs/sto
 |---|---|---|---|
 | Shop Minis React SDK | Basic |  | https://shopify.dev/docs/api/shop-minis |
 *Verified 2026-09-21 against shopify.dev (Spring '26).*
+
+**Q9.2.13** — Beyond the first, how many storefronts need a genuinely different design — a different layout and page structure, rather than different content, imagery or translations? *(recommended · client)*
+Drives: gate A second storefront design
+
+**Why it matters.** Separates the cheap axis from the expensive one. Content, imagery and translation per market are settings on one theme and are included. A genuinely different design is a second theme to build, deploy and keep in step on every release. More than one brand, each with its own design system, is Merkle Arc instead (rule 11.29).
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Per-market theme customization | Advanced | Reaches section content and block visibility only — never theme settings or Liquid templates | https://help.shopify.com/en/manual/markets/customizations/online-store |
+*Verified 2026-09-23 against help.shopify.com (Spring '26).*
 
 ### 9.3 Accessibility
 

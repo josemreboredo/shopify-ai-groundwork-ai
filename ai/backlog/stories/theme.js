@@ -258,6 +258,31 @@ export default [
     agent_prompt: (doc) => `Build the component library for ${storeName(doc)} from one token layer. No hex values, font names or radii inside components. Compose templates from components rather than tracing each page.${doc.design?.motion ? ' Implement the specified motion and interaction, and honour prefers-reduced-motion.' : ''} Add component tests and an isolated preview. Present it for designer approval before the templates are built out.`,
   },
   {
+    /* One design serves every market and every store in every pack, so a second
+       one is a second theme: Shopify's per-market customisation reaches section
+       content and block visibility only, never theme settings and never Liquid
+       templates. The design system is not built twice — this set is drawn
+       against the same token layer, which is what keeps it an add-on rather
+       than a second programme. */
+    key: 'LWC-THM-016',
+    epic: 'theme',
+    title: 'Build each further storefront design against the same token layer',
+    user_story: 'As a brand with a storefront that has to look genuinely different in one market or channel, I want a second design built on the same design system, so that it is a different layout rather than a second brand to maintain',
+    acceptance_criteria: [
+      'Given the approved second design, when it is built, then every template in the set is composed from the existing token layer and no new tokens, type ramp or colour values are introduced',
+      'Given the second theme, when it is installed, then it has its own theme settings and passes Theme Check and the accessibility checks, and the first theme is unchanged',
+      'Given both designs, when a shared component changes, then the change is applied to each and the release notes name every theme it went to',
+    ],
+    gaia_tier: 'T3',
+    points: 13,
+    owner: 'developer',
+    depends_on: ['LWC-THM-001'],
+    spec_refs: ['/design/extra_theme_designs'],
+    gates: ['theme_design'],
+    applies: (doc) => (doc.design?.extra_theme_designs ?? 0) > 0,
+    agent_prompt: (doc) => `Build ${doc.design?.extra_theme_designs ?? 1} further storefront design${(doc.design?.extra_theme_designs ?? 1) === 1 ? '' : 's'} for ${storeName(doc)} against the token layer the first one already established. Reuse the tokens and the components; change the layout and the page structure, not the system. Each design is its own theme with its own settings — theme licences are not shared between stores — so plan how a shared component change reaches every one of them before the first is signed off. If what is being asked for is a second brand with its own full design system, stop: that is a design-system programme per brand and it leaves the offers (rule 11.29).`,
+  },
+  {
     key: 'LWC-THM-013',
     epic: 'theme',
     title: 'Render editorial content from Shopify metaobjects',

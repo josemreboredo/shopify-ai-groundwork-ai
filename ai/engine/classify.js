@@ -174,6 +174,25 @@ const GATE_EVALUATORS = {
     };
   },
 
+  /* One design serves every market and every store in every pack, and that is a
+     Shopify fact rather than a Merkle line: per-market customisation reaches
+     section content and block visibility only, never theme settings and never
+     Liquid templates. So a genuinely different layout is a second theme — to
+     build, deploy, Theme Check and keep in step on every release, for ever.
+     The design system is not built twice; the second set is drawn against the
+     same token layer, which is why it prices between the two storefront-design
+     tiers. A design-system programme per brand is not this and leaves the
+     offers entirely (rule 11.29). */
+  theme_design: (doc) => {
+    const extra = doc.design?.extra_theme_designs ?? 0;
+    return {
+      active: extra > 0,
+      evidence: extra > 0
+        ? `${extra} storefront design${extra === 1 ? '' : 's'} beyond the first`
+        : 'One design serves every market and store',
+    };
+  },
+
   languages: (doc) => {
     // Translate & Adapt auto-translates two, and a Swiss engagement is DE/FR/IT
     // as a matter of course — so three are included and the gate opens at the
@@ -707,6 +726,7 @@ function modifierFor(gate, evaluated, doc) {
     integration: { count: countedIntegrations(doc).length, free: 0, weeks: 'per_integration_weeks', price: 'per_integration_price' },
     retail_pos: { count: retailLocations(doc), free: 0, weeks: 'per_location_weeks', price: 'per_location_price' },
     store_estate: { count: storesBeyondTheFirst(doc), free: 0, weeks: 'per_store_weeks', price: 'per_store_price' },
+    theme_design: { count: doc.design?.extra_theme_designs ?? 0, free: 0, weeks: 'per_theme_weeks', price: 'per_theme_price' },
   };
   const scale = SCALES[gate.id];
   if (!scale) return modifier;
