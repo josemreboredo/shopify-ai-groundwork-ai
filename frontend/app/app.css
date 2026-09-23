@@ -207,6 +207,9 @@ li::marker { color: var(--red); }
 .panel li { margin: 5px 0; font-size: 0.88rem; padding-left: 16px; position: relative; }
 .panel li::before { content: ''; position: absolute; left: 0; top: 8px; width: 7px; height: 7px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 .callout { background: var(--panel); border-left: 3px solid var(--red); padding: 12px 16px; margin: 12px 0; }
+/* The first-estimate line sits in the dark page head, where the panel colour
+   would be a light block on a dark band; it takes the head's own colours. */
+.page-head .estimate-note { background: transparent; color: inherit; border-left-color: currentColor; max-width: 72ch; }
 /* The same callout inside the dark page head: --panel is a light grey, so on
    black it rendered dark text on a dark ground and simply could not be read. */
 .page-head .callout { background: rgba(255, 255, 255, 0.08); color: #fff; }
@@ -2080,6 +2083,9 @@ h3.sub {
 .limits-gain td, .limits-gain th[scope="row"] { padding-right: var(--s-6); }
 .limits-gain .limits-value { color: var(--ink); }
 .limits-gain .limits-from::after { content: ' \2192'; color: var(--red); font-weight: 700; }
+/* A subject the step up leaves behind. Quiet, but not muted into nothing: it is
+   the row a client would otherwise find out about after signing. */
+.limits-loss { font-weight: 700; font-size: var(--t-s); color: var(--red); }
 .limits-cap { color: var(--muted); font-size: var(--t-xs); line-height: var(--lh-normal); }
 .limits-addon {
   display: block; margin-top: var(--s-1); font-size: var(--t-xs); color: var(--muted);
@@ -2089,7 +2095,9 @@ h3.sub {
 /* ── What can be bought on top of one pack ───────────────────────────────── */
 .addon-table { margin-top: var(--s-4); }
 .addon-table th[scope="col"]:first-child { width: 20rem; }
-.addon-table th[scope="col"]:nth-child(2) { width: 11rem; }
+/* Wide enough for "from +1.5 weeks per store": a per-unit figure is longer
+   than a span, and at 11rem it ran into the price column beside it. */
+.addon-table th[scope="col"]:nth-child(2) { width: 16rem; }
 .addon-table tbody tr { border-top: 1px solid var(--line); }
 .addon-weeks { font-weight: 700; font-size: var(--t-base); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .addon-band { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }

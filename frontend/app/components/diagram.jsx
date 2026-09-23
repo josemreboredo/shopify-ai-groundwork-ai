@@ -465,7 +465,7 @@ const gateWeeks = (w) => (w ? `+${w.min === w.max ? w.min : `${w.min}–${w.max}
  *
  * @param {{ catalogue: object[], totals: object, capacity: {min:number,max:number}|null, offerCode: string }} props
  */
-export function ScopeTable({ catalogue, totals, capacity }) {
+export function ScopeTable({ catalogue, totals }) {
   if (!catalogue?.length) return null;
   return (
     <div className="scope-epics">
@@ -473,7 +473,7 @@ export function ScopeTable({ catalogue, totals, capacity }) {
         <li><strong>{totals.epics}</strong><span>epics, every one delivered by named stories</span></li>
         <li><strong>{totals.always}</strong><span>stories in every engagement, whatever the answers</span></li>
         <li><strong>{totals.conditional}</strong><span>more when the answers call for them — inside this band</span></li>
-        <li><strong>{totals.gated}</strong><span>behind a scope gate{capacity ? `, priced past ${capacity.min}–${capacity.max} weeks` : ''}</span></li>
+        <li><strong>{totals.gated}</strong><span>behind a scope gate, each added at its own weeks and price</span></li>
       </ul>
 
       <div className="table-scroll" role="region" tabIndex={0} aria-label="What this offer builds, story by story">
@@ -958,7 +958,12 @@ export function ScopeLimits({ rows = [], code, previous, gainsOnly = false }) {
      column; the step-up section wants only the subjects that grew, and both
      values, because "up to 1 market → up to 3 markets" is the answer and the
      new figure alone is not. */
-  const kept = gainsOnly ? held.filter((r) => mine(r) !== theirs(r)) : held;
+  /* The step up shows what is lost as well as what is gained: L carries no
+     migration where M carries WooCommerce, and a table of gains only let a
+     client find that out after signing. */
+  const kept = gainsOnly
+    ? rows.filter((r) => (mine(r) || theirs(r)) && mine(r) !== theirs(r))
+    : held;
   if (!kept.length) return null;
 
   const groups = new Map();
@@ -1036,7 +1041,11 @@ export function ScopeLimits({ rows = [], code, previous, gainsOnly = false }) {
                       {theirs(row) ?? <span className="muted">Not in it</span>}
                     </td>
                   ) : null}
-                  <td data-label="This offer holds"><span className="limits-value">{mine(row)}</span></td>
+                  <td data-label="This offer holds">
+                    {mine(row)
+                      ? <span className="limits-value">{mine(row)}</span>
+                      : <span className="limits-loss">Not in it{row.addon?.includes(code) ? ' — an add-on here' : ''}</span>}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -1071,14 +1080,18 @@ export function AddonTable({ addons = [], code, pricing, currency, weeks, band }
 
   /* Longest first. A consultant scanning for what moves a deadline is looking
      for the big ones, and alphabetical order hides them among the half-weeks. */
-  const ordered = [...mine].sort((a, b) => (b.weeks?.max ?? 0) - (a.weeks?.max ?? 0));
+  /* A per-unit add-on sorts by one unit, not by its limit: a store is a week
+     and a half, and sorting it by the thirty weeks nine stores could reach put
+     it above a Magento replatform. */
+  const size = (a) => (a.per_unit ? a.per_unit.weeks : (a.weeks?.max ?? 0));
+  const ordered = [...mine].sort((a, b) => size(b) - size(a));
 
   return (
     <div className="table-scroll" role="region" tabIndex={0} aria-label="What can be bought on top of this offer">
       <table className="compare addon-table">
         <caption className="sr-only">
-          Every add-on this offer can buy, longest first. The weeks are added to the offer&rsquo;s own,
-          once the scope-gate work the band already holds is used up.
+          Every add-on this offer can buy, longest first. Each adds its own weeks and price to the
+          offer&rsquo;s own.
         </caption>
         <thead>
           <tr>
@@ -1120,13 +1133,17 @@ export function AddonTable({ addons = [], code, pricing, currency, weeks, band }
                 ) : null}
               </th>
               <td data-label="Adds">
-                {a.weeks?.max
-                  ? <span className="addon-weeks">+{weeks(a.weeks)} week{a.weeks.max === 1 ? '' : 's'}</span>
-                  : <span className="muted">Scoped per engagement</span>}
+                {a.per_unit
+                  ? <span className="addon-weeks">{a.per_unit.from ? 'from ' : ''}+{a.per_unit.weeks} week{a.per_unit.weeks === 1 ? '' : 's'} per {a.per_unit.noun}</span>
+                  : a.weeks?.max
+                    ? <span className="addon-weeks">+{weeks(a.weeks)} week{a.weeks.max === 1 ? '' : 's'}</span>
+                    : <span className="muted">Scoped per engagement</span>}
               </td>
               {pricing ? (
                 <td data-label="Internal">
-                  {a.price ? <span className="addon-band">{band(a.price, currency)}</span> : <span className="muted">&mdash;</span>}
+                  {a.per_unit?.price
+                    ? <span className="addon-band">{a.per_unit.from ? 'from ' : ''}{currency} {Math.round(a.per_unit.price / 100) / 10}k per {a.per_unit.noun}</span>
+                    : a.price ? <span className="addon-band">{band(a.price, currency)}</span> : <span className="muted">&mdash;</span>}
                 </td>
               ) : null}
             </tr>
@@ -1158,7 +1175,10 @@ export function AddonList({ addons, pricing, currency, weeks, band }) {
   return (
     <ul className="addons">
       {addons.map((a) => {
-        const headline = cost(a.weeks, a.price);
+        const headline = a.per_unit
+          ? [`${a.per_unit.from ? 'from ' : ''}+${a.per_unit.weeks} week${a.per_unit.weeks === 1 ? '' : 's'} per ${a.per_unit.noun}`,
+            ...(pricing && a.per_unit.price ? [`${currency} ${Math.round(a.per_unit.price / 100) / 10}k per ${a.per_unit.noun}`] : [])].join(' · ')
+          : cost(a.weeks, a.price);
         return (
           <li key={a.id} className="addon">
             <h3>{a.what}</h3>

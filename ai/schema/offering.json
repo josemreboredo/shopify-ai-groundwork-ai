@@ -4,7 +4,16 @@
   "currency": "CHF",
   "pricing": {
     "weekly_rate": 10500,
-    "$comment": "One rate for every week of scope-gate work, internal and never client-facing. Every modifier’s price is its weeks at this rate, so a quote is the Foundation base plus weeks the client can see, at a price nobody chose gate by gate. It replaced prices set one by one, which drifted to CHF 7–13k a week and made the riskiest work — migrations, B2B, design — the cheapest. The audit of 2026-09-23 measured the packs at CHF 10.5–10.8k a week at their midpoints; this is that rate."
+    "people_per_week": 2,
+    "$comment": "One rate for every week of scope-gate work, internal and never client-facing. Every modifier’s price is its weeks at this rate, so a quote is the Foundation base plus weeks the client can see, at a price nobody chose gate by gate. It replaced prices set one by one, which drifted to CHF 7–13k a week and made the riskiest work — migrations, B2B, design — the cheapest. The audit of 2026-09-23 measured the packs at CHF 10.5–10.8k a week at their midpoints; this is that rate. people_per_week: What a week at the rate buys, said the way a client can compare it: about two people full time, at the CHF 100–150 an hour DACH market rates for a Shopify specialist (Greenblut, read 2026-09-23). It turns \"CHF 40k against a CHF 7k package\" into \"two people for five weeks against twelve to thirty hours\" — a different product, not a dearer one."
+  },
+  "estimate": {
+    "line": "A first estimate to open the conversation, built from the scope the answers describe. The delivery team estimates the approach and gives the final figure; contingency and services such as Design and QA testing are added in the proposal.",
+    "$comment": "The tool’s purpose in the Lead Consultant’s words (2026-09-23): packs are what a conversation opens with; the RFP and its answers give an estimate of the scope identified; after discovery the scope is closed. The same sentence is on the offering pages and in the deck, so neither can drift into sounding like a fixed price."
+  },
+  "after_launch": {
+    "title": "After launch: the Grow retainer",
+    "line": "Run, optimise and the Phase 2 roadmap — offered with every pack after the 15 days of hypercare, and agreed before build starts. Its price is kept open and quoted with the proposal."
   },
   "offers": {
     "S": {
@@ -12,7 +21,7 @@
       "for_whom": "An established brand launching direct-to-consumer, or relaunching it properly — a retailer, a wholesaler or a label whose range already sells offline, in Switzerland first and in its languages. What it needs is a store that sells from day one, built the way a larger one would be, not a test of whether ecommerce works at all.",
       "delivery_track": "liquid",
       "build_label": "Liquid · Theme",
-      "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
+      "triggered_by": "An estimate below the Scale floor: the Foundation, with whatever goes past it as add-ons",
       "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
         "min": 40000,
@@ -180,7 +189,7 @@
       "for_whom": "A brand that already sells and cannot scale. The countries and the catalogue are in place, and one back-office system — an ERP, a PIM or an OMS — has to be wired to the store; each further system is an add-on. What holds the operation back is the storefront in front of it and the wiring behind it.",
       "delivery_track": "liquid",
       "build_label": "Liquid · Customisable",
-      "triggered_by": "2 or more scope gates",
+      "triggered_by": "An estimate from the Scale floor, or a further store — the recommended start for a brand that already sells",
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
         "min": 65000,
@@ -365,7 +374,7 @@
       "for_whom": "A brand already selling professionally — often on an enterprise platform — that needs more than one store, a storefront built out template by template, and measurement that stands up. The move to Shopify has to land on a store that performs at least as well, and is measured to prove it; the replatform itself is quoted beside the pack, by the platform it comes from.",
       "delivery_track": "liquid",
       "build_label": "Custom Liquid · Hydrogen",
-      "triggered_by": "A headless storefront, or scope that adds up to more than an M can hold — the largest of the three Shopify offers",
+      "triggered_by": "A headless storefront, or an estimate from the Growth floor — the largest of the three Shopify offers",
       "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 140000,

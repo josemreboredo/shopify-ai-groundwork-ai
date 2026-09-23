@@ -100,11 +100,14 @@ export default function Offering({ loaderData }) {
       <header className="page-head">
         <p className="eyebrow">Internal · signed-in consultants</p>
         <h1>Three offers, one engine</h1>
-        <p className="answer-line">The client&rsquo;s answers decide which offer applies. Nobody picks it by hand.</p>
+        <p className="answer-line">Three packs to open the conversation; the client&rsquo;s answers decide what the estimate is.</p>
         <p className="lede">
           This page is the map. Each offer has its own page: what it covers, how it meets Shopify, and what moves
-          an engagement out of it.
+          an engagement out of it. An engagement is named after the pack its budget reaches, plus whatever goes
+          past that pack&rsquo;s scope as add-ons — so a re-estimate that finds a second store reads as the same
+          pack with a store more.
         </p>
+        <p className="callout estimate-note">{view.estimate}</p>
         <ul className="stats">
           {view.offers.map((o) => (
             <li key={o.code} className={o.most_common ? 'stat-common' : undefined}>
@@ -215,12 +218,12 @@ export default function Offering({ loaderData }) {
             they take the width the table already uses and can be scanned;
             run together, they were read by nobody. */}
         <aside className="closed-note">
-          <p className="closed-head"><strong>Closed.</strong> A pack holds exactly this.</p>
+          <p className="closed-head"><strong>The scope this estimate assumes.</strong> A pack holds exactly this.</p>
           <ol className="closed-points">
             <li>
-              <h3>Past a ceiling is quoted on top</h3>
-              <p>Never assumed in. A test builds an engagement that takes exactly these limits and checks the
-              engine still calls it that pack.</p>
+              <h3>Past a ceiling is an add-on</h3>
+              <p>Never assumed in, and priced at its own weeks. A test builds an engagement that takes exactly
+              these limits and checks the engine quotes it inside the pack&rsquo;s own band.</p>
             </li>
             <li>
               <h3>A row states <em>how much</em>, not <em>which</em></h3>
@@ -247,8 +250,8 @@ export default function Offering({ loaderData }) {
           <h2>Add-on services</h2>
           <p className="lede">
             Everything that can be bought on top of a pack: more of what a pack already holds once its
-            ceiling is reached, and the capabilities no pack contains at all. Each is scoped and quoted on
-            its own — the pack is never quietly upgraded to carry it.
+            ceiling is reached, and the capabilities no pack contains at all. Each adds its own weeks and price
+            to whichever pack it is bought with — the pack is never quietly upgraded to carry it.
           </p>
           <AddonList addons={view.addons} pricing={view.pricing} currency={currency} weeks={weeks} band={band} />
           {view.pricing ? null : (

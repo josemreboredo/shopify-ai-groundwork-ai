@@ -17,7 +17,8 @@
  */
 
 import { offering } from '../schema/index.js';
-import { gateCapacity } from '../engine/classify.js';
+import { gateCapacity, classifyOffer } from '../engine/classify.js';
+import { engagementAt } from '../engine/promise.js';
 import { PLAN_RULES, PLAN_LABEL } from '../engine/plan.js';
 
 const money = (band) => (band ? { min: band.min, max: band.max, ...(band.open_ended ? { open_ended: true } : {}) } : undefined);
@@ -67,6 +68,33 @@ function plainRule(c) {
 
 /** Every modifier that prices a gate, in the order the schema lists them. */
 const modifiersFor = (gateId) => offering.modifiers.filter((m) => m.gate === gateId);
+
+/** The unit a per-unit modifier counts, by the field that prices it. */
+const UNIT = {
+  per_market_weeks: 'market', per_store_weeks: 'store', per_theme_weeks: 'design',
+  per_integration_weeks: 'integration', per_location_weeks: 'location', per_language_weeks: 'language',
+};
+
+/*
+ * What one more unit adds, for an add-on priced per unit.
+ *
+ * Its band runs from one unit to the most its limit allows — "0.75–20 weeks"
+ * for markets — which is true and useless on a page: the client is buying one
+ * more market, not twenty. "From" where other answers raise it (a market meets
+ * a bespoke template set, a store re-wires every integration).
+ */
+function perUnit(mods, pricing) {
+  if (mods.length !== 1) return undefined;
+  const [m] = mods;
+  const key = Object.keys(m).find((k) => UNIT[k]);
+  if (!key) return undefined;
+  return {
+    noun: UNIT[key],
+    weeks: m[key],
+    from: Boolean(m.per_unit_surcharge?.length),
+    ...(pricing ? { price: m[key.replace(/_weeks$/, '_price')] } : {}),
+  };
+}
 
 /** The span a gate's modifiers cover, cheapest tier to dearest. */
 const span = (mods, key) => ({
@@ -120,6 +148,7 @@ function addonService({ id, gate, what, description, available_in: availableIn, 
     ...(note ? { note } : {}),
     ...(mods.length ? { weeks: span(mods, 'effort_weeks') } : {}),
     ...(mods.length && pricing ? { price: money(span(mods, 'price_add')) } : {}),
+    ...(perUnit(mods, pricing) ? { per_unit: perUnit(mods, pricing) } : {}),
     ...(mods.length > 1 ? {
       tiers: mods.map((m) => ({
         label: (m.tier ?? m.id).replace(/_/g, ' '),
@@ -128,6 +157,16 @@ function addonService({ id, gate, what, description, available_in: availableIn, 
         ...(pricing ? { price: money(m.price_add) } : {}),
       })),
     } : {}),
+  };
+}
+
+/** L's own promise with a heavy replatform beside it, as the engine quotes it. */
+function replatform(pricing) {
+  const o = classifyOffer(engagementAt({ ...offering.closed_scope.limits.L, migration: 'sfcc' }));
+  return {
+    from: 'Salesforce Commerce Cloud, Adobe Commerce or a custom platform',
+    weeks: o.duration_weeks,
+    ...(pricing ? { price_band: money(o.price_band) } : {}),
   };
 }
 
@@ -154,6 +193,13 @@ export function offeringView({ pricing = false } = {}) {
        and letting the client pick the cheapest. It is a recommendation, not a
        count — nothing measured says most engagements land here. */
     ...(o.most_common ? { most_common: true } : {}),
+    /* What a week at the rate buys, in people rather than francs: the figure a
+       client can hold against a boutique's twelve-hour package. */
+    team: offering.pricing.people_per_week,
+    /* The deal an enterprise replatform actually sees: L plus a heavy
+       migration, computed by the engine from L's own promise, so the page
+       compares like with like against competitors who quote the move whole. */
+    ...(code === 'L' ? { with_replatform: replatform(pricing) } : {}),
     triggered_by: o.triggered_by,
     base_scope: o.base_scope.split(' · '),
     duration_weeks: o.duration_weeks,
@@ -257,6 +303,8 @@ export function offeringView({ pricing = false } = {}) {
   return {
     version: offering.version,
     pricing,
+    estimate: offering.estimate.line,
+    after_launch: { title: offering.after_launch.title, line: offering.after_launch.line },
     offers,
     classification: offering.classification.map((c) => ({ order: c.order, when: c.when, offer: c.offer, plain: plainRule(c), ...(c.apply_modifier ? { with_modifier: true } : {}) })),
     gates,

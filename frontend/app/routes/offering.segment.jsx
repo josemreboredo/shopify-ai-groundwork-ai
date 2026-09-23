@@ -40,6 +40,7 @@ const jumpFor = (previous) => [
   ...(previous ? [['extra', `Over ${previous.code}`]] : []),
   ['addons', 'Buy on top'],
   ['boundaries', 'Not in it'],
+  ['after-launch', 'After launch'],
   ['stories', 'Every story'],
   ['scale', 'Where it sits'],
 ];
@@ -129,7 +130,6 @@ export default function OfferingSegment({ loaderData }) {
      except by opening two tabs. */
   const i = view.offers.findIndex((o) => o.code === offer.code);
   const previous = i > 0 ? view.offers[i - 1] : null;
-  const envelope = segment.offer.gate_capacity_weeks;
 
   return (
     <main id="main" className="story offering">
@@ -147,15 +147,12 @@ export default function OfferingSegment({ loaderData }) {
           {/* A headline "0" reads as a missing number, not as a fact. On the
               offer that carries no gate work the fact is the rule itself: a
               gate here is added on top. */}
-          <li>
-            {offer.gate_capacity_weeks.max === 0
-              ? <><strong className="stat-words">On top</strong><span>this band holds no scope gates — one is added to the weeks and the price</span></>
-              : <><strong>{weeks(offer.gate_capacity_weeks)}</strong><span>weeks of scope gates this band already holds</span></>}
-          </li>
+          <li><strong>≈{offer.team} people</strong><span>full time for those weeks — what the band pays for</span></li>
           {view.pricing && offer.price_band
             ? <li><strong>{band(offer.price_band, currency)}</strong><span>internal price band — never in a client document</span></li>
             : <li><strong>{TRACK[offer.delivery_track] ?? offer.delivery_track}</strong><span>how the storefront is built</span></li>}
         </ul>
+        <p className="callout estimate-note">{view.estimate}</p>
         <nav className="jump" aria-label="On this page">
           {jumpFor(previous).map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
         </nav>
@@ -208,7 +205,8 @@ export default function OfferingSegment({ loaderData }) {
         <section id="extra">
           <h2>What you get over {previous.name}</h2>
           <p className="lede">
-            Only the subjects where this offer holds more. Everything else is the same in both, so it is
+            Only the subjects where the two differ: what this offer holds more of, and — marked — what it
+            leaves to an add-on that {previous.name} carries. Everything else is the same in both, so it is
             not what the step up is buying.
           </p>
           <ScopeLimits rows={view.closed_scope} code={offer.code} previous={previous} gainsOnly />
@@ -222,11 +220,17 @@ export default function OfferingSegment({ loaderData }) {
       <section id="addons">
         <h2>What can be bought on top, and what it adds</h2>
         <p className="lede">
-          Each is scoped and quoted on its own, longest first. The weeks are added to this offer&rsquo;s
-          own once the scope-gate work the band already holds is used up — {envelope.max === 0
-            ? 'and this band holds none, so the first one is added in full'
-            : `up to ${envelope.min}–${envelope.max} weeks of it`}.
+          Each adds its own weeks and price to this offer, longest first — whatever else is bought. The
+          engagement is then named after this offer plus the add-ons, never quietly upgraded to the next one.
         </p>
+        {offer.with_replatform ? (
+          <p className="callout">
+            With a replatform from {offer.with_replatform.from}: <strong>{weeks(offer.with_replatform.weeks)} weeks</strong>
+            {view.pricing && offer.with_replatform.price_band ? <> · <strong>{band(offer.with_replatform.price_band, currency)}</strong></> : null}
+            {' '}— this offer&rsquo;s own promise with a heavy migration beside it, the figure a client compares with a
+            competitor&rsquo;s replatform quote.
+          </p>
+        ) : null}
         <AddonTable
           addons={view.addons}
           code={offer.code}
@@ -246,6 +250,14 @@ export default function OfferingSegment({ loaderData }) {
         <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} assumes={offer.assumes} />
       </section>
 
+      {/* The next step, named. The retainer was "mentioned but kept open" and
+          so mentioned nowhere a consultant could point at; its price stays
+          open, its existence does not. */}
+      <section id="after-launch">
+        <h2>{view.after_launch.title}</h2>
+        <p className="lede">{view.after_launch.line}</p>
+      </section>
+
       <section id="stories">
         <h2>The backlog, story by story</h2>
         <p className="lede">
@@ -259,12 +271,12 @@ export default function OfferingSegment({ loaderData }) {
             gate adds weeks, is that on top of the offer or already inside it?
             The answer differs per offer and it used to be a grey line under the
             table, which is where a reader looks last. */}
-        <p className={`gate-rule ${envelope.max === 0 ? 'on-top' : 'inside'}`}>
-          {envelope.max === 0
-            ? `This offer holds no scope-gate work at all. A gate here is an add-on: its weeks and its price are added on top of the ${weeks(offer.duration_weeks)} weeks above. One gate stays in this offer; two or more make it an ${view.offers.find((o) => o.code === 'M')?.name ?? 'M'}.`
-            : `This offer already holds ${weeks(envelope)} weeks of scope-gate work inside its band. A gate that fits in there costs nothing more. Only what goes past it is added on top of the ${weeks(offer.duration_weeks)} weeks above.`}
+        <p className="gate-rule on-top">
+          Every scope gate adds its own weeks and price: the estimate is the Foundation build plus each gate the
+          answers open. What this offer includes is inside its {weeks(offer.duration_weeks)} weeks; anything past it
+          is an add-on, with its weeks and its price on top.
         </p>
-        <ScopeTable catalogue={catalogue} totals={totals} capacity={offer.gate_capacity_weeks} />
+        <ScopeTable catalogue={catalogue} totals={totals} />
       </section>
 
       <section id="scale">

@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import { classifyOffer } from '../../engine/classify.js';
 import { offeringView } from '../../shared/offering-view.js';
 import { offering } from '../../schema/index.js';
+import { engagementAt } from '../../engine/promise.js';
 
 describe('offering view', () => {
   /* This guards the mechanism, not who may read it: with pricing off, not one
@@ -241,5 +242,41 @@ describe('the page explains the rule the engine actually follows', () => {
       assert.ok(rule, `the rule that names an engagement ${code} by its budget is published`);
       assert.match(rule.plain, new RegExp(offering.offers[code].name));
     }
+  });
+});
+
+describe('the packs as packaging for a conversation', () => {
+  const view = offeringView();
+  const priced = offeringView({ pricing: true });
+
+  test('every page states it is a first estimate, in the offering’s own words', () => {
+    assert.equal(view.estimate, offering.estimate.line);
+    assert.match(view.estimate, /first estimate/i);
+    assert.match(view.estimate, /contingency/);
+    assert.match(view.estimate, /Design and QA testing/);
+    assert.equal(view.after_launch.title, offering.after_launch.title);
+    assert.match(view.after_launch.line, /price is kept open/);
+  });
+
+  test('a per-unit add-on says what one more unit adds, and its price only to pricing callers', () => {
+    const markets = view.addons.find((a) => a.gate === 'markets');
+    const mod = offering.modifiers.find((m) => m.id === '+Markets');
+    assert.deepEqual(markets.per_unit, { noun: 'market', weeks: mod.per_market_weeks, from: true });
+    assert.equal(priced.addons.find((a) => a.gate === 'markets').per_unit.price, mod.per_market_price);
+    assert.equal(view.addons.find((a) => a.gate === 'integration').per_unit.from, false, 'nothing raises an integration');
+    assert.equal(view.addons.find((a) => a.gate === 'migration').per_unit, undefined, 'a tiered add-on is not per unit');
+  });
+
+  test('L shows the replatform figure the engine itself quotes', () => {
+    const quoted = classifyOffer(engagementAt({ ...offering.closed_scope.limits.L, migration: 'sfcc' }));
+    const l = priced.offers.find((o) => o.code === 'L');
+    assert.deepEqual(l.with_replatform.weeks, quoted.duration_weeks);
+    assert.equal(l.with_replatform.price_band.max, quoted.price_band.max);
+    assert.equal(view.offers.find((o) => o.code === 'L').with_replatform.price_band, undefined, 'and no price without pricing');
+    assert.ok(!view.offers.filter((o) => o.code !== 'L').some((o) => o.with_replatform));
+  });
+
+  test('every pack says what a week buys in people', () => {
+    for (const o of view.offers) assert.equal(o.team, offering.pricing.people_per_week);
   });
 });
