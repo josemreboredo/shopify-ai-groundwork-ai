@@ -783,15 +783,15 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
               <th scope="col" key={o.code} className={o.most_common ? 'pack-common' : undefined}>
                 <span className="pack-code">{o.code}</span>
                 <span className="pack-name">{o.name}</span>
-                {/* "end to end", because the row below this one also says
-                    "Up to N weeks" about the same pack and the two sat one
-                    under the other with nothing saying that the second is part
-                    of the first. A reader comparing "Up to 14 weeks" with "Up
-                    to 9 weeks" has been handed a contradiction. */}
-                <span className="pack-meta">
-                  {upToWeeks(o.duration_weeks)} end to end
-                  {buildsAs(o) ? ` · ${buildsAs(o)}` : ''}
-                </span>
+                {/* One fact a line: what it is called, how it is built, how
+                    long it runs, what it costs. It used to be "Up to 5 weeks
+                    end to end · Online Store · Horizon" — a duration and a
+                    delivery track in one sentence, wrapping to three lines, and
+                    the track named a Shopify product rather than the thing
+                    being bought. The label comes from the schema, because
+                    `delivery_track` is "liquid" on all three and cannot tell S
+                    from M; what separates them is how much storefront is built. */}
+                <span className="pack-meta">{o.build_label ?? buildsAs(o)}</span>
                 {/* The price ceiling belongs with the week ceiling: they are the
                     two numbers a consultant carries into the room, and it used
                     to be a separate row three lines below, where nobody read it
@@ -814,16 +814,20 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
             price already holds, and — for an owner only — the band itself. Both
             are ceilings and both are printed as one. */}
         <tbody className="pack-differs">
+          {/* The duration, as the table's first row. The head carries what the
+              pack is called, how it is built and what it costs; how long it
+              runs is the first thing the comparison answers.
+              This row was the gate capacity — how much scope-gate work each
+              band already absorbs. That figure has not gone: each offer's own
+              page states it above its add-ons, which is where a reader asks
+              "does this gate cost me anything". */}
           <tr>
-            <th scope="row">Of those, scope-gate work the band already holds</th>
-            {offers.map((o) => {
-              const cap = o.gate_capacity_weeks;
-              return (
-                <td key={o.code} data-label={o.code} className={o.most_common ? 'pack-common' : undefined}>
-                  <span className="pack-budget">{!cap || cap.max === 0 ? 'None' : upToWeeks(cap)}</span>
-                </td>
-              );
-            })}
+            <th scope="row">Weeks, end to end</th>
+            {offers.map((o) => (
+              <td key={o.code} data-label={o.code} className={o.most_common ? 'pack-common' : undefined}>
+                <span className="pack-budget">{upToWeeks(o.duration_weeks)}</span>
+              </td>
+            ))}
             <td data-label="Merkle Arc" className="pack-arc"><span className="pack-arc-what">Scoped by the Arc practice</span></td>
           </tr>
           {/* The internal band was a row here and is now in the column head,

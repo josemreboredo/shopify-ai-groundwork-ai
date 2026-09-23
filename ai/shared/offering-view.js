@@ -143,6 +143,11 @@ export function offeringView({ pricing = false } = {}) {
        nothing about which brand is sitting across the table. */
     for_whom: o.for_whom ?? null,
     delivery_track: o.delivery_track,
+    /* How the storefront is built, in one line. `delivery_track` is "liquid" on
+       all three offers, so it cannot tell S from M — what separates them is how
+       much of the storefront is built, which is the storefront_design row. The
+       label says that, and it lives in the schema so a page cannot invent it. */
+    build_label: o.build_label ?? null,
     /* The middle offer carries a label, and it is not decoration: most engagements
        land here, and a consultant who cannot say which one is usual ends up
        presenting three equals and letting the client pick the cheapest. */

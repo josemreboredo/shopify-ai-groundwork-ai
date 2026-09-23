@@ -369,6 +369,27 @@ describe('the closed scope each pack sells', () => {
     }
   });
 
+  /* The column head of the comparison table says how each pack's storefront is
+     built — "Liquid · Theme", "Custom Liquid · Hydrogen". It is prose in the
+     schema, so nothing stops it drifting from what the offer can actually
+     deliver: a label naming Hydrogen on an offer with no headless track sells
+     something the engine does not price, and an offer that gains a headless
+     track without the label loses it silently. */
+  test('the build label names only a track the offer actually has', () => {
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      const label = offer.build_label;
+      assert.ok(label?.trim(), `${code}: the comparison table prints a build label and this offer has none`);
+      const headless = Boolean(offer.tracks?.hydrogen);
+      assert.equal(
+        /hydrogen/i.test(label),
+        headless,
+        headless
+          ? `${code}: builds headless and the label does not say so — "${label}"`
+          : `${code}: the label promises Hydrogen and the offer has no headless track — "${label}"`,
+      );
+    }
+  });
+
   test('a ceiling quoted in a row is the ceiling a rule actually enforces', () => {
     const byId = new Map(offering.exit_rules.map((r) => [r.id, r]));
     for (const row of rows) {

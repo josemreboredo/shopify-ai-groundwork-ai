@@ -1831,7 +1831,10 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    three values means the pack matters, one band means it does not. The tag is
    text, not a shade — the span is a layout cue and layout is not information a
    screen reader or a printout can be trusted to carry. */
-.pack-gets .pack-every { background: var(--panel); }
+/* Centred across the three columns it spans, because that is what it means:
+   the value is not S's with M and L trailing after it, it is the same in all
+   three. Left-aligned it sat under S and read as S's answer. */
+.pack-gets .pack-every { background: var(--panel); text-align: center; }
 .pack-every-tag {
   display: inline-block; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--muted); border: 1px solid var(--line-strong);
@@ -1840,7 +1843,9 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 @media (max-width: 560px) {
   /* Stacked, the span is gone and only the tag is left to say it — which is the
      bigger win on a phone: one line instead of the same sentence three times. */
-  .pack-gets .pack-every { background: none; }
+  /* Stacked there is nothing to centre across — one column, so it reads left
+     like every other value. */
+  .pack-gets .pack-every { background: none; text-align: left; }
   .pack-gets .pack-every::before { content: none; }
 }
 

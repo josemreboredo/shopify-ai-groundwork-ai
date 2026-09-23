@@ -1,12 +1,13 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.14.0",
+  "version": "2.16.0",
   "currency": "CHF",
   "offers": {
     "S": {
       "name": "Ecommerce Foundation",
       "for_whom": "A brand starting ecommerce, or starting it properly. There is no store today, or one nobody has really run — the open question is whether the range sells online at all, and the honest way to answer it is a store that does, quickly.",
       "delivery_track": "liquid",
+      "build_label": "Liquid · Theme",
       "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
       "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · Accessibility and Core Web Vitals measured, not promised",
       "price_band": {
@@ -157,7 +158,7 @@
         "One launch market, one selling entity and one checkout currency. Swiss DE/FR/IT is in every offer; a fourth language is a gate",
         "The catalogue loaded once, from one source file the client supplies in an agreed shape. Re-loads after a data change are a change request",
         "One training session per role, recorded, in the week before launch",
-        "Hypercare for 30 days after go-live: a named channel, a response within one working day, and defects triaged with the client",
+        "Hypercare for 15 days after go-live: a named channel, a response within one working day, and defects triaged with the client",
         "One build store and one theme release path. Staging beyond that is a gate",
         "The build store is transferred to the client at go-live, with their billing and plan in place. Until then it sits in Merkle’s Partner organisation on Basic-plan media storage limits"
       ],
@@ -173,6 +174,7 @@
       "name": "Ecommerce Scale",
       "for_whom": "A brand that already sells and cannot scale. The countries, the catalogue and the back office are in place — a PIM, an ERP, an OMS — and what holds the operation back is the storefront in front of them and the wiring behind it.",
       "delivery_track": "liquid",
+      "build_label": "Liquid · Customisable",
       "triggered_by": "2 or more scope gates",
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A migration where there is one to run, priced by where the data comes from",
       "price_band": {
@@ -339,7 +341,7 @@
         "Each integration built against one non-production environment the client provides, and tested with data the client recognises",
         "Reconciliation runs daily per connection unless the data says otherwise, and its output goes to a named owner on the client side",
         "One training session per role per market that has its own day-to-day owner",
-        "Hypercare for 30 days after go-live, per market where the launch is phased"
+        "Hypercare for 15 days after go-live, per market where the launch is phased"
       ],
       "client_provides": [
         "Everything Ecommerce Foundation needs: a decision-maker, brand assets, loadable product data, payment accounts and the legal text",
@@ -355,6 +357,7 @@
       "name": "Ecommerce Growth",
       "for_whom": "A brand already selling professionally, on an enterprise platform. Salesforce Commerce Cloud, Adobe Commerce or similar, with the traffic and the operation to match — the move to Shopify has to land on a store that performs at least as well, and is measured to prove it.",
       "delivery_track": "liquid",
+      "build_label": "Custom Liquid · Hydrogen",
       "triggered_by": "A headless storefront, or scope that adds up to more than an M can hold — the largest of the three Shopify offers",
       "base_scope": "A platform that has to perform from day one, because the one it replaces already did · The enterprise migration: the data, the redirect estate and the integrations the old platform was carrying · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
@@ -500,7 +503,7 @@
         "The design system is delivered as one token layer and the template set built against it — not as per-page designs traced one by one",
         "Experimentation is set up and one test is live at launch; the roadmap of tests after that is the client’s or a retainer’s",
         "Training per role, plus one session on the release path for whoever will own it",
-        "Hypercare for 30 days after go-live, with the rollback proven before the day rather than described"
+        "Hypercare for 15 days after go-live, with the rollback proven before the day rather than described"
       ],
       "client_provides": [
         "Everything Ecommerce Scale needs, including a non-production environment per connected system",
@@ -2490,9 +2493,9 @@
         "shopify_limit": null,
         "shopify_fact": false,
         "$comment": "No Shopify citation, matching the gate: hypercare, training and written SOPs are how Merkle delivers, not something Shopify documents.",
-        "S": "Hypercare, 30 days",
-        "M": "Hypercare, 30 days",
-        "L": "Hypercare, 30 days",
+        "S": "Hypercare, 15 days",
+        "M": "Hypercare, 15 days",
+        "L": "Hypercare, 15 days",
         "note": "A named channel, a response within one working day and defects triaged with the client, for thirty days after go-live — per market where the launch is phased. Training per role on the day-to-day is in every pack too. Written SOPs or a handover into a retainer are quoted on top.",
         "addon": [
           "S",
