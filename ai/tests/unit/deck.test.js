@@ -135,6 +135,27 @@ describe('client deck XML', () => {
     assert.doesNotMatch(withRetainerNote, /\+25%/);
   });
 
+  test('the investment names the pack and what goes past it, as a first estimate', () => {
+    const doc = load('acme-watches.json');
+    const client = clientPart(buildDeckXml(doc, backlogFor(doc)).xml);
+    const investment = client.slice(client.indexOf('<section id="investment"'));
+    for (const a of doc.offer.addons) assert.ok(investment.includes(a.label), `${a.gate} is named in the investment`);
+    assert.ok(investment.includes(offering.estimate.line.replace(/’/g, '&#8217;')) || investment.includes(offering.estimate.line), 'with the first-estimate note');
+    assert.doesNotMatch(investment, /fixed price/, 'never promising a fixed price');
+  });
+
+  test('market references reach the consultant and never the client', () => {
+    const doc = load('acme-watches.json');
+    const { xml } = buildDeckXml(doc, backlogFor(doc));
+    const notes = xml.slice(xml.indexOf('<section id="consultant-notes"'));
+    const refs = offering.market_references[doc.offer.code];
+    assert.ok(refs.length >= 3);
+    for (const r of refs) assert.ok(notes.includes(r.url), `${r.agency} is cited with its page`);
+    const client = clientPart(xml);
+    assert.doesNotMatch(client, /market-references/);
+    for (const r of refs) assert.ok(!client.includes(r.agency), `${r.agency} must not reach a client section`);
+  });
+
   test('missing backlog is reported as a warning, not an error', () => {
     const { warnings } = buildDeckXml(load('acme-watches.json'), null);
     assert.equal(warnings.length, 2);

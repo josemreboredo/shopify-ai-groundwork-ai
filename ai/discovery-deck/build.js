@@ -560,8 +560,11 @@ function investment(x, doc) {
     x.field('note', 'The Discovery Phase is quoted in the Enterprise Engagement proposal. Build investment is defined at the end of the Discovery Phase, once scope, launch waves and architecture are agreed.');
   } else {
     x.field('offer', doc.offer.name, undefined, { code: doc.offer.code });
+    // What goes past the pack, by name only: "Ecommerce Scale plus a further
+    // store" is the re-estimate a client can follow. No weeks, no price.
+    if (doc.offer.addons?.length) x.list('add-ons', doc.offer.addons.map((a) => a.label));
     x.empty('price-band', { currency: band.currency, from: band.min, to: band.open_ended ? undefined : band.max, 'open-ended': band.open_ended ? 'true' : undefined });
-    x.field('note', 'Indicative band for the offer. A single fixed price is issued in the proposal after sprint planning.');
+    x.field('note', offering.estimate.line);
   }
   if (doc.business?.budget?.min !== undefined) {
     x.empty('client-budget', { currency: doc.business.budget.currency, from: doc.business.budget.min, to: doc.business.budget.max });
@@ -729,9 +732,23 @@ function consultantNotes(x, doc, backlog) {
   for (const [id, g] of Object.entries(doc.offer.l_triggers ?? {})) x.field('l-trigger', g.evidence ?? '—', undefined, { id, active: String(g.active) });
   x.close();
 
+  x.open('add-ons', { pack: doc.offer.code });
+  for (const a of doc.offer.addons ?? []) {
+    x.empty('add-on', { gate: a.gate, label: a.label, units: a.units, 'included-units': a.included_units, tier: a.tier });
+  }
+  x.close();
+
   const modifiers = offering.modifiers.filter((mod) => doc.offer.modifiers?.includes(mod.id));
   x.open('modifiers');
   for (const mod of modifiers) x.empty('modifier', { id: mod.id, 'effort-weeks': `${mod.effort_weeks.min}–${mod.effort_weeks.max}`, 'price-add': `${offering.currency} ${mod.price_add.min}–${mod.price_add.max}` });
+  x.close();
+
+  // Public list prices for the pack, to answer "why this much" in the room —
+  // never a client line, never a competitor's price for this scope.
+  const refs = offering.market_references;
+  x.open('market-references', { 'read-on': refs.read_on, pack: doc.offer.code });
+  x.field('answer', refs.answer);
+  for (const r of refs[doc.offer.code] ?? []) x.field('reference', `${r.agency} (${r.where}): ${r.offer} — ${r.price} · ${r.weeks}`, undefined, { url: r.url });
   x.close();
 
   const budget = doc.business?.budget;

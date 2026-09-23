@@ -30,9 +30,9 @@
 | 13 | Out of scope | `out-of-scope` | Deferred tasks + standard exclusions |
 | 14 | Next steps | `next-steps` | Open exit-rule owners, questions to confirm, standard sign-off steps |
 | 15 | Timeline | `timeline` | `offer.duration_weeks`, kick-off, go-live target, phases, rule 11.15 if fired |
-| 16 | Investment | `investment` | `offer.price_band` (open-ended for L), client budget, recurring third-party costs (Shopify plan, apps) |
+| 16 | Investment | `investment` | the pack and its add-ons by name, `offer.price_band` (open-ended only where a headless storefront is floored at the L band), the first-estimate note, client budget, recurring third-party costs (Shopify plan, apps) |
 | 17 | Appendix — user stories | `appendix-stories` | `backlog.json` stories: key, epic, title — **no points** |
-| 18 | Consultant notes | `consultant-notes` | Lead Consultant only: offer / nearest offer, price band, duration, rationale, gate and L-trigger evidence, modifiers (effort, price add), budget vs band, all exit rules with source, questions and internal notes, plan requirements, app signals, story points, answers to confirm, consultant notes |
+| 18 | Consultant notes | `consultant-notes` | Lead Consultant only: offer / nearest offer, price band, duration, rationale, gate and L-trigger evidence, the add-ons past the pack, modifiers (effort, price add), public market references for the pack, budget vs band, all exit rules with source, questions and internal notes, plan requirements, app signals, story points, answers to confirm, consultant notes |
 
 **STOP engagements** produce sections 1, 2, 12, 14 and 18 only: the document explains the blockers and how to
 resolve them instead of presenting a solution.

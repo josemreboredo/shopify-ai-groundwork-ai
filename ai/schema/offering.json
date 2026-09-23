@@ -15,6 +15,89 @@
     "title": "After launch: the Grow retainer",
     "line": "Run, optimise and the Phase 2 roadmap — offered with every pack after the 15 days of hypercare, and agreed before build starts. Its price is kept open and quoted with the proposal."
   },
+  "market_references": {
+    "$comment": "Public list prices, read on 2026-09-23 and each re-fetched by a source check in the offering audit. Indicative market signals for the Lead Consultant: never in a client document, never a competitor’s price for a specific scope. They are \"from\" floors or marketing ranges, VAT treatment varies, and none of the enterprise Swiss partners publishes a price. Never put Merkle’s own figures into a search or request when refreshing them.",
+    "read_on": "2026-09-23",
+    "answer": "The band buys a staffed team, not a package: about two people full time for the pack’s weeks, against the twelve to thirty hours a fixed-price package buys — with accessibility and Core Web Vitals measured, quality gates, hypercare and a network behind it.",
+    "S": [
+      {
+        "agency": "Digital Delight",
+        "where": "Basel, CH",
+        "offer": "Tier-Setup / Custom-Theme",
+        "price": "CHF 6,900 fixed / from CHF 14,500",
+        "weeks": "4 weeks / 6–8 weeks",
+        "url": "https://digital-delight.ch/shopify-agentur-schweiz/"
+      },
+      {
+        "agency": "eCommercely",
+        "where": "Stuttgart, DE — serves Zürich",
+        "offer": "StartUp / Business / Premium",
+        "price": "€6,900 / €9,900 / €16,900 one-off",
+        "weeks": "about 1 / 4 / 6 weeks",
+        "url": "https://ecommercely.de/shopify-projekte-pakete-preise"
+      },
+      {
+        "agency": "Greenblut",
+        "where": "Freiburg, DE — DACH cost guide",
+        "offer": "New shop on a standard / custom theme",
+        "price": "€3–8k / €8–25k net",
+        "weeks": "3–6 / 6–12 weeks",
+        "url": "https://www.greenblut.com/ratgeber/shopify-agentur"
+      }
+    ],
+    "M": [
+      {
+        "agency": "fusion agency",
+        "where": "DE",
+        "offer": "Premium / Shopify Plus-Enterprise",
+        "price": "€20–50k / €50–150k+ net",
+        "weeks": "8–14 / 12–24 weeks",
+        "url": "https://www.fusion-agency.de/post/shopify-shop-erstellen-lassen-kosten-agentur"
+      },
+      {
+        "agency": "Ask Phill",
+        "where": "Amsterdam, NL — Shopify Platinum",
+        "offer": "Accelerator (Plus migration)",
+        "price": "€60–200k",
+        "weeks": "4–6 months",
+        "url": "https://askphill.com/blogs/blog/shopify-plus-pricing"
+      },
+      {
+        "agency": "Blackbelt Commerce",
+        "where": "New York, US",
+        "offer": "Shopify Plus builds",
+        "price": "typically $25–150k",
+        "weeks": "a 4–8 week launch window",
+        "url": "https://www.blackbeltcommerce.com/top-shopify-plus-agencies-in-2026-ranked-by-specialty/"
+      }
+    ],
+    "L": [
+      {
+        "agency": "Ask Phill",
+        "where": "Amsterdam, NL — Shopify Platinum",
+        "offer": "Enterprise Plus migration",
+        "price": "€150–700k+",
+        "weeks": "5–10 months",
+        "url": "https://askphill.com/blogs/blog/shopify-plus-pricing"
+      },
+      {
+        "agency": "Charle",
+        "where": "London, UK / US",
+        "offer": "Hydrogen build, top tier",
+        "price": "$155–260k+",
+        "weeks": "24 weeks plus",
+        "url": "https://www.charleagency.com/articles/shopify-hydrogen-oxygen/"
+      },
+      {
+        "agency": "Greenblut",
+        "where": "Freiburg, DE",
+        "offer": "Migration by source platform",
+        "price": "WooCommerce €3.5–15k · Shopware €5–20k · Magento €8–30k · Enterprise/Plus €25–55k net",
+        "weeks": "4–8 / 8–12 / 10–14 / 14–20 weeks",
+        "url": "https://www.greenblut.com/ratgeber/shopify-migration-kosten"
+      }
+    ]
+  },
   "offers": {
     "S": {
       "name": "Ecommerce Foundation",
