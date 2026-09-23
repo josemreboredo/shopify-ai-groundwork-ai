@@ -1,4 +1,4 @@
-# shopify-ai-builder — CLAUDE.md
+# shopify-ai-groundwork-ai — CLAUDE.md
 
 This project inherits Gaia (the master methodology) via the `gaia` skill auto-loaded
 from `~/.claude/skills/gaia`. Anything in Gaia is the **default behavior** —
@@ -7,12 +7,12 @@ token economy, documentation spec.
 
 This file is for **project-specific context only** — never to override Gaia.
 If a project's needs conflict with Gaia, file a proposal in
-`<working-skills>/references/shopify-ai-builder/_intake/` per
+`<working-skills>/references/shopify-ai-groundwork-ai/_intake/` per
 `gaia/methodology/reverse-propagation.md`.
 
 ---
 
-## What shopify-ai-builder is
+## What shopify-ai-groundwork-ai is
 
 A Gaia-governed delivery workspace for **Shopify projects** — covering themes, custom
 apps, Hydrogen/Remix storefronts, and AI-assisted builder features. This is the primary
@@ -126,4 +126,4 @@ Gaia's 14 roles apply. These roles have Shopify-specific scope expansions:
 
 Accumulate in `docs/learnings.md` as the biota surfaces Shopify-specific dynamics.
 File cross-biota learnings as Track C proposals in
-`<working-skills>/references/shopify-ai-builder/_intake/`.
+`<working-skills>/references/shopify-ai-groundwork-ai/_intake/`.
