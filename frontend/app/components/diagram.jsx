@@ -783,10 +783,24 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
               <th scope="col" key={o.code} className={o.most_common ? 'pack-common' : undefined}>
                 <span className="pack-code">{o.code}</span>
                 <span className="pack-name">{o.name}</span>
+                {/* "end to end", because the row below this one also says
+                    "Up to N weeks" about the same pack and the two sat one
+                    under the other with nothing saying that the second is part
+                    of the first. A reader comparing "Up to 14 weeks" with "Up
+                    to 9 weeks" has been handed a contradiction. */}
                 <span className="pack-meta">
-                  {upToWeeks(o.duration_weeks)}
+                  {upToWeeks(o.duration_weeks)} end to end
                   {buildsAs(o) ? ` · ${buildsAs(o)}` : ''}
                 </span>
+                {/* The price ceiling belongs with the week ceiling: they are the
+                    two numbers a consultant carries into the room, and it used
+                    to be a separate row three lines below, where nobody read it
+                    next to the weeks it goes with. */}
+                {pricing && o.price_band ? (
+                  <span className="pack-ceiling">
+                    Up to {currency ?? ''} {Math.round(o.price_band.max / 1000)}k{o.price_band.open_ended ? '+' : ''}
+                  </span>
+                ) : null}
               </th>
             ))}
             <th scope="col" className="pack-arc">
@@ -801,7 +815,7 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
             are ceilings and both are printed as one. */}
         <tbody className="pack-differs">
           <tr>
-            <th scope="row">Scope-gate weeks already in the price</th>
+            <th scope="row">Of those, scope-gate work the band already holds</th>
             {offers.map((o) => {
               const cap = o.gate_capacity_weeks;
               return (
@@ -812,19 +826,10 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
             })}
             <td data-label="Merkle Arc" className="pack-arc"><span className="pack-arc-what">Scoped by the Arc practice</span></td>
           </tr>
-          {pricing && offers.every((o) => o.price_band) ? (
-            <tr>
-              <th scope="row">Internal band</th>
-              {offers.map((o) => (
-                <td key={o.code} data-label={o.code} className={o.most_common ? 'pack-common' : undefined}>
-                  <span className="pack-budget">
-                    Up to {currency ?? ''} {Math.round(o.price_band.max / 1000)}k{o.price_band.open_ended ? '+' : ''}
-                  </span>
-                </td>
-              ))}
-              <td data-label="Merkle Arc" className="pack-arc"><span className="pack-arc-what">Not quoted or estimated here</span></td>
-            </tr>
-          ) : null}
+          {/* The internal band was a row here and is now in the column head,
+              next to the weeks ceiling it belongs with. Printed in both places
+              it was the same number twice, and two "Up to" figures per pack is
+              exactly what made this header hard to read. */}
         </tbody>
         {[...groups].map(([name, groupRows]) => (
           <tbody key={name ?? 'all'}>

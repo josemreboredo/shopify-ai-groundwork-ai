@@ -1707,6 +1707,14 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .pack-code { display: block; font-size: 1.7rem; line-height: 1; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); text-transform: none; }
 .pack-name { display: block; margin-top: 5px; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.01em; text-transform: none; color: var(--ink); }
 .pack-meta { display: block; margin-top: 3px; font-size: 0.76rem; font-weight: 400; letter-spacing: 0.01em; text-transform: none; color: var(--muted); line-height: 1.35; }
+/* The price ceiling, in the head with the week ceiling. Set in ink rather than
+   muted: it is the number the consultant is actually asked for, and it was
+   previously a row far enough down that it read as a footnote. */
+.pack-ceiling {
+  display: block; margin-top: 5px; font-size: 0.82rem; font-weight: 700;
+  letter-spacing: 0; text-transform: none; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
 .packs th[scope="row"] {
   width: auto; vertical-align: top; color: var(--ink); font-size: 0.9rem; font-weight: 700;
   text-transform: none; letter-spacing: 0; border-bottom: 1px solid var(--line-soft);
