@@ -963,11 +963,42 @@ export function ScopeLimits({ rows = [], code, previous, gainsOnly = false }) {
     if (!groups.has(name)) groups.set(name, []);
     groups.get(name).push(row);
   }
-  const cols = gainsOnly ? 3 : 2;
+  const cols = 3;
+
+  /* Measured at 1440: the subject cell was 988px wide to hold 43px of text, so
+     "Markets" and "Up to 1 market" sat 957px apart and the eye could not join
+     them. A subject and its ceiling are a term and its definition, not a row of
+     a table — as pairs they sit together and two columns of them use the width
+     the table was spending on a gap. The step-up view stays a table: three
+     values across is genuinely tabular. */
+  if (!gainsOnly) {
+    return (
+      <dl className="limits-pairs">
+        {[...groups].map(([name, groupRows]) => (
+          <div key={name ?? 'all'} className="limits-group">
+            {name ? <h4>{name}</h4> : null}
+            <div className="limits-pair-grid">
+              {groupRows.map((row) => (
+                <div key={row.id} className="limits-pair">
+                  <dt>
+                    {row.what}
+                    {row.addon?.includes(code) ? (
+                      <span className="limits-addon">{row.addon_label ?? 'More can be bought on top'}</span>
+                    ) : null}
+                  </dt>
+                  <dd>{mine(row)}</dd>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </dl>
+    );
+  }
 
   return (
     <>
-      <div className="table-scroll" role="region" tabIndex={0} aria-label={gainsOnly ? 'What this offer adds over the one below it' : 'What this offer includes, and up to what limit'}>
+      <div className="table-scroll" role="region" tabIndex={0} aria-label="What this offer adds over the one below it">
         <table className={`compare limits${gainsOnly ? ' limits-gain' : ''}`}>
           <caption className="sr-only">
             {gainsOnly

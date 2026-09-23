@@ -1196,6 +1196,10 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    the three questions a consultant actually arrives with, and they are marked
    the way this system marks a division: a black rule and an uppercase label,
    never a card, never a second colour. */
+/* It wrapped when the description was long, so Part 01 was 26px tall and Part
+   02 was 54px — the same component, two heights, on one page. The description
+   takes its own line always. */
+.part .part-what { flex-basis: 100%; }
 .part {
   display: flex; align-items: baseline; gap: var(--s-2) var(--s-3); flex-wrap: wrap;
   margin: 0 0 var(--s-4); padding-top: var(--s-1);
@@ -1236,6 +1240,16 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .answer-line {
   margin: var(--s-4) 0 0; max-width: 24ch;
   font-size: clamp(1.5rem, 3.2vw, 2.15rem); font-weight: 700; line-height: var(--lh-tight); letter-spacing: -0.015em;
+}
+/* 24ch is a measure for a statement of six words. The offer's "who it is for"
+   is a hundred and eighty characters, so at 34px it came out as seven lines of
+   four words each — in a column narrower than the 16px paragraph beside it,
+   which is the hierarchy upside down. Same role, one step down the type scale
+   and a measure that fits a sentence. */
+#for-whom > .answer-line {
+  max-width: 48ch;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  line-height: var(--lh-snug);
 }
 .page-head .answer-line { color: #fff; }
 .page-head .lede { max-width: 62ch; }
@@ -1558,8 +1572,12 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .boundary ul { margin: 0; padding-left: 18px; display: grid; gap: 9px; }
 /* The quantities, across the full measure rather than in a column: they read as
    a list somebody will be held to, not as a footnote beside the exclusions. */
-.boundary.assumes { margin-top: 28px; border-top-color: var(--line-strong); }
-.boundary.assumes ul { max-width: 86ch; }
+.boundary.assumes { margin-top: var(--s-5); border-top-color: var(--line-strong); }
+/* The two lists above it are a two-column grid; this one sat under them at one
+   column capped to a reading measure, so half the page was empty beside 390px
+   of text. Same two columns, so the block reads as the third part of one set. */
+.boundary.assumes ul { max-width: none; grid-template-columns: 1fr 1fr; gap: var(--s-2) var(--s-6); }
+@media (max-width: 760px) { .boundary.assumes ul { grid-template-columns: 1fr; } }
 .boundary li { color: var(--ink); font-size: 0.95rem; line-height: 1.45; max-width: 56ch; }
 
 @media (max-width: 900px) {
@@ -1787,7 +1805,11 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    hangs off its own row and is shut until asked for, so the table is quantities
    at rest and the reasoning is one click from the number it justifies. */
 .pack-why { margin-top: var(--s-2); font-weight: 400; }
+/* `summary` is a block, so it filled the cell and the shared marker rule —
+   `right: 0` — put the + 210px from "What this covers". Shrink the box to its
+   own words and the marker follows them. */
 .pack-why > summary {
+  display: inline-block; padding-right: 1.5rem;
   font-size: var(--t-xs); font-weight: 600; color: var(--muted); cursor: pointer; list-style-position: outside;
 }
 .pack-why > summary:hover { color: var(--red-ink); }
@@ -2006,6 +2028,27 @@ h3.sub {
 .table-scroll > .limits, .table-scroll > .addon-table {
   width: 100%; min-width: 0; max-width: 100%; table-layout: fixed;
 }
+/* The scope, as pairs. A subject and its ceiling sit together — label over
+   figure, the way a spec sheet reads — so there is nothing between the question
+   and its answer, and three of them fit across the width the single table was
+   spending on one 957px gap. */
+.limits-pairs { margin: var(--s-5) 0 0; }
+.limits-group + .limits-group { margin-top: var(--s-6); }
+.limits-group > h4 {
+  margin: 0 0 var(--s-3); padding-bottom: var(--s-2); border-bottom: 2px solid var(--ink);
+  font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.limits-pair-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--s-4) var(--s-5);
+}
+.limits-pair { border-top: 1px solid var(--line); padding-top: var(--s-3); }
+.limits-pair > dt {
+  margin: 0; font-size: var(--t-xs); color: var(--muted);
+}
+.limits-pair > dd {
+  margin: var(--s-1) 0 0; font-size: var(--t-m); font-weight: 700; line-height: var(--lh-snug);
+}
 .limits { margin-top: var(--s-4); }
 .limits th[scope="col"], .addon-table th[scope="col"] { text-align: left; vertical-align: bottom; padding-bottom: var(--s-2); }
 /* The subject takes what is left; the two value columns are sized for values
@@ -2022,7 +2065,14 @@ h3.sub {
 /* The step-up table reads left to right as a before and an after, so the pack
    below is set back and this offer's figure carries the weight. */
 .limits-from { color: var(--muted); }
-.limits-gain th[scope="col"]:first-child { width: auto; }
+/* Four to nine rows of three short values. Stretched to the section's full
+   width it put 741px between "Markets" and what M holds of it — the same gap
+   the pairs above were built to close. It is as wide as its content and no
+   wider; a comparison this small does not owe the page a full-bleed row. */
+.table-scroll > .limits-gain { width: auto; max-width: 100%; table-layout: auto; }
+.limits-gain th[scope="col"]:first-child { width: auto; padding-right: var(--s-6); }
+.limits-gain th[scope="col"]:nth-child(2), .limits-gain th[scope="col"]:nth-child(3) { width: auto; }
+.limits-gain td, .limits-gain th[scope="row"] { padding-right: var(--s-6); }
 .limits-gain .limits-value { color: var(--ink); }
 .limits-gain .limits-from::after { content: ' \2192'; color: var(--red); font-weight: 700; }
 .limits-cap { color: var(--muted); font-size: var(--t-xs); line-height: var(--lh-normal); }
