@@ -31,8 +31,10 @@ export const BESPOKE_SECTIONS_INCLUDED = offering.scope_gates
  * It used to be one flat modifier — one to two weeks, whatever the source. The
  * published DACH benchmark separates them by a factor of two: a WooCommerce
  * migration is a 4–8 week project, Shopware 8–12, Magento 10–14 (Greenblut, from
- * 150+ migrations). Charging a Magento estate what a WooCommerce store costs is
- * not a simplification, it is a loss taken on purpose.
+ * 150+ migrations: https://www.greenblut.com/ratgeber/shopify-migration-kosten,
+ * read 2026-09-23). Only the durations are borrowed; the price is Merkle's rate.
+ * Charging a Magento estate what a WooCommerce store costs is not a
+ * simplification, it is a loss taken on purpose.
  *
  * The tiers are the published totals minus a build with no migration in it.
  */
@@ -50,16 +52,14 @@ const MIGRATION_TIER = {
 };
 
 /**
- * How many weeks of scope gates an offer's band already contains.
+ * How many weeks of scope gates a pack's band spans: its duration less the
+ * Foundation's.
  *
- * Every offer is the same build on the same track now, so each band is an S
- * plus the gate work it was sized for: an M of 6–13 against an S of 4–5 holds
- * two to eight weeks of them, an L of 13–20 holds nine to fifteen.
- *
- * Gates inside that envelope cost nothing more — that is what the band is for.
- * Past it they are added to the quote, which is the half that was missing: an
- * L with a Magento estate, six markets and four integrations used to come out
- * at the same 13–20 weeks as one with a single market and no migration.
+ * It once decided the price — gates inside it cost nothing, the excess was
+ * quoted on top — and that is what made the ceiling snap to the pack. The
+ * quote is the Foundation plus every gate now; this is kept for the pack pages
+ * and for rule 11.3, which reads the largest pack's as the line past which a
+ * scope stops being one build.
  *
  * @param {string} code  offer code
  * @returns {{ min: number, max: number }}
@@ -461,7 +461,7 @@ const GATE_EVALUATORS = {
     // every brand that cares about search answers "significant", and the work
     // is set by how many URLs have to be carried, not by how much it matters.
     const tier = active
-      ? (redirects >= 10000 || (equity === 'significant' && redirects >= 5000) ? 'large' : 'standard')
+      ? (redirects > 10000 || (equity === 'significant' && redirects >= 5000) ? 'large' : 'standard')
       : null;
 
     const why = [

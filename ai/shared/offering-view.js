@@ -34,13 +34,13 @@ const APPROACH = {
     storefront: 'Horizon theme, extended with sections and blocks for the gated requirements',
     plan: 'Set by the gates in play: several markets, B2B catalogs or checkout needs can move it to Advanced or Plus — the engine names the feature that forces it',
     build: 'Native first, then App Store apps, then theme work, then custom — Markets, B2B, integrations and migration as their own workstreams',
-    topology: 'Derived from the business facts: one store with Shopify Markets by default, a hybrid or expansion stores only where the markets genuinely diverge',
+    topology: 'Derived from the business facts: one store with Shopify Markets by default; a second store where the facts force one, as an add-on',
   },
   L: {
-    storefront: 'Headless Hydrogen storefront on the Storefront API, hosted on Oxygen',
-    plan: 'Usually Shopify Plus, for the extensibility and the scale a headless build is chosen for',
-    build: 'A full Figma design system, custom motion and interaction, advanced personalisation — front end owned, commerce engine on Shopify',
-    topology: 'Derived the same way; a headless front end can serve several stores, which changes the cost of a second one',
+    storefront: 'A Shopify theme built out template by template over one token layer; a headless Hydrogen storefront on Oxygen where the answers ask for one',
+    plan: 'Shopify Plus where up to three stores or blocks inside the checkout steps are used — the engine names the feature that forces it',
+    build: 'A full design system over one token layer, motion and interaction as specified, one experiment live at launch — the commerce engine on Shopify either way',
+    topology: 'Derived the same way; up to three stores included, each further one an add-on',
   },
 };
 
@@ -149,9 +149,10 @@ export function offeringView({ pricing = false } = {}) {
        much of the storefront is built, which is the storefront_design row. The
        label says that, and it lives in the schema so a page cannot invent it. */
     build_label: o.build_label ?? null,
-    /* The middle offer carries a label, and it is not decoration: most engagements
-       land here, and a consultant who cannot say which one is usual ends up
-       presenting three equals and letting the client pick the cheapest. */
+    /* The middle offer carries a label, and it is not decoration: a consultant
+       who cannot say which one to start from ends up presenting three equals
+       and letting the client pick the cheapest. It is a recommendation, not a
+       count — nothing measured says most engagements land here. */
     ...(o.most_common ? { most_common: true } : {}),
     triggered_by: o.triggered_by,
     base_scope: o.base_scope.split(' · '),

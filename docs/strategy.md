@@ -208,7 +208,7 @@ the engagement price; the client sees the estimate, never the modifiers.
 record; the classification rule and this table are generated from it
 (`npm run strategy:render`), and a test fails when they drift.
 
-**Retail roll-outs are never priced per store.** A store with its own line item gets compared to 40 hours of work. Above 5 stores (rule 11.22, WARN) quote the programme and its roll-out increments, or a rate-carded run team.
+**Retail is priced per location up to five** — each location's set-up, hardware and staff training is the work it is. Above five (rule 11.22, WARN) the roll-out is a programme: quote it with its increments or a rate-carded run team, never as a per-store line item a client compares with 40 hours.
 
 ---
 
@@ -229,8 +229,8 @@ store-spec.yaml → `shopify theme push` pipeline (~85% of implementation)
 
 | Offer | Code | Triggered by | Base scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Foundation** | S | A quote below the M floor | A brand starting ecommerce. New Shopify store on the plan the requirements need (ADR 0011) · Horizon theme · core catalogue · payments · standard checkout | CHF 40–65k | 4–5 weeks |
-| **Ecommerce Scale** | M | A quote from the M floor, or a further store | A brand that already sells and cannot scale. Everything in S · the gates that fired, each as its own workstream · the markets, catalogue and systems behind them | CHF 65–170k | 6–15 weeks |
+| **Ecommerce Foundation** | S | A quote below the M floor | An established brand launching direct-to-consumer, or relaunching it properly. New Shopify store on the plan the requirements need (ADR 0011) · Horizon theme configured · core catalogue · payments · standard checkout · accessibility and Core Web Vitals measured | CHF 40–65k | 4–5 weeks |
+| **Ecommerce Scale** | M | A quote from the M floor, or a further store | A brand that already sells and cannot scale, with one back-office system to wire. Everything in S · up to three markets and four languages · bespoke sections · one integration · a WooCommerce or Shopify migration · events per market | CHF 65–170k | 6–15 weeks |
 
 Both S and M are deliverable by Consultant + AI + two part-time collaborators.
 No permanent agency headcount required.
@@ -259,7 +259,7 @@ token application, boilerplate, automated QA (~60% of implementation)
 
 | Offer | Code | Triggered by | Scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Growth** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally on an enterprise platform. Up to three Shopify stores · measurement designed against what the client measures · personalisation and experimentation live at launch · the design system built once over one token layer. The replatform itself is quoted on its own, not absorbed into the band | CHF 140–260k+ | 13–24 weeks |
+| **Ecommerce Growth** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally that needs more than one store, a storefront built out and measurement that stands up. Up to three Shopify stores · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 140–260k+ | 13–24 weeks |
 
 L builds either way and spends the same weeks differently — as theme sections and
 blocks, or as owned components on Hydrogen — so the track follows the answers

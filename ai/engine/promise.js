@@ -64,7 +64,12 @@ export function engagementAt(limits) {
       system: `sys${i}`, category: ['erp', 'pim', 'crm', 'oms', 'wms'][i], connector: 'custom', status: 'to_build', test_environment: 'available',
     })),
     retail: { store_count: limits.retail_locations, pos: limits.retail_locations ? 'shopify_pos' : false },
-    migration: limits.migration ? { source_platform: limits.migration, seo_equity: 'none' } : {},
+    // The redirect estate a pack carries is the SEO continuity row, read by the
+    // gate off the migration volumes whether or not a migration runs.
+    migration: {
+      ...(limits.migration ? { source_platform: limits.migration, seo_equity: 'none' } : {}),
+      ...(limits.redirects ? { volumes: { redirects: limits.redirects } } : {}),
+    },
     // A pack that promises checkout blocks has to be built with them.
     checkout: limits.checkout ? { customisation: [limits.checkout] } : {},
     /* And a pack that promises measurement past GA4's own events has to be

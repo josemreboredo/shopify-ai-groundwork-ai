@@ -751,6 +751,14 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.deepEqual(model('b2b').price_band, model('dtc').price_band);
   });
 
+  test('the large SEO tier starts above ten thousand URLs, as its name says', () => {
+    const seo = (redirects) => classifyOffer({ ...base(), migration: { volumes: { redirects } } }).scope_gates.seo_continuity;
+    assert.equal(seo(999).active, false, 'below a thousand the redirects are part of the launch');
+    assert.equal(seo(1000).tier, 'standard');
+    assert.equal(seo(10000).tier, 'standard', 'ten thousand is still the standard tier');
+    assert.equal(seo(10001).tier, 'large');
+  });
+
   test('B2B is priced by what it asks of the store, from answers already asked', () => {
     // One flat figure charged Shopify's own B2B set-up and a quote workflow
     // with catalogues per company the same.

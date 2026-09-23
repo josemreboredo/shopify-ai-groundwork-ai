@@ -322,6 +322,40 @@ describe('the closed scope each pack sells', () => {
     assert.equal(classifyOffer(engagementAt(limits.L)).addons.length, 0, 'L includes three stores');
   });
 
+  test('a row’s note never states a different number of days than its cells', () => {
+    // Hypercare was 15 days in every cell and thirty in the note under them,
+    // so a consultant reading the note promised twice what the price assumes.
+    const WORDS = { seven: 7, ten: 10, fourteen: 14, fifteen: 15, twenty: 20, thirty: 30, sixty: 60, ninety: 90 };
+    const days = (text) => [...String(text ?? '').matchAll(/\b(\d+|[a-z]+) days\b/gi)]
+      .map((m) => Number(m[1]) || WORDS[m[1].toLowerCase()]).filter(Boolean);
+    for (const row of rows) {
+      const inCells = new Set(['S', 'M', 'L'].flatMap((c) => days(row[c])));
+      if (!inCells.size) continue;
+      for (const n of days(row.note)) assert.ok(inCells.has(n), `${row.id}: the note says ${n} days, the cells say ${[...inCells]}`);
+    }
+  });
+
+  test('the migration add-on and the row agree on what each pack carries', () => {
+    const row = rows.find((r) => r.gate === 'migration');
+    const sold = addons.find((a) => a.gate === 'migration');
+    assert.match(row.M, /WooCommerce/);
+    assert.equal(limits.M.migration, 'woocommerce', 'the promise the engine prices carries the same');
+    assert.match(sold.description, /Ecommerce Scale already carries a WooCommerce or Shopify migration/);
+    assert.doesNotMatch(sold.description, /Ecommerce Growth already carr/, 'L carries no migration');
+    for (const source of ['Shopware', 'BigCommerce', 'Magento']) assert.match(row.addon_label, new RegExp(source), `${source} is sold on top in M, and the row has to say so`);
+  });
+
+  test('a pack promises nothing no row, gate or add-on stands behind', () => {
+    // "Personalisation set up and running at launch" and "consent carried to
+    // every destination" sat in L's headline with nothing priced behind them —
+    // the second one sold back to L as the analytics add-on.
+    for (const [code, offer] of Object.entries(offering.offers)) {
+      const promise = `${offer.for_whom} ${offer.base_scope}`;
+      assert.doesNotMatch(promise, /personali[sz]ation/i, `${code} promises personalisation, which nothing defines or prices`);
+      assert.doesNotMatch(promise, /consent carried|every destination/i, `${code} promises what the analytics add-on sells`);
+    }
+  });
+
   test('a further storefront design is sold where a further store is', () => {
     // Shopify publishes one theme per store, so a second design needs a second store.
     assert.deepEqual(addons.find((a) => a.gate === 'theme_design').available_in, ['M', 'L']);

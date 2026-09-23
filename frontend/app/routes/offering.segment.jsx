@@ -352,9 +352,9 @@ function Arc({ view, segment }) {
         </p>
         <ul className="ticks big ticks-no">
           <li>Hydrogen with editorial content in Shopify metaobjects — that is <Link to="/offering/l">Ecommerce Growth</Link> on the headless track</li>
-          <li>A second brand on a configured theme, or on a key-screens design — a second brand already forces Ecommerce Growth through the store it needs, and that is where it stays</li>
+          <li>Two brands that share one design system — a store per brand, an add-on on <Link to="/offering/m">Ecommerce Scale</Link> and up to three in Ecommerce Growth, and a further storefront design where a brand’s layout differs</li>
           <li>Blocks and fields inside the checkout steps — Shopify Plus permits them, and Ecommerce Growth builds them</li>
-          <li>Several markets, languages or stores — all of them are priced inside the offers</li>
+          <li>Several markets, languages or stores, up to the offers’ limits — each one priced inside the offers</li>
         </ul>
       </section>
 

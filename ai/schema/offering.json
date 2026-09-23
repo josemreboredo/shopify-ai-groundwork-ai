@@ -1,5 +1,5 @@
 {
-  "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
+  "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is informed by published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%) — shares of budget for a mid-size migration project, including a discovery phase these packs do not have; the 150+ figure is on greenblut.com, the percentage split was not found on its pages when checked on 2026-09-23, so read it as Merkle’s own calibration.",
   "version": "2.20.0",
   "currency": "CHF",
   "pricing": {
@@ -9,11 +9,11 @@
   "offers": {
     "S": {
       "name": "Ecommerce Foundation",
-      "for_whom": "A brand starting ecommerce, or starting it properly. There is no store today, or one nobody has really run — the open question is whether the range sells online at all, and the honest way to answer it is a store that does, quickly.",
+      "for_whom": "An established brand launching direct-to-consumer, or relaunching it properly — a retailer, a wholesaler or a label whose range already sells offline, in Switzerland first and in its languages. What it needs is a store that sells from day one, built the way a larger one would be, not a test of whether ecommerce works at all.",
       "delivery_track": "liquid",
       "build_label": "Liquid · Theme",
       "triggered_by": "0 scope gates, or exactly 1 gate (with internal modifier)",
-      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · Accessibility and Core Web Vitals measured, not promised",
+      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
         "min": 40000,
         "max": 65000,
@@ -99,7 +99,7 @@
         },
         {
           "id": "quality",
-          "name": "Quality and performance",
+          "name": "Build quality checks",
           "weeks": {
             "min": 0.5,
             "max": 0.5
@@ -130,7 +130,7 @@
       "channels": {
         "b2c": "The whole offer, as written: one consumer storefront with the standard checkout.",
         "b2b": "Not an extra on top of the consumer store — the same weeks spent differently. Company accounts, a price list and quantity rules take the place of the consumer promotion and checkout work, because a wholesale buyer needs neither.",
-        "both": "Two channels in one store, and the second one is a scope gate rather than a base: see Scale."
+        "both": "Two channels in one store: the second is the B2B add-on, priced by what it asks of the store."
       },
       "storefront": {
         "templates": [
@@ -155,7 +155,8 @@
         "Bespoke sections or a full template set designed in Figma — the base configures the theme; designing beyond it is the storefront design gate",
         "Content production: copy, photography and video are the client’s, or a separate engagement. Nothing here writes them",
         "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate",
-        "Running costs. The Shopify plan and every app subscription are billed to the client from the day they are installed — this offer selects and configures apps against the agreed monthly ceiling, it does not pay for them"
+        "Running costs. The Shopify plan and every app subscription are billed to the client from the day they are installed — this offer selects and configures apps against the agreed monthly ceiling, it does not pay for them",
+        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top, with QA testing as a service. This pack builds from the client’s design and runs its own build quality checks"
       ],
       "assumes": [
         "Two rounds of feedback on the template set, then sign-off. A third round is a change request, not a revision",
@@ -176,11 +177,11 @@
     },
     "M": {
       "name": "Ecommerce Scale",
-      "for_whom": "A brand that already sells and cannot scale. The countries, the catalogue and the back office are in place — a PIM, an ERP, an OMS — and what holds the operation back is the storefront in front of them and the wiring behind it.",
+      "for_whom": "A brand that already sells and cannot scale. The countries and the catalogue are in place, and one back-office system — an ERP, a PIM or an OMS — has to be wired to the store; each further system is an add-on. What holds the operation back is the storefront in front of it and the wiring behind it.",
       "delivery_track": "liquid",
       "build_label": "Liquid · Customisable",
       "triggered_by": "2 or more scope gates",
-      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A migration where there is one to run, priced by where the data comes from",
+      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
         "min": 65000,
         "max": 170000,
@@ -203,7 +204,7 @@
             "Everything Ecommerce Foundation sets up: the store on the right plan, users and permissions, domain and SSL, tax and the payment providers",
             "The store topology derived from the business facts and written down with its assumptions — one store with Shopify Markets by default",
             "The selling entity per market and the tax-registration footprint, agreed before the catalogue is built",
-            "Expansion stores only where the markets genuinely diverge, with what a second store costs to run"
+            "A second store only where the business facts force one — an add-on here, priced per store — with what it costs to run"
           ]
         },
         {
@@ -282,7 +283,7 @@
         },
         {
           "id": "quality",
-          "name": "Quality, accessibility and performance",
+          "name": "Build quality checks",
           "weeks": {
             "min": 0.5,
             "max": 1.5
@@ -313,7 +314,7 @@
       "channels": {
         "b2c": "The consumer storefront, at the scale the gates describe: markets, languages, catalogue depth and the systems behind them.",
         "b2b": "The same, wholesale: company accounts and locations, price lists per company, quantity rules, payment terms and the B2B templates. The consumer-only work is not in it.",
-        "both": "Where +B2B is actually earned. Both storefronts are built, both are tested, and a decision has to be taken per market about which channel sells there."
+        "both": "Where the B2B add-on is actually earned. Both storefronts are built, both are tested, and a decision has to be taken per market about which channel sells there."
       },
       "storefront": {
         "templates": [
@@ -337,7 +338,8 @@
         "Content production and translation copy — the translation route is decided and costed here, the words are not written here",
         "Custom checkout UI: Shopify’s checkout is extended through its own extension points or not at all (exit rule 11.6)",
         "Running the integrations after handover. Hypercare is in; the operating model past it is a gate, or a retainer",
-        "Anything whose content or front end lives outside Shopify — an external CMS or a front end Shopify does not build is Merkle Arc, and no offer here prices it"
+        "Anything whose content or front end lives outside Shopify — an external CMS or a front end Shopify does not build is Merkle Arc, and no offer here prices it",
+        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top, with QA testing as a service. This pack builds from the client’s design and runs its own build quality checks"
       ],
       "assumes": [
         "Everything Ecommerce Foundation assumes, at this size",
@@ -352,18 +354,19 @@
         "System access and, for each system we connect, a non-production environment to build against — without one, integration testing runs against the live system and the schedule stretches",
         "A named owner per integrated system on the client side",
         "Market facts: selling entity, tax registrations and who runs each market day to day",
-        "Translated copy, or approval of the translation route and its recurring cost"
+        "Translated copy, or approval of the translation route and its recurring cost",
+        "Where a further storefront design is bought, that design, complete enough to build from"
       ],
       "most_common": true,
-      "$comment": "Marked as the common case, and it has to stay earned: if the engine stops classifying most engagements as M, the label is a claim the offering cannot support and should move."
+      "$comment": "Marked as the recommended starting point for a brand that already sells — a positioning, like the middle tier every competitor marks, not a statistic. Only a count of real engagements could make it \"the most common\", and the page does not claim that."
     },
     "L": {
       "name": "Ecommerce Growth",
-      "for_whom": "A brand already selling professionally, on an enterprise platform. Salesforce Commerce Cloud, Adobe Commerce or similar, with the traffic and the operation to match — the move to Shopify has to land on a store that performs at least as well, and is measured to prove it.",
+      "for_whom": "A brand already selling professionally — often on an enterprise platform — that needs more than one store, a storefront built out template by template, and measurement that stands up. The move to Shopify has to land on a store that performs at least as well, and is measured to prove it; the replatform itself is quoted beside the pack, by the platform it comes from.",
       "delivery_track": "liquid",
       "build_label": "Custom Liquid · Hydrogen",
       "triggered_by": "A headless storefront, or scope that adds up to more than an M can hold — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them — the replatform itself is quoted on its own, because a migration is a project with its own shape rather than a line inside a band · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 140000,
         "max": 260000,
@@ -443,7 +446,7 @@
           "deliverables": [
             "The product model at scale: options, metafields, collections, search and filters, on the real catalogue",
             "Metaobjects for the content the storefront renders, so content changes without a theme release",
-            "Market catalogues and prices, languages and domains, and the migration where one fired — redirect estate included"
+            "Market catalogues and prices, languages and domains; where a replatform is quoted beside the pack, its data loaded against this model"
           ]
         },
         {
@@ -462,7 +465,7 @@
         },
         {
           "id": "quality",
-          "name": "Quality, accessibility and performance",
+          "name": "Build quality checks",
           "weeks": {
             "min": 1,
             "max": 2
@@ -495,12 +498,13 @@
         "both": "Both storefronts built and tested, with a decision taken per market about which channel sells there."
       },
       "not_included": [
-        "The replatform from the old system — the data, the redirect estate and the integrations it was carrying. It is quoted on its own for the platform it comes from, because a migration is a project with its own shape and absorbing it into a band prices it by accident",
+        "The replatform from the old system — its data, priced by the platform it comes from (light, medium or heavy) and quoted beside the pack rather than inside it, because a migration is a project with its own shape. Integrations and redirects past what L includes are their own add-ons",
         "Custom checkout UI. Shopify no longer permits it whatever the rest of the storefront does — Checkout Extensibility is the whole of what is possible",
         "A storefront whose content or front end lives outside Shopify: an external CMS or PIM, another framework, a native app, several front ends on one backend. Hydrogen with content in Shopify is this offer; the rest is Merkle Arc",
         "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
         "Content production, photography and video, and the copy that goes on the templates this offer builds",
-        "A Shop Mini — a presence inside Shopify’s Shop app. It stays inside Shopify, so it is not Merkle Arc; it is React SDK work built against the Shop Minis SDK, which no offer here estimates. It is scoped and priced on its own"
+        "A Shop Mini — a presence inside Shopify’s Shop app. It stays inside Shopify, so it is not Merkle Arc; it is React SDK work built against the Shop Minis SDK, which no offer here estimates. It is scoped and priced on its own",
+        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top, with QA testing as a service. This pack builds from the client’s design and runs its own build quality checks"
       ],
       "assumes": [
         "Everything Ecommerce Scale assumes, at this size",
@@ -508,13 +512,15 @@
         "The design system is delivered as one token layer and the template set built against it — not as per-page designs traced one by one",
         "Experimentation is set up and one test is live at launch; the roadmap of tests after that is the client’s or a retainer’s",
         "Training per role, plus one session on the release path for whoever will own it",
-        "Hypercare for 15 days after go-live, with the rollback proven before the day rather than described"
+        "Hypercare for 15 days after go-live, with the rollback proven before the day rather than described",
+        "Shopify Plus where up to three stores or blocks inside the checkout steps are used — the engine names the feature that forces it"
       ],
       "client_provides": [
         "Everything Ecommerce Scale needs, including a non-production environment per connected system",
         "The design, complete enough to build from: a template set with its states, not a set of key screens",
         "Whoever can approve a performance and accessibility target and then hold the project to it",
-        "A decision on who owns the store after handover, taken before the build rather than at the end of it"
+        "A decision on who owns the store after handover, taken before the build rather than at the end of it",
+        "Where a further storefront design is bought, that design too, complete enough to build from"
       ],
       "tracks": {
         "liquid": "One Shopify theme, built out: the design system as sections and blocks over one token layer, every template against it, and the merchant still able to rearrange them. The default, and the right answer more often than it is chosen.",
@@ -1796,7 +1802,7 @@
       "status": "canonical",
       "condition": "More than 5 retail stores in scope",
       "destination": "Quote the retail roll-out as a programme with roll-out increments, or as a rate-carded run team",
-      "internal_note": "Never quote a per-store price: a store with its own line item gets compared to 40 hours. Quote programme and increment, or a rate-carded run team (never shown to the client)",
+      "internal_note": "Above five locations, never quote a per-store price: a store with its own line item gets compared to 40 hours. Quote the programme and its increments, or a rate-carded run team (never shown to the client)",
       "inputs": [
         "/retail/store_count"
       ],
@@ -2507,24 +2513,7 @@
           "M",
           "L"
         ],
-        "addon_label": "Every platform in S and L; Magento, Salesforce Commerce Cloud or a custom platform in M"
-      },
-      {
-        "id": "seo",
-        "what": "SEO continuity",
-        "gate": "seo_continuity",
-        "group": "Data and integrations",
-        "shopify_limit": "100,000 URL redirects per store, 20,000,000 on Plus",
-        "S": "—",
-        "M": "Up to 10,000 URLs",
-        "L": "Up to 10,000 URLs",
-        "note": "Up to ten thousand URLs the map is authored from the old estate’s patterns and imported, with metadata and canonicals carried across and indexation watched through cut-over. The ceiling that bites is the work of building the map, not the platform’s. Above ten thousand, or where the business runs on its rankings, the map is built from a crawl instead, verified on staging and watched after launch — that is the add-on. A pack already carrying a migration does not also carry a redirect estate this size for free: where both are in scope the second is quoted on top.",
-        "addon": [
-          "S",
-          "M",
-          "L"
-        ],
-        "addon_label": "Above 10,000 URLs, or rankings the business runs on"
+        "addon_label": "Every platform in S and L; Shopware, BigCommerce, Magento, Salesforce Commerce Cloud or a custom platform in M"
       },
       {
         "id": "analytics",
@@ -2535,13 +2524,20 @@
         "S": "Shopify Analytics, its reports, and GA4’s own ecommerce events",
         "M": "All of that, plus events per market and currency, or from an app",
         "L": "All of that, plus a custom GA4 event implementation",
-        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically — that is S, and it is not a small thing. Ecommerce Scale adds the events a multi-market store needs that the standard set does not carry, and the events an app emits. Ecommerce Growth adds an event layer designed against what the client actually measures. The add-on is what goes past that in any pack: a third destination, a tag manager, server-side tagging or a consent platform.",
+        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically — that is S, and it is not a small thing. Ecommerce Scale adds the events a multi-market store needs that the standard set does not carry, and the events an app emits. Ecommerce Growth adds an event layer designed against what the client actually measures. The add-on is what goes past that in any pack: a third destination, a tag manager, server-side tagging or a consent platform. Shopify’s own cookie banner is configured for every market in scope in every pack: Shopify switches it on automatically only for the UK and the EEA, so a Swiss store gets it because someone set it up.",
         "addon": [
           "S",
           "M",
           "L"
         ],
-        "addon_label": "More destinations, a tag manager or consent"
+        "addon_label": "More destinations, a tag manager or consent",
+        "sources": [
+          "https://help.shopify.com/en/manual/privacy-and-security/privacy/customer-privacy-settings/privacy-settings"
+        ],
+        "verified": {
+          "on": "2026-09-23",
+          "source": "help.shopify.com"
+        }
       },
       {
         "id": "staff",
@@ -2585,7 +2581,7 @@
         "S": "Hypercare, 15 days",
         "M": "Hypercare, 15 days",
         "L": "Hypercare, 15 days",
-        "note": "A named channel, a response within one working day and defects triaged with the client, for thirty days after go-live — per market where the launch is phased. Training per role on the day-to-day is in every pack too. Written SOPs or a handover into a retainer are quoted on top.",
+        "note": "A named channel, a response within one working day and defects triaged with the client, for fifteen days after go-live — per market where the launch is phased. Training per role on the day-to-day is in every pack too. Written SOPs or a handover into a retainer are quoted on top.",
         "addon": [
           "S",
           "M",
@@ -2693,8 +2689,8 @@
       {
         "id": "migration",
         "gate": "migration",
-        "what": "Migration from Magento, Salesforce Commerce Cloud or a custom platform",
-        "description": "A migration priced by where the data comes from. The light and medium tiers are what Ecommerce Scale and Ecommerce Growth already carry; a bespoke data model with integrations to re-point is quoted on top of any pack.",
+        "what": "Migration from another platform, priced by source",
+        "description": "Priced by where the data comes from: light (WooCommerce), medium (Shopware, BigCommerce, an unnamed platform), heavy (Magento, Salesforce Commerce Cloud, a custom platform). Ecommerce Scale already carries a WooCommerce or Shopify migration; every other source, and any migration in S or L, is quoted by its tier beside the pack.",
         "available_in": [
           "S",
           "M",
@@ -2726,13 +2722,14 @@
       {
         "id": "seo_continuity",
         "gate": "seo_continuity",
-        "what": "A redirect estate above 10,000 URLs, or rankings the business runs on",
-        "description": "The redirect map, the metadata and the canonicals carried across a URL change — authored from the old estate’s patterns up to ten thousand URLs, and built from a crawl, verified on staging and watched after launch above that.",
+        "what": "SEO continuity: a redirect estate of 1,000 URLs or more, or rankings the business runs on",
+        "description": "The redirect map, the metadata and the canonicals carried across a URL change. Up to ten thousand URLs the map is authored from the old estate’s patterns and imported, with indexation watched through cut-over (standard); above that, or where the business runs on its rankings, it is built from a crawl, verified on staging and watched after launch (large). Below a thousand URLs the redirects are part of the launch in every pack. Priced once, whether or not a migration runs beside it. Shopify holds 100,000 redirects per store, 20 million on Plus — what sets the work is building the map, not the platform’s limit.",
         "available_in": [
           "S",
           "M",
           "L"
-        ]
+        ],
+        "$comment": "Was a comparison row promising M and L up to ten thousand URLs that neither band paid for: taking it moved a full pack past its ceiling (audit N3, C11). As an add-on it is priced where it is bought, and the boundary is above ten thousand, as the name says."
       },
       {
         "id": "subscriptions",
@@ -2749,8 +2746,8 @@
       {
         "id": "checkout_extensibility",
         "gate": "checkout_extensibility",
-        "what": "Inside the checkout steps, or backend rules as Functions",
-        "description": "The checkout past what every pack configures: UI extensions and custom fields on the information, shipping and payment steps, or backend logic as Shopify Functions — validation, delivery and payment customisation, order rules.",
+        "what": "Blocks after the sale, inside the checkout steps, or Functions",
+        "description": "The checkout past what each pack configures: in S, blocks on the Thank you and Order status pages; below L, UI extensions and custom fields inside the information, shipping and payment steps (Shopify Plus); and in every pack, backend logic as Shopify Functions — validation, delivery and payment customisation, order rules.",
         "available_in": [
           "S",
           "M",

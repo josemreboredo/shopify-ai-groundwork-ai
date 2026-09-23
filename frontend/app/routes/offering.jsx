@@ -115,7 +115,7 @@ export default function Offering({ loaderData }) {
                     and a reader with no signal picks the cheapest. Most
                     engagements land here; saying so is the difference between a
                     list and a recommendation. */}
-                {o.most_common ? <b className="stat-flag">Most engagements land here</b> : null}
+                {o.most_common ? <b className="stat-flag">Recommended starting point</b> : null}
               </span>
             </li>
           ))}
@@ -173,7 +173,7 @@ export default function Offering({ loaderData }) {
             <Link to="/offering/arc">
               <span className="seg-code">—</span>
               <span className="seg-name">Merkle Arc</span>
-              <span className="seg-when">Content or a front end that lives outside Shopify, or requirements that go past S, M and L</span>
+              <span className="seg-when">Content or a front end that lives outside Shopify, a fully custom checkout, or several brands each with its own design system</span>
               <span className="seg-meta">A separate engagement · not quoted or estimated here · {view.exits.beyond_offers.length} rules</span>
             </Link>
           </li>
@@ -288,7 +288,7 @@ export default function Offering({ loaderData }) {
       {/* 4 — the plan is never assumed, so what earns it is stated */}
       <section>
         <h2>What earns a higher Shopify plan</h2>
-        <p className="lede">The offers never assume Plus. These are the requirements that earn it, each with the Shopify page that sets the limit.</p>
+        <p className="lede">S and M never assume Plus, and L assumes it only where its stores or its checkout steps need it. These are the requirements that earn it, each with the Shopify page that sets the limit.</p>
         <div className="plan-cols">
           {plans.map(({ plan, features }) => (
             <div key={plan}>
