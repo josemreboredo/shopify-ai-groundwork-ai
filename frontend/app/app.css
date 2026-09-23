@@ -21,6 +21,39 @@
   --stop: var(--red-ink);
   --page: 1280px;
   --gutter: 32px;
+
+  /* ── The scales ──────────────────────────────────────────────────────────
+     Thirteen colour tokens and no spacing tokens: measured, the stylesheet
+     carried 37 distinct spacing values across 709 uses, 47 font sizes and 16
+     line-heights. Nothing shared a rhythm, which is what "the content is right
+     but it looks wrong" means — the colours, the typeface and the copy were
+     never the problem.
+
+     Eight steps of 4, because a scale nobody can hold in their head is not a
+     scale. Eighteen of those 47 sizes sat between 0.72 and 1.0rem, where the
+     difference between 0.84 and 0.85rem is invisible and costs coherence. */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+
+  --t-micro: 0.72rem;  /* eyebrows, column labels, tags — uppercase only */
+  --t-xs: 0.8rem;      /* captions, meta, the second line of a cell */
+  --t-s: 0.88rem;      /* table cells, secondary prose */
+  --t-base: 0.95rem;   /* body */
+  --t-m: 1.05rem;      /* sub-headings, the lead line of a section */
+  --t-l: 1.15rem;      /* h3, the claim */
+  --t-xl: clamp(1.5rem, 2.6vw, 2.1rem);   /* h2 */
+  --t-2xl: clamp(2rem, 3.6vw, 2.9rem);    /* h1 */
+
+  --lh-tight: 1.15;    /* display */
+  --lh-snug: 1.3;      /* headings */
+  --lh-normal: 1.5;    /* body */
+  --lh-relaxed: 1.6;   /* long prose */
   font-family: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color: var(--ink);
   background: #fff;
@@ -52,8 +85,8 @@ a:hover { color: var(--red-ink); text-decoration-color: var(--red-ink); }
 .error { color: var(--stop); }
 .errors { color: var(--stop); margin: 10px 0; padding: 10px 12px 10px 28px; background: rgba(221, 48, 57, 0.06); list-style-position: outside; }
 .eyebrow {
-  display: flex; align-items: center; gap: 10px; margin: 0 0 12px;
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red-ink);
+  display: flex; align-items: center; gap: var(--s-3); margin: 0 0 var(--s-3);
+  font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--red-ink);
 }
 .eyebrow::before { content: ''; width: 10px; height: 10px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 
@@ -106,13 +139,13 @@ li::marker { color: var(--red); }
   background: #000; color: #fff; width: 100vw; margin: -36px calc(50% - 50vw) 34px;
   padding: 52px max(var(--gutter), calc(50vw - var(--page) / 2 + var(--gutter))) 34px;
 }
-.page-head .crumb { color: rgba(255, 255, 255, 0.6); font-size: 0.76rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; display: inline-block; margin-bottom: 20px; }
+.page-head .crumb { color: rgba(255, 255, 255, 0.6); font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; display: inline-block; margin-bottom: var(--s-4); }
 .page-head .crumb:hover { color: #fff; }
 .page-head .eyebrow { color: #fff; }
 .page-head h1 { color: #fff; margin: 0; font-size: clamp(2rem, 3.6vw, 2.9rem); }
-.page-head > p { margin: 14px 0 0; color: rgba(255, 255, 255, 0.72); font-size: 0.95rem; max-width: 78ch; }
-.page-head .page-lang { margin: 10px 0 0; color: rgba(255, 255, 255, 0.72); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-.page-head .page-meta { margin: 16px 0 0; color: rgba(255, 255, 255, 0.55); font-size: 0.8rem; letter-spacing: 0.02em; }
+.page-head > p { margin: var(--s-3) 0 0; color: rgba(255, 255, 255, 0.72); font-size: var(--t-base); max-width: 78ch; }
+.page-head .page-lang { margin: var(--s-3) 0 0; color: rgba(255, 255, 255, 0.72); font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.page-head .page-meta { margin: var(--s-4) 0 0; color: rgba(255, 255, 255, 0.55); font-size: var(--t-xs); letter-spacing: 0.02em; }
 .page-head:has(.tabs), .page-head:has(.wayfinder) { padding-bottom: 0; }
 
 /* Links on the black bands. They inherited the ink colour — #101223 on #000,
@@ -321,9 +354,9 @@ button[type='submit'][aria-disabled='true'] { cursor: progress; }
 .just-recorded > td { background: rgba(12, 99, 66, 0.08); box-shadow: inset 3px 0 0 var(--ok); }
 
 /* The engine's own wording, kept and available, but not the first thing read. */
-.rule-exact { margin-top: 6px; }
-.rule-exact > summary { font-size: 0.78rem; color: var(--muted); cursor: pointer; }
-.rule-exact p, .rule-exact span { font-size: 0.86rem; margin: 6px 0 0; display: block; }
+.rule-exact { margin-top: var(--s-2); }
+.rule-exact > summary { font-size: var(--t-xs); color: var(--muted); cursor: pointer; }
+.rule-exact p, .rule-exact span { font-size: var(--t-s); margin: var(--s-2) 0 0; display: block; }
 
 /* Deleting an engagement: out of the way, and it asks for the slug back */
 details.danger { margin-top: 48px; border-top: 1px solid var(--line); padding-top: 16px; }
@@ -373,7 +406,7 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
   .table-scroll > .answers-table { width: 100%; table-layout: auto; }
   .answers-table th, .answers-table td { max-width: 46ch; }
 }
-.chip { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
+.chip { display: inline-block; font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px var(--s-2); border: 1px solid currentColor; color: var(--muted); white-space: nowrap; }
 .offering .small { font-size: 0.8rem; }
 
 /* 1 — the offers as a progression: each builds on the one before */
@@ -388,8 +421,8 @@ details.card.prefill > :not(summary) + :not(summary) { margin-top: 14px; }
 .offer-weeks { margin: 20px 0 16px; padding: 14px 0; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); color: var(--muted); }
 .offer-weeks strong { font-size: 1.9rem; color: var(--ink); letter-spacing: -0.02em; margin-right: 4px; }
 .offer-weeks span { color: var(--ink); font-weight: 700; }
-.ticks { list-style: none; padding: 0; margin: 0; display: grid; gap: 9px; }
-.ticks li { position: relative; padding-left: 20px; font-size: 0.95rem; }
+.ticks { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-2); }
+.ticks li { position: relative; padding-left: var(--s-4); font-size: var(--t-base); }
 .ticks li::before { content: ''; position: absolute; left: 0; top: 7px; width: 8px; height: 8px; background: var(--red); clip-path: polygon(100% 0, 100% 100%, 0 0); }
 
 /* 2 — the decision, as four lines on black */
@@ -459,19 +492,19 @@ table.compare td { font-size: 0.9rem; }
 .plan-cols a { text-decoration-color: var(--line); }
 
 /* 5 — beyond the offers */
-.routes { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; margin: 24px 0 36px; }
-.route { padding: 22px 24px; border: 1px solid var(--line); }
-.route h3 { margin: 0 0 12px; padding-bottom: 10px; border-bottom: 3px solid var(--red); }
-.route-proposal { margin: 0 0 10px; font-weight: 700; }
-.rules-title { display: flex; align-items: center; gap: 10px; }
-.rules { list-style: none; padding: 0; margin: 12px 0 0; }
-.rules li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 16px; padding: 14px 0; border-top: 1px solid var(--line-soft); }
-.rule-id { font-weight: 700; color: var(--red-ink); font-size: 0.9rem; }
-.rule-when { margin: 0 0 4px; font-weight: 600; }
+.routes { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--s-4); margin: var(--s-5) 0 var(--s-6); }
+.route { padding: var(--s-5) var(--s-5); border: 1px solid var(--line); }
+.route h3 { margin: 0 0 var(--s-3); padding-bottom: var(--s-3); border-bottom: 3px solid var(--red); }
+.route-proposal { margin: 0 0 var(--s-3); font-weight: 700; }
+.rules-title { display: flex; align-items: center; gap: var(--s-3); }
+.rules { list-style: none; padding: 0; margin: var(--s-3) 0 0; }
+.rules li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--s-4); padding: var(--s-3) 0; border-top: 1px solid var(--line-soft); }
+.rule-id { font-weight: 700; color: var(--red-ink); font-size: var(--t-s); }
+.rule-when { margin: 0 0 var(--s-1); font-weight: 600; }
 .rules .muted { margin: 0; }
-.rule-note { margin: 6px 0 0; font-size: 0.85rem; padding: 6px 10px; background: rgba(221, 48, 57, 0.06); border-left: 2px solid var(--red); }
-details.rules-more { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 16px; }
-details.rules-more > summary { display: flex; align-items: center; gap: 10px; font-size: 1rem; }
+.rule-note { margin: var(--s-2) 0 0; font-size: var(--t-s); padding: var(--s-2) var(--s-3); background: rgba(221, 48, 57, 0.06); border-left: 2px solid var(--red); }
+details.rules-more { margin-top: var(--s-5); border-top: 1px solid var(--line); padding-top: var(--s-4); }
+details.rules-more > summary { display: flex; align-items: center; gap: var(--s-3); font-size: var(--t-m); }
 
 @media (max-width: 900px) {
   .offer-ladder, .l-triggers ul, .ladder, .plan-cols, .routes { grid-template-columns: 1fr; }
@@ -527,19 +560,19 @@ main.story { padding-bottom: 0; }
 main.story > section { margin: 0 0 64px; }
 main.story > section.band { margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
 main.story > section:last-of-type { margin-bottom: 72px; }
-.lede { font-size: 1.15rem; line-height: 1.5; max-width: 62ch; }
-.page-head .lede { color: rgba(255, 255, 255, 0.82); margin: 18px 0 0; }
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; list-style: none; padding: 0; margin: 40px 0 0; }
-.stats li { display: flex; flex-direction: column; gap: 14px; }
-.stats strong { font-size: 2.4rem; line-height: 1; letter-spacing: -0.02em; }
-.stats span { font-size: 0.85rem; color: rgba(255, 255, 255, 0.66); border-top: 3px solid var(--red); padding-top: 14px; }
+.lede { font-size: var(--t-l); line-height: var(--lh-normal); max-width: 62ch; }
+.page-head .lede { color: rgba(255, 255, 255, 0.82); margin: var(--s-4) 0 0; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-5); list-style: none; padding: 0; margin: var(--s-6) 0 0; }
+.stats li { display: flex; flex-direction: column; gap: var(--s-3); }
+.stats strong { font-size: 2.4rem; line-height: var(--lh-tight); letter-spacing: -0.02em; }
+.stats span { font-size: var(--t-s); color: rgba(255, 255, 255, 0.66); border-top: 3px solid var(--red); padding-top: var(--s-3); }
 .band { width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); background: var(--panel); padding: 64px max(var(--gutter), calc(50vw - var(--page) / 2 + var(--gutter))); }
 .band.dark { background: #000; color: #fff; }
 .band.dark .lede, .band.dark p { color: rgba(255, 255, 255, 0.78); }
 .band.dark h2, .band.dark h3, .band.dark .eyebrow { color: #fff; }
 .band-inner { max-width: var(--page); margin: 0 auto; }
 .band-inner > h2 { margin-top: 0; font-size: clamp(1.5rem, 2.6vw, 2.1rem); letter-spacing: -0.01em; text-transform: none; }
-.band-inner > .lede { margin-top: 16px; }
+.band-inner > .lede { margin-top: var(--s-4); }
 .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; align-items: start; margin-top: 40px; }
 .grid-3 h3, .grid-2 h3 { margin-top: 0; }
@@ -564,11 +597,11 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .flow-n { margin: 0 0 10px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; color: var(--red); }
 .flow h3 { margin: 0 0 8px; font-size: 1.08rem; line-height: 1.2; letter-spacing: -0.01em; }
 .flow p { margin: 0; font-size: 0.9rem; color: var(--muted); }
-.rule-line { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+.rule-line { margin: var(--s-5) 0 0; padding-top: var(--s-4); border-top: 1px solid var(--line); font-size: var(--t-m); font-weight: 700; letter-spacing: -0.01em; }
 .guarantees { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 36px; }
 .guarantees article { border-top: 3px solid var(--red); padding-top: 18px; }
 .guarantees h2 { margin: 0 0 12px; font-size: 1.3rem; letter-spacing: -0.01em; text-transform: none; }
-.guarantees .lede { font-size: 1rem; margin: 0; }
+.guarantees .lede { font-size: var(--t-m); margin: 0; }
 .guarantees details { margin-top: 16px; }
 .guarantees summary { color: #fff; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
 .guarantees summary:hover { color: var(--red); }
@@ -697,7 +730,7 @@ main.story > section:last-of-type { margin-bottom: 72px; }
 .card.position.go { border-left-color: var(--ok); }
 .card.position.flag { border-left-color: var(--warn); }
 .card.position.stop { border-left-color: var(--red); }
-.card.position .eyebrow { margin: 0 0 10px; }
+.card.position .eyebrow { margin: 0 0 var(--s-3); }
 h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; text-transform: none; margin: 0 0 16px; max-width: 30ch; }
 /* The one sentence that decides it, set apart from what it rests on. */
 .why-line {
@@ -708,7 +741,7 @@ h2.verdict { font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.01em; tex
 .grounds > li { position: relative; padding: 0 0 5px 18px; font-size: 0.9rem; color: var(--muted); max-width: 78ch; }
 .grounds > li::before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 1px; background: var(--muted); }
 .before { border-top: 1px solid var(--line); padding-top: 16px; }
-.before .eyebrow { margin-bottom: 8px; }
+.before .eyebrow { margin-bottom: var(--s-2); }
 
 /* The standfirst: one answer, the shape of the gap and what blocks it, read in
    three seconds. Below it the page goes into detail; this part does not. */
@@ -780,15 +813,15 @@ h2.headline-answer {
    on this page the labels rendered white on white and all a reader saw was a
    column of numbers over red rules. Every colour it inherits is restated here. */
 .stats.kpis {
-  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s-4);
   border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-  padding: 20px 0; margin: 0 0 8px;
+  padding: var(--s-4) 0; margin: 0 0 var(--s-2);
 }
-.stats.kpis li { gap: 8px; }
+.stats.kpis li { gap: var(--s-2); }
 .stats.kpis strong { font-size: 2rem; color: var(--ink); }
 .stats.kpis span {
-  color: var(--muted); font-size: 0.78rem; line-height: 1.35;
-  border-top: 2px solid var(--line); padding-top: 8px;
+  color: var(--muted); font-size: var(--t-xs); line-height: var(--lh-snug);
+  border-top: 2px solid var(--line); padding-top: var(--s-2);
 }
 .stats.kpis .of { font-size: 0.55em; font-weight: 400; color: var(--muted); }
 @media (max-width: 1000px) { .stats.kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -945,7 +978,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 /* What we would assume is ours: it is set apart so it is never read as part of
    the question, and it is not in the download a consultant sends. */
 .for-us { margin-left: 2.2rem; padding: 12px 16px; background: var(--panel); border-left: 2px solid var(--line); max-width: 72ch; overflow-wrap: anywhere; }
-.for-us .eyebrow { margin: 0 0 6px; }
+.for-us .eyebrow { margin: 0 0 var(--s-2); }
 .for-us p { margin: 0; font-size: 0.88rem; }
 .for-us p + p { margin-top: 4px; }
 
@@ -989,7 +1022,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 @media (max-width: 900px) {
   .layout, .inline-form, .summary-grid { grid-template-columns: minmax(0, 1fr); }
   main { padding: 28px 16px 48px; }
-  .page-head { margin: -28px calc(50% - 50vw) 24px; padding: 36px 16px 24px; }
+  .page-head { margin: -28px calc(50% - 50vw) 24px; padding: var(--s-6) var(--s-4) var(--s-5); }
   .panel { position: static; }
 }
 @media (max-width: 860px) {
@@ -1049,7 +1082,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
   .door { padding: 22px 18px; }
   .row-actions { white-space: normal; }
   /* State is carried by these, and 10.9px uppercase is not state anyone reads. */
-  .badge, .chip { font-size: 0.78rem; }
+  .badge, .chip { font-size: var(--t-xs); }
   th, .card .meta, .field > label { font-size: 0.8rem; }
   .pilot { padding: 7px 16px; }
   .tabs { gap: 18px; overflow-x: auto; }
@@ -1068,7 +1101,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
   .compare td::before { content: attr(data-label) ' '; font-weight: 700; }
   .footer-columns { grid-template-columns: 1fr; }
   /* Two columns of 2.4rem numerals in 152px cells with three-line labels. */
-  .stats { grid-template-columns: 1fr; gap: 18px; }
+  .stats { grid-template-columns: 1fr; gap: var(--s-4); }
   .stats strong { font-size: 2rem; }
 }
 
@@ -1124,7 +1157,7 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 main.offering > section { margin-bottom: 10px; }
 /* A part is a bigger division than a section, and it is the only place on the
    page where the extra air earns its keep. */
-main.offering > section.part-start { margin-top: 26px; }
+main.offering > section.part-start { margin-top: var(--s-5); }
 main.offering > section:first-of-type.part-start { margin-top: 0; }
 /* The section's padding is the space above the heading. The heading's own
    margin was a second helping of it. */
@@ -1155,7 +1188,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 }
 /* And the lede drops behind it. It explains the artefact below; the artefact is
    what the reader came for, so the explanation stops competing with it. */
-.offering > section > .lede { font-size: 1rem; line-height: 1.5; color: var(--muted); max-width: 76ch; margin: 0; }
+.offering > section > .lede { font-size: var(--t-m); line-height: var(--lh-normal); color: var(--muted); max-width: 76ch; margin: 0; }
 
 /* The parts: a second level over the sections.
    Ten headings of equal weight are a list, not a hierarchy — there is nowhere
@@ -1164,13 +1197,13 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    the way this system marks a division: a black rule and an uppercase label,
    never a card, never a second colour. */
 .part {
-  display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap;
-  margin: 0 0 20px; padding-top: 4px;
-  font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  display: flex; align-items: baseline; gap: var(--s-2) var(--s-3); flex-wrap: wrap;
+  margin: 0 0 var(--s-4); padding-top: var(--s-1);
+  font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
 }
 .part .part-n { color: var(--red-ink); }
 .part .part-what {
-  font-size: 0.88rem; font-weight: 400; letter-spacing: 0.01em; text-transform: none; color: var(--muted);
+  font-size: var(--t-s); font-weight: 400; letter-spacing: 0.01em; text-transform: none; color: var(--muted);
 }
 /* The part rule replaces the section's own hairline rather than joining it: two
    rules 22px apart read as a mistake, not as a division. */
@@ -1181,12 +1214,12 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    give the page a shape; this gives it a way in. Same ribbon as the tabs under
    every other page head, because it is the same gesture. */
 .jump {
-  display: flex; flex-wrap: wrap; gap: 0 26px;
-  margin: 26px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.22);
+  display: flex; flex-wrap: wrap; gap: 0 var(--s-5);
+  margin: var(--s-5) 0 0; border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
 .jump a {
-  position: relative; padding: 13px 0 12px; text-decoration: none; color: rgba(255, 255, 255, 0.66);
-  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  position: relative; padding: var(--s-3) 0 var(--s-3); text-decoration: none; color: rgba(255, 255, 255, 0.66);
+  font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
 }
 .jump a::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: 5px; height: 3px; background: var(--red);
@@ -1201,25 +1234,25 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 
 /* The answer, before anything asks for attention. */
 .answer-line {
-  margin: 18px 0 0; max-width: 24ch;
-  font-size: clamp(1.5rem, 3.2vw, 2.15rem); font-weight: 700; line-height: 1.18; letter-spacing: -0.015em;
+  margin: var(--s-4) 0 0; max-width: 24ch;
+  font-size: clamp(1.5rem, 3.2vw, 2.15rem); font-weight: 700; line-height: var(--lh-tight); letter-spacing: -0.015em;
 }
 .page-head .answer-line { color: #fff; }
 .page-head .lede { max-width: 62ch; }
 
 /* ── Claims: the line is the point, the evidence folds ────────────────────── */
-.claims { list-style: none; counter-reset: claim; padding: 0; margin: 28px 0 0; max-width: 72ch; }
+.claims { list-style: none; counter-reset: claim; padding: 0; margin: var(--s-5) 0 0; max-width: 72ch; }
 .claims > li { counter-increment: claim; border-top: 1px solid var(--line); }
 .claims > li:last-child { border-bottom: 1px solid var(--line); }
-.claims > li > details > summary { display: grid; grid-template-columns: 3rem 1fr; padding: 20px 1.9rem 20px 0; margin: 0; }
+.claims > li > details > summary { display: grid; grid-template-columns: 3rem 1fr; padding: var(--s-4) 1.9rem var(--s-4) 0; margin: 0; }
 .claims > li > details > summary::before {
   content: counter(claim, decimal-leading-zero); grid-row: 1 / span 2;
-  color: var(--red); font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums;
+  color: var(--red); font-size: var(--t-m); font-weight: 700; font-variant-numeric: tabular-nums;
 }
 .claims > li > details > summary::after { top: 22px; }
-.claims .claim { font-size: clamp(1.1rem, 1.9vw, 1.4rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; }
-.claims .claim-line { grid-column: 2; color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
-.claims p { margin: 0 0 22px 3rem; max-width: 76ch; color: var(--muted); }
+.claims .claim { font-size: clamp(1.1rem, 1.9vw, 1.4rem); font-weight: 700; line-height: var(--lh-snug); letter-spacing: -0.01em; }
+.claims .claim-line { grid-column: 2; color: var(--muted); font-size: var(--t-base); margin-top: var(--s-1); }
+.claims p { margin: 0 0 var(--s-5) 3rem; max-width: 76ch; color: var(--muted); }
 
 /* ── Diagrams ─────────────────────────────────────────────────────────────── */
 /* Drawn at the size it was drawn for. Left to fill the column, a 640-wide
@@ -1370,13 +1403,13 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 
 /* Prev and next: the offers are a progression, so the page after one is the
    next one up. */
-.seg-next { display: flex; justify-content: space-between; gap: 20px; margin-top: 8px; padding-top: 22px; border-top: 1px solid var(--line); }
+.seg-next { display: flex; justify-content: space-between; gap: var(--s-4); margin-top: var(--s-2); padding-top: var(--s-5); border-top: 1px solid var(--line); }
 .seg-next a { font-weight: 700; text-decoration: none; }
 .seg-next a:hover { color: var(--red-ink); }
 .seg-next .seg-prev { color: var(--muted); font-weight: 500; }
 
 /* The scope list on a segment page carries weight: it is what the client buys. */
-.ticks.big > li { font-size: 1.02rem; padding-block: 5px; }
+.ticks.big > li { font-size: var(--t-m); padding-block: var(--s-1); }
 /* The red wedge means "this is in it". A list of four things that are NOT the
    subject carries the same wedge and reads as the opposite of what it says, so
    this one takes a neutral rule instead. The accent stays spent on the one
@@ -1406,14 +1439,14 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    comparing them meant reading three sentences and holding six numbers at once.
    A range on a shared axis is the same fact, seen instead of worked out. */
 .scale { margin: 22px 0 0; }
-.scale-head, .scale-row { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 1fr); gap: 14px 20px; align-items: center; }
-.scale-head { padding-bottom: 8px; border-bottom: 1px solid var(--line); }
-.scale-head span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.scale-row { padding: 14px 0; border-bottom: 1px solid var(--line-soft); }
-.scale-code { font-size: 1.6rem; font-weight: 700; line-height: 1; color: var(--ink); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.scale-head, .scale-row { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-3) var(--s-4); align-items: center; }
+.scale-head { padding-bottom: var(--s-2); border-bottom: 1px solid var(--line); }
+.scale-head span { font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.scale-row { padding: var(--s-3) 0; border-bottom: 1px solid var(--line-soft); }
+.scale-code { font-size: 1.6rem; font-weight: 700; line-height: var(--lh-tight); color: var(--ink); display: flex; align-items: baseline; gap: var(--s-2); flex-wrap: wrap; }
 /* --red on the panel grey this row sits on measured 4.12:1 at 9.9px, under the
    4.5 small text needs. --red-ink is the same mark carrying text, at 6.36:1. */
-.scale-here { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-ink); }
+.scale-here { font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-ink); }
 .scale-row.here { background: var(--panel); }
 .scale-bar { display: block; position: relative; block-size: 26px; }
 .scale-bar .bar {
@@ -1427,10 +1460,10 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    reason the two scales are drawn in different greys. */
 .scale-bar.money .bar { background: var(--muted); }
 .scale-row.here .scale-bar .bar { background: var(--red); }
-.scale-bar b { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; }
+.scale-bar b { font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; }
 /* The axis belongs to the weeks column, not to the row: spanning the full
    width put "14 weeks" under the price band, which is a different scale. */
-.scale-axis { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin: 8px 0 0; font-size: 0.72rem; color: var(--muted); }
+.scale-axis { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-4); margin: var(--s-2) 0 0; font-size: var(--t-micro); color: var(--muted); }
 .scale-axis span { grid-column: 2; display: flex; justify-content: space-between; }
 .scale-axis i { font-style: normal; }
 /* On the black band the ink bar disappears. */
@@ -1462,10 +1495,10 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 /* A gate priced by tier shows its tiers. Migration is the first: a WooCommerce
    store and a Magento estate are one gate each and differ by a factor of five,
    and the page used to print the heavy figure for both. */
-.tiers { list-style: none; padding: 0; margin: 12px 0 0; }
-.tiers > li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) auto; gap: 4px 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid var(--line-soft); }
-.tiers > li strong { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-ink); }
-.tiers .tier-cost { font-size: 0.82rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tiers { list-style: none; padding: 0; margin: var(--s-3) 0 0; }
+.tiers > li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr) auto; gap: var(--s-1) var(--s-4); align-items: baseline; padding: var(--s-3) 0; border-top: 1px solid var(--line-soft); }
+.tiers > li strong { font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red-ink); }
+.tiers .tier-cost { font-size: var(--t-xs); font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
 @media (max-width: 620px) {
   .tiers > li { grid-template-columns: minmax(0, 1fr); }
   .tiers .tier-cost { justify-self: start; }
@@ -1517,7 +1550,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .phases-total .phase-gets { display: none; }
 
 /* ── Where this offer stops ───────────────────────────────────────────────── */
-.boundaries { margin: 20px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
+.boundaries { margin: var(--s-4) 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--s-6); }
 .boundary { border-top: 2px solid var(--ink); padding-top: 16px; }
 .boundary.out { border-top-color: var(--red); }
 .boundary h3 { margin: 0 0 12px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
@@ -1531,15 +1564,15 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 
 @media (max-width: 900px) {
   .phase-gets { columns: 1; }
-  .boundaries { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .boundaries { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
 }
 
 /* ── Who it sells to ──────────────────────────────────────────────────────── */
-.channels { margin: 20px 0 0; display: grid; gap: 0; }
-.channels > div { display: grid; grid-template-columns: 11rem 1fr; gap: 6px 24px; border-top: 1px solid var(--line); padding: 16px 0; }
+.channels { margin: var(--s-4) 0 0; display: grid; gap: 0; }
+.channels > div { display: grid; grid-template-columns: 11rem 1fr; gap: var(--s-2) var(--s-5); border-top: 1px solid var(--line); padding: var(--s-4) 0; }
 .channels > div:last-child { border-bottom: 1px solid var(--line); }
-.channels dt { margin: 0; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.channels dd { margin: 0; color: var(--ink); font-size: 0.97rem; max-width: 70ch; }
+.channels dt { margin: 0; font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.channels dd { margin: 0; color: var(--ink); font-size: var(--t-base); max-width: 70ch; }
 
 @media (max-width: 720px) {
   .phase-head { grid-template-columns: minmax(0, 1fr); }
@@ -1566,8 +1599,8 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    fixed price and a consultant reads down a list rather than opening sixteen
    accordions. The epic is a group header inside the table; the price-deciding
    column is the third one. */
-.scope-epics { margin: 22px 0 0; }
-.scope-table { margin-top: 24px; }
+.scope-epics { margin: var(--s-5) 0 0; }
+.scope-table { margin-top: var(--s-5); }
 /* The shared scroller sizes a table to its content, which for a hundred and
    eighteen rows of prose is a table several screens wide. This one is a fixed
    grid that wraps instead: the key and the two right-hand columns are as wide
@@ -1578,18 +1611,18 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .scope-table th[scope="col"]:nth-child(3), .scope-row > td:nth-child(3) { width: 17rem; }
 .scope-table th[scope="col"]:nth-child(4), .scope-row > td:nth-child(4) { width: 6.5rem; }
 .scope-table tbody + tbody .epic-row > th { border-top: 1px solid var(--line-strong); }
-.epic-row > th { text-align: left; padding: 0 12px 0 0; width: auto; }
-.epic-name { display: block; font-size: 1.02rem; letter-spacing: -0.01em; }
+.epic-row > th { text-align: left; padding: 0 var(--s-3) 0 0; width: auto; }
+.epic-name { display: block; font-size: var(--t-m); letter-spacing: -0.01em; }
 /* A sentence, not a column label. It inherited `text-transform: uppercase` and
    0.08em of tracking from `th` and set neither back, so every one of the sixteen
    epic summaries was a line of prose in capitals — four wrapped lines of it at
    390px. */
 .epic-meta {
-  display: block; font-weight: 400; color: var(--muted); font-size: 0.85rem; margin-top: 4px;
-  text-transform: none; letter-spacing: 0; line-height: 1.4;
+  display: block; font-weight: 400; color: var(--muted); font-size: var(--t-s); margin-top: var(--s-1);
+  text-transform: none; letter-spacing: 0; line-height: var(--lh-normal);
 }
-.scope-row > td { vertical-align: top; padding: 6px 12px 6px 0; font-size: 0.9rem; }
-.scope-key { color: var(--muted); font-size: 0.78rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scope-row > td { vertical-align: top; padding: var(--s-2) var(--s-3) var(--s-2) 0; font-size: var(--t-s); }
+.scope-key { color: var(--muted); font-size: var(--t-xs); font-variant-numeric: tabular-nums; white-space: nowrap; }
 /* Prefixed, because .gate is a card elsewhere on this page set and .answers is a
    two-column grid: an unprefixed state class here inherited both and broke the
    row into pieces. */
@@ -1599,7 +1632,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    that decides the price. The square is filled by how certain the story is to
    be in it: solid always, half when the answers decide, hollow when a gate
    prices it separately. Colour stays as the second cue, never the only one. */
-.scope-when { font-size: 0.82rem; display: inline-flex; align-items: baseline; gap: 7px; }
+.scope-when { font-size: var(--t-xs); display: inline-flex; align-items: baseline; gap: var(--s-2); }
 .scope-when::before {
   content: ''; flex: 0 0 auto; align-self: center; inline-size: 9px; block-size: 9px;
   border: 1.5px solid currentColor;
@@ -1610,9 +1643,9 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .scope-when.is-answers::before { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
 .scope-when.is-gated { color: var(--ink); }
 .scope-when.is-gated > .gate-name { border-bottom: 1px solid var(--line-strong); }
-.scope-cost { font-variant-numeric: tabular-nums; font-size: 0.85rem; white-space: nowrap; }
-.decided abbr { border-bottom: 1px dotted var(--line-strong); text-decoration: none; cursor: help; font-size: 0.78rem; color: var(--muted); }
-.decided abbr + abbr { margin-left: 5px; }
+.scope-cost { font-variant-numeric: tabular-nums; font-size: var(--t-s); white-space: nowrap; }
+.decided abbr { border-bottom: 1px dotted var(--line-strong); text-decoration: none; cursor: help; font-size: var(--t-xs); color: var(--muted); }
+.decided abbr + abbr { margin-left: var(--s-1); }
 @media (max-width: 560px) {
   /* The stacked-card rule puts a border round every row; the epic header is a
      heading in that stack, not a card of its own. */
@@ -1625,8 +1658,8 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
      measured at 35,987px. The story is one line, the state is under it, and the
      column labels go — they say nothing the cells do not already say. */
   .scope-table .scope-row {
-    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 12px;
-    border: 0; border-top: 1px solid var(--line-soft); padding: 9px 0; margin: 0;
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px var(--s-3);
+    border: 0; border-top: 1px solid var(--line-soft); padding: var(--s-2) 0; margin: 0;
   }
   .scope-table .scope-row > td { padding: 0; }
   .scope-table .scope-row > td::before { content: none; }
@@ -1753,14 +1786,14 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    explained, which is a reliable way to have none of them read. Each note now
    hangs off its own row and is shut until asked for, so the table is quantities
    at rest and the reasoning is one click from the number it justifies. */
-.pack-why { margin-top: 7px; font-weight: 400; }
+.pack-why { margin-top: var(--s-2); font-weight: 400; }
 .pack-why > summary {
-  font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; list-style-position: outside;
+  font-size: var(--t-xs); font-weight: 600; color: var(--muted); cursor: pointer; list-style-position: outside;
 }
 .pack-why > summary:hover { color: var(--red-ink); }
 .pack-why > p {
-  margin: 7px 0 0; font-size: 0.85rem; line-height: 1.5; color: var(--muted); font-weight: 400;
-  padding-left: 10px; border-left: 2px solid var(--line);
+  margin: var(--s-2) 0 0; font-size: var(--t-s); line-height: var(--lh-normal); color: var(--muted); font-weight: 400;
+  padding-left: var(--s-3); border-left: 2px solid var(--line);
 }
 /* A quantity, and the absence of one. A dash is not a failure state and is not
    drawn as one — it is the boundary that makes a pack a pack — so it is muted
@@ -1854,7 +1887,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    rest recede and it keeps the accent. No badge, no second colour. */
 .stats:has(.stat-common) li:not(.stat-common) span { border-top-color: var(--line-strong); }
 .stat-flag {
-  display: block; margin-top: 6px; font-size: 0.78rem; font-weight: 700;
+  display: block; margin-top: var(--s-2); font-size: var(--t-xs); font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-ink);
 }
 /* Arc in the offers strip. The three solid rules are what this engine quotes;
@@ -1863,7 +1896,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .stat-beyond span { border-top-style: dashed; }
 .stat-beyond strong { color: rgba(255, 255, 255, 0.45); }
 .stat-note {
-  display: block; margin-top: 6px; font-size: 0.78rem; font-weight: 400;
+  display: block; margin-top: var(--s-2); font-size: var(--t-xs); font-weight: 400;
   color: rgba(255, 255, 255, 0.45);
 }
 
@@ -1931,52 +1964,84 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    overflow at 1440 and at 390. */
 .table-scroll:has(> table.packs) { overflow: visible; }
 
+/* ── Focus, and the size of a thing you tap ───────────────────────────────── */
+/* Measured: 36 `:hover` rules against 13 `:focus-visible` — twenty-three things
+   you can point at with a mouse and cannot see when you tab to them. Hover and
+   focus are one affordance shown to two input methods, so the base rule pairs
+   them for everything and a component that wants its own still wins: `:where()`
+   carries no specificity. Additive — it draws nothing until a keyboard focuses
+   the element, so it cannot move a pixel of layout. */
+:where(a, button, summary, [tabindex]:not([tabindex="-1"]), input, select, textarea):focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+/* --red is the mark on white. On the black statement band it is 4.1:1 against
+   the ground, which is thin for the one cue a keyboard user has. */
+.topbar :where(a, button, summary):focus-visible,
+.page-head :where(a, button, summary):focus-visible,
+.site-footer :where(a, button, summary):focus-visible,
+.band.dark :where(a, button, summary):focus-visible { outline-color: #fff; }
+
+/* A standalone control is 44px tall on a phone or it is a target people miss.
+   Measured at 390px: 45 of 72 interactive elements were under it. This covers
+   the controls — the ribbon, the crumb, the disclosures, the next-offer links.
+   A link inside a sentence is a word, not a control, and is left alone. */
+@media (max-width: 560px) {
+  .jump a, .crumb, .seg-next a,
+  .rules-more > summary, .pack-why > summary, .epic-row > th > details > summary {
+    min-block-size: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .epic-row > th > details > summary { display: block; padding-block: var(--s-3); }
+}
+
 /* ── One pack's scope, quantified, on its own page ────────────────────────── */
 /* The index compares three offers. This compares one offer with the pack below
    it, which is the question left over once a consultant has chosen: what does
    the step up actually buy. */
 h3.sub {
-  margin: 38px 0 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em;
+  margin: var(--s-6) 0 0; font-size: var(--t-m); font-weight: 700; letter-spacing: -0.01em;
 }
 .table-scroll > .limits, .table-scroll > .addon-table {
   width: 100%; min-width: 0; max-width: 100%; table-layout: fixed;
 }
-.limits { margin-top: 16px; }
-.limits th[scope="col"], .addon-table th[scope="col"] { text-align: left; vertical-align: bottom; padding-bottom: 9px; }
+.limits { margin-top: var(--s-4); }
+.limits th[scope="col"], .addon-table th[scope="col"] { text-align: left; vertical-align: bottom; padding-bottom: var(--s-2); }
 /* The subject takes what is left; the two value columns are sized for values
    like "Up to 3 markets" and nothing more. Left to share the table evenly, the
    pack-below column took 704px to hold three words. */
 .limits th[scope="col"]:nth-child(2), .limits th[scope="col"]:nth-child(3) { width: 13.5rem; }
 .limits th[scope="row"], .addon-table th[scope="row"] {
-  text-align: left; vertical-align: top; padding: 13px 14px 13px 0; font-weight: 400;
+  text-align: left; vertical-align: top; padding: var(--s-3) var(--s-3) var(--s-3) 0; font-weight: 400;
   text-transform: none; letter-spacing: 0;
 }
-.limits td, .addon-table td { vertical-align: top; padding: 13px 14px 13px 0; font-size: 0.88rem; }
+.limits td, .addon-table td { vertical-align: top; padding: var(--s-3) var(--s-3) var(--s-3) 0; font-size: var(--t-s); }
 .limits-row { border-top: 1px solid var(--line); }
-.limits-value { font-weight: 700; font-size: 0.92rem; }
+.limits-value { font-weight: 700; font-size: var(--t-base); }
 /* The step-up table reads left to right as a before and an after, so the pack
    below is set back and this offer's figure carries the weight. */
 .limits-from { color: var(--muted); }
 .limits-gain th[scope="col"]:first-child { width: auto; }
 .limits-gain .limits-value { color: var(--ink); }
 .limits-gain .limits-from::after { content: ' \2192'; color: var(--red); font-weight: 700; }
-.limits-cap { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.limits-cap { color: var(--muted); font-size: var(--t-xs); line-height: var(--lh-normal); }
 .limits-addon {
-  display: block; margin-top: 5px; font-size: 0.76rem; color: var(--muted);
+  display: block; margin-top: var(--s-1); font-size: var(--t-xs); color: var(--muted);
 }
 .limits-addon::before { content: '+ '; color: var(--red); font-weight: 700; }
 
 /* ── What can be bought on top of one pack ───────────────────────────────── */
-.addon-table { margin-top: 18px; }
+.addon-table { margin-top: var(--s-4); }
 .addon-table th[scope="col"]:first-child { width: 20rem; }
 .addon-table th[scope="col"]:nth-child(2) { width: 11rem; }
 .addon-table tbody tr { border-top: 1px solid var(--line); }
-.addon-weeks { font-weight: 700; font-size: 0.92rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.addon-weeks { font-weight: 700; font-size: var(--t-base); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .addon-band { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
-.addon-tiers-flat { margin: 12px 0 2px; display: grid; gap: 11px; }
-.addon-tiers-flat > div { display: grid; grid-template-columns: minmax(0, 1fr) 11rem; gap: 6px 18px; align-items: start; }
+.addon-tiers-flat { margin: var(--s-3) 0 2px; display: grid; gap: var(--s-3); }
+.addon-tiers-flat > div { display: grid; grid-template-columns: minmax(0, 1fr) 11rem; gap: var(--s-2) var(--s-4); align-items: start; }
 .addon-tiers-flat dt { margin: 0; }
-.addon-tiers-flat dd { margin: 0; font-variant-numeric: tabular-nums; font-size: 0.84rem; white-space: nowrap; }
+.addon-tiers-flat dd { margin: 0; font-variant-numeric: tabular-nums; font-size: var(--t-s); white-space: nowrap; }
 .addon-tiers-flat .addon-tier-name { display: block; font-weight: 700; font-size: 0.84rem; text-transform: capitalize; }
 .addon-tiers-flat .addon-tier-what { display: block; margin-top: 3px; font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
 @media (max-width: 560px) { .addon-tiers-flat > div { grid-template-columns: 1fr; } }
@@ -2021,16 +2086,16 @@ h3.sub {
    around 46px of content. The summary owns the row's height; the cell and the
    details give theirs up. */
 .epic-row > th > details { margin: 0; }
-.epic-row > th > details > summary { padding: 16px 1.9rem 16px 0; position: relative; cursor: pointer; }
+.epic-row > th > details > summary { padding: var(--s-4) 1.9rem var(--s-4) 0; position: relative; cursor: pointer; }
 .epic-row > th > details > summary::after { top: 14px; }
 .epic-row > th > details > summary::-webkit-details-marker { display: none; }
-.epic-row > th > details[open] { padding-bottom: 12px; }
+.epic-row > th > details[open] { padding-bottom: var(--s-3); }
 /* The stories table lives inside a `th` now, so it inherited that cell's
    uppercase and 0.08em of tracking and set every one of the 118 story labels,
    and every "the answers say so", in capitals. Same inheritance the epic
    summary hit; the header row below sets its own case back. */
 .epic-stories {
-  width: 100%; margin: 4px 0 8px;
+  width: 100%; margin: var(--s-1) 0 var(--s-2);
   text-transform: none; letter-spacing: 0; font-weight: 400;
 }
-.epic-stories th[scope="col"] { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.epic-stories th[scope="col"] { font-size: var(--t-micro); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
