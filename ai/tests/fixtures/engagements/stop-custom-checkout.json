@@ -137,13 +137,13 @@
     ],
     "price_band": {
       "min": 70000,
-      "max": 145000,
+      "max": 155000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
       "min": 6.5,
-      "max": 14
+      "max": 15
     },
     "rationale": "Three scope gates are active (markets, multi-currency, storefront design) and they add up to 2.5–3.5 weeks, inside the Ecommerce Scale ceiling, so the engagement classifies as M. Half a week of gate overflow is quoted on top of the band; delivery is blocked by exit 11.6.",
     "scope_effort_weeks": {
@@ -152,7 +152,7 @@
     },
     "gate_capacity_weeks": {
       "min": 2,
-      "max": 9
+      "max": 10
     },
     "scope_effort_by_gate": [
       {

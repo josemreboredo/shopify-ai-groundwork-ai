@@ -199,6 +199,9 @@ describe('the page explains the rule the engine actually follows', () => {
     ['scope beyond the M ceiling', {
       ...base(),
       ...markets('CH', 'DE', 'FR'),
+      // Past the ceiling by three weeks, not by half of one: this case has to
+      // survive the ceiling moving, and it did not when M grew to 15.
+      catalogue: { sku_count: 20000, variant_options_max: 3 },
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },
       integrations: [{ category: 'erp', connector: 'custom' }],

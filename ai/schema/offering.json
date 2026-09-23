@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.18.0",
+  "version": "2.19.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -179,12 +179,12 @@
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A migration where there is one to run, priced by where the data comes from",
       "price_band": {
         "min": 65000,
-        "max": 145000,
+        "max": 155000,
         "open_ended": false
       },
       "duration_weeks": {
         "min": 6,
-        "max": 14
+        "max": 15
       },
       "phases": [
         {
@@ -250,7 +250,7 @@
           "name": "Catalogue, markets and data",
           "weeks": {
             "min": 1,
-            "max": 2.5
+            "max": 3.5
           },
           "covers": "One catalogue across many markets, and the data from wherever it lives today.",
           "deliverables": [
@@ -2445,9 +2445,9 @@
         "group": "Data and integrations",
         "shopify_limit": "Shopify Analytics is on every plan, with more pre-built reports the higher the plan",
         "S": "Shopify Analytics, its reports, and GA4’s own ecommerce events",
-        "M": "The same: Shopify Analytics, its reports and GA4’s own events",
+        "M": "All of that, plus events per market and currency, or from an app",
         "L": "All of that, plus a custom GA4 event implementation",
-        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically — that is S and M, and it is not a small thing. Ecommerce Growth adds an event layer designed against what the client actually measures. The add-on is what goes past that in any pack: a third destination, a tag manager, server-side tagging or a consent platform.",
+        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically — that is S, and it is not a small thing. Ecommerce Scale adds the events a multi-market store needs that the standard set does not carry, and the events an app emits. Ecommerce Growth adds an event layer designed against what the client actually measures. The add-on is what goes past that in any pack: a third destination, a tag manager, server-side tagging or a consent platform.",
         "addon": [
           "S",
           "M",
@@ -2711,7 +2711,8 @@
         "migration": "woocommerce",
         "variant_options": 2,
         "checkout": "thank_you_order_status_blocks",
-        "stores": 1
+        "stores": 1,
+        "analytics_custom_events": true
       },
       "L": {
         "markets": 3,

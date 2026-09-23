@@ -213,7 +213,16 @@
         "evidence": "Q10.3.3: retainer; Q10.3.2: written SOPs required."
       }
     },
-    "l_triggers": {},
+    "l_triggers": {
+      "headless": {
+        "active": false,
+        "evidence": "Q9.2.1: no headless storefront required — Online Store with a Liquid theme."
+      },
+      "multi_store": {
+        "active": false,
+        "evidence": "Q3.1.1: one store serves CH, DE and AT through Shopify Markets."
+      }
+    },
     "modifiers": [
       "+Markets",
       "+MultiCurrency",
@@ -236,7 +245,7 @@
       "min": 14,
       "max": 24
     },
-    "rationale": "Ten scope gates are active and they add up to 13–17.5 weeks, past the 13-week ceiling of Ecommerce Scale, so the engagement classifies as L — Ecommerce Growth. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The gates sit inside the 9–15 weeks the L band already holds, so nothing is quoted on top of it.",
+    "rationale": "Ten scope gates are active and they add up to 14–18.5 weeks, past the 15-week ceiling of Ecommerce Scale, so the engagement classifies as L — Ecommerce Growth. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The gates sit inside the 9–19 weeks the L band already holds, so nothing is quoted on top of it.",
     "scope_effort_weeks": {
       "min": 14,
       "max": 18.5

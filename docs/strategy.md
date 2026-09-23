@@ -217,7 +217,7 @@ store-spec.yaml → `shopify theme push` pipeline (~85% of implementation)
 | Offer | Code | Triggered by | Base scope | Typical value | Delivery |
 |---|---|---|---|---|---|
 | **Ecommerce Foundation** | S | 0–1 scope gates | A brand starting ecommerce. New Shopify store on the plan the requirements need (ADR 0011) · Horizon theme · core catalogue · payments · standard checkout | CHF 40–65k | 4–5 weeks |
-| **Ecommerce Scale** | M | ≥ 2 scope gates | A brand that already sells and cannot scale. Everything in S · the gates that fired, each as its own workstream · the markets, catalogue and systems behind them | CHF 65–145k | 6–14 weeks |
+| **Ecommerce Scale** | M | ≥ 2 scope gates | A brand that already sells and cannot scale. Everything in S · the gates that fired, each as its own workstream · the markets, catalogue and systems behind them | CHF 65–155k | 6–15 weeks |
 
 Both S and M are deliverable by Consultant + AI + two part-time collaborators.
 No permanent agency headcount required.

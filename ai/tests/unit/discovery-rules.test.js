@@ -311,6 +311,11 @@ describe('the offer follows the effort, not the gate count', () => {
     const heavy = classifyOffer({
       ...base(),
       ...markets('CH', 'DE', 'FR'),
+      /* The catalogue is here so this stays past the M ceiling when that ceiling
+         moves: at three markets alone it cleared 14 weeks by half a one, and when
+         M grew to 15 this stopped being an L and the rule it proves stopped being
+         proved. Twenty thousand SKUs clears it by three. */
+      catalogue: { sku_count: 20000, variant_options_max: 3 },
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },
       integrations: [{ category: 'erp', connector: 'custom' }],

@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.2.0 · offering 2.18.0
+> **Version:** question bank 1.2.0 · offering 2.19.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont

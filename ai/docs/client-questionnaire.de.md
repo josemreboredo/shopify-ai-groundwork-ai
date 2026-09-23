@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.2.0 · offering 2.18.0
+> **Version:** question bank 1.2.0 · offering 2.19.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
