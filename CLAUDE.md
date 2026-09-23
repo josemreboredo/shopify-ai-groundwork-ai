@@ -122,6 +122,47 @@ Gaia's 14 roles apply. These roles have Shopify-specific scope expansions:
 - **QE** — tests include Shopify webhook replay, App Bridge UI smoke tests, and
   Storefront API contract tests where applicable
 
+## Two machines, two Claude accounts, one repository
+
+This biota is worked from two computers: **Enterprise** on the work machine and
+**personal** on the other, against this one repository. It is one person, which
+is the mildest version of the case and still the first time Gaia has been run
+this way — a Track C proposal is filed at
+`references/_intake/2026-W39-two-machine-biota/`.
+
+Until master has a position, these are the rules this biota runs by.
+
+**Pull before you start, push before you stop.** Both machines work `main`
+directly; there is no review gate between them because there is no second
+reviewer. That only stays safe if neither machine holds unpushed work overnight.
+
+**Stage explicit paths. Never `git add -A` or `git add .`.** Run `git status`
+first and treat anything you did not touch as the other machine's. This was
+written after two sessions sharing one checkout each diagnosed the other's
+in-flight edits as their own regression, repeatedly.
+
+**Say before you restructure.** Renaming or moving a directory is the one change
+the other machine cannot merge — it turns every pending commit into a conflict.
+`discovery/` → `ai/` was done while the other machine was committing into
+`discovery/`, and thirty-one commits had to be carried across by hand.
+
+**`npm test` is only yours if the tree is.** A red suite may be the other
+machine's work in flight. Check `git status` before believing a failure is
+yours, and re-run on a clean tree before reporting one.
+
+**What does not travel.** `.gaia/` and `.env` are gitignored, so each machine
+has its own. That means each machine has its **own Gate 5 allowlist and its own
+audit log**, and neither can see the other's — which is finding 3 of the Track C
+proposal, not a feature. Until it is resolved, treat the MCP scope on your
+machine as local and do not assume the other machine has the same.
+
+**The two accounts are not equivalent.** ADR 0007 restricted this biota to demo
+or anonymised engagements because it ran on a personal Claude account. The
+Enterprise machine is not bound that way; the personal one still is. Read live
+client engagements from Enterprise only.
+
+---
+
 ## Project-specific learnings
 
 Accumulate in `docs/learnings.md` as the biota surfaces Shopify-specific dynamics.
