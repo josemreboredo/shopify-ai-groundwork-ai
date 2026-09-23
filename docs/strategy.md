@@ -246,7 +246,7 @@ token application, boilerplate, automated QA (~60% of implementation)
 
 | Offer | Code | Triggered by | Scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Growth** | L | A headless requirement, or scope past the M ceiling | A brand already selling professionally on an enterprise platform. The enterprise migration · measurement that stands up · personalisation and experimentation live at launch · the design system built once over one token layer | CHF 140–240k+ | 13–22 weeks |
+| **Ecommerce Growth** | L | A headless requirement, or scope past the M ceiling | A brand already selling professionally on an enterprise platform. Up to two Shopify stores · measurement designed against what the client measures · personalisation and experimentation live at launch · the design system built once over one token layer. The replatform itself is quoted on its own, not absorbed into the band | CHF 140–240k+ | 13–22 weeks |
 
 L builds either way and spends the same weeks differently — as theme sections and
 blocks, or as owned components on Hydrogen — so the track follows the answers

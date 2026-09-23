@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -359,7 +359,7 @@
       "delivery_track": "liquid",
       "build_label": "Custom Liquid · Hydrogen",
       "triggered_by": "A headless storefront, or scope that adds up to more than an M can hold — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · The enterprise migration: the data, the redirect estate and the integrations the old platform was carrying · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to two Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them — the replatform itself is quoted on its own, because a migration is a project with its own shape rather than a line inside a band · Measurement that stands up — every destination wired through customer events, consent carried to each, and the numbers reconciled · Personalisation and experimentation set up and running at launch, not promised for later · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 140000,
         "max": 240000,
@@ -491,6 +491,7 @@
         "both": "Both storefronts built and tested, with a decision taken per market about which channel sells there."
       },
       "not_included": [
+        "The replatform from the old system — the data, the redirect estate and the integrations it was carrying. It is quoted on its own for the platform it comes from, because a migration is a project with its own shape and absorbing it into a band prices it by accident",
         "Custom checkout UI. Shopify no longer permits it whatever the rest of the storefront does — Checkout Extensibility is the whole of what is possible",
         "A storefront whose content or front end lives outside Shopify: an external CMS or PIM, another framework, a native app, several front ends on one backend. Hydrogen with content in Shopify is this offer; the rest is Merkle Arc",
         "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
@@ -2135,7 +2136,7 @@
         "shopify_limit": "One store per subscription; a Plus contract carries ten — one main store and nine expansion stores, each of which must be identical to the main brand",
         "S": "Up to 1 store",
         "M": "Up to 1 store",
-        "L": "Up to 1 store",
+        "L": "Up to 2 stores",
         "note": "One store already serves every market in the pack — a different currency, language, domain, price and catalogue per market, no second store required. Needing a second store is not an add-on chosen from S or M: it makes the engagement an Ecommerce Growth outright, whichever pack the rest of the answers would have meant, because expansion stores share no data, so every integration is wired again, every theme deployed again and every app bought again, per store. Whether the requirements need one is not a question we ask: the engine derives it from the market answers — does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, need its own theme design, or belong to a second brand.",
         "addon": [
           "L"
@@ -2411,14 +2412,14 @@
         "shopify_limit": "No documented Shopify ceiling — what sets the work is the source platform’s data model",
         "S": "—",
         "M": "WooCommerce or Shopify",
-        "L": "Shopware, BigCommerce, WooCommerce or Shopify",
-        "note": "The tier is set by where the data comes from, because that is what decides the work: WooCommerce and Shopify share a data model, Shopware and BigCommerce do not, and Magento, SFCC and bespoke platforms need the model mapped and every integration re-pointed. The redirect estate is not in here — it is the SEO continuity row, priced once. A migration carrying real search traffic or complex history is scoped as its own track (rule 11.14).",
+        "L": "—",
+        "note": "The tier is set by where the data comes from, because that is what decides the work: WooCommerce and Shopify share a data model, Shopware and BigCommerce do not, and Magento, SFCC and bespoke platforms need the model mapped and every integration re-pointed. Ecommerce Scale carries the two that share Shopify’s model; everywhere else a migration is quoted on its own, because a replatform is a project with its own shape and absorbing it into a band prices it by accident. The redirect estate is not in here — it is the SEO continuity row, priced once. A migration carrying real search traffic or complex history is scoped as its own track (rule 11.14).",
         "addon": [
           "S",
           "M",
           "L"
         ],
-        "addon_label": "Magento, Salesforce Commerce Cloud or a custom platform"
+        "addon_label": "Every platform in S and L; Magento, Salesforce Commerce Cloud or a custom platform in M"
       },
       {
         "id": "seo",
@@ -2443,10 +2444,10 @@
         "gate": "analytics_consent",
         "group": "Data and integrations",
         "shopify_limit": "Shopify Analytics is on every plan, with more pre-built reports the higher the plan",
-        "S": "Shopify Analytics, its reports and GA4",
-        "M": "Shopify Analytics, its reports and GA4",
-        "L": "Shopify Analytics, its reports and GA4",
-        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically. The add-on is what goes past that — a third destination, a tag manager, custom events, server-side tagging or a consent platform.",
+        "S": "Shopify Analytics, its reports, and GA4’s own ecommerce events",
+        "M": "The same: Shopify Analytics, its reports and GA4’s own events",
+        "L": "All of that, plus a custom GA4 event implementation",
+        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically — that is S and M, and it is not a small thing. Ecommerce Growth adds an event layer designed against what the client actually measures. The add-on is what goes past that in any pack: a third destination, a tag manager, server-side tagging or a consent platform.",
         "addon": [
           "S",
           "M",
@@ -2694,7 +2695,8 @@
         "integrations": 0,
         "retail_locations": 0,
         "migration": null,
-        "checkout": null
+        "checkout": null,
+        "stores": 1
       },
       "M": {
         "markets": 3,
@@ -2708,7 +2710,8 @@
         "retail_locations": 0,
         "migration": "woocommerce",
         "variant_options": 2,
-        "checkout": "thank_you_order_status_blocks"
+        "checkout": "thank_you_order_status_blocks",
+        "stores": 1
       },
       "L": {
         "markets": 3,
@@ -2719,9 +2722,11 @@
         "sku_count": 2000,
         "integrations": 1,
         "retail_locations": 0,
-        "migration": "shopware",
+        "migration": null,
         "variant_options": 2,
-        "checkout": "checkout_step_blocks_or_fields"
+        "checkout": "checkout_step_blocks_or_fields",
+        "stores": 2,
+        "analytics_custom_events": true
       }
     }
   }
