@@ -263,8 +263,8 @@
       }
     ],
     "price_band": {
-      "min": 120000,
-      "max": 180000,
+      "min": 85000,
+      "max": 114000,
       "currency": "CHF",
       "open_ended": false
     },

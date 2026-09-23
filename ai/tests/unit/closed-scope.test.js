@@ -464,6 +464,27 @@ describe('the quote is the scope, priced one way', () => {
     }
   });
 
+  test('the Foundation band and every floor are weeks at the rate, with the pack’s hypercare', () => {
+    /* The bands are the week's price, not numbers of their own: when the rate
+       moves, a band left behind is a price the engine no longer charges. */
+    const care = (days) => (days / 5) * rate * offering.pricing.hypercare_rate_share;
+    const k1 = (n) => Math.round(n / 1000) * 1000;
+    const S = offering.offers.S;
+    assert.equal(S.price_band.min, k1(S.duration_weeks.min * rate + care(S.hypercare_days)), 'S floor');
+    assert.equal(S.price_band.max, k1(S.duration_weeks.max * rate + care(S.hypercare_days)), 'S ceiling');
+    for (const code of ['M', 'L']) {
+      const o = offering.offers[code];
+      assert.equal(o.price_band.min, k1(o.duration_weeks.min * rate + care(o.hypercare_days)), `${code}: its floor is its shortest engagement at the rate`);
+    }
+  });
+
+  test('the week the rate prices is the team the pages show', () => {
+    const fte = offering.pricing.team.reduce((a, t) => a + t.fte, 0);
+    assert.ok(Math.abs(fte - offering.pricing.people_per_week) < 0.01);
+    for (const t of offering.pricing.team) assert.ok(t.role?.trim() && t.fte > 0, 'every role has a share of the week');
+    assert.ok(offering.pricing.team.some((t) => /QA/.test(t.role)), 'QA is part of the team, so it is not sold again on top');
+  });
+
   test('a per-unit band holds every unit its limit allows, at the dearest surcharge', () => {
     /* A band that clamps below the limit behind it gives the last units away:
        the fifth store to the tenth once cost nothing. */

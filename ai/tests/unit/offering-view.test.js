@@ -257,7 +257,7 @@ describe('the packs as packaging for a conversation', () => {
     assert.equal(view.estimate, offering.estimate.line);
     assert.match(view.estimate, /first estimate/i);
     assert.match(view.estimate, /contingency/);
-    assert.match(view.estimate, /Design and QA testing/);
+    assert.match(view.estimate, /services such as Design/);
     assert.equal(view.after_launch.title, offering.after_launch.title);
     assert.match(view.after_launch.line, /price is kept open/);
   });
@@ -280,7 +280,12 @@ describe('the packs as packaging for a conversation', () => {
     assert.ok(!view.offers.filter((o) => o.code !== 'L').some((o) => o.with_replatform));
   });
 
-  test('every pack says what a week buys in people', () => {
-    for (const o of view.offers) assert.equal(o.team, offering.pricing.people_per_week);
+  test('every pack says what a week buys in people, and which people', () => {
+    const fte = offering.pricing.team.reduce((a, t) => a + t.fte, 0);
+    assert.ok(Math.abs(fte - offering.pricing.people_per_week) < 0.01, `the roles add up to ${fte}, the page says ${offering.pricing.people_per_week}`);
+    for (const o of view.offers) {
+      assert.equal(o.team.people, offering.pricing.people_per_week);
+      assert.deepEqual(o.team.roles, offering.pricing.team.map((t) => t.role));
+    }
   });
 });

@@ -144,10 +144,9 @@ export default function OfferingSegment({ loaderData }) {
             offers whose scope is written as one line. */}
         <ul className="stats">
           <li><strong>{weeks(offer.duration_weeks)}</strong><span>weeks, end to end</span></li>
-          {/* A headline "0" reads as a missing number, not as a fact. On the
-              offer that carries no gate work the fact is the rule itself: a
-              gate here is added on top. */}
-          <li><strong>≈{offer.team} people</strong><span>full time for those weeks — what the band pays for</span></li>
+          {/* The team a build week pays for, so the band reads as people and
+              weeks rather than as a package price. Acronyms keep their case. */}
+          <li><strong>≈{offer.team.people} people</strong><span>full time for those weeks, offshore: {offer.team.roles.map((r) => (/^[A-Z]{2,}/.test(r) ? r : r.charAt(0).toLowerCase() + r.slice(1))).join(', ')}</span></li>
           {view.pricing && offer.price_band
             ? <li><strong>{band(offer.price_band, currency)}</strong><span>internal price band — never in a client document</span></li>
             : <li><strong>{TRACK[offer.delivery_track] ?? offer.delivery_track}</strong><span>how the storefront is built</span></li>}

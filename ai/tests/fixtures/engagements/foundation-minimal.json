@@ -148,8 +148,8 @@
     "modifiers": [],
     "addons": [],
     "price_band": {
-      "min": 30000,
-      "max": 55000,
+      "min": 28000,
+      "max": 35000,
       "currency": "CHF",
       "open_ended": false
     },

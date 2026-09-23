@@ -75,8 +75,9 @@ The actual delivery target: stores, themes, apps, Admin API, Storefront API.
 > guessed from a package."*
 
 The packs open the conversation; the answers make the estimate; a discovery closes
-the scope and the delivery team gives the final figure. Contingency and services such
-as Design and QA testing are added in the proposal.
+the scope and the delivery team gives the final figure. The packs are delivered by an
+offshore team with QA in it; contingency and services such as Design are added in
+the proposal.
 
 ---
 
@@ -157,7 +158,7 @@ creep post-signature.
 | **Post-launch support** | An operating model past go-live: written SOPs the client's team runs the store from, or a handover into a retainer. The hypercare window and launch-day training are in every offer |
 
 <!-- generated:classification -->
-**Classification rule** — the quote first, then the name. The quote is the Foundation base (4–5 weeks, CHF 30k–55k) plus every active scope gate at its own weeks, each week at one rate of CHF 10k. The pack it is named after, in order:
+**Classification rule** — the quote first, then the name. The quote is the Foundation base (4–5 weeks, CHF 28k–35k) plus every active scope gate at its own weeks, each week at one rate of CHF 6.3k. The pack it is named after, in order:
 1. A headless storefront — only Ecommerce Flagship builds one → **L**
 2. The quote reaches Ecommerce Flagship’s floor, and everything past its promise is sold as an add-on to it → **L**
 3. The quote reaches Ecommerce Scale’s floor, and everything past its promise is sold as an add-on to it → **M**
@@ -185,36 +186,36 @@ the engagement price; the client sees the estimate, never the modifiers.
 <!-- generated:modifiers -->
 | Modifier | Effort add | Price add |
 |---|---|---|
-| `+Markets` — each further market with its own currency: Shopify Markets, Translate & Adapt, geo-routing, and the price list, rounding and payouts of its currency | +0.75–20 wk | +CHF 7.5k–200k |
-| `+Stores` — each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again per store — expansion stores share no data, so the more integrations there are, the more this costs per additional store | +1.5–31.5 wk | +CHF 15k–315k |
-| `+B2B (standard)` — shopify’s own B2B: company accounts, price lists, volume rules and payment terms | +1–1.5 wk | +CHF 10k–15k |
-| `+B2B (advanced)` — b2B past Shopify’s own set-up: catalogues per company, quote or negotiated pricing, a separate B2B storefront or checkout, or needs Shopify’s B2B does not cover | +2–3 wk | +CHF 20k–30k |
-| `+Design (extended)` — bespoke sections and blocks built as Online Store 2.0 theme blocks from a key-screens design: schema, presets, translatable labels, Theme Check | +1–2 wk | +CHF 10k–20k |
-| `+Design (bespoke)` — a full template set from a mapped design system: every template, tokens wired to theme settings, motion and right-to-left where the markets need it | +3–5 wk | +CHF 30k–50k |
-| `+Theme design` — each further storefront design, built from the client’s second design against the same token layer: its own theme installed, configured and Theme Checked, every template built again — more of them when the first design is a full template set — and the theme kept in step with the first on every release | +2–31.5 wk | +CHF 20k–315k |
-| `+Integration` — each live connection to a counted system — ERP, PIM, CRM, OMS or 3PL | +1–3 wk | +CHF 10k–30k |
-| `+SKU (standard)` — 500 to 4,999 SKUs with complex variants, metafields or bundles: the product model designed once and applied | +0.5 wk | +CHF 5k |
-| `+SKU (large)` — 5,000 to 49,999 SKUs: the model is the same, the data is not — import batching, reconciliation per object, and the share of products that need a human before they load, with Search & Discovery set up for it | +1.5–2.5 wk | +CHF 15k–25k |
-| `+SKU (very large)` — 50,000 SKUs and above: catalogue operations in their own right — staged loads, a rehearsal run, and a data owner on the client side, with Search & Discovery set up for it | +3–5 wk | +CHF 30k–50k |
-| `+Search (native)` — search & Discovery taken to its limits: the filter set designed against the product data that backs it, boosts and synonyms per collection, and a merchandiser who can change them afterwards | +0.5–1 wk | +CHF 5k–10k |
-| `+Search (app)` — past a documented Shopify limit, so a third-party search app: indexing and re-indexing, the sync that keeps it true, and the merchandising rules moved into it with an owner | +1.5–2.5 wk | +CHF 15k–25k |
-| `+SEO (standard)` — the redirect map authored and imported, metadata and canonicals carried across, sitemap and indexation checked through cut-over | +0.5–1 wk | +CHF 5k–10k |
-| `+SEO (large)` — a redirect estate of 10,000 URLs or more, or rankings the business runs on: the map built from a crawl rather than a pattern, verified on staging, and indexation watched after launch | +1.5–2.5 wk | +CHF 15k–25k |
-| `+Subscriptions (standard)` — shopify Subscriptions: selling plans, the storefront widget, the customer portal and the billing states the support team has to recognise | +0.5–1 wk | +CHF 5k–10k |
-| `+Subscriptions (advanced)` — a third-party subscription app, or prepaid, build-a-box, B2B or international plans — and live contracts carried across without the customer re-entering a card, which is where these migrations fail | +1.5–2.5 wk | +CHF 15k–25k |
-| `+Checkout (post-purchase)` — uI extensions on the Thank you and Order status pages — order tracking, surveys, referrals, an app block after the sale. Available on every plan except Starter, so this needs no Plus | +0.5–1 wk | +CHF 5k–10k |
-| `+Checkout (in-checkout)` — uI extensions and custom fields on the information, shipping and payment steps. Shopify Plus only — on any other plan this is not a scope decision, it is a plan decision | +1–2 wk | +CHF 10k–20k |
-| `+Checkout (functions)` — backend logic as Shopify Functions — validation, delivery or payment customisation, order rules: a deployed app with its own tests and release path, not a setting | +1.5–3 wk | +CHF 15k–30k |
-| `+Analytics (standard)` — customer events, the destinations wired through them and consent respected on each — measurement that agrees with Shopify's own numbers | +0.5–1 wk | +CHF 5k–10k |
-| `+Analytics (advanced)` — server-side tagging or a third-party consent platform: consent state carried to every destination, capture points beyond checkout, and the reconciliation that proves the numbers still line up | +1.5–2.5 wk | +CHF 15k–25k |
-| `+Support (standard)` — one of the two: written SOPs, or a handover into a retainer that is not the Grow retainer — the runbooks and the owner named against each, past the launch-day training every offer carries | +0.5–1 wk | +CHF 5k–10k |
-| `+Support (extended)` — both: a documented operating model the client’s team runs the store from, handed into a retainer that has to receive it, with a training programme behind it | +1–2 wk | +CHF 10k–20k |
-| `+Retail` — each location selling with Shopify POS: hardware, inventory, staff and the in-store test pass | +1–5 wk | +CHF 10k–50k |
-| `+Migration (light)` — wooCommerce or Shopify-to-Shopify: catalogue, customers and order history. The redirect estate is the SEO continuity gate, not this one. | +1–1.5 wk | +CHF 10k–15k |
-| `+Migration (medium)` — shopware or BigCommerce: data model differences to map, order history, customer and price-list structures. Redirects are priced by the SEO continuity gate. | +2.5–4 wk | +CHF 25k–40k |
-| `+Migration (heavy)` — magento, Salesforce Commerce Cloud or a custom platform: a bespoke data model to map and integrations to re-point. Redirects are priced by the SEO continuity gate. | +4–5.5 wk | +CHF 40k–55k |
-| `+MultiCurrency` — price lists, rounding, payout and reconciliation per currency — priced on its own only where one market sells in several currencies; a further market carries its own | +0.5 wk | +CHF 5k |
-| `+Languages` — each language beyond the third: translation of products, collections, policies, URL handles, theme and app strings — and again on every release | +0.5–2.5 wk | +CHF 5k–25k |
+| `+Markets` — each further market with its own currency: Shopify Markets, Translate & Adapt, geo-routing, and the price list, rounding and payouts of its currency | +0.75–20 wk | +CHF 4.7k–126k |
+| `+Stores` — each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again per store — expansion stores share no data, so the more integrations there are, the more this costs per additional store | +1.5–31.5 wk | +CHF 9.5k–198.5k |
+| `+B2B (standard)` — shopify’s own B2B: company accounts, price lists, volume rules and payment terms | +1–1.5 wk | +CHF 6.3k–9.5k |
+| `+B2B (advanced)` — b2B past Shopify’s own set-up: catalogues per company, quote or negotiated pricing, a separate B2B storefront or checkout, or needs Shopify’s B2B does not cover | +2–3 wk | +CHF 12.6k–18.9k |
+| `+Design (extended)` — bespoke sections and blocks built as Online Store 2.0 theme blocks from a key-screens design: schema, presets, translatable labels, Theme Check | +1–2 wk | +CHF 6.3k–12.6k |
+| `+Design (bespoke)` — a full template set from a mapped design system: every template, tokens wired to theme settings, motion and right-to-left where the markets need it | +3–5 wk | +CHF 18.9k–31.5k |
+| `+Theme design` — each further storefront design, built from the client’s second design against the same token layer: its own theme installed, configured and Theme Checked, every template built again — more of them when the first design is a full template set — and the theme kept in step with the first on every release | +2–31.5 wk | +CHF 12.6k–198.5k |
+| `+Integration` — each live connection to a counted system — ERP, PIM, CRM, OMS or 3PL | +1–3 wk | +CHF 6.3k–18.9k |
+| `+SKU (standard)` — 500 to 4,999 SKUs with complex variants, metafields or bundles: the product model designed once and applied | +0.5 wk | +CHF 3.2k |
+| `+SKU (large)` — 5,000 to 49,999 SKUs: the model is the same, the data is not — import batching, reconciliation per object, and the share of products that need a human before they load, with Search & Discovery set up for it | +1.5–2.5 wk | +CHF 9.5k–15.8k |
+| `+SKU (very large)` — 50,000 SKUs and above: catalogue operations in their own right — staged loads, a rehearsal run, and a data owner on the client side, with Search & Discovery set up for it | +3–5 wk | +CHF 18.9k–31.5k |
+| `+Search (native)` — search & Discovery taken to its limits: the filter set designed against the product data that backs it, boosts and synonyms per collection, and a merchandiser who can change them afterwards | +0.5–1 wk | +CHF 3.2k–6.3k |
+| `+Search (app)` — past a documented Shopify limit, so a third-party search app: indexing and re-indexing, the sync that keeps it true, and the merchandising rules moved into it with an owner | +1.5–2.5 wk | +CHF 9.5k–15.8k |
+| `+SEO (standard)` — the redirect map authored and imported, metadata and canonicals carried across, sitemap and indexation checked through cut-over | +0.5–1 wk | +CHF 3.2k–6.3k |
+| `+SEO (large)` — a redirect estate of 10,000 URLs or more, or rankings the business runs on: the map built from a crawl rather than a pattern, verified on staging, and indexation watched after launch | +1.5–2.5 wk | +CHF 9.5k–15.8k |
+| `+Subscriptions (standard)` — shopify Subscriptions: selling plans, the storefront widget, the customer portal and the billing states the support team has to recognise | +0.5–1 wk | +CHF 3.2k–6.3k |
+| `+Subscriptions (advanced)` — a third-party subscription app, or prepaid, build-a-box, B2B or international plans — and live contracts carried across without the customer re-entering a card, which is where these migrations fail | +1.5–2.5 wk | +CHF 9.5k–15.8k |
+| `+Checkout (post-purchase)` — uI extensions on the Thank you and Order status pages — order tracking, surveys, referrals, an app block after the sale. Available on every plan except Starter, so this needs no Plus | +0.5–1 wk | +CHF 3.2k–6.3k |
+| `+Checkout (in-checkout)` — uI extensions and custom fields on the information, shipping and payment steps. Shopify Plus only — on any other plan this is not a scope decision, it is a plan decision | +1–2 wk | +CHF 6.3k–12.6k |
+| `+Checkout (functions)` — backend logic as Shopify Functions — validation, delivery or payment customisation, order rules: a deployed app with its own tests and release path, not a setting | +1.5–3 wk | +CHF 9.5k–18.9k |
+| `+Analytics (standard)` — customer events, the destinations wired through them and consent respected on each — measurement that agrees with Shopify's own numbers | +0.5–1 wk | +CHF 3.2k–6.3k |
+| `+Analytics (advanced)` — server-side tagging or a third-party consent platform: consent state carried to every destination, capture points beyond checkout, and the reconciliation that proves the numbers still line up | +1.5–2.5 wk | +CHF 9.5k–15.8k |
+| `+Support (standard)` — one of the two: written SOPs, or a handover into a retainer that is not the Grow retainer — the runbooks and the owner named against each, past the launch-day training every offer carries | +0.5–1 wk | +CHF 3.2k–6.3k |
+| `+Support (extended)` — both: a documented operating model the client’s team runs the store from, handed into a retainer that has to receive it, with a training programme behind it | +1–2 wk | +CHF 6.3k–12.6k |
+| `+Retail` — each location selling with Shopify POS: hardware, inventory, staff and the in-store test pass | +1–5 wk | +CHF 6.3k–31.5k |
+| `+Migration (light)` — wooCommerce or Shopify-to-Shopify: catalogue, customers and order history. The redirect estate is the SEO continuity gate, not this one. | +1–1.5 wk | +CHF 6.3k–9.5k |
+| `+Migration (medium)` — shopware or BigCommerce: data model differences to map, order history, customer and price-list structures. Redirects are priced by the SEO continuity gate. | +2.5–4 wk | +CHF 15.8k–25.2k |
+| `+Migration (heavy)` — magento, Salesforce Commerce Cloud or a custom platform: a bespoke data model to map and integrations to re-point. Redirects are priced by the SEO continuity gate. | +4–5.5 wk | +CHF 25.2k–34.7k |
+| `+MultiCurrency` — price lists, rounding, payout and reconciliation per currency — priced on its own only where one market sells in several currencies; a further market carries its own | +0.5 wk | +CHF 3.2k |
+| `+Languages` — each language beyond the third: translation of products, collections, policies, URL handles, theme and app strings — and again on every release | +0.5–2.5 wk | +CHF 3.2k–15.8k |
 <!-- /generated:modifiers -->
 
 **These are the values the engine runs.** `ai/schema/offering.json` is the
@@ -242,8 +243,8 @@ store-spec.yaml → `shopify theme push` pipeline (~85% of implementation)
 
 | Offer | Code | Triggered by | Base scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Foundation** | S | A quote below the M floor | An established brand launching direct-to-consumer, or relaunching it properly. New Shopify store on the plan the requirements need (ADR 0011) · Horizon theme configured · core catalogue · payments · standard checkout · accessibility and Core Web Vitals measured | CHF 30–55k | 4–5 weeks |
-| **Ecommerce Scale** | M | A quote from the M floor, or a further store | A brand that already sells and cannot scale, with one back-office system to wire. Everything in S · up to three markets and four languages · bespoke sections · one integration · a WooCommerce or Shopify migration · events per market | CHF 65–153k | 6–15 weeks |
+| **Ecommerce Foundation** | S | A quote below the M floor | An established brand launching direct-to-consumer, or relaunching it properly. New Shopify store on the plan the requirements need (ADR 0011) · Horizon theme configured · core catalogue · payments · standard checkout · accessibility and Core Web Vitals measured | CHF 28–35k | 4–5 weeks |
+| **Ecommerce Scale** | M | A quote from the M floor, or a further store | A brand that already sells and cannot scale, with one back-office system to wire. Everything in S · up to three markets and four languages · bespoke sections · one integration · a WooCommerce or Shopify migration · events per market | CHF 44–96k | 6–15 weeks |
 
 Both S and M are deliverable by Consultant + AI + two part-time collaborators.
 No permanent agency headcount required.
@@ -272,7 +273,7 @@ token application, boilerplate, automated QA (~60% of implementation)
 
 | Offer | Code | Triggered by | Scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Flagship** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally that needs more than one store, a storefront built out and measurement that stands up. Up to three Shopify stores · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 140–245k+ | 13–24 weeks |
+| **Ecommerce Flagship** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally that needs more than one store, a storefront built out and measurement that stands up. Up to three Shopify stores · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 91–155k+ | 13–24 weeks |
 
 L builds either way and spends the same weeks differently — as theme sections and
 blocks, or as owned components on Hydrogen — so the track follows the answers

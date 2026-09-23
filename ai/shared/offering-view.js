@@ -227,8 +227,9 @@ export function offeringView({ pricing = false } = {}) {
        count — nothing measured says most engagements land here. */
     ...(o.most_common ? { most_common: true } : {}),
     /* What a week at the rate buys, in people rather than francs: the figure a
-       client can hold against a boutique's twelve-hour package. */
-    team: offering.pricing.people_per_week,
+       client can hold against a boutique's twelve-hour package, and the roles
+       behind it. */
+    team: { people: offering.pricing.people_per_week, roles: offering.pricing.team.map((t) => t.role) },
     /* The deal an enterprise replatform actually sees: L plus a heavy
        migration, computed by the engine from L's own promise, so the page
        compares like with like against competitors who quote the move whole. */

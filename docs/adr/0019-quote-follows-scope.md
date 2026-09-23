@@ -47,3 +47,7 @@ give the final figure, and the commercial team adds contingency and services suc
 - **Inclusions by pack** (2026-09-23): hypercare of 5, 10 and 15 working days (a week of hypercare at half a build week) and
   3, 6 and 10 third-party apps (each further app an eighth of a week). A bigger pack's included apps never outweigh the
   hypercare it adds, so crossing into it never makes a quote cheaper. Bands: S CHF 30–55k, M 65–153k, L 140–245k+.
+- **The build week is an offshore team** (2026-09-23): front-end and back-end developers, QA, a project manager, a business
+  analyst and a solution architect — 2.5 people — at the offshore rate card: CHF 6.3k a week. The shape comes from a real
+  estimation the engine quotes at 20–29.5 weeks; QA is inside the team, so the commercial team no longer adds it on top.
+  The Foundation band and each pack's floor are its weeks at the rate with its hypercare: S 28–35k, M 44–96k, L 91–155k+.

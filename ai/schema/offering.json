@@ -3,14 +3,40 @@
   "version": "3.0.0",
   "currency": "CHF",
   "pricing": {
-    "weekly_rate": 10000,
-    "people_per_week": 2,
-    "$comment": "One rate for every week of scope-gate work, internal and never client-facing. Every modifier’s price is its weeks at this rate, so a quote is the Foundation base plus weeks the client can see, at a price nobody chose gate by gate. It replaced prices set one by one, which drifted to CHF 7–13k a week and made the riskiest work — migrations, B2B, design — the cheapest. The audit of 2026-09-23 measured the packs at CHF 10.5–10.8k a week at their midpoints; the Lead Consultant set it to CHF 10k the same day to bring the packs down. people_per_week: What a week at the rate buys, said the way a client can compare it: about two people full time, at the CHF 100–150 an hour DACH market rates for a Shopify specialist (Greenblut, read 2026-09-23). It turns \"CHF 40k against a CHF 7k package\" into \"two people for five weeks against twelve to thirty hours\" — a different product, not a dearer one. hypercare_rate_share: a week of hypercare after go-live — a named channel, a response within one working day, defects triaged — costs half a build week. Each pack carries its own days (S 5, M 10, L 15 working days); more are priced per week at that half rate. Until 2026-09-23 every pack carried fifteen days inside the Foundation base. app_weeks: each third-party app past what the pack includes (S 3, M 6, L 10) is an eighth of a build week — the low end of the CHF 1–5k a Swiss agency publishes per app integration, and set so that crossing into a bigger pack, which includes more apps and more hypercare, never makes a quote cheaper.",
+    "weekly_rate": 6300,
+    "people_per_week": 2.5,
+    "team": [
+      {
+        "role": "Front-end developer",
+        "fte": 0.8
+      },
+      {
+        "role": "Back-end developer",
+        "fte": 0.6
+      },
+      {
+        "role": "QA engineer",
+        "fte": 0.55
+      },
+      {
+        "role": "Project manager",
+        "fte": 0.2
+      },
+      {
+        "role": "Business analyst",
+        "fte": 0.2
+      },
+      {
+        "role": "Solution architect",
+        "fte": 0.15
+      }
+    ],
     "hypercare_rate_share": 0.5,
-    "app_weeks": 0.125
+    "app_weeks": 0.125,
+    "$comment": "Internal and never client-facing. A build week is what the delivery team does in one calendar week: the team above, 2.5 people full time, delivered offshore — front-end and back-end developers, QA, a project manager, a business analyst and a solution architect. weekly_rate is that week at the offshore rate card, converted from EUR at the ECB rate of 2026-09-23 (1 EUR = 0.939 CHF), rounded down; the rate card itself is not written here, because this repository is public. The shape comes from a real estimation (a Shopify B2C build of 173 developer days with QA at 40% of them, whose recorded answers the engine quotes at 20–29.5 weeks): developers 1.4, QA 0.55, and a project manager, business analyst and architect at 10, 10 and 7.5% of the delivery. Every modifier’s price is its weeks at this rate, so the quote is the Foundation base plus weeks a client can see. hypercare_rate_share: a week of hypercare after go-live — a named channel, a response within one working day, defects triaged — costs half a build week; each pack carries its own days (S 5, M 10, L 15 working days). app_weeks: each third-party app past what the pack includes (S 3, M 6, L 10) is an eighth of a build week, set so that crossing into a bigger pack, which includes more apps and more hypercare, never makes a quote cheaper. QA is part of the team, so the commercial team no longer adds a separate QA service on top of these packs."
   },
   "estimate": {
-    "line": "A first estimate to open the conversation, built from the scope the answers describe. The delivery team estimates the approach and gives the final figure; contingency and services such as Design and QA testing are added in the proposal.",
+    "line": "A first estimate to open the conversation, built from the scope the answers describe and delivered by an offshore team with QA in it. The delivery team estimates the approach and gives the final figure; contingency and services such as Design are added in the proposal.",
     "$comment": "The tool’s purpose in the Lead Consultant’s words (2026-09-23): packs are what a conversation opens with; the RFP and its answers give an estimate of the scope identified; after discovery the scope is closed. The same sentence is on the offering pages and in the deck, so neither can drift into sounding like a fixed price."
   },
   "after_launch": {
@@ -20,7 +46,7 @@
   "market_references": {
     "$comment": "Public list prices, read on 2026-09-23 and each re-fetched by a source check in the offering audit. Indicative market signals for the Lead Consultant: never in a client document, never a competitor’s price for a specific scope. They are \"from\" floors or marketing ranges, VAT treatment varies, and none of the enterprise Swiss partners publishes a price. Never put Merkle’s own figures into a search or request when refreshing them.",
     "read_on": "2026-09-23",
-    "answer": "The band buys a staffed team, not a package: about two people full time for the pack’s weeks, against the twelve to thirty hours a fixed-price package buys — with accessibility and Core Web Vitals measured, quality gates, hypercare and a network behind it.",
+    "answer": "The band buys a staffed team, not a package: about two and a half people for the pack’s weeks — front-end and back-end developers, QA, a project manager, a business analyst and an architect — against the twelve to thirty hours a fixed-price package buys, with accessibility and Core Web Vitals measured, quality gates and hypercare.",
     "S": [
       {
         "agency": "Digital Delight",
@@ -109,8 +135,8 @@
       "triggered_by": "An estimate below the Scale floor: the Foundation, with whatever goes past it as add-ons",
       "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
-        "min": 30000,
-        "max": 55000,
+        "min": 28000,
+        "max": 35000,
         "open_ended": false
       },
       "duration_weeks": {
@@ -195,7 +221,7 @@
         },
         {
           "id": "quality",
-          "name": "Build quality checks",
+          "name": "Quality assurance",
           "weeks": {
             "min": 0.5,
             "max": 0.5
@@ -252,7 +278,7 @@
         "Content production: copy, photography and video are the client’s, or a separate engagement. Nothing here writes them",
         "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate",
         "Running costs. The Shopify plan and every app subscription are billed to the client from the day they are installed — this offer selects and configures apps against the agreed monthly ceiling, it does not pay for them",
-        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top, with QA testing as a service. This pack builds from the client’s design and runs its own build quality checks"
+        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top. This pack builds from the client’s design, and QA is part of its team"
       ],
       "assumes": [
         "Two rounds of feedback on the template set, then sign-off. A third round is a change request, not a revision",
@@ -279,8 +305,8 @@
       "triggered_by": "An estimate from the Scale floor, or a further store — the recommended start for a brand that already sells",
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
-        "min": 65000,
-        "max": 153000,
+        "min": 44000,
+        "max": 96000,
         "open_ended": false
       },
       "duration_weeks": {
@@ -381,7 +407,7 @@
         },
         {
           "id": "quality",
-          "name": "Build quality checks",
+          "name": "Quality assurance",
           "weeks": {
             "min": 0.5,
             "max": 1.5
@@ -437,7 +463,7 @@
         "Custom checkout UI: Shopify’s checkout is extended through its own extension points or not at all (exit rule 11.6)",
         "Running the integrations after handover. Hypercare is in; the operating model past it is a gate, or a retainer",
         "Anything whose content or front end lives outside Shopify — an external CMS or a front end Shopify does not build is Merkle Arc, and no offer here prices it",
-        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top, with QA testing as a service. This pack builds from the client’s design and runs its own build quality checks"
+        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top. This pack builds from the client’s design, and QA is part of its team"
       ],
       "assumes": [
         "Everything Ecommerce Foundation assumes, at this size",
@@ -466,8 +492,8 @@
       "triggered_by": "A headless storefront, or an estimate from the Flagship floor — the largest of the three Shopify offers",
       "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
-        "min": 140000,
-        "max": 245000,
+        "min": 91000,
+        "max": 155000,
         "open_ended": true
       },
       "duration_weeks": {
@@ -565,7 +591,7 @@
         },
         {
           "id": "quality",
-          "name": "Build quality checks",
+          "name": "Quality assurance",
           "weeks": {
             "min": 1,
             "max": 2
@@ -604,7 +630,7 @@
         "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
         "Content production, photography and video, and the copy that goes on the templates this offer builds",
         "A Shop Mini — a presence inside Shopify’s Shop app. It stays inside Shopify, so it is not Merkle Arc; it is React SDK work built against the Shop Minis SDK, which no offer here estimates. It is scoped and priced on its own",
-        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top, with QA testing as a service. This pack builds from the client’s design and runs its own build quality checks"
+        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top. This pack builds from the client’s design, and QA is part of its team"
       ],
       "assumes": [
         "Everything Ecommerce Scale assumes, at this size",
@@ -1141,11 +1167,11 @@
         "max": 20
       },
       "price_add": {
-        "min": 7500,
-        "max": 200000
+        "min": 4725,
+        "max": 126000
       },
       "per_market_weeks": 0.75,
-      "per_market_price": 7500,
+      "per_market_price": 4725,
       "$comment": "Only the storefront is surcharged. Languages are already priced per language and integrations per integration, so charging a market for them again would be the redirect estate mistake in another place: the same work billed twice because two rules each think they own it.",
       "per_unit_surcharge": [
         {
@@ -1175,11 +1201,11 @@
         "max": 31.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 315000
+        "min": 9450,
+        "max": 198450
       },
       "per_store_weeks": 1.5,
-      "per_store_price": 15000,
+      "per_store_price": 9450,
       "per_unit_surcharge": [
         {
           "gate": "integration",
@@ -1210,8 +1236,8 @@
         "max": 1.5
       },
       "price_add": {
-        "min": 10000,
-        "max": 15000
+        "min": 6300,
+        "max": 9450
       }
     },
     {
@@ -1224,8 +1250,8 @@
         "max": 3
       },
       "price_add": {
-        "min": 20000,
-        "max": 30000
+        "min": 12600,
+        "max": 18900
       }
     },
     {
@@ -1238,8 +1264,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 10000,
-        "max": 20000
+        "min": 6300,
+        "max": 12600
       }
     },
     {
@@ -1252,8 +1278,8 @@
         "max": 5
       },
       "price_add": {
-        "min": 30000,
-        "max": 50000
+        "min": 18900,
+        "max": 31500
       }
     },
     {
@@ -1265,11 +1291,11 @@
         "max": 31.5
       },
       "price_add": {
-        "min": 20000,
-        "max": 315000
+        "min": 12600,
+        "max": 198450
       },
       "per_theme_weeks": 2,
-      "per_theme_price": 20000,
+      "per_theme_price": 12600,
       "per_unit_surcharge": [
         {
           "gate": "storefront_design",
@@ -1292,11 +1318,11 @@
         "max": 3
       },
       "price_add": {
-        "min": 10000,
-        "max": 30000
+        "min": 6300,
+        "max": 18900
       },
       "per_integration_weeks": 1,
-      "per_integration_price": 10000
+      "per_integration_price": 6300
     },
     {
       "id": "+SKU (standard)",
@@ -1308,8 +1334,8 @@
         "max": 0.5
       },
       "price_add": {
-        "min": 5000,
-        "max": 5000
+        "min": 3150,
+        "max": 3150
       }
     },
     {
@@ -1322,8 +1348,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 25000
+        "min": 9450,
+        "max": 15750
       }
     },
     {
@@ -1336,8 +1362,8 @@
         "max": 5
       },
       "price_add": {
-        "min": 30000,
-        "max": 50000
+        "min": 18900,
+        "max": 31500
       }
     },
     {
@@ -1350,8 +1376,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5000,
-        "max": 10000
+        "min": 3150,
+        "max": 6300
       }
     },
     {
@@ -1364,8 +1390,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 25000
+        "min": 9450,
+        "max": 15750
       }
     },
     {
@@ -1378,8 +1404,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5000,
-        "max": 10000
+        "min": 3150,
+        "max": 6300
       }
     },
     {
@@ -1392,8 +1418,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 25000
+        "min": 9450,
+        "max": 15750
       }
     },
     {
@@ -1406,8 +1432,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5000,
-        "max": 10000
+        "min": 3150,
+        "max": 6300
       }
     },
     {
@@ -1420,8 +1446,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 25000
+        "min": 9450,
+        "max": 15750
       }
     },
     {
@@ -1434,8 +1460,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5000,
-        "max": 10000
+        "min": 3150,
+        "max": 6300
       }
     },
     {
@@ -1448,8 +1474,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 10000,
-        "max": 20000
+        "min": 6300,
+        "max": 12600
       }
     },
     {
@@ -1462,8 +1488,8 @@
         "max": 3
       },
       "price_add": {
-        "min": 15000,
-        "max": 30000
+        "min": 9450,
+        "max": 18900
       }
     },
     {
@@ -1476,8 +1502,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5000,
-        "max": 10000
+        "min": 3150,
+        "max": 6300
       }
     },
     {
@@ -1490,8 +1516,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 25000
+        "min": 9450,
+        "max": 15750
       }
     },
     {
@@ -1504,8 +1530,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5000,
-        "max": 10000
+        "min": 3150,
+        "max": 6300
       }
     },
     {
@@ -1518,8 +1544,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 10000,
-        "max": 20000
+        "min": 6300,
+        "max": 12600
       }
     },
     {
@@ -1531,11 +1557,11 @@
         "max": 5
       },
       "price_add": {
-        "min": 10000,
-        "max": 50000
+        "min": 6300,
+        "max": 31500
       },
       "per_location_weeks": 1,
-      "per_location_price": 10000
+      "per_location_price": 6300
     },
     {
       "id": "+Migration (light)",
@@ -1547,8 +1573,8 @@
         "max": 1.5
       },
       "price_add": {
-        "min": 10000,
-        "max": 15000
+        "min": 6300,
+        "max": 9450
       }
     },
     {
@@ -1561,8 +1587,8 @@
         "max": 4
       },
       "price_add": {
-        "min": 25000,
-        "max": 40000
+        "min": 15750,
+        "max": 25200
       }
     },
     {
@@ -1575,8 +1601,8 @@
         "max": 5.5
       },
       "price_add": {
-        "min": 40000,
-        "max": 55000
+        "min": 25200,
+        "max": 34650
       }
     },
     {
@@ -1588,8 +1614,8 @@
         "max": 0.5
       },
       "price_add": {
-        "min": 5000,
-        "max": 5000
+        "min": 3150,
+        "max": 3150
       }
     },
     {
@@ -1601,11 +1627,11 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 5000,
-        "max": 25000
+        "min": 3150,
+        "max": 15750
       },
       "per_language_weeks": 0.5,
-      "per_language_price": 5000,
+      "per_language_price": 3150,
       "free_languages": 3
     }
   ],

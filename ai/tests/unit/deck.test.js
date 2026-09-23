@@ -98,7 +98,7 @@ describe('client deck XML', () => {
 
     // Only a headless storefront is quoted as a floor, and says so.
     const headless = recompute({ ...load('foundation-minimal.json'), design: { headless_required: true } });
-    assert.match(buildDeckXml(headless, backlogFor(headless)).xml, /<price-band currency="CHF" from="140000" open-ended="true"\/>/);
+    assert.match(buildDeckXml(headless, backlogFor(headless)).xml, new RegExp(`<price-band currency="CHF" from="${offering.offers.L.price_band.min}" open-ended="true"/>`));
   });
 
   test('client sections never contain modifiers, price adds, effort, story points or commercial warnings', () => {

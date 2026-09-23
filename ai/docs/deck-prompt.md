@@ -135,8 +135,8 @@ or a source, and a reader can trace it.
    commercial warnings or consultant notes into sections 1–17; write all of them, completely, in section 18.
 4. **Pricing (GO):** name the offer and, when `<add-ons>` lists any, what goes past it ("Ecommerce Scale, plus a
    further Shopify store"). State the price band exactly as given (`from`–`to`, or "from" when open-ended), with
-   the `<note>` as written: a first estimate — the delivery team gives the final figure, and contingency, Design
-   and QA testing are added in the proposal. Do not break the band down, estimate effort in days or points, or
+   the `<note>` as written: a first estimate — the delivery team gives the final figure, and contingency and
+   services such as Design are added in the proposal. Do not break the band down, estimate effort in days or points, or
    mention discounts, surcharges or retainers.
 5. **Estimates are ranges** (delivery duration in weeks from `<timeline>`), never single numbers.
 6. **Be factual about Shopify.** Describe what the platform does natively, with apps, with theme work and with
