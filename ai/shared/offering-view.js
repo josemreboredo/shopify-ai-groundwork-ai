@@ -180,6 +180,19 @@ function hypercareAddon(pricing) {
   };
 }
 
+/** A third-party app past what the pack includes (S 3, M 6, L 10). */
+function appsAddon(pricing) {
+  const weeks = offering.pricing.app_weeks;
+  return {
+    id: 'apps',
+    what: 'Each further third-party app',
+    gate: null,
+    description: `Installed, configured, tested with the theme and handed over with an owner and its monthly fee. Each pack includes some: ${['S', 'M', 'L'].map((c) => `${c} ${offering.offers[c].apps_included}`).join(', ')}; Shopify’s own apps and apps a scope gate prices do not count.`,
+    available_in: ['S', 'M', 'L'],
+    per_unit: { noun: 'app', weeks, from: false, ...(pricing ? { price: weeks * offering.pricing.weekly_rate } : {}) },
+  };
+}
+
 /** L's own promise with a heavy replatform beside it, as the engine quotes it. */
 function replatform(pricing) {
   const o = classifyOffer(engagementAt({ ...offering.closed_scope.limits.L, migration: 'sfcc' }));
@@ -365,7 +378,7 @@ export function offeringView({ pricing = false } = {}) {
     /* The add-on services catalogue: every gate that can be bought on top of a
        pack, including the three no pack includes anything of — B2B, Shopify
        POS and subscriptions — which is why they are no longer rows. */
-    addons: [...(offering.closed_scope?.addons ?? []).map((a) => addonService(a, pricing)), hypercareAddon(pricing)],
+    addons: [...(offering.closed_scope?.addons ?? []).map((a) => addonService(a, pricing)), appsAddon(pricing), hypercareAddon(pricing)],
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {
       beyond_offers: byResult('STOP'),

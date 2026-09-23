@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.7.0 · offering 3.0.0
+> **Version:** question bank 1.8.0 · offering 3.0.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
@@ -251,6 +251,11 @@
 
 **Q1.2.6** — How many people need their own Shopify admin login after go-live? *(required)*
 *Collaborator accounts and POS-only staff are not counted.*
+
+> Answer:
+
+**Q1.2.7** — How many third-party apps will the store run at launch — the ones kept from today and the ones it needs? *(recommended)*
+*Count App Store apps from other companies. Shopify’s own apps — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — are not counted.*
 
 > Answer:
 

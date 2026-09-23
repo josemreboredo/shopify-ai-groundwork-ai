@@ -103,8 +103,8 @@ describe('the comparison table and the add-on catalogue the page reads', () => {
     for (const a of view.addons) {
       assert.ok(a.description?.trim(), `${a.id}: an add-on service with no scope description`);
       assert.ok(a.available_in.length, `${a.id}: nobody can buy it`);
-      // Hypercare runs after go-live: it is bought in days, not build weeks.
-      if (a.gate === null) { assert.ok(a.per_unit?.days > 0, `${a.id}: an add-on with neither weeks nor days`); continue; }
+      // Hypercare runs after go-live and apps are counted: neither is a gate.
+      if (a.gate === null) { assert.ok(a.per_unit?.days > 0 || a.per_unit?.weeks > 0, `${a.id}: an add-on with neither weeks nor days`); continue; }
       assert.equal(typeof a.weeks.max, 'number', `${a.id}: weeks are a string, so the page cannot choose how to print them`);
       assert.ok(a.weeks.max >= a.weeks.min && a.weeks.min > 0, `${a.id}: ${a.weeks.min}–${a.weeks.max} weeks`);
       for (const t of a.tiers ?? []) {

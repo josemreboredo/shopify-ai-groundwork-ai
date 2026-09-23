@@ -826,9 +826,21 @@ export function classifyOffer(doc) {
    * held only while every gate had a modifier. The label below compares each
    * gate with what a pack includes, so the pairing has to be real.
    */
+  /*
+   * One client decision, one price.
+   *
+   * A second currency only exists as a further market, and a further market is
+   * priced with its currency; charging the currency again priced one decision
+   * twice. The same for a catalogue of 5,000 SKUs and more, which sets up
+   * Shopify's own search as part of the catalogue work. What is carried stays
+   * active — its evidence still explains the engagement — and is not priced.
+   */
+  const carried = ({ gate, evaluated }) =>
+    (gate.id === 'multi_currency' && scope_gates.markets?.active === true)
+    || (gate.id === 'search_merchandising' && evaluated.tier === 'native' && ['large', 'very_large'].includes(scope_gates.sku_complexity?.tier));
   const priced = activeGates
     .map((gate) => ({ gate, evaluated: scope_gates[gate.id], modifier: modifierFor(gate, scope_gates[gate.id], doc) }))
-    .filter((p) => p.modifier);
+    .filter((p) => p.modifier && !carried(p));
   /*
    * The same sum, itemised.
    *
@@ -879,20 +891,34 @@ export function classifyOffer(doc) {
   const hypercarePrice = (days) => (days / 5) * offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share;
   const asked = doc.delivery?.hypercare_days ?? 0;
   const hypercareFor = (code) => Math.max(offering.offers[code].hypercare_days, asked);
+  /*
+   * Apps, by pack, the same way.
+   *
+   * S installs and configures three third-party apps, M six, L ten; Shopify's
+   * own apps do not count. Each further one is an eighth of a build week —
+   * sized so that the apps a bigger pack includes never outweigh the hypercare
+   * it adds, and crossing into it never makes a quote cheaper.
+   */
+  const apps = doc.shopify?.apps_at_launch ?? 0;
+  const extraApps = (code) => Math.max(0, apps - offering.offers[code].apps_included);
   const foundation = hypercarePrice(S.hypercare_days);
   const scope = {
     price: { min: S.price_band.min - foundation + gateTotals.price.min, max: S.price_band.max - foundation + gateTotals.price.max },
     weeks: { min: S.duration_weeks.min + gateTotals.weeks.min, max: S.duration_weeks.max + gateTotals.weeks.max },
   };
+  // The time the apps take is the same whatever the pack; what a pack
+  // includes is only what it does not charge for.
+  const appWeeks = Math.max(0, apps - S.apps_included) * offering.pricing.app_weeks;
   const quoteFor = (code) => {
-    const care = hypercarePrice(hypercareFor(code));
-    const priced = { min: scope.price.min + care, max: scope.price.max + care };
+    const add = hypercarePrice(hypercareFor(code)) + extraApps(code) * offering.pricing.app_weeks * offering.pricing.weekly_rate;
+    const priced = { min: scope.price.min + add, max: scope.price.max + add };
+    const weeks = { min: scope.weeks.min + appWeeks, max: scope.weeks.max + appWeeks };
     return headless
       ? {
           price: { min: Math.max(priced.min, L.price_band.min), max: Math.max(priced.max, L.price_band.max) },
-          weeks: { min: Math.max(scope.weeks.min, L.duration_weeks.min), max: Math.max(scope.weeks.max, L.duration_weeks.max) },
+          weeks: { min: Math.max(weeks.min, L.duration_weeks.min), max: Math.max(weeks.max, L.duration_weeks.max) },
         }
-      : { price: priced, weeks: scope.weeks };
+      : { price: priced, weeks };
   };
 
   const { code, addons } = packFor(priced, quoteFor, headless);
@@ -905,7 +931,7 @@ export function classifyOffer(doc) {
       : addons.length
         ? `${offer.name} plus ${addonLabels.join('; ')}`
         : `${offer.name} as packaged: ${activeGates.length ? `${activeGates.map((g) => g.label).join(', ')} — all inside what it includes` : 'no scope gates active'}`,
-    `Quoted from the Foundation base plus each scope gate at its own weeks and price, with ${hypercareFor(code)} working days of hypercare after go-live`,
+    `Quoted from the Foundation base plus each scope gate at its own weeks and price, with ${hypercareFor(code)} working days of hypercare after go-live${extraApps(code) ? ` and ${extraApps(code)} third-party app${extraApps(code) === 1 ? '' : 's'} past the ${offer.apps_included} it includes` : ''}`,
     ...(headless ? [`and at no less than the ${L.name} band, because Hydrogen has no modifier of its own yet`] : []),
   ].join('. ').replace(/\. and /, ' and ');
 
@@ -938,6 +964,7 @@ export function classifyOffer(doc) {
     },
     duration_weeks: { min: toHalfWeek(quote.weeks.min), max: toHalfWeek(quote.weeks.max) },
     hypercare: { days: hypercareFor(code), included_days: offer.hypercare_days },
+    apps: { count: apps, included: offer.apps_included, extra: extraApps(code) },
     // What the scope adds up to before any floor, kept so a reader can check
     // the quote against the scope rather than take it.
     scope_effort_weeks: scope.weeks,

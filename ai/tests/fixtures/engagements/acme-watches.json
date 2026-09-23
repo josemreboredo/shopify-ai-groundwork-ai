@@ -225,7 +225,6 @@
     },
     "modifiers": [
       "+Markets",
-      "+MultiCurrency",
       "+B2B (standard)",
       "+Integration",
       "+SKU (standard)",
@@ -264,23 +263,28 @@
       }
     ],
     "price_band": {
-      "min": 130000,
-      "max": 192000,
+      "min": 120000,
+      "max": 180000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
-      "min": 13,
-      "max": 17.5
+      "min": 12.5,
+      "max": 17
     },
     "hypercare": {
       "days": 10,
       "included_days": 10
     },
+    "apps": {
+      "count": 0,
+      "included": 6,
+      "extra": 0
+    },
     "rationale": "Ten scope gates are active and they bring the build to 13–17.5 weeks. The engagement is named Ecommerce Scale, the largest pack whose floor the quote reaches, with what goes past its promise as add-ons: B2B alongside consumer, a second integration, SEO continuity, blocks inside the checkout steps and written SOPs after launch. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The quote is the Foundation base plus each gate at its own weeks and price.",
     "scope_effort_weeks": {
-      "min": 13,
-      "max": 17.5
+      "min": 12.5,
+      "max": 17
     },
     "gate_capacity_weeks": {
       "min": 2,
@@ -349,14 +353,6 @@
         "weeks": {
           "min": 0.5,
           "max": 1
-        }
-      },
-      {
-        "gate": "multi_currency",
-        "label": "Multi-currency",
-        "weeks": {
-          "min": 0.5,
-          "max": 0.5
         }
       },
       {

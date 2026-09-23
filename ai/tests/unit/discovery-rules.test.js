@@ -760,6 +760,45 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.equal(support({ support_model: 'retainer', sops_required: true }).tier, 'extended');
   });
 
+  test('one client decision is one price: a market carries its currency, a large catalogue its search', () => {
+    const chde = classifyOffer({ ...base(), markets: { list: [{ code: 'CH', currency: 'CHF', price_strategy: 'base_currency' }, { code: 'DE', currency: 'EUR', price_strategy: 'base_currency' }] } });
+    assert.equal(chde.scope_gates.multi_currency.active, true, 'the currency is still recorded');
+    assert.deepEqual(chde.modifiers, ['+Markets'], 'and priced with the market it arrives with');
+    assert.deepEqual(chde.addons.map((a) => a.gate), ['markets']);
+
+    const big = classifyOffer({ ...base(), catalogue: { sku_count: 20000, variant_options_max: 3 } });
+    assert.equal(big.scope_gates.search_merchandising.tier, 'native');
+    assert.ok(!big.modifiers.includes('+Search (native)'), 'Shopify’s own search comes with the large catalogue');
+    const app = classifyOffer({ ...base(), catalogue: { sku_count: 20000, variant_options_max: 3, search: { approach: 'app' } } });
+    if (app.scope_gates.search_merchandising.tier === 'app') assert.ok(app.modifiers.includes('+Search (app)'), 'a search app is still its own price');
+  });
+
+  test('apps: each pack installs its own number, and every further one is an eighth of a week', () => {
+    const rate = offering.pricing.weekly_rate;
+    const withApps = (n, extra = {}) => classifyOffer({ ...base(), ...extra, shopify: { apps_at_launch: n } });
+    assert.deepEqual(['S', 'M', 'L'].map((c) => offering.offers[c].apps_included), [3, 6, 10]);
+    assert.deepEqual(withApps(3).apps, { count: 3, included: 3, extra: 0 });
+    const five = withApps(5);
+    assert.deepEqual(five.apps, { count: 5, included: 3, extra: 2 });
+    assert.equal(five.price_band.max - withApps(3).price_band.max, Math.round((2 * offering.pricing.app_weeks * rate) / 1000) * 1000);
+    // A Scale includes six.
+    const scale = withApps(6, { migration: { source_platform: 'magento' } });
+    assert.equal(scale.code, 'M');
+    assert.equal(scale.apps.extra, 0);
+    // What a pack includes it does not charge for; the time the apps take is spent either way.
+    const eleven = withApps(11, { migration: { source_platform: 'magento' } });
+    const three = withApps(3, { migration: { source_platform: 'magento' } });
+    assert.equal(eleven.duration_weeks.max - three.duration_weeks.max, 8 * offering.pricing.app_weeks, 'eight apps past the Foundation’s three take their time');
+    assert.equal(eleven.apps.extra, 5, 'and five past the Scale’s six are charged');
+    // What a bigger pack includes never outweighs the hypercare it adds.
+    const care = (d) => (d / 5) * rate * offering.pricing.hypercare_rate_share;
+    for (const [a, b] of [['S', 'M'], ['M', 'L']]) {
+      const apps = (offering.offers[b].apps_included - offering.offers[a].apps_included) * offering.pricing.app_weeks * rate;
+      assert.ok(apps <= care(offering.offers[b].hypercare_days) - care(offering.offers[a].hypercare_days) + 1,
+        `${a}→${b}: the apps ${b} includes are worth more than the hypercare it adds, so crossing into it would cut a quote`);
+    }
+  });
+
   test('hypercare is the pack’s own days, and more are priced by the week at half the build rate', () => {
     const week = offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share;
     assert.deepEqual(['S', 'M', 'L'].map((c) => offering.offers[c].hypercare_days), [5, 10, 15]);

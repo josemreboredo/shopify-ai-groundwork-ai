@@ -317,7 +317,8 @@
     "Q7.3.3": "4f3d3c5c6547",
     "Q7.6.8": "2f68b27508c0",
     "Q10.2.4": "5dc23518880b",
-    "Q10.3.7": "fc88af40f0fd"
+    "Q10.3.7": "fc88af40f0fd",
+    "Q1.2.7": "d51368492bea"
   },
   "sections": {
     "0": "Objectifs business",
@@ -3849,6 +3850,13 @@
       "help": "L’hypercare est la période qui suit la mise en ligne : un canal désigné, une réponse sous un jour ouvré et les défauts triés avec vous. Un nombre de jours est compris dans l’offre ; ne répondez que si vous en avez besoin de plus.",
       "teach": {
         "why": "Quelques jours suffisent pour un lancement simple. Une migration avec un grand catalogue, ou un lancement dans plusieurs marchés à la fois, a souvent besoin de la première clôture mensuelle complète pendant l’hypercare — chaque semaine supplémentaire est facturée, à la moitié du taux d’une semaine de build."
+      }
+    },
+    "Q1.2.7": {
+      "text": "Combien d’applications tierces la boutique utilisera-t-elle au lancement — celles gardées d’aujourd’hui et celles dont elle a besoin ?",
+      "help": "Comptez les applications de l’App Store éditées par d’autres sociétés. Les applications de Shopify — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — ne comptent pas.",
+      "teach": {
+        "why": "Chaque application est installée, configurée, testée avec le thème et remise avec un responsable et un abonnement mensuel. Une boutique avec quinze applications n’est pas le même build qu’une boutique avec trois, et le client paie chaque licence tous les mois."
       }
     }
   },

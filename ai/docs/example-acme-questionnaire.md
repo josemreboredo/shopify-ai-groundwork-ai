@@ -248,6 +248,11 @@
 
 > Answer:
 
+**Q1.2.7** — How many third-party apps will the store run at launch — the ones kept from today and the ones it needs? *(recommended)*
+*Count App Store apps from other companies. Shopify’s own apps — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — are not counted.*
+
+Answer: 4
+
 ### 1.3 Brand & positioning
 
 **Q1.3.1** — How would you describe the brand's positioning: value, mid-market, premium, luxury or enterprise? *(required)*

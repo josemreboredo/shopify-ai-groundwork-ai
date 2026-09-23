@@ -515,6 +515,7 @@ describe('the quote is the scope, priced one way', () => {
       migration: [null, 'woocommerce', 'shopware', 'magento'], retail_locations: [0, 1, 3], stores: [1, 2, 3, 5],
       checkout: [null, 'thank_you_order_status_blocks', 'checkout_step_blocks_or_fields'], analytics_custom_events: [false, true],
       b2b: [false, 'standard', 'advanced'], extra_theme_designs: [0, 1, 2], headless: [false, true],
+      apps: [0, 3, 5, 6, 8, 10, 14], hypercare_days: [0, 5, 10, 15, 30],
     };
     let seed = 7;
     const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
@@ -527,8 +528,9 @@ describe('the quote is the scope, priced one way', () => {
       const d = pick(dims);
       const next = { ...lim, [d]: STEPS[d][STEPS[d].indexOf(lim[d]) + 1] };
       next.extra_theme_designs = Math.min(next.extra_theme_designs, next.stores - 1);
-      const a = numbers(classifyOffer(engagementAt(lim)));
-      const b = numbers(classifyOffer(engagementAt(next)));
+      const doc = (l) => ({ ...engagementAt(l), shopify: { apps_at_launch: l.apps }, delivery: { hypercare_days: l.hypercare_days } });
+      const a = numbers(classifyOffer(doc(lim)));
+      const b = numbers(classifyOffer(doc(next)));
       a.forEach((n, j) => assert.ok(b[j] >= n, `${d} ${lim[d]} → ${next[d]} lowers ${['the floor', 'the ceiling', 'the minimum weeks', 'the maximum weeks'][j]}: ${n} → ${b[j]}`));
     }
   });

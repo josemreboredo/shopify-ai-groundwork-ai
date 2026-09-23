@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.7.0 · offering 3.0.0
+> **Version:** question bank 1.8.0 · offering 3.0.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -251,6 +251,11 @@
 
 **Q1.2.6** — Combien de personnes auront besoin de leur propre accès à l’administration Shopify après la mise en ligne ? *(required)*
 *Les comptes collaborateur et le personnel uniquement POS ne sont pas comptés.*
+
+> Answer:
+
+**Q1.2.7** — Combien d’applications tierces la boutique utilisera-t-elle au lancement — celles gardées d’aujourd’hui et celles dont elle a besoin ? *(recommended)*
+*Comptez les applications de l’App Store éditées par d’autres sociétés. Les applications de Shopify — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — ne comptent pas.*
 
 > Answer:
 

@@ -395,6 +395,11 @@
             ]
           }
         },
+        "apps_at_launch": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Third-party App Store apps the store runs at launch, kept or new; Shopify’s own apps are not counted (Q1.2.7)."
+        },
         "deprecated_features": {
           "type": "array",
           "uniqueItems": true,
@@ -638,6 +643,30 @@
               "minimum": 0
             },
             "included_days": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "apps": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "count",
+            "included",
+            "extra"
+          ],
+          "description": "Third-party apps the engagement runs at launch, how many its pack includes, and how many are priced on top.",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "included": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "extra": {
               "type": "integer",
               "minimum": 0
             }

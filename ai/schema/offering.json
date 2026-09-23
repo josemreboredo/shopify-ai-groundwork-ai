@@ -3,10 +3,11 @@
   "version": "3.0.0",
   "currency": "CHF",
   "pricing": {
-    "weekly_rate": 10500,
+    "weekly_rate": 10000,
     "people_per_week": 2,
-    "$comment": "One rate for every week of scope-gate work, internal and never client-facing. Every modifier’s price is its weeks at this rate, so a quote is the Foundation base plus weeks the client can see, at a price nobody chose gate by gate. It replaced prices set one by one, which drifted to CHF 7–13k a week and made the riskiest work — migrations, B2B, design — the cheapest. The audit of 2026-09-23 measured the packs at CHF 10.5–10.8k a week at their midpoints; this is that rate. people_per_week: What a week at the rate buys, said the way a client can compare it: about two people full time, at the CHF 100–150 an hour DACH market rates for a Shopify specialist (Greenblut, read 2026-09-23). It turns \"CHF 40k against a CHF 7k package\" into \"two people for five weeks against twelve to thirty hours\" — a different product, not a dearer one. hypercare_rate_share: a week of hypercare after go-live — a named channel, a response within one working day, defects triaged — costs half a build week. Each pack carries its own days (S 5, M 10, L 15 working days); more are priced per week at that half rate. Until 2026-09-23 every pack carried fifteen days inside the Foundation base.",
-    "hypercare_rate_share": 0.5
+    "$comment": "One rate for every week of scope-gate work, internal and never client-facing. Every modifier’s price is its weeks at this rate, so a quote is the Foundation base plus weeks the client can see, at a price nobody chose gate by gate. It replaced prices set one by one, which drifted to CHF 7–13k a week and made the riskiest work — migrations, B2B, design — the cheapest. The audit of 2026-09-23 measured the packs at CHF 10.5–10.8k a week at their midpoints; the Lead Consultant set it to CHF 10k the same day to bring the packs down. people_per_week: What a week at the rate buys, said the way a client can compare it: about two people full time, at the CHF 100–150 an hour DACH market rates for a Shopify specialist (Greenblut, read 2026-09-23). It turns \"CHF 40k against a CHF 7k package\" into \"two people for five weeks against twelve to thirty hours\" — a different product, not a dearer one. hypercare_rate_share: a week of hypercare after go-live — a named channel, a response within one working day, defects triaged — costs half a build week. Each pack carries its own days (S 5, M 10, L 15 working days); more are priced per week at that half rate. Until 2026-09-23 every pack carried fifteen days inside the Foundation base. app_weeks: each third-party app past what the pack includes (S 3, M 6, L 10) is an eighth of a build week — the low end of the CHF 1–5k a Swiss agency publishes per app integration, and set so that crossing into a bigger pack, which includes more apps and more hypercare, never makes a quote cheaper.",
+    "hypercare_rate_share": 0.5,
+    "app_weeks": 0.125
   },
   "estimate": {
     "line": "A first estimate to open the conversation, built from the scope the answers describe. The delivery team estimates the approach and gives the final figure; contingency and services such as Design and QA testing are added in the proposal.",
@@ -117,6 +118,7 @@
         "max": 5
       },
       "hypercare_days": 5,
+      "apps_included": 3,
       "phases": [
         {
           "id": "setup",
@@ -278,7 +280,7 @@
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
         "min": 65000,
-        "max": 163000,
+        "max": 153000,
         "open_ended": false
       },
       "duration_weeks": {
@@ -286,6 +288,7 @@
         "max": 15
       },
       "hypercare_days": 10,
+      "apps_included": 6,
       "phases": [
         {
           "id": "setup",
@@ -464,7 +467,7 @@
       "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 140000,
-        "max": 260000,
+        "max": 245000,
         "open_ended": true
       },
       "duration_weeks": {
@@ -472,6 +475,7 @@
         "max": 24
       },
       "hypercare_days": 15,
+      "apps_included": 10,
       "phases": [
         {
           "id": "setup",
@@ -1131,17 +1135,17 @@
     {
       "id": "+Markets",
       "gate": "markets",
-      "description": "Shopify Markets set-up: geo-routing, Translate & Adapt, tax, duties and payment methods per market, and the checkout tested in each one — three quarters of a week per market beyond the first, and a third more where that market meets a bespoke template set rather than a configured theme",
+      "description": "Each further market with its own currency: Shopify Markets, Translate & Adapt, geo-routing, and the price list, rounding and payouts of its currency",
       "effort_weeks": {
         "min": 0.75,
         "max": 20
       },
       "price_add": {
-        "min": 7875,
-        "max": 210000
+        "min": 7500,
+        "max": 200000
       },
       "per_market_weeks": 0.75,
-      "per_market_price": 7875,
+      "per_market_price": 7500,
       "$comment": "Only the storefront is surcharged. Languages are already priced per language and integrations per integration, so charging a market for them again would be the redirect estate mistake in another place: the same work billed twice because two rules each think they own it.",
       "per_unit_surcharge": [
         {
@@ -1171,11 +1175,11 @@
         "max": 31.5
       },
       "price_add": {
-        "min": 15750,
-        "max": 330750
+        "min": 15000,
+        "max": 315000
       },
       "per_store_weeks": 1.5,
-      "per_store_price": 15750,
+      "per_store_price": 15000,
       "per_unit_surcharge": [
         {
           "gate": "integration",
@@ -1206,8 +1210,8 @@
         "max": 1.5
       },
       "price_add": {
-        "min": 10500,
-        "max": 15750
+        "min": 10000,
+        "max": 15000
       }
     },
     {
@@ -1220,8 +1224,8 @@
         "max": 3
       },
       "price_add": {
-        "min": 21000,
-        "max": 31500
+        "min": 20000,
+        "max": 30000
       }
     },
     {
@@ -1234,8 +1238,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 10500,
-        "max": 21000
+        "min": 10000,
+        "max": 20000
       }
     },
     {
@@ -1248,8 +1252,8 @@
         "max": 5
       },
       "price_add": {
-        "min": 31500,
-        "max": 52500
+        "min": 30000,
+        "max": 50000
       }
     },
     {
@@ -1261,11 +1265,11 @@
         "max": 31.5
       },
       "price_add": {
-        "min": 21000,
-        "max": 330750
+        "min": 20000,
+        "max": 315000
       },
       "per_theme_weeks": 2,
-      "per_theme_price": 21000,
+      "per_theme_price": 20000,
       "per_unit_surcharge": [
         {
           "gate": "storefront_design",
@@ -1288,11 +1292,11 @@
         "max": 3
       },
       "price_add": {
-        "min": 10500,
-        "max": 31500
+        "min": 10000,
+        "max": 30000
       },
       "per_integration_weeks": 1,
-      "per_integration_price": 10500
+      "per_integration_price": 10000
     },
     {
       "id": "+SKU (standard)",
@@ -1304,36 +1308,36 @@
         "max": 0.5
       },
       "price_add": {
-        "min": 5250,
-        "max": 5250
+        "min": 5000,
+        "max": 5000
       }
     },
     {
       "id": "+SKU (large)",
       "gate": "sku_complexity",
       "tier": "large",
-      "description": "5,000 to 49,999 SKUs: the model is the same, the data is not — import batching, reconciliation per object, and the share of products that need a human before they load",
+      "description": "5,000 to 49,999 SKUs: the model is the same, the data is not — import batching, reconciliation per object, and the share of products that need a human before they load, with Search & Discovery set up for it",
       "effort_weeks": {
         "min": 1.5,
         "max": 2.5
       },
       "price_add": {
-        "min": 15750,
-        "max": 26250
+        "min": 15000,
+        "max": 25000
       }
     },
     {
       "id": "+SKU (very large)",
       "gate": "sku_complexity",
       "tier": "very_large",
-      "description": "50,000 SKUs and above: catalogue operations in their own right — staged loads, a rehearsal run, and a data owner on the client side",
+      "description": "50,000 SKUs and above: catalogue operations in their own right — staged loads, a rehearsal run, and a data owner on the client side, with Search & Discovery set up for it",
       "effort_weeks": {
         "min": 3,
         "max": 5
       },
       "price_add": {
-        "min": 31500,
-        "max": 52500
+        "min": 30000,
+        "max": 50000
       }
     },
     {
@@ -1346,8 +1350,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5250,
-        "max": 10500
+        "min": 5000,
+        "max": 10000
       }
     },
     {
@@ -1360,8 +1364,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15750,
-        "max": 26250
+        "min": 15000,
+        "max": 25000
       }
     },
     {
@@ -1374,8 +1378,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5250,
-        "max": 10500
+        "min": 5000,
+        "max": 10000
       }
     },
     {
@@ -1388,8 +1392,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15750,
-        "max": 26250
+        "min": 15000,
+        "max": 25000
       }
     },
     {
@@ -1402,8 +1406,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5250,
-        "max": 10500
+        "min": 5000,
+        "max": 10000
       }
     },
     {
@@ -1416,8 +1420,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15750,
-        "max": 26250
+        "min": 15000,
+        "max": 25000
       }
     },
     {
@@ -1430,8 +1434,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5250,
-        "max": 10500
+        "min": 5000,
+        "max": 10000
       }
     },
     {
@@ -1444,8 +1448,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 10500,
-        "max": 21000
+        "min": 10000,
+        "max": 20000
       }
     },
     {
@@ -1458,8 +1462,8 @@
         "max": 3
       },
       "price_add": {
-        "min": 15750,
-        "max": 31500
+        "min": 15000,
+        "max": 30000
       }
     },
     {
@@ -1472,8 +1476,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5250,
-        "max": 10500
+        "min": 5000,
+        "max": 10000
       }
     },
     {
@@ -1486,8 +1490,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15750,
-        "max": 26250
+        "min": 15000,
+        "max": 25000
       }
     },
     {
@@ -1500,8 +1504,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5250,
-        "max": 10500
+        "min": 5000,
+        "max": 10000
       }
     },
     {
@@ -1514,8 +1518,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 10500,
-        "max": 21000
+        "min": 10000,
+        "max": 20000
       }
     },
     {
@@ -1527,11 +1531,11 @@
         "max": 5
       },
       "price_add": {
-        "min": 10500,
-        "max": 52500
+        "min": 10000,
+        "max": 50000
       },
       "per_location_weeks": 1,
-      "per_location_price": 10500
+      "per_location_price": 10000
     },
     {
       "id": "+Migration (light)",
@@ -1543,8 +1547,8 @@
         "max": 1.5
       },
       "price_add": {
-        "min": 10500,
-        "max": 15750
+        "min": 10000,
+        "max": 15000
       }
     },
     {
@@ -1557,8 +1561,8 @@
         "max": 4
       },
       "price_add": {
-        "min": 26250,
-        "max": 42000
+        "min": 25000,
+        "max": 40000
       }
     },
     {
@@ -1571,21 +1575,21 @@
         "max": 5.5
       },
       "price_add": {
-        "min": 42000,
-        "max": 57750
+        "min": 40000,
+        "max": 55000
       }
     },
     {
       "id": "+MultiCurrency",
       "gate": "multi_currency",
-      "description": "More than one checkout currency: price lists, rounding rules, payout and reconciliation per currency",
+      "description": "Price lists, rounding, payout and reconciliation per currency — priced on its own only where one market sells in several currencies; a further market carries its own",
       "effort_weeks": {
         "min": 0.5,
         "max": 0.5
       },
       "price_add": {
-        "min": 5250,
-        "max": 5250
+        "min": 5000,
+        "max": 5000
       }
     },
     {
@@ -1597,11 +1601,11 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 5250,
-        "max": 26250
+        "min": 5000,
+        "max": 25000
       },
       "per_language_weeks": 0.5,
-      "per_language_price": 5250,
+      "per_language_price": 5000,
       "free_languages": 3
     }
   ],
@@ -2667,6 +2671,25 @@
         "note": "Every pack shortlists from the app registry, installs and configures each app and leaves it with a named owner and its monthly cost — per market in the larger packs, where the number that surprises clients is cost per market rather than cost per app. The subscription is the client’s own running cost from the day it is installed, against the monthly ceiling they set; it is never a Merkle line, which is why there is no quantity to compare."
       },
       {
+        "id": "apps",
+        "what": "Third-party apps installed and configured",
+        "gate": null,
+        "group": "Running the store",
+        "shopify_limit": null,
+        "shopify_fact": false,
+        "$comment": "A Merkle line, not a Shopify fact: how many App Store apps a pack installs, configures and hands over with an owner and a monthly cost.",
+        "S": "Up to 3",
+        "M": "Up to 6",
+        "L": "Up to 10",
+        "note": "Shopify’s own apps — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — do not count, and neither does an app a scope gate already prices. Each further app is bought on top. The apps’ own monthly fees are the client’s.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Each further app"
+      },
+      {
         "id": "support",
         "what": "After go-live",
         "gate": "post_launch_support",
@@ -2715,7 +2738,8 @@
           "S",
           "M",
           "L"
-        ]
+        ],
+        "note": "A further market brings its own currency and is priced as one market: a second currency is charged on its own only where a single market sells in several."
       },
       {
         "id": "b2b",
@@ -2780,7 +2804,8 @@
           "S",
           "M",
           "L"
-        ]
+        ],
+        "note": "At 5,000 SKUs and above the catalogue add-on already sets up Shopify’s own search; a search app past it is priced here."
       },
       {
         "id": "migration",

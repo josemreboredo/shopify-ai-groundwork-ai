@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.7.0 · offering 3.0.0
+> **Version:** question bank 1.8.0 · offering 3.0.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -251,6 +251,11 @@
 
 **Q1.2.6** — Wie viele Personen benötigen nach dem Go-live einen eigenen Shopify-Admin-Zugang? *(required)*
 *Mitarbeit über Collaborator-Konten und reines POS-Personal zählen nicht mit.*
+
+> Answer:
+
+**Q1.2.7** — Wie viele Apps von Drittanbietern wird der Shop beim Launch nutzen — die, die von heute bleiben, und die, die er braucht? *(recommended)*
+*Zählen Sie App-Store-Apps anderer Anbieter. Shopifys eigene Apps — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — werden nicht mitgezählt.*
 
 > Answer:
 

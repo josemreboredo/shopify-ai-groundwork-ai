@@ -84,7 +84,12 @@ for (const { file, doc } of fixtures) {
          and not the engine agreeing with itself: every active gate is quoted,
          and the quote is the Foundation base plus each quoted modifier. */
       const quoted = (offer.modifiers ?? []).map((id) => offering.modifiers.find((m) => m.id === id));
-      assert.deepEqual(quoted.map((m) => m.gate).sort(), [...gates].sort(), 'every active gate is quoted, and only those');
+      // One decision, one price: a further market carries its currency, and a
+      // catalogue of 5,000 SKUs or more carries Shopify's own search.
+      const g = offer.scope_gates;
+      const carried = (id) => (id === 'multi_currency' && g.markets?.active)
+        || (id === 'search_merchandising' && g.search_merchandising?.tier === 'native' && ['large', 'very_large'].includes(g.sku_complexity?.tier));
+      assert.deepEqual(quoted.map((m) => m.gate).sort(), gates.filter((id) => !carried(id)).sort(), 'every active gate is quoted, and only those');
       const weeks = (offer.scope_effort_by_gate ?? []).reduce((a, g) => ({ min: a.min + g.weeks.min, max: a.max + g.weeks.max }), { min: 0, max: 0 });
       const S = offering.offers.S;
       const rate = offering.pricing.weekly_rate;

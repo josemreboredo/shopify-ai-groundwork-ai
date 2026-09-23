@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.7.0 · offering 3.0.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.8.0 · offering 3.0.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 128 of 315 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 128 of 316 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -338,6 +338,10 @@ Sources: https://help.shopify.com/en/manual/your-account/users/users-plan-requir
 |---|---|---|---|
 | Staff accounts | Grow | Basic 0, Grow 5, Advanced 15, Plus unlimited; collaborators and POS-only staff not counted | https://help.shopify.com/en/manual/your-account/users/users-plan-requirements |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q1.2.7** — How many third-party apps will the store run at launch — the ones kept from today and the ones it needs? *(recommended · client)*
+
+**Why it matters.** Every app is installed, configured, tested with the theme and handed over with an owner and a monthly fee. A store with fifteen of them is a different build from one with three, and the client pays each app’s licence every month.
 
 ### 1.3 Brand & positioning
 

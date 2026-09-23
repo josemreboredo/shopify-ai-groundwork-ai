@@ -317,7 +317,8 @@
     "Q7.3.3": "4f3d3c5c6547",
     "Q7.6.8": "2f68b27508c0",
     "Q10.2.4": "5dc23518880b",
-    "Q10.3.7": "fc88af40f0fd"
+    "Q10.3.7": "fc88af40f0fd",
+    "Q1.2.7": "d51368492bea"
   },
   "sections": {
     "0": "Geschäftsziele",
@@ -3849,6 +3850,13 @@
       "help": "Hypercare ist die Zeit direkt nach dem Go-live: ein benannter Kanal, eine Antwort innert eines Arbeitstags und die Triage der Fehler mit Ihnen. Eine bestimmte Anzahl Tage ist im Angebot enthalten; antworten Sie nur, wenn Sie mehr brauchen.",
       "teach": {
         "why": "Wenige Tage decken einen einfachen Launch ab. Ein Replatforming mit grossem Katalog oder ein Launch in mehreren Märkten zugleich braucht oft den ersten vollen Monatsabschluss innerhalb der Hypercare — jede weitere Woche wird berechnet, zum halben Satz einer Build-Woche."
+      }
+    },
+    "Q1.2.7": {
+      "text": "Wie viele Apps von Drittanbietern wird der Shop beim Launch nutzen — die, die von heute bleiben, und die, die er braucht?",
+      "help": "Zählen Sie App-Store-Apps anderer Anbieter. Shopifys eigene Apps — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — werden nicht mitgezählt.",
+      "teach": {
+        "why": "Jede App wird installiert, konfiguriert, mit dem Theme getestet und mit einem Verantwortlichen und einer Monatsgebühr übergeben. Ein Shop mit fünfzehn Apps ist ein anderer Build als einer mit drei, und der Kunde bezahlt jede Lizenz jeden Monat."
       }
     }
   },
