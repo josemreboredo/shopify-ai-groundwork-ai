@@ -1814,10 +1814,20 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .ladder-note { margin: 26px 0 0; color: var(--muted); font-size: 0.92rem; }
 .ladder-note a { color: var(--ink); }
 
-/* The offer most engagements land on. One red rule and a label — the same mark
-   the rest of the page uses for emphasis, never a second accent or a badge. */
-.stats .stat-common { border-top-color: var(--red); }
+/* The offer most engagements land on.
+   The first attempt gave it a red rule, which changed nothing: every stat
+   already had one, so the mark marked nothing. What makes one of three stand
+   out is the other two stepping back — so where a list names a common case, the
+   rest recede and it keeps the accent. No badge, no second colour. */
+.stats:has(.stat-common) li:not(.stat-common) span { border-top-color: var(--line-strong); }
 .stat-flag {
   display: block; margin-top: 6px; font-size: 0.78rem; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-ink);
 }
+
+/* Where one band's ceiling meets the next one's floor. Quiet by design — it is
+   a fact a consultant uses in a room, not a claim the page makes. */
+.overlaps { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px; max-width: 72ch; }
+.overlaps li { display: grid; grid-template-columns: 5.5rem 1fr; gap: 16px; align-items: baseline; }
+.overlaps strong { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: var(--red-ink); }
+.overlaps span { font-size: 0.93rem; color: var(--muted); line-height: 1.5; }

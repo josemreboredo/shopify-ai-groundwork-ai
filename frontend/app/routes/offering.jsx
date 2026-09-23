@@ -26,6 +26,57 @@ const LADDER = [
   ['Custom', 'Functions, metaobjects, a custom app — when nothing cheaper works'],
 ];
 
+
+/**
+ * Where one offer's ceiling meets the next one's floor.
+ *
+ * The bands are built to overlap and the page never said it, so the most useful
+ * sentence a consultant has — "at the top of this one you are paying what the
+ * next one starts at" — had to be assembled from two numbers in different rows.
+ * Computed, never typed: a claim about a price that quietly stops being true is
+ * worse than no claim.
+ *
+ * @param {{ offers: object[], currency?: string }} props
+ */
+function Overlaps({ offers, currency }) {
+  const k = (n) => `${Math.round(n / 1000)}k`;
+  const pairs = [];
+  for (let i = 0; i < offers.length - 1; i++) {
+    const below = offers[i];
+    const above = offers[i + 1];
+    if (!below.price_band || !above.price_band) continue;
+    const gap = above.price_band.min - below.price_band.max;
+    pairs.push({ below, above, gap });
+  }
+  if (!pairs.length) return null;
+
+  return (
+    <ul className="overlaps">
+      {pairs.map(({ below, above, gap }) => (
+        <li key={below.code}>
+          <strong>{below.code} → {above.code}</strong>
+          {/* No articles: the offers are named Ecommerce Foundation and
+              Ecommerce Scale, so "a"/"an" has to be chosen per name and the
+              first version printed "a Ecommerce Foundation". The names carry
+              themselves. */}
+          {gap <= 0 ? (
+            <span>
+              {below.name} at its ceiling costs {currency} {k(below.price_band.max)} —{' '}
+              {gap === 0
+                ? `exactly where ${above.name} starts`
+                : `${currency} ${k(-gap)} above where ${above.name} starts`}. The step up is the cheapest it will
+              ever be at that point in the conversation.
+            </span>
+          ) : (
+            <span>
+              {currency} {k(gap)} separates the ceiling of {below.name} from the floor of {above.name}.
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
 export default function Offering({ loaderData }) {
   const { view } = loaderData;
   const currency = view.offers[0]?.currency;
@@ -66,6 +117,13 @@ export default function Offering({ loaderData }) {
       <section>
         <h2>What the three offers are</h2>
         <p className="lede">Who each one is for, in one line. Then the comparison.</p>
+        {/* Where the bands meet, said out loud.
+            The ladder overlaps on purpose and nothing on this page said so, so
+            the fact that moves a conversation was one a consultant had to spot
+            by reading two numbers in different rows and subtracting. It is
+            computed from the bands rather than written down, because a
+            sentence about a price that stops being true is worse than none. */}
+        {view.pricing ? <Overlaps offers={view.offers} currency={currency} /> : null}
         <ol className="segments">
           {view.offers.map((o) => (
             <li key={o.code}>
