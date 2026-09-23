@@ -6,7 +6,7 @@ import { markets, list, listOr, isB2b, hasProductType } from './helpers.js';
 
 const methods = (doc) => [...new Set([...(doc.payments?.providers ?? []), ...(doc.payments?.local_methods ?? []), ...(doc.payments?.bnpl ?? [])])];
 const extensionsOf = (doc) => [...(doc.checkout?.extensions ?? []).map((e) => e.replace(/_/g, ' ')), ...(doc.checkout?.custom_fields ?? [])];
-const giftCardsInScope = (doc) => hasProductType(doc, 'gift_card') || doc.checkout?.gift_cards === true || doc.promotions?.gift_cards?.as_product === true || doc.promotions?.gift_cards?.as_reward === true;
+const giftCardsInScope = (doc) => hasProductType(doc, 'gift_card') || doc.promotions?.gift_cards?.as_product === true || doc.promotions?.gift_cards?.as_reward === true;
 
 /** @type {import('../model.js').StoryDefinition[]} */
 export default [

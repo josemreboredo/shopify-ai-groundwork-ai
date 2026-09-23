@@ -43,10 +43,10 @@ const VAT_INVOICE_UNSUPPORTED = ['PT'];
 const SHOPIFY_SMS_COUNTRIES = ['AT', 'CA', 'DK', 'FI', 'IT', 'LU', 'PL', 'PT', 'SE', 'GB', 'US'];
 
 /** A named tool that is really Shopify's own feature is not a reason for an app. */
-const isNamedApp = (name) => typeof name === 'string' && name.trim() !== '' && !/^(shopify|native|none|n\/?a)\b/i.test(name.trim());
+export const isNamedApp = (name) => typeof name === 'string' && name.trim() !== '' && !/^(shopify|native|none|n\/?a)\b/i.test(name.trim());
 
-const RETURNS_WORDS = /return|loop|redo|exchange/i;
-const TRACKING_WORDS = /track|parcel|aftership|narvar|route|wismo|delivery/i;
+export const RETURNS_WORDS = /return|loop|redo|exchange/i;
+export const TRACKING_WORDS = /track|parcel|aftership|narvar|route|wismo|delivery/i;
 
 /** True when some fulfilment or market is outside the US (native return labels and automatic dates are US-only). */
 const outsideUs = (doc) => marketsOf(doc).some((m) => m.code !== 'US') || (doc.meta?.client?.hq_country ?? 'US') !== 'US';
@@ -67,7 +67,7 @@ export function appSignals(doc) {
   const tracking = pp.tracking ?? {};
   const cancellations = pp.cancellations ?? {};
   const catalogue = doc.catalogue ?? {};
-  const preferred = [...(pp.apps_preferred ?? []), ...(isNamedApp(pp.platform_preference) ? [pp.platform_preference] : [])].filter(isNamedApp).map((a) => a.trim());
+  const preferred = (pp.apps_preferred ?? []).filter(isNamedApp).map((a) => a.trim());
 
   const returnsPlatform = [];
   if (returns.label === 'qr_drop_off') returnsPlatform.push('QR code drop-off returns need a carrier integration');
@@ -80,7 +80,6 @@ export function appSignals(doc) {
     ? Math.round((pp.orders_per_month * returns.return_rate_pct) / 100)
     : undefined;
   if (volume !== undefined && volume >= RETURNS_VOLUME_THRESHOLD) returnsPlatform.push(`About ${volume} returns per month`);
-  if (isNamedApp(returns.solution)) returnsPlatform.push(`Client uses or prefers ${returns.solution.trim()} for returns`);
   for (const app of preferred.filter((a) => RETURNS_WORDS.test(a))) returnsPlatform.push(`Client uses or prefers ${app}`);
   for (const i of (doc.integrations ?? []).filter((x) => x.category === 'returns' && isNamedApp(x.system))) {
     returnsPlatform.push(`${i.system} is in the client's system landscape (${i.status ?? 'status unknown'})`);

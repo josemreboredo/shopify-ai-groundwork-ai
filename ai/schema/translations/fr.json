@@ -312,7 +312,11 @@
     "Q6.5.3": "b118523702dc",
     "Q6.5.4": "2fc09133ccfa",
     "Q6.5.5": "806c31083c6b",
-    "Q9.2.14": "a851eaed2470"
+    "Q9.2.14": "a851eaed2470",
+    "Q3.4.14": "fa00298a9d03",
+    "Q7.3.3": "4f3d3c5c6547",
+    "Q7.6.8": "2f68b27508c0",
+    "Q10.2.4": "5dc23518880b"
   },
   "sections": {
     "0": "Objectifs business",
@@ -780,7 +784,12 @@
     "wechat_mini_program": "Mini-programme WeChat",
     "weight_or_price_based": "Selon le poids ou le montant",
     "wfoe": "Entreprise à capitaux entièrement étrangers (WFOE)",
-    "wishlist": "Liste d'envies"
+    "wishlist": "Liste d'envies",
+    "self_managed_markets": "Shopify Markets avec nos propres enregistrements fiscaux",
+    "managed_markets": "Shopify Managed Markets (Global-e comme merchant of record)",
+    "third_party_mor_app": "Application tierce de merchant of record",
+    "shopify": "Shopify",
+    "esp": "Plateforme d’e-mailing (ESP)"
   },
   "questions": {
     "Q0.1.1": {
@@ -3805,6 +3814,33 @@
       "help": "Un design system peut porter plusieurs marques : les mêmes composants, avec les couleurs, la typographie et l’imagerie de chaque marque en tokens, et une autre mise en page là où une marque en a besoin. Un design system par marque, ce sont des tokens et des composants séparés, conçus et maintenus à part.",
       "teach": {
         "why": "Détermine si plusieurs marques restent dans les offres. Des marques qui partagent un design system, c’est une boutique par marque et, là où une mise en page diffère, un design de vitrine supplémentaire. Un design system par marque est un programme de design : c’est Merkle Arc (règle 11.29)."
+      }
+    },
+    "Q3.4.14": {
+      "text": "Comment vendrez-vous à l’international : avec Shopify Markets et vos propres enregistrements fiscaux, avec Managed Markets de Shopify, ou avec une application tierce de merchant of record ?",
+      "help": "Avec Markets, vous vendez en votre nom et gérez la fiscalité pays par pays. Un merchant of record vend en son propre nom et prend en charge la fiscalité et la conformité pour vous. Managed Markets de Shopify (Global-e comme merchant of record) n’est disponible que pour les marchands établis dans la partie continentale des États-Unis et certaines boutiques au Canada et au Royaume-Uni — pas pour une boutique établie en Suisse.",
+      "teach": {
+        "why": "Détermine qui vend au client à l’étranger. Vendre en votre nom avec Markets suppose des enregistrements et des déclarations fiscales par pays ; un merchant of record s’en charge contre rémunération et limite ce que la boutique peut faire — les abonnements, par exemple, restent nationaux sous Managed Markets."
+      }
+    },
+    "Q7.3.3": {
+      "text": "Où les segments de clientèle sont-ils gérés : dans Shopify ou dans la plateforme d’e-mailing ?",
+      "help": "Le système qui possède les segments est celui où ils sont construits et d’où l’autre les lit.",
+      "teach": {
+        "why": "Deux systèmes qui gèrent chacun leurs propres segments divergent en un mois, et les campagnes partent vers les mauvaises personnes. Désigner le propriétaire décide du sens de la synchronisation et de ce que l’intégration doit transporter."
+      }
+    },
+    "Q7.6.8": {
+      "text": "Les promotions diffèrent-elles selon le marché — une campagne ou une remise valable dans un seul pays ?",
+      "teach": {
+        "why": "Une remise limitée à un marché se configure et se teste marché par marché, avec sa propre devise et ses propres conditions. Demandée tôt, c’est une ligne du build ; découverte en semaine six, c’est une demande de changement."
+      }
+    },
+    "Q10.2.4": {
+      "text": "Quels rôles feront tourner la boutique au quotidien — par exemple merchandising, service client, finance, marketing — chacun avec ses propres droits d’accès ?",
+      "help": "Des rôles, pas des noms. Chaque rôle reçoit ses propres droits plutôt qu’un identifiant partagé.",
+      "teach": {
+        "why": "Les comptes du personnel et leurs droits sont configurés par rôle avant le lancement. Un identifiant de propriétaire partagé, c’est ainsi qu’une commande est remboursée par la mauvaise personne et que personne ne peut dire qui a changé un prix."
       }
     }
   },

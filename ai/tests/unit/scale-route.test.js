@@ -228,13 +228,14 @@ describe('rules and signals', () => {
     const doc = load('foundation-minimal.json');
     const base = appSignals(doc);
     assert.deepEqual(base.returns_platform, []);
-    doc.shipping = { ...doc.shipping, returns: { ...doc.shipping?.returns, solution: 'Shopify native returns' } };
+    // Read from the one field a question fills (Q6.x apps_preferred); the two
+    // free-text fields beside it were never asked, so nothing ever reached them.
+    doc.post_purchase = { ...doc.post_purchase, apps_preferred: ['Shopify native returns'] };
     assert.deepEqual(appSignals(doc).returns_platform, []);
-    doc.shipping.returns.solution = 'Loop Returns';
-    doc.post_purchase = { ...doc.post_purchase, platform_preference: 'parcelLab' };
+    doc.post_purchase.apps_preferred = ['Loop Returns', 'parcelLab'];
     doc.integrations = [...(doc.integrations ?? []), { system: 'Returns hub', category: 'returns', status: 'to_build' }];
     const s = appSignals(doc);
-    assert.deepEqual(s.returns_platform, ['Client uses or prefers Loop Returns for returns', "Returns hub is in the client's system landscape (to_build)"]);
+    assert.deepEqual(s.returns_platform, ['Client uses or prefers Loop Returns', "Returns hub is in the client's system landscape (to_build)"]);
     assert.deepEqual(s.post_purchase_platform, ['Client uses or prefers parcelLab']);
   });
 });

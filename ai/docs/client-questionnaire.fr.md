@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.4.0 · offering 2.20.0
+> **Version:** question bank 1.5.0 · offering 2.20.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -708,6 +708,16 @@
 - [ ] Mixte
 - [ ] Pas encore certain
 
+**Q3.4.14** — Comment vendrez-vous à l’international : avec Shopify Markets et vos propres enregistrements fiscaux, avec Managed Markets de Shopify, ou avec une application tierce de merchant of record ? *(recommended)*
+*Ask if Q3.1.1 has 2+ markets.*
+*Avec Markets, vous vendez en votre nom et gérez la fiscalité pays par pays. Un merchant of record vend en son propre nom et prend en charge la fiscalité et la conformité pour vous. Managed Markets de Shopify (Global-e comme merchant of record) n’est disponible que pour les marchands établis dans la partie continentale des États-Unis et certaines boutiques au Canada et au Royaume-Uni — pas pour une boutique établie en Suisse.*
+
+*(tick one)*
+- [ ] Shopify Markets avec nos propres enregistrements fiscaux
+- [ ] Shopify Managed Markets (Global-e comme merchant of record)
+- [ ] Application tierce de merchant of record
+- [ ] Pas encore certain
+
 ### 3.5 Chine continentale
 
 **Q3.5.1** — Souhaitez-vous vendre en Chine continentale en transfrontalier (depuis l'extérieur de la Chine) ou sur place, derrière la Grande Muraille numérique ? *(required)*
@@ -1285,7 +1295,7 @@
 
 *(tick one)*
 - [ ] Shopify
-- [ ] ESP
+- [ ] Plateforme d’e-mailing (ESP)
 - [ ] Mixte
 
 ### 5.4 Annulations & remboursements
@@ -1639,7 +1649,7 @@
 
 *(tick one)*
 - [ ] Shopify
-- [ ] ESP
+- [ ] Plateforme d’e-mailing (ESP)
 - [ ] CDP
 - [ ] Mixte
 - [ ] Aucun
@@ -1816,6 +1826,13 @@
 
 > Answer:
 
+**Q7.3.3** — Où les segments de clientèle sont-ils gérés : dans Shopify ou dans la plateforme d’e-mailing ? *(recommended)*
+*Le système qui possède les segments est celui où ils sont construits et d’où l’autre les lit.*
+
+*(tick one)*
+- [ ] Shopify
+- [ ] Plateforme d’e-mailing (ESP)
+
 **Q7.3.4** — Envoyez-vous du marketing par SMS, et vers quels pays ? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat.*
 
@@ -1963,6 +1980,12 @@
 
 **Q7.6.7** — Des comptes à rebours ou des éléments d'urgence sont-ils nécessaires ? *(optional)*
 *Les comptes à rebours exigent une application ou du travail de thème.*
+
+- [ ] Yes
+- [ ] No
+
+**Q7.6.8** — Les promotions diffèrent-elles selon le marché — une campagne ou une remise valable dans un seul pays ? *(optional)*
+*Ask if Q3.1.1 has 2+ markets.*
 
 - [ ] Yes
 - [ ] No
@@ -2394,6 +2417,11 @@
 
 - [ ] Yes
 - [ ] No
+
+**Q10.2.4** — Quels rôles feront tourner la boutique au quotidien — par exemple merchandising, service client, finance, marketing — chacun avec ses propres droits d’accès ? *(recommended)*
+*Des rôles, pas des noms. Chaque rôle reçoit ses propres droits plutôt qu’un identifiant partagé.*
+
+> Answer:
 
 ### 10.3 Support & formation
 

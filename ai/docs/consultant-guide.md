@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.4.0 · offering 2.20.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.5.0 · offering 2.20.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 127 of 310 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 128 of 314 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -1036,6 +1036,17 @@ Sources: https://help.shopify.com/en/manual/international/managed-markets/requir
 |---|---|---|---|
 | Shopify Tax and Basic Tax registrations per region | Basic |  | https://help.shopify.com/en/manual/taxes/registration/setup |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q3.4.14** — How will you sell across borders: Shopify Markets with your own tax registrations, Shopify’s Managed Markets, or a third-party merchant-of-record app? *(recommended · client)*
+Drives: app signal Subscriptions beyond Shopify Subscriptions
+Quick interview: ask if Q3.1.1 has 2+ markets
+
+**Why it matters.** Decides who sells to the customer abroad. Selling in your own name with Markets means tax registrations and returns per country; a merchant of record takes that on for a fee and limits what the store can do — subscriptions, for one, stay domestic under Managed Markets.
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Managed Markets — Global-e as merchant of record | Basic | Plan not stated by Shopify; only for merchants based in the continental US and certain stores in Canada and the UK | https://help.shopify.com/en/manual/international/managed-markets |
+*Verified 2026-09-23 against help.shopify.com (undefined).*
 
 ### 3.5 Mainland China
 
@@ -2453,6 +2464,10 @@ If native is not enough: [Email marketing](https://apps.shopify.com/categories/m
 
 **Why it matters.** Lifecycle flows are where recovered revenue comes from — abandoned cart above all. Each flow needs trigger data, content and a test pass, so the list sizes the marketing build and tells tracking which events it must actually produce.
 
+**Q7.3.3** — Where are customer segments kept: in Shopify, or in the email platform? *(recommended · client)*
+
+**Why it matters.** Two systems each holding their own segments drift apart within a month, and campaigns then go to the wrong people. Naming the owner decides which way the sync runs and what the integration has to carry.
+
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended · client)*
 Drives: app signal SMS marketing outside Shopify Messaging countries
 Quick interview: ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat
@@ -2619,6 +2634,11 @@ If native is not enough: App Store — [Rise Gift Cards & Store Credit](https://
 |---|---|---|
 | An app | Marketing can schedule and style timers without a developer | Monthly licence, another script on the page, and the look is constrained by the app |
 | Theme work | Exactly the brand's design, no licence, no third-party script | Every new campaign format is a developer change, and caching has to be handled carefully |
+
+**Q7.6.8** — Do promotions differ by market — a campaign or a discount that runs in one country only? *(optional · client)*
+Quick interview: ask if Q3.1.1 has 2+ markets
+
+**Why it matters.** A discount limited to one market is set up and tested per market, with its own currency and its own conditions. Asked once, it is a line in the build; found in week six, it is a change request.
 
 **Q7.6.9** — Do you run scheduled drops or flash sales with high traffic? *(optional · client)*
 
@@ -3255,6 +3275,10 @@ Drives: rule 11.16 (FLAG)
 **Why it matters.** The same exit rule 11.16. If nobody can say yes to money, the scope you agree is provisional — change requests, apps with monthly fees and the retainer all stall. Name the budget owner before the statement of work.
 
 **Limits.** Rule 11.16 is a FLAG, not a STOP: discovery continues, but the budget owner must be confirmed before signature.
+
+**Q10.2.4** — Which roles will run the store day to day — for example merchandising, customer service, finance, marketing — each needing its own staff permissions? *(recommended · client)*
+
+**Why it matters.** Staff accounts and permissions are set up per role before launch. A shared owner login is how orders get refunded by the wrong person and how nobody can say who changed a price.
 
 ### 10.3 Support & training
 

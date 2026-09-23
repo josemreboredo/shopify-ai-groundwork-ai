@@ -30,7 +30,7 @@
     "sepa_or_invoice_via_gateway": "SEPA direct debit or invoice via a gateway",
     "shopify_payments_hong_kong_wallets": "Alipay / WeChat Pay via Shopify Payments (Hong Kong)",
     "invoice_via_draft_order": "Invoice via draft order",
-    "managed_markets": "Shopify Managed Markets (Shopify as merchant of record)", "self_managed_markets": "Self-managed Markets (Shopify Tax)",
+    "managed_markets": "Shopify Managed Markets (Global-e as merchant of record)", "self_managed_markets": "Shopify Markets, with our own tax registrations", "esp": "The email platform (ESP)",
     "third_party_mor_app": "Third-party merchant-of-record app",
     "red_xiaohongshu": "RED (Xiaohongshu)", "kol_koc": "KOL / KOC influencers", "wfoe": "Wholly foreign-owned enterprise (WFOE)",
     "tmall_global": "Tmall Global", "tmall_ads": "Tmall advertising", "jd_worldwide": "JD Worldwide", "douyin_global": "Douyin Global", "douyin": "Douyin", "baidu": "Baidu", "wechat": "WeChat",

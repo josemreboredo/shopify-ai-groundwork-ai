@@ -77,7 +77,7 @@ export default [
     gates: ['migration'],
     security_flags: ['pii'],
     applies: (doc) => migrates(doc, 'customers'),
-    agent_prompt: (doc) => `Import about ${count(doc.migration?.volumes?.customers, 'the agreed number of')} customers from ${source(doc)}: email, name, phone, addresses, tags, email and SMS marketing consent with opt-in level and date. Passwords cannot be migrated; with ${doc.customers?.account_type === 'classic' ? 'legacy accounts plan account activation emails' : 'new customer accounts no password is needed'}. Do not send any customer email from the import. Process personal data only on approved machines, never log or paste it, and delete exports after sign-off. Reconcile counts and consent totals.`,
+    agent_prompt: (doc) => `Import about ${count(doc.migration?.volumes?.customers, 'the agreed number of')} customers from ${source(doc)}: email, name, phone, addresses, tags, email and SMS marketing consent with opt-in level and date. Passwords cannot be migrated; with new customer accounts no password is needed. Do not send any customer email from the import. Process personal data only on approved machines, never log or paste it, and delete exports after sign-off. Reconcile counts and consent totals.`,
   },
   {
     key: 'LWC-MIG-004',

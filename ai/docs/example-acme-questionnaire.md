@@ -689,6 +689,12 @@
 - [ ] mixed
 - [ ] Not sure yet
 
+**Q3.4.14** — How will you sell across borders: Shopify Markets with your own tax registrations, Shopify’s Managed Markets, or a third-party merchant-of-record app? *(recommended)*
+*Ask if Q3.1.1 has 2+ markets.*
+*With Markets you sell in your own name and handle tax per country. A merchant of record sells in its own name and takes on tax and compliance for you. Shopify’s Managed Markets (Global-e as merchant of record) is only available to merchants based in the continental US and certain stores in Canada and the UK — not to a store based in Switzerland.*
+
+Answer: Shopify Markets, with our own tax registrations
+
 ### 3.5 Mainland China
 
 **Q3.5.1** — Do you want to sell to mainland China cross-border (from outside China) or onshore, behind the Great Firewall? *(required)*
@@ -1681,6 +1687,11 @@
 
 > Answer: Welcome; Abandoned cart; Browse abandonment; Post-purchase; Win-back
 
+**Q7.3.3** — Where are customer segments kept: in Shopify, or in the email platform? *(recommended)*
+*The system that owns the segments is where they are built and where the other one reads them from.*
+
+Answer: Shopify
+
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat.*
 
@@ -1823,6 +1834,11 @@
 
 - [ ] Yes
 - [x] No
+
+**Q7.6.8** — Do promotions differ by market — a campaign or a discount that runs in one country only? *(optional)*
+*Ask if Q3.1.1 has 2+ markets.*
+
+Answer: No
 
 **Q7.6.9** — Do you run scheduled drops or flash sales with high traffic? *(optional)*
 *Scheduled theme and checkout changes are native (Rollouts).*
@@ -2255,6 +2271,11 @@ Answer: not applicable — one brand
 
 - [x] Yes
 - [ ] No
+
+**Q10.2.4** — Which roles will run the store day to day — for example merchandising, customer service, finance, marketing — each needing its own staff permissions? *(recommended)*
+*Roles, not names. Each role gets its own set of permissions rather than one shared login.*
+
+Answer: merchandising, customer service, finance
 
 ### 10.3 Support & training
 

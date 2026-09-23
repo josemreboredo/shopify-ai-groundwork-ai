@@ -312,7 +312,11 @@
     "Q6.5.3": "b118523702dc",
     "Q6.5.4": "2fc09133ccfa",
     "Q6.5.5": "806c31083c6b",
-    "Q9.2.14": "a851eaed2470"
+    "Q9.2.14": "a851eaed2470",
+    "Q3.4.14": "fa00298a9d03",
+    "Q7.3.3": "4f3d3c5c6547",
+    "Q7.6.8": "2f68b27508c0",
+    "Q10.2.4": "5dc23518880b"
   },
   "sections": {
     "0": "Geschäftsziele",
@@ -780,7 +784,12 @@
     "wechat_mini_program": "WeChat-Mini-Programm",
     "weight_or_price_based": "Nach Gewicht oder Wert",
     "wfoe": "Unternehmen in ausländischem Alleinbesitz (WFOE)",
-    "wishlist": "Merkliste"
+    "wishlist": "Merkliste",
+    "self_managed_markets": "Shopify Markets mit eigenen Steuerregistrierungen",
+    "managed_markets": "Shopify Managed Markets (Global-e als Merchant of Record)",
+    "third_party_mor_app": "Merchant-of-Record-App eines Drittanbieters",
+    "shopify": "Shopify",
+    "esp": "E-Mail-Plattform (ESP)"
   },
   "questions": {
     "Q0.1.1": {
@@ -3805,6 +3814,33 @@
       "help": "Ein Design-System kann mehrere Marken tragen: dieselben Komponenten, mit Farben, Typografie und Bildsprache jeder Marke als Tokens, und einem anderen Layout, wo eine Marke eines braucht. Ein Design-System pro Marke bedeutet getrennte Tokens und Komponenten, getrennt gestaltet und gepflegt.",
       "teach": {
         "why": "Entscheidet, ob mehrere Marken in den Angeboten bleiben. Marken mit einem gemeinsamen Design-System sind ein Store pro Marke und, wo sich ein Layout unterscheidet, ein weiteres Storefront-Design. Ein Design-System pro Marke ist ein Design-Programm — das ist Merkle Arc (Regel 11.29)."
+      }
+    },
+    "Q3.4.14": {
+      "text": "Wie verkaufen Sie über die Grenze: mit Shopify Markets und eigenen Steuerregistrierungen, mit Shopifys Managed Markets oder mit einer Merchant-of-Record-App eines Drittanbieters?",
+      "help": "Mit Markets verkaufen Sie in eigenem Namen und regeln die Steuern pro Land. Ein Merchant of Record verkauft in seinem Namen und übernimmt Steuern und Compliance für Sie. Shopifys Managed Markets (Global-e als Merchant of Record) steht nur Händlern mit Sitz in den kontinentalen USA und bestimmten Shops in Kanada und Grossbritannien offen — nicht einem Shop mit Sitz in der Schweiz.",
+      "teach": {
+        "why": "Entscheidet, wer im Ausland an den Kunden verkauft. Wer mit Markets in eigenem Namen verkauft, braucht Steuerregistrierungen und Abrechnungen pro Land; ein Merchant of Record übernimmt das gegen Gebühr und schränkt ein, was der Shop kann — Abonnements etwa bleiben unter Managed Markets national."
+      }
+    },
+    "Q7.3.3": {
+      "text": "Wo werden Kundensegmente geführt: in Shopify oder in der E-Mail-Plattform?",
+      "help": "Das System, das die Segmente führt, ist das, in dem sie gebaut werden und aus dem das andere sie liest.",
+      "teach": {
+        "why": "Zwei Systeme mit je eigenen Segmenten laufen innert eines Monats auseinander, und Kampagnen gehen an die falschen Leute. Wer der Eigentümer ist, entscheidet die Richtung der Synchronisation und was die Integration tragen muss."
+      }
+    },
+    "Q7.6.8": {
+      "text": "Unterscheiden sich Aktionen je Markt — eine Kampagne oder ein Rabatt, der nur in einem Land läuft?",
+      "teach": {
+        "why": "Ein Rabatt, der auf einen Markt beschränkt ist, wird pro Markt eingerichtet und getestet, mit eigener Währung und eigenen Bedingungen. Früh gefragt ist das eine Zeile im Build; in Woche sechs entdeckt ist es ein Change Request."
+      }
+    },
+    "Q10.2.4": {
+      "text": "Welche Rollen betreiben den Shop im Alltag — zum Beispiel Merchandising, Kundendienst, Finanzen, Marketing — mit jeweils eigenen Mitarbeiterberechtigungen?",
+      "help": "Rollen, keine Namen. Jede Rolle erhält eigene Berechtigungen statt eines gemeinsamen Logins.",
+      "teach": {
+        "why": "Mitarbeiterkonten und Berechtigungen werden vor dem Launch pro Rolle eingerichtet. Ein geteiltes Inhaber-Login ist der Weg, auf dem Bestellungen von der falschen Person erstattet werden und niemand sagen kann, wer einen Preis geändert hat."
       }
     }
   },

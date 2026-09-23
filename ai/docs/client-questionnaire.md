@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.4.0 · offering 2.20.0
+> **Version:** question bank 1.5.0 · offering 2.20.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
@@ -708,6 +708,16 @@
 - [ ] Mixed
 - [ ] Not sure yet
 
+**Q3.4.14** — How will you sell across borders: Shopify Markets with your own tax registrations, Shopify’s Managed Markets, or a third-party merchant-of-record app? *(recommended)*
+*Ask if Q3.1.1 has 2+ markets.*
+*With Markets you sell in your own name and handle tax per country. A merchant of record sells in its own name and takes on tax and compliance for you. Shopify’s Managed Markets (Global-e as merchant of record) is only available to merchants based in the continental US and certain stores in Canada and the UK — not to a store based in Switzerland.*
+
+*(tick one)*
+- [ ] Shopify Markets, with our own tax registrations
+- [ ] Shopify Managed Markets (Global-e as merchant of record)
+- [ ] Third-party merchant-of-record app
+- [ ] Not sure yet
+
 ### 3.5 Mainland China
 
 **Q3.5.1** — Do you want to sell to mainland China cross-border (from outside China) or onshore, behind the Great Firewall? *(required)*
@@ -1285,7 +1295,7 @@
 
 *(tick one)*
 - [ ] Shopify
-- [ ] ESP
+- [ ] The email platform (ESP)
 - [ ] Mixed
 
 ### 5.4 Cancellations & refunds
@@ -1639,7 +1649,7 @@
 
 *(tick one)*
 - [ ] Shopify
-- [ ] ESP
+- [ ] The email platform (ESP)
 - [ ] CDP
 - [ ] Mixed
 - [ ] None
@@ -1816,6 +1826,13 @@
 
 > Answer:
 
+**Q7.3.3** — Where are customer segments kept: in Shopify, or in the email platform? *(recommended)*
+*The system that owns the segments is where they are built and where the other one reads them from.*
+
+*(tick one)*
+- [ ] Shopify
+- [ ] The email platform (ESP)
+
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat.*
 
@@ -1963,6 +1980,12 @@
 
 **Q7.6.7** — Are countdown timers or urgency elements needed? *(optional)*
 *Countdown timers need an app or theme work.*
+
+- [ ] Yes
+- [ ] No
+
+**Q7.6.8** — Do promotions differ by market — a campaign or a discount that runs in one country only? *(optional)*
+*Ask if Q3.1.1 has 2+ markets.*
 
 - [ ] Yes
 - [ ] No
@@ -2394,6 +2417,11 @@
 
 - [ ] Yes
 - [ ] No
+
+**Q10.2.4** — Which roles will run the store day to day — for example merchandising, customer service, finance, marketing — each needing its own staff permissions? *(recommended)*
+*Roles, not names. Each role gets its own set of permissions rather than one shared login.*
+
+> Answer:
 
 ### 10.3 Support & training
 

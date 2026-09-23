@@ -3,7 +3,14 @@
  */
 
 import { markets, list, listOr, isB2b, integrationsOf, exitFired } from './helpers.js';
-import { appSignals } from '../../engine/app-signals.js';
+import { appSignals, isNamedApp, RETURNS_WORDS, TRACKING_WORDS } from '../../engine/app-signals.js';
+
+/* The returns and post-purchase tools the client uses or prefers, read from the
+   one field a question fills (apps_preferred). Two free-text fields beside it
+   were read here and never asked, so the stories that named a tool never did. */
+const preferredApps = (doc) => (doc.post_purchase?.apps_preferred ?? []).filter(isNamedApp).map((a) => a.trim());
+const returnsApp = (doc) => preferredApps(doc).find((a) => RETURNS_WORDS.test(a)) ?? null;
+const trackingApp = (doc) => preferredApps(doc).find((a) => TRACKING_WORDS.test(a) && !RETURNS_WORDS.test(a)) ?? null;
 
 const RATE_TEXT = {
   flat: 'flat rates',
@@ -36,7 +43,7 @@ export default [
     depends_on: ['LWC-FND-001'],
     spec_refs: ['/shipping/rates', '/shipping/carriers', '/shipping/special_rules', '/shipping/international', '/shipping/excluded_countries', '/markets/list'],
     applies: () => true,
-    agent_prompt: (doc) => `Set up shipping in Settings > Shipping and delivery: a general profile with zones per market (${listOr(markets(doc).map((m) => m.code), 'primary market')})${doc.shipping?.international ? ' plus international zones' : ''}, ${rateText(doc) ?? 'agreed rates'} and delivery-time labels. ${(doc.shipping?.rates ?? []).includes('carrier_calculated') ? 'Third-party carrier-calculated rates need the Advanced or Plus plan (an add-on on Grow) — confirm eligibility and keep carrier API credentials out of the repository. ' : ''}${(doc.shipping?.free_shipping_thresholds ?? []).length ? `Free-shipping thresholds: ${doc.shipping.free_shipping_thresholds.map((t) => `${t.market} ${t.currency ?? ''} ${t.threshold}`.replace(/\s+/g, ' ')).join('; ')}. ` : ''}${doc.shipping?.special_rules?.length ? `Create separate delivery profiles for: ${list(doc.shipping.special_rules)}. ` : ''}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')} — connect via Shopify Shipping or the carrier's app for labels and tracking. Define free-shipping thresholds per market currency. Take zones, rates, locations, packages and special products from the client's completed store configuration workbook (configuration-workbook.md, Shipping and delivery; generate it with npm run workbook). Present the rate table for approval before applying it.`,
+    agent_prompt: (doc) => `Set up shipping in Settings > Shipping and delivery: a general profile with zones per market (${listOr(markets(doc).map((m) => m.code), 'primary market')}), ${rateText(doc) ?? 'agreed rates'} and delivery-time labels. ${(doc.shipping?.rates ?? []).includes('carrier_calculated') ? 'Third-party carrier-calculated rates need the Advanced or Plus plan (an add-on on Grow) — confirm eligibility and keep carrier API credentials out of the repository. ' : ''}${(doc.shipping?.free_shipping_thresholds ?? []).length ? `Free-shipping thresholds: ${doc.shipping.free_shipping_thresholds.map((t) => `${t.market} ${t.currency ?? ''} ${t.threshold}`.replace(/\s+/g, ' ')).join('; ')}. ` : ''}${doc.shipping?.special_rules?.length ? `Create separate delivery profiles for: ${list(doc.shipping.special_rules)}. ` : ''}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')} — connect via Shopify Shipping or the carrier's app for labels and tracking. Define free-shipping thresholds per market currency. Take zones, rates, locations, packages and special products from the client's completed store configuration workbook (configuration-workbook.md, Shipping and delivery; generate it with npm run workbook). Present the rate table for approval before applying it.`,
   },
   {
     key: 'LWC-SHP-002',
@@ -99,7 +106,7 @@ export default [
   {
     key: 'LWC-SHP-005',
     epic: 'shipping',
-    title: (doc) => `Set up returns${doc.shipping?.returns?.exchanges ? ' and exchanges' : ''}${doc.shipping?.returns?.solution ? ` with ${doc.shipping.returns.solution}` : ''}`,
+    title: (doc) => `Set up returns${doc.shipping?.returns?.exchanges ? ' and exchanges' : ''}${returnsApp(doc) ? ` with ${returnsApp(doc)}` : ''}`,
     user_story: 'As a shopper, I want to request a return or exchange easily, so that buying online feels safe.',
     description: (doc) => `Policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}`,
     acceptance_criteria: (doc) => [
@@ -115,11 +122,11 @@ export default [
     points: 3,
     owner: 'agent',
     depends_on: ['LWC-SHP-001'],
-    spec_refs: ['/shipping/returns/policy', '/shipping/returns/portal', '/shipping/returns/exchanges', '/shipping/returns/solution', '/shipping/returns/label', '/shipping/returns/exchange_types', '/shipping/returns/window_days', '/post_purchase/orders_per_month'],
+    spec_refs: ['/shipping/returns/policy', '/shipping/returns/portal', '/shipping/returns/exchanges', '/post_purchase/apps_preferred', '/shipping/returns/label', '/shipping/returns/exchange_types', '/shipping/returns/window_days', '/post_purchase/orders_per_month'],
     security_flags: ['pii'],
     applies: () => true,
-    agent_prompt: (doc) => `Returns policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}. Returns-platform signals: ${listOr(appSignals(doc).returns_platform, 'none — native Shopify returns are enough')}. ${doc.shipping?.returns?.solution
-      ? `Install and configure ${doc.shipping.returns.solution}: return reasons, windows, fees per market, ${doc.shipping?.returns?.exchanges ? 'exchange-first flow, ' : ''}label generation and restock location. Link its portal from customer accounts and the footer.`
+    agent_prompt: (doc) => `Returns policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}. Returns-platform signals: ${listOr(appSignals(doc).returns_platform, 'none — native Shopify returns are enough')}. ${returnsApp(doc)
+      ? `Install and configure ${returnsApp(doc)}: return reasons, windows, fees per market, ${doc.shipping?.returns?.exchanges ? 'exchange-first flow, ' : ''}label generation and restock location. Link its portal from customer accounts and the footer.`
       : `Use Shopify's native return rules and ${doc.shipping?.returns?.portal === 'native_self_serve_returns' ? 'self-serve returns in customer accounts' : 'staff-created returns'}${doc.shipping?.returns?.exchanges ? ' with exchanges' : ''}.`} Update the refund policy page and notifications. Test a return, an exchange (if in scope) and a refund in test mode.`,
   },
   {
@@ -221,10 +228,10 @@ export default [
     points: 5,
     owner: 'agent',
     depends_on: ['LWC-SHP-001'],
-    spec_refs: ['/post_purchase/tracking/branded_tracking_page', '/post_purchase/tracking/proactive_channels', '/post_purchase/tracking/delivery_estimates', '/post_purchase/platform_preference', '/shipping/carriers'],
+    spec_refs: ['/post_purchase/tracking/branded_tracking_page', '/post_purchase/tracking/proactive_channels', '/post_purchase/tracking/delivery_estimates', '/post_purchase/apps_preferred', '/shipping/carriers'],
     security_flags: ['pii'],
     applies: (doc) => appSignals(doc).post_purchase_platform.length > 0,
-    agent_prompt: (doc) => `Post-purchase requirements beyond native Shopify: ${list(appSignals(doc).post_purchase_platform)}. ${doc.post_purchase?.platform_preference ? `Client platform preference (check it covers tracking, not only returns): ${doc.post_purchase.platform_preference}. ` : 'Shortlist post-purchase platforms (for example AfterShip, parcelLab, Narvar) that support the carriers and markets, and present the choice for consultant approval. '}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')}. Configure the branded tracking page, notification templates per language and consent-aware channels; decide which system sends each shipping message so customers get no duplicates.`,
+    agent_prompt: (doc) => `Post-purchase requirements beyond native Shopify: ${list(appSignals(doc).post_purchase_platform)}. ${trackingApp(doc) ? `Client platform preference (check it covers tracking, not only returns): ${trackingApp(doc)}. ` : 'Shortlist post-purchase platforms (for example AfterShip, parcelLab, Narvar) that support the carriers and markets, and present the choice for consultant approval. '}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')}. Configure the branded tracking page, notification templates per language and consent-aware channels; decide which system sends each shipping message so customers get no duplicates.`,
   },
   {
     key: 'LWC-SHP-010',
@@ -240,10 +247,10 @@ export default [
     points: 5,
     owner: 'developer',
     depends_on: ['LWC-CUS-001'],
-    spec_refs: ['/post_purchase/warranty_claims', '/post_purchase/platform_preference', '/shipping/returns/solution'],
+    spec_refs: ['/post_purchase/warranty_claims', '/post_purchase/apps_preferred'],
     security_flags: ['pii'],
     applies: (doc) => doc.post_purchase?.warranty_claims === true,
-    agent_prompt: (doc) => `Warranty, repair and servicing claims must be opened online. First check whether ${doc.shipping?.returns?.solution ?? doc.post_purchase?.platform_preference ?? 'the chosen returns or post-purchase platform'} supports warranty or repair flows; otherwise design a claim form in customer accounts backed by a helpdesk app or a metaobject-based claim record with Shopify Flow notifications. Present the options with pros, cons and Gaia tier for consultant approval. Photos and customer details are personal data: store them only where the retention policy allows.`,
+    agent_prompt: (doc) => `Warranty, repair and servicing claims must be opened online. First check whether ${returnsApp(doc) ?? trackingApp(doc) ?? 'the chosen returns or post-purchase platform'} supports warranty or repair flows; otherwise design a claim form in customer accounts backed by a helpdesk app or a metaobject-based claim record with Shopify Flow notifications. Present the options with pros, cons and Gaia tier for consultant approval. Photos and customer details are personal data: store them only where the retention policy allows.`,
   },
   /*
    * The delivery methods the bank asks for in Q5.1.11 and nothing delivered.

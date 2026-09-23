@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.4.0 · offering 2.20.0
+> **Version:** question bank 1.5.0 · offering 2.20.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -708,6 +708,16 @@
 - [ ] Gemischt
 - [ ] Noch unklar
 
+**Q3.4.14** — Wie verkaufen Sie über die Grenze: mit Shopify Markets und eigenen Steuerregistrierungen, mit Shopifys Managed Markets oder mit einer Merchant-of-Record-App eines Drittanbieters? *(recommended)*
+*Ask if Q3.1.1 has 2+ markets.*
+*Mit Markets verkaufen Sie in eigenem Namen und regeln die Steuern pro Land. Ein Merchant of Record verkauft in seinem Namen und übernimmt Steuern und Compliance für Sie. Shopifys Managed Markets (Global-e als Merchant of Record) steht nur Händlern mit Sitz in den kontinentalen USA und bestimmten Shops in Kanada und Grossbritannien offen — nicht einem Shop mit Sitz in der Schweiz.*
+
+*(tick one)*
+- [ ] Shopify Markets mit eigenen Steuerregistrierungen
+- [ ] Shopify Managed Markets (Global-e als Merchant of Record)
+- [ ] Merchant-of-Record-App eines Drittanbieters
+- [ ] Noch unklar
+
 ### 3.5 Festlandchina
 
 **Q3.5.1** — Möchten Sie grenzüberschreitend (von außerhalb Chinas) oder onshore, hinter der Großen Firewall, an das chinesische Festland verkaufen? *(required)*
@@ -1285,7 +1295,7 @@
 
 *(tick one)*
 - [ ] Shopify
-- [ ] ESP
+- [ ] E-Mail-Plattform (ESP)
 - [ ] Gemischt
 
 ### 5.4 Stornierungen & Erstattungen
@@ -1639,7 +1649,7 @@
 
 *(tick one)*
 - [ ] Shopify
-- [ ] ESP
+- [ ] E-Mail-Plattform (ESP)
 - [ ] CDP
 - [ ] Gemischt
 - [ ] Keine
@@ -1816,6 +1826,13 @@
 
 > Answer:
 
+**Q7.3.3** — Wo werden Kundensegmente geführt: in Shopify oder in der E-Mail-Plattform? *(recommended)*
+*Das System, das die Segmente führt, ist das, in dem sie gebaut werden und aus dem das andere sie liest.*
+
+*(tick one)*
+- [ ] Shopify
+- [ ] E-Mail-Plattform (ESP)
+
 **Q7.3.4** — Versenden Sie SMS-Marketing, und in welche Länder? *(recommended)*
 *Ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat.*
 
@@ -1963,6 +1980,12 @@
 
 **Q7.6.7** — Werden Countdown-Timer oder Dringlichkeitselemente benötigt? *(optional)*
 *Countdown-Timer brauchen eine App oder Theme-Arbeit.*
+
+- [ ] Yes
+- [ ] No
+
+**Q7.6.8** — Unterscheiden sich Aktionen je Markt — eine Kampagne oder ein Rabatt, der nur in einem Land läuft? *(optional)*
+*Ask if Q3.1.1 has 2+ markets.*
 
 - [ ] Yes
 - [ ] No
@@ -2394,6 +2417,11 @@
 
 - [ ] Yes
 - [ ] No
+
+**Q10.2.4** — Welche Rollen betreiben den Shop im Alltag — zum Beispiel Merchandising, Kundendienst, Finanzen, Marketing — mit jeweils eigenen Mitarbeiterberechtigungen? *(recommended)*
+*Rollen, keine Namen. Jede Rolle erhält eigene Berechtigungen statt eines gemeinsamen Logins.*
+
+> Answer:
 
 ### 10.3 Support & Schulung
 
