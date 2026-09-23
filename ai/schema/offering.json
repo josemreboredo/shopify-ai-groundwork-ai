@@ -819,7 +819,7 @@
     {
       "id": "theme_design",
       "label": "A second storefront design",
-      "condition": "A market, channel or store needs a genuinely different storefront design — a different layout and page structure — rather than different content, imagery or translations. One design serves every market and every store in every pack, because Shopify's per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates: a genuinely different design is a second theme. The design system is not rebuilt — the second set is drawn against the same token layer — so this is the template work again, not the programme again. More than one customer-facing brand, each with its own full design system, is not this: that is Merkle Arc (rule 11.29).",
+      "condition": "A market, channel or store needs a genuinely different storefront design — a different layout and page structure — rather than different content, imagery or translations. One design serves every market and every store in every pack, because Shopify's per-market customisation reaches section content, block visibility and order, and section-level settings — never theme settings and never Liquid templates: a genuinely different design is a second theme. The design system is not rebuilt — the second set is drawn against the same token layer — so this is the template work again, not the programme again. More than one customer-facing brand, each with its own full design system, is not this: that is Merkle Arc (rule 11.29).",
       "inputs": [
         "/design/extra_theme_designs"
       ],
@@ -2478,7 +2478,7 @@
         "what": "Theme designs",
         "gate": "theme_design",
         "group": "Storefront",
-        "shopify_limit": "Per-market theme customization reaches section content and block visibility only — never theme settings such as colour and typography, and never Liquid templates",
+        "shopify_limit": "Per-market theme customization reaches section content, block visibility and order, and section-level settings — never theme settings such as colour and typography, and never Liquid templates",
         "S": "Up to 1",
         "M": "Up to 1",
         "L": "Up to 1",
@@ -2487,7 +2487,7 @@
           "https://help.shopify.com/en/manual/markets/customizations/online-store"
         ],
         "verified": {
-          "on": "2026-09-17",
+          "on": "2026-09-23",
           "source": "help.shopify.com"
         },
         "addon": [
@@ -2755,7 +2755,7 @@
           "M",
           "L"
         ],
-        "note": "Sold where a further store is: on M with the store add-on, and in L. Shopify publishes one theme per store, and per-market customisation reaches section content and block visibility only — never theme settings or Liquid templates — so a genuinely different layout is a second theme on a second store. Built from the client’s second design against the same token layer: the design system is not built twice. More than one brand, each with its own design system, is Merkle Arc instead (rule 11.29)."
+        "note": "Sold where a further store is: on M with the store add-on, and in L. Shopify publishes one theme per store, and per-market customisation reaches section content, block visibility and order, and section-level settings — never theme settings or Liquid templates — so a genuinely different layout is a second theme on a second store. Built from the client’s second design against the same token layer: the design system is not built twice. More than one brand, each with its own design system, is Merkle Arc instead (rule 11.29)."
       },
       {
         "id": "sku_complexity",

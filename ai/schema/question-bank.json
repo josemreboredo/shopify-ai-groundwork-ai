@@ -2197,7 +2197,7 @@
       },
       "teach": {
         "why": "Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range, owner and theme-design columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.",
-        "limits": "Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Per-market theme customization never reaches theme settings (colours, typography) or Liquid templates, only section content and block visibility — a market that needs an actually different design needs its own store. Mainland China is excluded from this engagement and routed to a separate China discovery.",
+        "limits": "Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Per-market theme customization never reaches theme settings (colours, typography) or Liquid templates, only section content, block visibility and order, and section-level settings — a market that needs an actually different design needs its own store. Mainland China is excluded from this engagement and routed to a separate China discovery.",
         "sources": [
           "https://help.shopify.com/en/manual/markets/getting-started/market-types",
           "https://help.shopify.com/en/manual/international/localization-and-translation",
@@ -9225,7 +9225,7 @@
       "audience": "client",
       "answer_type": "integer",
       "text": "Beyond the first, how many storefronts need a genuinely different design — a different layout and page structure, rather than different content, imagery or translations?",
-      "help": "Different content, imagery and translations per market are in every offer. A different design is a second theme, and that is a different thing: Shopify's per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates. Answer 0 if one design serves every market and store.",
+      "help": "Different content, imagery and translations per market are in every offer. A different design is a second theme, and that is a different thing: Shopify's per-market customisation reaches section content, block visibility and order, and section-level settings — never theme settings and never Liquid templates. Answer 0 if one design serves every market and store.",
       "maps_to": [
         "/design/extra_theme_designs"
       ],
@@ -9237,7 +9237,7 @@
           {
             "feature": "Per-market theme customization",
             "plan": "advanced",
-            "plan_note": "Reaches section content and block visibility only — never theme settings or Liquid templates",
+            "plan_note": "Reaches section content, block visibility and order, and section-level settings — never theme settings or Liquid templates",
             "docs": "https://help.shopify.com/en/manual/markets/customizations/online-store"
           }
         ],

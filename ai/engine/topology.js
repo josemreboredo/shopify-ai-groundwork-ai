@@ -51,7 +51,7 @@ export const SOURCES = {
   per_market_theme: 'https://help.shopify.com/en/manual/online-store/themes/customizing-themes-for-markets',
   // Explicit on the ceiling per_market_theme only illustrates: per-market
   // customization never reaches theme settings (colors, typography) or
-  // Liquid templates, only section content and block visibility/ordering.
+  // Liquid templates, only section content, block visibility and order, and section-level settings.
   theme_customization_limits: 'https://help.shopify.com/en/manual/markets/customizations/online-store',
   b2b_plans: 'https://help.shopify.com/en/manual/b2b/getting-started/plan-features',
   managed_markets_requirements: 'https://help.shopify.com/en/manual/international/managed-markets/requirements-and-considerations',
@@ -256,7 +256,7 @@ const CRITERIA = [
       if (!different.length) return null;
       return {
         markets: codes(different),
-        evidence: `${different.length} market(s) need a genuinely different theme design, not just localized content (${codes(different).join(', ')}) — Shopify's per-market customization reaches section content and block visibility, never theme settings such as colours and typography, or Liquid templates`,
+        evidence: `${different.length} market(s) need a genuinely different theme design, not just localized content (${codes(different).join(', ')}) — Shopify's per-market customization reaches section content, block visibility and order, and section-level settings, never theme settings such as colours and typography, or Liquid templates`,
         question_ids: ['Q3.1.1'],
         stated: true,
         broad: different.length >= Math.ceil(markets.length / 2),

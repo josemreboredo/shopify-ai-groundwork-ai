@@ -703,7 +703,7 @@ Who holds this fact: Country manager or commercial lead for the range and the te
 
 **Why it matters.** Sets the whole international scope: markets, currencies, languages, domains and price strategy. The entity, range, owner and theme-design columns are what the engine reads to decide one store with Markets, expansion stores or a hybrid — the client is never asked to choose the topology.
 
-**Limits.** Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Per-market theme customization never reaches theme settings (colours, typography) or Liquid templates, only section content and block visibility — a market that needs an actually different design needs its own store. Mainland China is excluded from this engagement and routed to a separate China discovery.
+**Limits.** Shopify documents no limit on the number of country or region markets. Published languages are capped at 20 below Plus and 30 on Plus. Charging in a local currency (rather than only displaying one) requires Shopify Payments or Adyen; with any other provider the customer is charged in the store's default currency. Per-market theme customization never reaches theme settings (colours, typography) or Liquid templates, only section content, block visibility and order, and section-level settings — a market that needs an actually different design needs its own store. Mainland China is excluded from this engagement and routed to a separate China discovery.
 
 Sources: https://help.shopify.com/en/manual/markets/getting-started/market-types · https://help.shopify.com/en/manual/international/localization-and-translation · https://help.shopify.com/en/manual/markets/customizations/local-currencies · https://help.shopify.com/en/manual/markets/customizations/online-store
 
@@ -3172,7 +3172,7 @@ Drives: gate A second storefront design
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Per-market theme customization | Advanced | Reaches section content and block visibility only — never theme settings or Liquid templates | https://help.shopify.com/en/manual/markets/customizations/online-store |
+| Per-market theme customization | Advanced | Reaches section content, block visibility and order, and section-level settings — never theme settings or Liquid templates | https://help.shopify.com/en/manual/markets/customizations/online-store |
 *Verified 2026-09-23 against help.shopify.com (Spring '26).*
 
 **Q9.2.14** — Does each brand need its own design system — its own tokens and components — rather than one design system with a theme per brand? *(recommended · client)*

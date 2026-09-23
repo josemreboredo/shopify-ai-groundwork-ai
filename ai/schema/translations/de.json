@@ -66,7 +66,7 @@
     "Q2.5.2": "cafaa2d1bb57",
     "Q2.5.3": "0edd87c0d6b9",
     "Q2.5.4": "d4d56af4965e",
-    "Q3.1.1": "4b55fc6f0a4d",
+    "Q3.1.1": "7ebeaadd7c34",
     "Q3.1.2": "a09ea035d8a0",
     "Q3.1.3": "72097ef71964",
     "Q3.1.4": "24bb069d6bef",
@@ -279,7 +279,7 @@
     "Q9.2.9": "efe1ac926233",
     "Q9.2.10": "a0d69c0f580a",
     "Q9.2.12": "2ed9234dcc0e",
-    "Q9.2.13": "bc3093757999",
+    "Q9.2.13": "a829739e5b2b",
     "Q9.3.1": "6bf3ad8d2c48",
     "Q9.3.2": "6630ad795cac",
     "Q9.4.1": "0d36dc79db10",
@@ -1406,7 +1406,7 @@
       "help": "Eine Zeile je Land. Lassen Sie ein Feld leer, wenn Sie es nicht wissen — wir kommen darauf zurück.",
       "teach": {
         "why": "Legt den gesamten internationalen Rahmen fest: Märkte, Währungen, Sprachen, Domains und Preisstrategie. Die Spalten Gesellschaft, Sortiment, Verantwortung und Theme-Design sind das, woraus die Engine ableitet, ob ein Store mit Markets, Expansion Stores oder eine Mischform entsteht — der Kunde wird nie gebeten, die Topologie selbst zu wählen.",
-        "limits": "Shopify dokumentiert keine Obergrenze für die Zahl der Länder- oder Regionenmärkte. Veröffentlichte Sprachen sind unterhalb von Plus auf 20 und auf Plus auf 30 begrenzt. Die Abrechnung in lokaler Währung (statt sie nur anzuzeigen) setzt Shopify Payments oder Adyen voraus; bei jedem anderen Anbieter wird in der Standardwährung des Stores abgerechnet. Die marktspezifische Anpassung erreicht nie die Theme-Einstellungen (Farben, Typografie) oder Liquid-Templates, sondern nur Abschnittsinhalte und die Sichtbarkeit von Blöcken — ein Land, das tatsächlich ein anderes Design braucht, braucht einen eigenen Store. Das chinesische Festland ist aus diesem Engagement ausgenommen und wird in eine eigene China-Discovery geleitet."
+        "limits": "Shopify dokumentiert keine Obergrenze für die Zahl der Länder- oder Regionenmärkte. Veröffentlichte Sprachen sind unterhalb von Plus auf 20 und auf Plus auf 30 begrenzt. Die Abrechnung in lokaler Währung (statt sie nur anzuzeigen) setzt Shopify Payments oder Adyen voraus; bei jedem anderen Anbieter wird in der Standardwährung des Stores abgerechnet. Die marktspezifische Anpassung erreicht nie die Theme-Einstellungen (Farben, Typografie) oder Liquid-Templates, sondern nur Abschnittsinhalte, Sichtbarkeit und Reihenfolge von Blöcken sowie Section-Einstellungen — ein Land, das tatsächlich ein anderes Design braucht, braucht einen eigenen Store. Das chinesische Festland ist aus diesem Engagement ausgenommen und wird in eine eigene China-Discovery geleitet."
       }
     },
     "Q3.1.2": {
@@ -3535,7 +3535,7 @@
     },
     "Q9.2.13": {
       "text": "Wie viele Storefronts brauchen über die erste hinaus ein wirklich anderes Design — ein anderes Layout und einen anderen Seitenaufbau, nicht andere Inhalte, Bilder oder Übersetzungen?",
-      "help": "Andere Inhalte, Bilder und Übersetzungen pro Markt sind in jedem Angebot enthalten. Ein anderes Design ist ein zweites Theme, und das ist etwas anderes: Shopifys Anpassung pro Markt reicht nur bis Section-Inhalte und Sichtbarkeit von Blöcken — nie bis zu Theme-Einstellungen und nie bis zu Liquid-Templates. Antworten Sie 0, wenn ein Design für alle Märkte und Stores reicht.",
+      "help": "Andere Inhalte, Bilder und Übersetzungen pro Markt sind in jedem Angebot enthalten. Ein anderes Design ist ein zweites Theme, und das ist etwas anderes: Shopifys Anpassung pro Markt reicht bis Section-Inhalte, Sichtbarkeit und Reihenfolge von Blöcken sowie Section-Einstellungen — nie bis zu Theme-Einstellungen und nie bis zu Liquid-Templates. Antworten Sie 0, wenn ein Design für alle Märkte und Stores reicht.",
       "teach": {
         "why": "Die Frage trennt die günstige Achse von der teuren. Inhalte, Bilder und Übersetzung pro Markt sind Einstellungen an einem Theme und enthalten. Ein wirklich anderes Design ist ein zweites Theme — zu bauen, auszurollen, zu testen und bei jedem Release nachzuführen. Mehr als eine kundenseitige Marke mit je eigenem Design-System ist etwas ganz anderes: das ist Merkle Arc (Regel 11.29)."
       }

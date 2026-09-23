@@ -260,8 +260,8 @@ export default [
   {
     /* One design serves every market and every store in every pack, so a second
        one is a second theme: Shopify's per-market customisation reaches section
-       content and block visibility only, never theme settings and never Liquid
-       templates. The design system is not built twice — this set is drawn
+       content, block visibility and order, and section-level settings — never
+       theme settings and never Liquid templates. The design system is not built twice — this set is drawn
        against the same token layer, which is what keeps it an add-on rather
        than a second programme. */
     key: 'LWC-THM-016',

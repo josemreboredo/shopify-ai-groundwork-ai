@@ -2327,7 +2327,7 @@
 - [ ] Noch unklar
 
 **Q9.2.13** — Wie viele Storefronts brauchen über die erste hinaus ein wirklich anderes Design — ein anderes Layout und einen anderen Seitenaufbau, nicht andere Inhalte, Bilder oder Übersetzungen? *(recommended)*
-*Andere Inhalte, Bilder und Übersetzungen pro Markt sind in jedem Angebot enthalten. Ein anderes Design ist ein zweites Theme, und das ist etwas anderes: Shopifys Anpassung pro Markt reicht nur bis Section-Inhalte und Sichtbarkeit von Blöcken — nie bis zu Theme-Einstellungen und nie bis zu Liquid-Templates. Antworten Sie 0, wenn ein Design für alle Märkte und Stores reicht.*
+*Andere Inhalte, Bilder und Übersetzungen pro Markt sind in jedem Angebot enthalten. Ein anderes Design ist ein zweites Theme, und das ist etwas anderes: Shopifys Anpassung pro Markt reicht bis Section-Inhalte, Sichtbarkeit und Reihenfolge von Blöcken sowie Section-Einstellungen — nie bis zu Theme-Einstellungen und nie bis zu Liquid-Templates. Antworten Sie 0, wenn ein Design für alle Märkte und Stores reicht.*
 
 > Answer:
 

@@ -177,8 +177,8 @@ const GATE_EVALUATORS = {
 
   /* One design serves every market and every store in every pack, and that is a
      Shopify fact rather than a Merkle line: per-market customisation reaches
-     section content and block visibility only, never theme settings and never
-     Liquid templates. So a genuinely different layout is a second theme — to
+     section content, block visibility and order, and section-level settings —
+     never theme settings and never Liquid templates. So a genuinely different layout is a second theme — to
      build, deploy, Theme Check and keep in step on every release, for ever.
      The design system is not built twice; the second set is drawn against the
      same token layer, which is why it prices between the two storefront-design

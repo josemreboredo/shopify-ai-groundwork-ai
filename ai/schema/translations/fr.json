@@ -66,7 +66,7 @@
     "Q2.5.2": "cafaa2d1bb57",
     "Q2.5.3": "0edd87c0d6b9",
     "Q2.5.4": "d4d56af4965e",
-    "Q3.1.1": "4b55fc6f0a4d",
+    "Q3.1.1": "7ebeaadd7c34",
     "Q3.1.2": "a09ea035d8a0",
     "Q3.1.3": "72097ef71964",
     "Q3.1.4": "24bb069d6bef",
@@ -279,7 +279,7 @@
     "Q9.2.9": "efe1ac926233",
     "Q9.2.10": "a0d69c0f580a",
     "Q9.2.12": "2ed9234dcc0e",
-    "Q9.2.13": "bc3093757999",
+    "Q9.2.13": "a829739e5b2b",
     "Q9.3.1": "6bf3ad8d2c48",
     "Q9.3.2": "6630ad795cac",
     "Q9.4.1": "0d36dc79db10",
@@ -1406,7 +1406,7 @@
       "help": "Une ligne par pays. Laissez une cellule vide si vous ne savez pas — nous y reviendrons.",
       "teach": {
         "why": "Fixe tout le périmètre international : marchés, devises, langues, domaines et stratégie de prix. Les colonnes société, gamme, responsable et design de thème sont ce que le moteur lit pour décider entre une boutique unique avec Markets, des boutiques d'expansion ou une solution hybride — on ne demande jamais au client de choisir la topologie.",
-        "limits": "Shopify ne documente aucune limite au nombre de marchés pays ou région. Les langues publiées sont plafonnées à 20 en dessous de Plus et à 30 sur Plus. Facturer dans une devise locale (et pas seulement l'afficher) exige Shopify Payments ou Adyen ; avec tout autre prestataire, le client est débité dans la devise par défaut de la boutique. La personnalisation par marché n'atteint jamais les paramètres du thème (couleurs, typographie) ni les templates Liquid, seulement le contenu des sections et la visibilité des blocs — un marché qui a besoin d'un design réellement différent a besoin de sa propre boutique. La Chine continentale est exclue de cet engagement et orientée vers une discovery Chine distincte."
+        "limits": "Shopify ne documente aucune limite au nombre de marchés pays ou région. Les langues publiées sont plafonnées à 20 en dessous de Plus et à 30 sur Plus. Facturer dans une devise locale (et pas seulement l'afficher) exige Shopify Payments ou Adyen ; avec tout autre prestataire, le client est débité dans la devise par défaut de la boutique. La personnalisation par marché n'atteint jamais les paramètres du thème (couleurs, typographie) ni les templates Liquid, seulement le contenu des sections, la visibilité et l'ordre des blocs, et les réglages de section — un marché qui a besoin d'un design réellement différent a besoin de sa propre boutique. La Chine continentale est exclue de cet engagement et orientée vers une discovery Chine distincte."
       }
     },
     "Q3.1.2": {
@@ -3535,7 +3535,7 @@
     },
     "Q9.2.13": {
       "text": "Au-delà de la première, combien de vitrines ont besoin d’un design véritablement différent — une autre mise en page et une autre structure de pages, et non d’un autre contenu, d’autres images ou d’autres traductions ?",
-      "help": "Le contenu, les images et les traductions par marché sont inclus dans chaque offre. Un design différent, c’est un second thème, et ce n’est pas la même chose : la personnalisation par marché de Shopify ne va pas plus loin que le contenu des sections et la visibilité des blocs — jamais les réglages du thème, jamais les templates Liquid. Répondez 0 si un seul design sert tous les marchés et tous les stores.",
+      "help": "Le contenu, les images et les traductions par marché sont inclus dans chaque offre. Un design différent, c’est un second thème, et ce n’est pas la même chose : la personnalisation par marché de Shopify va jusqu’au contenu des sections, à la visibilité et à l’ordre des blocs, et aux réglages de section — jamais les réglages du thème, jamais les templates Liquid. Répondez 0 si un seul design sert tous les marchés et tous les stores.",
       "teach": {
         "why": "La question sépare l’axe bon marché de l’axe coûteux. Le contenu, les images et la traduction par marché sont des réglages sur un seul thème et sont inclus. Un design véritablement différent est un second thème — à construire, déployer, tester et maintenir à chaque mise en production. Plusieurs marques, chacune avec son propre design system complet, est tout autre chose : c’est Merkle Arc (règle 11.29)."
       }

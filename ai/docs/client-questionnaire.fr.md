@@ -2327,7 +2327,7 @@
 - [ ] Pas encore certain
 
 **Q9.2.13** — Au-delà de la première, combien de vitrines ont besoin d’un design véritablement différent — une autre mise en page et une autre structure de pages, et non d’un autre contenu, d’autres images ou d’autres traductions ? *(recommended)*
-*Le contenu, les images et les traductions par marché sont inclus dans chaque offre. Un design différent, c’est un second thème, et ce n’est pas la même chose : la personnalisation par marché de Shopify ne va pas plus loin que le contenu des sections et la visibilité des blocs — jamais les réglages du thème, jamais les templates Liquid. Répondez 0 si un seul design sert tous les marchés et tous les stores.*
+*Le contenu, les images et les traductions par marché sont inclus dans chaque offre. Un design différent, c’est un second thème, et ce n’est pas la même chose : la personnalisation par marché de Shopify va jusqu’au contenu des sections, à la visibilité et à l’ordre des blocs, et aux réglages de section — jamais les réglages du thème, jamais les templates Liquid. Répondez 0 si un seul design sert tous les marchés et tous les stores.*
 
 > Answer:
 
