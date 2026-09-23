@@ -89,7 +89,7 @@ export function estimationView({ pricing = false } = {}) {
     examples: [
       example(`${offering.offers.S.name}, as packaged`, 'One market, a configured theme, no scope gate: the Foundation build and its hypercare.', limits.S, pricing),
       example(`${offering.offers.M.name}, as packaged`, 'Everything M promises — three markets, four languages, bespoke sections, one integration, a WooCommerce migration.', limits.M, pricing),
-      example(`${offering.offers.L.name}, as packaged`, 'Everything L promises — three stores, six languages, the full template set, blocks inside the checkout.', limits.L, pricing),
+      example(`${offering.offers.L.name}, as packaged`, 'Everything L promises — three stores, nine markets across them, six languages, the full template set, blocks inside the checkout.', limits.L, pricing),
       example(`${offering.offers.M.name}, after discovery finds a second store`, 'The same M, re-estimated: the second store is one more line, not a different project.', { ...limits.M, stores: 2 }, pricing),
     ],
     calibration: p.calibration,

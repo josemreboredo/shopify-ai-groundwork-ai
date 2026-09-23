@@ -873,7 +873,9 @@ export function classifyOffer(doc) {
    *
    * A headless storefront is the one exception. Hydrogen has no modifier of its
    * own yet, so its work cannot be summed like a gate; it is quoted at no less
-   * than the band of the pack that builds it.
+   * than its own floor. That floor was L's band until L came to hold nine
+   * markets, which a headless build does not get, so it is a value of its own
+   * rather than the band.
    */
   const S = offering.offers.S;
   const L = offering.offers.L;
@@ -922,10 +924,11 @@ export function classifyOffer(doc) {
     const add = hypercarePrice(hypercareFor(code)) + (extraApps(code) + perStore) * offering.pricing.app_weeks * offering.pricing.weekly_rate;
     const priced = { min: scope.price.min + add, max: scope.price.max + add };
     const weeks = { min: scope.weeks.min + appWeeks, max: scope.weeks.max + appWeeks };
+    const floor = L.headless_floor;
     return headless
       ? {
-          price: { min: Math.max(priced.min, L.price_band.min), max: Math.max(priced.max, L.price_band.max) },
-          weeks: { min: Math.max(weeks.min, L.duration_weeks.min), max: Math.max(weeks.max, L.duration_weeks.max) },
+          price: { min: Math.max(priced.min, floor.price.min), max: Math.max(priced.max, floor.price.max) },
+          weeks: { min: Math.max(weeks.min, floor.weeks.min), max: Math.max(weeks.max, floor.weeks.max) },
         }
       : { price: priced, weeks };
   };
@@ -941,7 +944,7 @@ export function classifyOffer(doc) {
         ? `${offer.name} plus ${addonLabels.join('; ')}`
         : `${offer.name} as packaged: ${activeGates.length ? `${activeGates.map((g) => g.label).join(', ')} — all inside what it includes` : 'no scope gates active'}`,
     `Quoted from the Foundation base plus each scope gate at its own weeks and price, with ${hypercareFor(code)} working days of hypercare after go-live${extraApps(code) ? ` and ${extraApps(code)} third-party app${extraApps(code) === 1 ? '' : 's'} past the ${offer.apps_included} it includes` : ''}${perStore ? `, each app set up again in every further store (${perStore})` : ''}`,
-    ...(headless ? [`and at no less than the ${L.name} band, because Hydrogen has no modifier of its own yet`] : []),
+    ...(headless ? [`and at no less than the floor a headless ${L.name} starts from, because Hydrogen has no modifier of its own yet`] : []),
   ].join('. ').replace(/\. and /, ' and ');
 
   /*

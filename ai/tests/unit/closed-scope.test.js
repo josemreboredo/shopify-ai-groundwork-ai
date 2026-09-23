@@ -322,6 +322,28 @@ describe('the closed scope each pack sells', () => {
     assert.equal(classifyOffer(engagementAt(limits.L)).addons.length, 0, 'L includes three stores');
   });
 
+  test('L sells across regions: more markets than M, spread over its stores', () => {
+    /* Three stores are how a brand sells across regions, and L promised three
+       markets — one per store, no more than M. The ladder has to climb on the
+       thing a flagship is bought for. */
+    assert.ok(limits.S.markets < limits.M.markets && limits.M.markets < limits.L.markets, 'markets climb from S to M to L');
+    assert.ok(limits.L.markets > limits.L.stores, 'more than one market in a store');
+    assert.equal(classifyOffer(engagementAt(limits.L)).addons.length, 0, 'and every one of them is inside L');
+  });
+
+  test('a headless build keeps its own floor, whatever L comes to hold', () => {
+    /* Hydrogen has no modifier, so a headless quote is floored. The floor was
+       L's band, and L's band grew with nine markets a headless build does not
+       get — which would have raised every headless quote for nothing. */
+    const floor = offering.offers.L.headless_floor;
+    const bare = classifyOffer(engagementAt({ ...limits.S, headless: true }));
+    assert.equal(bare.code, 'L');
+    assert.deepEqual([bare.price_band.min, bare.price_band.max], [floor.price.min, floor.price.max]);
+    assert.deepEqual(bare.duration_weeks, floor.weeks);
+    assert.equal(floor.price.min, offering.offers.L.price_band.min, 'it starts where L starts');
+    assert.ok(floor.price.max < offering.offers.L.price_band.max, 'and does not charge for L’s markets');
+  });
+
   test('a row’s note never states a different number of days than its cells', () => {
     // Hypercare was 15 days in every cell and thirty in the note under them,
     // so a consultant reading the note promised twice what the price assumes.

@@ -23,11 +23,12 @@ const load = (name) => JSON.parse(fs.readFileSync(path.join(FIXTURES, name), 'ut
 /** An engagement whose scope goes well past what the largest pack includes. */
 function overflowing() {
   const doc = load('foundation-minimal.json');
-  /* This has to outgrow whatever L carries, and L now carries three stores
-     and 24 weeks. Eight markets in six languages over a 20,000-SKU
-     catalogue clears it by nearly six weeks, so a band moving by one does
-     not quietly stop this testing anything. */
+  /* This has to outgrow whatever L carries, and L now carries nine markets
+     across three stores and 29 weeks. Eight markets in six languages over a
+     20,000-SKU catalogue and a full template set clears it by six weeks, so a
+     band moving by one does not quietly stop this testing anything. */
   doc.markets = { list: ['CH', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'PL'].map((code) => ({ code, currency: code === 'CH' ? 'CHF' : 'EUR', price_strategy: 'base_currency', languages: ['de', 'fr', 'it', 'en', 'es', 'nl'] })) };
+  doc.design = { figma: { completeness: 'all_templates' } };
   doc.catalogue = { sku_count: 20000, variant_options_max: 3 };
   doc.migration = { source_platform: 'magento' };
   doc.b2b = { enabled: true };

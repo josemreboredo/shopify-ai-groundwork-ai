@@ -24,7 +24,7 @@ give the final figure, and the commercial team adds contingency and services suc
 
 1. **The quote is the Foundation base plus every active scope gate at its own weeks and price**, floor and ceiling alike —
    the rule S already used for its one gate, generalised. A headless storefront is quoted at no less than the L band
-   until Hydrogen has a modifier of its own.
+   until Hydrogen has a modifier of its own (a floor of its own since L holds nine markets — see Consequences).
 2. **One weekly rate prices every modifier** (`offering.pricing.weekly_rate`, CHF 10.5k at first, CHF 10k from the same day), so a gate's price is its weeks. One client decision is one price: a further market carries its currency, and a catalogue of 5,000 SKUs or more carries Shopify's own search.
 3. **The name is the largest pack whose price floor the quote reaches, among the packs that sell as add-ons everything
    past their promise**; what goes past is listed as `offer.addons`. A pack's promise is `closed_scope.limits` built into
@@ -53,3 +53,8 @@ give the final figure, and the commercial team adds contingency and services suc
   The Foundation band and each pack's floor are its weeks at the rate with its hypercare: S 28–35k, M 44–96k, L 91–155k+.
 - **Apps in every further store** (2026-09-23): a pack's app allowance is its first store's; every app is installed and
   configured again in each store past the first, an eighth of a week per app and store, in every pack.
+- **L holds nine markets** (2026-09-23): three stores are how a brand sells across regions, and three markets — one per
+  store, no more than M — did not describe that brand. L's promise is nine markets across its stores (S 1, M 3, L 9), so
+  its band is CHF 91–192k+ and 13–29 weeks, and rule 11.3's line moves from 19 to 24 gate-weeks. A headless build does
+  not get those markets, so its floor stays where it was (CHF 91–155k, 13–24 weeks) as a value of its own
+  (`offers.L.headless_floor`). No engagement's quote changes: the quote follows the scope, and only the promise moved.

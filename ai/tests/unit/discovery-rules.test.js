@@ -334,10 +334,13 @@ describe('the offer follows the effort, not the gate count', () => {
        was sized for would be the same error as absorbing the ones it was not.
        The engagement has to stay heavier than whatever L carries: when L grew
        to three stores and 24 weeks this one fitted inside it by three quarters
-       of a week, and the test that proves overflow stopped proving anything. */
+       of a week, and the test that proves overflow stopped proving anything.
+       L holds nine markets and 29 weeks now, so it builds the full template
+       set as well. */
     const answers = {
       ...base(),
       ...markets('CH', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'PL'),
+      design: { figma: { completeness: 'all_templates' } },
       catalogue: { sku_count: 20000, variant_options_max: 3 },
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },

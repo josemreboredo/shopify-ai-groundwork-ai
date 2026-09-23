@@ -495,29 +495,40 @@
     },
     "L": {
       "name": "Ecommerce Flagship",
-      "for_whom": "A brand already selling professionally — often on an enterprise platform — that needs more than one store, a storefront built out template by template, and measurement that stands up. The move to Shopify has to land on a store that performs at least as well, and is measured to prove it; the replatform itself is quoted beside the pack, by the platform it comes from.",
+      "for_whom": "A brand already selling professionally across regions — often on an enterprise platform — that needs a store per region, a storefront built out template by template, and measurement that stands up. The move to Shopify has to land on a store that performs at least as well, and is measured to prove it; the replatform itself is quoted beside the pack, by the platform it comes from.",
       "delivery_track": "liquid",
       "build_label": "Custom Liquid · Hydrogen",
       "triggered_by": "A headless storefront, or an estimate from the Flagship floor — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 91000,
-        "max": 155000,
+        "max": 192000,
         "open_ended": true
       },
       "duration_weeks": {
         "min": 13,
-        "max": 24
+        "max": 29
       },
       "hypercare_days": 15,
       "apps_included": 10,
+      "headless_floor": {
+        "price": {
+          "min": 91000,
+          "max": 155000
+        },
+        "weeks": {
+          "min": 13,
+          "max": 24
+        },
+        "$comment": "What a headless storefront is quoted at the least. Hydrogen has no modifier of its own yet, so its work cannot be summed like a gate and the quote is floored instead. It was L’s own band until L came to hold nine markets across its three stores (2026-09-23); a headless build does not get those markets, so it keeps the floor it had rather than paying for them."
+      },
       "phases": [
         {
           "id": "setup",
           "name": "Store set-up and topology",
           "weeks": {
             "min": 1.5,
-            "max": 2.5
+            "max": 3.5
           },
           "covers": "Everything Ecommerce Scale sets up, plus what a build this size needs around it: a staging store, the theme release path, and users and permissions per market",
           "deliverables": [
@@ -575,7 +586,7 @@
           "name": "Catalogue, content and markets",
           "weeks": {
             "min": 2,
-            "max": 3
+            "max": 4
           },
           "covers": "The product model at the size a deep range needs, the content the storefront renders from metaobjects, and the markets behind it",
           "deliverables": [
@@ -603,7 +614,7 @@
           "name": "Quality assurance",
           "weeks": {
             "min": 1,
-            "max": 2
+            "max": 4
           },
           "covers": "Measured per template on the real catalogue, per market and per channel, and signed off by the client rather than by us",
           "deliverables": [
@@ -617,7 +628,7 @@
           "name": "Launch and handover",
           "weeks": {
             "min": 1,
-            "max": 1
+            "max": 2
           },
           "covers": "Cut-over, per market where the launch is phased, and the store handed to a team that can actually run it",
           "deliverables": [
@@ -2343,8 +2354,8 @@
         "shopify_limit": "No documented cap on markets per store",
         "S": "Up to 1 market",
         "M": "Up to 3 markets",
-        "L": "Up to 3 markets",
-        "note": "The most the pack holds with everything else in it taken too. A further market is three quarters of a week, and a third more where it meets a bespoke template set rather than a configured theme — a market is re-tested and signed off against whatever the pack builds, so it costs more in the larger packs than in the entry one. What it costs is in the add-on services below, where the price is gated to the people allowed to see it.",
+        "L": "Up to 9 markets, across its stores",
+        "note": "The most the pack holds with everything else in it taken too. A further market is three quarters of a week, and a third more where it meets a bespoke template set rather than a configured theme — a market is re-tested and signed off against whatever the pack builds, so it costs more in the larger packs than in the entry one. What it costs in each pack is on the add-on services page.",
         "addon": [
           "S",
           "M",
@@ -2968,7 +2979,7 @@
         "analytics_custom_events": true
       },
       "L": {
-        "markets": 3,
+        "markets": 9,
         "multi_currency": true,
         "languages": 6,
         "b2b": false,

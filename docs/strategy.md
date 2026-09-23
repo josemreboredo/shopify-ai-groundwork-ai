@@ -273,7 +273,7 @@ token application, boilerplate, automated QA (~60% of implementation)
 
 | Offer | Code | Triggered by | Scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Flagship** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally that needs more than one store, a storefront built out and measurement that stands up. Up to three Shopify stores · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 91–155k+ | 13–24 weeks |
+| **Ecommerce Flagship** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally across regions that needs a store per region, a storefront built out and measurement that stands up. Up to three Shopify stores and nine markets across them · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 91–192k+ | 13–29 weeks |
 
 L builds either way and spends the same weeks differently — as theme sections and
 blocks, or as owned components on Hydrogen — so the track follows the answers
