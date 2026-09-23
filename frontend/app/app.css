@@ -1852,58 +1852,6 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
   .pack-gets .pack-every::before { content: none; }
 }
 
-/* ── Add-on services ─────────────────────────────────────────────────────────
-   Deliberately not a table. The page's failure was three grids a reader could
-   not tell apart, and a fourth under the survivor would rebuild it. These are a
-   price list: a name, who can buy it, what it covers, what it costs. The shape
-   itself says "this is not in the comparison above". */
-.addons { list-style: none; padding: 0; margin: 24px 0 0; display: grid; gap: 18px; }
-@media (min-width: 900px) { .addons { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.addon { border: 1px solid var(--line); border-top: 3px solid var(--red); background: #fff; padding: 18px 20px 20px; }
-.addon h3 { margin: 0; font-size: 1.05rem; }
-.addon-where {
-  margin: 6px 0 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted);
-}
-.addon-what { margin: 12px 0 0; font-size: 0.9rem; line-height: 1.5; color: var(--ink); max-width: none; }
-/* The one or two of these that carry a condition on being bought at all — "a
-   second store makes the engagement an L outright" is not a footnote. */
-.addon-note {
-  margin: 10px 0 0; padding: 8px 12px; background: var(--panel); border-left: 3px solid var(--red);
-  font-size: 0.85rem; line-height: 1.5; color: var(--ink); max-width: none;
-}
-/* The cost, on its own rule at the foot of the card, so "what does this add" is
-   answered in the same place on every one of them. A range rather than a
-   ceiling: the floor is the price of one of these, and the table above is where
-   ceilings live. */
-.addon-cost {
-  margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line-soft);
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px;
-}
-.addon-cost-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.addon-cost-figure { font-size: 0.98rem; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
-/* Nine of the sixteen are priced by case, and each case carries its own
-   paragraph. Flat, that is the wall this page was rebuilt to stop being. */
-.addon-tiers { margin-top: 10px; }
-.addon-tiers > summary { font-size: 0.78rem; font-weight: 600; color: var(--muted); cursor: pointer; }
-.addon-tiers > summary:hover { color: var(--red-ink); }
-.addon-tiers dl { margin: 10px 0 0; display: grid; gap: 10px; }
-.addon-tiers dl > div { display: grid; gap: 4px 16px; grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
-.addon-tiers dt { min-width: 0; }
-.addon-tier-name {
-  display: inline-block; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-  border: 1px solid var(--line-strong); color: var(--muted); padding: 1px 6px; margin-bottom: 4px;
-}
-.addon-tier-what { display: block; font-size: 0.84rem; line-height: 1.45; color: var(--muted); }
-.addon-tiers dd {
-  margin: 0; justify-self: end; text-align: right; white-space: nowrap;
-  font-size: 0.85rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums;
-}
-@media (max-width: 560px) {
-  .addon-tiers dl > div { grid-template-columns: 1fr; }
-  .addon-tiers dd { justify-self: start; text-align: left; white-space: normal; }
-}
-
 /* The approach table left this band; what replaced it is a line of links out to
    the pages that carry the same material in full. The band is --panel, a light
    grey, so this stays in ink — `.band.dark` is a different surface. */
@@ -2033,7 +1981,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 h3.sub {
   margin: var(--s-6) 0 0; font-size: var(--t-m); font-weight: 700; letter-spacing: -0.01em;
 }
-.table-scroll > .limits, .table-scroll > .addon-table {
+.table-scroll > .limits {
   width: 100%; min-width: 0; max-width: 100%; table-layout: fixed;
 }
 /* The scope, as pairs. A subject and its ceiling sit together — label over
@@ -2058,16 +2006,16 @@ h3.sub {
   margin: var(--s-1) 0 0; font-size: var(--t-m); font-weight: 700; line-height: var(--lh-snug);
 }
 .limits { margin-top: var(--s-4); }
-.limits th[scope="col"], .addon-table th[scope="col"] { text-align: left; vertical-align: bottom; padding-bottom: var(--s-2); }
+.limits th[scope="col"] { text-align: left; vertical-align: bottom; padding-bottom: var(--s-2); }
 /* The subject takes what is left; the two value columns are sized for values
    like "Up to 3 markets" and nothing more. Left to share the table evenly, the
    pack-below column took 704px to hold three words. */
 .limits th[scope="col"]:nth-child(2), .limits th[scope="col"]:nth-child(3) { width: 13.5rem; }
-.limits th[scope="row"], .addon-table th[scope="row"] {
+.limits th[scope="row"] {
   text-align: left; vertical-align: top; padding: var(--s-3) var(--s-3) var(--s-3) 0; font-weight: 400;
   text-transform: none; letter-spacing: 0;
 }
-.limits td, .addon-table td { vertical-align: top; padding: var(--s-3) var(--s-3) var(--s-3) 0; font-size: var(--t-s); }
+.limits td { vertical-align: top; padding: var(--s-3) var(--s-3) var(--s-3) 0; font-size: var(--t-s); }
 .limits-row { border-top: 1px solid var(--line); }
 .limits-value { font-weight: 700; font-size: var(--t-base); }
 /* The step-up table reads left to right as a before and an after, so the pack
@@ -2092,28 +2040,83 @@ h3.sub {
 }
 .limits-addon::before { content: '+ '; color: var(--red); font-weight: 700; }
 
-/* ── What can be bought on top of one pack ───────────────────────────────── */
-.addon-table { margin-top: var(--s-4); }
-.addon-table th[scope="col"]:first-child { width: 20rem; }
-/* Wide enough for "from +1.5 weeks per store": a per-unit figure is longer
-   than a span, and at 11rem it ran into the price column beside it. */
-.addon-table th[scope="col"]:nth-child(2) { width: 16rem; }
-.addon-table tbody tr { border-top: 1px solid var(--line); }
-.addon-weeks { font-weight: 700; font-size: var(--t-base); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.addon-band { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
-.addon-tiers-flat { margin: var(--s-3) 0 2px; display: grid; gap: var(--s-3); }
-.addon-tiers-flat > div { display: grid; grid-template-columns: minmax(0, 1fr) 11rem; gap: var(--s-2) var(--s-4); align-items: start; }
-.addon-tiers-flat dt { margin: 0; }
-.addon-tiers-flat dd { margin: 0; font-variant-numeric: tabular-nums; font-size: var(--t-s); white-space: nowrap; }
-.addon-tiers-flat .addon-tier-name { display: block; font-weight: 700; font-size: 0.84rem; text-transform: capitalize; }
-.addon-tiers-flat .addon-tier-what { display: block; margin-top: 3px; font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
-@media (max-width: 560px) { .addon-tiers-flat > div { grid-template-columns: 1fr; } }
 @media (max-width: 560px) {
-  .limits th[scope="col"]:first-child, .limits th[scope="row"],
-  .addon-table th[scope="col"]:first-child, .addon-table th[scope="row"] { width: auto; padding-right: 0; }
+  .limits th[scope="col"]:first-child, .limits th[scope="row"] { width: auto; padding-right: 0; }
   /* Stacked, the arrow points at a line break rather than at the next cell. */
   .limits-gain .limits-from::after { content: none; }
 }
+
+/* ── The add-on services, pack by pack ────────────────────────────────────── */
+/* The pack table's shape — the same code and name in the head, the same group
+   rules — because it is the same three packs read the other way: not what each
+   holds, but what each adds. A time and a cost column per pack, so a reader can
+   run down one pack's costs without reading the other two. */
+.table-scroll > .addon-matrix { width: 100%; min-width: 0; max-width: 100%; table-layout: fixed; }
+.addon-matrix { margin-top: var(--s-5); }
+.addon-matrix .addon-col-what { width: 30%; }
+.addon-matrix th[scope="col"], .addon-matrix th[scope="colgroup"] {
+  text-align: left; vertical-align: bottom; padding: 0 var(--s-3) var(--s-2) 0;
+}
+.addon-matrix .addon-pack { border-bottom: 1px solid var(--line); }
+.addon-units th {
+  padding-top: var(--s-2); font-size: var(--t-micro); font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted);
+}
+/* Every cell of a row on the one faint rule: the global `th` draws a 2px black
+   one, which under the first column only read as a heading rule per row. */
+.addon-matrix th[scope="row"] {
+  text-align: left; vertical-align: top; padding: var(--s-3) var(--s-4) var(--s-3) 0;
+  font-size: var(--t-s); font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--ink);
+  border-bottom: 1px solid var(--line-soft);
+}
+/* The shared `details` margin is 16px either side, which made every row a
+   third taller than its content. */
+.addon-matrix .pack-why { margin: var(--s-1) 0 0; }
+.addon-matrix td { vertical-align: top; padding: var(--s-3) var(--s-3) var(--s-3) 0; font-size: var(--t-s); }
+.addon-row { border-top: 1px solid var(--line-soft); }
+/* A tiered add-on: its name on a row of its own, its tiers set in under it. */
+.addon-head > th {
+  text-align: left; padding: var(--s-5) 0 var(--s-2); font-size: var(--t-s); font-weight: 400;
+  text-transform: none; letter-spacing: 0; color: var(--ink); border-bottom: 1px solid var(--line-soft);
+}
+.addon-tier > th[scope="row"] { padding-left: var(--s-4); }
+.addon-figure { display: block; font-weight: 700; font-size: var(--t-base); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.addon-aside { display: block; margin-top: 2px; font-size: var(--t-xs); line-height: var(--lh-snug); color: var(--muted); }
+.addon-cost { font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Included and not sold are statements rather than figures: one across the
+   pair, quieter than a price, and "not sold" quieter still. */
+.addon-state { font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.addon-in { color: var(--ok); }
+.addon-no { color: var(--line-strong); }
+.addon-tier-notes {
+  margin: var(--s-2) 0 0; display: grid; gap: var(--s-2); padding-left: var(--s-3); border-left: 2px solid var(--line);
+}
+.addon-tier-notes dt { font-size: var(--t-xs); font-weight: 700; color: var(--ink); }
+.addon-tier-notes dd { margin: 2px 0 0; font-size: var(--t-s); line-height: var(--lh-normal); color: var(--muted); }
+/* Where an offer page used to list the add-ons, one line says where they are. */
+.addons-pointer { margin: var(--s-5) 0 0; font-size: var(--t-base); }
+@media (max-width: 560px) {
+  /* Stacked, a row is a card: the add-on, then a line per pack with its time
+     and its cost side by side, the way the column pair reads on a desk. */
+  .addon-matrix .addon-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--s-3); }
+  .addon-matrix .addon-row > th, .addon-matrix .addon-row > td[colspan] { grid-column: 1 / -1; }
+  .addon-matrix .addon-row > th[scope="row"] { padding: 0 0 var(--s-2); }
+  .addon-matrix .addon-figure { display: inline; }
+  .addon-matrix .addon-cost { align-self: start; text-align: right; }
+  .addon-matrix .addon-cost::before { content: none; }
+  /* The pack is a label, not part of the statement it introduces. */
+  .addon-matrix .addon-state::before { text-transform: none; letter-spacing: 0; color: var(--ink); }
+  /* The group and the add-on names are headings between cards, not cards. */
+  .addon-matrix .pack-group, .addon-matrix .addon-head { border: 0; padding: 0; margin: 0; }
+  .addon-head > th { padding: var(--s-4) 0 var(--s-2); }
+}
+
+/* ── The offering's pages as one set ──────────────────────────────────────── */
+/* The strip takes the crumb's place at the top of the band, so the band keeps
+   the bottom padding the tabs rule gives up for a strip that closes it. */
+.page-head:has(.offering-tabs) { padding-bottom: 34px; }
+.page-head .offering-tabs { margin: 0 0 var(--s-6); flex-wrap: wrap; column-gap: var(--s-5); row-gap: 0; }
+.page-head .offering-tabs a { padding: var(--s-1) 0 var(--s-3); font-size: var(--t-micro); }
 
 /* ── The Arc column: where the offers stop ────────────────────────────────── */
 /* Not a fourth pack, and it must not read as one. A rule down its left edge is

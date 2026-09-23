@@ -7,8 +7,8 @@ import assert from 'node:assert/strict';
 
 import { classifyOffer } from '../../engine/classify.js';
 import { offeringView } from '../../shared/offering-view.js';
+import { addonsView } from '../../shared/addons-view.js';
 import { offering } from '../../schema/index.js';
-import { engagementAt } from '../../engine/promise.js';
 
 describe('offering view', () => {
   /* This guards the mechanism, not who may read it: with pricing off, not one
@@ -77,7 +77,6 @@ describe('the comparison table and the add-on catalogue the page reads', () => {
    * catalogue, where a scope description and a cost belong.
    */
   const view = offeringView();
-  const priced = offeringView({ pricing: true });
 
   test('every row carries its group and the Shopify ceiling behind it', () => {
     assert.ok(view.closed_scope_groups.length, 'the groups are published in reading order');
@@ -91,47 +90,14 @@ describe('the comparison table and the add-on catalogue the page reads', () => {
   test('nothing a pack includes none of is left in the table', () => {
     const dashed = view.closed_scope.filter((r) => Object.values(r.values).every((v) => v === '—'));
     assert.deepEqual(dashed.map((r) => r.id), [], 'rows that are add-on services in disguise');
-    // And the three that were: they are in the catalogue instead.
-    const gates = view.addons.map((a) => a.gate);
+    // And the three that were: they are on the add-on services page instead.
+    const gates = addonsView().groups.flatMap((g) => g.addons).map((a) => a.gate);
     for (const id of ['b2b', 'retail_pos', 'subscriptions']) {
       assert.ok(gates.includes(id), `${id} is in no pack and is not in the add-on catalogue either`);
       assert.ok(!view.closed_scope.some((r) => r.gate === id), `${id} is still a comparison row`);
     }
   });
 
-  test('every add-on names its scope, its packs and its weeks — as numbers, not as a sentence', () => {
-    for (const a of view.addons) {
-      assert.ok(a.description?.trim(), `${a.id}: an add-on service with no scope description`);
-      assert.ok(a.available_in.length, `${a.id}: nobody can buy it`);
-      // Hypercare runs after go-live and apps are counted: neither is a gate.
-      if (a.gate === null) { assert.ok(a.per_unit?.days > 0 || a.per_unit?.weeks > 0, `${a.id}: an add-on with neither weeks nor days`); continue; }
-      assert.equal(typeof a.weeks.max, 'number', `${a.id}: weeks are a string, so the page cannot choose how to print them`);
-      assert.ok(a.weeks.max >= a.weeks.min && a.weeks.min > 0, `${a.id}: ${a.weeks.min}–${a.weeks.max} weeks`);
-      for (const t of a.tiers ?? []) {
-        assert.ok(t.label?.trim() && t.description?.trim(), `${a.id}: a tier with no label or no description`);
-        assert.ok(t.weeks.max >= t.weeks.min, `${a.id} / ${t.label}: weeks run backwards`);
-      }
-    }
-  });
-
-  test('the weeks the page prints span every tier the engine prices', () => {
-    const migration = view.addons.find((a) => a.gate === 'migration');
-    assert.deepEqual(migration.tiers.map((t) => t.label), ['light', 'medium', 'heavy']);
-    assert.equal(migration.weeks.min, Math.min(...migration.tiers.map((t) => t.weeks.min)));
-    assert.equal(migration.weeks.max, Math.max(...migration.tiers.map((t) => t.weeks.max)));
-  });
-
-  test('an add-on costs nothing a consultant can see, and everything an owner can', () => {
-    assert.ok(view.addons.every((a) => a.price === undefined && a.per_unit?.price === undefined && (a.tiers ?? []).every((t) => t.price === undefined)),
-      'a price band reached a caller who may not see Merkle pricing');
-    assert.ok(priced.addons.every((a) => (a.price?.min ?? a.per_unit?.price) > 0), 'an owner sees what every add-on costs');
-    const hypercare = priced.addons.find((a) => a.id === 'hypercare');
-    assert.equal(hypercare.per_unit.price, offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share, 'a week of hypercare is half a build week');
-    const b2b = priced.addons.find((a) => a.gate === 'b2b');
-    const mods = offering.modifiers.filter((m) => m.gate === 'b2b');
-    assert.equal(b2b.price.min, Math.min(...mods.map((m) => m.price_add.min)), 'the add-on quotes a price the engine does not');
-    assert.equal(b2b.weeks.max, Math.max(...mods.map((m) => m.effort_weeks.max)));
-  });
 });
 
 describe('a gate priced by tier shows every tier', () => {
@@ -251,7 +217,6 @@ describe('the page explains the rule the engine actually follows', () => {
 
 describe('the packs as packaging for a conversation', () => {
   const view = offeringView();
-  const priced = offeringView({ pricing: true });
 
   test('every page states it is a first estimate, in the offering’s own words', () => {
     assert.equal(view.estimate, offering.estimate.line);
@@ -260,24 +225,6 @@ describe('the packs as packaging for a conversation', () => {
     assert.match(view.estimate, /services such as Design/);
     assert.equal(view.after_launch.title, offering.after_launch.title);
     assert.match(view.after_launch.line, /price is kept open/);
-  });
-
-  test('a per-unit add-on says what one more unit adds, and its price only to pricing callers', () => {
-    const markets = view.addons.find((a) => a.gate === 'markets');
-    const mod = offering.modifiers.find((m) => m.id === '+Markets');
-    assert.deepEqual(markets.per_unit, { noun: 'market', weeks: mod.per_market_weeks, from: true });
-    assert.equal(priced.addons.find((a) => a.gate === 'markets').per_unit.price, mod.per_market_price);
-    assert.equal(view.addons.find((a) => a.gate === 'integration').per_unit.from, false, 'nothing raises an integration');
-    assert.equal(view.addons.find((a) => a.gate === 'migration').per_unit, undefined, 'a tiered add-on is not per unit');
-  });
-
-  test('L shows the replatform figure the engine itself quotes', () => {
-    const quoted = classifyOffer(engagementAt({ ...offering.closed_scope.limits.L, migration: 'sfcc' }));
-    const l = priced.offers.find((o) => o.code === 'L');
-    assert.deepEqual(l.with_replatform.weeks, quoted.duration_weeks);
-    assert.equal(l.with_replatform.price_band.max, quoted.price_band.max);
-    assert.equal(view.offers.find((o) => o.code === 'L').with_replatform.price_band, undefined, 'and no price without pricing');
-    assert.ok(!view.offers.filter((o) => o.code !== 'L').some((o) => o.with_replatform));
   });
 
   test('every pack says what a week buys in people, and which people', () => {

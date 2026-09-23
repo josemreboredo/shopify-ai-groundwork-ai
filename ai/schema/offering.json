@@ -2834,7 +2834,7 @@
       {
         "id": "sku_complexity",
         "gate": "sku_complexity",
-        "what": "5,000 SKUs and above",
+        "what": "A larger or more complex catalogue",
         "description": "A catalogue past what the pack carries. The product model is designed once; the data is handled per thousand — import batching, reconciliation per object, and the share of products that need a human before they load.",
         "available_in": [
           "S",

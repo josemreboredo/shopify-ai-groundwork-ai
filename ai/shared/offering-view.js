@@ -17,8 +17,7 @@
  */
 
 import { offering } from '../schema/index.js';
-import { gateCapacity, classifyOffer } from '../engine/classify.js';
-import { engagementAt } from '../engine/promise.js';
+import { gateCapacity } from '../engine/classify.js';
 import { PLAN_RULES, PLAN_LABEL } from '../engine/plan.js';
 
 const money = (band) => (band ? { min: band.min, max: band.max, ...(band.open_ended ? { open_ended: true } : {}) } : undefined);
@@ -69,33 +68,6 @@ function plainRule(c) {
 /** Every modifier that prices a gate, in the order the schema lists them. */
 const modifiersFor = (gateId) => offering.modifiers.filter((m) => m.gate === gateId);
 
-/** The unit a per-unit modifier counts, by the field that prices it. */
-const UNIT = {
-  per_market_weeks: 'market', per_store_weeks: 'store', per_theme_weeks: 'design',
-  per_integration_weeks: 'integration', per_location_weeks: 'location', per_language_weeks: 'language',
-};
-
-/*
- * What one more unit adds, for an add-on priced per unit.
- *
- * Its band runs from one unit to the most its limit allows — "0.75–20 weeks"
- * for markets — which is true and useless on a page: the client is buying one
- * more market, not twenty. "From" where other answers raise it (a market meets
- * a bespoke template set, a store re-wires every integration).
- */
-function perUnit(mods, pricing) {
-  if (mods.length !== 1) return undefined;
-  const [m] = mods;
-  const key = Object.keys(m).find((k) => UNIT[k]);
-  if (!key) return undefined;
-  return {
-    noun: UNIT[key],
-    weeks: m[key],
-    from: Boolean(m.per_unit_surcharge?.length),
-    ...(pricing ? { price: m[key.replace(/_weeks$/, '_price')] } : {}),
-  };
-}
-
 /** The span a gate's modifiers cover, cheapest tier to dearest. */
 const span = (mods, key) => ({
   min: Math.min(...mods.map((m) => m[key].min)),
@@ -114,105 +86,6 @@ function addonCost(gateId, pricing) {
   return {
     effort_weeks: span(mods, 'effort_weeks'),
     ...(pricing ? { price_add: money(span(mods, 'price_add')) } : {}),
-  };
-}
-
-/**
- * One add-on service, as a catalogue entry rather than as a table cell.
- *
- * A capability no pack includes has no business in a comparison table — three
- * columns saying "not in the base pack" is a table explaining what it does not
- * sell. It is an add-on service, and what a reader needs beside it is what it
- * covers and what it costs, which is the gate's own price so it cannot drift
- * from what the engine quotes.
- *
- * Weeks stay as `{ min, max }` rather than a rendered string: the page decides
- * whether to print the maximum or the span, and a number formatted in the model
- * is a decision the page can no longer take.
- *
- * @param {object} addon    entry from offering.closed_scope.addons
- * @param {boolean} pricing whether this caller may see Merkle's price
- */
-function addonService({ id, gate, what, description, available_in: availableIn, note }, pricing) {
-  const mods = modifiersFor(gate);
-  const [first] = mods;
-  return {
-    id,
-    what,
-    gate,
-    /* A gate priced by one modifier describes itself; a gate priced by tiers
-       needs a line above them, because three tier descriptions with nothing
-       over them is a price list rather than a service. */
-    description: description ?? first?.description ?? null,
-    available_in: availableIn ?? ['S', 'M', 'L'],
-    ...(note ? { note } : {}),
-    ...(mods.length ? { weeks: span(mods, 'effort_weeks') } : {}),
-    ...(mods.length && pricing ? { price: money(span(mods, 'price_add')) } : {}),
-    ...(perUnit(mods, pricing) ? { per_unit: perUnit(mods, pricing) } : {}),
-    ...(mods.length > 1 ? {
-      tiers: mods.map((m) => ({
-        label: (m.tier ?? m.id).replace(/_/g, ' '),
-        description: m.description,
-        weeks: m.effort_weeks,
-        ...(pricing ? { price: money(m.price_add) } : {}),
-      })),
-    } : {}),
-  };
-}
-
-/*
- * More hypercare, as an add-on like any other.
- *
- * It is not a scope gate — it runs after go-live and adds no build weeks — so
- * it has no entry in closed_scope.addons, and a catalogue that listed only
- * gates left the one thing every client asks about ("how long are you there
- * after launch?") off the list of what can be bought.
- */
-function hypercareAddon(pricing) {
-  const week = offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share;
-  return {
-    id: 'hypercare',
-    what: 'Each further week of hypercare',
-    gate: null,
-    description: `A named channel, a response within one working day and defects triaged with the client, for five more working days after go-live. Each pack carries its own days: ${['S', 'M', 'L'].map((c) => `${c} ${offering.offers[c].hypercare_days}`).join(', ')}.`,
-    available_in: ['S', 'M', 'L'],
-    per_unit: { noun: 'week', days: 5, from: false, ...(pricing ? { price: week } : {}) },
-  };
-}
-
-/** A third-party app past what the pack includes (S 3, M 6, L 10). */
-function appsAddon(pricing) {
-  const weeks = offering.pricing.app_weeks;
-  return {
-    id: 'apps',
-    what: 'Each further third-party app',
-    gate: null,
-    description: `Installed, configured, tested with the theme and handed over with an owner and its monthly fee. Each pack includes some: ${['S', 'M', 'L'].map((c) => `${c} ${offering.offers[c].apps_included}`).join(', ')}; Shopify’s own apps and apps a scope gate prices do not count.`,
-    available_in: ['S', 'M', 'L'],
-    per_unit: { noun: 'app', weeks, from: false, ...(pricing ? { price: weeks * offering.pricing.weekly_rate } : {}) },
-  };
-}
-
-/** Every app again in every store past the first — no pack's allowance covers it. */
-function appsPerStoreAddon(pricing) {
-  const weeks = offering.pricing.app_weeks;
-  return {
-    id: 'apps_per_store',
-    what: 'Each app in each further store',
-    gate: null,
-    description: 'Expansion stores share no data and apps are installed, configured and billed per store, so every app the store runs is set up again in each store past the first. A pack’s app allowance is its first store’s.',
-    available_in: ['M', 'L'],
-    per_unit: { noun: 'app and store', weeks, from: false, ...(pricing ? { price: weeks * offering.pricing.weekly_rate } : {}) },
-  };
-}
-
-/** L's own promise with a heavy replatform beside it, as the engine quotes it. */
-function replatform(pricing) {
-  const o = classifyOffer(engagementAt({ ...offering.closed_scope.limits.L, migration: 'sfcc' }));
-  return {
-    from: 'Salesforce Commerce Cloud, Adobe Commerce or a custom platform',
-    weeks: o.duration_weeks,
-    ...(pricing ? { price_band: money(o.price_band) } : {}),
   };
 }
 
@@ -243,10 +116,6 @@ export function offeringView({ pricing = false } = {}) {
        client can hold against a boutique's twelve-hour package, and the roles
        behind it. */
     team: { people: offering.pricing.people_per_week, roles: offering.pricing.team.map((t) => t.role) },
-    /* The deal an enterprise replatform actually sees: L plus a heavy
-       migration, computed by the engine from L's own promise, so the page
-       compares like with like against competitors who quote the move whole. */
-    ...(code === 'L' ? { with_replatform: replatform(pricing) } : {}),
     triggered_by: o.triggered_by,
     base_scope: o.base_scope.split(' · '),
     duration_weeks: o.duration_weeks,
@@ -389,10 +258,6 @@ export function offeringView({ pricing = false } = {}) {
     /* The reading order of the row groups, so the page groups the table the
        way the schema does rather than re-deriving an order of its own. */
     closed_scope_groups: offering.closed_scope?.groups ?? [],
-    /* The add-on services catalogue: every gate that can be bought on top of a
-       pack, including the three no pack includes anything of — B2B, Shopify
-       POS and subscriptions — which is why they are no longer rows. */
-    addons: [...(offering.closed_scope?.addons ?? []).map((a) => addonService(a, pricing)), appsAddon(pricing), appsPerStoreAddon(pricing), hypercareAddon(pricing)],
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {
       beyond_offers: byResult('STOP'),

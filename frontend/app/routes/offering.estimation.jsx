@@ -3,7 +3,8 @@ import { Link } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { estimationView } from '../../../ai/shared/estimation-view.js';
 import { pageTitle } from '../brand.js';
-import { band, weeks } from '../offering.js';
+import { band, chf, chfSpan, weeks, weeksNear } from '../offering.js';
+import { OfferingNav } from '../components/offering-nav.jsx';
 
 export const meta = () => [{ title: pageTitle('How we estimate') }];
 
@@ -18,15 +19,7 @@ export async function loader({ request }) {
   return { view: estimationView({ pricing: Boolean(user) }) };
 }
 
-/** "CHF 6.3k", one figure. */
-const chf = (n, currency) => `${currency} ${(Math.round(n / 100) / 10).toString()}k`;
-/** A span of francs, or one figure when it is fixed. */
-const span = (r, currency) => (r.min === r.max ? chf(r.min, currency) : `${chf(r.min, currency)}–${(Math.round(r.max / 100) / 10).toString()}k`);
 const pct = (n) => `${Math.round(n * 100)}%`;
-/* Gate weeks carry per-unit surcharges ("1.755"); a tenth of a week is as
-   precise as a consultant can say out loud. */
-const tenth = (n) => Math.round(n * 10) / 10;
-const wk = (w) => (w ? weeks({ min: tenth(w.min), max: tenth(w.max) }) : '—');
 
 export default function Estimation({ loaderData }) {
   const { view } = loaderData;
@@ -34,7 +27,7 @@ export default function Estimation({ loaderData }) {
   return (
     <main id="main" className="story offering estimation">
       <header className="page-head">
-        <Link to="/offering" className="crumb">← The offering</Link>
+        <OfferingNav packs={view.packs} />
         <p className="eyebrow">Internal · signed-in consultants</p>
         <h1>How we estimate</h1>
         <p className="answer-line">Every estimate is weeks of one delivery team, at one weekly cost.</p>
@@ -179,8 +172,8 @@ export default function Estimation({ loaderData }) {
                   {x.lines.map((l) => (
                     <tr key={l.what}>
                       <th scope="row">{l.what}</th>
-                      <td>{l.after_go_live ? 'after go-live' : wk(l.weeks)}</td>
-                      {view.pricing ? <td>{span(l.price, currency)}</td> : null}
+                      <td>{l.after_go_live ? 'after go-live' : weeksNear(l.weeks)}</td>
+                      {view.pricing ? <td>{chfSpan(l.price, currency)}</td> : null}
                     </tr>
                   ))}
                 </tbody>
@@ -211,7 +204,8 @@ export default function Estimation({ loaderData }) {
         <p className="muted small">
           The team, the weekly cost, the hypercare share and the app allowance live in the offering data, and every band
           is derived from them: change the team or the week and every pack and every add-on moves with it. The decision
-          and its history are in ADR 0019. See <Link to="/offering">the offering</Link> for what each pack holds.
+          and its history are in ADR 0019. See <Link to="/offering">the offering</Link> for what each pack holds, and{' '}
+          <Link to="/offering/addons">the add-on services</Link> for what each add-on adds to it.
         </p>
       </section>
     </main>

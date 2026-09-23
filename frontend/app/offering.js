@@ -21,6 +21,25 @@ export const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w
 
 const k = (n) => `${Math.round(n / 1000)}k`;
 
+/** "CHF 6.3k": a price under a band, to the hundred francs. */
+export const chf = (n, currency) => `${currency} ${(Math.round(n / 100) / 10).toString()}k`;
+
+/** "CHF 6.3k–12.6k", or one figure when it is fixed. */
+export const chfSpan = (r, currency) => (r.min === r.max
+  ? chf(r.min, currency)
+  : `${chf(r.min, currency)}–${(Math.round(r.max / 100) / 10).toString()}k`);
+
+/* Weeks as a consultant says them. A surcharge lands on 0.8775 or 2.49 weeks,
+   which nobody reads out in a room; to the nearest twentieth it is 0.9 and 2.5,
+   and the quarter weeks the offering sells by (0.75, 2.25) survive exactly. An
+   eighth is the one smaller fraction it sells — one app — and keeps its name. */
+const near = (n) => (n === 0.125 ? '⅛' : (Math.round(n * 20) / 20).toString());
+
+/** "0.75", "2.25–3.25" or "⅛" — a span of weeks, rounded the one way. */
+export const weeksNear = (w) => (w
+  ? (near(w.min) === near(w.max) ? near(w.min) : `${near(w.min)}–${near(w.max)}`)
+  : '—');
+
 /** "EUR 40k–65k". Internal: the engine keeps these out of anything client-facing. */
 // A fixed price is one figure: "CHF 5k", not "CHF 5k–5k".
 export const band = (b, currency) => (b

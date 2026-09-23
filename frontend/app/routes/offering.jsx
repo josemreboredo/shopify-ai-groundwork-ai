@@ -4,7 +4,8 @@ import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../ai/shared/offering-view.js';
 import { pageTitle } from '../brand.js';
 import { band, TRACK, weeks } from '../offering.js';
-import { AddonList, PackTable } from '../components/diagram.jsx';
+import { PackTable } from '../components/diagram.jsx';
+import { OfferingNav } from '../components/offering-nav.jsx';
 
 export const meta = () => [{ title: pageTitle('The offering') }];
 
@@ -98,6 +99,7 @@ export default function Offering({ loaderData }) {
   return (
     <main id="main" className="story offering">
       <header className="page-head">
+        <OfferingNav packs={view.offers} />
         <p className="eyebrow">Internal · signed-in consultants</p>
         <h1>Three offers, one engine</h1>
         <p className="answer-line">Three packs to open the conversation; the client&rsquo;s answers decide what the estimate is.</p>
@@ -202,7 +204,8 @@ export default function Offering({ loaderData }) {
           One row per subject the discovery asks about, one column per pack, and the number in the cell is
           the most that pack holds. Three values means the packs differ and the choice matters; one value
           across the three columns means the subject is the same whichever pack you are in. A dash means
-          the pack includes none of it — what can be bought on top is the section after this one.
+          the pack includes none of it. What can be bought on top, and what it adds to each pack, is
+          on <Link to="/offering/addons">the add-on services page</Link>.
         </p>
         <PackTable
           offers={view.offers}
@@ -239,26 +242,10 @@ export default function Offering({ loaderData }) {
         </aside>
       </section>
 
-      {/* 3 — the price list, drawn as a price list.
-          B2B, Subscriptions and Retail/POS were rows in the comparison, which
-          put three columns of "not in the base pack" in front of a reader and
-          asked them to work out that it was for sale. Nothing that a pack does
-          not include is in the table any more; it is all here, with what it
-          covers and what it costs. */}
-      {view.addons?.length ? (
-        <section>
-          <h2>Add-on services</h2>
-          <p className="lede">
-            Everything that can be bought on top of a pack: more of what a pack already holds once its
-            ceiling is reached, and the capabilities no pack contains at all. Each adds its own weeks and price
-            to whichever pack it is bought with — the pack is never quietly upgraded to carry it.
-          </p>
-          <AddonList addons={view.addons} pricing={view.pricing} currency={currency} weeks={weeks} band={band} />
-          {view.pricing ? null : (
-            <p className="muted small">Weeks are the high-level estimate. Costs are shown to engagement leads.</p>
-          )}
-        </section>
-      ) : null}
+      {/* The add-on services were a catalogue here, one figure each. They are
+          a page of their own now, pack by pack, because a market or an
+          integration is more work in L than in S and one figure was wrong for
+          two packs out of three. */}
 
       {/* The one rule that is the same in every offer */}
       <section className="band">

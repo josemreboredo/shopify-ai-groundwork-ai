@@ -25,6 +25,7 @@ export default [
   route('engagements/:client/clarifications.md', 'routes/engagement.clarifications-md.js'),
   route('engagements/:client/questions/:questionId', 'routes/engagement.question.jsx'),
   route('offering', 'routes/offering.jsx'),
+  route('offering/addons', 'routes/offering.addons.jsx'),
   route('offering/estimation', 'routes/offering.estimation.jsx'),
   route('offering/:segment', 'routes/offering.segment.jsx'),
   route('about', 'routes/about.jsx'),

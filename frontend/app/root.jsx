@@ -57,6 +57,8 @@ const SECTIONS = [
       { to: '/offering/m', label: 'Ecommerce Scale', signedIn: true },
       { to: '/offering/l', label: 'Ecommerce Flagship', signedIn: true },
       { to: '/offering/arc', label: 'Merkle Arc', signedIn: true },
+      { to: '/offering/addons', label: 'Add-on services', signedIn: true },
+      { to: '/offering/estimation', label: 'How we estimate', signedIn: true },
     ],
   },
   {

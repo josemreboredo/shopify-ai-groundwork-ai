@@ -5,7 +5,8 @@ import { offeringView } from '../../../ai/shared/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../ai/shared/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { AddonTable, Boundaries, Channels, OfferScale, ScopeLimits, ScopeTable } from '../components/diagram.jsx';
+import { Boundaries, Channels, OfferScale, ScopeLimits, ScopeTable } from '../components/diagram.jsx';
+import { OfferingNav } from '../components/offering-nav.jsx';
 
 /**
  * The three questions a consultant arrives with, over the sections that answer
@@ -18,7 +19,7 @@ import { AddonTable, Boundaries, Channels, OfferScale, ScopeLimits, ScopeTable }
  */
 const PARTS = {
   'for-whom': ['01', 'Who it is for', 'The brand across the table, and how they sell'],
-  scope: ['02', 'What it covers', 'What it holds, what it adds, and what can be bought on top'],
+  scope: ['02', 'What it covers', 'What it holds, and what it adds over the pack below'],
   stories: ['03', 'What it builds', 'Every story behind the price'],
 };
 
@@ -38,7 +39,6 @@ const jumpFor = (previous) => [
   ['for-whom', 'Who it is for'],
   ['scope', 'In scope'],
   ...(previous ? [['extra', `Over ${previous.code}`]] : []),
-  ['addons', 'Buy on top'],
   ['boundaries', 'Not in it'],
   ['after-launch', 'After launch'],
   ['stories', 'Every story'],
@@ -134,7 +134,7 @@ export default function OfferingSegment({ loaderData }) {
   return (
     <main id="main" className="story offering">
       <header className="page-head">
-        <Link to="/offering" className="crumb">← The offering</Link>
+        <OfferingNav packs={view.offers} />
         <p className="eyebrow">Offer {offer.code} · {TRACK[offer.delivery_track] ?? offer.delivery_track}</p>
         <h1>{offer.name}</h1>
         <p className="answer-line">{offer.for_whom ?? `${offer.triggered_by}.`}</p>
@@ -194,6 +194,10 @@ export default function OfferingSegment({ loaderData }) {
           this offer.
         </p>
         <ScopeLimits rows={view.closed_scope} code={offer.code} />
+        <p className="addons-pointer">
+          Past these limits everything is an add-on, never assumed in: what each one adds to {offer.name}, in
+          weeks{view.pricing ? ' and francs' : ''}, is on <Link to="/offering/addons">the add-on services page</Link>.
+        </p>
       </section>
 
       {/* The step up, as its own answer rather than as marked rows inside a
@@ -211,34 +215,6 @@ export default function OfferingSegment({ loaderData }) {
           <ScopeLimits rows={view.closed_scope} code={offer.code} previous={previous} gainsOnly />
         </section>
       ) : null}
-
-      {/* Paired with the scope above, because "what do I get" and "what can I
-          add" are one question asked twice. The gates section further down is
-          the same catalogue read the other way — what escalates the offer
-          rather than what extends it. */}
-      <section id="addons">
-        <h2>What can be bought on top, and what it adds</h2>
-        <p className="lede">
-          Each adds its own weeks and price to this offer, longest first — whatever else is bought. The
-          engagement is then named after this offer plus the add-ons, never quietly upgraded to the next one.
-        </p>
-        {offer.with_replatform ? (
-          <p className="callout">
-            With a replatform from {offer.with_replatform.from}: <strong>{weeks(offer.with_replatform.weeks)} weeks</strong>
-            {view.pricing && offer.with_replatform.price_band ? <> · <strong>{band(offer.with_replatform.price_band, currency)}</strong></> : null}
-            {' '}— this offer&rsquo;s own promise with a heavy migration beside it, the figure a client compares with a
-            competitor&rsquo;s replatform quote.
-          </p>
-        ) : null}
-        <AddonTable
-          addons={view.addons}
-          code={offer.code}
-          pricing={view.pricing}
-          currency={currency}
-          weeks={weeks}
-          band={band}
-        />
-      </section>
 
       <section id="boundaries">
         <h2>Not in this offer, and what we assume</h2>
@@ -310,7 +286,7 @@ function Arc({ view, segment }) {
   return (
     <main id="main" className="story offering">
       <header className="page-head">
-        <Link to="/offering" className="crumb">← The offering</Link>
+        <OfferingNav packs={view.offers} />
         <p className="eyebrow">Beyond S, M and L</p>
         <h1>Merkle Arc</h1>
         <p className="answer-line">Unify brand design, content and commerce in one architecture.</p>
