@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, Link, Links, Meta, NavLink, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useLocation, useRouteLoaderData } from 'react-router';
+import { Form, Link, Links, Meta, Outlet, Scripts, ScrollRestoration, isRouteErrorResponse, useLocation, useRouteLoaderData } from 'react-router';
 
 import { getUser } from './auth.server.js';
 import { PRODUCT } from './brand.js';
@@ -57,8 +57,7 @@ const SECTIONS = [
       { to: '/offering/m', label: 'Ecommerce Scale', signedIn: true },
       { to: '/offering/l', label: 'Ecommerce Flagship', signedIn: true },
       { to: '/offering/arc', label: 'Merkle Arc', signedIn: true },
-      { to: '/offering/addons', label: 'Add-on services', signedIn: true },
-      { to: '/offering/estimation', label: 'How we estimate', signedIn: true },
+      { to: '/offering/add-ons', label: 'Add-on services', signedIn: true },
     ],
   },
   {
@@ -74,6 +73,9 @@ const SECTIONS = [
     pages: [
       { to: '/about', label: 'What this is', header: true },
       { to: '/how-it-works', label: 'How it works', header: true },
+      /* How a figure is built, beside how the tool works: the question a
+         consultant is asked in the room right after the figure itself. */
+      { to: '/offering/estimation', label: 'How we estimate', signedIn: true, header: true },
     ],
   },
 ];
@@ -81,6 +83,14 @@ const SECTIONS = [
 const visible = (pages, user) => pages.filter((p) => !p.signedIn || user);
 /** The header: one link per group top, in the order the sections are declared. */
 const headerPages = (user) => SECTIONS.flatMap((s) => visible(s.pages, user).filter((p) => p.header));
+/*
+ * The header page a path belongs to: the deepest one it sits under. How we
+ * estimate lives at /offering/estimation, so a link that lights up for every
+ * path under it would mark Offering and How we estimate at once.
+ */
+const currentOf = (pages, pathname) => pages
+  .filter((p) => (p.end ? pathname === p.to : pathname === p.to || pathname.startsWith(`${p.to}/`)))
+  .sort((a, b) => b.to.length - a.to.length)[0]?.to;
 /** The footer: everything, grouped, minus any group that signing out empties. */
 const footerSections = (user) => SECTIONS
   .map((s) => ({ ...s, pages: visible(s.pages, user) }))
@@ -92,9 +102,9 @@ export async function loader({ request }) {
 
 /**
  * Six uppercase links wrapped onto three lines, so every page on a phone opened
- * with navigation. Below 760px they live behind one button — to the left of the
+ * with navigation. Below 1220px they live behind one button — to the left of the
  * wordmark, where a phone expects it — and the footer keeps the full index for
- * anyone whose JavaScript never arrives.
+ * anyone whose JavaScript never arrives. Seven links no longer fit a tablet.
  */
 function MenuToggle({ open, onToggle }) {
   return (
@@ -135,7 +145,10 @@ export function Layout({ children }) {
           <MenuToggle open={menuOpen} onToggle={() => setMenuOpen((v) => !v)} />
           <Link to="/" className="brand" aria-label={`${PRODUCT} — home`}><img src="/brand/merkle-wordmark.svg" alt="Merkle" width="142" height="18" /></Link>
           <nav id="topnav" className={menuOpen ? 'topnav open' : 'topnav'} aria-label="Main">
-            {headerPages(root?.user).map((p) => <NavLink key={p.to} to={p.to} end={p.end}>{p.label}</NavLink>)}
+            {headerPages(root?.user).map((p, _, pages) => {
+              const here = currentOf(pages, pathname) === p.to;
+              return <Link key={p.to} to={p.to} className={here ? 'active' : undefined} aria-current={here ? 'page' : undefined}>{p.label}</Link>;
+            })}
           </nav>
           {root?.user ? (
             <Form method="post" action="/logout" className="user">

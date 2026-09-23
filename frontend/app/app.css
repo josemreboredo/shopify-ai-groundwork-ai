@@ -99,7 +99,7 @@ a:hover { color: var(--red-ink); text-decoration-color: var(--red-ink); }
   color: #fff; text-decoration: none; font-size: 0.82rem; font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase;
 }
-.topnav a { position: relative; padding: 6px 0; }
+.topnav a { position: relative; padding: 6px 0; white-space: nowrap; }
 .topnav a::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--red);
   transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease;
@@ -108,6 +108,42 @@ a:hover { color: var(--red-ink); text-decoration-color: var(--red-ink); }
 .topnav a:hover { color: #fff; }
 /* Desktop shows the links themselves; the button only exists on a phone. */
 .menu-toggle { display: none; }
+/* Seven links since How we estimate joined them, and a link on two lines reads
+   as two links. So the bar tightens before anything wraps — smaller type and
+   gaps under 1560px, the signed-in name gone under 1420px — and under 1220px
+   the links go behind the menu button, the way they do on a phone. Nothing in
+   the bar wraps inside itself: a squeezed name or button made it a line taller. */
+.user { flex: 0 0 auto; }
+.user .who, .topbar .cta { white-space: nowrap; }
+@media (max-width: 1560px) {
+  .topbar { gap: 28px; }
+  .topnav { gap: 20px; }
+  .topnav a { font-size: 0.76rem; letter-spacing: 0.06em; }
+}
+@media (max-width: 1420px) {
+  .user .who { display: none; }
+}
+@media (max-width: 1220px) {
+  .topbar { flex-wrap: wrap; gap: 14px 16px; padding: 14px 16px; }
+  /* One button instead of three lines of links. The footer keeps the full index. */
+  /* The mark alone: three white rules closed, a white cross open. The 46px box
+     stays for the thumb, it just has nothing drawn around it. */
+  .menu-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 46px; height: 46px; padding: 0; margin-left: -10px; flex: 0 0 auto;
+    background: none; border: 0; color: #fff; cursor: pointer;
+  }
+  .topnav { display: none; }
+  .topnav.open { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; order: 4; width: 100%; padding: 6px 0 4px; }
+  /* One line: the mark, the wordmark, and the way out. The login name goes —
+     a phone header has room for the action, not for who is holding the phone. */
+  .menu-toggle { order: 1; }
+  .brand { order: 2; }
+  .user { order: 3; margin-left: auto; }
+  .topbar > .cta { order: 3; margin-left: auto; }
+  .user .who { display: none; }
+  .topnav.open a { padding: 10px 0; }
+}
 .user { margin-left: auto; display: flex; gap: 16px; align-items: center; color: rgba(255, 255, 255, 0.75); font-size: 0.78rem; }
 .user .who { letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
 .cta {
@@ -1041,25 +1077,6 @@ button.link:disabled { color: var(--line-strong); cursor: default; }
 }
 @media (max-width: 760px) {
   .toc { columns: 1; }
-  .topbar { flex-wrap: wrap; gap: 14px 16px; padding: 14px 16px; }
-  /* One button instead of three lines of links. The footer keeps the full index. */
-  /* The mark alone: three white rules closed, a white cross open. The 46px box
-     stays for the thumb, it just has nothing drawn around it. */
-  .menu-toggle {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 46px; height: 46px; padding: 0; margin-left: -10px; flex: 0 0 auto;
-    background: none; border: 0; color: #fff; cursor: pointer;
-  }
-  .topnav { display: none; }
-  .topnav.open { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; order: 4; width: 100%; padding: 6px 0 4px; }
-  /* One line: the mark, the wordmark, and the way out. The login name goes —
-     a phone header has room for the action, not for who is holding the phone. */
-  .menu-toggle { order: 1; }
-  .brand { order: 2; }
-  .user { order: 3; margin-left: auto; }
-  .topbar > .cta { order: 3; margin-left: auto; }
-  .user .who { display: none; }
-  .topnav.open a { padding: 10px 0; }
   /* `flex: 0 0 auto` froze these at max-content, so "Change" — the only way to
      the settings — sat in the clipped region. */
   .views { flex: 1 1 100%; margin-left: 0; flex-wrap: wrap; gap: 12px 18px; padding-bottom: 8px; }
@@ -2175,18 +2192,56 @@ h3.sub {
 .since-rfp { margin-top: var(--s-6); }
 .since-rfp h3 { margin-bottom: var(--s-2); }
 
-/* How we estimate. The allocation bar is the share of a build week each role
-   gives, drawn so the team reads as a shape rather than as six numbers. */
+/* ── How we estimate ──────────────────────────────────────────────────────── */
+/* The allocation bar is the share of a build week each role gives, drawn so the
+   team reads as a shape rather than as six numbers. */
 .team-table .alloc { display: inline-block; width: 6rem; height: 0.5rem; margin-right: var(--s-2); background: var(--line); vertical-align: middle; }
 .team-table .alloc > span { display: block; height: 100%; background: var(--red); }
-.team-table tfoot th, .team-table tfoot td, .example-table tfoot th, .example-table tfoot td { font-weight: 700; border-top: 2px solid var(--ink); }
-.estimation .steps { margin: var(--s-4) 0 var(--s-6); padding-left: var(--s-5); max-width: 72ch; }
-.estimation .steps li { margin-bottom: var(--s-3); line-height: var(--lh-normal); }
-.estimation .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr)); gap: var(--s-6); margin-top: var(--s-4); }
-.estimation .example h3 { margin: 0 0 var(--s-1); }
-.estimation .example-table { width: 100%; margin-top: var(--s-3); }
-.estimation .example-table td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* Row heads are names — a role, a pack, a line of work — so they read as text.
+   The global `th` is a column label: 0.72rem capitals over a 2px black rule,
+   which on every row turned three tables into a stack of heavy lines. */
+.estimation .compare th[scope="row"] {
+  font-size: var(--t-s); font-weight: 600; color: var(--ink); text-transform: none; letter-spacing: 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.estimation .compare td { font-variant-numeric: tabular-nums; }
+.estimation .compare tfoot th[scope="row"], .estimation .compare tfoot td {
+  font-weight: 700; border-top: 2px solid var(--ink); border-bottom: 0;
+}
+.team-table th[scope="col"]:first-child { width: 34%; }
+.estimation-notes { margin-top: var(--s-5); max-width: 78ch; }
+/* Five moves, one row, the same flow as How it works. */
+.flow.flow-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: var(--s-5); }
+.packs-table { margin-top: var(--s-3); }
+/* Four quotes, each a card its total closes. Two lines for S and twelve for L:
+   in a grid the short one left a hole the height of the long one beside it, so
+   they flow down two columns instead. */
+.worked { column-count: 2; column-gap: var(--s-5); margin-top: var(--s-5); }
+.worked-example {
+  break-inside: avoid; margin: 0 0 var(--s-5);
+  border: 1px solid var(--line); border-top: 3px solid var(--red); padding: var(--s-5); background: #fff;
+}
+.worked-example h3 { margin: 0; font-size: var(--t-l); }
+.worked-example > p { margin: var(--s-2) 0 0; }
+.example-table { width: 100%; margin-top: var(--s-4); }
+.example-table th[scope="col"]:nth-child(2), .example-table td:nth-of-type(1) { width: 7.5rem; }
+.example-table td { white-space: nowrap; }
+.stats.kpis.kpis-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--s-5); }
 .estimate-note a { white-space: nowrap; }
+@media (max-width: 1100px) {
+  .flow.flow-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Two to a row: the odd steps open a row, so they lose the arrow in. */
+  .flow.flow-5 article:nth-child(2n + 3) { padding-left: 0; border-left: none; border-top: 1px solid var(--line); padding-top: 26px; }
+  .flow.flow-5 article:nth-child(2n + 3)::before { display: none; }
+  .flow.flow-5 article:nth-child(4) { border-top: 1px solid var(--line); padding-top: 26px; }
+  .worked { column-count: 1; }
+}
+@media (max-width: 900px) {
+  .flow.flow-5 { grid-template-columns: 1fr; }
+  .flow.flow-5 article:nth-child(4) { padding-left: 0; border-left: none; }
+}
 @media (max-width: 560px) {
-  .estimation .examples { grid-template-columns: 1fr; }
+  .stats.kpis.kpis-3 { grid-template-columns: 1fr; }
+  .worked-example { padding: var(--s-4); }
+  .team-table th[scope="col"]:first-child { width: auto; }
 }

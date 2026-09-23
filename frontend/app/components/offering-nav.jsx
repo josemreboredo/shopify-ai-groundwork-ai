@@ -18,7 +18,7 @@ export function OfferingNav({ packs = [] }) {
     // it: every pack is "Ecommerce" something, so the word is the rest.
     ...packs.map((p) => ({ to: `/offering/${p.code.toLowerCase()}`, label: `${p.code} · ${p.name.replace(/^Ecommerce\s+/, '')}` })),
     { to: '/offering/arc', label: 'Merkle Arc' },
-    { to: '/offering/addons', label: 'Add-ons' },
+    { to: '/offering/add-ons', label: 'Add-ons' },
     { to: '/offering/estimation', label: 'How we estimate' },
   ];
   return (

@@ -196,7 +196,7 @@ export default function OfferingSegment({ loaderData }) {
         <ScopeLimits rows={view.closed_scope} code={offer.code} />
         <p className="addons-pointer">
           Past these limits everything is an add-on, never assumed in: what each one adds to {offer.name}, in
-          weeks{view.pricing ? ' and francs' : ''}, is on <Link to="/offering/addons">the add-on services page</Link>.
+          weeks{view.pricing ? ' and francs' : ''}, is on <Link to="/offering/add-ons">the add-on services page</Link>.
         </p>
       </section>
 

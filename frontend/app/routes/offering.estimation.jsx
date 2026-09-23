@@ -13,6 +13,11 @@ export const meta = () => [{ title: pageTitle('How we estimate') }];
  * and the packs worked through by the engine itself. Signed-in only, and every
  * signed-in consultant reads the francs — the same decision as the offering
  * pages (see offering.jsx), with the same caveat while sign-in stays open.
+ *
+ * Built from the site's own components and nothing else. The first version
+ * borrowed three class names that already meant something — the headline
+ * statement, a two-column numbered list and a quotation — and rendered two
+ * sentences at headline size and five steps in a 76px column.
  */
 export async function loader({ request }) {
   const user = await requireUser(request);
@@ -24,6 +29,18 @@ const pct = (n) => `${Math.round(n * 100)}%`;
 export default function Estimation({ loaderData }) {
   const { view } = loaderData;
   const { currency } = view;
+  const [S] = view.packs;
+  const app = weeksNear({ min: view.app_weeks, max: view.app_weeks });
+
+  /* The five moves from the answers to a figure, in the order they happen. */
+  const STEPS = [
+    ['The Foundation build', `Every estimate starts here: the store, the theme configured, apps, catalogue, quality and launch — ${weeks(S.weeks)} weeks.`],
+    ['Each gate the answers open', 'A further market, an integration, a migration, bespoke sections: each is weeks of the team, at the weekly cost.'],
+    ['The pack’s hypercare and apps', `${view.packs.map((p, i) => (i === 0 ? `${p.code} carries ${p.hypercare_days} days of hypercare and ${p.apps_included} apps` : `${p.code} ${p.hypercare_days} and ${p.apps_included}`)).join(', ')}. More of either is priced on top.`],
+    ['The name', 'The largest pack whose budget the estimate reaches, plus what goes past its scope as add-ons: “Ecommerce Scale plus a further store”.'],
+    ['The final figure', 'The delivery team estimates the approach from the closed scope; the commercial team adds contingency and design.'],
+  ];
+
   return (
     <main id="main" className="story offering estimation">
       <header className="page-head">
@@ -77,14 +94,14 @@ export default function Estimation({ loaderData }) {
             <tfoot>
               <tr>
                 <th scope="row">The team</th>
-                <td>{view.people} FTE</td>
-                <td>{view.person_days}</td>
-                <td>100%</td>
+                <td data-label="Allocation">{view.people} FTE</td>
+                <td data-label="Days in a week">{view.person_days}</td>
+                <td data-label="Share of the week">100%</td>
               </tr>
             </tfoot>
           </table>
         </div>
-        <ul className="ticks">
+        <ul className="ticks estimation-notes">
           <li>Developers build and configure: front end for templates, sections and the checkout, back end for integrations, data and apps.</li>
           <li>QA is part of the team, not a service added on top: test cases, regression and the release checks every pack carries.</li>
           <li>The project manager, business analyst and solution architect give a share of each week — enough to run it, specify it and decide its design, not a second team.</li>
@@ -93,18 +110,23 @@ export default function Estimation({ loaderData }) {
 
       <section id="week">
         <h2>What a week costs</h2>
-        {view.pricing ? (
-          <p className="answer-line">
-            One build week of the team costs <strong>{chf(view.weekly_cost, currency)}</strong>: the team above at the
-            offshore rate card, converted to Swiss francs. It is internal and never reaches a client document.
-          </p>
-        ) : (
-          <p className="answer-line">One build week of the team costs the same for every piece of work. The figure is shown to signed-in consultants.</p>
-        )}
-        <ul className="ticks">
-          <li>Every add-on is priced as its weeks at that cost, so no piece of work is cheaper or dearer per week than another.</li>
-          <li>Hypercare after go-live is {pct(view.hypercare_share)} of a build week per week{view.pricing ? ` (${chf(view.hypercare_week, currency)})` : ''}: a named channel and a response within a working day, not the team building.</li>
-          <li>Each third-party app past what a pack includes is {view.app_weeks === 0.125 ? 'an eighth' : view.app_weeks} of a week{view.pricing ? ` (${chf(view.app_cost, currency)})` : ''}, and every app is set up again in each further store.</li>
+        <p className="lede">
+          One rate prices everything, so no piece of work is cheaper or dearer per week than another. Every add-on is
+          its weeks at this cost.
+        </p>
+        <ul className="stats kpis kpis-3">
+          <li>
+            <strong>{view.pricing ? chf(view.weekly_cost, currency) : '1 week'}</strong>
+            <span>One build week of the whole team{view.pricing ? ' — internal, never in a client document' : ''}</span>
+          </li>
+          <li>
+            <strong>{view.pricing ? chf(view.hypercare_week, currency) : pct(view.hypercare_share)}</strong>
+            <span>A week of hypercare after go-live, at {pct(view.hypercare_share)} of a build week: a named channel and a response within a working day, not the team building</span>
+          </li>
+          <li>
+            <strong>{view.pricing ? chf(view.app_cost, currency) : `${app} week`}</strong>
+            <span>Each third-party app past a pack&rsquo;s allowance, {app} of a week — and every app is set up again in each further store</span>
+          </li>
         </ul>
         <p className="muted small">
           Not in the week, and added in the proposal: design creation (UX and UI in Figma), contingency, the Shopify
@@ -114,15 +136,18 @@ export default function Estimation({ loaderData }) {
 
       <section id="build">
         <h2>From the answers to an estimate</h2>
-        <ol className="steps">
-          <li><strong>The Foundation build.</strong> Every engagement starts with it: the store, the theme configured, apps, catalogue, quality and launch — {weeks(view.packs[0].weeks)} weeks.</li>
-          <li><strong>Each scope gate the answers open adds its weeks.</strong> A second market, an integration, a migration, bespoke sections — each measured in weeks of the team and priced at the weekly cost.</li>
-          <li><strong>The pack&rsquo;s hypercare and apps.</strong> {view.packs.map((p) => `${p.code} carries ${p.hypercare_days} working days of hypercare and ${p.apps_included} apps`).join('; ')}. More of either is priced on top.</li>
-          <li><strong>The name.</strong> The estimate is named after the largest pack whose budget it reaches, and whatever goes past that pack&rsquo;s scope is listed as add-ons — &ldquo;Ecommerce Scale plus a further store&rdquo;.</li>
-          <li><strong>The final figure.</strong> The delivery team estimates the approach from the closed scope, and the commercial team adds contingency and design.</li>
-        </ol>
+        <div className="flow flow-5">
+          {STEPS.map(([title, line], i) => (
+            <article key={title}>
+              <p className="flow-n">{String(i + 1).padStart(2, '0')}</p>
+              <h3>{title}</h3>
+              <p>{line}</p>
+            </article>
+          ))}
+        </div>
+        <h3 className="sub">What each pack holds, in weeks and team days</h3>
         <div className="table-scroll" role="region" tabIndex={0} aria-label="What each pack holds, in weeks and team days">
-          <table className="compare">
+          <table className="compare packs-table">
             <thead>
               <tr>
                 <th scope="col">Pack</th>
@@ -137,11 +162,11 @@ export default function Estimation({ loaderData }) {
               {view.packs.map((p) => (
                 <tr key={p.code}>
                   <th scope="row">{p.code} · {p.name}</th>
-                  <td>{weeks(p.weeks)}</td>
-                  <td>{Math.round(p.weeks.min * view.person_days)}–{Math.round(p.weeks.max * view.person_days)}</td>
-                  <td>{p.hypercare_days} days</td>
-                  <td>{p.apps_included}</td>
-                  {view.pricing ? <td>{band(p.price_band, currency)}</td> : null}
+                  <td data-label="Weeks">{weeks(p.weeks)}</td>
+                  <td data-label="Person-days">{Math.round(p.weeks.min * view.person_days)}–{Math.round(p.weeks.max * view.person_days)}</td>
+                  <td data-label="Hypercare">{p.hypercare_days} days</td>
+                  <td data-label="Apps included">{p.apps_included}</td>
+                  {view.pricing ? <td data-label="Band">{band(p.price_band, currency)}</td> : null}
                 </tr>
               ))}
             </tbody>
@@ -155,9 +180,9 @@ export default function Estimation({ loaderData }) {
           Each is the engine&rsquo;s own quote on the scope a pack promises, line by line. The lines add up to the
           estimate before it is rounded to the nearest thousand.
         </p>
-        <div className="examples">
+        <div className="worked">
           {view.examples.map((x) => (
-            <article key={x.title} className="example">
+            <article key={x.title} className="worked-example">
               <h3>{x.title}</h3>
               <p className="muted small">{x.lead}</p>
               <table className="compare example-table">
@@ -172,16 +197,16 @@ export default function Estimation({ loaderData }) {
                   {x.lines.map((l) => (
                     <tr key={l.what}>
                       <th scope="row">{l.what}</th>
-                      <td>{l.after_go_live ? 'after go-live' : weeksNear(l.weeks)}</td>
-                      {view.pricing ? <td>{chfSpan(l.price, currency)}</td> : null}
+                      <td data-label="Weeks">{l.after_go_live ? 'after go-live' : weeksNear(l.weeks)}</td>
+                      {view.pricing ? <td data-label={currency}>{chfSpan(l.price, currency)}</td> : null}
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th scope="row">{x.code} · {x.name}{x.addons.length ? ` + ${x.addons.join(', ').toLowerCase()}` : ''}</th>
-                    <td>{weeks(x.weeks)}</td>
-                    {view.pricing ? <td>{band(x.price_band, currency)}</td> : null}
+                    <th scope="row">{x.code} · {x.name}{x.addons.length ? ` + ${x.addons.map((a) => a.charAt(0).toLowerCase() + a.slice(1)).join(', ')}` : ''}</th>
+                    <td data-label="Weeks">{weeks(x.weeks)}</td>
+                    {view.pricing ? <td data-label={currency}>{band(x.price_band, currency)}</td> : null}
                   </tr>
                 </tfoot>
               </table>
@@ -192,8 +217,8 @@ export default function Estimation({ loaderData }) {
 
       <section id="calibration">
         <h2>Checked against a real estimation</h2>
-        <p className="answer-line">{view.calibration.note}</p>
-        <ul className="stats kpis">
+        <p className="lede">{view.calibration.note}</p>
+        <ul className="stats kpis kpis-3">
           <li><strong>{view.calibration.estimate_developer_days}</strong><span>developer days in the estimation</span></li>
           <li><strong>{pct(view.calibration.estimate_qa_share)}</strong><span>QA on top of development</span></li>
           <li><strong>{weeks(view.calibration.engine_weeks)}</strong><span>weeks the engine quotes for the same answers</span></li>
@@ -205,7 +230,7 @@ export default function Estimation({ loaderData }) {
           The team, the weekly cost, the hypercare share and the app allowance live in the offering data, and every band
           is derived from them: change the team or the week and every pack and every add-on moves with it. The decision
           and its history are in ADR 0019. See <Link to="/offering">the offering</Link> for what each pack holds, and{' '}
-          <Link to="/offering/addons">the add-on services</Link> for what each add-on adds to it.
+          <Link to="/offering/add-ons">the add-on services</Link> for what each add-on adds to it.
         </p>
       </section>
     </main>

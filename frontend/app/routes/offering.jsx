@@ -205,7 +205,7 @@ export default function Offering({ loaderData }) {
           the most that pack holds. Three values means the packs differ and the choice matters; one value
           across the three columns means the subject is the same whichever pack you are in. A dash means
           the pack includes none of it. What can be bought on top, and what it adds to each pack, is
-          on <Link to="/offering/addons">the add-on services page</Link>.
+          on <Link to="/offering/add-ons">the add-on services page</Link>.
         </p>
         <PackTable
           offers={view.offers}
