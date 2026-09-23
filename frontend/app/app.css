@@ -1339,9 +1339,15 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .segments { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 0; }
 .segments > li { border-top: 1px solid var(--line); }
 .segments > li:last-child { border-bottom: 1px solid var(--line); }
+/* The description sat in row 1 beside the name and the duration in row 2, and
+   `align-items: baseline` made row 1 as tall as the longest thing in it. The
+   description runs to several lines, so the duration — "4–5 weeks · Online
+   Store · Horizon" — ended up stranded at the foot of the row, a hundred and
+   eighty pixels under the name it describes. The name and its shape are one
+   thing and stack as one; the description spans both rows beside them. */
 .segments a {
-  display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) minmax(0, 1.1fr); gap: 4px 24px;
-  align-items: baseline; padding: 24px 2rem 24px 0; position: relative;
+  display: grid; grid-template-columns: 3.4rem minmax(10rem, 15rem) minmax(0, 1fr); gap: 5px 30px;
+  align-items: start; padding: 22px 2.4rem 22px 0; position: relative;
   text-decoration: none; color: inherit;
 }
 .segments a:hover { background: var(--panel); }
@@ -1350,10 +1356,16 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
   color: var(--line-strong); font-size: 1.1rem;
 }
 .segments a:hover::after { color: var(--red); transform: translateY(-50%) translateX(4px); transition: transform 120ms ease; }
-.seg-code { grid-row: 1 / span 2; font-size: 2rem; font-weight: 700; line-height: 1; color: var(--red); font-variant-numeric: tabular-nums; }
-.seg-name { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
-.seg-when { grid-column: 3; grid-row: 1; color: var(--muted); font-size: 0.9rem; }
-.seg-meta { grid-column: 2 / span 2; color: var(--muted); font-size: 0.82rem; letter-spacing: 0.02em; }
+.seg-code { grid-column: 1; grid-row: 1 / span 2; font-size: 2rem; font-weight: 700; line-height: 1.02; color: var(--red); font-variant-numeric: tabular-nums; }
+.seg-name { grid-column: 2; grid-row: 1; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+.seg-meta { grid-column: 2; grid-row: 2; color: var(--muted); font-size: 0.82rem; letter-spacing: 0.02em; }
+.seg-when { grid-column: 3; grid-row: 1 / span 2; color: var(--muted); font-size: 0.95rem; line-height: 1.5; max-width: 80ch; }
+/* `main ol li` caps every list item at 72ch, which is right for prose and wrong
+   for a row of layout: it held each offer to 725 of the 1216px the table below
+   uses, so the description wrapped to six lines with a third of the page empty
+   beside it and the chevron sat in the middle of nowhere. The row takes the
+   width; the description inside it keeps the measure. */
+.segments > li, .overlaps > li { max-width: none; }
 .segments > li.beyond .seg-code { color: var(--line-strong); }
 
 /* Prev and next: the offers are a progression, so the page after one is the
@@ -1376,7 +1388,12 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 
 @media (max-width: 760px) {
   .segments a { grid-template-columns: 3.2rem minmax(0, 1fr); padding-right: 1.6rem; }
-  .seg-when, .seg-meta { grid-column: 2; }
+  /* Stacked, everything is one column under the code — and the rows have to be
+     reset with it. Setting only `grid-column` left the description spanning
+     rows 1 and 2, which put it straight on top of the name. */
+  .seg-name { grid-column: 2; grid-row: 1; }
+  .seg-meta { grid-column: 2; grid-row: 2; }
+  .seg-when { grid-column: 2; grid-row: 3; max-width: none; }
 }
 
 /* The one path out of the sourcing rule is a failure, and it is drawn as one. */
@@ -1831,6 +1848,38 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .stat-flag {
   display: block; margin-top: 6px; font-size: 0.78rem; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase; color: var(--red-ink);
+}
+/* Arc in the offers strip. The three solid rules are what this engine quotes;
+   the dashed one is where that stops. Same statement as the comparison table's
+   fourth column, made the same way, so one fact does not look like two. */
+.stat-beyond span { border-top-style: dashed; }
+.stat-beyond strong { color: rgba(255, 255, 255, 0.45); }
+.stat-note {
+  display: block; margin-top: 6px; font-size: 0.78rem; font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+
+/* ── What "closed" means, under the table it closes ───────────────────────── */
+/* Full width, because the table above it is, and three columns because it is
+   three promises. `main p` caps prose at 72ch for a reason — one paragraph run
+   to 1216px is 110 characters a line and worse to read, not better — so the
+   panel takes the width and each column keeps a measure. */
+.closed-note {
+  margin: 26px 0 0; background: var(--panel); border-left: 3px solid var(--red);
+  padding: 22px 26px 26px;
+}
+.closed-head { margin: 0; font-size: 1.05rem; max-width: none; }
+.closed-head strong { letter-spacing: 0.01em; }
+.closed-points {
+  list-style: none; margin: 20px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px 34px;
+}
+.closed-points > li { max-width: none; border-top: 1px solid var(--line-strong); padding-top: 13px; }
+.closed-points h3 { margin: 0 0 7px; font-size: 0.92rem; font-weight: 700; letter-spacing: -0.005em; }
+.closed-points p { margin: 0; max-width: none; font-size: 0.88rem; line-height: 1.5; color: var(--muted); }
+@media (max-width: 860px) {
+  .closed-points { grid-template-columns: 1fr; gap: 18px; }
 }
 
 /* Where one band's ceiling meets the next one's floor. Quiet by design — it is

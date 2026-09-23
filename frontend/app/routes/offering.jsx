@@ -106,6 +106,17 @@ export default function Offering({ loaderData }) {
               </span>
             </li>
           ))}
+          {/* Where the three stop. Not a fourth offer, and the strip must not
+              read as four: no code, no weeks, no band. The engine reaches Arc
+              only through STOP rules and never through a scope gate — a gate is
+              the priced mechanism, and this engine does not price Arc. */}
+          <li className="stat-beyond">
+            <strong>&mdash;</strong>
+            <span>
+              Merkle Arc · beyond the three
+              <b className="stat-note">Not quoted or estimated here</b>
+            </span>
+          </li>
         </ul>
       </header>
 
@@ -184,15 +195,32 @@ export default function Offering({ loaderData }) {
           currency={currency}
           track={(t) => TRACK[t] ?? t}
         />
-        <p className="callout">
-          <strong>Closed.</strong> A pack holds exactly this — anything past a ceiling is quoted on top,
-          never assumed in, and a test builds an engagement that takes exactly these limits and checks the
-          engine still calls it that pack. A row states <em>how much</em> fits, not <em>which</em>: which tax
-          registrations, which shipping rates, which payment methods and which apps are named per requirement
-          and then set up in the configuration workbook once the pack is agreed. Where a row carries
-          Shopify&rsquo;s limit, that is the platform&rsquo;s own documented ceiling, not Merkle&rsquo;s — and
-          an app subscription is the client&rsquo;s cost, never a line in the pack.
-        </p>
+        {/* The table's closing statement, and it was a seven-line grey slab
+            ending at half the width of the table it belonged to. It is three
+            separate promises, not one paragraph: what "closed" means, what a
+            row does and does not name, and whose ceiling a limit is. Split,
+            they take the width the table already uses and can be scanned;
+            run together, they were read by nobody. */}
+        <aside className="closed-note">
+          <p className="closed-head"><strong>Closed.</strong> A pack holds exactly this.</p>
+          <ol className="closed-points">
+            <li>
+              <h3>Past a ceiling is quoted on top</h3>
+              <p>Never assumed in. A test builds an engagement that takes exactly these limits and checks the
+              engine still calls it that pack.</p>
+            </li>
+            <li>
+              <h3>A row states <em>how much</em>, not <em>which</em></h3>
+              <p>Which tax registrations, shipping rates, payment methods and apps are named per requirement,
+              then set up in the configuration workbook once the pack is agreed.</p>
+            </li>
+            <li>
+              <h3>A limit is Shopify&rsquo;s, not Merkle&rsquo;s</h3>
+              <p>Where a row carries one, that is the platform&rsquo;s own documented ceiling — and an app
+              subscription is the client&rsquo;s cost, never a line in the pack.</p>
+            </li>
+          </ol>
+        </aside>
       </section>
 
       {/* 3 — the price list, drawn as a price list.
