@@ -946,14 +946,16 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
  * where the two differ are what the client is paying the step-up for, and they
  * are marked — on M, four of twenty-two rows.
  */
-export function ScopeLimits({ rows = [], code, previous }) {
+export function ScopeLimits({ rows = [], code, previous, gainsOnly = false }) {
   const mine = (r) => quantity(r.values?.[code]);
   const theirs = (r) => (previous ? quantity(r.values?.[previous.code]) : null);
-  const kept = rows.filter((r) => mine(r));
+  const held = rows.filter((r) => mine(r));
+  /* Two readings of one dataset. The scope section wants every subject and one
+     column; the step-up section wants only the subjects that grew, and both
+     values, because "up to 1 market → up to 3 markets" is the answer and the
+     new figure alone is not. */
+  const kept = gainsOnly ? held.filter((r) => mine(r) !== theirs(r)) : held;
   if (!kept.length) return null;
-
-  const gained = (r) => Boolean(previous) && mine(r) !== theirs(r);
-  const gains = kept.filter(gained).length;
 
   const groups = new Map();
   for (const row of kept) {
@@ -961,27 +963,22 @@ export function ScopeLimits({ rows = [], code, previous }) {
     if (!groups.has(name)) groups.set(name, []);
     groups.get(name).push(row);
   }
-  const cols = previous ? 3 : 2;
+  const cols = gainsOnly ? 3 : 2;
 
   return (
     <>
-      {previous ? (
-        <p className="limits-lead">
-          <strong>{gains}</strong> of the {kept.length} subjects below hold more here than in {previous.name}.
-          They are marked, and they are what the step up buys.
-        </p>
-      ) : null}
-      <div className="table-scroll" role="region" tabIndex={0} aria-label="What this offer includes, and up to what limit">
-        <table className="compare limits">
+      <div className="table-scroll" role="region" tabIndex={0} aria-label={gainsOnly ? 'What this offer adds over the one below it' : 'What this offer includes, and up to what limit'}>
+        <table className={`compare limits${gainsOnly ? ' limits-gain' : ''}`}>
           <caption className="sr-only">
-            One row per subject the discovery asks about, and the most this offer holds of it.
-            {previous ? ` The last column is what ${previous.name} holds, so a row where the two differ is scope this offer adds.` : ''}
+            {gainsOnly
+              ? `Only the subjects where this offer holds more than ${previous.name}. The middle column is what ${previous.name} holds and the last is what this offer holds.`
+              : 'One row per subject the discovery asks about, and the most this offer holds of it.'}
           </caption>
           <thead>
             <tr>
               <th scope="col">Subject</th>
+              {gainsOnly ? <th scope="col" className="limits-from">{previous.name}</th> : null}
               <th scope="col">This offer holds</th>
-              {previous ? <th scope="col" className="limits-from">{previous.name}</th> : null}
             </tr>
           </thead>
           {[...groups].map(([name, groupRows]) => (
@@ -992,19 +989,19 @@ export function ScopeLimits({ rows = [], code, previous }) {
                 </tr>
               ) : null}
               {groupRows.map((row) => (
-                <tr key={row.id} className={`limits-row${gained(row) ? ' limits-more' : ''}`}>
+                <tr key={row.id} className="limits-row">
                   <th scope="row">
                     <span className="pack-what">{row.what}</span>
-                    {row.addon?.includes(code) ? (
+                    {!gainsOnly && row.addon?.includes(code) ? (
                       <span className="limits-addon">{row.addon_label ?? 'More can be bought on top'}</span>
                     ) : null}
                   </th>
-                  <td data-label="This offer holds"><span className="limits-value">{mine(row)}</span></td>
-                  {previous ? (
+                  {gainsOnly ? (
                     <td data-label={previous.name} className="limits-from">
-                      {theirs(row) ?? <span className="muted">&mdash;</span>}
+                      {theirs(row) ?? <span className="muted">Not in it</span>}
                     </td>
                   ) : null}
+                  <td data-label="This offer holds"><span className="limits-value">{mine(row)}</span></td>
                 </tr>
               ))}
             </tbody>
@@ -1027,6 +1024,15 @@ export function ScopeLimits({ rows = [], code, previous }) {
 export function AddonTable({ addons = [], code, pricing, currency, weeks, band }) {
   const mine = addons.filter((a) => (a.available_in ?? ['S', 'M', 'L']).includes(code));
   if (!mine.length) return null;
+
+  /** "1–8 weeks · CHF 8k–86k", or just the weeks where price is not shown. */
+  const cost = (w, pr) => {
+    const parts = [];
+    const span = w?.max ? weeks(w) : null;
+    if (span) parts.push(`${span} week${w.max === 1 ? '' : 's'}`);
+    if (pricing && pr) parts.push(band(pr, currency));
+    return parts.length ? parts.join(' · ') : null;
+  };
 
   /* Longest first. A consultant scanning for what moves a deadline is looking
      for the big ones, and alphabetical order hides them among the half-weeks. */
@@ -1051,10 +1057,30 @@ export function AddonTable({ addons = [], code, pricing, currency, weeks, band }
             <tr key={a.id}>
               <th scope="row">
                 <span className="pack-what">{a.what}</span>
-                {a.description ? (
+                {/* Nine of these are priced by which case the client is in, and
+                    the headline span covers all of them — "+1–5.5 weeks" is
+                    right for a third of engagements and wrong by a factor of
+                    five for the rest. The breakdown used to live in the gates
+                    section; that section is gone, so it lives here. */}
+                {a.description || a.tiers?.length ? (
                   <details className="pack-why">
-                    <summary>What this covers</summary>
-                    <p>{a.description}</p>
+                    <summary>
+                      {a.tiers?.length ? `What this covers — priced by case, ${a.tiers.length} tiers` : 'What this covers'}
+                    </summary>
+                    {a.description ? <p>{a.description}</p> : null}
+                    {a.tiers?.length ? (
+                      <dl className="addon-tiers-flat">
+                        {a.tiers.map((t, i) => (
+                          <div key={t.label ?? `tier-${i}`}>
+                            <dt>
+                              {t.label ? <span className="addon-tier-name">{t.label}</span> : null}
+                              {t.description ? <span className="addon-tier-what">{t.description}</span> : null}
+                            </dt>
+                            <dd>{cost(t.weeks, t.price) ?? <span className="muted">Quoted per engagement</span>}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ) : null}
                   </details>
                 ) : null}
               </th>

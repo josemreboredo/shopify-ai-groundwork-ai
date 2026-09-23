@@ -5,7 +5,7 @@ import { offeringView } from '../../../ai/shared/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../ai/shared/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { AddonTable, Boundaries, Channels, Lands, OfferScale, PhasePlan, ScopeLimits, ScopeTable, Storefront, Tracks } from '../components/diagram.jsx';
+import { AddonTable, Boundaries, Channels, OfferScale, ScopeLimits, ScopeTable } from '../components/diagram.jsx';
 
 /**
  * The three questions a consultant arrives with, over the sections that answer
@@ -17,9 +17,9 @@ import { AddonTable, Boundaries, Channels, Lands, OfferScale, PhasePlan, ScopeLi
  * to skip three sections at once.
  */
 const PARTS = {
-  scope: ['01', 'What it covers', 'The claim, and where it stops'],
-  phases: ['02', 'What it builds', 'The weeks, the storefront and the backlog behind the price'],
-  lands: ['03', 'What moves it', 'What puts an engagement here, and what takes it somewhere else'],
+  'for-whom': ['01', 'Who it is for', 'The brand across the table, and how they sell'],
+  scope: ['02', 'What it covers', 'What it holds, what it adds, and what can be bought on top'],
+  stories: ['03', 'What it builds', 'Every story behind the price'],
 };
 
 /* Arc gets the same furniture and two parts rather than three. There is no
@@ -31,16 +31,16 @@ const ARC_PARTS = {
 };
 
 /** The ribbon under the page head. Five screens of page, opened before a call. */
-const JUMP = [
+/* Built per page rather than held as one list: only M and L have a pack below
+   them, so only they carry the step-up section the ribbon would otherwise link
+   to an anchor that is not there. */
+const jumpFor = (previous) => [
+  ['for-whom', 'Who it is for'],
   ['scope', 'In scope'],
+  ...(previous ? [['extra', `Over ${previous.code}`]] : []),
   ['addons', 'Buy on top'],
   ['boundaries', 'Not in it'],
-  ['phases', 'Phase by phase'],
-  ['storefront', 'Storefront'],
   ['stories', 'Every story'],
-  ['lands', 'Puts it here'],
-  ['gates', 'Moves it up'],
-  ['channels', 'Who it sells to'],
   ['scale', 'Where it sits'],
 ];
 
@@ -123,7 +123,6 @@ export default function OfferingSegment({ loaderData }) {
      do now — past the weeks the band already holds, each one is added to it — so
      an L page listing only its triggers says the opposite of what the engine
      does. */
-  const moves = view.gates;
   /* The offer one rung down, where there is one. M and L are steps up from
      something, and the rows where they hold more than the pack below are what
      the client is paying the step for — a question the page could not answer
@@ -158,22 +157,28 @@ export default function OfferingSegment({ loaderData }) {
             : <li><strong>{TRACK[offer.delivery_track] ?? offer.delivery_track}</strong><span>how the storefront is built</span></li>}
         </ul>
         <nav className="jump" aria-label="On this page">
-          {JUMP.map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
+          {jumpFor(previous).map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
         </nav>
       </header>
+
+      {/* Who is across the table, before a word about what gets built. It was
+          two things in two places — a line in the page head that scrolls away,
+          and a "Who it sells to" section nine screens down — and they answer the
+          same question. One section, first. */}
+      <section id="for-whom" className="part-start">
+        <Part id="for-whom" />
+        <h2>Who this offer is for</h2>
+        {offer.for_whom ? <p className="answer-line">{offer.for_whom}</p> : null}
+        <p className="lede">
+          Wholesale is not this offer plus an extra. Selling both ways is — that is the one case the
+          B2B gate is for.
+        </p>
+        <Channels channels={offer.channels} />
+      </section>
 
       <section id="scope" className="part-start">
         <Part id="scope" />
         <h2>What is in scope</h2>
-        {/* Who is sitting across the table. It was one line in the page head,
-            above the fold and gone — and it is the first thing a consultant
-            checks before reading a word of scope. */}
-        {offer.for_whom ? (
-          <p className="for-whom">
-            <span className="for-whom-label">Who this offer is for</span>
-            {offer.for_whom}
-          </p>
-        ) : null}
         {/* The first line is the offer's claim — what makes "Foundation" a
             foundation and "Growth" growth — and it is not a scope item. Ticked
             alongside the rest it read as one, which is how an offer ends up with
@@ -192,8 +197,23 @@ export default function OfferingSegment({ loaderData }) {
           <Link to="/offering">the comparison table</Link> — it is a fact about the platform, not about
           this offer.
         </p>
-        <ScopeLimits rows={view.closed_scope} code={offer.code} previous={previous} />
+        <ScopeLimits rows={view.closed_scope} code={offer.code} />
       </section>
+
+      {/* The step up, as its own answer rather than as marked rows inside a
+          table of twenty-two. "What do I get over the one below" is the
+          question a client asks when they see two prices, and it deserves a
+          heading of its own — nothing else on the page answers it. */}
+      {previous ? (
+        <section id="extra">
+          <h2>What you get over {previous.name}</h2>
+          <p className="lede">
+            Only the subjects where this offer holds more. Everything else is the same in both, so it is
+            not what the step up is buying.
+          </p>
+          <ScopeLimits rows={view.closed_scope} code={offer.code} previous={previous} gainsOnly />
+        </section>
+      ) : null}
 
       {/* Paired with the scope above, because "what do I get" and "what can I
           add" are one question asked twice. The gates section further down is
@@ -226,52 +246,6 @@ export default function OfferingSegment({ loaderData }) {
         <Boundaries notIncluded={offer.not_included} clientProvides={offer.client_provides} assumes={offer.assumes} />
       </section>
 
-      <section id="phases" className="part-start">
-        <Part id="phases" />
-        <h2>What you get, phase by phase</h2>
-        <p className="lede">
-          The phases in the order they run, each with the weeks it takes and the things that are
-          handed over at the end of it. Set-up, template selection, app selection and template
-          customisation are the four a client asks about by name, so they are named.
-        </p>
-        <PhasePlan phases={offer.phases} weeks={offer.duration_weeks} />
-      </section>
-
-      {/* The heading used to be "What gets built, counted" against "What it
-          builds, epic by epic" two sections later — two headings answering the
-          same question with different units. They are named by their unit now:
-          weeks above, templates here, stories below. */}
-      <section id="storefront">
-        <h2>The storefront, counted</h2>
-        <p className="lede">
-          The templates this offer builds, and how many sections are built rather than configured. The phases
-          describe the work; this is the number a fixed price is argued about.
-        </p>
-        <Storefront storefront={offer.storefront} />
-        {/* How it is built used to be a section of its own that existed on L
-            alone, so the three offers were three different pages. It is the same
-            question on all of them — Growth answers it two ways and the other
-            two answer it once — and it belongs beside what gets built. */}
-        <h3>How it is built</h3>
-        {offer.tracks ? (
-          <p className="muted">
-            Two ways, one band. The track is an answer rather than a property of the offer — a headless build
-            spends the same weeks differently, it does not add weeks on top. Content stays in Shopify either way;
-            content or a front end outside it is <Link to="/offering/arc">Merkle Arc</Link>.
-          </p>
-        ) : (
-          <p className="muted">
-            One way. A headless storefront is not a variant of this offer: it is an{' '}
-            <Link to="/offering/l">L trigger</Link>, and it lands the engagement in Ecommerce Growth whatever the
-            rest of the scope says.
-          </p>
-        )}
-        <Tracks
-          tracks={offer.tracks}
-          only={{ label: TRACK[offer.delivery_track] ?? offer.delivery_track, body: offer.approach.storefront }}
-        />
-      </section>
-
       <section id="stories">
         <h2>The backlog, story by story</h2>
         <p className="lede">
@@ -291,83 +265,6 @@ export default function OfferingSegment({ loaderData }) {
             : `This offer already holds ${weeks(envelope)} weeks of scope-gate work inside its band. A gate that fits in there costs nothing more. Only what goes past it is added on top of the ${weeks(offer.duration_weeks)} weeks above.`}
         </p>
         <ScopeTable catalogue={catalogue} totals={totals} capacity={offer.gate_capacity_weeks} />
-      </section>
-
-      {/* On every offer, not only on L.
-          "Is this engagement an M" is the question these pages are opened with,
-          and it was answered on one page out of three — in prose, under a
-          heading S and M did not have, which is also why a consultant moving
-          between the offers lost their place. */}
-      <section id="lands" className="part-start">
-        <Part id="lands" />
-        <h2>What puts an engagement here</h2>
-        <p className="lede">
-          The engine asks these in order and stops at the first yes. Nobody picks the offer by hand, and nothing
-          qualitative puts an engagement in one: a luxury brand with one market and a small catalogue is a small
-          engagement.
-        </p>
-        <Lands classification={view.classification} here={offer.code} />
-        <p className="lands-note">
-          {segment.slug === 'l'
-            ? <>A headless storefront lands here whatever the rest of the scope says — four weeks of Foundation cannot produce one at any catalogue size. What leaves the offers altogether is content or a front end outside Shopify: <Link to="/offering/arc">Merkle Arc</Link>, which these offers do not quote.</>
-            : <>These are the whole decision — there is no sixth rule and no judgement call after them. What leaves the offers altogether is content or a front end outside Shopify: <Link to="/offering/arc">Merkle Arc</Link>, a separate engagement that nothing here quotes or estimates.</>}
-        </p>
-      </section>
-
-      {/* The gates, on every offer — and what the band already holds before any
-          of them is added to it. A page that lists what a gate costs without
-          saying what the offer already covers leaves the consultant to guess
-          whether the number is inside the band or on top of it. */}
-      <section id="gates">
-        <h2>{segment.slug === 'l' ? 'What the gates add to it' : 'What would make this a bigger offer'}</h2>
-        <p className="lede">
-          {segment.slug === 's'
-            ? 'One gate keeps it in S with a modifier, and the modifier is added to the weeks and the band — an S with a heavy migration quotes what a heavy migration costs. Two gates or more make it an M.'
-            : `This band already holds ${envelope.min}\u2013${envelope.max} weeks of scope gates: inside that they cost nothing more. Past it, each one is added to the weeks and to the band.${segment.slug === 'm' ? ' Only an L trigger takes an engagement out of this offer.' : ''}`}
-        </p>
-        <ol className="claims">
-          {moves.map((g) => (
-            <li key={g.id}>
-              <details>
-                <summary>
-                  <span className="claim">{g.label}</span>
-                  <span className="claim-line">
-                    {g.effort_weeks ? `+${weeks(g.effort_weeks)} week${g.effort_weeks.max === 1 ? '' : 's'}` : 'No fixed effort'}
-                    {view.pricing && g.price_add ? ` · ${band(g.price_add, currency)}` : ''}
-                  </span>
-                </summary>
-                <p><strong>The exact rule.</strong> {g.condition}</p>
-                {g.adds ? <p>{g.adds}</p> : null}
-                {/* A gate priced by tier shows every tier. One headline number
-                    is right for a third of engagements and wrong by a factor of
-                    five for the rest. */}
-                {g.tiers ? (
-                  <ul className="tiers">
-                    {g.tiers.map((t) => (
-                      <li key={t.tier}>
-                        <strong>{t.tier}</strong>
-                        <span className="muted small">{t.adds}</span>
-                        <span className="tier-cost">
-                          +{weeks(t.effort_weeks)} week{t.effort_weeks.max === 1 ? '' : 's'}
-                          {view.pricing && t.price_add ? ` · ${band(t.price_add, currency)}` : ''}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </details>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section id="channels">
-        <h2>Who it sells to</h2>
-        <p className="lede">
-          Wholesale is not this offer plus an extra. Selling both ways is — that is the one case the
-          B2B gate is for.
-        </p>
-        <Channels channels={offer.channels} />
       </section>
 
       <section id="scale">

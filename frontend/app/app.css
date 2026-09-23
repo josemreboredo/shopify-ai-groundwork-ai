@@ -1935,19 +1935,9 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 /* The index compares three offers. This compares one offer with the pack below
    it, which is the question left over once a consultant has chosen: what does
    the step up actually buy. */
-.for-whom {
-  margin: 0 0 22px; padding: 14px 0 14px 17px; border-left: 3px solid var(--red);
-  font-size: 1.02rem; line-height: 1.5; max-width: 74ch;
-}
-.for-whom-label {
-  display: block; margin-bottom: 5px; font-size: 0.72rem; font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
-}
 h3.sub {
   margin: 38px 0 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em;
 }
-.limits-lead { margin: 10px 0 0; color: var(--muted); font-size: 0.95rem; max-width: 74ch; }
-.limits-lead strong { color: var(--ink); font-size: 1.05rem; }
 .table-scroll > .limits, .table-scroll > .addon-table {
   width: 100%; min-width: 0; max-width: 100%; table-layout: fixed;
 }
@@ -1964,11 +1954,12 @@ h3.sub {
 .limits td, .addon-table td { vertical-align: top; padding: 13px 14px 13px 0; font-size: 0.88rem; }
 .limits-row { border-top: 1px solid var(--line); }
 .limits-value { font-weight: 700; font-size: 0.92rem; }
-/* The rows where this pack holds more than the one below. Same mark the index
-   uses for the rows where the packs disagree, because it is the same fact. */
-.limits-more th[scope="row"] { box-shadow: inset 3px 0 0 var(--red); padding-left: 13px; }
-.limits-more .limits-value { color: var(--ink); }
+/* The step-up table reads left to right as a before and an after, so the pack
+   below is set back and this offer's figure carries the weight. */
 .limits-from { color: var(--muted); }
+.limits-gain th[scope="col"]:first-child { width: auto; }
+.limits-gain .limits-value { color: var(--ink); }
+.limits-gain .limits-from::after { content: ' \2192'; color: var(--red); font-weight: 700; }
 .limits-cap { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
 .limits-addon {
   display: block; margin-top: 5px; font-size: 0.76rem; color: var(--muted);
@@ -1982,10 +1973,18 @@ h3.sub {
 .addon-table tbody tr { border-top: 1px solid var(--line); }
 .addon-weeks { font-weight: 700; font-size: 0.92rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .addon-band { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.addon-tiers-flat { margin: 12px 0 2px; display: grid; gap: 11px; }
+.addon-tiers-flat > div { display: grid; grid-template-columns: minmax(0, 1fr) 11rem; gap: 6px 18px; align-items: start; }
+.addon-tiers-flat dt { margin: 0; }
+.addon-tiers-flat dd { margin: 0; font-variant-numeric: tabular-nums; font-size: 0.84rem; white-space: nowrap; }
+.addon-tiers-flat .addon-tier-name { display: block; font-weight: 700; font-size: 0.84rem; text-transform: capitalize; }
+.addon-tiers-flat .addon-tier-what { display: block; margin-top: 3px; font-size: 0.82rem; color: var(--muted); line-height: 1.45; }
+@media (max-width: 560px) { .addon-tiers-flat > div { grid-template-columns: 1fr; } }
 @media (max-width: 560px) {
   .limits th[scope="col"]:first-child, .limits th[scope="row"],
   .addon-table th[scope="col"]:first-child, .addon-table th[scope="row"] { width: auto; padding-right: 0; }
-  .limits-more th[scope="row"] { box-shadow: none; padding-left: 0; }
+  /* Stacked, the arrow points at a line break rather than at the next cell. */
+  .limits-gain .limits-from::after { content: none; }
 }
 
 /* ── The Arc column: where the offers stop ────────────────────────────────── */
