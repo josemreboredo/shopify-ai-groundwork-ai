@@ -1523,7 +1523,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 
 /* ── Where the weeks go: the phases of one offer ───────────────────────────── */
 /* A numbered spine, with a bar proportional to the longest phase. The shape is
-   the argument: on Growth the storefront build is four to six of thirteen to
+   the argument: on Flagship the storefront build is four to six of thirteen to
    twenty weeks, and that is visible before a word is read. */
 .phases { list-style: none; padding: 0; margin: 20px 0 0; counter-reset: phase; }
 .phases > li { counter-increment: phase; border-top: 1px solid var(--line); padding: 18px 0; }

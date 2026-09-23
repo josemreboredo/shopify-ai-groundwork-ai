@@ -648,7 +648,7 @@ const GATE_EVALUATORS = {
  *
  * It is a trigger rather than a gate because it is a floor, not a size: four
  * weeks of Foundation cannot produce a headless storefront at any catalogue.
- * What it is not is an extra on the band — Ecommerce Growth spends the same
+ * What it is not is an extra on the band — Ecommerce Flagship spends the same
  * weeks differently, which is what offers.L.tracks says.
  *
  * @type {Record<string, (doc: object) => Gate>}
@@ -893,7 +893,7 @@ export function classifyOffer(doc) {
   /*
    * The track is an answer, not a property of the offer.
    *
-   * Ecommerce Growth builds either way and spends the same weeks differently,
+   * Ecommerce Flagship builds either way and spends the same weeks differently,
    * so reading the track off the offer would tell a Hydrogen engagement it was
    * getting a theme. S and M have no headless variant: nothing there fires the
    * trigger, so they resolve to their own track and stay Liquid.

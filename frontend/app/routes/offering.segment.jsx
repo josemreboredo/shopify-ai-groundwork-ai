@@ -177,7 +177,7 @@ export default function OfferingSegment({ loaderData }) {
         <Part id="scope" />
         <h2>What is in scope</h2>
         {/* The first line is the offer's claim — what makes "Foundation" a
-            foundation and "Growth" growth — and it is not a scope item. Ticked
+            foundation and "Flagship" a flagship — and it is not a scope item. Ticked
             alongside the rest it read as one, which is how an offer ends up with
             a name nobody can connect to what it delivers. */}
         <p className="answer-line">{offer.base_scope[0]}.</p>
@@ -296,7 +296,7 @@ export default function OfferingSegment({ loaderData }) {
  *
  * Arc is Merkle's enterprise platform for unifying brand design, content and
  * commerce in one architecture. Headless is not the line — Hydrogen with content
- * in Shopify metaobjects is a Shopify build, and Ecommerce Growth prices it. The
+ * in Shopify metaobjects is a Shopify build, and Ecommerce Flagship prices it. The
  * line is a second system: content in an external CMS or PIM, or a front end
  * Shopify does not build. The honest thing for this page to do is name it and
  * stop — no band, no weeks, no estimate.
@@ -363,9 +363,9 @@ function Arc({ view, segment }) {
           priced by this engine like any other build.
         </p>
         <ul className="ticks big ticks-no">
-          <li>Hydrogen with editorial content in Shopify metaobjects — that is <Link to="/offering/l">Ecommerce Growth</Link> on the headless track</li>
-          <li>Two brands that share one design system — a store per brand, an add-on on <Link to="/offering/m">Ecommerce Scale</Link> and up to three in Ecommerce Growth, and a further storefront design where a brand’s layout differs</li>
-          <li>Blocks and fields inside the checkout steps — Shopify Plus permits them, and Ecommerce Growth builds them</li>
+          <li>Hydrogen with editorial content in Shopify metaobjects — that is <Link to="/offering/l">Ecommerce Flagship</Link> on the headless track</li>
+          <li>Two brands that share one design system — a store per brand, an add-on on <Link to="/offering/m">Ecommerce Scale</Link> and up to three in Ecommerce Flagship, and a further storefront design where a brand’s layout differs</li>
+          <li>Blocks and fields inside the checkout steps — Shopify Plus permits them, and Ecommerce Flagship builds them</li>
           <li>Several markets, languages or stores, up to the offers’ limits — each one priced inside the offers</li>
         </ul>
       </section>

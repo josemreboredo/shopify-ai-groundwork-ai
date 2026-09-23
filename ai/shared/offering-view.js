@@ -213,7 +213,7 @@ export function offeringView({ pricing = false } = {}) {
     /* And who is being sold to. B2B used to be a modifier on a consumer base,
        which charged a wholesale-only client for consumer work they never got. */
     channels: o.channels ?? null,
-    /* And how it is built. Ecommerce Growth builds as a theme or as Hydrogen
+    /* And how it is built. Ecommerce Flagship builds as a theme or as Hydrogen
        and spends the same weeks differently, so the track is a decision inside
        the offer rather than a label on it. */
     tracks: o.tracks ?? null,

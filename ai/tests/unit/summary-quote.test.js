@@ -97,7 +97,7 @@ describe('the quote the Summary carries', () => {
     assert.match(md, /\*\*Quoted:\*\*/);
     assert.match(md, /How that number is built/);
     assert.match(md, /every scope gate at its own weeks and price/);
-    assert.match(md, /past what Ecommerce Growth includes/);
+    assert.match(md, /past what Ecommerce Flagship includes/);
 
     // And withheld the same way it is on the page.
     const withheld = renderSummaryMarkdown({ ...s, quote: quote(doc, { pricing: false }) });

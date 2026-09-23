@@ -244,7 +244,7 @@ const EVALUATORS = {
    *
    * This rule was removed for one commit, on the reasoning that a headless
    * storefront had left the offers altogether. It had not — Hydrogen with
-   * content in Shopify is Ecommerce Growth on the headless track — so the
+   * content in Shopify is Ecommerce Flagship on the headless track — so the
    * condition came straight back into scope while the flag that covered it did
    * not. Verified 2026-09-21: production and preview always exist and custom
    * environments besides, but the public limit is 1 on Starter, Basic, Grow and
@@ -285,7 +285,7 @@ const EVALUATORS = {
    *
    * Not headless: Hydrogen is Shopify's own framework on the Storefront API,
    * and with content in metaobjects and metafields it is a Shopify build — the
-   * headless track of Ecommerce Growth, priced by these offers. The line is
+   * headless track of Ecommerce Flagship, priced by these offers. The line is
    * what sits outside Shopify. Editorial content in an external CMS or a PIM
    * means a second system to unify; another framework, a native app or several
    * front ends on one backend means a front end Shopify does not build. Either

@@ -12,7 +12,7 @@
 /** In the order an engagement travels: the smallest offer first, then past them. */
 export const SEGMENTS = ['s', 'm', 'l', 'arc'];
 
-/* S and M are themes. Ecommerce Growth builds either way and spends the same
+/* S and M are themes. Ecommerce Flagship builds either way and spends the same
    weeks differently — the track follows the answers, not the offer. */
 export const TRACK = { liquid: 'Online Store · Horizon', hydrogen: 'Headless · Hydrogen on Oxygen' };
 

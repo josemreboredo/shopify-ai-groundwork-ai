@@ -158,8 +158,8 @@ creep post-signature.
 
 <!-- generated:classification -->
 **Classification rule** — the quote first, then the name. The quote is the Foundation base (4–5 weeks, CHF 40k–65k) plus every active scope gate at its own weeks, each week at one rate of CHF 10.5k. The pack it is named after, in order:
-1. A headless storefront — only Ecommerce Growth builds one → **L**
-2. The quote reaches Ecommerce Growth’s floor, and everything past its promise is sold as an add-on to it → **L**
+1. A headless storefront — only Ecommerce Flagship builds one → **L**
+2. The quote reaches Ecommerce Flagship’s floor, and everything past its promise is sold as an add-on to it → **L**
 3. The quote reaches Ecommerce Scale’s floor, and everything past its promise is sold as an add-on to it → **M**
 4. Below that, Ecommerce Foundation, with whatever goes past its promise as add-ons → **S**
 5. Below Ecommerce Scale’s floor but needing what only a larger pack sells — a further store — the smallest pack that sells it → **M**
@@ -272,7 +272,7 @@ token application, boilerplate, automated QA (~60% of implementation)
 
 | Offer | Code | Triggered by | Scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Growth** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally that needs more than one store, a storefront built out and measurement that stands up. Up to three Shopify stores · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 140–260k+ | 13–24 weeks |
+| **Ecommerce Flagship** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally that needs more than one store, a storefront built out and measurement that stands up. Up to three Shopify stores · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 140–260k+ | 13–24 weeks |
 
 L builds either way and spends the same weeks differently — as theme sections and
 blocks, or as owned components on Hydrogen — so the track follows the answers
@@ -290,7 +290,7 @@ quote.
 ```
 Ecommerce Foundation  (S)  ──►  Liquid / Horizon                 0–1 gates
 Ecommerce Scale       (M)  ──►  Liquid / Horizon                 ≥ 2 gates
-Ecommerce Growth      (L)  ──►  Liquid / Horizon                 scope past the M ceiling
+Ecommerce Flagship      (L)  ──►  Liquid / Horizon                 scope past the M ceiling
                            └─►  Hydrogen on Oxygen              headless required
                                                                  (content still in Shopify)
 
@@ -306,7 +306,7 @@ component library, GraphQL middleware and its own console — composable and
 headless, without the vendor lock-in.
 
 **The line is not headless.** Hydrogen with content in Shopify metaobjects is a
-Shopify build and Ecommerce Growth prices it. The line is a second system:
+Shopify build and Ecommerce Flagship prices it. The line is a second system:
 editorial content in an external CMS or PIM, or a front end Shopify does not
 build — another framework, a native app, several front ends on one backend.
 Either is exit rule 11.26, a STOP with a destination.

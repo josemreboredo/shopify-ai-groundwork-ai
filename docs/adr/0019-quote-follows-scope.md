@@ -42,3 +42,5 @@ give the final figure, and the commercial team adds contingency and services suc
 - The capacity arithmetic (`gate_capacity_weeks`) no longer prices anything; it is kept for the pack pages and for
   rule 11.3, which reads the largest pack's envelope.
 - Offering 3.0.0.
+- L is renamed **Ecommerce Flagship** (was Ecommerce Growth): "Growth" read as the small option next to the Grow retainer
+  and Shopify's Grow plan (audit CB-17), and "Enterprise" is the Merkle Enterprise Engagement route.

@@ -55,7 +55,7 @@ const SECTIONS = [
          did not fit was the earlier "S · Ecommerce Foundation", at three. */
       { to: '/offering/s', label: 'Ecommerce Foundation', signedIn: true },
       { to: '/offering/m', label: 'Ecommerce Scale', signedIn: true },
-      { to: '/offering/l', label: 'Ecommerce Growth', signedIn: true },
+      { to: '/offering/l', label: 'Ecommerce Flagship', signedIn: true },
       { to: '/offering/arc', label: 'Merkle Arc', signedIn: true },
     ],
   },

@@ -453,11 +453,11 @@
       "$comment": "Marked as the recommended starting point for a brand that already sells — a positioning, like the middle tier every competitor marks, not a statistic. Only a count of real engagements could make it \"the most common\", and the page does not claim that."
     },
     "L": {
-      "name": "Ecommerce Growth",
+      "name": "Ecommerce Flagship",
       "for_whom": "A brand already selling professionally — often on an enterprise platform — that needs more than one store, a storefront built out template by template, and measurement that stands up. The move to Shopify has to land on a store that performs at least as well, and is measured to prove it; the replatform itself is quoted beside the pack, by the platform it comes from.",
       "delivery_track": "liquid",
       "build_label": "Custom Liquid · Hydrogen",
-      "triggered_by": "A headless storefront, or an estimate from the Growth floor — the largest of the three Shopify offers",
+      "triggered_by": "A headless storefront, or an estimate from the Flagship floor — the largest of the three Shopify offers",
       "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores, each with its own domain, tax and payments, and one design system kept in step across them · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 140000,
@@ -643,13 +643,13 @@
       "order": 1,
       "when": "l_trigger headless",
       "offer": "L",
-      "plain": "A headless storefront — only Ecommerce Growth builds one"
+      "plain": "A headless storefront — only Ecommerce Flagship builds one"
     },
     {
       "order": 2,
       "when": "the quote reaches the L floor, and every gate past the L promise is sold as an L add-on",
       "offer": "L",
-      "plain": "The quote reaches Ecommerce Growth’s floor, and everything past its promise is sold as an add-on to it"
+      "plain": "The quote reaches Ecommerce Flagship’s floor, and everything past its promise is sold as an add-on to it"
     },
     {
       "order": 3,
@@ -1664,7 +1664,7 @@
       "id": "11.3",
       "result": "STOP",
       "status": "canonical",
-      "condition": "Scope has outgrown the gate work the largest pack carries — Ecommerce Growth’s band spans nine to nineteen weeks of scope gates — AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: every gate is quoted at its own weeks and price. What cannot be quoted is scope this large that cannot yet be committed to",
+      "condition": "Scope has outgrown the gate work the largest pack carries — Ecommerce Flagship’s band spans nine to nineteen weeks of scope gates — AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: every gate is quoted at its own weeks and price. What cannot be quoted is scope this large that cannot yet be committed to",
       "destination": "An Enterprise Engagement opening with a dedicated Discovery Phase, to close the open risks before the scope is committed",
       "inputs": [
         "/offer/scope_effort_by_gate",
@@ -1944,7 +1944,7 @@
       "id": "11.26",
       "result": "STOP",
       "status": "canonical",
-      "condition": "The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track",
+      "condition": "The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Flagship on the headless track",
       "destination": "Merkle Arc — not quoted or estimated here; the Arc practice scopes it",
       "inputs": [
         "/design/headless/content_source",
@@ -2617,7 +2617,7 @@
         "S": "Shopify Analytics, its reports, and GA4’s own ecommerce events",
         "M": "All of that, plus events per market and currency, or from an app",
         "L": "All of that, plus a custom GA4 event implementation",
-        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically — that is S, and it is not a small thing. Ecommerce Scale adds the events a multi-market store needs that the standard set does not carry, and the events an app emits. Ecommerce Growth adds an event layer designed against what the client actually measures. The add-on is what goes past that in any pack: a third destination, a tag manager, server-side tagging or a consent platform. Shopify’s own cookie banner is configured for every market in scope in every pack: Shopify switches it on automatically only for the UK and the EEA, so a Swiss store gets it because someone set it up.",
+        "note": "Every store already has Shopify Analytics: the pre-built reports, the dashboard and the ShopifyQL query editor. GA4 connects through the Google & YouTube channel and its ecommerce events are tracked automatically — that is S, and it is not a small thing. Ecommerce Scale adds the events a multi-market store needs that the standard set does not carry, and the events an app emits. Ecommerce Flagship adds an event layer designed against what the client actually measures. The add-on is what goes past that in any pack: a third destination, a tag manager, server-side tagging or a consent platform. Shopify’s own cookie banner is configured for every market in scope in every pack: Shopify switches it on automatically only for the UK and the EEA, so a Swiss store gets it because someone set it up.",
         "addon": [
           "S",
           "M",
@@ -2641,7 +2641,7 @@
         "S": "One login per role",
         "M": "One login per role",
         "L": "One login per role",
-        "note": "Users, roles and permissions are set up in every pack, one set per role rather than one shared login — per market in Ecommerce Growth. The headcount is a plan gate rather than a licence add-on and can move the store up a plan on its own (rule 11.1), which is why it is counted before the plan is quoted.",
+        "note": "Users, roles and permissions are set up in every pack, one set per role rather than one shared login — per market in Ecommerce Flagship. The headcount is a plan gate rather than a licence add-on and can move the store up a plan on its own (rule 11.1), which is why it is counted before the plan is quoted.",
         "sources": [
           "https://help.shopify.com/en/manual/your-account/users/users-plan-requirements"
         ],
@@ -2846,7 +2846,7 @@
           "M",
           "L"
         ],
-        "note": "Blocks on the Thank you and Order status pages are already in Ecommerce Scale and Ecommerce Growth. Inside the checkout steps is Shopify Plus only (rule 11.1), and a fully custom checkout UI is not sold at all (rule 11.6)."
+        "note": "Blocks on the Thank you and Order status pages are already in Ecommerce Scale and Ecommerce Flagship. Inside the checkout steps is Shopify Plus only (rule 11.1), and a fully custom checkout UI is not sold at all (rule 11.6)."
       },
       {
         "id": "analytics_consent",

@@ -255,7 +255,7 @@ export function OfferScale({ offers, pricing, currency, here }) {
  * so "what does set-up actually include" had no answer, and the largest phase
  * of an L was invisible.
  *
- * Bars rather than a table, because the shape is the argument. On Growth the
+ * Bars rather than a table, because the shape is the argument. On Flagship the
  * storefront build is four to six of the thirteen to twenty weeks and you see
  * that before reading a word, which is exactly why that offer exists. Widths are
  * a percentage of the longest phase, in CSS, so the numbers stay selectable and
@@ -334,7 +334,7 @@ export function Channels({ channels }) {
  * How the storefront is built.
  *
  * The track used to be a property of the offer, which told a headless
- * engagement it was getting a theme. It is an answer: Ecommerce Growth builds
+ * engagement it was getting a theme. It is an answer: Ecommerce Flagship builds
  * either way and spends the same weeks differently, exactly as it does per
  * channel.
  *
@@ -735,7 +735,7 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
      say it was the second one a reader could not tell from this. An offer that
      builds either way has a `tracks` pair and says so — `delivery_track` is
      `liquid` on all three, so printing it alone put "Online Store · Horizon"
-     under Ecommerce Growth, which is the one offer that is often headless. */
+     under Ecommerce Flagship, which is the one offer that is often headless. */
   const buildsAs = (o) => (o.tracks ? 'Theme or headless' : (track ? track(o.delivery_track) ?? o.delivery_track : null));
 
   /* A row whose value is the same in every pack is not a comparison; it is one

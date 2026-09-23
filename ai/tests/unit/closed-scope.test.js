@@ -240,7 +240,7 @@ describe('the closed scope each pack sells', () => {
 
   test('a quantity in a cell is the quantity the engine was tested at', () => {
     /*
-     * The row that started this: the page promised an Ecommerce Growth "up to
+     * The row that started this: the page promised an Ecommerce Flagship "up to
      * 3 system integrations" while the fixture below — the one the classifier
      * actually runs — carried one, and at two the scope overflows the band and
      * the engagement is no longer priced as quoted. Nothing could see it,
@@ -341,7 +341,7 @@ describe('the closed scope each pack sells', () => {
     assert.match(row.M, /WooCommerce/);
     assert.equal(limits.M.migration, 'woocommerce', 'the promise the engine prices carries the same');
     assert.match(sold.description, /Ecommerce Scale already carries a WooCommerce or Shopify migration/);
-    assert.doesNotMatch(sold.description, /Ecommerce Growth already carr/, 'L carries no migration');
+    assert.doesNotMatch(sold.description, /Ecommerce Flagship already carr/, 'L carries no migration');
     for (const source of ['Shopware', 'BigCommerce', 'Magento']) assert.match(row.addon_label, new RegExp(source), `${source} is sold on top in M, and the row has to say so`);
   });
 

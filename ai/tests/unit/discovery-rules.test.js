@@ -83,7 +83,7 @@ describe('classification edge cases', () => {
     assert.equal(offer.l_triggers.headless.active, false);
   });
 
-  test('a headless storefront is Ecommerce Growth, and the track follows the answer', () => {
+  test('a headless storefront is Ecommerce Flagship, and the track follows the answer', () => {
     // Headless is a floor, not a size: four weeks of Foundation cannot produce
     // a headless storefront at any catalogue. It is still a Shopify build while
     // Shopify holds the content — what leaves is exit rule 11.26's business.
@@ -306,7 +306,7 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(withHeavy.price_band.max > bare.price_band.max + 30000, 'and so is the price');
   });
 
-  test('a quote that reaches the Growth floor is named Growth, on the track the answers chose', () => {
+  test('a quote that reaches the Flagship floor is named Flagship, on the track the answers chose', () => {
     // The name follows the budget the quote is in; the track is an answer, so
     // a large Liquid build is an L on the Liquid track.
     const heavy = classifyOffer({
@@ -324,7 +324,7 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.equal(heavy.code, 'L');
     assert.equal(heavy.delivery_track, 'liquid', 'nothing here asked for a headless storefront');
     assert.equal(heavy.l_triggers.headless.active, false);
-    assert.ok(heavy.price_band.min >= offering.offers.L.price_band.min, 'it is in the Growth budget');
+    assert.ok(heavy.price_band.min >= offering.offers.L.price_band.min, 'it is in the Flagship budget');
   });
 
   test('an L carries the gates that outgrow its own band, not M\u2019s', () => {
@@ -461,11 +461,11 @@ describe('the offer follows the effort, not the gate count', () => {
       assert.ok(s.note?.length > 40, `${code}: and what happens past it`);
       bespoke[code] = s.bespoke_sections;
     }
-    // Foundation configures, Scale builds a few, Growth builds the set — and a
+    // Foundation configures, Scale builds a few, Flagship builds the set — and a
     // null is the set, not an omission.
     assert.equal(bespoke.S, 0);
     assert.ok(bespoke.M > bespoke.S, 'Scale builds more than Foundation');
-    assert.equal(bespoke.L, null, 'Growth is the whole template set, which is not a count');
+    assert.equal(bespoke.L, null, 'Flagship is the whole template set, which is not a count');
     assert.ok(offering.offers.L.storefront.templates.length > offering.offers.S.storefront.templates.length,
       'and the bigger offer builds more templates');
   });
@@ -494,8 +494,8 @@ describe('the offer follows the effort, not the gate count', () => {
   test('no offer excludes something the same page prices as one of its gates', () => {
     // The Foundation page said "no ERP, PIM, CRM or 3PL connection is in this
     // offer" directly above a gate table pricing one at +1-3 weeks and
-    // CHF 10-30k, and Growth excluded a headless storefront, which is the thing
-    // Growth is bought for. A boundary that contradicts the price list on the
+    // CHF 10-30k, and the L pack excluded a headless storefront, which is the thing
+    // L is bought for. A boundary that contradicts the price list on the
     // same page is the first thing a client challenges, and rightly.
     const priced = new Map(offering.scope_gates.map((g) => [g.id, g.label]));
     const FLAT_DENIAL = /\bis (not )?in this offer\b|\bnot included in this offer\b/i;
@@ -506,10 +506,10 @@ describe('the offer follows the effort, not the gate count', () => {
       }
     }
 
-    // And the one that is simply false: Ecommerce Growth builds headless.
+    // And the one that is simply false: Ecommerce Flagship builds headless.
     const growth = (offering.offers.L.not_included ?? []).join(' ');
     assert.doesNotMatch(growth, /^(?:(?!outside Shopify).)*a headless .{0,40}storefront\b/is,
-      'Growth cannot exclude the track it is triggered by');
+      'Flagship cannot exclude the track it is triggered by');
     assert.ok(priced.has('storefront_design'));
     // The design system is built inside the offers, priced by its gate, since
     // it stopped being an L trigger.
