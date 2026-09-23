@@ -1,6 +1,6 @@
 # shopify-ai-builder — Product Strategy
 
-> **Status:** Approved · **Date:** 2025-06 · **Updated:** 2026-09-16 (Phase 1 — offering as data, multi-consultant scope) · **Owner:** Jose Reboredo
+> **Status:** Approved · **Date:** 2025-06 · **Updated:** 2026-09-23 (offering 3.0.0 — the quote follows the scope, ADR 0019) · **Owner:** Jose Reboredo
 
 ---
 
@@ -69,24 +69,37 @@ The actual delivery target: stores, themes, apps, Admin API, Storefront API.
 
 ## Value proposition
 
-> *"I use an AI-assisted delivery system that translates your business requirements
-> directly into a working Shopify store — with the same quality gates and structured
-> process a technical agency would use, at a fraction of the cost and timeline."*
+> *"We translate your business requirements into a Shopify scope you can read, estimate
+> and sign — every feature grounded in Shopify's own documentation, every question
+> asked that the approach needs, and the estimate built from the scope rather than
+> guessed from a package."*
+
+The packs open the conversation; the answers make the estimate; a discovery closes
+the scope and the delivery team gives the final figure. Contingency and services such
+as Design and QA testing are added in the proposal.
 
 ---
 
 ## Competitive position
 
-| Who | Target | Gap they leave |
-|---|---|---|
-| Shopify AI Store Builder | Merchant, own store, self-serve | No governance, no customisation, single-session |
-| Shopify AI Toolkit | Developers who know Shopify | Requires technical knowledge, no delivery workflow |
-| Freelance dev team | Anyone | 5–15× cost, slow, coordination overhead |
-| Shopify agencies | Mid-market+ | Minimum engagement size, not SME-friendly |
-| **`shopify-ai-builder`** | **Consultant delivering for clients** | ← fills this gap |
+Merkle does not compete with Shopify agencies on cost. The public DACH market sells
+fixed packages from CHF 1.5–15k for a configured theme in two to six weeks, and a
+Shopify Plus or enterprise tier from about EUR 50–150k over twelve to twenty-four
+weeks (market references in `ai/schema/offering.json`, read 2026-09-23). Merkle's
+bands buy a staffed team — about two people full time for the pack's weeks — not a
+package's hours: governance, a Shopify-sourced scope, accessibility and Core Web
+Vitals measured, quality gates and hypercare, with network capacity behind it.
+
+| Who | Target | What they sell | Where Merkle differs |
+|---|---|---|---|
+| Swiss and DACH boutiques | SMEs launching online | Fixed packages, CHF 1.5–15k, 2–8 weeks | A staffed team and quality gates; S is for a brand launching D2C properly, not a test |
+| DACH Plus agencies | Mid-market | EUR 20–150k+, 8–24 weeks | Scope decided by gates from the client's answers, add-ons priced at one rate |
+| Enterprise Plus partners (NL, UK, US) | Enterprise replatforms | EUR 150–700k+, five to ten months | L with the replatform quoted beside it, by source platform |
+| Shopify AI Store Builder / AI Toolkit | Merchants and developers | Self-serve tooling | Governance, discovery and a delivery workflow |
+| **Merkle (this tool)** | **Lead Consultants in pre-sales and discovery** | **Packs to open, an estimate from the answers, a closed scope** | ← the combination |
 
 The moat is the **combination**: live Shopify knowledge (toolkit) + delivery
-governance (Gaia) + non-technical operator path (consultant as UI).
+governance (Gaia) + a consultant-run discovery whose answers decide the scope.
 
 ---
 

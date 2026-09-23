@@ -1910,7 +1910,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .ladder-note { margin: 26px 0 0; color: var(--muted); font-size: 0.92rem; }
 .ladder-note a { color: var(--ink); }
 
-/* The offer most engagements land on.
+/* The recommended starting offer.
    The first attempt gave it a red rule, which changed nothing: every stat
    already had one, so the mark marked nothing. What makes one of three stand
    out is the other two stepping back — so where a list names a common case, the
@@ -1977,7 +1977,7 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    read correctly in the rule and hid the first row of every group behind them:
    the reference sticks the plan names and lets the section titles scroll, and
    it is right. */
-/* The offer most engagements land on, marked down the whole column rather than
+/* The recommended starting offer, marked down the whole column rather than
    only in the page head — the same fact, where the reader is. */
 .packs .pack-common { background: var(--panel); }
 .packs thead th.pack-common { background: var(--panel); }
@@ -2119,7 +2119,7 @@ h3.sub {
 /* Not a fourth pack, and it must not read as one. A rule down its left edge is
    the whole statement — everything left of it is quoted by this engine and
    everything in it is not. No tint, because the tint already means "the offer
-   most engagements land on", and no red, because the page spends its one
+   the recommended start", and no red, because the page spends its one
    accent on the rows where the packs differ. */
 .packs .pack-arc { border-left: 1px solid var(--line-strong); padding-left: 13px; }
 /* An em-dash at 1.7rem and 700 weight shouts a heading where there is no offer

@@ -1,6 +1,6 @@
 # ADR 0001 — Offer model: S/M/L with scope gates as data
 
-- **Status:** Accepted (2026-09-16)
+- **Status:** Accepted (2026-09-16) · pricing amended by ADR 0019 (2026-09-23): the quote follows the scope
 - **Date:** 2026-09-16
 - **Deciders:** Jose Reboredo (offering owner)
 
