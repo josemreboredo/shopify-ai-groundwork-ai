@@ -257,7 +257,7 @@ export function offeringView({ pricing = false } = {}) {
        offer decided"; this answers the question a client asks instead — if I
        buy an M, what exactly do I get. `limits` is the machine-readable twin
        the test builds from and has no business on a page, so it is not here. */
-    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, group, shopify_limit: shopifyLimit, S, M, L, note, addon, addon_label: addonLabel }) => ({
+    closed_scope: (offering.closed_scope?.rows ?? []).map(({ id, what, gate, group, shopify_limit: shopifyLimit, S, M, L, Arc, Arc_rules: arcRules, note, addon, addon_label: addonLabel }) => ({
       id,
       what,
       gate: gate ?? null,
@@ -270,6 +270,12 @@ export function offeringView({ pricing = false } = {}) {
          needs in a room, and the one they used to have to guess at. */
       shopify_limit: shopifyLimit ?? null,
       values: { S, M, L },
+      /* Where the offers stop. Arc is not a fourth pack and gets no `values`
+         entry: it has no band, no weeks and no gate capacity, and putting it
+         in there would make every consumer of this view treat it as one. Only
+         three rows carry it, and each names the STOP rule it comes from, so
+         the cell cannot say something the engine would not. */
+      ...(Arc ? { arc: { what: Arc, rules: arcRules ?? [] } } : {}),
       ...(note ? { note } : {}),
       /* Which packs can buy more of this, and what it costs there. A ceiling
          the client can buy past is not a refusal, and printing one loses the

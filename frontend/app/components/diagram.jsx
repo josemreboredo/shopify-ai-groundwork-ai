@@ -640,6 +640,37 @@ function quantity(value) {
 }
 
 /** A dash a screen reader can read, since the glyph alone announces as nothing. */
+/**
+ * The Arc column. Arc is not a fourth pack — it has no band, no weeks and no
+ * gate capacity — so it is a column of where the offers stop rather than one
+ * more thing to buy. Three of the twenty-two rows carry it, each derived from
+ * the STOP rule that routes to Arc, and the rule is printed so the cell cannot
+ * claim something the engine would not.
+ */
+function ArcCell({ arc }) {
+  /* Not `NotCovered`: that announces "Not included in this pack", and Arc is
+     not a pack. An empty cell here means the row is not where the offers stop,
+     which is the opposite of a gap in what Arc does. */
+  if (!arc) {
+    return (
+      <>
+        <span className="sr-only">Not where the offers stop</span>
+        <span aria-hidden="true">&mdash;</span>
+      </>
+    );
+  }
+  return (
+    <>
+      <span className="pack-arc-what">{arc.what}</span>
+      {arc.rules?.length ? (
+        <span className="pack-arc-rule">
+          {arc.rules.length === 1 ? 'Rule' : 'Rules'} {arc.rules.join(', ')}
+        </span>
+      ) : null}
+    </>
+  );
+}
+
 function NotCovered() {
   return (
     <>
@@ -698,7 +729,7 @@ const differs = (row, offers) => offers.some((o, i) => i > 0 && String(row.value
 
 export function PackTable({ offers, closedScope = [], pricing, currency, track }) {
   if (!offers?.length) return null;
-  const cols = offers.length + 1;
+  const cols = offers.length + 2; // the row label, the packs, and Arc
 
   /* How the pack is built, in the column head, because the table that used to
      say it was the second one a reader could not tell from this. An offer that
@@ -742,6 +773,8 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
           What each pack includes, and up to what limit. A dash means the pack includes none of that row.
           A cell marked &ldquo;Every pack&rdquo; spans the three pack columns and holds the same value in
           all of them. What can be bought on top is listed under Add-on services, after this table.
+          The last column is Merkle Arc, which is not a pack and is not quoted here: it carries a value
+          only on the rows where a STOP rule takes the requirement out of the offers altogether.
         </caption>
         <thead>
           <tr>
@@ -756,6 +789,11 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
                 </span>
               </th>
             ))}
+            <th scope="col" className="pack-arc">
+              <span className="pack-code">&mdash;</span>
+              <span className="pack-name">Merkle Arc</span>
+              <span className="pack-meta">Not quoted here</span>
+            </th>
           </tr>
         </thead>
         {/* The commercial frame, above the capabilities: how much gated work the
@@ -772,6 +810,7 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
                 </td>
               );
             })}
+            <td data-label="Merkle Arc" className="pack-arc"><span className="pack-arc-what">Scoped by the Arc practice</span></td>
           </tr>
           {pricing && offers.every((o) => o.price_band) ? (
             <tr>
@@ -783,6 +822,7 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
                   </span>
                 </td>
               ))}
+              <td data-label="Merkle Arc" className="pack-arc"><span className="pack-arc-what">Not quoted or estimated here</span></td>
             </tr>
           ) : null}
         </tbody>
@@ -840,6 +880,9 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
                     </td>
                   );
                 })}
+                <td data-label="Merkle Arc" className={`pack-arc${row.arc ? '' : ' pack-no'}`}>
+                  <ArcCell arc={row.arc} />
+                </td>
               </tr>
             ))}
           </tbody>

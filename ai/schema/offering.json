@@ -1,6 +1,6 @@
 {
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "currency": "CHF",
   "offers": {
     "S": {
@@ -2148,6 +2148,10 @@
         "S": "Up to 1",
         "M": "Up to 1",
         "L": "Up to 1",
+        "Arc": "Several brands, each with its own design-system programme",
+        "Arc_rules": [
+          "11.29"
+        ],
         "note": "A second brand is not a second market. It always needs its own store, and unlike an ordinary further store that one is not free with the first — which is why one brand is what every pack assumes even in a single market.",
         "sources": [
           "https://help.shopify.com/en/manual/organization-settings/expansion-stores"
@@ -2271,6 +2275,10 @@
         "S": "The theme’s own sections, 0 bespoke",
         "M": "Up to 3 bespoke sections",
         "L": "The full template set",
+        "Arc": "A front end Shopify does not build, or editorial content in an external CMS",
+        "Arc_rules": [
+          "11.26"
+        ],
         "note": "Horizon configured with brand tokens is in every pack, and the merchant can still rearrange it afterwards. Past that it is a design gate: bespoke sections and blocks from a key-screens design, or every template from a mapped design system.",
         "addon": [
           "S",
@@ -2306,6 +2314,10 @@
         "S": "Settings and editor branding",
         "M": "Settings, branding, and blocks after the sale",
         "L": "All of that, plus blocks and fields inside the checkout steps (Plus)",
+        "Arc": "A fully custom checkout UI — composable commerce",
+        "Arc_rules": [
+          "11.6"
+        ],
         "note": "Shopify gates the checkout in three steps and so does this offering. Blocks on the Thank you and Order status pages run on every plan except Starter, so M and L build them. Blocks and custom fields inside the information, shipping and payment steps need Shopify Plus — L includes them, and below L they are an add-on and a plan decision before they are a scope one. Backend rules are Shopify Functions, an add-on in every pack. A fully custom checkout UI is not sold at all (rule 11.6).",
         "addon": [
           "S",

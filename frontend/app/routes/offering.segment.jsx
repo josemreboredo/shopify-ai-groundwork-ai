@@ -22,6 +22,14 @@ const PARTS = {
   lands: ['03', 'What moves it', 'What puts an engagement here, and what takes it somewhere else'],
 };
 
+/* Arc gets the same furniture and two parts rather than three. There is no
+   "What it builds" here, and that gap is the honest one: this engine does not
+   know what Arc builds and must not appear to. */
+const ARC_PARTS = {
+  what: ['01', 'What it covers', 'What Arc is, and what is not Arc'],
+  stops: ['02', 'What moves it', 'What takes an engagement out of the offers, and what carries across'],
+};
+
 /** The ribbon under the page head. Five screens of page, opened before a call. */
 const JUMP = [
   ['scope', 'In scope'],
@@ -35,9 +43,17 @@ const JUMP = [
   ['scale', 'Where it sits'],
 ];
 
+const ARC_JUMP = [
+  ['what', 'What Arc is'],
+  ['not', 'What is not Arc'],
+  ['stops', 'What takes it here'],
+  ['route', 'After a stop'],
+  ['handover', 'What carries across'],
+];
+
 /** The part marker, where a section opens one. */
-function Part({ id }) {
-  const part = PARTS[id];
+function Part({ id, parts = PARTS }) {
+  const part = parts[id];
   if (!part) return null;
   const [n, name, what] = part;
   return (
@@ -326,6 +342,12 @@ export default function OfferingSegment({ loaderData }) {
  * stop — no band, no weeks, no estimate.
  */
 function Arc({ view, segment }) {
+  /* How many of the rules that leave the offers hand the engagement to Arc
+     rather than to a Larger Engagement or a review. Counted from the rules
+     themselves, because a number written down here is a number that goes
+     stale the first time a rule is added. */
+  const toArc = view.exits.beyond_offers.filter((r) => /Merkle Arc/.test(r.destination ?? ''));
+
   return (
     <main id="main" className="story offering">
       <header className="page-head">
@@ -334,39 +356,67 @@ function Arc({ view, segment }) {
         <h1>Merkle Arc</h1>
         <p className="answer-line">Unify brand design, content and commerce in one architecture.</p>
         <p className="lede">
-          Headless is not the line: Hydrogen with content in Shopify is <Link to="/offering/l">Ecommerce Growth</Link>,
-          priced like any other build. The offers stop where a second system arrives — editorial content in an
-          external CMS or PIM, or a front end Shopify does not build. Arc is the enterprise platform Merkle
-          unifies those on: a tokenised design system, a multi-channel component library, GraphQL middleware and
-          its own console, composable and headless without the vendor lock-in.
+          The offers stop where a second system arrives — editorial content in an external CMS or PIM, or a
+          front end Shopify does not build. Arc is the enterprise platform Merkle unifies those on, and a
+          separate engagement scoped by the Arc practice.
         </p>
-        <p className="callout">
-          <strong>Nothing here quotes it, and nothing here estimates it.</strong> This engine prices Shopify
-          builds. Arc is a separate engagement, scoped by the Arc practice. What goes across is the discovery —
-          every answer, every requirement, and the rule that named the reason.
-        </p>
+        {/* The same three-stat head the offers carry, holding the three facts
+            Arc actually has. The middle one is a word rather than a number
+            because there is no band and no duration to print, and a dash where
+            a figure belongs reads as a figure someone forgot. */}
+        <ul className="stats">
+          <li><strong>{view.exits.beyond_offers.length}</strong><span>rules take an engagement out of the offers</span></li>
+          <li><strong>{toArc.length}</strong><span>of them hand it to Arc rather than to a Larger Engagement</span></li>
+          <li><strong className="stat-words">Not quoted</strong><span>no band, no weeks, no estimate — the Arc practice scopes it</span></li>
+        </ul>
+        <nav className="jump" aria-label="On this page">
+          {ARC_JUMP.map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
+        </nav>
       </header>
 
-      <section>
-        <h2>What the consultant records after a stop</h2>
-        <p className="lede">
-          Recorded in question 10.5.5, before the closing document is written. Two routes, and the engine produces
-          a different thing for each.
+      <section id="what" className="part-start">
+        <Part id="what" parts={ARC_PARTS} />
+        <h2>What Arc is</h2>
+        <p className="answer-line">Merkle&rsquo;s enterprise platform for unifying brand design, content and commerce in one architecture.</p>
+        <ul className="ticks big">
+          <li>A tokenised design system</li>
+          <li>A multi-channel component library</li>
+          <li>GraphQL middleware</li>
+          <li>Its own console</li>
+          <li>Composable and headless, without the vendor lock-in</li>
+        </ul>
+        <p className="callout">
+          <strong>Nothing here quotes it, and nothing here estimates it.</strong> This engine prices Shopify
+          builds. What goes across to Arc is the discovery — every answer, every requirement, and the rule
+          that named the reason.
         </p>
-        <div className="routes">
-          {view.routes.map((r) => (
-            <article key={r.id} className={`route route-${r.id}`}>
-              <h3>{r.label}</h3>
-              {r.proposal ? <p className="route-proposal">{r.proposal}</p> : null}
-              <p className="muted">{r.description}</p>
-            </article>
-          ))}
-        </div>
       </section>
 
-      <section>
+      {/* The boundary section the offers carry, pointing the other way. On an
+          offer page it lists what the offer does not include; here the useful
+          boundary is what people mistake for Arc and is in fact an offer, which
+          is the confusion that costs a deal. */}
+      <section id="not">
+        <h2>What is not Arc</h2>
+        <p className="lede">
+          Headless is not the line. Each of these looks like it leaves Shopify and does not, so each one is
+          priced by this engine like any other build.
+        </p>
+        <ul className="ticks big ticks-no">
+          <li>Hydrogen with editorial content in Shopify metaobjects — that is <Link to="/offering/l">Ecommerce Growth</Link> on the headless track</li>
+          <li>A second brand on a configured theme, or on a key-screens design — a second brand already forces Ecommerce Growth through the store it needs, and that is where it stays</li>
+          <li>Blocks and fields inside the checkout steps — Shopify Plus permits them, and Ecommerce Growth builds them</li>
+          <li>Several markets, languages or stores — all of them are priced inside the offers</li>
+        </ul>
+      </section>
+
+      <section id="stops" className="part-start">
+        <Part id="stops" parts={ARC_PARTS} />
         <h2>What takes an engagement beyond the offers <span className="chip">{view.exits.beyond_offers.length}</span></h2>
-        <p className="lede">Each of these is a rule in the engine. It fires on the answers, not on an opinion.</p>
+        <p className="lede">
+          Each of these is a rule in the engine. It fires on the answers, not on an opinion, and only{' '}
+          {toArc.length} of them end at Arc — the rest go to a Larger Engagement or to a review.
+        </p>
         <ol className="claims">
           {view.exits.beyond_offers.map((r) => (
             <li key={r.id}>
@@ -383,7 +433,31 @@ function Arc({ view, segment }) {
         </ol>
       </section>
 
-      <section>
+      <section id="route">
+        <h2>What the consultant records after a stop</h2>
+        <p className="lede">
+          Recorded in question 10.5.5, before the closing document is written. Two routes, and the engine produces
+          a different thing for each.
+        </p>
+        <div className="routes">
+          {view.routes.map((r) => (
+            <article key={r.id} className={`route route-${r.id}`}>
+              <h3>{r.label}</h3>
+              {r.proposal ? <p className="route-proposal">{r.proposal}</p> : null}
+              <p className="muted">{r.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* These two lists used to sit in a section with no heading, under the
+          page's last rule, which left them reading as a footer rather than as
+          the two things a consultant still owes someone after a stop. */}
+      <section id="handover">
+        <h2>What carries across</h2>
+        <p className="lede">
+          Neither list changes the route. Both travel with the discovery to whoever picks the engagement up.
+        </p>
         <details className="rules-more">
           <summary>What needs a named owner before the build starts <span className="chip">{view.exits.flags.length}</span></summary>
           <p className="muted">Flags do not change the route. Each needs an owner and a resolution before build.</p>

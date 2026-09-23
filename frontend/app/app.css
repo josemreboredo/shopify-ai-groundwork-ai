@@ -1365,6 +1365,14 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 
 /* The scope list on a segment page carries weight: it is what the client buys. */
 .ticks.big > li { font-size: 1.02rem; padding-block: 5px; }
+/* The red wedge means "this is in it". A list of four things that are NOT the
+   subject carries the same wedge and reads as the opposite of what it says, so
+   this one takes a neutral rule instead. The accent stays spent on the one
+   thing per page that earns it. */
+.ticks-no li::before {
+  background: none; clip-path: none; width: 11px; height: 0;
+  border-top: 2px solid var(--line-strong); top: 12px;
+}
 
 @media (max-width: 760px) {
   .segments a { grid-template-columns: 3.2rem minmax(0, 1fr); padding-right: 1.6rem; }
@@ -1865,6 +1873,29 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    wrapper gives the overflow back. Measured, not assumed: 0 px of horizontal
    overflow at 1440 and at 390. */
 .table-scroll:has(> table.packs) { overflow: visible; }
+
+/* ── The Arc column: where the offers stop ────────────────────────────────── */
+/* Not a fourth pack, and it must not read as one. A rule down its left edge is
+   the whole statement — everything left of it is quoted by this engine and
+   everything in it is not. No tint, because the tint already means "the offer
+   most engagements land on", and no red, because the page spends its one
+   accent on the rows where the packs differ. */
+.packs .pack-arc { border-left: 1px solid var(--line-strong); padding-left: 13px; }
+/* An em-dash at 1.7rem and 700 weight shouts a heading where there is no offer
+   code to print. It is a placeholder, so it is set like one. */
+.packs thead th.pack-arc .pack-code { font-size: 1rem; color: var(--muted); font-weight: 400; }
+.pack-arc-what { display: block; color: var(--muted); }
+/* The STOP rule behind the cell, printed because a cell that names what leaves
+   the offers has to be checkable against the engine that decides it. */
+.pack-arc-rule {
+  display: block; margin-top: 5px; font-size: 0.72rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink); font-variant-numeric: tabular-nums;
+}
+@media (max-width: 560px) {
+  /* Stacked, a left rule on one card in a column of cards is noise: the
+     `data-label` already says which column it is. */
+  .packs .pack-arc { border-left: 0; padding-left: 0; }
+}
 
 /* ── The backlog, one epic at a time ──────────────────────────────────────── */
 /* Sixteen epics with their stories inline came to 6,310px — forty-four per cent

@@ -330,6 +330,45 @@ describe('the closed scope each pack sells', () => {
     assert.deepEqual(rows.find((r) => r.id === 'store_estate').addon, ['L']);
   });
 
+  /* The Arc column is the one place the pack table talks about work this engine
+     does not price. Left to prose it would drift into a fourth offer — a cell
+     saying what Arc "includes" is a commercial promise for a practice that
+     never agreed to it. So every Arc cell has to be traceable to a STOP rule
+     that actually routes there: the rule must exist, it must stop the
+     engagement, and its destination must name Arc. */
+  test('every Arc cell is backed by a STOP rule that routes to Arc', () => {
+    const byId = new Map(offering.exit_rules.map((r) => [r.id, r]));
+    const withArc = rows.filter((r) => r.Arc);
+    assert.ok(withArc.length, 'the pack table claims an Arc column and no row fills it');
+
+    for (const row of rows) {
+      if (row.Arc_rules && !row.Arc) assert.fail(`${row.id}: cites Arc rules with nothing in the Arc cell`);
+      if (!row.Arc) continue;
+      assert.ok(row.Arc_rules?.length, `${row.id}: says what Arc does and names no rule for it`);
+      for (const id of row.Arc_rules) {
+        const rule = byId.get(id);
+        assert.ok(rule, `${row.id}: cites rule ${id}, which does not exist`);
+        assert.equal(rule.result, 'STOP', `${row.id}: rule ${id} does not take the engagement out of the offers`);
+        assert.match(
+          rule.destination ?? '',
+          /Merkle Arc/,
+          `${row.id}: rule ${id} leaves the offers, but not towards Arc — it goes to "${rule.destination}"`,
+        );
+      }
+    }
+  });
+
+  /* The other half of the same guard. A rule that routes to Arc and appears in
+     no row is a column that under-reports where the offers stop, which is the
+     failure a consultant finds out about in the room. */
+  test('every rule that routes to Arc appears in the Arc column', () => {
+    const arcRules = offering.exit_rules.filter((r) => r.result === 'STOP' && /Merkle Arc/.test(r.destination ?? ''));
+    const cited = new Set(rows.flatMap((r) => r.Arc_rules ?? []));
+    for (const rule of arcRules) {
+      assert.ok(cited.has(rule.id), `rule ${rule.id} routes to Arc and no row in the pack table says so`);
+    }
+  });
+
   test('a ceiling quoted in a row is the ceiling a rule actually enforces', () => {
     const byId = new Map(offering.exit_rules.map((r) => [r.id, r]));
     for (const row of rows) {

@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.2.0 · offering 2.13.0
+> **Version:** question bank 1.2.0 · offering 2.14.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are

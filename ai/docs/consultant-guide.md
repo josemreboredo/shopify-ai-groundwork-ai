@@ -2,7 +2,7 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.2.0 · offering 2.13.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.2.0 · offering 2.14.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
