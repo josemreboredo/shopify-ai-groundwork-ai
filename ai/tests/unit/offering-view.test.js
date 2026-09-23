@@ -10,7 +10,12 @@ import { offeringView } from '../../shared/offering-view.js';
 import { offering } from '../../schema/index.js';
 
 describe('offering view', () => {
-  test('a consultant sees scope, routes, durations and the Shopify approach — and no price at all', () => {
+  /* This guards the mechanism, not who may read it: with pricing off, not one
+     field and not one figure leaves the server. The offering pages now pass
+     pricing on for every signed-in consultant, but the deck and every
+     client-facing path still build their view with it off, and this is what
+     stops a band reaching them. */
+  test('with pricing off, no field and no figure leaves the server', () => {
     const view = offeringView();
     assert.equal(view.pricing, false);
     assert.deepEqual(view.offers.map((o) => o.code), ['S', 'M', 'L']);

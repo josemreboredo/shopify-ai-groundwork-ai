@@ -9,13 +9,26 @@ import { AddonList, PackTable } from '../components/diagram.jsx';
 export const meta = () => [{ title: pageTitle('The offering') }];
 
 /**
- * Signed-in only. Price bands travel only to owners: while sign-in is open to any
- * GitHub account, "signed in" does not mean "Merkle", and the offering view strips
- * Merkle pricing on the server for everyone else.
+ * Signed-in only, and every signed-in consultant reads the bands (owner decision,
+ * 2026-09-23). These are the offering's standard bands for S, M and L — the thing
+ * a consultant needs in the room — and they are already public in this repository's
+ * `ai/schema/offering.json`.
+ *
+ * READ THIS BEFORE RELYING ON IT. The gate this replaced existed for a reason that
+ * has not gone away: sign-in is open to every GitHub account unless
+ * SIGN_IN_MODE=allowlist is set, so "signed in" does not yet mean "Merkle". While
+ * it stays open, anyone with a GitHub account who finds the URL reads these bands.
+ * Closing that is one environment variable — SIGN_IN_MODE=allowlist with
+ * CONSULTANT_GITHUB_LOGINS — and it is what makes this decision safe rather than
+ * merely deliberate.
+ *
+ * A named client's own quote is a separate gate and is still owner-only
+ * (`ai/shared/index.js`), as is everything the deck generates.
  */
 export async function loader({ request }) {
   const user = await requireUser(request);
-  return { view: offeringView({ pricing: user.role === 'owner' }) };
+  // `requireUser` has already thrown for anyone not signed in.
+  return { view: offeringView({ pricing: Boolean(user) }) };
 }
 
 /** The resolution ladder every requirement climbs, cheapest first. */

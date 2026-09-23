@@ -86,7 +86,7 @@ export const meta = ({ data }) => [{
 
 export async function loader({ request, params }) {
   const user = await requireUser(request);
-  const view = offeringView({ pricing: user.role === 'owner' });
+  const view = offeringView({ pricing: Boolean(user) });   // see offering.jsx: bands are for every consultant
   const segment = segmentOf(view, params.segment);
   if (!segment) throw new Response('Not found', { status: 404, statusText: 'No such offer' });
   // The scope catalogue is the same backlog for every offer — what differs is
