@@ -107,7 +107,7 @@ export default function Offering({ loaderData }) {
           past that pack&rsquo;s scope as add-ons — so a re-estimate that finds a second store reads as the same
           pack with a store more.
         </p>
-        <p className="callout estimate-note">{view.estimate}</p>
+        <p className="callout estimate-note">{view.estimate} <Link to="/offering/estimation">How we estimate →</Link></p>
         <ul className="stats">
           {view.offers.map((o) => (
             <li key={o.code} className={o.most_common ? 'stat-common' : undefined}>

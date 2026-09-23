@@ -33,6 +33,15 @@
     ],
     "hypercare_rate_share": 0.5,
     "app_weeks": 0.125,
+    "calibration": {
+      "estimate_developer_days": 173,
+      "estimate_qa_share": 0.4,
+      "engine_weeks": {
+        "min": 20,
+        "max": 29.5
+      },
+      "note": "A real Shopify B2C estimation, anonymised: 173 developer days (with code review, documentation, unit tests and bug fixing) and QA at 40% of them. Run on the same engagement’s recorded answers, the engine quotes 20–29.5 weeks, and the estimation at the team’s rate card falls inside that range."
+    },
     "$comment": "Internal and never client-facing. A build week is what the delivery team does in one calendar week: the team above, 2.5 people full time, delivered offshore — front-end and back-end developers, QA, a project manager, a business analyst and a solution architect. weekly_rate is that week at the offshore rate card, converted from EUR at the ECB rate of 2026-09-23 (1 EUR = 0.939 CHF), rounded down; the rate card itself is not written here, because this repository is public. The shape comes from a real estimation (a Shopify B2C build of 173 developer days with QA at 40% of them, whose recorded answers the engine quotes at 20–29.5 weeks): developers 1.4, QA 0.55, and a project manager, business analyst and architect at 10, 10 and 7.5% of the delivery. Every modifier’s price is its weeks at this rate, so the quote is the Foundation base plus weeks a client can see. hypercare_rate_share: a week of hypercare after go-live — a named channel, a response within one working day, defects triaged — costs half a build week; each pack carries its own days (S 5, M 10, L 15 working days). app_weeks: each third-party app past what the pack includes (S 3, M 6, L 10) is an eighth of a build week, set so that crossing into a bigger pack, which includes more apps and more hypercare, never makes a quote cheaper. QA is part of the team, so the commercial team no longer adds a separate QA service on top of these packs."
   },
   "estimate": {

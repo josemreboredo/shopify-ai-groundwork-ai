@@ -2171,3 +2171,19 @@ h3.sub {
    re-estimate reads as the project it was plus what discovery found. */
 .since-rfp { margin-top: var(--s-6); }
 .since-rfp h3 { margin-bottom: var(--s-2); }
+
+/* How we estimate. The allocation bar is the share of a build week each role
+   gives, drawn so the team reads as a shape rather than as six numbers. */
+.team-table .alloc { display: inline-block; width: 6rem; height: 0.5rem; margin-right: var(--s-2); background: var(--line); vertical-align: middle; }
+.team-table .alloc > span { display: block; height: 100%; background: var(--red); }
+.team-table tfoot th, .team-table tfoot td, .example-table tfoot th, .example-table tfoot td { font-weight: 700; border-top: 2px solid var(--ink); }
+.estimation .steps { margin: var(--s-4) 0 var(--s-6); padding-left: var(--s-5); max-width: 72ch; }
+.estimation .steps li { margin-bottom: var(--s-3); line-height: var(--lh-normal); }
+.estimation .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr)); gap: var(--s-6); margin-top: var(--s-4); }
+.estimation .example h3 { margin: 0 0 var(--s-1); }
+.estimation .example-table { width: 100%; margin-top: var(--s-3); }
+.estimation .example-table td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.estimate-note a { white-space: nowrap; }
+@media (max-width: 560px) {
+  .estimation .examples { grid-template-columns: 1fr; }
+}

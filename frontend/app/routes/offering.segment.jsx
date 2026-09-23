@@ -151,7 +151,7 @@ export default function OfferingSegment({ loaderData }) {
             ? <li><strong>{band(offer.price_band, currency)}</strong><span>internal price band — never in a client document</span></li>
             : <li><strong>{TRACK[offer.delivery_track] ?? offer.delivery_track}</strong><span>how the storefront is built</span></li>}
         </ul>
-        <p className="callout estimate-note">{view.estimate}</p>
+        <p className="callout estimate-note">{view.estimate} <Link to="/offering/estimation">How we estimate →</Link></p>
         <nav className="jump" aria-label="On this page">
           {jumpFor(previous).map(([id, label]) => <a key={id} href={`#${id}`}>{label}</a>)}
         </nav>
