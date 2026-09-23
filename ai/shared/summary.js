@@ -164,6 +164,7 @@ export function quote(doc, { pricing = false, provisional = false } = {}) {
     // at its own weeks, and which of those go past the pack it is named after.
     scope_effort_weeks: o.scope_effort_weeks ?? null,
     base_weeks: offering.offers.S.duration_weeks,
+    hypercare_days: o.hypercare?.days ?? null,
     addons: (o.addons ?? []).map((a) => a.label),
     modifiers: o.modifiers ?? [],
     rationale: o.rationale ?? null,

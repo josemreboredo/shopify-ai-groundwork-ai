@@ -103,6 +103,8 @@ describe('the comparison table and the add-on catalogue the page reads', () => {
     for (const a of view.addons) {
       assert.ok(a.description?.trim(), `${a.id}: an add-on service with no scope description`);
       assert.ok(a.available_in.length, `${a.id}: nobody can buy it`);
+      // Hypercare runs after go-live: it is bought in days, not build weeks.
+      if (a.gate === null) { assert.ok(a.per_unit?.days > 0, `${a.id}: an add-on with neither weeks nor days`); continue; }
       assert.equal(typeof a.weeks.max, 'number', `${a.id}: weeks are a string, so the page cannot choose how to print them`);
       assert.ok(a.weeks.max >= a.weeks.min && a.weeks.min > 0, `${a.id}: ${a.weeks.min}–${a.weeks.max} weeks`);
       for (const t of a.tiers ?? []) {
@@ -120,9 +122,11 @@ describe('the comparison table and the add-on catalogue the page reads', () => {
   });
 
   test('an add-on costs nothing a consultant can see, and everything an owner can', () => {
-    assert.ok(view.addons.every((a) => a.price === undefined && (a.tiers ?? []).every((t) => t.price === undefined)),
+    assert.ok(view.addons.every((a) => a.price === undefined && a.per_unit?.price === undefined && (a.tiers ?? []).every((t) => t.price === undefined)),
       'a price band reached a caller who may not see Merkle pricing');
-    assert.ok(priced.addons.every((a) => a.price.min > 0), 'an owner sees what every add-on costs');
+    assert.ok(priced.addons.every((a) => (a.price?.min ?? a.per_unit?.price) > 0), 'an owner sees what every add-on costs');
+    const hypercare = priced.addons.find((a) => a.id === 'hypercare');
+    assert.equal(hypercare.per_unit.price, offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share, 'a week of hypercare is half a build week');
     const b2b = priced.addons.find((a) => a.gate === 'b2b');
     const mods = offering.modifiers.filter((m) => m.gate === 'b2b');
     assert.equal(b2b.price.min, Math.min(...mods.map((m) => m.price_add.min)), 'the add-on quotes a price the engine does not');

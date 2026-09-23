@@ -65,6 +65,7 @@ export function estimateSnapshot(offer, { at, stage }) {
     addons: (offer.addons ?? []).map(({ gate, label, units, tier }) => ({ gate, label, ...(units !== undefined ? { units } : {}), ...(tier ? { tier } : {}) })),
     price_band: offer.price_band,
     duration_weeks: offer.duration_weeks,
+    hypercare_days: offer.hypercare?.days ?? null,
     gates: (offer.scope_effort_by_gate ?? []).map(({ gate, label, weeks }) => ({ gate, label, weeks })),
   };
 }
@@ -101,6 +102,21 @@ export function reestimate(before, after, { pricing = false } = {}) {
     });
   }
   moved.sort((a, b) => Math.abs(b.weeks.max) - Math.abs(a.weeks.max));
+  /* Hypercare moves with the pack an engagement is named after (S five days,
+     M ten, L fifteen) and with the days the client asks for. It runs after
+     go-live, so it moves the price and not the weeks — and without its own
+     line the list would not add up to the quote's move. */
+  const days = (after.hypercare_days ?? 0) - (before.hypercare_days ?? 0);
+  if (before.hypercare_days !== null && after.hypercare_days !== null && days !== 0) {
+    const care = toThousand((days / 5) * rate * offering.pricing.hypercare_rate_share);
+    moved.push({
+      gate: 'hypercare',
+      label: `Hypercare after go-live, ${before.hypercare_days} → ${after.hypercare_days} working days`,
+      change: days > 0 ? 'more' : 'less',
+      weeks: { min: 0, max: 0 },
+      ...(pricing ? { price: { min: care, max: care } } : {}),
+    });
+  }
 
   const addonsWas = new Set(before.addons.map((a) => a.gate));
   const addonsNow = new Set(after.addons.map((a) => a.gate));

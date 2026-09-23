@@ -86,7 +86,9 @@ describe('client deck XML', () => {
     // A heavy migration on an otherwise bare Foundation: the base plus the
     // migration at its own weeks, which reaches the Scale floor and is named so.
     const single = recompute({ ...load('foundation-minimal.json'), migration: { source_platform: 'magento' } });
-    assert.match(buildDeckXml(single, backlogFor(single)).xml, /<price-band currency="CHF" from="82000" to="123000"\/>/);
+    const b = single.offer.price_band;
+    assert.equal(single.offer.code, 'M');
+    assert.match(buildDeckXml(single, backlogFor(single)).xml, new RegExp(`<price-band currency="CHF" from="${b.min}" to="${b.max}"/>`));
 
     const doc = load('acme-watches.json');
     const { xml } = buildDeckXml(doc, backlogFor(doc));

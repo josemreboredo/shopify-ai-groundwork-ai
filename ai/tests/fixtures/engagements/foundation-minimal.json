@@ -148,14 +148,18 @@
     "modifiers": [],
     "addons": [],
     "price_band": {
-      "min": 40000,
-      "max": 65000,
+      "min": 30000,
+      "max": 55000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
       "min": 4,
       "max": 5
+    },
+    "hypercare": {
+      "days": 5,
+      "included_days": 5
     },
     "rationale": "No scope gate and no L trigger is active, so the engagement is Ecommerce Foundation as packaged.",
     "scope_effort_weeks": {

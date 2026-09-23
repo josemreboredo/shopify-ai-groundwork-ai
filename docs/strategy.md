@@ -157,7 +157,7 @@ creep post-signature.
 | **Post-launch support** | An operating model past go-live: written SOPs the client's team runs the store from, or a handover into a retainer. The hypercare window and launch-day training are in every offer |
 
 <!-- generated:classification -->
-**Classification rule** — the quote first, then the name. The quote is the Foundation base (4–5 weeks, CHF 40k–65k) plus every active scope gate at its own weeks, each week at one rate of CHF 10.5k. The pack it is named after, in order:
+**Classification rule** — the quote first, then the name. The quote is the Foundation base (4–5 weeks, CHF 30k–55k) plus every active scope gate at its own weeks, each week at one rate of CHF 10.5k. The pack it is named after, in order:
 1. A headless storefront — only Ecommerce Flagship builds one → **L**
 2. The quote reaches Ecommerce Flagship’s floor, and everything past its promise is sold as an add-on to it → **L**
 3. The quote reaches Ecommerce Scale’s floor, and everything past its promise is sold as an add-on to it → **M**
@@ -207,8 +207,8 @@ the engagement price; the client sees the estimate, never the modifiers.
 | `+Checkout (functions)` — backend logic as Shopify Functions — validation, delivery or payment customisation, order rules: a deployed app with its own tests and release path, not a setting | +1.5–3 wk | +CHF 15.8k–31.5k |
 | `+Analytics (standard)` — customer events, the destinations wired through them and consent respected on each — measurement that agrees with Shopify's own numbers | +0.5–1 wk | +CHF 5.3k–10.5k |
 | `+Analytics (advanced)` — server-side tagging or a third-party consent platform: consent state carried to every destination, capture points beyond checkout, and the reconciliation that proves the numbers still line up | +1.5–2.5 wk | +CHF 15.8k–26.3k |
-| `+Support (standard)` — one of three: written SOPs, a handover into a retainer that is not the Grow retainer, or hypercare extended from fifteen to thirty days — each with its owner named, past the launch-day training every offer carries | +0.5–1 wk | +CHF 5.3k–10.5k |
-| `+Support (extended)` — two or more of them: a documented operating model the client’s team runs the store from, a handover into a retainer that has to receive it, a longer hypercare window, with a training programme behind it | +1–2 wk | +CHF 10.5k–21k |
+| `+Support (standard)` — one of the two: written SOPs, or a handover into a retainer that is not the Grow retainer — the runbooks and the owner named against each, past the launch-day training every offer carries | +0.5–1 wk | +CHF 5.3k–10.5k |
+| `+Support (extended)` — both: a documented operating model the client’s team runs the store from, handed into a retainer that has to receive it, with a training programme behind it | +1–2 wk | +CHF 10.5k–21k |
 | `+Retail` — each location selling with Shopify POS: hardware, inventory, staff and the in-store test pass | +1–5 wk | +CHF 10.5k–52.5k |
 | `+Migration (light)` — wooCommerce or Shopify-to-Shopify: catalogue, customers and order history. The redirect estate is the SEO continuity gate, not this one. | +1–1.5 wk | +CHF 10.5k–15.8k |
 | `+Migration (medium)` — shopware or BigCommerce: data model differences to map, order history, customer and price-list structures. Redirects are priced by the SEO continuity gate. | +2.5–4 wk | +CHF 26.3k–42k |
@@ -242,8 +242,8 @@ store-spec.yaml → `shopify theme push` pipeline (~85% of implementation)
 
 | Offer | Code | Triggered by | Base scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Foundation** | S | A quote below the M floor | An established brand launching direct-to-consumer, or relaunching it properly. New Shopify store on the plan the requirements need (ADR 0011) · Horizon theme configured · core catalogue · payments · standard checkout · accessibility and Core Web Vitals measured | CHF 40–65k | 4–5 weeks |
-| **Ecommerce Scale** | M | A quote from the M floor, or a further store | A brand that already sells and cannot scale, with one back-office system to wire. Everything in S · up to three markets and four languages · bespoke sections · one integration · a WooCommerce or Shopify migration · events per market | CHF 65–170k | 6–15 weeks |
+| **Ecommerce Foundation** | S | A quote below the M floor | An established brand launching direct-to-consumer, or relaunching it properly. New Shopify store on the plan the requirements need (ADR 0011) · Horizon theme configured · core catalogue · payments · standard checkout · accessibility and Core Web Vitals measured | CHF 30–55k | 4–5 weeks |
+| **Ecommerce Scale** | M | A quote from the M floor, or a further store | A brand that already sells and cannot scale, with one back-office system to wire. Everything in S · up to three markets and four languages · bespoke sections · one integration · a WooCommerce or Shopify migration · events per market | CHF 65–163k | 6–15 weeks |
 
 Both S and M are deliverable by Consultant + AI + two part-time collaborators.
 No permanent agency headcount required.

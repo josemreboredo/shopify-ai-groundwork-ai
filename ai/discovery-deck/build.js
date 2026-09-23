@@ -564,6 +564,7 @@ function investment(x, doc) {
     // store" is the re-estimate a client can follow. No weeks, no price.
     if (doc.offer.addons?.length) x.list('add-ons', doc.offer.addons.map((a) => a.label));
     x.empty('price-band', { currency: band.currency, from: band.min, to: band.open_ended ? undefined : band.max, 'open-ended': band.open_ended ? 'true' : undefined });
+    if (doc.offer.hypercare) x.field('hypercare', `${doc.offer.hypercare.days} working days of hypercare after go-live`);
     x.field('note', offering.estimate.line);
   }
   if (doc.business?.budget?.min !== undefined) {

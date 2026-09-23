@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.6.0 · offering 3.0.0
+> **Version:** question bank 1.7.0 · offering 3.0.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -2457,11 +2457,10 @@
 - [ ] Yes
 - [ ] No
 
-**Q10.3.7** — Soll die Hypercare nach dem Go-live dreissig statt fünfzehn Tage dauern? *(recommended)*
-*Jedes Angebot enthält fünfzehn Tage Hypercare: einen benannten Kanal, eine Antwort innert eines Arbeitstags und die Triage der Fehler mit Ihnen. Dreissig Tage werden zusätzlich berechnet.*
+**Q10.3.7** — Wie viele Arbeitstage Hypercare brauchen Sie nach dem Go-live? *(recommended)*
+*Hypercare ist die Zeit direkt nach dem Go-live: ein benannter Kanal, eine Antwort innert eines Arbeitstags und die Triage der Fehler mit Ihnen. Eine bestimmte Anzahl Tage ist im Angebot enthalten; antworten Sie nur, wenn Sie mehr brauchen.*
 
-- [ ] Yes
-- [ ] No
+> Answer:
 
 ### 10.4 Recht & regulierte Branchen
 

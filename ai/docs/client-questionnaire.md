@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.6.0 · offering 3.0.0
+> **Version:** question bank 1.7.0 · offering 3.0.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
@@ -2457,11 +2457,10 @@
 - [ ] Yes
 - [ ] No
 
-**Q10.3.7** — Should hypercare after go-live run thirty days instead of fifteen? *(recommended)*
-*Every offer includes fifteen days of hypercare: a named channel, a response within one working day, and defects triaged with you. Thirty days is priced on top.*
+**Q10.3.7** — How many working days of hypercare do you need after go-live? *(recommended)*
+*Hypercare is the period right after go-live: a named channel, a response within one working day, and defects triaged with you. A set number of days is part of the offer; answer only if you need more.*
 
-- [ ] Yes
-- [ ] No
+> Answer:
 
 ### 10.4 Legal & regulated industries
 

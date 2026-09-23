@@ -317,7 +317,7 @@
     "Q7.3.3": "4f3d3c5c6547",
     "Q7.6.8": "2f68b27508c0",
     "Q10.2.4": "5dc23518880b",
-    "Q10.3.7": "eeffab73cd34"
+    "Q10.3.7": "fc88af40f0fd"
   },
   "sections": {
     "0": "Objectifs business",
@@ -3845,10 +3845,10 @@
       }
     },
     "Q10.3.7": {
-      "text": "L’hypercare après la mise en ligne doit-elle durer trente jours au lieu de quinze ?",
-      "help": "Chaque offre comprend quinze jours d’hypercare : un canal désigné, une réponse sous un jour ouvré et les défauts triés avec vous. Trente jours sont facturés en plus.",
+      "text": "De combien de jours ouvrés d’hypercare avez-vous besoin après la mise en ligne ?",
+      "help": "L’hypercare est la période qui suit la mise en ligne : un canal désigné, une réponse sous un jour ouvré et les défauts triés avec vous. Un nombre de jours est compris dans l’offre ; ne répondez que si vous en avez besoin de plus.",
       "teach": {
-        "why": "Quinze jours, c’est le standard du marché et cela couvre la plupart des lancements. Une migration avec un grand catalogue, ou un lancement dans plusieurs marchés à la fois, a souvent besoin de la première clôture mensuelle complète pendant l’hypercare — c’est ce que la fenêtre plus longue achète."
+        "why": "Quelques jours suffisent pour un lancement simple. Une migration avec un grand catalogue, ou un lancement dans plusieurs marchés à la fois, a souvent besoin de la première clôture mensuelle complète pendant l’hypercare — chaque semaine supplémentaire est facturée, à la moitié du taux d’une semaine de build."
       }
     }
   },

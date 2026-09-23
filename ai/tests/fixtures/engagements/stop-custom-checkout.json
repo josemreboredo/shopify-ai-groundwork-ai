@@ -153,14 +153,18 @@
       }
     ],
     "price_band": {
-      "min": 65000,
-      "max": 100000,
+      "min": 55000,
+      "max": 90000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
       "min": 6.5,
       "max": 8.5
+    },
+    "hypercare": {
+      "days": 5,
+      "included_days": 5
     },
     "rationale": "Three scope gates are active (markets, multi-currency, storefront design) and they add up to 2.5–3.5 weeks on top of the Foundation build, so the engagement is an Ecommerce Foundation with those three as add-ons, each at its own weeks and price. Delivery is blocked by exit 11.6.",
     "scope_effort_weeks": {

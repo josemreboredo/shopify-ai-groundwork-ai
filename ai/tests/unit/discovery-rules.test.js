@@ -751,14 +751,31 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.deepEqual(model('b2b').price_band, model('dtc').price_band);
   });
 
-  test('after launch: a signed Grow retainer receives its handover free, and a longer hypercare is priced', () => {
+  test('after launch: a signed Grow retainer receives its handover free', () => {
     const support = (delivery) => classifyOffer({ ...base(), delivery }).scope_gates.post_launch_support;
-    assert.equal(support({ support_model: 'hypercare_only' }).active, false, 'fifteen days of hypercare is in every offer');
+    assert.equal(support({ support_model: 'hypercare_only' }).active, false, 'hypercare is in every offer');
     assert.equal(support({ support_model: 'retainer' }).tier, 'standard', 'a handover into a retainer not yet signed is work');
     assert.equal(support({ support_model: 'retainer', grow_retainer: { signed: true } }).active, false,
       'the handover into a signed Grow retainer is part of the retainer, not a charge for agreeing to it');
-    assert.equal(support({ hypercare_extended: true }).tier, 'standard', 'thirty days instead of fifteen is priced');
-    assert.equal(support({ hypercare_extended: true, sops_required: true }).tier, 'extended');
+    assert.equal(support({ support_model: 'retainer', sops_required: true }).tier, 'extended');
+  });
+
+  test('hypercare is the pack’s own days, and more are priced by the week at half the build rate', () => {
+    const week = offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share;
+    assert.deepEqual(['S', 'M', 'L'].map((c) => offering.offers[c].hypercare_days), [5, 10, 15]);
+    const bare = classifyOffer(base());
+    assert.deepEqual(bare.hypercare, { days: 5, included_days: 5 });
+    // Asking for three weeks on a Foundation adds two weeks of hypercare, not two build weeks.
+    const longer = classifyOffer({ ...base(), delivery: { hypercare_days: 15 } });
+    assert.deepEqual(longer.hypercare, { days: 15, included_days: 5 });
+    assert.equal(longer.price_band.max - bare.price_band.max, Math.round((2 * week) / 1000) * 1000);
+    assert.deepEqual(longer.duration_weeks, bare.duration_weeks, 'hypercare runs after go-live');
+    // Fewer days than the pack carries is not a discount.
+    assert.deepEqual(classifyOffer({ ...base(), delivery: { hypercare_days: 2 } }).price_band, bare.price_band);
+    // A Scale carries ten.
+    const scale = classifyOffer({ ...base(), migration: { source_platform: 'magento' } });
+    assert.equal(scale.code, 'M');
+    assert.deepEqual(scale.hypercare, { days: 10, included_days: 10 });
   });
 
   test('the large SEO tier starts above ten thousand URLs, as its name says', () => {

@@ -5,7 +5,8 @@
   "pricing": {
     "weekly_rate": 10500,
     "people_per_week": 2,
-    "$comment": "One rate for every week of scope-gate work, internal and never client-facing. Every modifier’s price is its weeks at this rate, so a quote is the Foundation base plus weeks the client can see, at a price nobody chose gate by gate. It replaced prices set one by one, which drifted to CHF 7–13k a week and made the riskiest work — migrations, B2B, design — the cheapest. The audit of 2026-09-23 measured the packs at CHF 10.5–10.8k a week at their midpoints; this is that rate. people_per_week: What a week at the rate buys, said the way a client can compare it: about two people full time, at the CHF 100–150 an hour DACH market rates for a Shopify specialist (Greenblut, read 2026-09-23). It turns \"CHF 40k against a CHF 7k package\" into \"two people for five weeks against twelve to thirty hours\" — a different product, not a dearer one."
+    "$comment": "One rate for every week of scope-gate work, internal and never client-facing. Every modifier’s price is its weeks at this rate, so a quote is the Foundation base plus weeks the client can see, at a price nobody chose gate by gate. It replaced prices set one by one, which drifted to CHF 7–13k a week and made the riskiest work — migrations, B2B, design — the cheapest. The audit of 2026-09-23 measured the packs at CHF 10.5–10.8k a week at their midpoints; this is that rate. people_per_week: What a week at the rate buys, said the way a client can compare it: about two people full time, at the CHF 100–150 an hour DACH market rates for a Shopify specialist (Greenblut, read 2026-09-23). It turns \"CHF 40k against a CHF 7k package\" into \"two people for five weeks against twelve to thirty hours\" — a different product, not a dearer one. hypercare_rate_share: a week of hypercare after go-live — a named channel, a response within one working day, defects triaged — costs half a build week. Each pack carries its own days (S 5, M 10, L 15 working days); more are priced per week at that half rate. Until 2026-09-23 every pack carried fifteen days inside the Foundation base.",
+    "hypercare_rate_share": 0.5
   },
   "estimate": {
     "line": "A first estimate to open the conversation, built from the scope the answers describe. The delivery team estimates the approach and gives the final figure; contingency and services such as Design and QA testing are added in the proposal.",
@@ -13,7 +14,7 @@
   },
   "after_launch": {
     "title": "After launch: the Grow retainer",
-    "line": "Run, optimise and the Phase 2 roadmap — offered with every pack after the 15 days of hypercare, and agreed before build starts. Its price is kept open and quoted with the proposal."
+    "line": "Run, optimise and the Phase 2 roadmap — offered with every pack after its hypercare, and agreed before build starts. Its price is kept open and quoted with the proposal."
   },
   "market_references": {
     "$comment": "Public list prices, read on 2026-09-23 and each re-fetched by a source check in the offering audit. Indicative market signals for the Lead Consultant: never in a client document, never a competitor’s price for a specific scope. They are \"from\" floors or marketing ranges, VAT treatment varies, and none of the enterprise Swiss partners publishes a price. Never put Merkle’s own figures into a search or request when refreshing them.",
@@ -107,14 +108,15 @@
       "triggered_by": "An estimate below the Scale floor: the Foundation, with whatever goes past it as add-ons",
       "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
-        "min": 40000,
-        "max": 65000,
+        "min": 30000,
+        "max": 55000,
         "open_ended": false
       },
       "duration_weeks": {
         "min": 4,
         "max": 5
       },
+      "hypercare_days": 5,
       "phases": [
         {
           "id": "setup",
@@ -255,7 +257,7 @@
         "One launch market, one selling entity and one checkout currency. Swiss DE/FR/IT is in every offer; a fourth language is a gate",
         "The catalogue loaded once, from one source file the client supplies in an agreed shape. Re-loads after a data change are a change request",
         "One training session per role, recorded, in the week before launch",
-        "Hypercare for 15 days after go-live: a named channel, a response within one working day, and defects triaged with the client",
+        "Hypercare for 5 working days after go-live: a named channel, a response within one working day, and defects triaged with the client",
         "One build store and one theme release path. Staging beyond that is a gate",
         "The build store is transferred to the client at go-live, with their billing and plan in place. Until then it sits in Merkle’s Partner organisation on Basic-plan media storage limits"
       ],
@@ -276,13 +278,14 @@
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
         "min": 65000,
-        "max": 170000,
+        "max": 163000,
         "open_ended": false
       },
       "duration_weeks": {
         "min": 6,
         "max": 15
       },
+      "hypercare_days": 10,
       "phases": [
         {
           "id": "setup",
@@ -439,7 +442,7 @@
         "Each integration built against one non-production environment the client provides, and tested with data the client recognises",
         "Reconciliation runs daily per connection unless the data says otherwise, and its output goes to a named owner on the client side",
         "One training session per role per market that has its own day-to-day owner",
-        "Hypercare for 15 days after go-live, per market where the launch is phased"
+        "Hypercare for 10 working days after go-live, per market where the launch is phased"
       ],
       "client_provides": [
         "Everything Ecommerce Foundation needs: a decision-maker, brand assets, loadable product data, payment accounts and the legal text",
@@ -468,6 +471,7 @@
         "min": 13,
         "max": 24
       },
+      "hypercare_days": 15,
       "phases": [
         {
           "id": "setup",
@@ -604,7 +608,7 @@
         "The design system is delivered as one token layer and the template set built against it — not as per-page designs traced one by one",
         "Experimentation is set up and one test is live at launch; the roadmap of tests after that is the client’s or a retainer’s",
         "Training per role, plus one session on the release path for whoever will own it",
-        "Hypercare for 15 days after go-live, with the rollback proven before the day rather than described",
+        "Hypercare for 15 working days after go-live, with the rollback proven before the day rather than described",
         "Shopify Plus where up to three stores or blocks inside the checkout steps are used — the engine names the feature that forces it"
       ],
       "client_provides": [
@@ -1074,12 +1078,11 @@
     {
       "id": "post_launch_support",
       "label": "Post-launch support",
-      "condition": "An operating model past go-live: written SOPs the client’s team runs the store from, a handover into a retainer other than a signed Grow retainer, or hypercare extended to thirty days. The fifteen-day hypercare window and launch-day training are in every offer and do not fire it; the handover into a signed Grow retainer is part of that retainer, not priced here",
+      "condition": "An operating model past go-live: written SOPs the client’s team runs the store from, or a handover into a retainer other than a signed Grow retainer. Hypercare is not this gate: each pack carries its own days and more are priced by the week; launch-day training is in every offer; the handover into a signed Grow retainer is part of that retainer",
       "inputs": [
         "/delivery/support_model",
         "/delivery/sops_required",
-        "/delivery/grow_retainer/signed",
-        "/delivery/hypercare_extended"
+        "/delivery/grow_retainer/signed"
       ],
       "modifier": null,
       "modifier_tiers": [
@@ -1491,7 +1494,7 @@
       "id": "+Support (standard)",
       "gate": "post_launch_support",
       "tier": "standard",
-      "description": "One of three: written SOPs, a handover into a retainer that is not the Grow retainer, or hypercare extended from fifteen to thirty days — each with its owner named, past the launch-day training every offer carries",
+      "description": "One of the two: written SOPs, or a handover into a retainer that is not the Grow retainer — the runbooks and the owner named against each, past the launch-day training every offer carries",
       "effort_weeks": {
         "min": 0.5,
         "max": 1
@@ -1505,7 +1508,7 @@
       "id": "+Support (extended)",
       "gate": "post_launch_support",
       "tier": "extended",
-      "description": "Two or more of them: a documented operating model the client’s team runs the store from, a handover into a retainer that has to receive it, a longer hypercare window, with a training programme behind it",
+      "description": "Both: a documented operating model the client’s team runs the store from, handed into a retainer that has to receive it, with a training programme behind it",
       "effort_weeks": {
         "min": 1,
         "max": 2
@@ -2671,16 +2674,16 @@
         "shopify_limit": null,
         "shopify_fact": false,
         "$comment": "No Shopify citation, matching the gate: hypercare, training and written SOPs are how Merkle delivers, not something Shopify documents.",
-        "S": "Hypercare, 15 days",
-        "M": "Hypercare, 15 days",
-        "L": "Hypercare, 15 days",
-        "note": "A named channel, a response within one working day and defects triaged with the client, for fifteen days after go-live — per market where the launch is phased. Training per role on the day-to-day is in every pack too. Written SOPs or a handover into a retainer are quoted on top.",
+        "S": "Hypercare, 5 working days",
+        "M": "Hypercare, 10 working days",
+        "L": "Hypercare, 15 working days",
+        "note": "A named channel, a response within one working day and defects triaged with the client, for the working days each pack carries after go-live — per market where the launch is phased. More days are bought by the week. Training per role on the day-to-day is in every pack too. Written SOPs or a handover into a retainer are quoted on top.",
         "addon": [
           "S",
           "M",
           "L"
         ],
-        "addon_label": "Written SOPs, a handover into a retainer, or hypercare extended to thirty days"
+        "addon_label": "More weeks of hypercare, written SOPs, or a handover into a retainer"
       }
     ],
     "addons": [
@@ -2862,8 +2865,8 @@
       {
         "id": "post_launch_support",
         "gate": "post_launch_support",
-        "what": "Written SOPs, a handover into a retainer, or a longer hypercare",
-        "description": "The operating model past the hypercare window every pack carries: the runbooks the client’s team runs the store from, an owner named against each, the handover into a retainer that has to receive it, or hypercare extended from fifteen to thirty days.",
+        "what": "Written SOPs, or a handover into a retainer",
+        "description": "The operating model past the hypercare every pack carries: the runbooks the client’s team runs the store from, an owner named against each, and the handover into a retainer that has to receive it.",
         "available_in": [
           "S",
           "M",

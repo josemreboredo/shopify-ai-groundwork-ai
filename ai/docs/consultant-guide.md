@@ -2,7 +2,7 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.6.0 · offering 3.0.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.7.0 · offering 3.0.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
@@ -3322,10 +3322,9 @@ Drives: rule 11.11 (WARN)
 
 **Why it matters.** Shopify announces platform changes at each Edition, and the apps and features the store depends on can change. Someone has to re-verify them. A no here means nobody is watching the store drift — which usually becomes retainer work.
 
-**Q10.3.7** — Should hypercare after go-live run thirty days instead of fifteen? *(recommended · client)*
-Drives: gate Post-launch support
+**Q10.3.7** — How many working days of hypercare do you need after go-live? *(recommended · client)*
 
-**Why it matters.** Fifteen days is the market floor and covers most launches. A replatform with a large catalogue, or a launch into several markets at once, often needs the first full month-end inside hypercare — that is what the longer window buys.
+**Why it matters.** A few days cover a simple launch. A replatform with a large catalogue, or a launch into several markets at once, often needs its first full month-end inside hypercare — each further week is priced, at half the rate of a build week.
 
 ### 10.4 Legal & regulated industries
 

@@ -97,6 +97,7 @@ function Quote({ q, estimate }) {
         {q.addons?.length
           ? ` Past what ${q.name} includes: ${q.addons.join(', ')}.`
           : ` All of it inside what ${q.name} includes.`}
+        {q.hypercare_days ? ` Plus ${q.hypercare_days} working days of hypercare after go-live, priced in.` : ''}
       </p>
       {q.provisional ? (
         <p className="callout">

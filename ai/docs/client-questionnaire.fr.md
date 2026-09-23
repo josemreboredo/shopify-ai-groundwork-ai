@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.6.0 · offering 3.0.0
+> **Version:** question bank 1.7.0 · offering 3.0.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -2457,11 +2457,10 @@
 - [ ] Yes
 - [ ] No
 
-**Q10.3.7** — L’hypercare après la mise en ligne doit-elle durer trente jours au lieu de quinze ? *(recommended)*
-*Chaque offre comprend quinze jours d’hypercare : un canal désigné, une réponse sous un jour ouvré et les défauts triés avec vous. Trente jours sont facturés en plus.*
+**Q10.3.7** — De combien de jours ouvrés d’hypercare avez-vous besoin après la mise en ligne ? *(recommended)*
+*L’hypercare est la période qui suit la mise en ligne : un canal désigné, une réponse sous un jour ouvré et les défauts triés avec vous. Un nombre de jours est compris dans l’offre ; ne répondez que si vous en avez besoin de plus.*
 
-- [ ] Yes
-- [ ] No
+> Answer:
 
 ### 10.4 Juridique & secteurs réglementés
 

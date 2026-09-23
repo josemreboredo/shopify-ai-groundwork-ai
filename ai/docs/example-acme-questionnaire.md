@@ -2311,10 +2311,10 @@ Answer: merchandising, customer service, finance
 - [ ] Yes
 - [ ] No
 
-**Q10.3.7** — Should hypercare after go-live run thirty days instead of fifteen? *(recommended)*
-*Every offer includes fifteen days of hypercare: a named channel, a response within one working day, and defects triaged with you. Thirty days is priced on top.*
+**Q10.3.7** — How many working days of hypercare do you need after go-live? *(recommended)*
+*Hypercare is the period right after go-live: a named channel, a response within one working day, and defects triaged with you. A set number of days is part of the offer; answer only if you need more.*
 
-Answer: No
+Answer: 10
 
 ### 10.4 Legal & regulated industries
 

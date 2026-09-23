@@ -1133,7 +1133,9 @@ export function AddonTable({ addons = [], code, pricing, currency, weeks, band }
                 ) : null}
               </th>
               <td data-label="Adds">
-                {a.per_unit
+                {a.per_unit?.days
+                  ? <span className="addon-weeks">+{a.per_unit.days} days after go-live</span>
+                  : a.per_unit
                   ? <span className="addon-weeks">{a.per_unit.from ? 'from ' : ''}+{a.per_unit.weeks} week{a.per_unit.weeks === 1 ? '' : 's'} per {a.per_unit.noun}</span>
                   : a.weeks?.max
                     ? <span className="addon-weeks">+{weeks(a.weeks)} week{a.weeks.max === 1 ? '' : 's'}</span>
@@ -1176,7 +1178,7 @@ export function AddonList({ addons, pricing, currency, weeks, band }) {
     <ul className="addons">
       {addons.map((a) => {
         const headline = a.per_unit
-          ? [`${a.per_unit.from ? 'from ' : ''}+${a.per_unit.weeks} week${a.per_unit.weeks === 1 ? '' : 's'} per ${a.per_unit.noun}`,
+          ? [a.per_unit.days ? `+${a.per_unit.days} days after go-live` : `${a.per_unit.from ? 'from ' : ''}+${a.per_unit.weeks} week${a.per_unit.weeks === 1 ? '' : 's'} per ${a.per_unit.noun}`,
             ...(pricing && a.per_unit.price ? [`${a.per_unit.from ? 'from ' : ''}${currency} ${Math.round(a.per_unit.price / 100) / 10}k per ${a.per_unit.noun}`] : [])].join(' · ')
           : cost(a.weeks, a.price);
         return (

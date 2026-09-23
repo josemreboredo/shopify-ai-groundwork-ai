@@ -259,6 +259,8 @@ describe('one engine, two processes', () => {
     assert.match(since.headline, /^Still Ecommerce Scale, plus each further Shopify store/);
     const store2 = since.moved.find((m) => m.gate === 'store_estate');
     assert.equal(store2.change, 'added');
+    // The same pack, so the same hypercare: nothing but the store moved.
+    assert.ok(!since.moved.some((m) => m.gate === 'hypercare'));
     // The list adds up to the quote's own move, weeks and francs.
     const sum = (k, f) => since.moved.reduce((a, m) => a + m[f][k], 0);
     assert.equal(sum('max', 'weeks'), since.weeks.max);
@@ -334,5 +336,23 @@ describe('the two screens the information passes through', () => {
     const { document_yield: read } = await svc.getInterview(consultant, 'a-bid');
     assert.equal(read[0].answers, 0);
     assert.equal(read[0].sections, 0);
+  });
+});
+
+describe('a re-estimate that changes the pack', () => {
+  test('carries the hypercare the new pack brings, so the list still adds up', async () => {
+    const { reestimate: move, estimateSnapshot: snap } = await import('../../shared/estimate.js');
+    const { classifyOffer } = await import('../../engine/classify.js');
+    const { offering } = await import('../../schema/index.js');
+    const base = { schema_version: '1.0.0', meta: { client: { name: 'X', slug: 'x' }, source: 'questionnaire' } };
+    const small = classifyOffer({ ...base, integrations: [{ category: 'erp', connector: 'custom' }] });
+    const grown = classifyOffer({ ...base, integrations: [{ category: 'erp', connector: 'custom' }], migration: { source_platform: 'magento' } });
+    assert.deepEqual([small.code, grown.code], ['S', 'M'], 'the RFP was a Foundation; discovery found a replatform');
+    const since = move(snap(small, { at: '2026-09-01', stage: 'rfp' }), snap(grown, { at: '2026-09-20', stage: 'discovery' }), { pricing: true });
+    const care = since.moved.find((m) => m.gate === 'hypercare');
+    assert.equal(care.change, 'more');
+    assert.equal(care.price.max, Math.round(((offering.offers.M.hypercare_days - offering.offers.S.hypercare_days) / 5) * offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share / 1000) * 1000);
+    const sum = since.moved.reduce((a, m) => a + m.price.max, 0);
+    assert.ok(Math.abs(sum - since.price.max) <= 2000, `the moves add up to the quote's: ${sum} against ${since.price.max}`);
   });
 });

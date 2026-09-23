@@ -160,6 +160,26 @@ function addonService({ id, gate, what, description, available_in: availableIn, 
   };
 }
 
+/*
+ * More hypercare, as an add-on like any other.
+ *
+ * It is not a scope gate — it runs after go-live and adds no build weeks — so
+ * it has no entry in closed_scope.addons, and a catalogue that listed only
+ * gates left the one thing every client asks about ("how long are you there
+ * after launch?") off the list of what can be bought.
+ */
+function hypercareAddon(pricing) {
+  const week = offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share;
+  return {
+    id: 'hypercare',
+    what: 'Each further week of hypercare',
+    gate: null,
+    description: `A named channel, a response within one working day and defects triaged with the client, for five more working days after go-live. Each pack carries its own days: ${['S', 'M', 'L'].map((c) => `${c} ${offering.offers[c].hypercare_days}`).join(', ')}.`,
+    available_in: ['S', 'M', 'L'],
+    per_unit: { noun: 'week', days: 5, from: false, ...(pricing ? { price: week } : {}) },
+  };
+}
+
 /** L's own promise with a heavy replatform beside it, as the engine quotes it. */
 function replatform(pricing) {
   const o = classifyOffer(engagementAt({ ...offering.closed_scope.limits.L, migration: 'sfcc' }));
@@ -345,7 +365,7 @@ export function offeringView({ pricing = false } = {}) {
     /* The add-on services catalogue: every gate that can be bought on top of a
        pack, including the three no pack includes anything of — B2B, Shopify
        POS and subscriptions — which is why they are no longer rows. */
-    addons: (offering.closed_scope?.addons ?? []).map((a) => addonService(a, pricing)),
+    addons: [...(offering.closed_scope?.addons ?? []).map((a) => addonService(a, pricing)), hypercareAddon(pricing)],
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {
       beyond_offers: byResult('STOP'),

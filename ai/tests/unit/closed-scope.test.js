@@ -481,7 +481,7 @@ describe('the quote is the scope, priced one way', () => {
     }
   });
 
-  test('the quote is the Foundation base plus every gate at its own price', () => {
+  test('the quote is the Foundation base plus every gate at its own price, and the pack’s hypercare', () => {
     const cases = [
       ...Object.values(limits),
       { ...limits.M, stores: 2 }, { ...limits.M, languages: 5 }, { ...limits.S, migration: 'magento' },
@@ -494,10 +494,14 @@ describe('the quote is the scope, priced one way', () => {
       const weeks = o.scope_effort_by_gate.reduce((a, g) => ({ min: a.min + g.weeks.min, max: a.max + g.weeks.max }), { min: 0, max: 0 });
       assert.equal(o.duration_weeks.min, Math.round((S.duration_weeks.min + weeks.min) * 2) / 2);
       assert.equal(o.duration_weeks.max, Math.round((S.duration_weeks.max + weeks.max) * 2) / 2);
-      assert.equal(o.price_band.min, Math.round((S.price_band.min + weeks.min * rate) / 1000) * 1000,
-        `${JSON.stringify(lim)}: the floor is not the base plus the gates`);
-      assert.equal(o.price_band.max, Math.round((S.price_band.max + weeks.max * rate) / 1000) * 1000,
-        `${JSON.stringify(lim)}: the ceiling is not the base plus the gates`);
+      // S's band carries S's own hypercare; the named pack carries its own.
+      const care = (days) => (days / 5) * rate * offering.pricing.hypercare_rate_share;
+      const base = { min: S.price_band.min - care(S.hypercare_days), max: S.price_band.max - care(S.hypercare_days) };
+      assert.equal(o.hypercare.days, offering.offers[o.code].hypercare_days);
+      assert.equal(o.price_band.min, Math.round((base.min + weeks.min * rate + care(o.hypercare.days)) / 1000) * 1000,
+        `${JSON.stringify(lim)}: the floor is not the base plus the gates and the hypercare`);
+      assert.equal(o.price_band.max, Math.round((base.max + weeks.max * rate + care(o.hypercare.days)) / 1000) * 1000,
+        `${JSON.stringify(lim)}: the ceiling is not the base plus the gates and the hypercare`);
     }
   });
 

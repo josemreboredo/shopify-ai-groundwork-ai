@@ -617,19 +617,18 @@ const GATE_EVALUATORS = {
     //
     // A handover into a signed Grow retainer is part of that retainer: pricing
     // it here charged the client for agreeing to the retainer, and could tip a
-    // Foundation into the next budget for doing so. And fifteen days of
-    // hypercare is in every offer; thirty is priced.
+    // Foundation into the next budget for doing so. Hypercare is not this gate:
+    // each pack carries its own days and more are priced with the quote.
     const signed = d.grow_retainer?.signed === true;
     const retainer = model === 'retainer' && !signed;
-    const longer = d.hypercare_extended === true;
-    const parts = [retainer, sops, longer].filter(Boolean).length;
+    const parts = [retainer, sops].filter(Boolean).length;
     const active = parts > 0;
     const tier = active ? (parts >= 2 ? 'extended' : 'standard') : null;
     return {
       active,
       ...(tier ? { tier } : {}),
       evidence: active
-        ? `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'}${sops ? ', written SOPs required' : ''}${longer ? ', hypercare extended to thirty days' : ''}`
+        ? `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'}${sops ? ', written SOPs required' : ''}`
         : `Support model: ${model ? model.replace(/_/g, ' ') : 'not recorded'}${model === 'retainer' && signed ? ' — the handover is part of the signed Grow retainer' : ''} — hypercare and handover are in every offer`,
     };
   },
@@ -866,18 +865,38 @@ export function classifyOffer(doc) {
    */
   const S = offering.offers.S;
   const L = offering.offers.L;
+  /*
+   * Hypercare, by pack.
+   *
+   * Every pack carried fifteen working days inside the Foundation base. Each
+   * carries its own now — S five, M ten, L fifteen — and a week of hypercare
+   * costs half a build week: a named channel and a response within a working
+   * day, not a team building. The Foundation build is S's band without S's own
+   * days; the pack an engagement is named after adds its days back, and days
+   * the client asks for past them are priced the same way. Hypercare runs
+   * after go-live, so it adds to the price and not to the weeks.
+   */
+  const hypercarePrice = (days) => (days / 5) * offering.pricing.weekly_rate * offering.pricing.hypercare_rate_share;
+  const asked = doc.delivery?.hypercare_days ?? 0;
+  const hypercareFor = (code) => Math.max(offering.offers[code].hypercare_days, asked);
+  const foundation = hypercarePrice(S.hypercare_days);
   const scope = {
-    price: { min: S.price_band.min + gateTotals.price.min, max: S.price_band.max + gateTotals.price.max },
+    price: { min: S.price_band.min - foundation + gateTotals.price.min, max: S.price_band.max - foundation + gateTotals.price.max },
     weeks: { min: S.duration_weeks.min + gateTotals.weeks.min, max: S.duration_weeks.max + gateTotals.weeks.max },
   };
-  const quote = headless
-    ? {
-        price: { min: Math.max(scope.price.min, L.price_band.min), max: Math.max(scope.price.max, L.price_band.max) },
-        weeks: { min: Math.max(scope.weeks.min, L.duration_weeks.min), max: Math.max(scope.weeks.max, L.duration_weeks.max) },
-      }
-    : scope;
+  const quoteFor = (code) => {
+    const care = hypercarePrice(hypercareFor(code));
+    const priced = { min: scope.price.min + care, max: scope.price.max + care };
+    return headless
+      ? {
+          price: { min: Math.max(priced.min, L.price_band.min), max: Math.max(priced.max, L.price_band.max) },
+          weeks: { min: Math.max(scope.weeks.min, L.duration_weeks.min), max: Math.max(scope.weeks.max, L.duration_weeks.max) },
+        }
+      : { price: priced, weeks: scope.weeks };
+  };
 
-  const { code, addons } = packFor(priced, quote, headless);
+  const { code, addons } = packFor(priced, quoteFor, headless);
+  const quote = quoteFor(code);
   const offer = offering.offers[code];
   const addonLabels = addons.map((a) => a.label.charAt(0).toLowerCase() + a.label.slice(1));
   const rationale = [
@@ -886,7 +905,7 @@ export function classifyOffer(doc) {
       : addons.length
         ? `${offer.name} plus ${addonLabels.join('; ')}`
         : `${offer.name} as packaged: ${activeGates.length ? `${activeGates.map((g) => g.label).join(', ')} — all inside what it includes` : 'no scope gates active'}`,
-    'Quoted from the Foundation base plus each scope gate at its own weeks and price',
+    `Quoted from the Foundation base plus each scope gate at its own weeks and price, with ${hypercareFor(code)} working days of hypercare after go-live`,
     ...(headless ? [`and at no less than the ${L.name} band, because Hydrogen has no modifier of its own yet`] : []),
   ].join('. ').replace(/\. and /, ' and ');
 
@@ -918,6 +937,7 @@ export function classifyOffer(doc) {
       open_ended: headless,
     },
     duration_weeks: { min: toHalfWeek(quote.weeks.min), max: toHalfWeek(quote.weeks.max) },
+    hypercare: { days: hypercareFor(code), included_days: offer.hypercare_days },
     // What the scope adds up to before any floor, kept so a reader can check
     // the quote against the scope rather than take it.
     scope_effort_weeks: scope.weeks,
@@ -972,11 +992,11 @@ function beyond({ gate, evaluated, modifier }, included) {
  * the scope's sum whatever the name.
  *
  * @param {object[]} priced  active gates with their evaluation and modifier
- * @param {object} quote     the quote's price and weeks
+ * @param {(code: string) => object} quoteFor  the quote as that pack would price it (its hypercare included)
  * @param {boolean} headless whether a headless storefront is required
  * @returns {{ code: string, addons: object[] }}
  */
-function packFor(priced, quote, headless) {
+function packFor(priced, quoteFor, headless) {
   const addonOf = new Map(offering.closed_scope.addons.map((a) => [a.gate, a]));
   const candidates = (headless ? ['L'] : ['S', 'M', 'L']).map((code) => {
     const included = includedIn(code);
@@ -984,7 +1004,7 @@ function packFor(priced, quote, headless) {
     return { code, extra, sellable: extra.every((p) => addonOf.get(p.gate.id)?.available_in.includes(code)) };
   });
   const sellable = candidates.filter((c) => c.sellable);
-  const reached = sellable.filter((c) => quote.price.min >= offering.offers[c.code].price_band.min);
+  const reached = sellable.filter((c) => quoteFor(c.code).price.min >= offering.offers[c.code].price_band.min);
   const chosen = reached.at(-1) ?? sellable[0] ?? candidates.at(-1);
   return {
     code: chosen.code,

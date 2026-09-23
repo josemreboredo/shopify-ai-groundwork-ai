@@ -92,8 +92,11 @@ for (const { file, doc } of fixtures) {
         min: Math.round((S.duration_weeks.min + weeks.min) * 2) / 2,
         max: Math.round((S.duration_weeks.max + weeks.max) * 2) / 2,
       });
-      assert.equal(offer.price_band.min, Math.round((S.price_band.min + weeks.min * rate) / 1000) * 1000);
-      assert.equal(offer.price_band.max, Math.round((S.price_band.max + weeks.max * rate) / 1000) * 1000);
+      const care = (days) => (days / 5) * rate * offering.pricing.hypercare_rate_share;
+      const hypercare = Math.max(def.hypercare_days, doc.delivery?.hypercare_days ?? 0);
+      assert.deepEqual(offer.hypercare, { days: hypercare, included_days: def.hypercare_days });
+      assert.equal(offer.price_band.min, Math.round((S.price_band.min - care(S.hypercare_days) + weeks.min * rate + care(hypercare)) / 1000) * 1000);
+      assert.equal(offer.price_band.max, Math.round((S.price_band.max - care(S.hypercare_days) + weeks.max * rate + care(hypercare)) / 1000) * 1000);
 
       // The name is a budget the quote reaches, with what goes past the pack
       // sold as add-ons in it.

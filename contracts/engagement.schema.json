@@ -624,6 +624,25 @@
         "duration_weeks": {
           "$ref": "#/$defs/number_range"
         },
+        "hypercare": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "days",
+            "included_days"
+          ],
+          "description": "Hypercare after go-live, priced into price_band at half the build rate per week and not counted in duration_weeks.",
+          "properties": {
+            "days": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "included_days": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
         "rationale": {
           "type": "string"
         },
@@ -3226,9 +3245,10 @@
         "sops_required": {
           "type": "boolean"
         },
-        "hypercare_extended": {
-          "type": "boolean",
-          "description": "Hypercare after go-live extended from fifteen to thirty days (Q10.3.7), priced by the post-launch support gate."
+        "hypercare_days": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Working days of hypercare the client needs after go-live (Q10.3.7). Each pack carries its own (S 5, M 10, L 15); days past that are priced by the week at half the build rate."
         },
         "admin_roles": {
           "$ref": "#/$defs/strings"
