@@ -226,7 +226,11 @@ describe('preview', () => {
     p = preview(s, TODAY);
     assert.equal(p.scope_gates.markets.state, 'active');
     assert.equal(p.scope_gates.b2b.state, 'active');
-    assert.equal(p.offer.code, 'M');
+    // Two light gates are two add-ons to the Foundation until the quote
+    // reaches the Scale floor; the offer still moves with the answers.
+    assert.equal(p.offer.code, 'S');
+    recordAnswer(s, { pointer: '/migration/source_platform', value: 'magento', question_id: 'Q0.5.4', today: TODAY });
+    assert.equal(preview(s, TODAY).offer.code, 'M', 'a Magento replatform takes it into the Scale budget');
   });
 
   test('the minimum Shopify plan is suggested while the plan is open (B2B alone does not need Plus)', () => {

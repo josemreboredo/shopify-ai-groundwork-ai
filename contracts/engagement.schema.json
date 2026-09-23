@@ -517,7 +517,8 @@
             "enum": [
               "+Analytics (advanced)",
               "+Analytics (standard)",
-              "+B2B",
+              "+B2B (advanced)",
+              "+B2B (standard)",
               "+Checkout (functions)",
               "+Checkout (in-checkout)",
               "+Checkout (post-purchase)",
@@ -539,14 +540,63 @@
               "+Search (app)",
               "+Search (native)",
               "+Stores",
-              "+Theme design",
               "+Subscriptions (advanced)",
               "+Subscriptions (standard)",
               "+Support (extended)",
-              "+Support (standard)"
+              "+Support (standard)",
+              "+Theme design"
             ]
           },
           "uniqueItems": true
+        },
+        "addons": {
+          "type": "array",
+          "description": "What goes past the promise of the pack this engagement is named after, one entry per scope gate. The quote already contains them: the price is the Foundation base plus every active gate at its own weeks and price, so this names the add-ons rather than pricing them. Empty when the engagement is the pack as packaged.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "gate",
+              "label"
+            ],
+            "properties": {
+              "gate": {
+                "enum": [
+                  "markets",
+                  "store_estate",
+                  "multi_currency",
+                  "b2b",
+                  "integration",
+                  "storefront_design",
+                  "theme_design",
+                  "sku_complexity",
+                  "search_merchandising",
+                  "migration",
+                  "retail_pos",
+                  "languages",
+                  "seo_continuity",
+                  "subscriptions",
+                  "checkout_extensibility",
+                  "analytics_consent",
+                  "post_launch_support"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "units": {
+                "type": "number",
+                "description": "How many of the gate's units the engagement takes (markets, languages, integrations, stores beyond the first, POS locations, further designs)."
+              },
+              "included_units": {
+                "type": "number",
+                "description": "How many of those units the pack's promise already includes."
+              },
+              "tier": {
+                "type": "string"
+              }
+            }
+          }
         },
         "price_band": {
           "type": "object",
@@ -580,7 +630,7 @@
         "gate_capacity_weeks": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Weeks of scope gates this offer's band already contains. L is the last offer: when the gates exceed this there is nothing to promote to, so the excess is added to the quoted band and duration.",
+          "description": "Weeks of scope gates this pack's band spans (its duration minus the Foundation's). Shown on the pack pages and read by exit rule 11.3; the quote itself is the Foundation base plus every active gate, so this no longer moves the price.",
           "properties": {
             "min": {
               "type": "number"
@@ -2955,7 +3005,11 @@
         "extra_theme_designs": {
           "type": "integer",
           "minimum": 0,
-          "description": "How many storefronts need a genuinely different design beyond the first \u2014 a different layout and page structure, not different content, imagery or translations. Per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates, so a genuinely different design is a second theme to build, deploy and keep in step. A design-system programme per brand is not this: that is Merkle Arc (rule 11.29)."
+          "description": "How many storefronts need a genuinely different design beyond the first — a different layout and page structure, not different content, imagery or translations. Per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates, so a genuinely different design is a second theme to build, deploy and keep in step. A design-system programme per brand is not this: that is Merkle Arc (rule 11.29)."
+        },
+        "design_system_per_brand": {
+          "type": "boolean",
+          "description": "Each customer-facing brand needs its own design system (tokens and components), rather than one design system themed per brand (Q9.2.14). With more than one brand this routes to Merkle Arc (rule 11.29)."
         },
         "bespoke_sections": {
           "type": "integer",

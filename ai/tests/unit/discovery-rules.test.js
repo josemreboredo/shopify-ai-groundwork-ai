@@ -58,15 +58,18 @@ for (const [file, fixture] of fixtures) {
 describe('classification edge cases', () => {
   const base = () => ({ schema_version: '1.0.0', meta: { client: { name: 'X', slug: 'x' }, source: 'questionnaire' } });
 
-  test('a single gate gives S with its modifier; no gates gives S without modifiers', () => {
-    const doc = { ...base(), migration: { source_platform: 'magento' } };
-    assert.deepEqual([classifyOffer(doc).code, classifyOffer(doc).modifiers], ['S', ['+Migration (heavy)']]);
-
+  test('a light gate stays a Foundation with its add-on; a heavy one reaches the Scale floor', () => {
     const singleMarket = { ...base(), markets: { list: [{ code: 'CH', currency: 'CHF', price_strategy: 'base_currency' }] } };
     assert.deepEqual([classifyOffer(singleMarket).code, classifyOffer(singleMarket).modifiers], ['S', []]);
 
-    const retail = { ...base(), retail: { store_count: 3, pos: 'shopify_pos' } };
-    assert.deepEqual([classifyOffer(retail).code, classifyOffer(retail).modifiers], ['S', ['+Retail']]);
+    const retail = classifyOffer({ ...base(), retail: { store_count: 1, pos: 'shopify_pos' } });
+    assert.deepEqual([retail.code, retail.modifiers, retail.addons.map((a) => a.gate)], ['S', ['+Retail'], ['retail_pos']]);
+
+    // A Magento replatform on its own is weeks of work: the quote reaches the
+    // Scale floor, so the conversation is in that budget, with the migration
+    // named as what goes past Scale's promise.
+    const heavy = classifyOffer({ ...base(), migration: { source_platform: 'magento' } });
+    assert.deepEqual([heavy.code, heavy.modifiers, heavy.addons.map((a) => a.gate)], ['M', ['+Migration (heavy)'], ['migration']]);
   });
 
   test('luxury positioning decides nothing on its own — it was never a size', () => {
@@ -186,11 +189,13 @@ describe('exit rule edge cases', () => {
   });
 
   test('11.11 warns on M without a signed retainer', () => {
-    const doc = { ...base, markets: { list: [{ code: 'DE' }, { code: 'AT' }] }, b2b: { enabled: true } };
+    const doc = { ...base, markets: { list: [{ code: 'DE' }, { code: 'AT' }, { code: 'FR' }] }, b2b: { enabled: true }, integrations: [{ category: 'erp', connector: 'custom' }] };
     const items = evaluateExits(withOffer(doc)).items;
     const warn = items.find((i) => i.rule_id === '11.11');
     assert.equal(warn.result, 'WARN');
     assert.equal(warn.resolution, undefined);
+    assert.equal(withOffer(doc).offer.code, 'M');
+    assert.doesNotMatch(JSON.stringify(warn), /\+25%/, 'it raises the retainer, it does not price its absence');
     const routed = { ...doc, delivery: { route: 'larger_engagement' } };
     assert.ok(!evaluateExits(withOffer(routed)).items.some((i) => i.rule_id === '11.11'), 'a routed STOP quotes no S/M/L offer');
   });
@@ -292,22 +297,18 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.ok(five.duration_weeks.max > two.duration_weeks.max);
   });
 
-  test('S with a modifier quotes the modifier, not the bare offer', () => {
-    // "Priced with its modifier" is what the classification always said. The
-    // duration and the band returned were the bare S — invisible at one week,
-    // a five-week understatement once a Magento migration is priced properly.
+  test('one gate is quoted in full on top of the Foundation, not absorbed', () => {
+    // The duration and the band once returned were the bare S — invisible at
+    // one week, a five-week understatement once a Magento migration is priced.
     const bare = classifyOffer(base());
     const withHeavy = classifyOffer({ ...base(), migration: { source_platform: 'magento' } });
-    assert.equal(withHeavy.code, 'S');
     assert.ok(withHeavy.duration_weeks.max > bare.duration_weeks.max + 4, 'the weeks are added');
     assert.ok(withHeavy.price_band.max > bare.price_band.max + 30000, 'and so is the price');
   });
 
-  test('scope that outgrows the M ceiling becomes an L, on the track the answers chose', () => {
-    // This rule was removed and is back. It was wrong while the offer decided
-    // the track — half a week past the ceiling quoted a theme build at a
-    // headless band and dragged the architecture after it. The track is an
-    // answer now, so the offer following the work is exactly right.
+  test('a quote that reaches the Growth floor is named Growth, on the track the answers chose', () => {
+    // The name follows the budget the quote is in; the track is an answer, so
+    // a large Liquid build is an L on the Liquid track.
     const heavy = classifyOffer({
       ...base(),
       ...markets('CH', 'DE', 'FR'),
@@ -318,12 +319,12 @@ describe('the offer follows the effort, not the gate count', () => {
       catalogue: { sku_count: 20000, variant_options_max: 3 },
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },
-      integrations: [{ category: 'erp', connector: 'custom' }],
+      integrations: [{ category: 'erp', connector: 'custom' }, { category: 'pim', connector: 'custom' }],
     });
     assert.equal(heavy.code, 'L');
     assert.equal(heavy.delivery_track, 'liquid', 'nothing here asked for a headless storefront');
     assert.equal(heavy.l_triggers.headless.active, false);
-    assert.ok(heavy.scope_effort_weeks.max > offering.offers.M.duration_weeks.max);
+    assert.ok(heavy.price_band.min >= offering.offers.L.price_band.min, 'it is in the Growth budget');
   });
 
   test('an L carries the gates that outgrow its own band, not M\u2019s', () => {
@@ -521,21 +522,19 @@ describe('the offer follows the effort, not the gate count', () => {
     }
   });
 
-  test('the envelope is the offer\u2019s own arithmetic, and gates inside it cost nothing extra', () => {
-    // Two light gates are what an M is for. Charging them on top would be the
-    // mirror of the bug above.
+  test('two light gates are two add-ons on the Foundation, not a jump to a band', () => {
+    // A second market and a larger catalogue once made an M quoted at the whole
+    // M band, CHF 65–155k, for a week of work. Priced as themselves they stay a
+    // Foundation with two add-ons.
     const light = classifyOffer({
       ...base(),
       ...markets('CH', 'DE'),
       catalogue: { sku_count: 900, variant_options_max: 3 },
     });
-    assert.equal(light.code, 'M');
-    assert.deepEqual(light.duration_weeks, offering.offers.M.duration_weeks);
-    assert.deepEqual(light.modifiers, []);
-    assert.deepEqual(light.gate_capacity_weeks, {
-      min: offering.offers.M.duration_weeks.min - offering.offers.S.duration_weeks.min,
-      max: offering.offers.M.duration_weeks.max - offering.offers.S.duration_weeks.max,
-    });
+    assert.equal(light.code, 'S');
+    assert.deepEqual(light.modifiers, ['+Markets', '+SKU (standard)']);
+    assert.deepEqual(light.addons.map((a) => a.gate), ['markets', 'sku_complexity']);
+    assert.ok(light.price_band.max < offering.offers.M.price_band.max / 2, 'far below the M ceiling');
   });
 
   test('and scope that still fits an M stays an M', () => {
@@ -566,8 +565,8 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.deepEqual(four.modifiers, ['+Languages']);
     // Exactly one language's worth, not four. Asserting only "more than three"
     // let a version through that charged for all four and read as plausible.
-    const perLanguage = offering.modifiers.find((m) => m.id === '+Languages').per_language_price;
-    assert.equal(four.price_band.max - classifyOffer(base()).price_band.max, perLanguage,
+    const perLanguage = offering.modifiers.find((m) => m.id === '+Languages').per_language_weeks;
+    assert.equal(four.scope_effort_weeks.max - classifyOffer(base()).scope_effort_weeks.max, perLanguage,
       'the fourth language is charged once — the first three are in the offer');
 
     // Priced per language beyond the three, not as one flat surcharge.
@@ -744,12 +743,24 @@ describe('the offer follows the effort, not the gate count', () => {
     assert.equal(model('b2b').scope_gates.b2b.active, false, 'wholesale only is the base, not a gate');
     assert.deepEqual(model('b2b').modifiers, [], 'and it is not charged as an addition');
     assert.equal(model('hybrid').scope_gates.b2b.active, true, 'both channels is what the gate is for');
-    assert.deepEqual(model('hybrid').modifiers, ['+B2B']);
+    assert.deepEqual(model('hybrid').modifiers, ['+B2B (standard)']);
     assert.equal(model('dtc').scope_gates.b2b.active, false);
 
     // The same base, whichever single channel it is.
     assert.deepEqual(model('b2b').duration_weeks, model('dtc').duration_weeks);
     assert.deepEqual(model('b2b').price_band, model('dtc').price_band);
+  });
+
+  test('B2B is priced by what it asks of the store, from answers already asked', () => {
+    // One flat figure charged Shopify's own B2B set-up and a quote workflow
+    // with catalogues per company the same.
+    const hybrid = (b2b) => classifyOffer({ ...base(), meta: { ...base().meta, client: { name: 'X', slug: 'x', business_model: 'hybrid' } }, b2b: { enabled: true, ...b2b } });
+    assert.deepEqual(hybrid({ price_lists: true, payment_terms: ['net_30'] }).modifiers, ['+B2B (standard)'], 'Shopify’s own B2B is the standard tier');
+    for (const past of [{ rfq_or_negotiated_pricing: true }, { company_specific_catalogs: true }, { catalog_count: 3 }, { contextual_experience: true }, { unsupported_needs: ['subscriptions'] }]) {
+      const o = hybrid(past);
+      assert.deepEqual(o.modifiers, ['+B2B (advanced)'], `${JSON.stringify(past)} is past Shopify’s own B2B`);
+      assert.ok(o.price_band.max > hybrid({}).price_band.max, 'and costs more');
+    }
   });
 
   test('no modifier is priced at a rate the offers themselves do not charge', () => {

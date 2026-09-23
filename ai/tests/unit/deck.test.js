@@ -82,24 +82,24 @@ describe('client deck XML', () => {
     assert.ok(buildDeckXml(doc, backlogFor(doc)).warnings.some((w) => w.includes('pricing not answered for GB')));
   });
 
-  test('investment shows the offer band only; L is open-ended', () => {
-    // Golden values: the S band plus a heavy migration priced in full, because S
-    // carries no gate weeks of its own. It came down when the migration tiers
-    // stopped including the redirect estate — that work is the SEO continuity
-    // gate now, and a Magento replatform with a large estate was paying for it
-    // in both places.
+  test('investment shows the quote only, open-ended only where it is a floor', () => {
+    // A heavy migration on an otherwise bare Foundation: the base plus the
+    // migration at its own weeks, which reaches the Scale floor and is named so.
     const single = recompute({ ...load('foundation-minimal.json'), migration: { source_platform: 'magento' } });
-    assert.match(buildDeckXml(single, backlogFor(single)).xml, /<price-band currency="CHF" from="70000" to="109000"\/>/);
+    assert.match(buildDeckXml(single, backlogFor(single)).xml, /<price-band currency="CHF" from="82000" to="123000"\/>/);
 
     const doc = load('acme-watches.json');
     const { xml } = buildDeckXml(doc, backlogFor(doc));
-    // Above the bare L floor, because acme's gates come to more than the nine
-    // weeks the band carries at its minimum, and the excess is quoted on top.
-    assert.match(xml, /<price-band currency="CHF" from="150000" open-ended="true"\/>/);
+    // The scope's own sum, floor and ceiling alike — not a pack's band.
+    assert.match(xml, /<price-band currency="CHF" from="140000" to="207000"\/>/);
+
+    // Only a headless storefront is quoted as a floor, and says so.
+    const headless = recompute({ ...load('foundation-minimal.json'), design: { headless_required: true } });
+    assert.match(buildDeckXml(headless, backlogFor(headless)).xml, /<price-band currency="CHF" from="140000" open-ended="true"\/>/);
   });
 
   test('client sections never contain modifiers, price adds, effort, story points or commercial warnings', () => {
-    // S with one gate → modifier applied; M without retainer → WARN 11.11
+    // One heavy gate → its modifier applied; M without retainer → WARN 11.11
     const single = recompute({ ...load('foundation-minimal.json'), migration: { source_platform: 'magento' } });
     const noRetainer = recompute(load('acme-watches.json'));
     noRetainer.delivery.grow_retainer = { signed: false };
@@ -125,9 +125,14 @@ describe('client deck XML', () => {
     assert.match(notes, /<total-points>\d+<\/total-points>/);
     assertWellFormed(xml);
 
+    // The retainer is a commercial point the consultant raises, with its
+    // price kept open — no surcharge rides on it any more.
     const noRetainer = load('acme-watches.json');
     noRetainer.delivery.grow_retainer = { signed: false };
-    assert.match(buildDeckXml(recompute(noRetainer)).xml, /\+25%/);
+    const withRetainerNote = buildDeckXml(recompute(noRetainer)).xml;
+    const consultant = withRetainerNote.slice(withRetainerNote.indexOf('<section id="consultant-notes"'));
+    assert.match(consultant, /Grow retainer/);
+    assert.doesNotMatch(withRetainerNote, /\+25%/);
   });
 
   test('missing backlog is reported as a warning, not an error', () => {

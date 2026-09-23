@@ -311,7 +311,8 @@
     "Q6.5.2": "0bc52d1b699c",
     "Q6.5.3": "b118523702dc",
     "Q6.5.4": "2fc09133ccfa",
-    "Q6.5.5": "806c31083c6b"
+    "Q6.5.5": "806c31083c6b",
+    "Q9.2.14": "a851eaed2470"
   },
   "sections": {
     "0": "Objectifs business",
@@ -3797,6 +3798,13 @@
       "teach": {
         "why": "Un rendez-vous en boutique ou un essayage fait partie intégrante de la vente chez certaines marques, et Shopify n’a rien de natif pour cela — c’est donc une application avec sa licence, un responsable du calendrier et une place dans la journée de l’équipe, décidée sur l’échelle comme toute autre application plutôt que supposée dans le thème.",
         "limits": "Aucune fonction de réservation native chez Shopify : les rendez-vous et les services sont une catégorie de l’App Store. Planification multi-sites, portails collaborateurs, acomptes et rappels varient d’une application à l’autre ; la liste courte se construit donc sur les besoins réels de ce client."
+      }
+    },
+    "Q9.2.14": {
+      "text": "Chaque marque a-t-elle besoin de son propre design system — ses propres tokens et composants — plutôt que d’un seul design system avec un thème par marque ?",
+      "help": "Un design system peut porter plusieurs marques : les mêmes composants, avec les couleurs, la typographie et l’imagerie de chaque marque en tokens, et une autre mise en page là où une marque en a besoin. Un design system par marque, ce sont des tokens et des composants séparés, conçus et maintenus à part.",
+      "teach": {
+        "why": "Détermine si plusieurs marques restent dans les offres. Des marques qui partagent un design system, c’est une boutique par marque et, là où une mise en page diffère, un design de vitrine supplémentaire. Un design system par marque est un programme de design : c’est Merkle Arc (règle 11.29)."
       }
     }
   },

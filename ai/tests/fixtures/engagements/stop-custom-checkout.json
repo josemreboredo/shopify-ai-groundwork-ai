@@ -67,8 +67,8 @@
     "target_plan": "plus"
   },
   "offer": {
-    "code": "M",
-    "name": "Ecommerce Scale",
+    "code": "S",
+    "name": "Ecommerce Foundation",
     "delivery_track": "liquid",
     "scope_gates": {
       "markets": {
@@ -135,24 +135,41 @@
       "+MultiCurrency",
       "+Design (extended)"
     ],
+    "addons": [
+      {
+        "gate": "markets",
+        "label": "Each further market",
+        "units": 2,
+        "included_units": 0
+      },
+      {
+        "gate": "multi_currency",
+        "label": "A second checkout currency"
+      },
+      {
+        "gate": "storefront_design",
+        "label": "Bespoke sections, or a full template set",
+        "tier": "extended"
+      }
+    ],
     "price_band": {
-      "min": 70000,
-      "max": 155000,
+      "min": 65000,
+      "max": 100000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
       "min": 6.5,
-      "max": 15
-    },
-    "rationale": "Three scope gates are active (markets, multi-currency, storefront design) and they add up to 2.5–3.5 weeks, inside the Ecommerce Scale ceiling, so the engagement classifies as M. Half a week of gate overflow is quoted on top of the band; delivery is blocked by exit 11.6.",
-    "scope_effort_weeks": {
-      "min": 6.5,
       "max": 8.5
     },
+    "rationale": "Three scope gates are active (markets, multi-currency, storefront design) and they add up to 2.5–3.5 weeks on top of the Foundation build, so the engagement is an Ecommerce Foundation with those three as add-ons, each at its own weeks and price. Delivery is blocked by exit 11.6.",
+    "scope_effort_weeks": {
+      "min": 6.3774999999999995,
+      "max": 8.3775
+    },
     "gate_capacity_weeks": {
-      "min": 2,
-      "max": 10
+      "min": 0,
+      "max": 0
     },
     "scope_effort_by_gate": [
       {
@@ -167,8 +184,8 @@
         "gate": "markets",
         "label": "Markets",
         "weeks": {
-          "min": 1,
-          "max": 1
+          "min": 0.8775,
+          "max": 0.8775
         }
       },
       {

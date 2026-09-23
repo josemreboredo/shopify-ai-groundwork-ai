@@ -189,36 +189,34 @@ function offerOf(doc) {
  * The rule that fires on the shape of the whole rather than on any one answer.
  *
  * It is the only STOP with no requirement behind it — it reads the scope's size
- * against what the offer carries and how many delivery risks are still open —
+ * against what the largest pack carries and how many delivery risks are still open —
  * which is why it needs naming here: every sentence that counts requirements
  * has to leave it out.
  */
 const EFFORT_RULE = '11.3';
 
 /**
- * What the scope adds up to, when it is past what the offer's band carries.
+ * What the quote is built from, when it goes past the pack it is named after.
  *
- * It used to appear only on a STOP, which was the wrong trigger twice over. An
- * offer now quotes its own overflow — so the case that most needs explaining is
- * the one that is *not* a STOP: a healthy L quoted at thirty weeks instead of
- * twenty, where a consultant has to say why in a room. And a STOP is no longer
- * about size at all, so hanging the ledger off it would have shown the working
- * for a conclusion it is not the working for.
+ * The quote is the Foundation build plus every scope gate at its own weeks, so
+ * the ledger always adds up to it; it is shown when some of those gates go
+ * past the pack's promise, because that is when a consultant has to say in a
+ * room why this is "an M plus a second store" rather than the M on the page.
+ * Nothing on it is outside the offers — that is what the exit rules are for.
  *
  * @param {object} doc
  */
 function overflowOf(doc) {
+  const addons = doc.offer?.addons ?? [];
   const gates = doc.offer?.scope_effort_by_gate ?? [];
-  const capacity = doc.offer?.gate_capacity_weeks;
-  if (!gates.length || !capacity) return null;
-  const total = gates.reduce((a, g) => a + g.weeks.max, 0);
-  if (total <= capacity.max) return null;
+  if (!addons.length || !gates.length) return null;
+  const past = new Set(addons.map((a) => a.gate));
   return {
     weeks: doc.offer?.scope_effort_weeks ?? null,
     quoted: doc.offer?.duration_weeks ?? null,
-    carries: capacity,
+    pack: doc.offer?.name ?? null,
     base: offering.offers.S.duration_weeks,
-    gates,
+    gates: gates.map((g) => ({ ...g, addon: past.has(g.gate) })),
   };
 }
 

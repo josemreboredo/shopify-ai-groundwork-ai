@@ -7,7 +7,7 @@
  * @module ai/shared/summary
  */
 
-import { schemaNodeAt, enumValues, optionLabel } from '../schema/index.js';
+import { schemaNodeAt, enumValues, optionLabel, offering } from '../schema/index.js';
 
 /**
  * A recorded value in words: option codes as labels, lists joined, table rows one per line.
@@ -146,7 +146,7 @@ export function quote(doc, { pricing = false, provisional = false } = {}) {
       outside_the_offers: true,
       route: doc.delivery?.route ?? null,
       scope_effort_weeks: o.scope_effort_weeks ?? null,
-      gate_capacity_weeks: o.gate_capacity_weeks ?? null,
+      addons: (o.addons ?? []).map((a) => a.label),
       modifiers: o.modifiers ?? [],
       rationale: o.rationale ?? null,
     };
@@ -160,11 +160,11 @@ export function quote(doc, { pricing = false, provisional = false } = {}) {
     ...(pricing && o.price_band ? { band: o.price_band } : {}),
     pricing_withheld: !pricing,
     provisional,
-    // The two numbers the quote is built from: what the gates add up to, and
-    // how much of that the band already holds. Anything past the second is what
-    // "quoted on top" means, and the modifiers name which gates did it.
+    // What the quote is built from: the Foundation build plus every scope gate
+    // at its own weeks, and which of those go past the pack it is named after.
     scope_effort_weeks: o.scope_effort_weeks ?? null,
-    gate_capacity_weeks: o.gate_capacity_weeks ?? null,
+    base_weeks: offering.offers.S.duration_weeks,
+    addons: (o.addons ?? []).map((a) => a.label),
     modifiers: o.modifiers ?? [],
     rationale: o.rationale ?? null,
   };
@@ -205,13 +205,12 @@ export function renderSummaryMarkdown(s) {
       if (q.outside_the_offers) {
         return [
           `- **Quoted:** nothing \u2014 the requirements are outside the standard offers. Route: ${q.route ? q.route.replace(/_/g, ' ') : 'not decided yet'}.`,
-          `- **It would have been:** ${q.code} \u00b7 ${q.name}, with the gates adding up to ${span(q.scope_effort_weeks)} weeks against the ${span(q.gate_capacity_weeks)} that offer\u2019s band holds.`,
+          `- **It would have been:** ${q.code} \u00b7 ${q.name}${q.addons.length ? ` plus ${q.addons.join(', ')}` : ''}, with the scope adding up to ${span(q.scope_effort_weeks)} weeks.`,
         ];
       }
-      const over = q.modifiers.length > 0;
       return [
-        `- **Quoted:** ${q.code} \u00b7 ${q.name} \u00b7 ${span(q.weeks)} weeks${q.band ? ` \u00b7 ${q.band.currency} ${Math.round(q.band.min / 1000)}k\u2013${Math.round(q.band.max / 1000)}k${q.band.open_ended ? '+' : ''}` : ''}${q.provisional ? ' (provisional \u2014 some scope gates are still unknown)' : ''}`,
-        `- **How that number is built:** the gates add up to ${span(q.scope_effort_weeks)} weeks against the ${span(q.gate_capacity_weeks)} this offer\u2019s band already holds${over ? `, so the excess is quoted on top of it \u2014 ${q.modifiers.join(', ')}` : ', so nothing is quoted on top of it'}.`,
+        `- **Quoted:** ${q.code} \u00b7 ${q.name}${q.addons.length ? ` plus ${q.addons.join(', ')}` : ''} \u00b7 ${span(q.weeks)} weeks${q.band ? ` \u00b7 ${q.band.currency} ${Math.round(q.band.min / 1000)}k\u2013${Math.round(q.band.max / 1000)}k${q.band.open_ended ? '+' : ''}` : ''}${q.provisional ? ' (provisional \u2014 some scope gates are still unknown)' : ''}`,
+        `- **How that number is built:** the Foundation build (${span(q.base_weeks)} weeks) plus every scope gate at its own weeks and price, ${span(q.scope_effort_weeks)} weeks in all${q.addons.length ? ` \u2014 ${q.addons.length} of them past what ${q.name} includes` : `, all inside what ${q.name} includes`}.`,
       ];
     })() : []),
     `- **Coverage:** ${p.coverage.required_answered} of ${p.coverage.required_total} required questions answered · ${p.coverage.required_tbc} TBC · ${p.coverage.required_commented ?? 0} clarified by comment · ${p.coverage.required_open} open`,

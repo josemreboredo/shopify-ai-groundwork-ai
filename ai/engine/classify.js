@@ -9,6 +9,7 @@
 
 import { offering } from '../schema/index.js';
 import { picked } from './values.js';
+import { promiseOf } from './promise.js';
 
 const COUNTED = new Set(offering.integration_definition.counted_categories);
 const NON_MIGRATION_SOURCES = new Set(['none', 'shopify']);
@@ -232,10 +233,25 @@ const GATE_EVALUATORS = {
         evidence: `Wholesale only${features.length ? ` with ${features.join(', ').replace(/_/g, ' ')}` : ''} — B2B is this engagement's base, not an addition to a consumer store`,
       };
     }
+    /*
+     * What the B2B side asks of the store.
+     *
+     * One flat figure charged Shopify's own B2B set-up and a quote workflow
+     * with catalogues per company the same, although the answers that tell them
+     * apart were already asked. Standard is Shopify's own: company accounts,
+     * price lists, volume rules, payment terms. Advanced is past it.
+     */
+    const advanced = [
+      b2b.company_specific_catalogs === true || (b2b.catalog_count ?? 0) > 1 ? 'catalogues per company' : null,
+      b2b.rfq_or_negotiated_pricing === true ? 'quote or negotiated pricing' : null,
+      b2b.contextual_experience === true ? 'a separate B2B storefront or checkout' : null,
+      picked(b2b.unsupported_needs).filter((n) => n !== 'none').length ? 'needs Shopify’s B2B does not cover' : null,
+    ].filter(Boolean);
     return {
       active: selling,
+      ...(selling ? { tier: advanced.length ? 'advanced' : 'standard' } : {}),
       evidence: selling
-        ? `Both channels in one store: consumer and B2B${features.length ? `, with ${features.join(', ').replace(/_/g, ' ')}` : ''}`
+        ? `Both channels in one store: consumer and B2B${features.length ? `, with ${features.join(', ').replace(/_/g, ' ')}` : ''}${advanced.length ? `; past Shopify’s own B2B: ${advanced.join(', ')}` : ''}`
         : 'No B2B selling',
     };
   },
@@ -793,124 +809,78 @@ export function classifyOffer(doc) {
     offering.l_triggers.map((t) => [t.id, L_TRIGGER_EVALUATORS[t.id](doc)]),
   );
 
-  const activeGates    = offering.scope_gates.filter((g) => scope_gates[g.id].active);
-  const activeTriggers = offering.l_triggers.filter((t) => l_triggers[t.id].active);
+  const activeGates = offering.scope_gates.filter((g) => scope_gates[g.id].active);
+  const headless = Boolean(l_triggers.headless?.active);
 
-  // What the active gates actually add, in weeks. Counting gates treats a
-  // Magento migration and a 500-SKU catalogue as the same thing; they differ by
-  // an order of magnitude, and the offering already records how much each one
-  // costs. Summing it is the only honest way to ask which offer this is.
-  const adds = activeGates.map((g) => modifierFor(g, scope_gates[g.id], doc)).filter(Boolean);
+  /*
+   * Each active gate with the modifier that prices it, kept together.
+   *
+   * They used to be two arrays joined by position, one of them filtered — which
+   * held only while every gate had a modifier. The label below compares each
+   * gate with what a pack includes, so the pairing has to be real.
+   */
+  const priced = activeGates
+    .map((gate) => ({ gate, evaluated: scope_gates[gate.id], modifier: modifierFor(gate, scope_gates[gate.id], doc) }))
+    .filter((p) => p.modifier);
   /*
    * The same sum, itemised.
    *
    * Only the total survived, and on an engagement that outgrows the largest
    * offer the total is the one number that cannot be acted on: a consultant
-   * reading "the scope reaches 30 weeks against the 20 an L holds" has been told
-   * there is a problem and nothing about where it is. The gate labels, not the
-   * modifier ids — the ids are internal pricing vocabulary and this is read in
-   * front of the work, not the price.
+   * reading "the scope reaches 30 weeks" has been told there is a problem and
+   * nothing about where it is. The gate labels, not the modifier ids — the ids
+   * are internal pricing vocabulary and this is read in front of the work.
    */
-  const byGate = activeGates
-    .map((g, i) => ({ gate: g.id, label: g.label, weeks: adds[i]?.effort_weeks }))
+  const byGate = priced
+    .map((p) => ({ gate: p.gate.id, label: p.gate.label, weeks: p.modifier.effort_weeks }))
     .filter((x) => x.weeks)
     .sort((a, b) => b.weeks.max - a.weeks.max);
-  const effort = adds.reduce((a, m) => ({
-    min: a.min + (m.effort_weeks?.min ?? 0),
-    max: a.max + (m.effort_weeks?.max ?? 0),
-  }), { min: 0, max: 0 });
-  const base = offering.offers.S.duration_weeks;
-  const total = { min: base.min + effort.min, max: base.max + effort.max };
-
-  let code;
-  let modifiers = [];
-  let rationale;
-  // Whether the modifier is added to what is quoted. "Priced with its modifier"
-  // is what the classification has always said, but the duration and the band
-  // returned were the bare offer's — invisible while a modifier was one week,
-  // and a five-week lie once a Magento migration is priced properly.
-  let priced = false;
-  // Weeks the gates push past this offer's envelope. Null while they fit.
-  let overflow = null;
-
-  /*
-   * Scope decides the offer, and nothing else does.
-   *
-   * This rule was removed once and is back, because what made it wrong has
-   * gone: L was the headless offer, so outgrowing the M ceiling by half a week
-   * quoted a Liquid build at a Hydrogen band and dragged the architecture and
-   * the app shortlist after it. All three offers are Liquid now — L is simply
-   * the largest of them — so the offer following the work is exactly right.
-   *
-   * The test is the ceiling the scope has outgrown, not the floor of the next
-   * offer up: a scope of 10–13 weeks fits an M of 6–13 exactly, and quoting it
-   * as an L would over-quote work the engine itself estimated at ten. Scope
-   * that outgrows every offer is exit rule 11.3's, and is a programme.
-   */
-  if (activeTriggers.length > 0) {
-    code = 'L';
-    rationale = `L trigger(s): ${activeTriggers.map((t) => t.label).join(', ')}`;
-  } else if (total.max > offering.offers.M.duration_weeks.max) {
-    code = 'L';
-    rationale = `Scope reaches ${total.min}–${total.max} weeks (${activeGates.map((g) => g.label).join(', ')}), beyond the M ceiling of ${offering.offers.M.duration_weeks.max}`;
-  } else if (activeGates.length >= 2) {
-    code = 'M';
-    rationale = `${activeGates.length} scope gates active: ${activeGates.map((g) => g.label).join(', ')}`;
-  } else if (activeGates.length === 1) {
-    code = 'S';
-    modifiers = adds.map((m) => m.id);
-    rationale = `1 scope gate active: ${activeGates[0].label}`;
-    priced = true;
-  } else {
-    code = 'S';
-    rationale = 'No scope gates active';
-  }
-
-  const offer = offering.offers[code];
-
-  const gateTotals = adds.reduce((a, m) => ({
+  const gateTotals = priced.reduce((a, { modifier: m }) => ({
     weeks: { min: a.weeks.min + (m.effort_weeks?.min ?? 0), max: a.weeks.max + (m.effort_weeks?.max ?? 0) },
     price: { min: a.price.min + (m.price_add?.min ?? 0), max: a.price.max + (m.price_add?.max ?? 0) },
   }), { weeks: { min: 0, max: 0 }, price: { min: 0, max: 0 } });
 
   /*
-   * When the envelope bursts, the excess has to reach the quote.
+   * The quote follows the scope, floor and ceiling alike.
    *
-   * Only the excess: the band already contains the gate work it was sized for,
-   * and charging those gates twice would be the same error in the other
-   * direction.
+   * It is the Foundation base plus every active gate at its own weeks and
+   * price — the rule S always used for its one gate, now used for all of them.
+   * It replaced a band per pack plus whatever overflowed the pack's capacity,
+   * which followed the scope at the floor and snapped to the pack at the top:
+   * half a week of extra work could move a quote by CHF 105k, and a re-estimate
+   * that found a second store read as a different project rather than as the
+   * same one with a store more. The packs remain what the conversation opens
+   * with; what a client is quoted is what the answers add up to.
    *
-   * S is not in this: it prices its single gate in full, because its band is
-   * four to five weeks of base and nothing else.
+   * A headless storefront is the one exception. Hydrogen has no modifier of its
+   * own yet, so its work cannot be summed like a gate; it is quoted at no less
+   * than the band of the pack that builds it.
    */
-  const capacity = gateCapacity(code);
-  if (code !== 'S') {
-    const over = {
-      min: Math.max(0, gateTotals.weeks.min - capacity.min),
-      max: Math.max(0, gateTotals.weeks.max - capacity.max),
-    };
-    if (over.min > 0 || over.max > 0) {
-      overflow = over;
-      priced = true;
-      modifiers = adds.map((m) => m.id);
-      rationale += `. Scope gates add ${gateTotals.weeks.min}–${gateTotals.weeks.max} weeks against the ${capacity.min}–${capacity.max} this offer already carries, so ${over.min}–${over.max} week(s) are quoted on top`;
-    }
-  }
+  const S = offering.offers.S;
+  const L = offering.offers.L;
+  const scope = {
+    price: { min: S.price_band.min + gateTotals.price.min, max: S.price_band.max + gateTotals.price.max },
+    weeks: { min: S.duration_weeks.min + gateTotals.weeks.min, max: S.duration_weeks.max + gateTotals.weeks.max },
+  };
+  const quote = headless
+    ? {
+        price: { min: Math.max(scope.price.min, L.price_band.min), max: Math.max(scope.price.max, L.price_band.max) },
+        weeks: { min: Math.max(scope.weeks.min, L.duration_weeks.min), max: Math.max(scope.weeks.max, L.duration_weeks.max) },
+      }
+    : scope;
 
-  /*
-   * What an overflow week costs is not a rate written down somewhere else: it
-   * is the rate the gates that caused it are already priced at, blended across
-   * the band. The overflow is more of exactly that work.
-   */
-  const weeksTotal = gateTotals.weeks.min + gateTotals.weeks.max;
-  const perWeek = weeksTotal > 0 ? (gateTotals.price.min + gateTotals.price.max) / weeksTotal : 0;
-  const toThousand = (n) => Math.round(n / 1000) * 1000;
-
-  const add = !priced
-    ? { weeks: { min: 0, max: 0 }, price: { min: 0, max: 0 } }
-    : overflow
-      ? { weeks: overflow, price: { min: toThousand(overflow.min * perWeek), max: toThousand(overflow.max * perWeek) } }
-      : gateTotals;
+  const { code, addons } = packFor(priced, quote, headless);
+  const offer = offering.offers[code];
+  const addonLabels = addons.map((a) => a.label.charAt(0).toLowerCase() + a.label.slice(1));
+  const rationale = [
+    headless
+      ? `${offer.name}: a headless storefront is built only in this pack${addons.length ? `, with ${addonLabels.join('; ')} on top` : ''}`
+      : addons.length
+        ? `${offer.name} plus ${addonLabels.join('; ')}`
+        : `${offer.name} as packaged: ${activeGates.length ? `${activeGates.map((g) => g.label).join(', ')} — all inside what it includes` : 'no scope gates active'}`,
+    'Quoted from the Foundation base plus each scope gate at its own weeks and price',
+    ...(headless ? [`and at no less than the ${L.name} band, because Hydrogen has no modifier of its own yet`] : []),
+  ].join('. ').replace(/\. and /, ' and ');
 
   /*
    * The track is an answer, not a property of the offer.
@@ -920,7 +890,9 @@ export function classifyOffer(doc) {
    * getting a theme. S and M have no headless variant: nothing there fires the
    * trigger, so they resolve to their own track and stay Liquid.
    */
-  const delivery_track = l_triggers.headless?.active ? 'hydrogen' : offer.delivery_track;
+  const delivery_track = headless ? 'hydrogen' : offer.delivery_track;
+  const toThousand = (n) => Math.round(n / 1000) * 1000;
+  const toHalfWeek = (n) => Math.round(n * 2) / 2;
 
   return {
     code,
@@ -928,24 +900,95 @@ export function classifyOffer(doc) {
     delivery_track,
     scope_gates,
     l_triggers,
-    modifiers,
+    modifiers: priced.map((p) => p.modifier.id),
+    addons,
     price_band: {
-      min: offer.price_band.min + add.price.min,
-      max: offer.price_band.max + add.price.max,
+      min: toThousand(quote.price.min),
+      max: toThousand(quote.price.max),
       currency: offering.currency,
-      open_ended: offer.price_band.open_ended,
+      // Open-ended only where the quote is a floor rather than a sum.
+      open_ended: headless,
     },
-    duration_weeks: { min: offer.duration_weeks.min + add.weeks.min, max: offer.duration_weeks.max + add.weeks.max },
-    // What the gates add on their own, kept so the proposal can show its work
-    // and so a reader can check the offer against the scope rather than take it.
-    scope_effort_weeks: total,
+    duration_weeks: { min: toHalfWeek(quote.weeks.min), max: toHalfWeek(quote.weeks.max) },
+    // What the scope adds up to before any floor, kept so a reader can check
+    // the quote against the scope rather than take it.
+    scope_effort_weeks: scope.weeks,
     // And the same sum gate by gate, heaviest first, so a scope that has
     // outgrown the offers can be argued with rather than only reported.
     scope_effort_by_gate: byGate,
-    // The gate weeks this offer's band already contains, so a reader can check
-    // an overflow rather than take it.
-    gate_capacity_weeks: capacity,
+    // The gate weeks this pack's band spans, read by exit rule 11.3 and shown
+    // on the pack pages; no longer part of what is quoted.
+    gate_capacity_weeks: gateCapacity(code),
     rationale,
+  };
+}
+
+/*
+ * What each pack's promise includes, gate by gate.
+ *
+ * The promise is `closed_scope.limits` built into an engagement and run
+ * through the same gates, so "M includes three markets" means exactly what the
+ * markets gate does with three markets. Computed once per pack.
+ */
+const INCLUDED = {};
+function includedIn(code) {
+  if (INCLUDED[code]) return INCLUDED[code];
+  const doc = promiseOf(code);
+  const out = {};
+  for (const gate of offering.scope_gates) {
+    const evaluated = GATE_EVALUATORS[gate.id](doc);
+    if (!evaluated.active) continue;
+    const modifier = modifierFor(gate, evaluated, doc);
+    out[gate.id] = { tier: evaluated.tier ?? modifier?.tier ?? null, units: modifier?.units ?? null };
+  }
+  return (INCLUDED[code] = out);
+}
+
+/** Whether an engagement's use of one gate goes past what a pack includes. */
+function beyond({ gate, evaluated, modifier }, included) {
+  if (!included) return true;
+  if (modifier.units != null && included.units != null) return modifier.units > included.units;
+  const tiers = gate.modifier_tiers;
+  if (tiers?.length) return tiers.indexOf(evaluated.tier ?? modifier.tier) > tiers.indexOf(included.tier);
+  return false;
+}
+
+/**
+ * The pack an engagement is built on, and what it takes on top of it.
+ *
+ * A pack can carry an engagement when everything past its promise is sold as an
+ * add-on in that pack. Of those, the engagement is named after the largest one
+ * whose floor its quote reaches — that is the budget the conversation is in —
+ * and what goes past that pack's promise is listed as add-ons. A headless
+ * storefront is only built in L. Nothing here moves the price: the quote is
+ * the scope's sum whatever the name.
+ *
+ * @param {object[]} priced  active gates with their evaluation and modifier
+ * @param {object} quote     the quote's price and weeks
+ * @param {boolean} headless whether a headless storefront is required
+ * @returns {{ code: string, addons: object[] }}
+ */
+function packFor(priced, quote, headless) {
+  const addonOf = new Map(offering.closed_scope.addons.map((a) => [a.gate, a]));
+  const candidates = (headless ? ['L'] : ['S', 'M', 'L']).map((code) => {
+    const included = includedIn(code);
+    const extra = priced.filter((p) => beyond(p, included[p.gate.id]));
+    return { code, extra, sellable: extra.every((p) => addonOf.get(p.gate.id)?.available_in.includes(code)) };
+  });
+  const sellable = candidates.filter((c) => c.sellable);
+  const reached = sellable.filter((c) => quote.price.min >= offering.offers[c.code].price_band.min);
+  const chosen = reached.at(-1) ?? sellable[0] ?? candidates.at(-1);
+  return {
+    code: chosen.code,
+    addons: chosen.extra.map((p) => {
+      const included = includedIn(chosen.code)[p.gate.id];
+      return {
+        gate: p.gate.id,
+        label: addonOf.get(p.gate.id)?.what ?? p.gate.label,
+        ...(p.modifier.units != null ? { units: p.modifier.units, included_units: included?.units ?? 0 } : {}),
+        ...(p.evaluated.tier ? { tier: p.evaluated.tier } : {}),
+      };
+    }),
   };
 }
 

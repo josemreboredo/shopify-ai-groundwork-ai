@@ -2,7 +2,7 @@
 
 # Shopify Discovery Questionnaire
 
-> **Version:** question bank 1.3.0 · offering 2.20.0
+> **Version:** question bank 1.4.0 · offering 2.20.0
 >
 > **How to use:** work through §§ 0–10 with the client in the discovery call. Answer every
 > *required* question — "TBC" is acceptable, a blank is not. Questions marked *consultant* are
@@ -2307,6 +2307,13 @@
 *Different content, imagery and translations per market are in every offer. A different design is a second theme, and that is a different thing: Shopify's per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates. Answer 0 if one design serves every market and store.*
 
 > Answer:
+
+**Q9.2.14** — Does each brand need its own design system — its own tokens and components — rather than one design system with a theme per brand? *(recommended)*
+*Ask if Q1.1.8 is 2 or more.*
+*One design system can carry several brands: the same components, with each brand’s colours, typography and imagery as tokens, and a different layout where a brand needs one. A design system per brand means separate tokens and components, designed and maintained apart.*
+
+- [ ] Yes
+- [ ] No
 
 ### 9.3 Accessibility
 

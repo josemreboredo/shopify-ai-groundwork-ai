@@ -146,8 +146,8 @@
     "target_plan": "plus"
   },
   "offer": {
-    "code": "L",
-    "name": "Ecommerce Growth",
+    "code": "M",
+    "name": "Ecommerce Scale",
     "delivery_track": "liquid",
     "scope_gates": {
       "markets": {
@@ -226,7 +226,7 @@
     "modifiers": [
       "+Markets",
       "+MultiCurrency",
-      "+B2B",
+      "+B2B (standard)",
       "+Integration",
       "+SKU (standard)",
       "+Migration (light)",
@@ -235,24 +235,52 @@
       "+Analytics (standard)",
       "+Support (extended)"
     ],
+    "addons": [
+      {
+        "gate": "b2b",
+        "label": "B2B and wholesale alongside consumer",
+        "tier": "standard"
+      },
+      {
+        "gate": "integration",
+        "label": "Each further system integration",
+        "units": 2,
+        "included_units": 1
+      },
+      {
+        "gate": "seo_continuity",
+        "label": "A redirect estate above 10,000 URLs, or rankings the business runs on",
+        "tier": "standard"
+      },
+      {
+        "gate": "checkout_extensibility",
+        "label": "Inside the checkout steps, or backend rules as Functions",
+        "tier": "in_checkout"
+      },
+      {
+        "gate": "post_launch_support",
+        "label": "Written SOPs, or a handover into a retainer",
+        "tier": "extended"
+      }
+    ],
     "price_band": {
-      "min": 150000,
-      "max": 260000,
+      "min": 140000,
+      "max": 207000,
       "currency": "CHF",
-      "open_ended": true
+      "open_ended": false
     },
     "duration_weeks": {
-      "min": 14,
-      "max": 24
+      "min": 13.5,
+      "max": 18.5
     },
-    "rationale": "Ten scope gates are active and they add up to 14–18.5 weeks, past the 15-week ceiling of Ecommerce Scale, so the engagement classifies as L — Ecommerce Growth. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The gates sit inside the 9–19 weeks the L band already holds, so nothing is quoted on top of it.",
+    "rationale": "Ten scope gates are active and they bring the build to 13.5–18.5 weeks. The engagement is named Ecommerce Scale, the largest pack whose floor the quote reaches, with what goes past its promise as add-ons: B2B alongside consumer, a second integration, SEO continuity, blocks inside the checkout steps and extended post-launch support. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The quote is the Foundation base plus each gate at its own weeks and price.",
     "scope_effort_weeks": {
-      "min": 14,
+      "min": 13.5,
       "max": 18.5
     },
     "gate_capacity_weeks": {
-      "min": 9,
-      "max": 19
+      "min": 2,
+      "max": 10
     },
     "scope_effort_by_gate": [
       {
@@ -291,7 +319,7 @@
         "gate": "b2b",
         "label": "B2B / Wholesale",
         "weeks": {
-          "min": 1.5,
+          "min": 1,
           "max": 1.5
         }
       },

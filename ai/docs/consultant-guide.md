@@ -2,11 +2,11 @@
 
 # Consultant guide — Shopify knowledge per question
 
-> **Version:** question bank 1.3.0 · offering 2.20.0 · app registry checked 2026-09-17
+> **Version:** question bank 1.4.0 · offering 2.20.0 · app registry checked 2026-09-17
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 127 of 309 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 127 of 310 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -3155,6 +3155,12 @@ Drives: gate A second storefront design
 | Per-market theme customization | Advanced | Reaches section content and block visibility only — never theme settings or Liquid templates | https://help.shopify.com/en/manual/markets/customizations/online-store |
 *Verified 2026-09-23 against help.shopify.com (Spring '26).*
 
+**Q9.2.14** — Does each brand need its own design system — its own tokens and components — rather than one design system with a theme per brand? *(recommended · client)*
+Drives: rule 11.29 (STOP)
+Quick interview: ask if Q1.1.8 is 2 or more
+
+**Why it matters.** Decides whether several brands stay in the offers. Brands that share one design system are a store per brand and, where a layout differs, a further storefront design. A design system per brand is a design programme, which is Merkle Arc (rule 11.29).
+
 ### 9.3 Accessibility
 
 **Q9.3.1** — Which accessibility standard applies? *(required · client)*
@@ -3368,7 +3374,7 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 |---|---|---|---|---|
 | 11.1 | STOP | A required Shopify feature needs a higher plan than the target plan, per Shopify's plan documentation (Plus: company-specific or more than 3 B2B catalogs, B2B deposits and partial payments, checkout step extensions / Checkout Branding API, expansion stores, several legal entities, combined listings, Multipass sign-in, more than 10 locations, more than 20 languages, several product discounts on one item; Advanced: B2B contextual experience, per-market customisation, carrier-calculated rates, multi-currency payouts, more than 5 staff users; Grow: A/B testing with Rollouts). Shopify B2B itself runs on every plan from Basic. A fully custom checkout UI is handled by 11.6, not here | Confirm the plan the requirements need, or remove the feature from scope | Q1.1.6, Q1.2.3, Q1.2.6, Q2.1.4, Q3.1.1, Q3.1.7, Q4.1.4, Q4.2.1, Q5.1.3, Q5.1.6, Q6.1.4, Q6.2.3, Q6.2.5, Q6.2.10, Q6.2.11, Q7.5.2, Q9.2.10 |
 | 11.2 | FLAG | B2B requires request-for-quote or prices negotiated per buyer (Shopify has no built-in RFQ) | B2B architecture review: Shopify B2B draft-order review or a quote app (App Store category "Pricing quotes"), before build | Q6.2.6 |
-| 11.3 | STOP | Scope has outgrown the gate work this offer's band already carries, AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: the offer quotes its own overflow at the rate of the work that caused it. What cannot be quoted is scope this large that cannot yet be committed to | An Enterprise Engagement opening with a dedicated Discovery Phase, to close the open risks before the scope is committed | Q3.1.1 |
+| 11.3 | STOP | Scope has outgrown the gate work the largest pack carries — Ecommerce Growth’s band spans nine to nineteen weeks of scope gates — AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: every gate is quoted at its own weeks and price. What cannot be quoted is scope this large that cannot yet be committed to | An Enterprise Engagement opening with a dedicated Discovery Phase, to close the open risks before the scope is committed | Q3.1.1 |
 | 11.4 | STOP | More than 6 distinct languages across all markets | Larger Engagement: translation and content operations in the Discovery Phase | Q3.1.1 |
 | 11.5 | FLAG | More than 3 variant options per product (Shopify limit), or more than 2,048 variants on one product | Product model review: combined listings, a product options app for non-stock options, or splitting products | Q2.1.2, Q2.1.3 |
 | 11.6 | STOP | Fully custom checkout UI — not possible on Shopify (checkout.liquid is retired; only Checkout Extensibility) | Merkle Arc — composable commerce, scoped separately | Q4.2.1 |
@@ -3376,7 +3382,7 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.8 | STOP | Regulated industry (pharma, alcohol, firearms, age-restricted, financial products, medical devices) | Legal / compliance review | Q1.1.3, Q10.4.1 |
 | 11.9 | STOP | PCI scope beyond Shopify-hosted payments (custom card UI, tokenisation, handling card data) | Security review (threat model mandatory) | Q4.1.5 |
 | 11.10 | FLAG | GDPR / CCPA data export or deletion workflow required | Legal sign-off on data-subject request handling | Q6.4.5 |
-| 11.11 | WARN | Grow retainer not signed on an M or L engagement | Grow retainer to be signed before delivery starts; otherwise commercial adjustment | Q10.3.4 |
+| 11.11 | WARN | An M or L engagement with no Grow retainer agreed yet | Offer the Grow retainer — run, optimise and the Phase 2 roadmap — and record the client’s answer before build starts. Its price is kept open | Q10.3.4 |
 | 11.12 | FLAG | ERP or PIM with no existing Shopify connector and no iPaaS | Integration scoping as its own track, before the build is quoted | Q8.1.1 |
 | 11.13 | FLAG | fulfilment_locations > 2 AND routing beyond Shopify's native order routing rules (a custom routing Function or the ERP / OMS decides) | Multi-location inventory scoped separately | Q5.1.3, Q5.1.4 |
 | 11.14 | FLAG | Migration with significant SEO equity or complex historical data | Dedicated migration scoping track — not combined with the store build sprint | Q8.2.3, Q8.2.4, Q8.2.5, Q8.2.6 |
@@ -3394,4 +3400,4 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/supported-
 | 11.26 | STOP | The storefront leaves Shopify: editorial content is managed in an external CMS or PIM rather than in Shopify metaobjects, or the front end is not a single Hydrogen storefront — another framework, a native app, or several front ends on one backend. Hydrogen with content in Shopify is not this: that is Ecommerce Growth on the headless track | Merkle Arc — not quoted or estimated here; the Arc practice scopes it | Q9.2.6, Q9.2.8, Q9.2.11 |
 | 11.27 | FLAG | One order delivered to more than one address — gifting to several recipients, or a wholesale buyer splitting a single order across branches. Shopify has no way to do this: split shipping divides an order into several shipments when items cannot travel together, but every shipment goes to the same address, and it does not apply to accelerated checkouts or to draft orders that already carry a shipping line | Decide before the build: one order per address, an app that does it, or drop the requirement — and say which in the proposal | Q5.1.15 |
 | 11.28 | FLAG | A presence inside Shopify's Shop app — a Shop Mini. It stays inside Shopify and sells the same store, but it is not theme work: Minis are "immersive, full-screen buyer experiences within the Shop app" built with the Shop Minis React SDK, and a Mini "must function solely within the Shop app; it cannot be a standalone app that operates outside of the Shop". Publishing one also needs Manage apps permission in the Partner organisation. None of these offers estimates React Native work | Not included in S, M or L: scope and price the Mini separately, and agree whether it runs in this engagement or after it | Q9.2.12 |
-| 11.29 | STOP | More than one customer-facing brand, each needing its own full template set from a design system (the storefront design gate at its bespoke tier). One design programme repeated per brand is not a pack: Ecommerce Growth prices one. Multibrand on a configured theme, or on a key-screens design, is not this rule — a second brand already forces Ecommerce Growth through the multi-brand store it needs, and that is where it stays | Merkle Arc — a design-system programme per brand, scoped by the Arc practice | Q1.1.8 |
+| 11.29 | STOP | More than one customer-facing brand, each needing its own design system — its own tokens and components (Q9.2.14). Brands that share one design system stay in the offers: a store per brand (an add-on on M, up to three in L) and a further storefront design where a brand’s layout differs. A design system per brand is a design programme, not a pack | Merkle Arc — a design-system programme per brand, scoped by the Arc practice | Q1.1.8, Q9.2.14 |

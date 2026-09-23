@@ -10,6 +10,7 @@
     "test": "node --test \"ai/tests/**/*.test.js\" \"frontend/app/**/*.test.js\"",
     "lint": "eslint ai frontend/app",
     "questionnaire:render": "node ai/scripts/render-questionnaire.js",
+    "strategy:render": "node ai/scripts/render-strategy.js",
     "discover": "node --env-file-if-exists=.env ai/engine/cli.js",
     "discover:prepare": "node ai/engine/claude-code.js prepare",
     "discover:assemble": "node ai/engine/claude-code.js assemble",

@@ -2166,6 +2166,12 @@ Managing Director, with the Finance Controller informed.
 
 Answer: 0
 
+**Q9.2.14** — Does each brand need its own design system — its own tokens and components — rather than one design system with a theme per brand? *(recommended)*
+*Ask if Q1.1.8 is 2 or more.*
+*One design system can carry several brands: the same components, with each brand’s colours, typography and imagery as tokens, and a different layout where a brand needs one. A design system per brand means separate tokens and components, designed and maintained apart.*
+
+Answer: not applicable — one brand
+
 ### 9.3 Accessibility
 
 **Q9.3.1** — Which accessibility standard applies? *(required)*

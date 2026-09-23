@@ -46,6 +46,7 @@ const APPROACH = {
 
 /** The engine's classification condition as a sentence, built from the data it reads. */
 function plainRule(c) {
+  if (c.plain) return c.plain;
   const when = String(c.when);
   if (/l_trigger/.test(when)) return `Any of: ${offering.l_triggers.map((t) => t.label.toLowerCase()).join(', ')}`;
   // The rule that decides the offer by what the work adds up to. Left to the

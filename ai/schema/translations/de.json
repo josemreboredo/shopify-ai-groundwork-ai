@@ -311,7 +311,8 @@
     "Q6.5.2": "0bc52d1b699c",
     "Q6.5.3": "b118523702dc",
     "Q6.5.4": "2fc09133ccfa",
-    "Q6.5.5": "806c31083c6b"
+    "Q6.5.5": "806c31083c6b",
+    "Q9.2.14": "a851eaed2470"
   },
   "sections": {
     "0": "Geschäftsziele",
@@ -3797,6 +3798,13 @@
       "teach": {
         "why": "Ein Termin in der Boutique oder eine Anprobe gehört bei manchen Marken fest zum Verkauf, und Shopify hat dafür nichts Natives — es ist also eine App mit Lizenz, einer verantwortlichen Person für den Kalender und einem Platz im Arbeitstag des Teams, entschieden auf der Leiter wie jede andere App und nicht stillschweigend ins Theme gelegt.",
         "limits": "Keine native Shopify-Buchungsfunktion: Termine und Dienstleistungen sind eine App-Store-Kategorie. Terminplanung über mehrere Standorte, Mitarbeiterportale, Anzahlungen und Erinnerungen unterscheiden sich je App, die Auswahl entsteht also am tatsächlichen Bedarf dieses Kunden."
+      }
+    },
+    "Q9.2.14": {
+      "text": "Braucht jede Marke ein eigenes Design-System — eigene Tokens und Komponenten — statt eines Design-Systems mit einem Theme pro Marke?",
+      "help": "Ein Design-System kann mehrere Marken tragen: dieselben Komponenten, mit Farben, Typografie und Bildsprache jeder Marke als Tokens, und einem anderen Layout, wo eine Marke eines braucht. Ein Design-System pro Marke bedeutet getrennte Tokens und Komponenten, getrennt gestaltet und gepflegt.",
+      "teach": {
+        "why": "Entscheidet, ob mehrere Marken in den Angeboten bleiben. Marken mit einem gemeinsamen Design-System sind ein Store pro Marke und, wo sich ein Layout unterscheidet, ein weiteres Storefront-Design. Ein Design-System pro Marke ist ein Design-Programm — das ist Merkle Arc (Regel 11.29)."
       }
     }
   },

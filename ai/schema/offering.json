@@ -2,6 +2,10 @@
   "$comment": "Machine-readable offering (ADR 0001, ADR 0003). Source: docs/strategy.md 'Service offers & delivery tiers'. INTERNAL: modifiers and price adds are never shown to clients. Conditions are prose in v1; Phase 2 implements one evaluator per id and tests that every id is implemented. Shopify plan and feature facts are benchmarked against Shopify documentation (question-bank `shopify` blocks, checked 2026-09-17); S and M do not assume Shopify Plus. Phase weeks per offer sum exactly to that offer's duration, and a test enforces it; the split is calibrated against published DACH delivery data (Greenblut, 150+ migrations: discovery 5-10%, set-up 15-20%, data 20-25%, integrations 15-25%, QA 10-15%, launch 10-15%).",
   "version": "2.20.0",
   "currency": "CHF",
+  "pricing": {
+    "weekly_rate": 10500,
+    "$comment": "One rate for every week of scope-gate work, internal and never client-facing. Every modifier’s price is its weeks at this rate, so a quote is the Foundation base plus weeks the client can see, at a price nobody chose gate by gate. It replaced prices set one by one, which drifted to CHF 7–13k a week and made the riskiest work — migrations, B2B, design — the cheapest. The audit of 2026-09-23 measured the packs at CHF 10.5–10.8k a week at their midpoints; this is that rate."
+  },
   "offers": {
     "S": {
       "name": "Ecommerce Foundation",
@@ -179,7 +183,7 @@
       "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A migration where there is one to run, priced by where the data comes from",
       "price_band": {
         "min": 65000,
-        "max": 155000,
+        "max": 170000,
         "open_ended": false
       },
       "duration_weeks": {
@@ -539,29 +543,33 @@
   "classification": [
     {
       "order": 1,
-      "when": "any l_trigger active",
-      "offer": "L"
+      "when": "l_trigger headless",
+      "offer": "L",
+      "plain": "A headless storefront — only Ecommerce Growth builds one"
     },
     {
       "order": 2,
-      "when": "base weeks + active gate modifiers > offers.M.duration_weeks.max",
-      "offer": "L"
+      "when": "the quote reaches the L floor, and every gate past the L promise is sold as an L add-on",
+      "offer": "L",
+      "plain": "The quote reaches Ecommerce Growth’s floor, and everything past its promise is sold as an add-on to it"
     },
     {
       "order": 3,
-      "when": "active scope gates >= 2",
-      "offer": "M"
+      "when": "the quote reaches the M floor, and every gate past the M promise is sold as an M add-on",
+      "offer": "M",
+      "plain": "The quote reaches Ecommerce Scale’s floor, and everything past its promise is sold as an add-on to it"
     },
     {
       "order": 4,
-      "when": "active scope gates == 1",
+      "when": "every gate past the S promise is sold as an S add-on",
       "offer": "S",
-      "apply_modifier": true
+      "plain": "Below that, Ecommerce Foundation, with whatever goes past its promise as add-ons"
     },
     {
       "order": 5,
-      "when": "active scope gates == 0",
-      "offer": "S"
+      "when": "otherwise, the smallest pack that sells every gate past its promise",
+      "offer": "M",
+      "plain": "Below Ecommerce Scale’s floor but needing what only a larger pack sells — a further store — the smallest pack that sells it"
     }
   ],
   "scope_gates": [
@@ -633,14 +641,18 @@
     {
       "id": "b2b",
       "label": "B2B / Wholesale",
-      "condition": "B2B or hybrid business model (B2B selling unless answered otherwise), with B2B customer accounts, wholesale pricing, or volume discounts",
+      "condition": "B2B or hybrid business model (B2B selling unless answered otherwise), with B2B customer accounts, wholesale pricing, or volume discounts. Priced by what it asks of the store: Shopify’s own B2B set-up (standard), or catalogues per company, quote or negotiated pricing, a separate B2B storefront or checkout, or needs Shopify’s B2B does not cover (advanced)",
       "inputs": [
         "/meta/client/business_model",
         "/b2b/company_accounts",
         "/b2b/price_lists",
-        "/b2b/volume_discounts"
+        "/b2b/volume_discounts",
+        "/b2b/company_specific_catalogs",
+        "/b2b/catalog_count",
+        "/b2b/rfq_or_negotiated_pricing",
+        "/b2b/contextual_experience",
+        "/b2b/unsupported_needs"
       ],
-      "modifier": "+B2B",
       "sources": [
         "https://help.shopify.com/en/manual/b2b/getting-started/plan-features",
         "https://help.shopify.com/en/manual/b2b/getting-started/features"
@@ -648,7 +660,12 @@
       "verified": {
         "on": "2026-09-17",
         "source": "question bank citations"
-      }
+      },
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "advanced"
+      ]
     },
     {
       "id": "integration",
@@ -988,7 +1005,7 @@
     {
       "id": "multi_store",
       "label": "More than one Shopify store",
-      "condition": "The engine's derived market topology (ai/engine/topology.js) recommends more than one Shopify store — a hybrid or a full expansion-store estate — because a business fact forces it: a selling entity per market beyond what Plus's own per-market entity assignment covers, its own tax and invoicing footprint, a genuinely different range, a market run by its own local team, a market needing its own theme design rather than shared content, a market with its own regulatory requirement, wholesale run as its own operation, or more than one customer-facing brand. Global reach alone never triggers this: Shopify documents no cap on markets per store, so an engagement selling in many markets from one Shopify Markets set-up stays whichever offer its other gates decide. A second store is a second app estate, a second theme licence and every integration wired again — L-shaped work regardless of market count",
+      "condition": "The engine's derived market topology (ai/engine/topology.js) recommends more than one Shopify store — a hybrid or a full expansion-store estate — because a business fact forces it: a selling entity per market beyond what Plus's own per-market entity assignment covers, its own tax and invoicing footprint, a genuinely different range, a market run by its own local team, a market needing its own theme design rather than shared content, a market with its own regulatory requirement, wholesale run as its own operation, or more than one customer-facing brand. Global reach alone never triggers this: Shopify documents no cap on markets per store, so an engagement selling in many markets from one Shopify Markets set-up stays whichever offer its other gates decide. It is recorded for the approach and the architecture and no longer decides the pack: each further store is priced by the store-estate gate, sold as an add-on on M and included in L up to three.",
       "inputs": [
         "/markets/topology/recommendation",
         "/markets/topology/separate_store_markets",
@@ -1014,15 +1031,15 @@
       "gate": "markets",
       "description": "Shopify Markets set-up: geo-routing, Translate & Adapt, tax, duties and payment methods per market, and the checkout tested in each one — three quarters of a week per market beyond the first, and a third more where that market meets a bespoke template set rather than a configured theme",
       "effort_weeks": {
-        "min": 1,
-        "max": 8
+        "min": 0.75,
+        "max": 20
       },
       "price_add": {
-        "min": 8000,
-        "max": 86000
+        "min": 7875,
+        "max": 210000
       },
       "per_market_weeks": 0.75,
-      "per_market_price": 8000,
+      "per_market_price": 7875,
       "$comment": "Only the storefront is surcharged. Languages are already priced per language and integrations per integration, so charging a market for them again would be the redirect estate mistake in another place: the same work billed twice because two rules each think they own it.",
       "per_unit_surcharge": [
         {
@@ -1037,7 +1054,11 @@
           "add": 0.33,
           "why": "A full template set is re-tested and signed off in every market — the largest surface a further market meets"
         }
-      ]
+      ],
+      "max_units": {
+        "value": 20,
+        "why": "Shopify documents no cap on markets per store; twenty further markets, every one re-tested against a full template set, is where an estate stops being one build and rule 11.3 reads it as a programme"
+      }
     },
     {
       "id": "+Stores",
@@ -1045,14 +1066,14 @@
       "description": "Each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again per store — expansion stores share no data, so the more integrations there are, the more this costs per additional store",
       "effort_weeks": {
         "min": 1.5,
-        "max": 9
+        "max": 31.5
       },
       "price_add": {
-        "min": 16000,
-        "max": 96000
+        "min": 15750,
+        "max": 330750
       },
       "per_store_weeks": 1.5,
-      "per_store_price": 16000,
+      "per_store_price": 15750,
       "per_unit_surcharge": [
         {
           "gate": "integration",
@@ -1067,19 +1088,38 @@
           "why": "Theme licences cannot be shared, so a bespoke template set is deployed and kept in step store by store"
         }
       ],
-      "$comment": "Ten stores come with a Plus contract at no licence cost, which is exactly why nobody counts them. The cost is not the licence: it is apps billed per store, theme licences per store, and integrations wired per store because expansion stores share no data by default."
+      "$comment": "Ten stores come with a Plus contract at no licence cost, which is exactly why nobody counts them. The cost is not the licence: it is apps billed per store, theme licences per store, and integrations wired per store because expansion stores share no data by default.",
+      "max_units": {
+        "value": 9,
+        "why": "A Shopify Plus contract carries nine expansion stores; every one is charged, with three counted integrations (rule 11.7 stops a fourth) and a bespoke template set to redeploy"
+      }
     },
     {
-      "id": "+B2B",
+      "id": "+B2B (standard)",
       "gate": "b2b",
-      "description": "Wholesale pricing, B2B accounts, volume discounts",
+      "tier": "standard",
+      "description": "Shopify’s own B2B: company accounts, price lists, volume rules and payment terms",
       "effort_weeks": {
-        "min": 1.5,
+        "min": 1,
         "max": 1.5
       },
       "price_add": {
-        "min": 10000,
-        "max": 15000
+        "min": 10500,
+        "max": 15750
+      }
+    },
+    {
+      "id": "+B2B (advanced)",
+      "gate": "b2b",
+      "tier": "advanced",
+      "description": "B2B past Shopify’s own set-up: catalogues per company, quote or negotiated pricing, a separate B2B storefront or checkout, or needs Shopify’s B2B does not cover",
+      "effort_weeks": {
+        "min": 2,
+        "max": 3
+      },
+      "price_add": {
+        "min": 21000,
+        "max": 31500
       }
     },
     {
@@ -1092,8 +1132,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 8000,
-        "max": 18000
+        "min": 10500,
+        "max": 21000
       }
     },
     {
@@ -1106,24 +1146,36 @@
         "max": 5
       },
       "price_add": {
-        "min": 25000,
-        "max": 45000
+        "min": 31500,
+        "max": 52500
       }
     },
     {
       "id": "+Theme design",
       "gate": "theme_design",
-      "description": "Each storefront design beyond the first: every template drawn and built again against the same token layer, its own theme installed, configured and Theme Checked, and kept in step with the first on every release. Priced between the two storefront-design tiers on purpose — more than the bespoke sections of a key-screens design, less than a full template set from a design system, because the system itself is not built twice",
+      "description": "Each further storefront design, built from the client’s second design against the same token layer: its own theme installed, configured and Theme Checked, every template built again — more of them when the first design is a full template set — and the theme kept in step with the first on every release",
       "effort_weeks": {
         "min": 2,
-        "max": 8
+        "max": 31.5
       },
       "price_add": {
-        "min": 17000,
-        "max": 70000
+        "min": 21000,
+        "max": 330750
       },
       "per_theme_weeks": 2,
-      "per_theme_price": 17000
+      "per_theme_price": 21000,
+      "per_unit_surcharge": [
+        {
+          "gate": "storefront_design",
+          "tier": "bespoke",
+          "add": 0.75,
+          "why": "A further design is built to the tier of the first: against a full template set every template is built again, which is most of a bespoke design’s own weeks"
+        }
+      ],
+      "max_units": {
+        "value": 9,
+        "why": "Shopify publishes one theme per store, so there is never a further design without a further store — nine at most"
+      }
     },
     {
       "id": "+Integration",
@@ -1134,11 +1186,11 @@
         "max": 3
       },
       "price_add": {
-        "min": 10000,
-        "max": 30000
+        "min": 10500,
+        "max": 31500
       },
       "per_integration_weeks": 1,
-      "per_integration_price": 10000
+      "per_integration_price": 10500
     },
     {
       "id": "+SKU (standard)",
@@ -1150,8 +1202,8 @@
         "max": 0.5
       },
       "price_add": {
-        "min": 5000,
-        "max": 8000
+        "min": 5250,
+        "max": 5250
       }
     },
     {
@@ -1164,8 +1216,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 25000
+        "min": 15750,
+        "max": 26250
       }
     },
     {
@@ -1178,8 +1230,8 @@
         "max": 5
       },
       "price_add": {
-        "min": 30000,
-        "max": 50000
+        "min": 31500,
+        "max": 52500
       }
     },
     {
@@ -1192,8 +1244,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 6000,
-        "max": 11000
+        "min": 5250,
+        "max": 10500
       }
     },
     {
@@ -1206,8 +1258,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 16000,
-        "max": 28000
+        "min": 15750,
+        "max": 26250
       }
     },
     {
@@ -1220,8 +1272,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5000,
-        "max": 10000
+        "min": 5250,
+        "max": 10500
       }
     },
     {
@@ -1234,8 +1286,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 25000
+        "min": 15750,
+        "max": 26250
       }
     },
     {
@@ -1248,8 +1300,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 6000,
-        "max": 12000
+        "min": 5250,
+        "max": 10500
       }
     },
     {
@@ -1262,8 +1314,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 16000,
-        "max": 28000
+        "min": 15750,
+        "max": 26250
       }
     },
     {
@@ -1276,8 +1328,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 6000,
-        "max": 11000
+        "min": 5250,
+        "max": 10500
       }
     },
     {
@@ -1290,8 +1342,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 11000,
-        "max": 22000
+        "min": 10500,
+        "max": 21000
       }
     },
     {
@@ -1304,8 +1356,8 @@
         "max": 3
       },
       "price_add": {
-        "min": 16000,
-        "max": 32000
+        "min": 15750,
+        "max": 31500
       }
     },
     {
@@ -1318,8 +1370,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 5000,
-        "max": 10000
+        "min": 5250,
+        "max": 10500
       }
     },
     {
@@ -1332,8 +1384,8 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 15000,
-        "max": 26000
+        "min": 15750,
+        "max": 26250
       }
     },
     {
@@ -1346,8 +1398,8 @@
         "max": 1
       },
       "price_add": {
-        "min": 6000,
-        "max": 11000
+        "min": 5250,
+        "max": 10500
       }
     },
     {
@@ -1360,8 +1412,8 @@
         "max": 2
       },
       "price_add": {
-        "min": 12000,
-        "max": 22000
+        "min": 10500,
+        "max": 21000
       }
     },
     {
@@ -1373,11 +1425,11 @@
         "max": 5
       },
       "price_add": {
-        "min": 8000,
-        "max": 40000
+        "min": 10500,
+        "max": 52500
       },
       "per_location_weeks": 1,
-      "per_location_price": 8000
+      "per_location_price": 10500
     },
     {
       "id": "+Migration (light)",
@@ -1389,8 +1441,8 @@
         "max": 1.5
       },
       "price_add": {
-        "min": 8000,
-        "max": 12000
+        "min": 10500,
+        "max": 15750
       }
     },
     {
@@ -1403,8 +1455,8 @@
         "max": 4
       },
       "price_add": {
-        "min": 18000,
-        "max": 30000
+        "min": 26250,
+        "max": 42000
       }
     },
     {
@@ -1417,8 +1469,8 @@
         "max": 5.5
       },
       "price_add": {
-        "min": 30000,
-        "max": 44000
+        "min": 42000,
+        "max": 57750
       }
     },
     {
@@ -1430,8 +1482,8 @@
         "max": 0.5
       },
       "price_add": {
-        "min": 4000,
-        "max": 7000
+        "min": 5250,
+        "max": 5250
       }
     },
     {
@@ -1443,11 +1495,11 @@
         "max": 2.5
       },
       "price_add": {
-        "min": 6000,
-        "max": 30000
+        "min": 5250,
+        "max": 26250
       },
       "per_language_weeks": 0.5,
-      "per_language_price": 6000,
+      "per_language_price": 5250,
       "free_languages": 3
     }
   ],
@@ -1466,7 +1518,7 @@
   "exit_results": {
     "STOP": "Beyond the S/M/L offers. Not a refusal: the engagement continues as a Larger Engagement with a consultant-led Discovery Phase, or Merkle does not bid. Recorded in Q10.5.5 before the closing document.",
     "FLAG": "Does not block GO. Requires a named owner and resolution before build starts.",
-    "WARN": "Commercial adjustment. Recorded in the proposal; does not block GO."
+    "WARN": "Commercial point for the proposal, kept out of every client section. Does not block GO."
   },
   "exit_rules": [
     {
@@ -1513,14 +1565,13 @@
       "id": "11.3",
       "result": "STOP",
       "status": "canonical",
-      "condition": "Scope has outgrown the gate work this offer's band already carries, AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: the offer quotes its own overflow at the rate of the work that caused it. What cannot be quoted is scope this large that cannot yet be committed to",
+      "condition": "Scope has outgrown the gate work the largest pack carries — Ecommerce Growth’s band spans nine to nineteen weeks of scope gates — AND two or more delivery risks are still open (no connector or iPaaS, a migration carrying rankings, a deadline shorter than the build, an unsettled store topology, a system with no test environment). Size alone is not a programme: every gate is quoted at its own weeks and price. What cannot be quoted is scope this large that cannot yet be committed to",
       "destination": "An Enterprise Engagement opening with a dedicated Discovery Phase, to close the open risks before the scope is committed",
       "inputs": [
         "/offer/scope_effort_by_gate",
-        "/offer/gate_capacity_weeks",
         "/offer/scope_effort_weeks"
       ],
-      "label": "Scope past the offer envelope, with too much about delivering it still open",
+      "label": "Scope past the largest pack, with too much about delivering it still open",
       "reads_rules": [
         "11.12",
         "11.14",
@@ -1612,14 +1663,13 @@
       "id": "11.11",
       "result": "WARN",
       "status": "canonical",
-      "condition": "Grow retainer not signed on an M or L engagement",
-      "destination": "Grow retainer to be signed before delivery starts; otherwise commercial adjustment",
-      "internal_note": "Quote at list price +25% (never shown to the client)",
+      "condition": "An M or L engagement with no Grow retainer agreed yet",
+      "destination": "Offer the Grow retainer — run, optimise and the Phase 2 roadmap — and record the client’s answer before build starts. Its price is kept open",
       "inputs": [
         "/delivery/grow_retainer/signed",
         "/offer/code"
       ],
-      "label": "An M or L engagement with no Grow retainer signed"
+      "label": "An M or L engagement with no Grow retainer agreed yet"
     },
     {
       "id": "11.12",
@@ -1830,13 +1880,13 @@
       "id": "11.29",
       "result": "STOP",
       "status": "canonical",
-      "condition": "More than one customer-facing brand, each needing its own full template set from a design system (the storefront design gate at its bespoke tier). One design programme repeated per brand is not a pack: Ecommerce Growth prices one. Multibrand on a configured theme, or on a key-screens design, is not this rule — a second brand already forces Ecommerce Growth through the multi-brand store it needs, and that is where it stays",
+      "condition": "More than one customer-facing brand, each needing its own design system — its own tokens and components (Q9.2.14). Brands that share one design system stay in the offers: a store per brand (an add-on on M, up to three in L) and a further storefront design where a brand’s layout differs. A design system per brand is a design programme, not a pack",
       "destination": "Merkle Arc — a design-system programme per brand, scoped by the Arc practice",
       "inputs": [
         "/meta/client/brand_count",
-        "/offer/scope_gates/storefront_design/tier"
+        "/design/design_system_per_brand"
       ],
-      "label": "More than one brand, each with its own full design system"
+      "label": "More than one brand, each with its own design system"
     }
   ],
   "routes": [
@@ -2170,8 +2220,9 @@
         "S": "Up to 1 store",
         "M": "Up to 1 store",
         "L": "Up to 3 stores",
-        "note": "One store already serves every market in the pack — a different currency, language, domain, price and catalogue per market, no second store required. Needing a second store is not an add-on chosen from S or M: it makes the engagement an Ecommerce Growth outright, whichever pack the rest of the answers would have meant, because expansion stores share no data, so every integration is wired again, every theme deployed again and every app bought again, per store. Whether the requirements need one is not a question we ask: the engine derives it from the market answers — does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, need its own theme design, or belong to a second brand.",
+        "note": "One store already serves every market in the pack — a different currency, language, domain, price and catalogue per market, no second store required. When the requirements do need a second store it is an add-on on M, and L includes up to three. Each further store is its own set-up, domain, tax and payments, the theme deployed again and every integration wired again, because expansion stores share no data. Whether the requirements need one is not a question we ask: the engine derives it from the market answers — does another market invoice through its own company, hold its own tax registration, sell a genuinely different range, run under its own team, need its own theme design, or belong to a second brand.",
         "addon": [
+          "M",
           "L"
         ],
         "addon_label": "Each further store"
@@ -2245,8 +2296,7 @@
         "note": "Translate & Adapt auto-translates two and Swiss DE/FR/IT is in every pack, which is why the gate opens at the fourth. Six is the ceiling in every pack: more is a separate discovery (rule 11.4), well below what Shopify itself would publish.",
         "addon": [
           "S",
-          "M",
-          "L"
+          "M"
         ],
         "addon_label": "Each further language"
       },
@@ -2333,7 +2383,7 @@
         "S": "Up to 1",
         "M": "Up to 1",
         "L": "Up to 1",
-        "note": "One theme design serves every market in the pack, translated and with per-market content. A market that needs a genuinely different design rather than different content needs its own store — the Shopify stores row — and per-market content itself needs Advanced (rule 11.1).",
+        "note": "One theme design serves every market in the pack, translated and with per-market content. A genuinely different design is a second published theme, and Shopify publishes one theme per store, so it comes with a further store: sold where stores are, on M and L. Per-market content itself needs Advanced (rule 11.1).",
         "sources": [
           "https://help.shopify.com/en/manual/markets/customizations/online-store"
         ],
@@ -2342,7 +2392,6 @@
           "source": "help.shopify.com"
         },
         "addon": [
-          "S",
           "M",
           "L"
         ],
@@ -2561,9 +2610,10 @@
         "gate": "store_estate",
         "what": "Each further Shopify store",
         "available_in": [
+          "M",
           "L"
         ],
-        "note": "Never an add-on to an S or an M. A second store makes the engagement an Ecommerce Growth outright, because expansion stores share no data: every integration is wired again, every theme deployed again and every app bought again, per store."
+        "note": "Sold on M, and included in L up to three stores. One store already serves every market; a second is needed only when the requirements force it, which the engine derives from the market and brand answers. Each further store is its own set-up, users, domain, tax and payments, the theme deployed and kept in step, and every integration wired again — expansion stores share no data. Below Shopify Plus every store carries its own plan; a Plus contract includes nine expansion stores of the same brand."
       },
       {
         "id": "multi_currency",
@@ -2613,11 +2663,10 @@
         "gate": "theme_design",
         "what": "Each further storefront design",
         "available_in": [
-          "S",
           "M",
           "L"
         ],
-        "note": "One design serves every market and every store in every pack: per-market customisation reaches section content and block visibility only, never theme settings and never Liquid templates, so a genuinely different layout is a second theme. The design system is not built twice — the second set is drawn against the same token layer — which is what keeps this an add-on. More than one brand, each with its own full design system, is Merkle Arc instead (rule 11.29)."
+        "note": "Sold where a further store is: on M with the store add-on, and in L. Shopify publishes one theme per store, and per-market customisation reaches section content and block visibility only — never theme settings or Liquid templates — so a genuinely different layout is a second theme on a second store. Built from the client’s second design against the same token layer: the design system is not built twice. More than one brand, each with its own design system, is Merkle Arc instead (rule 11.29)."
       },
       {
         "id": "sku_complexity",
@@ -2670,9 +2719,9 @@
         "what": "Each further language",
         "available_in": [
           "S",
-          "M",
-          "L"
-        ]
+          "M"
+        ],
+        "note": "L already carries six languages, and a seventh is a separate discovery (rule 11.4), so this is sold on S and M."
       },
       {
         "id": "seo_continuity",

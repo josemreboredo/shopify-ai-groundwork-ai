@@ -123,9 +123,9 @@ describe('the comparison table and the add-on catalogue the page reads', () => {
       'a price band reached a caller who may not see Merkle pricing');
     assert.ok(priced.addons.every((a) => a.price.min > 0), 'an owner sees what every add-on costs');
     const b2b = priced.addons.find((a) => a.gate === 'b2b');
-    const mod = offering.modifiers.find((m) => m.id === '+B2B');
-    assert.equal(b2b.price.min, mod.price_add.min, 'the add-on quotes a price the engine does not');
-    assert.equal(b2b.weeks.max, mod.effort_weeks.max);
+    const mods = offering.modifiers.filter((m) => m.gate === 'b2b');
+    assert.equal(b2b.price.min, Math.min(...mods.map((m) => m.price_add.min)), 'the add-on quotes a price the engine does not');
+    assert.equal(b2b.weeks.max, Math.max(...mods.map((m) => m.effort_weeks.max)));
   });
 });
 
@@ -160,10 +160,10 @@ describe('a gate priced by tier shows every tier', () => {
   });
 
   test('a gate with one modifier still reports it directly', () => {
-    const b2b = view.gates.find((g) => g.id === 'b2b');
-    assert.equal(b2b.modifier, '+B2B');
-    assert.equal(b2b.tiers, undefined);
-    assert.ok(b2b.adds?.trim());
+    const integration = view.gates.find((g) => g.id === 'integration');
+    assert.equal(integration.modifier, '+Integration');
+    assert.equal(integration.tiers, undefined);
+    assert.ok(integration.adds?.trim());
   });
 
   test('every gate carries an effort and a price — none is silently free', () => {
@@ -195,24 +195,22 @@ describe('the page explains the rule the engine actually follows', () => {
 
   /** One engagement per published rule, in the order the page prints them. */
   const CASES = [
-    ['any l_trigger', { ...base(), design: { headless_required: true, headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects' } } }, 'L'],
-    ['scope beyond the M ceiling', {
+    ['a headless storefront', { ...base(), design: { headless_required: true, headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects' } } }, 'L'],
+    ['a quote from the Growth floor', {
       ...base(),
       ...markets('CH', 'DE', 'FR'),
-      // Past the ceiling by three weeks, not by half of one: this case has to
-      // survive the ceiling moving, and it did not when M grew to 15.
       catalogue: { sku_count: 20000, variant_options_max: 3 },
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },
-      integrations: [{ category: 'erp', connector: 'custom' }],
+      integrations: [{ category: 'erp', connector: 'custom' }, { category: 'pim', connector: 'custom' }],
     }, 'L'],
-    ['two or more gates', {
+    ['a quote from the Scale floor', { ...base(), migration: { source_platform: 'magento' } }, 'M'],
+    ['a Foundation with add-ons', { ...base(), ...markets('CH', 'DE') }, 'S'],
+    ['a further store below the Scale floor', {
       ...base(),
       ...markets('CH', 'DE'),
-      retail: { store_count: 2, pos: 'shopify_pos' },
+      markets: { ...markets('CH', 'DE').markets, topology: { recommendation: 'expansion_stores', separate_store_markets: ['DE'], additional_channel_stores: [] } },
     }, 'M'],
-    ['exactly one gate', { ...base(), retail: { store_count: 2, pos: 'shopify_pos' } }, 'S'],
-    ['no gate at all', base(), 'S'],
   ];
 
   test('there is one published rule per branch the engine has', () => {
@@ -236,10 +234,12 @@ describe('the page explains the rule the engine actually follows', () => {
     }
   });
 
-  test('the effort rule names the ceiling it is testing', () => {
-    // "More than an M can hold" is only checkable if the number is on the page.
-    const effortRule = view.classification.find((c) => /adds up to/.test(c.plain));
-    assert.ok(effortRule, 'the rule that decides M against L is published');
-    assert.match(effortRule.plain, new RegExp(String(offering.offers.M.duration_weeks.max)));
+  test('the floor rules name the pack whose floor they test', () => {
+    // "Reaches the floor" is only checkable if the page says which one.
+    for (const code of ['L', 'M']) {
+      const rule = view.classification.find((c) => c.offer === code && /floor/.test(c.plain) && !/Below/.test(c.plain));
+      assert.ok(rule, `the rule that names an engagement ${code} by its budget is published`);
+      assert.match(rule.plain, new RegExp(offering.offers[code].name));
+    }
   });
 });

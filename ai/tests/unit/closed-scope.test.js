@@ -20,58 +20,11 @@ import fs from 'node:fs';
 
 import { offering } from '../../schema/index.js';
 import { classifyOffer } from '../../engine/classify.js';
+import { engagementAt } from '../../engine/promise.js';
+import { renderStrategy } from '../../scripts/render-strategy.js';
 
 /** A citation is a page on one of Shopify's own sites, and nothing else. */
 const SHOPIFY = /^https:\/\/(help\.shopify\.com|shopify\.dev|www\.shopify\.com|changelog\.shopify\.com)\//;
-
-const LANGS = ['de', 'fr', 'it', 'en', 'es', 'pt', 'nl'];
-const CODES = ['CH', 'DE', 'AT', 'FR', 'IT', 'ES', 'NL', 'BE', 'PL', 'SE'];
-
-/** An engagement that takes exactly what a pack promises, and nothing more. */
-function engagementAt(limits) {
-  const languages = LANGS.slice(0, limits.languages);
-  return {
-    schema_version: '1.0.0',
-    meta: { client: { name: 'X', slug: 'x', business_model: limits.b2b ? 'hybrid' : 'dtc' }, source: 'questionnaire', created_at: '2026-09-01' },
-    markets: {
-      list: Array.from({ length: limits.markets }, (_, i) => ({
-        code: CODES[i],
-        currency: limits.multi_currency && i > 0 ? 'EUR' : 'CHF',
-        price_strategy: 'base_currency',
-        languages,
-      })),
-      /* The store estate is read off the derived topology, never off a count,
-         so a pack that promises N stores has to be built with a topology that
-         produces N — otherwise the gate never fires and the test proves a
-         cheaper engagement than the one the pack sells. */
-      topology: (limits.stores ?? 1) > 1
-        ? {
-            recommendation: 'expansion_stores',
-            separate_store_markets: CODES.slice(1, limits.stores),
-            additional_channel_stores: [],
-          }
-        : { recommendation: 'single_store_markets', separate_store_markets: [], additional_channel_stores: [] },
-    },
-    // A pack that promises complex variants has to be built with them, or the
-    // catalogue gate never fires and the test proves the wrong engagement.
-    catalogue: { sku_count: limits.sku_count, variant_options_max: limits.variant_options ?? 1 },
-    /* A pack that promises N bespoke sections has to be built with N of them,
-       for the same reason as the variants above: the number went unenforced
-       for months precisely because nothing built an engagement that took it. */
-    design: { figma: { completeness: limits.storefront }, ...(limits.bespoke_sections === undefined ? {} : { bespoke_sections: limits.bespoke_sections }) },
-    integrations: Array.from({ length: limits.integrations }, (_, i) => ({
-      system: `sys${i}`, category: ['erp', 'pim', 'crm'][i], connector: 'custom', status: 'to_build', test_environment: 'available',
-    })),
-    retail: { store_count: limits.retail_locations, pos: limits.retail_locations ? 'shopify_pos' : false },
-    migration: limits.migration ? { source_platform: limits.migration, seo_equity: 'none' } : {},
-    // A pack that promises checkout blocks has to be built with them.
-    checkout: limits.checkout ? { customisation: [limits.checkout] } : {},
-    /* And a pack that promises measurement past GA4's own events has to be
-       built with some, or the analytics gate never fires and the test proves a
-       pack that sells less than this one does. */
-    marketing: { analytics: limits.analytics_custom_events ? { custom_events: ['market_view', 'app_event'] } : {} },
-  };
-}
 
 describe('every threshold a price rests on is referenced', () => {
   /*
@@ -145,6 +98,10 @@ describe('the strategy document and the engine quote the same offering', () => {
    */
   const strategy = fs.readFileSync(new URL('../../../docs/strategy.md', import.meta.url), 'utf8');
 
+  test('the classification rule and the modifier table are the offering’s own', () => {
+    assert.equal(strategy, renderStrategy(strategy), 'docs/strategy.md has drifted from offering.json — run npm run strategy:render');
+  });
+
   test('every offer\u2019s band and duration appear in the table that claims to define them', () => {
     for (const [code, offer] of Object.entries(offering.offers)) {
       const b = offer.price_band;
@@ -169,14 +126,21 @@ describe('the closed scope each pack sells', () => {
     }
   });
 
-  test('and it fits inside the weeks that pack already carries, so the price does not move', () => {
+  test('and it is quoted inside the band the pack publishes', () => {
+    /* The quote is the Foundation base plus every gate at its own price, so a
+       pack's band is a promise the arithmetic has to keep: a client who takes
+       exactly the pack is quoted inside it, never above the ceiling on the
+       page. When the gates a pack includes grow, this goes red until the band
+       moves with them. */
     for (const [code, lim] of Object.entries(limits)) {
       const offer = classifyOffer(engagementAt(lim));
-      const gates = offer.scope_effort_by_gate.reduce((a, g) => a + g.weeks.max, 0);
-      assert.ok(gates <= offer.gate_capacity_weeks.max,
-        `${code} promises ${gates} weeks of scope gates against the ${offer.gate_capacity_weeks.max} its band carries — quoting it would cost more than the pack`);
-      assert.ok(offer.duration_weeks.max <= offering.offers[code].duration_weeks.max,
-        `${code} promises more than its own duration`);
+      const band = offering.offers[code].price_band;
+      const weeks = offering.offers[code].duration_weeks;
+      assert.ok(offer.price_band.min >= band.min && offer.price_band.max <= band.max,
+        `${code} at its promise is quoted CHF ${offer.price_band.min}–${offer.price_band.max} against a published ${band.min}–${band.max}`);
+      assert.ok(offer.duration_weeks.min >= weeks.min && offer.duration_weeks.max <= weeks.max,
+        `${code} at its promise takes ${offer.duration_weeks.min}–${offer.duration_weeks.max} weeks against a published ${weeks.min}–${weeks.max}`);
+      assert.deepEqual(offer.addons, [], `${code} at its promise needs add-ons: ${offer.addons.map((a) => a.gate)}`);
     }
   });
 
@@ -336,13 +300,32 @@ describe('the closed scope each pack sells', () => {
     }
   });
 
-  test('a second Shopify store is sold only where the engine can actually deliver it', () => {
-    // The store gate and the multi_store L-trigger read the same fact, so any
-    // second store makes the engagement an Ecommerce Growth. Offering one as an
-    // add-on to an S or an M would be selling a pack the engine cannot quote.
+  test('a second Shopify store is an add-on on M, and included in L up to three', () => {
+    /* A re-estimate that finds a second store has to read as the same project
+       with a store more. The store is sold on M and included in L; S does not
+       carry it, so a small engagement that needs one is named after the
+       smallest pack that sells it. */
     const stores = addons.find((a) => a.gate === 'store_estate');
-    assert.deepEqual(stores.available_in, ['L']);
-    assert.deepEqual(rows.find((r) => r.id === 'store_estate').addon, ['L']);
+    assert.deepEqual(stores.available_in, ['M', 'L']);
+    assert.deepEqual(rows.find((r) => r.id === 'store_estate').addon, ['M', 'L']);
+
+    const m = classifyOffer(engagementAt(limits.M));
+    const more = classifyOffer(engagementAt({ ...limits.M, stores: 2 }));
+    assert.equal(more.code, 'M', 'an M that finds a second store is still an M');
+    assert.deepEqual(more.addons.map((a) => a.gate), ['store_estate']);
+    const store = more.price_band.max - m.price_band.max;
+    assert.ok(store > 0 && store < 30000, `the store adds CHF ${store} to the ceiling, not the next pack's band`);
+
+    const small = classifyOffer(engagementAt({ ...limits.S, stores: 2 }));
+    assert.equal(small.code, 'M', 'S does not carry a second store');
+    assert.deepEqual(small.addons.map((a) => a.gate), ['store_estate']);
+    assert.equal(classifyOffer(engagementAt(limits.L)).addons.length, 0, 'L includes three stores');
+  });
+
+  test('a further storefront design is sold where a further store is', () => {
+    // Shopify publishes one theme per store, so a second design needs a second store.
+    assert.deepEqual(addons.find((a) => a.gate === 'theme_design').available_in, ['M', 'L']);
+    assert.deepEqual(rows.find((r) => r.id === 'themes').addon, ['M', 'L']);
   });
 
   /* The Arc column is the one place the pack table talks about work this engine
@@ -428,6 +411,87 @@ describe('the closed scope each pack sells', () => {
       for (const id of (row.note ?? '').match(/rule (\d+\.\d+)/g)?.map((m) => m.slice(5)) ?? []) {
         assert.ok(byId.has(id), `${row.id}: cites rule ${id}, which does not exist`);
       }
+    }
+  });
+});
+
+describe('the quote is the scope, priced one way', () => {
+  const { limits } = offering.closed_scope;
+  const S = offering.offers.S;
+  const rate = offering.pricing.weekly_rate;
+
+  test('every modifier is priced at the one weekly rate', () => {
+    for (const m of offering.modifiers) {
+      assert.equal(m.price_add.min, Math.round(m.effort_weeks.min * rate), `${m.id}: its minimum is not its weeks at the rate`);
+      assert.equal(m.price_add.max, Math.round(m.effort_weeks.max * rate), `${m.id}: its maximum is not its weeks at the rate`);
+      for (const k of Object.keys(m).filter((x) => /^per_\w+_weeks$/.test(x))) {
+        assert.equal(m[k.replace(/_weeks$/, '_price')], Math.round(m[k] * rate), `${m.id}: ${k} is not priced at the rate`);
+      }
+    }
+  });
+
+  test('a per-unit band holds every unit its limit allows, at the dearest surcharge', () => {
+    /* A band that clamps below the limit behind it gives the last units away:
+       the fifth store to the tenth once cost nothing. */
+    for (const m of offering.modifiers.filter((x) => x.max_units)) {
+      const key = Object.keys(m).find((k) => /^per_\w+_weeks$/.test(k));
+      // Tiers of one gate never apply together; a per-unit surcharge counts up
+      // to three integrations, the most rule 11.7 lets through.
+      const byGate = {};
+      for (const s of m.per_unit_surcharge ?? []) byGate[s.gate] = Math.max(byGate[s.gate] ?? 0, s.add * (s.per_unit ? 3 : 1));
+      const uplift = Object.values(byGate).reduce((a, n) => a + n, 0);
+      const needed = m.max_units.value * m[key] * (1 + uplift);
+      assert.ok(m.effort_weeks.max >= needed - 0.05,
+        `${m.id}: ${m.max_units.value} units at the dearest surcharge need ${needed} weeks; the band stops at ${m.effort_weeks.max}`);
+      assert.ok(m.max_units.why?.trim(), `${m.id}: a limit with no reason`);
+    }
+  });
+
+  test('the quote is the Foundation base plus every gate at its own price', () => {
+    const cases = [
+      ...Object.values(limits),
+      { ...limits.M, stores: 2 }, { ...limits.M, languages: 5 }, { ...limits.S, migration: 'magento' },
+      { ...limits.L, migration: 'sfcc', stores: 4 }, { ...limits.S, b2b: 'advanced', integrations: 2 },
+    ];
+    for (const lim of cases) {
+      const o = classifyOffer(engagementAt(lim));
+      const mods = o.modifiers.map((id) => offering.modifiers.find((m) => m.id === id));
+      assert.equal(mods.length, o.scope_effort_by_gate.length, 'every active gate is priced');
+      const weeks = o.scope_effort_by_gate.reduce((a, g) => ({ min: a.min + g.weeks.min, max: a.max + g.weeks.max }), { min: 0, max: 0 });
+      assert.equal(o.duration_weeks.min, Math.round((S.duration_weeks.min + weeks.min) * 2) / 2);
+      assert.equal(o.duration_weeks.max, Math.round((S.duration_weeks.max + weeks.max) * 2) / 2);
+      assert.equal(o.price_band.min, Math.round((S.price_band.min + weeks.min * rate) / 1000) * 1000,
+        `${JSON.stringify(lim)}: the floor is not the base plus the gates`);
+      assert.equal(o.price_band.max, Math.round((S.price_band.max + weeks.max * rate) / 1000) * 1000,
+        `${JSON.stringify(lim)}: the ceiling is not the base plus the gates`);
+    }
+  });
+
+  test('more scope never costs less, and never takes less time', () => {
+    /* Every dimension a client can grow, stepped up one notch at a time from
+       random engagements, checked on all four numbers. The test it replaced
+       looked at the maximums only and at nine gates of seventeen. */
+    const STEPS = {
+      markets: [1, 2, 3, 4, 6], multi_currency: [false, true], languages: [1, 3, 4, 5, 6], integrations: [0, 1, 2, 3],
+      storefront: ['brand_only', 'key_screens', 'all_templates'], sku_count: [400, 2000, 6000, 20000],
+      migration: [null, 'woocommerce', 'shopware', 'magento'], retail_locations: [0, 1, 3], stores: [1, 2, 3, 5],
+      checkout: [null, 'thank_you_order_status_blocks', 'checkout_step_blocks_or_fields'], analytics_custom_events: [false, true],
+      b2b: [false, 'standard', 'advanced'], extra_theme_designs: [0, 1, 2], headless: [false, true],
+    };
+    let seed = 7;
+    const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+    const pick = (a) => a[Math.floor(rnd() * a.length)];
+    const numbers = (o) => [o.price_band.min, o.price_band.max, o.duration_weeks.min, o.duration_weeks.max];
+    for (let i = 0; i < 1500; i++) {
+      const lim = Object.fromEntries(Object.entries(STEPS).map(([k, v]) => [k, pick(v)]));
+      lim.extra_theme_designs = Math.min(lim.extra_theme_designs, lim.stores - 1);
+      const dims = Object.keys(STEPS).filter((k) => STEPS[k].indexOf(lim[k]) < STEPS[k].length - 1);
+      const d = pick(dims);
+      const next = { ...lim, [d]: STEPS[d][STEPS[d].indexOf(lim[d]) + 1] };
+      next.extra_theme_designs = Math.min(next.extra_theme_designs, next.stores - 1);
+      const a = numbers(classifyOffer(engagementAt(lim)));
+      const b = numbers(classifyOffer(engagementAt(next)));
+      a.forEach((n, j) => assert.ok(b[j] >= n, `${d} ${lim[d]} → ${next[d]} lowers ${['the floor', 'the ceiling', 'the minimum weeks', 'the maximum weeks'][j]}: ${n} → ${b[j]}`));
     }
   });
 });

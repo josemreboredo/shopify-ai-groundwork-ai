@@ -101,20 +101,17 @@ export default function GoNoGo({ loaderData }) {
         </p>
       </section>
 
-      {/* What adds up to an overrun.
-          "Which requirement is outside the offers?" has no answer on an
-          engagement that hit the effort ceiling — none of them is, and the page
-          said "1 requirement" anyway, which sends a consultant looking for
-          something that does not exist. This is the sum itemised: nothing to
-          remove, a list to negotiate. */}
+      {/* What the quote is built from, when it goes past the pack.
+          "Which requirement is outside the offers?" has no answer here — none
+          of them is. This is the quote itemised: the build, every scope gate at
+          its own weeks, and which of them go past what the pack includes. */}
       {g.outgrew ? (
         <section>
-          <h2>Why this is bigger than the offer</h2>
+          <h2>Why this is more than {g.outgrew.pack}</h2>
           <p className="muted">
-            Nothing on this list is outside the offers on its own. The offer's band already carries{' '}
-            <strong>{span(g.outgrew.carries)} weeks</strong> of scope-gate work; this engagement asks for more
-            than that, so the excess is quoted on top at the rate of the work that caused it — which is why it
-            is quoted at <strong>{span(g.outgrew.quoted)} weeks</strong> rather than the offer's usual band.
+            Nothing on this list is outside the offers on its own. The quote is the Foundation build plus every
+            scope gate at its own weeks and price; the lines marked <em>add-on</em> go past what{' '}
+            {g.outgrew.pack} includes, which is why it is quoted at <strong>{span(g.outgrew.quoted)} weeks</strong>.
           </p>
           <ol className="outgrew">
             <li className="outgrew-base">
@@ -123,7 +120,7 @@ export default function GoNoGo({ loaderData }) {
             </li>
             {g.outgrew.gates.map((x) => (
               <li key={x.gate}>
-                <span className="outgrew-what">{x.label}</span>
+                <span className="outgrew-what">{x.label}{x.addon ? <em> · add-on</em> : null}</span>
                 <span className="outgrew-weeks">+{span(x.weeks)}</span>
               </li>
             ))}

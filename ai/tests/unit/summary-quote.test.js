@@ -20,7 +20,7 @@ import { classifyOffer } from '../../engine/classify.js';
 const FIXTURES = path.join(import.meta.dirname, '..', 'fixtures', 'engagements');
 const load = (name) => JSON.parse(fs.readFileSync(path.join(FIXTURES, name), 'utf8'));
 
-/** An engagement whose gates outgrow the weeks its band already holds. */
+/** An engagement whose scope goes well past what the largest pack includes. */
 function overflowing() {
   const doc = load('foundation-minimal.json');
   /* This has to outgrow whatever L carries, and L now carries three stores
@@ -65,13 +65,11 @@ describe('the quote the Summary carries', () => {
 
   test('it carries its own arithmetic, so the number can be rebuilt', () => {
     const q = quote(overflowing(), { pricing: true });
-    const published = offering.offers[q.code];
-    // Every part of "gates add up to X against the Y this band holds" is here.
-    assert.ok(q.scope_effort_weeks.max > q.gate_capacity_weeks.max, 'which is why anything is on top');
-    assert.deepEqual(q.gate_capacity_weeks, {
-      min: published.duration_weeks.min - offering.offers.S.duration_weeks.min,
-      max: published.duration_weeks.max - offering.offers.S.duration_weeks.max,
-    });
+    // Every part of "the Foundation build plus every gate, and what goes past
+    // the pack" is here.
+    assert.deepEqual(q.base_weeks, offering.offers.S.duration_weeks);
+    assert.ok(q.scope_effort_weeks.max > q.base_weeks.max, 'the gates add to the build');
+    assert.ok(q.addons.length, 'and it names what goes past the pack');
     assert.ok(q.rationale?.length, 'and the engine says why in its own words');
   });
 
@@ -98,7 +96,8 @@ describe('the quote the Summary carries', () => {
     const md = renderSummaryMarkdown(s);
     assert.match(md, /\*\*Quoted:\*\*/);
     assert.match(md, /How that number is built/);
-    assert.match(md, /quoted on top of it/);
+    assert.match(md, /every scope gate at its own weeks and price/);
+    assert.match(md, /past what Ecommerce Growth includes/);
 
     // And withheld the same way it is on the page.
     const withheld = renderSummaryMarkdown({ ...s, quote: quote(doc, { pricing: false }) });
@@ -122,7 +121,8 @@ describe('an engagement outside the offers', () => {
     assert.equal(q.route, 'larger_engagement');
     // What is still worth knowing: which offer it would have been, and the size.
     assert.equal(q.code, doc.offer.code);
-    assert.ok(q.scope_effort_weeks.max > q.gate_capacity_weeks.max);
+    assert.ok(q.scope_effort_weeks.max > offering.offers.L.duration_weeks.max);
+    assert.ok(q.addons.length, 'and what would have gone past the pack');
     assert.doesNotMatch(JSON.stringify(q), /\d{5,}/, 'no price reaches it by another route');
   });
 

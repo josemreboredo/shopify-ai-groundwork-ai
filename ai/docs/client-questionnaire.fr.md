@@ -2,7 +2,7 @@
 
 # Questionnaire de discovery Shopify
 
-> **Version:** question bank 1.3.0 · offering 2.20.0
+> **Version:** question bank 1.4.0 · offering 2.20.0
 >
 > **Mode d’emploi :** parcourez les §§ 0 à 10 avec le client pendant l’atelier de discovery. Répondez à chaque
 > question *required* — « TBC » est acceptable, une case vide ne l’est pas. Les questions marquées *consultant* sont
@@ -2307,6 +2307,13 @@
 *Le contenu, les images et les traductions par marché sont inclus dans chaque offre. Un design différent, c’est un second thème, et ce n’est pas la même chose : la personnalisation par marché de Shopify ne va pas plus loin que le contenu des sections et la visibilité des blocs — jamais les réglages du thème, jamais les templates Liquid. Répondez 0 si un seul design sert tous les marchés et tous les stores.*
 
 > Answer:
+
+**Q9.2.14** — Chaque marque a-t-elle besoin de son propre design system — ses propres tokens et composants — plutôt que d’un seul design system avec un thème par marque ? *(recommended)*
+*Ask if Q1.1.8 is 2 or more.*
+*Un design system peut porter plusieurs marques : les mêmes composants, avec les couleurs, la typographie et l’imagerie de chaque marque en tokens, et une autre mise en page là où une marque en a besoin. Un design system par marque, ce sont des tokens et des composants séparés, conçus et maintenus à part.*
+
+- [ ] Yes
+- [ ] No
 
 ### 9.3 Accessibilité
 

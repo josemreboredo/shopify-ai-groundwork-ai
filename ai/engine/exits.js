@@ -8,7 +8,7 @@
  */
 
 import { offering } from '../schema/index.js';
-import { countedIntegrations, marketsOf, distinctLanguages, hasChinaMainland } from './classify.js';
+import { countedIntegrations, marketsOf, distinctLanguages, hasChinaMainland, gateCapacity } from './classify.js';
 import { unmetPlanRequirements, describeRequirements } from './plan.js';
 import { picked } from './values.js';
 
@@ -91,15 +91,17 @@ const EVALUATORS = {
    */
   '11.3': (doc, fired = new Set()) => {
     const gates = doc.offer?.scope_effort_by_gate ?? [];
-    const capacity = doc.offer?.gate_capacity_weeks;
-    if (!gates.length || !capacity) return null;
+    if (!gates.length) return null;
+    // Past the largest pack's envelope, not the named pack's: an M with add-ons
+    // on top is an ordinary quote now, and only scope past every pack is this.
+    const capacity = gateCapacity('L');
     const total = gates.reduce((a, g) => a + g.weeks.max, 0);
     if (total <= capacity.max) return null;
 
     const open = DISCOVERY_RISKS.filter((id) => fired.has(id));
     if (open.length < DISCOVERY_RISK_THRESHOLD) return null;
     const scope = doc.offer?.scope_effort_weeks;
-    return `Scope of ${scope.min}\u2013${scope.max} weeks, ${Math.round((total - capacity.max) * 10) / 10} beyond what the offer carries, with ${open.length} delivery risks still open (${open.join(', ')})`;
+    return `Scope of ${scope.min}\u2013${scope.max} weeks, ${Math.round((total - capacity.max) * 10) / 10} beyond what the largest pack carries, with ${open.length} delivery risks still open (${open.join(', ')})`;
   },
 
   '11.4': (doc) => {
@@ -136,7 +138,7 @@ const EVALUATORS = {
     const code = doc.offer?.code;
     if (code !== 'M' && code !== 'L') return null;
     if (doc.delivery?.route) return null; // routed STOP: Larger Engagement or no bid, no S/M/L offer is quoted
-    return doc.delivery?.grow_retainer?.signed === true ? null : `Offer ${code} without a signed Grow retainer`;
+    return doc.delivery?.grow_retainer?.signed === true ? null : `Offer ${code} with no Grow retainer agreed yet`;
   },
 
   '11.12': (doc) => {
@@ -332,26 +334,24 @@ const EVALUATORS = {
   },
 
   /*
-   * One design programme per brand is not a pack.
+   * One design system per brand is not a pack.
    *
-   * A second brand already forces Ecommerce Growth on its own, through the
-   * store it needs (the multi_store trigger): two brands cannot share one
-   * Shopify store, and Shopify's expansion stores must stay "an extension of
-   * the main brand". That is priced, and it stays in the offers. What is not
-   * priced is the design: a full template set from a mapped design system,
-   * built again for a second identity, is the storefront gate's dearest tier
-   * twice over, which no band carries.
+   * A second brand needs its own store — two brands cannot share one Shopify
+   * store, and expansion stores must stay "an extension of the main brand" —
+   * and that store is priced: an add-on on M, up to three in L. A second layout
+   * is priced too, as a further storefront design built against the same token
+   * layer. What no pack carries is a design system per brand: separate tokens
+   * and components, which is a design programme.
    *
-   * It reads the tier the classifier already decided rather than testing the
-   * Figma answers again. Two places deciding what "bespoke" means is how this
-   * engine once ended up with two classifiers disagreeing, and `weigh()`
-   * classifies before it evaluates exits precisely so a rule can read it.
+   * It used to fire on the storefront tier, which is the tier L itself
+   * includes, so a two-brand client taking exactly the design L sells was sent
+   * to Arc. It reads the client's own answer now (Q9.2.14).
    */
   '11.29': (doc) => {
     const brands = doc.meta?.client?.brand_count ?? 1;
     if (brands <= 1) return null;
-    if (doc.offer?.scope_gates?.storefront_design?.tier !== 'bespoke') return null;
-    return `${brands} customer-facing brands, each needing its own full template set from a design system`;
+    if (doc.design?.design_system_per_brand !== true) return null;
+    return `${brands} customer-facing brands, each needing its own design system`;
   },
 
 };

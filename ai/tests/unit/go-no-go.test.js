@@ -223,17 +223,18 @@ describe('a scope that outgrew the offers', () => {
     const sum = (k) => v.outgrew.base[k] + v.outgrew.gates.reduce((a, x) => a + x.weeks[k], 0);
     assert.equal(sum('min'), v.outgrew.weeks.min, 'the items add up to the total');
     assert.equal(sum('max'), v.outgrew.weeks.max);
-    // What the ledger exists to explain: the gates come to more than the band
-    // already carries, which is why the quote is bigger than the offer's.
-    const gateWeeks = v.outgrew.gates.reduce((a, x) => a + x.weeks.max, 0);
-    assert.ok(gateWeeks > v.outgrew.carries.max, `gates ${gateWeeks} must exceed the ${v.outgrew.carries.max} the band carries`);
+    // What the ledger exists to explain: which of those go past what the pack
+    // includes, which is why the quote is more than the pack on the page.
+    assert.ok(v.outgrew.gates.some((x) => x.addon), 'it marks what goes past the pack');
+    assert.ok(v.outgrew.gates.some((x) => !x.addon), 'and what the pack already includes');
     assert.ok(v.outgrew.quoted.max > offering.offers.L.duration_weeks.max, 'and the quote says so');
     // Gate labels, never the internal modifier ids this is priced from.
     for (const x of v.outgrew.gates) assert.doesNotMatch(x.label, /^\+/, `${x.label} is a modifier id`);
   });
 
-  test('an engagement inside the offers shows no ledger at all', () => {
-    assert.equal(view().outgrew, null);
+  test('an engagement that is its pack as packaged shows no ledger at all', () => {
+    assert.equal(view({}, 'foundation-minimal').outgrew, null);
+    assert.ok(view().outgrew, 'while one with add-ons shows its working');
   });
 
   test('the same risks on a small scope are flags with owners, not a programme', () => {

@@ -2,7 +2,7 @@
 
 # Shopify Discovery — Fragebogen
 
-> **Version:** question bank 1.3.0 · offering 2.20.0
+> **Version:** question bank 1.4.0 · offering 2.20.0
 >
 > **So nutzen Sie ihn:** Gehen Sie §§ 0–10 im Discovery-Termin gemeinsam mit dem Kunden durch. Beantworten Sie jede
 > *erforderliche* Frage — „TBC“ ist zulässig, eine Lücke nicht. Mit *consultant* markierte Fragen beantwortet
@@ -2307,6 +2307,13 @@
 *Andere Inhalte, Bilder und Übersetzungen pro Markt sind in jedem Angebot enthalten. Ein anderes Design ist ein zweites Theme, und das ist etwas anderes: Shopifys Anpassung pro Markt reicht nur bis Section-Inhalte und Sichtbarkeit von Blöcken — nie bis zu Theme-Einstellungen und nie bis zu Liquid-Templates. Antworten Sie 0, wenn ein Design für alle Märkte und Stores reicht.*
 
 > Answer:
+
+**Q9.2.14** — Braucht jede Marke ein eigenes Design-System — eigene Tokens und Komponenten — statt eines Design-Systems mit einem Theme pro Marke? *(recommended)*
+*Ask if Q1.1.8 is 2 or more.*
+*Ein Design-System kann mehrere Marken tragen: dieselben Komponenten, mit Farben, Typografie und Bildsprache jeder Marke als Tokens, und einem anderen Layout, wo eine Marke eines braucht. Ein Design-System pro Marke bedeutet getrennte Tokens und Komponenten, getrennt gestaltet und gepflegt.*
+
+- [ ] Yes
+- [ ] No
 
 ### 9.3 Barrierefreiheit
 
