@@ -1831,3 +1831,37 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
 .overlaps li { display: grid; grid-template-columns: 5.5rem 1fr; gap: 16px; align-items: baseline; }
 .overlaps strong { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: var(--red-ink); }
 .overlaps span { font-size: 0.93rem; color: var(--muted); line-height: 1.5; }
+
+/* ── The pack table, read the way Shopify's own comparison is read ────────── */
+/* Four thousand pixels of rows with the plan names only at the top: by the
+   Migration row a reader has lost which column is which. Shopify's comparison
+   solves it by repeating the header, and so does this. The background is solid
+   because a transparent sticky header shows the rows sliding under it. */
+.packs thead th {
+  position: sticky; top: 0; z-index: 3;
+  /* An explicit colour, not a token: the first version used var(--paper),
+     which this stylesheet has never defined, so the background resolved to
+     nothing and every row scrolled visibly through the header. It looked
+     correct in the rule and wrong on the screen. */
+  background: #fff; box-shadow: 0 2px 0 #000;
+}
+/* Only the column header sticks. Sticking the group headings under it as well
+   read correctly in the rule and hid the first row of every group behind them:
+   the reference sticks the plan names and lets the section titles scroll, and
+   it is right. */
+/* The offer most engagements land on, marked down the whole column rather than
+   only in the page head — the same fact, where the reader is. */
+.packs .pack-common { background: var(--panel); }
+.packs thead th.pack-common { background: var(--panel); }
+/* The marked column keeps its tint where it sticks, or the header would show
+   one column as white and the rows beneath it as grey. */
+/* And the rows that actually separate the packs. Eighteen of twenty-two say the
+   same thing, so the difference was the hardest thing on the page to find. */
+.pack-differs th[scope="row"] { box-shadow: inset 3px 0 0 var(--red); padding-left: 13px; }
+/* `overflow-x: auto` makes the wrapper a scroll container on both axes, and a
+   sticky header inside one sticks to the container rather than to the window —
+   so the header scrolled away with the page and the fix did nothing. The pack
+   table stacks into cards before it ever needs to scroll sideways, so this one
+   wrapper gives the overflow back. Measured, not assumed: 0 px of horizontal
+   overflow at 1440 and at 390. */
+.table-scroll:has(> table.packs) { overflow: visible; }

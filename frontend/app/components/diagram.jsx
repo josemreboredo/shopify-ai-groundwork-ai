@@ -677,6 +677,9 @@ function NotCovered() {
  * @param {{ offers: object[], closedScope?: object[], pricing: boolean,
  *   currency?: string, track?: Function }} props
  */
+/** Whether a row says something different for any two adjacent packs. */
+const differs = (row, offers) => offers.some((o, i) => i > 0 && String(row.values?.[o.code]) !== String(row.values?.[offers[i - 1].code]));
+
 export function PackTable({ offers, closedScope = [], pricing, currency, track }) {
   if (!offers?.length) return null;
   const cols = offers.length + 1;
@@ -728,7 +731,7 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
           <tr>
             <th scope="col">What the pack includes</th>
             {offers.map((o) => (
-              <th scope="col" key={o.code}>
+              <th scope="col" key={o.code} className={o.most_common ? 'pack-common' : undefined}>
                 <span className="pack-code">{o.code}</span>
                 <span className="pack-name">{o.name}</span>
                 <span className="pack-meta">
@@ -748,7 +751,7 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
             {offers.map((o) => {
               const cap = o.gate_capacity_weeks;
               return (
-                <td key={o.code} data-label={o.code}>
+                <td key={o.code} data-label={o.code} className={o.most_common ? 'pack-common' : undefined}>
                   <span className="pack-budget">{!cap || cap.max === 0 ? 'None' : upToWeeks(cap)}</span>
                 </td>
               );
@@ -758,7 +761,7 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
             <tr>
               <th scope="row">Internal band</th>
               {offers.map((o) => (
-                <td key={o.code} data-label={o.code}>
+                <td key={o.code} data-label={o.code} className={o.most_common ? 'pack-common' : undefined}>
                   <span className="pack-budget">
                     Up to {currency ?? ''} {Math.round(o.price_band.max / 1000)}k{o.price_band.open_ended ? '+' : ''}
                   </span>
@@ -775,7 +778,11 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
               </tr>
             ) : null}
             {groupRows.map((row) => (
-              <tr key={row.id} className="pack-gets">
+              /* Marked where the packs do not agree. Eighteen of the twenty-two
+                 rows say the same thing for M and L, so the four that separate
+                 them are what a consultant is looking for and were the hardest
+                 thing on the page to find. */
+              <tr key={row.id} className={`pack-gets${differs(row, offers) ? ' pack-differs' : ''}`}>
                 <th scope="row">
                   <span className="pack-what">{row.what}</span>
                   {row.shopify_limit ? (
@@ -812,7 +819,7 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
                 ) : offers.map((o) => {
                   const value = quantity(row.values?.[o.code]);
                   return (
-                    <td key={o.code} data-label={o.code} className={value ? 'pack-yes' : 'pack-no'}>
+                    <td key={o.code} data-label={o.code} className={[value ? 'pack-yes' : 'pack-no', o.most_common && 'pack-common'].filter(Boolean).join(' ') || undefined}>
                       {value ?? <NotCovered />}
                     </td>
                   );
