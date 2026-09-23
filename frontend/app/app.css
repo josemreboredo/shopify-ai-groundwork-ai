@@ -1931,6 +1931,63 @@ main.offering > section:first-of-type.part-start { margin-top: 0; }
    overflow at 1440 and at 390. */
 .table-scroll:has(> table.packs) { overflow: visible; }
 
+/* ── One pack's scope, quantified, on its own page ────────────────────────── */
+/* The index compares three offers. This compares one offer with the pack below
+   it, which is the question left over once a consultant has chosen: what does
+   the step up actually buy. */
+.for-whom {
+  margin: 0 0 22px; padding: 14px 0 14px 17px; border-left: 3px solid var(--red);
+  font-size: 1.02rem; line-height: 1.5; max-width: 74ch;
+}
+.for-whom-label {
+  display: block; margin-bottom: 5px; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+h3.sub {
+  margin: 38px 0 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em;
+}
+.limits-lead { margin: 10px 0 0; color: var(--muted); font-size: 0.95rem; max-width: 74ch; }
+.limits-lead strong { color: var(--ink); font-size: 1.05rem; }
+.table-scroll > .limits, .table-scroll > .addon-table {
+  width: 100%; min-width: 0; max-width: 100%; table-layout: fixed;
+}
+.limits { margin-top: 16px; }
+.limits th[scope="col"], .addon-table th[scope="col"] { text-align: left; vertical-align: bottom; padding-bottom: 9px; }
+/* The subject takes what is left; the two value columns are sized for values
+   like "Up to 3 markets" and nothing more. Left to share the table evenly, the
+   pack-below column took 704px to hold three words. */
+.limits th[scope="col"]:nth-child(2), .limits th[scope="col"]:nth-child(3) { width: 13.5rem; }
+.limits th[scope="row"], .addon-table th[scope="row"] {
+  text-align: left; vertical-align: top; padding: 13px 14px 13px 0; font-weight: 400;
+  text-transform: none; letter-spacing: 0;
+}
+.limits td, .addon-table td { vertical-align: top; padding: 13px 14px 13px 0; font-size: 0.88rem; }
+.limits-row { border-top: 1px solid var(--line); }
+.limits-value { font-weight: 700; font-size: 0.92rem; }
+/* The rows where this pack holds more than the one below. Same mark the index
+   uses for the rows where the packs disagree, because it is the same fact. */
+.limits-more th[scope="row"] { box-shadow: inset 3px 0 0 var(--red); padding-left: 13px; }
+.limits-more .limits-value { color: var(--ink); }
+.limits-from { color: var(--muted); }
+.limits-cap { color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+.limits-addon {
+  display: block; margin-top: 5px; font-size: 0.76rem; color: var(--muted);
+}
+.limits-addon::before { content: '+ '; color: var(--red); font-weight: 700; }
+
+/* ── What can be bought on top of one pack ───────────────────────────────── */
+.addon-table { margin-top: 18px; }
+.addon-table th[scope="col"]:first-child { width: 20rem; }
+.addon-table th[scope="col"]:nth-child(2) { width: 11rem; }
+.addon-table tbody tr { border-top: 1px solid var(--line); }
+.addon-weeks { font-weight: 700; font-size: 0.92rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.addon-band { font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+@media (max-width: 560px) {
+  .limits th[scope="col"]:first-child, .limits th[scope="row"],
+  .addon-table th[scope="col"]:first-child, .addon-table th[scope="row"] { width: auto; padding-right: 0; }
+  .limits-more th[scope="row"] { box-shadow: none; padding-left: 0; }
+}
+
 /* ── The Arc column: where the offers stop ────────────────────────────────── */
 /* Not a fourth pack, and it must not read as one. A rule down its left edge is
    the whole statement — everything left of it is quoted by this engine and

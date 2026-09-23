@@ -928,6 +928,154 @@ export function PackTable({ offers, closedScope = [], pricing, currency, track }
  * @param {{ addons?: object[], pricing: boolean, currency?: string,
  *   weeks: Function, band: Function }} props
  */
+/**
+ * One pack's closed scope, quantified, on that pack's own page.
+ *
+ * Shopify's own documented ceiling is deliberately NOT a column here. It is a
+ * fact about the platform rather than about this offer, it lives on the index's
+ * comparison table already, and it is long prose — on a phone it was 325px of
+ * every row and it took this page from 16,000 to 27,500px on its own.
+ *
+ * The comparison table on the index answers "how do the three differ". A
+ * consultant on one offer's page has already chosen, and needs the other
+ * question: what exactly does THIS one hold, and up to what. That was a prose
+ * list of claims, so "up to how many markets" had no answer anywhere on the
+ * page that sells markets.
+ *
+ * On M and L it carries a second column: what the pack below holds. The rows
+ * where the two differ are what the client is paying the step-up for, and they
+ * are marked — on M, four of twenty-two rows.
+ */
+export function ScopeLimits({ rows = [], code, previous }) {
+  const mine = (r) => quantity(r.values?.[code]);
+  const theirs = (r) => (previous ? quantity(r.values?.[previous.code]) : null);
+  const kept = rows.filter((r) => mine(r));
+  if (!kept.length) return null;
+
+  const gained = (r) => Boolean(previous) && mine(r) !== theirs(r);
+  const gains = kept.filter(gained).length;
+
+  const groups = new Map();
+  for (const row of kept) {
+    const name = row.group ?? null;
+    if (!groups.has(name)) groups.set(name, []);
+    groups.get(name).push(row);
+  }
+  const cols = previous ? 3 : 2;
+
+  return (
+    <>
+      {previous ? (
+        <p className="limits-lead">
+          <strong>{gains}</strong> of the {kept.length} subjects below hold more here than in {previous.name}.
+          They are marked, and they are what the step up buys.
+        </p>
+      ) : null}
+      <div className="table-scroll" role="region" tabIndex={0} aria-label="What this offer includes, and up to what limit">
+        <table className="compare limits">
+          <caption className="sr-only">
+            One row per subject the discovery asks about, and the most this offer holds of it.
+            {previous ? ` The last column is what ${previous.name} holds, so a row where the two differ is scope this offer adds.` : ''}
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Subject</th>
+              <th scope="col">This offer holds</th>
+              {previous ? <th scope="col" className="limits-from">{previous.name}</th> : null}
+            </tr>
+          </thead>
+          {[...groups].map(([name, groupRows]) => (
+            <tbody key={name ?? 'all'}>
+              {name ? (
+                <tr className="pack-group">
+                  <th scope="rowgroup" colSpan={cols}>{name}</th>
+                </tr>
+              ) : null}
+              {groupRows.map((row) => (
+                <tr key={row.id} className={`limits-row${gained(row) ? ' limits-more' : ''}`}>
+                  <th scope="row">
+                    <span className="pack-what">{row.what}</span>
+                    {row.addon?.includes(code) ? (
+                      <span className="limits-addon">{row.addon_label ?? 'More can be bought on top'}</span>
+                    ) : null}
+                  </th>
+                  <td data-label="This offer holds"><span className="limits-value">{mine(row)}</span></td>
+                  {previous ? (
+                    <td data-label={previous.name} className="limits-from">
+                      {theirs(row) ?? <span className="muted">&mdash;</span>}
+                    </td>
+                  ) : null}
+                </tr>
+              ))}
+            </tbody>
+          ))}
+        </table>
+      </div>
+    </>
+  );
+}
+
+/**
+ * What can be bought on top of this pack, and what it adds to the weeks.
+ *
+ * The same catalogue the index draws as cards, which is right there and wrong
+ * here: fifteen cards is a section nobody reaches the end of, and the question
+ * on an offer page is narrower — what can I add, and how much longer does it
+ * make the project. So: a table, ordered by what it adds, filtered to what
+ * this pack can actually buy.
+ */
+export function AddonTable({ addons = [], code, pricing, currency, weeks, band }) {
+  const mine = addons.filter((a) => (a.available_in ?? ['S', 'M', 'L']).includes(code));
+  if (!mine.length) return null;
+
+  /* Longest first. A consultant scanning for what moves a deadline is looking
+     for the big ones, and alphabetical order hides them among the half-weeks. */
+  const ordered = [...mine].sort((a, b) => (b.weeks?.max ?? 0) - (a.weeks?.max ?? 0));
+
+  return (
+    <div className="table-scroll" role="region" tabIndex={0} aria-label="What can be bought on top of this offer">
+      <table className="compare addon-table">
+        <caption className="sr-only">
+          Every add-on this offer can buy, longest first. The weeks are added to the offer&rsquo;s own,
+          once the scope-gate work the band already holds is used up.
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Add-on</th>
+            <th scope="col">Adds</th>
+            {pricing ? <th scope="col">Internal</th> : null}
+          </tr>
+        </thead>
+        <tbody>
+          {ordered.map((a) => (
+            <tr key={a.id}>
+              <th scope="row">
+                <span className="pack-what">{a.what}</span>
+                {a.description ? (
+                  <details className="pack-why">
+                    <summary>What this covers</summary>
+                    <p>{a.description}</p>
+                  </details>
+                ) : null}
+              </th>
+              <td data-label="Adds">
+                {a.weeks?.max
+                  ? <span className="addon-weeks">+{weeks(a.weeks)} week{a.weeks.max === 1 ? '' : 's'}</span>
+                  : <span className="muted">Scoped per engagement</span>}
+              </td>
+              {pricing ? (
+                <td data-label="Internal">
+                  {a.price ? <span className="addon-band">{band(a.price, currency)}</span> : <span className="muted">&mdash;</span>}
+                </td>
+              ) : null}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function AddonList({ addons, pricing, currency, weeks, band }) {
   if (!addons?.length) return null;
 

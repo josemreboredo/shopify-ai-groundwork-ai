@@ -5,7 +5,7 @@ import { offeringView } from '../../../ai/shared/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../ai/shared/scope-view.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
-import { Boundaries, Channels, Lands, OfferScale, PhasePlan, ScopeTable, Storefront, Tracks } from '../components/diagram.jsx';
+import { AddonTable, Boundaries, Channels, Lands, OfferScale, PhasePlan, ScopeLimits, ScopeTable, Storefront, Tracks } from '../components/diagram.jsx';
 
 /**
  * The three questions a consultant arrives with, over the sections that answer
@@ -33,6 +33,7 @@ const ARC_PARTS = {
 /** The ribbon under the page head. Five screens of page, opened before a call. */
 const JUMP = [
   ['scope', 'In scope'],
+  ['addons', 'Buy on top'],
   ['boundaries', 'Not in it'],
   ['phases', 'Phase by phase'],
   ['storefront', 'Storefront'],
@@ -123,6 +124,12 @@ export default function OfferingSegment({ loaderData }) {
      an L page listing only its triggers says the opposite of what the engine
      does. */
   const moves = view.gates;
+  /* The offer one rung down, where there is one. M and L are steps up from
+     something, and the rows where they hold more than the pack below are what
+     the client is paying the step for — a question the page could not answer
+     except by opening two tabs. */
+  const i = view.offers.findIndex((o) => o.code === offer.code);
+  const previous = i > 0 ? view.offers[i - 1] : null;
   const envelope = segment.offer.gate_capacity_weeks;
 
   return (
@@ -158,12 +165,56 @@ export default function OfferingSegment({ loaderData }) {
       <section id="scope" className="part-start">
         <Part id="scope" />
         <h2>What is in scope</h2>
+        {/* Who is sitting across the table. It was one line in the page head,
+            above the fold and gone — and it is the first thing a consultant
+            checks before reading a word of scope. */}
+        {offer.for_whom ? (
+          <p className="for-whom">
+            <span className="for-whom-label">Who this offer is for</span>
+            {offer.for_whom}
+          </p>
+        ) : null}
         {/* The first line is the offer's claim — what makes "Foundation" a
             foundation and "Growth" growth — and it is not a scope item. Ticked
             alongside the rest it read as one, which is how an offer ends up with
             a name nobody can connect to what it delivers. */}
         <p className="answer-line">{offer.base_scope[0]}.</p>
         <ul className="ticks big">{offer.base_scope.slice(1).map((line) => <li key={line}>{line}</li>)}</ul>
+
+        {/* And then the same scope with numbers on it. The list above is the
+            claim; this is the ceiling. "Up to how many markets" had no answer
+            anywhere on the page that sells markets — a consultant had to go back
+            to the index, read across three columns and pick the one they were
+            already on. */}
+        <h3 className="sub">What that holds, and up to what limit</h3>
+        <p className="muted small">
+          Shopify&rsquo;s own documented ceiling for each of these subjects is on{' '}
+          <Link to="/offering">the comparison table</Link> — it is a fact about the platform, not about
+          this offer.
+        </p>
+        <ScopeLimits rows={view.closed_scope} code={offer.code} previous={previous} />
+      </section>
+
+      {/* Paired with the scope above, because "what do I get" and "what can I
+          add" are one question asked twice. The gates section further down is
+          the same catalogue read the other way — what escalates the offer
+          rather than what extends it. */}
+      <section id="addons">
+        <h2>What can be bought on top, and what it adds</h2>
+        <p className="lede">
+          Each is scoped and quoted on its own, longest first. The weeks are added to this offer&rsquo;s
+          own once the scope-gate work the band already holds is used up — {envelope.max === 0
+            ? 'and this band holds none, so the first one is added in full'
+            : `up to ${envelope.min}–${envelope.max} weeks of it`}.
+        </p>
+        <AddonTable
+          addons={view.addons}
+          code={offer.code}
+          pricing={view.pricing}
+          currency={currency}
+          weeks={weeks}
+          band={band}
+        />
       </section>
 
       <section id="boundaries">
