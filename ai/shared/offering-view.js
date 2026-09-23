@@ -193,6 +193,19 @@ function appsAddon(pricing) {
   };
 }
 
+/** Every app again in every store past the first — no pack's allowance covers it. */
+function appsPerStoreAddon(pricing) {
+  const weeks = offering.pricing.app_weeks;
+  return {
+    id: 'apps_per_store',
+    what: 'Each app in each further store',
+    gate: null,
+    description: 'Expansion stores share no data and apps are installed, configured and billed per store, so every app the store runs is set up again in each store past the first. A pack’s app allowance is its first store’s.',
+    available_in: ['M', 'L'],
+    per_unit: { noun: 'app and store', weeks, from: false, ...(pricing ? { price: weeks * offering.pricing.weekly_rate } : {}) },
+  };
+}
+
 /** L's own promise with a heavy replatform beside it, as the engine quotes it. */
 function replatform(pricing) {
   const o = classifyOffer(engagementAt({ ...offering.closed_scope.limits.L, migration: 'sfcc' }));
@@ -379,7 +392,7 @@ export function offeringView({ pricing = false } = {}) {
     /* The add-on services catalogue: every gate that can be bought on top of a
        pack, including the three no pack includes anything of — B2B, Shopify
        POS and subscriptions — which is why they are no longer rows. */
-    addons: [...(offering.closed_scope?.addons ?? []).map((a) => addonService(a, pricing)), appsAddon(pricing), hypercareAddon(pricing)],
+    addons: [...(offering.closed_scope?.addons ?? []).map((a) => addonService(a, pricing)), appsAddon(pricing), appsPerStoreAddon(pricing), hypercareAddon(pricing)],
     l_triggers: offering.l_triggers.map(({ id, label, condition }) => ({ id, label, condition })),
     exits: {
       beyond_offers: byResult('STOP'),

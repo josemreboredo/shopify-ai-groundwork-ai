@@ -51,3 +51,5 @@ give the final figure, and the commercial team adds contingency and services suc
   analyst and a solution architect — 2.5 people — at the offshore rate card: CHF 6.3k a week. The shape comes from a real
   estimation the engine quotes at 20–29.5 weeks; QA is inside the team, so the commercial team no longer adds it on top.
   The Foundation band and each pack's floor are its weeks at the rate with its hypercare: S 28–35k, M 44–96k, L 91–155k+.
+- **Apps in every further store** (2026-09-23): a pack's app allowance is its first store's; every app is installed and
+  configured again in each store past the first, an eighth of a week per app and store, in every pack.

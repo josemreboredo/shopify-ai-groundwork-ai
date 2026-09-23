@@ -1195,7 +1195,7 @@
     {
       "id": "+Stores",
       "gate": "store_estate",
-      "description": "Each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again per store — expansion stores share no data, so the more integrations there are, the more this costs per additional store",
+      "description": "Each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again per store — expansion stores share no data, so the more integrations there are, the more this costs per additional store; the apps are set up again in each store too, priced per app and store",
       "effort_weeks": {
         "min": 1.5,
         "max": 31.5
@@ -2694,7 +2694,8 @@
         "S": "Native first, then an app — installed and owned",
         "M": "Native first, then an app — installed and owned",
         "L": "Native first, then an app — installed and owned",
-        "note": "Every pack shortlists from the app registry, installs and configures each app and leaves it with a named owner and its monthly cost — per market in the larger packs, where the number that surprises clients is cost per market rather than cost per app. The subscription is the client’s own running cost from the day it is installed, against the monthly ceiling they set; it is never a Merkle line, which is why there is no quantity to compare."
+        "note": "Shopify’s own apps — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — do not count, and neither does an app a scope gate already prices. The allowance is the first store’s: in every further store each app is installed and configured again, and priced on top. Each further app is bought on top too. The apps’ own monthly fees are the client’s.",
+        "addon_label": "Each further app, and each app in each further store"
       },
       {
         "id": "apps",
@@ -2754,7 +2755,7 @@
           "M",
           "L"
         ],
-        "note": "Sold on M, and included in L up to three stores. One store already serves every market; a second is needed only when the requirements force it, which the engine derives from the market and brand answers. Each further store is its own set-up, users, domain, tax and payments, the theme deployed and kept in step, and every integration wired again — expansion stores share no data. Below Shopify Plus every store carries its own plan; a Plus contract includes nine expansion stores of the same brand."
+        "note": "Sold on M, and included in L up to three stores. One store already serves every market; a second is needed only when the requirements force it, which the engine derives from the market and brand answers. Each further store is its own set-up, users, domain, tax and payments, the theme deployed and kept in step, and every integration wired again — expansion stores share no data. Below Shopify Plus every store carries its own plan; a Plus contract includes nine expansion stores of the same brand. Every app the store runs is installed and configured again in each further store, priced per app and store."
       },
       {
         "id": "multi_currency",

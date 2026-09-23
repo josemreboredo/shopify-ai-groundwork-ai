@@ -164,7 +164,8 @@
     "apps": {
       "count": 0,
       "included": 3,
-      "extra": 0
+      "extra": 0,
+      "in_further_stores": 0
     },
     "rationale": "Three scope gates are active (markets, multi-currency, storefront design) and they add up to 2.5–3.5 weeks on top of the Foundation build, so the engagement is an Ecommerce Foundation with those three as add-ons, each at its own weeks and price. Delivery is blocked by exit 11.6.",
     "scope_effort_weeks": {

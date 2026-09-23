@@ -656,7 +656,7 @@
             "included",
             "extra"
           ],
-          "description": "Third-party apps the engagement runs at launch, how many its pack includes, and how many are priced on top.",
+          "description": "Third-party apps the engagement runs at launch, how many its pack includes, how many are priced on top, and how many installations the further stores add.",
           "properties": {
             "count": {
               "type": "integer",
@@ -669,6 +669,11 @@
             "extra": {
               "type": "integer",
               "minimum": 0
+            },
+            "in_further_stores": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "App installations in the stores past the first: every app the engagement runs, set up again in each further store and priced on top in every pack."
             }
           }
         },

@@ -164,7 +164,8 @@
     "apps": {
       "count": 0,
       "included": 3,
-      "extra": 0
+      "extra": 0,
+      "in_further_stores": 0
     },
     "rationale": "No scope gate and no L trigger is active, so the engagement is Ecommerce Foundation as packaged.",
     "scope_effort_weeks": {

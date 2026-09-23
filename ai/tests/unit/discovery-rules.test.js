@@ -777,9 +777,9 @@ describe('the offer follows the effort, not the gate count', () => {
     const rate = offering.pricing.weekly_rate;
     const withApps = (n, extra = {}) => classifyOffer({ ...base(), ...extra, shopify: { apps_at_launch: n } });
     assert.deepEqual(['S', 'M', 'L'].map((c) => offering.offers[c].apps_included), [3, 6, 10]);
-    assert.deepEqual(withApps(3).apps, { count: 3, included: 3, extra: 0 });
+    assert.deepEqual(withApps(3).apps, { count: 3, included: 3, extra: 0, in_further_stores: 0 });
     const five = withApps(5);
-    assert.deepEqual(five.apps, { count: 5, included: 3, extra: 2 });
+    assert.deepEqual(five.apps, { count: 5, included: 3, extra: 2, in_further_stores: 0 });
     assert.equal(five.price_band.max - withApps(3).price_band.max, Math.round((2 * offering.pricing.app_weeks * rate) / 1000) * 1000);
     // A Scale includes six.
     const scale = withApps(6, { migration: { source_platform: 'magento' } });
@@ -790,6 +790,20 @@ describe('the offer follows the effort, not the gate count', () => {
     const three = withApps(3, { migration: { source_platform: 'magento' } });
     assert.equal(eleven.duration_weeks.max - three.duration_weeks.max, 8 * offering.pricing.app_weeks, 'eight apps past the Foundation’s three take their time');
     assert.equal(eleven.apps.extra, 5, 'and five past the Scale’s six are charged');
+    // Every further store sets each app up again, whatever the pack includes.
+    const stores = (n, count) => classifyOffer({ ...base(), migration: { source_platform: 'magento' }, shopify: { apps_at_launch: count },
+      markets: { list: [{ code: 'CH', currency: 'CHF', price_strategy: 'base_currency' }, { code: 'DE', currency: 'EUR', price_strategy: 'base_currency' }],
+        topology: n > 1 ? { recommendation: 'expansion_stores', separate_store_markets: ['DE'], additional_channel_stores: [] } : { recommendation: 'single_store_markets', separate_store_markets: [], additional_channel_stores: [] } } });
+    const twoStores = stores(2, 4);
+    assert.equal(twoStores.apps.in_further_stores, 4, 'four apps, set up again in the second store');
+    assert.equal(twoStores.apps.extra, 0, 'the pack’s allowance still covers the first store');
+    assert.equal(twoStores.price_band.max - stores(2, 0).price_band.max,
+      Math.round((4 * offering.pricing.app_weeks * rate + Math.max(0, 4 - offering.offers[twoStores.code].apps_included) * offering.pricing.app_weeks * rate) / 1000) * 1000,
+      'priced per app and store');
+    assert.equal(stores(1, 4).apps.in_further_stores, 0, 'one store sets its apps up once');
+    // Eleven apps on two stores: eight past the Foundation's three, and all
+    // eleven again in the second store — nineteen eighths of a week.
+    assert.ok(stores(2, 11).duration_weeks.max - stores(2, 0).duration_weeks.max >= 2, 'the apps set up again take their time');
     // What a bigger pack includes never outweighs the hypercare it adds.
     const care = (d) => (d / 5) * rate * offering.pricing.hypercare_rate_share;
     for (const [a, b] of [['S', 'M'], ['M', 'L']]) {

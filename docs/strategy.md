@@ -187,7 +187,7 @@ the engagement price; the client sees the estimate, never the modifiers.
 | Modifier | Effort add | Price add |
 |---|---|---|
 | `+Markets` — each further market with its own currency: Shopify Markets, Translate & Adapt, geo-routing, and the price list, rounding and payouts of its currency | +0.75–20 wk | +CHF 4.7k–126k |
-| `+Stores` — each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again per store — expansion stores share no data, so the more integrations there are, the more this costs per additional store | +1.5–31.5 wk | +CHF 9.5k–198.5k |
+| `+Stores` — each Shopify store beyond the first: set-up, users, domain, tax and payments of its own, the theme deployed and kept in step, and every integration wired again per store — expansion stores share no data, so the more integrations there are, the more this costs per additional store; the apps are set up again in each store too, priced per app and store | +1.5–31.5 wk | +CHF 9.5k–198.5k |
 | `+B2B (standard)` — shopify’s own B2B: company accounts, price lists, volume rules and payment terms | +1–1.5 wk | +CHF 6.3k–9.5k |
 | `+B2B (advanced)` — b2B past Shopify’s own set-up: catalogues per company, quote or negotiated pricing, a separate B2B storefront or checkout, or needs Shopify’s B2B does not cover | +2–3 wk | +CHF 12.6k–18.9k |
 | `+Design (extended)` — bespoke sections and blocks built as Online Store 2.0 theme blocks from a key-screens design: schema, presets, translatable labels, Theme Check | +1–2 wk | +CHF 6.3k–12.6k |

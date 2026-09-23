@@ -906,11 +906,20 @@ export function classifyOffer(doc) {
     price: { min: S.price_band.min - foundation + gateTotals.price.min, max: S.price_band.max - foundation + gateTotals.price.max },
     weeks: { min: S.duration_weeks.min + gateTotals.weeks.min, max: S.duration_weeks.max + gateTotals.weeks.max },
   };
+  /*
+   * Every further store installs its apps again.
+   *
+   * Expansion stores share no data and apps are installed, configured and
+   * billed per store, so an app the engagement runs is set up once more in
+   * each store past the first. No pack includes that: its allowance is the
+   * first store's.
+   */
+  const perStore = apps * storesBeyondTheFirst(doc);
   // The time the apps take is the same whatever the pack; what a pack
   // includes is only what it does not charge for.
-  const appWeeks = Math.max(0, apps - S.apps_included) * offering.pricing.app_weeks;
+  const appWeeks = (Math.max(0, apps - S.apps_included) + perStore) * offering.pricing.app_weeks;
   const quoteFor = (code) => {
-    const add = hypercarePrice(hypercareFor(code)) + extraApps(code) * offering.pricing.app_weeks * offering.pricing.weekly_rate;
+    const add = hypercarePrice(hypercareFor(code)) + (extraApps(code) + perStore) * offering.pricing.app_weeks * offering.pricing.weekly_rate;
     const priced = { min: scope.price.min + add, max: scope.price.max + add };
     const weeks = { min: scope.weeks.min + appWeeks, max: scope.weeks.max + appWeeks };
     return headless
@@ -931,7 +940,7 @@ export function classifyOffer(doc) {
       : addons.length
         ? `${offer.name} plus ${addonLabels.join('; ')}`
         : `${offer.name} as packaged: ${activeGates.length ? `${activeGates.map((g) => g.label).join(', ')} — all inside what it includes` : 'no scope gates active'}`,
-    `Quoted from the Foundation base plus each scope gate at its own weeks and price, with ${hypercareFor(code)} working days of hypercare after go-live${extraApps(code) ? ` and ${extraApps(code)} third-party app${extraApps(code) === 1 ? '' : 's'} past the ${offer.apps_included} it includes` : ''}`,
+    `Quoted from the Foundation base plus each scope gate at its own weeks and price, with ${hypercareFor(code)} working days of hypercare after go-live${extraApps(code) ? ` and ${extraApps(code)} third-party app${extraApps(code) === 1 ? '' : 's'} past the ${offer.apps_included} it includes` : ''}${perStore ? `, each app set up again in every further store (${perStore})` : ''}`,
     ...(headless ? [`and at no less than the ${L.name} band, because Hydrogen has no modifier of its own yet`] : []),
   ].join('. ').replace(/\. and /, ' and ');
 
@@ -964,7 +973,7 @@ export function classifyOffer(doc) {
     },
     duration_weeks: { min: toHalfWeek(quote.weeks.min), max: toHalfWeek(quote.weeks.max) },
     hypercare: { days: hypercareFor(code), included_days: offer.hypercare_days },
-    apps: { count: apps, included: offer.apps_included, extra: extraApps(code) },
+    apps: { count: apps, included: offer.apps_included, extra: extraApps(code), in_further_stores: perStore },
     // What the scope adds up to before any floor, kept so a reader can check
     // the quote against the scope rather than take it.
     scope_effort_weeks: scope.weeks,
