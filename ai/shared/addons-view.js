@@ -31,6 +31,8 @@ const oneMore = (key) => (l) => ({ ...l, [key]: (l[key] ?? 0) + 1 });
 const withAStore = (l) => ({ ...l, stores: Math.max(l.stores ?? 1, 2) });
 /** A change to the built engagement, where the limits have no word for it. */
 const merge = (section, values) => (doc) => ({ ...doc, [section]: { ...doc[section], ...values } });
+/** An email platform in place of Shopify Messaging, with the flows most brands start from. */
+const ESP = { type: 'third_party_esp', platform: 'Klaviyo', flows: ['Welcome', 'Abandoned cart', 'Post-purchase'] };
 
 /*
  * How to ask for each add-on, as a change to what a pack promises.
@@ -161,6 +163,13 @@ export const ASKS = {
         limits: (l) => ({ ...l, analytics_custom_events: true }),
         doc: (d) => ({ ...d, marketing: { ...d.marketing, analytics: { ...d.marketing?.analytics, server_side: true } } }),
       },
+    },
+  },
+  /* Another platform in place of Shopify Messaging, which every pack sets up. */
+  messaging_platform: {
+    tiers: {
+      standard: { label: 'An email platform with up to five lifecycle flows', doc: (d) => ({ ...d, marketing: { ...d.marketing, esp: ESP } }) },
+      advanced: { label: 'More flows, or SMS or WhatsApp outside Shopify Messaging', doc: (d) => ({ ...d, marketing: { ...d.marketing, esp: ESP, sms: { enabled: true, countries: ['GB'] } } }) },
     },
   },
   post_launch_support: {

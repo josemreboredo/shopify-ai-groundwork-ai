@@ -146,8 +146,8 @@
     "target_plan": "plus"
   },
   "offer": {
-    "code": "M",
-    "name": "Ecommerce Scale",
+    "code": "L",
+    "name": "Ecommerce Flagship",
     "delivery_track": "liquid",
     "scope_gates": {
       "markets": {
@@ -212,6 +212,11 @@
         "tier": "standard",
         "evidence": "Q7.2.1 / Q7.2.3: GA4, Meta and Google Ads; Q7.2.4: a tag manager is already configured."
       },
+      "messaging_platform": {
+        "active": true,
+        "tier": "standard",
+        "evidence": "Q7.3.1: Klaviyo in place of Shopify Messaging; Q7.3.2: five lifecycle flows — welcome, abandoned cart, browse abandonment, post-purchase and win-back; no SMS or WhatsApp recorded."
+      },
       "post_launch_support": {
         "active": true,
         "tier": "standard",
@@ -234,6 +239,7 @@
       "+SEO (standard)",
       "+Checkout (in-checkout)",
       "+Analytics (standard)",
+      "+Messaging (standard)",
       "+Support (standard)"
     ],
     "addons": [
@@ -249,6 +255,11 @@
         "included_units": 1
       },
       {
+        "gate": "migration",
+        "label": "Migration from another platform, priced by source",
+        "tier": "light"
+      },
+      {
         "gate": "returns_post_purchase",
         "label": "Returns and post-purchase, past Shopify’s own",
         "tier": "advanced"
@@ -259,9 +270,9 @@
         "tier": "standard"
       },
       {
-        "gate": "checkout_extensibility",
-        "label": "Blocks after the sale, inside the checkout steps, or Functions",
-        "tier": "in_checkout"
+        "gate": "messaging_platform",
+        "label": "An email or SMS platform past Shopify Messaging",
+        "tier": "standard"
       },
       {
         "gate": "post_launch_support",
@@ -270,39 +281,39 @@
       }
     ],
     "price_band": {
-      "min": 100000,
-      "max": 138000,
+      "min": 107000,
+      "max": 148000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
-      "min": 14,
-      "max": 19.5
+      "min": 14.5,
+      "max": 20.5
     },
     "hypercare": {
-      "days": 10,
-      "included_days": 10
+      "days": 15,
+      "included_days": 15
     },
     "design": {
       "days": {
-        "min": 7,
-        "max": 12
+        "min": 8,
+        "max": 13
       }
     },
     "apps": {
       "count": 0,
-      "included": 6,
+      "included": 10,
       "extra": 0,
       "in_further_stores": 0
     },
-    "rationale": "Ten scope gates are active and they bring the build to 13–17.5 weeks. The engagement is named Ecommerce Scale, the largest pack whose floor the quote reaches, with what goes past its promise as add-ons: B2B alongside consumer, a second integration, SEO continuity, blocks inside the checkout steps and written SOPs after launch. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The quote is the Foundation base plus each gate at its own weeks and price.",
+    "rationale": "Twelve scope gates are active and they bring the build to 14.5–20.5 weeks. The engagement is named Ecommerce Flagship, the largest pack whose floor the quote reaches, with what goes past its promise as add-ons: B2B alongside consumer, a second integration, the migration, returns past Shopify’s own, SEO continuity, Klaviyo in place of Shopify Messaging and written SOPs after launch. It is a Flagship by budget, not by shape: one store, three markets, and no template set of its own. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The quote is the Foundation base plus each gate at its own weeks and price.",
     "scope_effort_weeks": {
-      "min": 14,
-      "max": 19.5
+      "min": 14.5,
+      "max": 20.5
     },
     "gate_capacity_weeks": {
-      "min": 2,
-      "max": 10
+      "min": 9,
+      "max": 24
     },
     "scope_effort_by_gate": [
       {
@@ -364,6 +375,14 @@
       {
         "gate": "analytics_consent",
         "label": "Analytics and consent",
+        "weeks": {
+          "min": 0.5,
+          "max": 1
+        }
+      },
+      {
+        "gate": "messaging_platform",
+        "label": "Email and SMS platform",
         "weeks": {
           "min": 0.5,
           "max": 1

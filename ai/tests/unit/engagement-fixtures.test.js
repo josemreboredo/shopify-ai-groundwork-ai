@@ -149,13 +149,14 @@ for (const { file, doc } of fixtures) {
 test('golden fixtures produce the expected outcomes', () => {
   const byFile = new Map(fixtures.map(({ file, doc }) => [file, doc]));
   const expected = {
+    // A Flagship by budget since Klaviyo was priced: one store, three markets, no template set of its own.
     'acme-watches.json': {
-      code: 'M', go: true,
+      code: 'L', go: true,
       gates: ['markets', 'multi_currency', 'b2b', 'integration', 'sku_complexity', 'migration', 'seo_continuity', 'returns_post_purchase',
-        'checkout_extensibility', 'analytics_consent', 'post_launch_support'],
+        'checkout_extensibility', 'analytics_consent', 'messaging_platform', 'post_launch_support'],
       exits: ['11.10', '11.14', '11.23'],
     },
-    'foundation-minimal.json': { code: 'S', go: true, gates: [], exits: [] },
+    'foundation-minimal.json': { code: 'S', go: true, gates: ['messaging_platform'], exits: [] },
     'stop-custom-checkout.json': { code: 'S', go: false, gates: ['markets', 'multi_currency', 'storefront_design'], exits: ['11.6', '11.23'] },
   };
 
@@ -169,7 +170,7 @@ test('golden fixtures produce the expected outcomes', () => {
     assert.deepEqual(doc.exits.items.map((i) => i.rule_id).sort(), [...want.exits].sort(), `${file}: exit items`);
   }
 
-  assert.deepEqual(byFile.get('foundation-minimal.json').offer.modifiers, []);
+  assert.deepEqual(byFile.get('foundation-minimal.json').offer.modifiers, ['+Messaging (standard)'], 'Klaviyo, and nothing else past the Foundation');
   const stop = byFile.get('stop-custom-checkout.json');
   assert.equal(stop.exits.triggered, true);
   assert.ok(stop.exits.items.some((i) => i.rule_id === '11.6' && i.result === 'STOP' && i.resolution.status === 'open'));

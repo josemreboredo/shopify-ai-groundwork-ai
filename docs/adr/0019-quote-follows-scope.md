@@ -117,6 +117,16 @@ give the final figure, and the commercial team adds contingency and services suc
   stores, and each store is its own Shopify account with its own tax and payments. L now holds up to three, one per store,
   and a further store on M brings its entity with it. A second entity inside one store stays Plus’s per-market assignment
   (rule 11.1), which no pack assumes. The row is text only; the quote does not change.
+- **Email and SMS** (2026-09-24): story LWC-MKG-004 connected Klaviyo and rebuilt its flows, and nothing priced it: an
+  email platform is an app, not a counted integration. Every pack now sets up Shopify Messaging — the abandoned checkout
+  automation and Shopify’s lifecycle templates activated in the brand (an Email and SMS row, a line in each pack’s scope,
+  story LWC-MKG-008). Another platform in its place is the `messaging_platform` add-on: an email platform with up to five
+  flows rebuilt (standard, 0.5–1 week and a design day for the master template), and more flows or SMS or WhatsApp outside
+  Shopify Messaging (advanced, half a week more). SMS to a country Shopify does not send to needs an SMS app, so it is the
+  add-on whatever sends the email. Languages are not a tier: the languages add-on already charges from the fourth. ACME
+  runs Klaviyo with five flows, so it rises from CHF 100–138k to 107–148k. Quoted with L’s own hypercare, that reaches the
+  Flagship floor, and ACME is now named Ecommerce Flagship: by budget, not by shape (one store, three markets). The
+  minimal Foundation fixture, which also runs Klaviyo, is Foundation plus that add-on at CHF 35–45k.
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,

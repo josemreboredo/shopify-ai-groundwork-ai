@@ -636,6 +636,38 @@ describe('the quote is the scope, priced one way', () => {
     assert.equal(m.max_units.value, 4, 'Marketplace Connect lists on four');
   });
 
+  test('Shopify Messaging is in every pack; another email or SMS platform is the add-on', () => {
+    const row = offering.closed_scope.rows.find((r) => r.id === 'email');
+    assert.ok(row.S === row.M && row.M === row.L, 'the same Shopify Messaging set-up in every pack');
+    for (const c of ['S', 'M', 'L']) assert.match(offering.offers[c].base_scope, /Email and SMS from Shopify Messaging/);
+    const gate = (marketing) => classifyOffer({ ...engagementAt(limits.S), marketing }).scope_gates.messaging_platform;
+    const flows = (n) => Array.from({ length: n }, (_, i) => `Flow ${i + 1}`);
+
+    // Shopify's own, however it is answered, is the pack.
+    assert.equal(gate({}).active, false, 'nothing answered is Shopify Messaging');
+    assert.equal(gate({ esp: { type: 'shopify_messaging', flows: flows(8) } }).active, false, 'Shopify’s templates, however many');
+    assert.equal(gate({ esp: { platform: 'Shopify Messaging' } }).active, false, 'Shopify’s own, named');
+    assert.equal(gate({ esp: { type: 'none', platform: 'Klaviyo' } }).active, false, 'the type answer decides');
+    assert.equal(gate({ esp: { type: 'shopify_messaging' }, sms: { enabled: true, countries: ['GB', 'US', 'AT'] } }).active, false, 'SMS where Shopify sends it');
+
+    // Another platform is the add-on, standard up to five flows.
+    assert.equal(gate({ esp: { platform: 'Klaviyo', flows: flows(5) } }).tier, 'standard', 'a named platform, with no type recorded');
+    assert.equal(gate({ esp: { type: 'third_party_esp' } }).tier, 'standard', 'a platform not yet named');
+    assert.equal(gate({ esp: { type: 'third_party_esp', flows: flows(6) } }).tier, 'advanced', 'a sixth flow');
+    assert.equal(gate({ esp: { type: 'third_party_esp' }, sms: { enabled: true, countries: ['GB'] } }).tier, 'advanced', 'SMS through the platform');
+    assert.equal(gate({ esp: { type: 'third_party_esp' }, whatsapp: true }).tier, 'advanced', 'WhatsApp through the platform');
+    assert.equal(gate({ esp: { type: 'third_party_esp' }, sms: { enabled: false, countries: ['CH'] } }).tier, 'standard', 'SMS switched off');
+    // SMS to a country Shopify does not send to needs an SMS app, whatever sends the email.
+    const ch = gate({ esp: { type: 'shopify_messaging' }, sms: { enabled: true, countries: ['CH'] } });
+    assert.deepEqual([ch.active, ch.tier], [true, 'advanced']);
+    assert.match(ch.evidence, /CH/);
+
+    // Advanced is the standard work and half a week more, and neither is a pack's worth.
+    const [std, adv] = ['standard', 'advanced'].map((t) => offering.modifiers.find((x) => x.gate === 'messaging_platform' && x.tier === t));
+    assert.deepEqual([adv.effort_weeks.min - std.effort_weeks.min, adv.effort_weeks.max - std.effort_weeks.max], [0.5, 0.5]);
+    assert.ok(adv.effort_weeks.max <= 1.5);
+  });
+
   test('design is priced by the design day, by pack and only on the add-ons that need it', () => {
     /* A designer inside the build week would be charged on a migration as much
        as on a template set. Design is its own line: S adapts the UI to the

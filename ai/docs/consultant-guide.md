@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 131 of 319 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 132 of 319 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -270,7 +270,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplaces/m
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Shopify Marketplace Connect: Amazon, eBay, Target Plus and Walmart | Basic | Target Plus and Walmart are United States only; new Etsy connections cannot be made | https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect |
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q1.1.8** — How many distinct customer-facing brands does this engagement need a Shopify storefront for? *(required · client)*
 Drives: gate More than one Shopify store · L trigger More than one Shopify store · rule 11.29 (STOP)
@@ -284,7 +284,7 @@ Sources: https://help.shopify.com/en/manual/organization-settings/expansion-stor
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Expansion stores must be an extension of the main brand | Shopify Plus |  | https://help.shopify.com/en/manual/organization-settings/expansion-stores |
-*Verified 2026-09-22 against help.shopify.com (undefined).*
+*Verified 2026-09-22 against help.shopify.com.*
 
 ### 1.2 Shopify account
 
@@ -635,7 +635,7 @@ Sources: https://help.shopify.com/en/manual/ai-powered-tools · https://help.sho
 |---|---|---|---|
 | Shopify Magic: product descriptions, and a suggested category with its category metafields | Basic | Free, in the admin as products are created and edited | https://help.shopify.com/en/manual/products/details/product-category |
 | Product CSV import: description, SEO title and description, image alt text, product category and metafields | Basic |  | https://help.shopify.com/en/manual/products/import-export/using-csv |
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 ### 2.4 Pricing
 
@@ -1081,7 +1081,7 @@ Quick interview: ask if Q3.1.1 has 2+ markets
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Managed Markets — Global-e as merchant of record | Basic | Plan not stated by Shopify; only for merchants based in the continental US and certain stores in Canada and the UK | https://help.shopify.com/en/manual/international/managed-markets |
-*Verified 2026-09-23 against help.shopify.com (undefined).*
+*Verified 2026-09-23 against help.shopify.com.*
 
 ### 3.5 Mainland China
 
@@ -1680,7 +1680,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/
 | Self-serve returns and return rules | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/self-serve-returns |
 
 If native is not enough: [Returns and exchanges](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all) — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [AfterShip Returns & Exchanges](https://apps.shopify.com/returns-center-by-aftership), [Narvar Return and Exchange](https://apps.shopify.com/narvar-returns), [Redo](https://apps.shopify.com/redo)
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q5.2.3** — Do you process exchanges (not only refunds)? *(optional · client)*
 
@@ -1714,7 +1714,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/
 | Return rules and self-serve returns | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/return-rules |
 
 If native is not enough: [Returns and exchanges](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all) — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [AfterShip Returns & Exchanges](https://apps.shopify.com/returns-center-by-aftership), [Narvar Return and Exchange](https://apps.shopify.com/narvar-returns), [Redo](https://apps.shopify.com/redo)
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q5.2.7** — How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed? *(recommended · client)*
 Drives: app signal Returns platform · gate Returns and post-purchase
@@ -1736,7 +1736,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/fulfilling-orders/shippi
 | Return labels | Basic | US fulfilment locations only | https://help.shopify.com/en/manual/fulfillment/fulfilling-orders/shipping-labels/buying-labels/return-labels |
 
 If native is not enough: [Returns and exchanges](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all) — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [AfterShip Returns & Exchanges](https://apps.shopify.com/returns-center-by-aftership)
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q5.2.8** — Who pays return shipping: you, the customer, or it depends on the market? *(recommended · client)*
 
@@ -1755,7 +1755,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/
 | Exchanges added by staff on return approval | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/self-serve-returns |
 
 If native is not enough: App Store — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [Redo](https://apps.shopify.com/redo)
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q5.2.10** — Do you accept international returns (including refunding duties)? *(optional · client)*
 Drives: app signal Returns platform
@@ -1828,7 +1828,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/
 | Cancellation requests and cancellation rules | Basic | Requests need merchant approval | https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/return-rules |
 
 If native is not enough: [Order editing](https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all) — [Revize: Order Editing & Upsell](https://apps.shopify.com/revize), [OrderEditing.com](https://apps.shopify.com/order-editing), [Orderify ‑ Order Edit Cancel](https://apps.shopify.com/orderify)
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q5.4.3** — Until when can an order be cancelled? *(recommended · client)*
 
@@ -1853,7 +1853,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/editing-
 | Staff order editing | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/editing-orders |
 
 If native is not enough: [Order editing](https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all) — [Revize: Order Editing & Upsell](https://apps.shopify.com/revize), [OrderEditing.com](https://apps.shopify.com/order-editing), [Orderify ‑ Order Edit Cancel](https://apps.shopify.com/orderify)
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q5.4.6** — How are refunds paid: to the original payment method, as store credit, or as a gift card? *(recommended · client)*
 
@@ -1968,7 +1968,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/setup/delivery-expectati
 | Delivery dates at checkout | Basic | Automatic dates: US fulfilment locations only | https://help.shopify.com/en/manual/fulfillment/setup/delivery-expectations/overview |
 
 If native is not enough: [Delivery and pickup](https://apps.shopify.com/categories/orders-and-shipping-shipping-solutions-delivery-and-pickup/all) — [Estimated Delivery Date ‑ ETA](https://apps.shopify.com/estimated-delivery-days), [Essent Estimated Delivery Date](https://apps.shopify.com/essential-estimated-delivery)
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q5.5.4** — Do customers need to open warranty, repair or servicing claims online? *(recommended · client)*
 Drives: app signal Warranty claims solution · gate Returns and post-purchase
@@ -2481,6 +2481,7 @@ Drives: gate Analytics and consent
 ### 7.3 Email & CRM
 
 **Q7.3.1** — Which email / CRM platform do you use or plan to use: Shopify Messaging or another platform (name)? *(recommended · client)*
+Drives: gate Email and SMS platform
 
 **Why it matters.** Shopify Messaging covers email, SMS and WhatsApp campaigns and automations natively. A third-party platform has to earn its licence through segmentation, deeper flows and data that lives outside Shopify. This answer sets the integration work and the customer-data path.
 
@@ -2496,9 +2497,10 @@ Sources: https://help.shopify.com/en/manual/promoting-marketing/create-marketing
 | Shopify Messaging | Basic |  | https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging |
 
 If native is not enough: [Email marketing](https://apps.shopify.com/categories/marketing-and-conversion-marketing-email-marketing) — [Klaviyo: Email Marketing & SMS](https://apps.shopify.com/klaviyo-email-marketing), [Omnisend Email Marketing & SMS](https://apps.shopify.com/omnisend)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.3.2** — Which automated flows are needed (welcome, abandoned cart, post-purchase, win-back)? *(recommended · client)*
+Drives: gate Email and SMS platform
 
 **Why it matters.** Lifecycle flows are where recovered revenue comes from — abandoned cart above all. Each flow needs trigger data, content and a test pass, so the list sizes the marketing build and tells tracking which events it must actually produce.
 
@@ -2507,7 +2509,7 @@ If native is not enough: [Email marketing](https://apps.shopify.com/categories/m
 **Why it matters.** Two systems each holding their own segments drift apart within a month, and campaigns then go to the wrong people. Naming the owner decides which way the sync runs and what the integration has to carry.
 
 **Q7.3.4** — Do you send SMS marketing, and to which countries? *(recommended · client)*
-Drives: app signal SMS marketing outside Shopify Messaging countries
+Drives: gate Email and SMS platform · app signal SMS marketing outside Shopify Messaging countries
 Quick interview: ask if Q0.2.6 is 500 or more, or Q0.4.1 mentions sms, retention or repeat
 
 **Why it matters.** Shopify Messaging sends SMS only in a documented list of countries. Marketing by SMS outside that list means a third-party app, plus its own consent capture, sender registration and country rules — cost and legal work, not a switch.
@@ -2526,11 +2528,17 @@ Sources: https://help.shopify.com/en/manual/promoting-marketing/create-marketing
 | Shopify Messaging SMS | Basic | AT, CA, DK, FI, IT, LU, PL, PT, SE, UK, US; Spain paused since 2026-09-15 | https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging/sms/requirements |
 
 If native is not enough: [SMS marketing](https://apps.shopify.com/categories/marketing-and-conversion-marketing-sms-marketing/all) — [Klaviyo: Email Marketing & SMS](https://apps.shopify.com/klaviyo-email-marketing), [Attentive](https://apps.shopify.com/attentive), [Postscript SMS Marketing](https://apps.shopify.com/postscript-sms-marketing)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.3.5** — Do you send WhatsApp marketing? *(optional · client)*
+Drives: gate Email and SMS platform
 
 **Why it matters.** WhatsApp marketing is native in Shopify Messaging, so a yes may cost no extra tool — but it still needs opt-in capture, message templates and someone to run the channel. A no keeps it out of scope and out of the estimate.
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shopify Messaging WhatsApp | Basic | Unavailable in the United States, China and sanctioned regions; billed per message | https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging/whatsapp/pricing |
+*Verified 2026-09-24 against help.shopify.com.*
 
 ### 7.4 Reviews & affiliates
 
@@ -2592,7 +2600,7 @@ Sources: https://help.shopify.com/en/manual/discounts/discount-combinations
 | Discount combinations | Basic | Up to 5 product or order codes + 1 shipping code on an order; 25 active automatic discounts, app discounts included | https://help.shopify.com/en/manual/discounts/discount-combinations |
 | Several product discounts on the same line item | Shopify Plus | Shopify Plus only | https://help.shopify.com/en/manual/discounts/discount-combinations |
 Build with: Discount Function
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.5.3** — Are coupon codes single-use, multi-use, or bulk-generated? *(optional · client)*
 
@@ -2710,7 +2718,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Agentic storefronts (active by default for eligible stores) | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home |
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.7.2** — Should Shopify enrol you automatically in new AI channels as they appear, or do you want to approve each one? *(recommended · client)*
 
@@ -2746,7 +2754,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Direct checkout in agentic channels | Basic | Per channel; ChatGPT is referral only | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements |
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.7.4** — Do you sell to customers in the United States? *(recommended · client)*
 
@@ -2759,7 +2767,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Agentic channel eligibility | Basic | No country or plan requirement stated on the requirements page | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements |
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.7.5** — Who can accept Shopify's additional terms for selling through AI channels? *(recommended · client)*
 
@@ -2790,7 +2798,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Customer data shared with agentic channels on direct checkout | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/data-privacy |
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.7.7** — How complete is your product data — titles, images, prices, descriptions and variants? *(recommended · client)*
 
@@ -2817,7 +2825,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Catalog mapping for custom data | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products |
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.7.9** — Should AI crawlers be allowed, restricted or blocked on your website? *(optional · client)*
 Drives: gate Agentic commerce
@@ -2836,7 +2844,7 @@ Sources: https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robo
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | robots.txt through the theme (robots.txt.liquid) | Basic |  | https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt |
-*Verified 2026-09-24 against help.shopify.com (undefined).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q7.7.10** — Do you want to control the answers AI assistants give about shipping, returns and sizing? *(optional · client)*
 
@@ -2850,7 +2858,7 @@ Sources: https://help.shopify.com/en/manual/promoting-marketing/knowledge-base
 |---|---|---|---|
 | Shopify Knowledge Base app | Basic |  | https://help.shopify.com/en/manual/promoting-marketing/knowledge-base |
 | Shopify Knowledge Base app (free, by Shopify) | Basic | Free; English | https://apps.shopify.com/shopify-knowledge-base |
-*Verified 2026-09-24 against apps.shopify.com (undefined).*
+*Verified 2026-09-24 against apps.shopify.com.*
 
 **Q7.7.11** — Do you plan to offer your own AI shopping assistant, or connect the store to agent platforms yourself? *(optional · client)*
 Drives: gate Agentic commerce
@@ -2865,7 +2873,7 @@ Sources: https://shopify.dev/docs/agents · https://shopify.dev/docs/apps/build/
 |---|---|---|---|
 | Universal Commerce Protocol and agent interfaces | Basic | Universal Cart API is early access | https://shopify.dev/docs/agents |
 | Storefront MCP server | Basic |  | https://shopify.dev/docs/apps/build/storefront-mcp/servers/storefront |
-*Verified 2026-09-24 against shopify.dev (undefined).*
+*Verified 2026-09-24 against shopify.dev.*
 
 **Q7.7.12** — Which Shopify AI tools do you want your team to use in day-to-day work? *(optional · client)*
 
@@ -3041,7 +3049,7 @@ Sources: https://shopify.dev/docs/storefronts/themes/architecture/sections
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Sections and blocks in a theme | Basic | 25 sections per template or section group, 50 blocks per section | https://shopify.dev/docs/storefronts/themes/architecture/sections |
-*Verified 2026-09-23 against shopify.dev (undefined).*
+*Verified 2026-09-23 against shopify.dev.*
 
 **Q9.1.7** — If the storefront stays on a Shopify theme, how many page templates must be designed and built new? *(recommended · client)*
 Drives: gate Custom templates on a Shopify theme
@@ -3055,7 +3063,7 @@ Sources: https://shopify.dev/docs/storefronts/themes/architecture/templates
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Alternate templates in a theme | Basic | Up to 1,000 JSON templates per theme, across all template types | https://shopify.dev/docs/storefronts/themes/architecture/templates |
-*Verified 2026-09-24 against shopify.dev (undefined).*
+*Verified 2026-09-24 against shopify.dev.*
 
 ### 9.2 Storefront
 

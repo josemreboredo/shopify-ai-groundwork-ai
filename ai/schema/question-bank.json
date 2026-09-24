@@ -7322,6 +7322,9 @@
         "/marketing/esp/type",
         "/marketing/esp/platform"
       ],
+      "feeds": [
+        "gate:messaging_platform"
+      ],
       "shopify": {
         "native": [
           {
@@ -7339,9 +7342,8 @@
           "omnisend"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -7372,6 +7374,9 @@
       "text": "Which automated flows are needed (welcome, abandoned cart, post-purchase, win-back)?",
       "maps_to": [
         "/marketing/esp/flows"
+      ],
+      "feeds": [
+        "gate:messaging_platform"
       ],
       "teach": {
         "why": "Lifecycle flows are where recovered revenue comes from — abandoned cart above all. Each flow needs trigger data, content and a test pass, so the list sizes the marketing build and tells tracking which events it must actually produce."
@@ -7414,6 +7419,7 @@
         "/marketing/sms/countries"
       ],
       "feeds": [
+        "gate:messaging_platform",
         "app:sms_app"
       ],
       "shopify": {
@@ -7435,9 +7441,8 @@
           "postscript-sms-marketing"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -7471,6 +7476,23 @@
       "maps_to": [
         "/marketing/whatsapp"
       ],
+      "feeds": [
+        "gate:messaging_platform"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Shopify Messaging WhatsApp",
+            "plan": "basic",
+            "plan_note": "Unavailable in the United States, China and sanctioned regions; billed per message",
+            "docs": "https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging/whatsapp/pricing"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
+        }
+      },
       "teach": {
         "why": "WhatsApp marketing is native in Shopify Messaging, so a yes may cost no extra tool — but it still needs opt-in capture, message templates and someone to run the channel. A no keeps it out of scope and out of the estimate."
       }

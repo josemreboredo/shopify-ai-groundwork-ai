@@ -247,7 +247,8 @@ function renderGuideQuestion(q) {
     lines.push('', `If native is not enough: ${s.app_category ? `[${s.app_category.name}](${s.app_category.url ?? 'https://apps.shopify.com'})` : 'App Store'}${appList.length ? ` — ${appList.join(', ')}` : ''}`);
   }
   if (s.extension_points?.length) lines.push(`Build with: ${s.extension_points.join(' · ')}`);
-  lines.push(`*Verified ${s.verified.on} against ${s.verified.source} (${s.verified.edition}).*`);
+  // The edition is optional: a fact checked between Editions is dated, not named after one.
+  lines.push(`*Verified ${s.verified.on} against ${s.verified.source}${s.verified.edition ? ` (${s.verified.edition})` : ''}.*`);
   return lines.join('\n');
 }
 

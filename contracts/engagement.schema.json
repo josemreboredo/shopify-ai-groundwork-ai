@@ -534,6 +534,9 @@
             "analytics_consent": {
               "$ref": "#/$defs/gate"
             },
+            "messaging_platform": {
+              "$ref": "#/$defs/gate"
+            },
             "post_launch_support": {
               "$ref": "#/$defs/gate"
             }
@@ -570,6 +573,8 @@
               "+Languages",
               "+Marketplaces",
               "+Markets",
+              "+Messaging (advanced)",
+              "+Messaging (standard)",
               "+Migration (heavy)",
               "+Migration (light)",
               "+Migration (medium)",
@@ -633,6 +638,7 @@
                   "custom_promotions",
                   "agentic_commerce",
                   "analytics_consent",
+                  "messaging_platform",
                   "post_launch_support"
                 ]
               },

@@ -120,6 +120,22 @@ export function marketplaceCount(doc) {
   return named || ((doc.channels?.launch ?? []).includes('marketplaces') ? 1 : 0);
 }
 
+/** Countries Shopify Messaging sends SMS marketing to (Spain paused since 2026-09-15; checked 2026-09-24). */
+export const SHOPIFY_SMS_COUNTRIES = ['AT', 'CA', 'DK', 'FI', 'IT', 'LU', 'PL', 'PT', 'SE', 'GB', 'US'];
+
+/**
+ * The email platform the client runs in place of Shopify Messaging, or null.
+ * The type answer decides; with none recorded, a named platform that is not
+ * Shopify's own is one.
+ * @param {object} doc
+ */
+export function otherEmailPlatform(doc) {
+  const esp = doc.marketing?.esp ?? {};
+  const named = typeof esp.platform === 'string' && esp.platform.trim() && !/^shopify\b/i.test(esp.platform.trim()) ? esp.platform.trim() : null;
+  if (esp.type === 'third_party_esp') return named ?? 'an email platform';
+  return esp.type ? null : named;
+}
+
 /** Launch markets in the offering's scope (mainland China excluded). @param {object} doc */
 export const marketsOf = (doc) => (doc.markets?.list ?? []).filter((m) => m.code !== CHINA_MAINLAND);
 
@@ -757,6 +773,33 @@ const GATE_EVALUATORS = {
       evidence: active
         ? `${destinations} destination(s)${a.server_side ? ', server-side' : ''}${a.tag_manager ? ', tag manager' : ''}${events.length ? `, ${events.length} custom event(s)` : ''}${cmp ? ', third-party consent platform' : ''}`
         : 'Shopify analytics and the Shopify cookie banner — in every offer',
+    };
+  },
+
+  /* Shopify Messaging is in every pack: its automations are templates to
+     activate and brand. Another platform in its place is the add-on — an
+     email platform, or SMS to a country Shopify does not send to. Advanced is
+     what goes past the lifecycle flows: more of them, or SMS and WhatsApp
+     outside Shopify Messaging, which bring consent capture and sender
+     registration of their own. */
+  messaging_platform: (doc) => {
+    const m = doc.marketing ?? {};
+    const platform = otherEmailPlatform(doc);
+    const sms = m.sms?.enabled === true;
+    const smsOutside = sms ? (m.sms.countries ?? []).filter((c) => !SHOPIFY_SMS_COUNTRIES.includes(c)) : [];
+    const flows = (m.esp?.flows ?? []).length;
+    const past = [
+      platform && flows > 5 ? `${flows} flows` : null,
+      sms && (platform || smsOutside.length) ? `SMS outside Shopify Messaging${smsOutside.length ? ` (${smsOutside.join(', ')} not covered)` : ''}` : null,
+      m.whatsapp === true && platform ? 'WhatsApp through the platform' : null,
+    ].filter(Boolean);
+    const active = Boolean(platform) || smsOutside.length > 0;
+    return {
+      active,
+      ...(active ? { tier: past.length ? 'advanced' : 'standard' } : {}),
+      evidence: active
+        ? `${platform ?? 'An SMS app'} in place of Shopify Messaging${past.length ? `: ${past.join(', ')}` : ''}`
+        : 'Shopify Messaging — in every pack',
     };
   },
 

@@ -233,8 +233,13 @@ describe('a scope that outgrew the offers', () => {
   });
 
   test('an engagement that is its pack as packaged shows no ledger at all', () => {
-    assert.equal(view({}, 'foundation-minimal').outgrew, null);
-    assert.ok(view().outgrew, 'while one with add-ons shows its working');
+    // The minimal Foundation runs Klaviyo, an add-on; on Shopify Messaging it is the pack itself.
+    const packaged = fixture('foundation-minimal');
+    packaged.marketing.esp = { type: 'shopify_messaging', flows: packaged.marketing.esp.flows };
+    packaged.offer = classifyOffer(packaged);
+    assert.equal(goNoGoView(packaged, state(), null, {}).outgrew, null);
+    assert.ok(view({}, 'foundation-minimal').outgrew, 'while one add-on already shows its working');
+    assert.ok(view().outgrew, 'and so does one with several');
   });
 
   test('the same risks on a small scope are flags with owners, not a programme', () => {

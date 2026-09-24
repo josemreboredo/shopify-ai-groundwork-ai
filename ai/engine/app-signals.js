@@ -24,7 +24,7 @@
  */
 
 import { offering, questionBank, apps } from '../schema/index.js';
-import { marketsOf, distinctLanguages } from './classify.js';
+import { marketsOf, distinctLanguages, SHOPIFY_SMS_COUNTRIES } from './classify.js';
 import { picked } from './values.js';
 
 /** Monthly returns above this volume make a returns platform worth evaluating. */
@@ -38,9 +38,6 @@ export const NATIVE_PICKUP_POINT_COUNTRIES = ['FR', 'IT', 'ES', 'GB'];
 
 /** Store countries where Shopify's VAT invoices are not supported. */
 const VAT_INVOICE_UNSUPPORTED = ['PT'];
-
-/** Countries where Shopify Messaging sends SMS marketing (Spain paused since 2026-09-15). */
-const SHOPIFY_SMS_COUNTRIES = ['AT', 'CA', 'DK', 'FI', 'IT', 'LU', 'PL', 'PT', 'SE', 'GB', 'US'];
 
 /** A named tool that is really Shopify's own feature is not a reason for an app. */
 export const isNamedApp = (name) => typeof name === 'string' && name.trim() !== '' && !/^(shopify|native|none|n\/?a)\b/i.test(name.trim());

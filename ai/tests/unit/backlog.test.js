@@ -120,6 +120,8 @@ function maximalLiquidEngagement() {
   const doc = load('foundation-minimal.json');
   doc.design = { ...doc.design, motion: true, custom_design: true, custom_templates: 2, figma: { ...doc.design?.figma, exists: true, completeness: 'all_templates', mapped_to_sections: true } };
   doc.markets = { ...doc.markets, rtl_required: true };
+  // And a small store sends its email from Shopify Messaging, which every pack sets up.
+  doc.marketing = { ...doc.marketing, esp: { type: 'shopify_messaging', flows: ['Welcome', 'Abandoned checkout'] }, sms: { enabled: true, countries: ['GB'] } };
   doc.offer = classifyOffer(doc);
   doc.exits = evaluateExits(doc);
   assert.notEqual(doc.offer.delivery_track, 'hydrogen', 'the point of this fixture is the Liquid track');
@@ -210,7 +212,7 @@ describe('story definitions', () => {
       'LWC-AI-003': 'agentic_commerce', 'LWC-AI-007': 'agentic_commerce', 'LWC-AI-008': 'agentic_commerce',
       'LWC-CAT-015': 'ai_content', 'LWC-PRM-002': 'custom_promotions', 'LWC-THM-017': 'custom_templates',
       'LWC-THM-010': 'hydrogen', 'LWC-THM-011': 'hydrogen', 'LWC-THM-018': 'hydrogen',
-      'LWC-SHP-010': 'returns_post_purchase', 'LWC-MKG-007': 'marketplaces',
+      'LWC-SHP-010': 'returns_post_purchase', 'LWC-MKG-007': 'marketplaces', 'LWC-MKG-004': 'messaging_platform',
     };
     for (const doc of [...GO_FIXTURES, maximalEngagement(), maximalLiquidEngagement()]) {
       for (const story of selectStories(doc)) {
@@ -238,6 +240,25 @@ describe('story definitions', () => {
     assert.ok(selectStories(doc).some((x) => x.key === 'LWC-AI-003'), 'selective: built');
     doc.ai = { ...doc.ai, crawler_policy: 'allow_all' };
     assert.ok(!selectStories(doc).some((x) => x.key === 'LWC-AI-003'), 'allow all is the default, and every pack keeps it');
+  });
+
+  test('Shopify Messaging is set up unless another platform replaces it, and never both', () => {
+    const keys = (marketing) => {
+      const doc = load('foundation-minimal.json');
+      doc.marketing = { ...doc.marketing, ...marketing };
+      doc.offer = classifyOffer(doc);
+      return selectStories(doc).map((x) => x.key).filter((k) => k === 'LWC-MKG-004' || k === 'LWC-MKG-008');
+    };
+    assert.deepEqual(keys({ esp: { type: 'shopify_messaging' } }), ['LWC-MKG-008']);
+    assert.deepEqual(keys({ esp: { type: 'third_party_esp', platform: 'Klaviyo' } }), ['LWC-MKG-004']);
+    assert.deepEqual(keys({ esp: { type: 'none' } }), [], 'no email marketing, nothing to set up');
+    // Email from Shopify, SMS by an app where Shopify does not send it: both, each for its own channel.
+    const doc = load('foundation-minimal.json');
+    doc.marketing = { ...doc.marketing, esp: { type: 'shopify_messaging' }, sms: { enabled: true, countries: ['CH'] } };
+    doc.offer = classifyOffer(doc);
+    const stories = selectStories(doc);
+    assert.deepEqual(stories.map((x) => x.key).filter((k) => k === 'LWC-MKG-004' || k === 'LWC-MKG-008').sort(), ['LWC-MKG-004', 'LWC-MKG-008']);
+    assert.match(stories.find((x) => x.key === 'LWC-MKG-004').title, /SMS where Shopify Messaging does not send/);
   });
 
   test('every epic has at least one story definition', () => {

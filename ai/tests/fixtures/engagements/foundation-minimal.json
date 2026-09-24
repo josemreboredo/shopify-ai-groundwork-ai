@@ -139,23 +139,36 @@
         "active": false,
         "evidence": "Q7.2.1 / Q7.2.3: GA4 and a Meta pixel — what every offer carries."
       },
+      "messaging_platform": {
+        "active": true,
+        "tier": "standard",
+        "evidence": "Q7.3.1: Klaviyo in place of Shopify Messaging; Q7.3.2: two lifecycle flows — welcome and abandoned cart."
+      },
       "post_launch_support": {
         "active": false,
         "evidence": "Q10.3.3: hypercare only, and hypercare is in every offer."
       }
     },
     "l_triggers": {},
-    "modifiers": [],
-    "addons": [],
+    "modifiers": [
+      "+Messaging (standard)"
+    ],
+    "addons": [
+      {
+        "gate": "messaging_platform",
+        "label": "An email or SMS platform past Shopify Messaging",
+        "tier": "standard"
+      }
+    ],
     "price_band": {
-      "min": 31000,
-      "max": 38000,
+      "min": 35000,
+      "max": 45000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
-      "min": 4,
-      "max": 5
+      "min": 4.5,
+      "max": 6
     },
     "hypercare": {
       "days": 5,
@@ -163,8 +176,8 @@
     },
     "design": {
       "days": {
-        "min": 3,
-        "max": 5
+        "min": 4,
+        "max": 6
       }
     },
     "apps": {
@@ -173,16 +186,25 @@
       "extra": 0,
       "in_further_stores": 0
     },
-    "rationale": "No scope gate and no L trigger is active, so the engagement is Ecommerce Foundation as packaged.",
+    "rationale": "One scope gate is active: Klaviyo in place of Shopify Messaging, which every pack sets up. The engagement is Ecommerce Foundation plus an email platform, as an add-on. The quote is the Foundation base plus that gate at its own weeks and price.",
     "scope_effort_weeks": {
-      "min": 4,
-      "max": 5
+      "min": 4.5,
+      "max": 6
     },
     "gate_capacity_weeks": {
       "min": 0,
       "max": 0
     },
-    "scope_effort_by_gate": []
+    "scope_effort_by_gate": [
+      {
+        "gate": "messaging_platform",
+        "label": "Email and SMS platform",
+        "weeks": {
+          "min": 0.5,
+          "max": 1
+        }
+      }
+    ]
   },
   "markets": {
     "primary_markets": [

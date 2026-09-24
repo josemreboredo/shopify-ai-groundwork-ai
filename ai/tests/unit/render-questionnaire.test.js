@@ -23,6 +23,8 @@ test('Shopify plan requirements stay in the consultant guide, never in the clien
   const guide = renderConsultantGuide();
   assert.match(guide, /Shopify Plus/);
   for (const q of questionBank.questions.filter((x) => x.shopify)) assert.ok(guide.includes(`**${q.id}**`), q.id);
+  // A field the renderer reads and a question leaves out printed "(undefined)" into the guide.
+  assert.doesNotMatch(guide, /\bundefined\b/);
 });
 
 test('the client questionnaire uses neutral wording: no rule numbers, offers, STOP/FLAG or consultant-only STOP questions', () => {

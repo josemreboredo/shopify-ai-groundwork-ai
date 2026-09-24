@@ -3,10 +3,16 @@
  */
 
 import { list, listOr, languages, isMigration, recommendedApps, themeName } from './helpers.js';
+import { otherEmailPlatform, SHOPIFY_SMS_COUNTRIES } from '../../engine/classify.js';
 
 /** Shopify's own sales channels the client sells on, as a reader names them. */
 const CHANNEL = { shop_app: 'Shop', google_youtube: 'Google & YouTube', facebook_instagram: 'Facebook & Instagram', tiktok: 'TikTok' };
 const channels = (doc) => (doc.channels?.launch ?? []).filter((c) => CHANNEL[c]);
+
+/** The platform the messaging add-on connects: the email platform, or an SMS app where only SMS leaves Shopify. */
+const platform = (doc) => otherEmailPlatform(doc) ?? 'the SMS app';
+const smsOutside = (doc) => (doc.marketing?.sms?.enabled === true ? (doc.marketing.sms.countries ?? []).filter((c) => !SHOPIFY_SMS_COUNTRIES.includes(c)) : []);
+const flows = (doc) => doc.marketing?.esp?.flows ?? [];
 
 const trackers = (doc) => [...(doc.marketing?.analytics?.platforms ?? []), ...(doc.marketing?.analytics?.pixels ?? [])];
 const reviewsApp = (doc) => doc.marketing?.reviews?.app ?? recommendedApps(doc).find((a) => /review/i.test(`${a.requirement ?? ''} ${a.name}`))?.name;
@@ -75,24 +81,28 @@ export default [
     agent_prompt: (doc) => `Server-side tracking for ${listOr(doc.marketing?.analytics?.pixels, 'the ad platforms')}: prefer native connectors (Facebook & Instagram app with the maximum data-sharing setting for Conversions API; Google & YouTube app enhanced conversions). Only if a platform has no native connector, propose a server-side option (T3) for approval — webhook consumers must verify X-Shopify-Hmac-Sha256 and keep API tokens in environment secrets. Respect consent from the Customer Privacy API. Update the privacy policy data-sharing section with legal.`,
   },
   {
+    /* The email and SMS platform add-on: another platform in place of Shopify Messaging. */
     key: 'LWC-MKG-004',
     scope: 'Connect the email platform and rebuild the flows',
     epic: 'marketing',
-    title: (doc) => `Connect ${doc.marketing?.esp?.platform} and rebuild email flows`,
+    title: (doc) => (otherEmailPlatform(doc) ? `Connect ${platform(doc)} and rebuild email flows` : `Connect ${platform(doc)} for SMS where Shopify Messaging does not send`),
     user_story: 'As a marketer, I want our email platform connected with the flows that drive revenue, so that automated emails work from day one.',
     acceptance_criteria: (doc) => [
-      `Given the ${doc.marketing?.esp?.platform} Shopify integration, when a customer subscribes, browses, adds to cart or orders, then the profile and events sync within minutes with consent status`,
-      ...(doc.marketing?.esp?.flows ?? []).map((f) => `Given the "${f}" flow, when a test profile triggers it, then the email sends in the profile's language with correct product data and unsubscribe link`),
-      `Given the storefront sign-up forms, when they are published, then they use ${doc.marketing?.esp?.platform}'s onsite form or embed without blocking page load`,
+      `Given the ${platform(doc)} Shopify integration, when a customer subscribes, browses, adds to cart or orders, then the profile and events sync within minutes with consent status`,
+      ...flows(doc).map((f) => `Given the "${f}" flow, when a test profile triggers it, then the email sends in the profile's language with correct product data and unsubscribe link`),
+      ...(otherEmailPlatform(doc) ? [`Given the storefront sign-up forms, when they are published, then they use ${platform(doc)}'s onsite form or embed without blocking page load`] : []),
+      ...(doc.marketing?.sms?.enabled === true ? [`Given SMS marketing${smsOutside(doc).length ? ` to ${list(smsOutside(doc))}, where Shopify Messaging does not send` : ''}, when a customer opts in, then the SMS consent is captured separately from email and the sender is registered as each country requires`] : []),
+      'Given Shopify’s own marketing automations, when the platform goes live, then the ones it replaces are switched off, so no customer receives the same message twice',
     ],
     gaia_tier: 'T2',
     points: 5,
-    owner: 'client',
+    owner: 'developer',
     depends_on: ['LWC-CMP-004', 'LWC-FND-003'],
-    spec_refs: ['/marketing/esp/platform', '/marketing/esp/flows', '/marketing/esp/segments_master', '/integrations/*/category'],
+    spec_refs: ['/marketing/esp/platform', '/marketing/esp/flows', '/marketing/esp/segments_master', '/marketing/sms/countries', '/integrations/*/category'],
     security_flags: ['pii'],
-    applies: (doc) => Boolean(doc.marketing?.esp?.platform),
-    agent_prompt: (doc) => `Install ${doc.marketing?.esp?.platform}'s Shopify app, connect it to the build store and enable customer, order and catalogue sync plus onsite tracking via its app embed (respecting consent). Sync email marketing consent both ways. Rebuild flows: ${listOr(doc.marketing?.esp?.flows, 'to confirm')} — the agent sets up triggers and filters; the client team owns copy and design. Segments master: ${doc.marketing?.esp?.segments_master ?? 'to confirm'}. Disable the equivalent Shopify marketing automations to avoid duplicates. Test every flow with an internal test profile.`,
+    gates: ['messaging_platform'],
+    applies: (doc) => doc.offer?.scope_gates?.messaging_platform?.active === true,
+    agent_prompt: (doc) => `Install ${platform(doc)}'s Shopify app, connect it to the build store and enable customer, order and catalogue sync plus onsite tracking via its app embed (respecting consent). Sync marketing consent both ways. ${flows(doc).length ? `Rebuild flows: ${list(flows(doc))}` : 'Rebuild the lifecycle flows agreed with the client'} — the agent sets up triggers and filters on the new store's events; the client team owns copy, and the master email template follows the design. Segments master: ${doc.marketing?.esp?.segments_master ?? 'to confirm'}. ${doc.marketing?.sms?.enabled === true ? `SMS${smsOutside(doc).length ? ` to ${list(smsOutside(doc))} (not covered by Shopify Messaging)` : ''}: capture SMS consent separately and complete the sender registration each country requires. ` : ''}Switch off the equivalent Shopify Messaging automations to avoid duplicates. Test every flow with an internal test profile.`,
   },
   {
     key: 'LWC-MKG-005',
@@ -151,5 +161,26 @@ export default [
     gates: ['marketplaces'],
     applies: (doc) => doc.offer?.scope_gates?.marketplaces?.active === true,
     agent_prompt: (doc) => `List the catalogue on ${listOr((doc.channels?.marketplaces ?? []).filter((x) => x !== 'not_sure').map((x) => x.replace(/_/g, ' ')), 'the agreed marketplaces')} with Shopify Marketplace Connect. Map products to each marketplace's categories and required attributes, set prices and rules per marketplace, and test orders, stock, cancellations and refunds both ways. Target Plus and Walmart are United States only, and new Etsy connections cannot be made.`,
+  },
+  {
+    /* In every pack: Shopify Messaging's automations are templates to activate, not a build. */
+    key: 'LWC-MKG-008',
+    epic: 'marketing',
+    title: 'Set up Shopify Messaging: the abandoned checkout automation and the lifecycle templates',
+    user_story: 'As a marketer, I want the store to recover abandoned checkouts and welcome, thank and win back customers from launch day, so that revenue does not wait for a marketing project.',
+    acceptance_criteria: (doc) => [
+      'Given a test customer who leaves the checkout, when the send-after delay passes, then the abandoned checkout email arrives in the brand, in the customer’s language, with a link back to the checkout',
+      `Given Shopify’s lifecycle templates the client chose (${listOr(flows(doc), 'welcome, abandoned cart and browse, thank you, win-back — to confirm')}), when each is activated, then it is branded, tested with a test profile and live`,
+      ...(doc.marketing?.sms?.enabled === true ? ['Given SMS marketing, when it is switched on, then it covers only the countries Shopify Messaging sends to, and the recovery automations are the ones sent by SMS'] : []),
+      'Given the hand-over, when the client reviews it, then they know the monthly free emails, what messages cost past them, and that Shopify Messaging needs Shopify Network Intelligence turned on in the privacy settings',
+    ],
+    gaia_tier: 'T1',
+    points: 2,
+    owner: 'consultant',
+    depends_on: ['LWC-CMP-004'],
+    spec_refs: ['/marketing/esp/type', '/marketing/esp/flows', '/marketing/sms/enabled'],
+    security_flags: ['pii'],
+    applies: (doc) => !otherEmailPlatform(doc) && doc.marketing?.esp?.type !== 'none',
+    agent_prompt: (doc) => `In Apps > Messaging > Automations, create the abandoned checkout automation and the lifecycle automations the client chose (${listOr(flows(doc), 'to confirm')}) from Shopify's templates; apply the brand, edit only what the template needs, and activate each after a test send. Moving from the legacy abandoned checkout email to the new automation is permanent — confirm with the client first. ${doc.marketing?.sms?.enabled === true ? `SMS: Shopify Messaging sends only to ${list(SHOPIFY_SMS_COUNTRIES)}, and by automation only for abandoned checkout, cart and browse. ` : ''}Hand over what the messages cost past the free allowance, and that Shopify Network Intelligence must stay on for Shopify Messaging to work.`,
   },
 ];

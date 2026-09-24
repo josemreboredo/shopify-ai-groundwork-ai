@@ -117,7 +117,7 @@ describe('client deck XML', () => {
       assert.doesNotMatch(client, /points="|price[-_]add|effort[-_]weeks|\+25%|11\.11/i);
       for (const mod of offering.modifiers) assert.ok(!client.includes(mod.id), mod.id);
     }
-    assert.deepEqual(single.offer.modifiers, ['+Migration (heavy)']);
+    assert.deepEqual(single.offer.modifiers, ['+Migration (heavy)', '+Messaging (standard)'], 'the migration, and the Klaviyo it already had');
     assert.ok(noRetainer.exits.items.some((i) => i.rule_id === '11.11'));
   });
 

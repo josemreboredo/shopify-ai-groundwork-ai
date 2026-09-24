@@ -157,7 +157,7 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Theme",
       "triggered_by": "An estimate below the Scale floor: the Foundation, with whatever goes past it as add-ons",
-      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
+      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
         "min": 31000,
         "max": 38000,
@@ -213,7 +213,8 @@
           "deliverables": [
             "An app shortlist from the registry, native Shopify first and an App Store app only where nothing native covers it",
             "Each app installed, configured, and left with a named owner and its monthly cost",
-            "What was considered and rejected, so the decision can be reopened without starting again"
+            "What was considered and rejected, so the decision can be reopened without starting again",
+            "Shopify Messaging set up: the abandoned checkout automation and the lifecycle templates the client wants — welcome, abandoned cart and browse, thank you, win-back — activated in the brand, and what messages cost past the free allowance explained"
           ]
         },
         {
@@ -329,7 +330,7 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Customisable",
       "triggered_by": "An estimate from the Scale floor, or a further store — the recommended start for a brand that already sells",
-      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
+      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
         "min": 50000,
         "max": 105000,
@@ -383,7 +384,8 @@
           "deliverables": [
             "A shortlist with a cost per market, not a cost per app — the number that surprises clients later",
             "Which app is allowed in which market, and what replaces it where it is not",
-            "Each one installed, configured and owned, as in Foundation"
+            "Each one installed, configured and owned, as in Foundation",
+            "Shopify Messaging set up: the abandoned checkout automation and the lifecycle templates the client wants — welcome, abandoned cart and browse, thank you, win-back — activated in the brand, and what messages cost past the free allowance explained"
           ]
         },
         {
@@ -518,7 +520,7 @@
       "delivery_track": "liquid",
       "build_label": "Custom Liquid",
       "triggered_by": "An estimate from the Flagship floor — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 106000,
         "max": 214000,
@@ -572,7 +574,8 @@
           "deliverables": [
             "The shortlist from the app registry: native Shopify first, an App Store app only where nothing native covers it",
             "Which app is allowed in which market and on which channel, and what each one costs there",
-            "A running cost per app, so the store has a total cost of ownership and not only a build price"
+            "A running cost per app, so the store has a total cost of ownership and not only a build price",
+            "Shopify Messaging set up: the abandoned checkout automation and the lifecycle templates the client wants — welcome, abandoned cart and browse, thank you, win-back — activated in the brand, and what messages cost past the free allowance explained"
           ]
         },
         {
@@ -1291,6 +1294,36 @@
       }
     },
     {
+      "id": "messaging_platform",
+      "label": "Email and SMS platform",
+      "condition": "An email or SMS platform past Shopify Messaging. Every pack sets up Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates — welcome new subscribers, abandoned cart and product browse, thank you, first-purchase upsell, win-back, birthday and VIP — activated in the brand, by email, and by SMS for the three recovery automations in the countries Shopify sends SMS to. Standard is an email platform in its place, such as Klaviyo or Omnisend: its Shopify app connected, customers, orders, catalogue and consent synced, sign-up forms through its app embed, and up to five lifecycle flows rebuilt from its templates. Advanced is a platform past that: more than five flows, or SMS or WhatsApp sent through something other than Shopify Messaging — an SMS app for the countries Shopify does not send to included — with its own consent capture and sender registration.",
+      "inputs": [
+        "/marketing/esp/type",
+        "/marketing/esp/platform",
+        "/marketing/esp/flows",
+        "/marketing/sms/enabled",
+        "/marketing/sms/countries",
+        "/marketing/whatsapp"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "advanced"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging",
+        "https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging/marketing-automations/create",
+        "https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging/email/pricing",
+        "https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging/sms/pricing",
+        "https://help.shopify.com/en/manual/promoting-marketing/create-marketing/shopify-messaging/whatsapp/pricing",
+        "https://help.shopify.com/en/manual/promoting-marketing/create-marketing/migrate-abandoned-checkout"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "help.shopify.com"
+      }
+    },
+    {
       "id": "post_launch_support",
       "label": "Post-launch support",
       "condition": "An operating model past go-live: written SOPs the client’s team runs the store from, or a handover into a retainer other than a signed Grow retainer. Hypercare is not this gate: each pack carries its own days and more are priced by the week; launch-day training is in every offer; the handover into a signed Grow retainer is part of that retainer",
@@ -1899,6 +1932,42 @@
       "price_add": {
         "min": 9450,
         "max": 15750
+      }
+    },
+    {
+      "id": "+Messaging (standard)",
+      "gate": "messaging_platform",
+      "tier": "standard",
+      "description": "An email platform in place of Shopify Messaging: its Shopify app connected, customers, orders, catalogue and consent synced both ways, sign-up forms through its app embed, a master email template built to the brand, and up to five lifecycle flows rebuilt from its templates in the storefront’s languages — each tested with a test profile, and Shopify’s own automations switched off so nothing sends twice. The copy is the client’s.",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 1
+      },
+      "price_add": {
+        "min": 3150,
+        "max": 6300
+      },
+      "design_days": {
+        "min": 1,
+        "max": 1
+      }
+    },
+    {
+      "id": "+Messaging (advanced)",
+      "gate": "messaging_platform",
+      "tier": "advanced",
+      "description": "The standard work, and a platform past the lifecycle flows — half a week more: more than five flows, or SMS or WhatsApp sent through something other than Shopify Messaging, with its own consent capture and the sender registration each country asks for.",
+      "effort_weeks": {
+        "min": 1,
+        "max": 1.5
+      },
+      "price_add": {
+        "min": 6300,
+        "max": 9450
+      },
+      "design_days": {
+        "min": 1,
+        "max": 2
       }
     },
     {
@@ -3165,6 +3234,23 @@
         }
       },
       {
+        "id": "email",
+        "what": "Email and SMS",
+        "gate": "messaging_platform",
+        "group": "Data and integrations",
+        "shopify_limit": "Shopify Messaging is on the Basic, Grow, Advanced and Plus plans, with 10,000 free emails a month and abandoned checkout emails always free; SMS goes only to the countries Shopify lists, and SMS automations cover abandoned checkout, cart and browse only",
+        "S": "Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand, by email, and by SMS where Shopify sends it",
+        "M": "Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand, by email, and by SMS where Shopify sends it",
+        "L": "Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand, by email, and by SMS where Shopify sends it",
+        "note": "Set up in every pack, because each automation is a Shopify template to activate and brand rather than a build. The copy is the client’s, and so are the message fees past the free emails. Shopify Messaging needs Shopify Network Intelligence turned on in the store’s privacy settings, which is the client’s decision to take. Another platform in its place is the email and SMS platform add-on.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Another email or SMS platform"
+      },
+      {
         "id": "staff",
         "what": "Staff admin users",
         "gate": null,
@@ -3496,6 +3582,18 @@
           "M",
           "L"
         ]
+      },
+      {
+        "id": "messaging_platform",
+        "gate": "messaging_platform",
+        "what": "An email or SMS platform past Shopify Messaging",
+        "description": "Klaviyo, Omnisend or another email platform in place of Shopify Messaging: connected and synced, with up to five lifecycle flows rebuilt in it — and, advanced, more flows, or SMS or WhatsApp sent outside Shopify Messaging, an SMS app for the countries Shopify does not reach included.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Shopify Messaging is in every pack: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand. The platform’s own licence and message fees are the client’s."
       },
       {
         "id": "post_launch_support",
