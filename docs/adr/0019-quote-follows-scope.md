@@ -78,3 +78,9 @@ give the final figure, and the commercial team adds contingency and services suc
   engagement L — the headless L trigger and the classification rule it drove are gone, and the name follows the budget like
   any other add-on. It brings the full template set with it, bought alongside it in S and M. L's build label is "Custom
   Liquid"; the track is still an answer (`offer.delivery_track`), read off the hydrogen gate.
+- **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
+  or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
+  cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,
+  1–1.5 weeks and 1 design day) or stacking rules of the business’s own (advanced, 2–3 weeks and 1–2 design days). The
+  backlog built that Function unpriced until now. A custom app containing a Function needs Shopify Plus; below Plus it comes
+  in a public App Store app (shopify.dev and help.shopify.com, checked 2026-09-24).

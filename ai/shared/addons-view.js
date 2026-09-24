@@ -128,6 +128,12 @@ export const ASKS = {
       functions: { label: 'Functions: validation, delivery and payment rules', limits: (l) => ({ ...l, checkout: 'backend_logic_functions' }) },
     },
   },
+  custom_promotions: {
+    tiers: {
+      standard: { label: 'Tiered or volume discounts for consumers', doc: merge('promotions', { discount_types: ['volume_tiered'] }) },
+      advanced: { label: 'Stacking rules of the business’s own across discounts', doc: merge('promotions', { stacking: 'custom_logic_function' }) },
+    },
+  },
   analytics_consent: {
     tiers: {
       standard: { label: 'Custom events, a tag manager or a third destination', limits: (l) => ({ ...l, analytics_custom_events: true }) },

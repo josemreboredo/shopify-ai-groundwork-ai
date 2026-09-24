@@ -7506,7 +7506,10 @@
       ],
       "teach": {
         "why": "Each discount type is one of three things: an admin setting, a native combination, or a discount function someone writes and maintains. Listing the types is what tells us which — and that is the whole difference in cost."
-      }
+      },
+      "feeds": [
+        "gate:custom_promotions"
+      ]
     },
     {
       "id": "Q7.5.2",
@@ -7520,6 +7523,7 @@
         "/promotions/stacking"
       ],
       "feeds": [
+        "gate:custom_promotions",
         "exit:11.1"
       ],
       "shopify": {
@@ -7527,13 +7531,13 @@
           {
             "feature": "Discount combinations",
             "plan": "basic",
-            "plan_note": "Up to 5 codes + 1 shipping code; 25 automatic discounts",
+            "plan_note": "Up to 5 product or order codes + 1 shipping code on an order; 25 active automatic discounts, app discounts included",
             "docs": "https://help.shopify.com/en/manual/discounts/discount-combinations"
           },
           {
             "feature": "Several product discounts on the same line item",
             "plan": "plus",
-            "plan_note": "Plan requirement to recheck after Spring '26",
+            "plan_note": "Shopify Plus only",
             "docs": "https://help.shopify.com/en/manual/discounts/discount-combinations"
           }
         ],
@@ -7541,9 +7545,8 @@
           "Discount Function"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {

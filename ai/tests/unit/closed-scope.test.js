@@ -534,6 +534,24 @@ describe('the quote is the scope, priced one way', () => {
     assert.equal(headless.scope_gates.custom_templates.active, false, 'a headless storefront has no theme to add templates to');
   });
 
+  test('promotions: Shopify’s own discounts in every pack, a discount Function is the add-on', () => {
+    /* Codes, automatic discounts, buy X get Y, free shipping and scheduled
+       sales are an admin setting; a rule they cannot express is code that
+       touches every order's price, and was built by the backlog unpriced. */
+    const row = offering.closed_scope.rows.find((r) => r.id === 'promotions');
+    assert.ok(row.S === row.M && row.M === row.L, 'the same standard capabilities in every pack');
+    const at = (promotions, model) => {
+      const doc = engagementAt(limits.M);
+      return classifyOffer({ ...doc, promotions, ...(model ? { meta: { ...doc.meta, client: { ...doc.meta.client, business_model: model } } } : {}) });
+    };
+    assert.equal(at({ discount_types: ['percentage', 'bogo', 'free_shipping', 'scheduled_sale'], stacking: 'native_combinations' }).scope_gates.custom_promotions.active, false);
+    assert.equal(at({ discount_types: ['volume_tiered'] }).scope_gates.custom_promotions.tier, 'standard');
+    const custom = at({ discount_types: ['percentage'], stacking: 'custom_logic_function' });
+    assert.equal(custom.scope_gates.custom_promotions.tier, 'advanced');
+    assert.deepEqual(custom.addons.map((x) => x.gate), ['custom_promotions'], 'an M plus custom promotions');
+    assert.equal(at({ discount_types: ['volume_tiered'] }, 'b2b').scope_gates.custom_promotions.active, false, 'wholesale volume pricing is B2B quantity rules');
+  });
+
   test('design is priced by the design day, by pack and only on the add-ons that need it', () => {
     /* A designer inside the build week would be charged on a migration as much
        as on a template set. Design is its own line: S adapts the UI to the

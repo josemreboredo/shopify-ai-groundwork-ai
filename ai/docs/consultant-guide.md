@@ -2535,11 +2535,12 @@ If native is not enough: [Product reviews](https://apps.shopify.com/categories/m
 ### 7.5 Discounts & coupons
 
 **Q7.5.1** — Which discount types are used? *(recommended · client)*
+Drives: gate Custom promotions
 
 **Why it matters.** Each discount type is one of three things: an admin setting, a native combination, or a discount function someone writes and maintains. Listing the types is what tells us which — and that is the whole difference in cost.
 
 **Q7.5.2** — Which discounts must combine on one order? *(required · client)*
-Drives: rule 11.1 (STOP)
+Drives: gate Custom promotions · rule 11.1 (STOP)
 
 **Why it matters.** Stacking is where the promotion plan meets platform limits. Shopify combines product, order and shipping discounts natively; several product discounts on the same item is a Plus feature, and anything outside the native rules needs a discount function.
 
@@ -2554,10 +2555,10 @@ Sources: https://help.shopify.com/en/manual/discounts/discount-combinations
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Discount combinations | Basic | Up to 5 codes + 1 shipping code; 25 automatic discounts | https://help.shopify.com/en/manual/discounts/discount-combinations |
-| Several product discounts on the same line item | Shopify Plus | Plan requirement to recheck after Spring '26 | https://help.shopify.com/en/manual/discounts/discount-combinations |
+| Discount combinations | Basic | Up to 5 product or order codes + 1 shipping code on an order; 25 active automatic discounts, app discounts included | https://help.shopify.com/en/manual/discounts/discount-combinations |
+| Several product discounts on the same line item | Shopify Plus | Shopify Plus only | https://help.shopify.com/en/manual/discounts/discount-combinations |
 Build with: Discount Function
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q7.5.3** — Are coupon codes single-use, multi-use, or bulk-generated? *(optional · client)*
 

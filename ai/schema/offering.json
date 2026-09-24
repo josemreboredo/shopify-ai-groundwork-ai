@@ -1125,6 +1125,28 @@
       }
     },
     {
+      "id": "custom_promotions",
+      "label": "Custom promotions",
+      "condition": "A promotion Shopify’s own discounts cannot express — tiered or volume discounts for consumers (standard), or stacking rules of the business’s own across discounts (advanced) — built as a discount Function and owned as code. Codes, automatic discounts, buy X get Y, free shipping, scheduled sales and the native combinations are in every pack and do not fire this. A custom app containing a Function needs Shopify Plus; below Plus the Function comes in a public App Store app.",
+      "inputs": [
+        "/promotions/discount_types",
+        "/promotions/stacking"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "advanced"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/discounts/discount-combinations",
+        "https://shopify.dev/docs/apps/build/functions"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "help.shopify.com"
+      }
+    },
+    {
       "id": "analytics_consent",
       "label": "Analytics and consent",
       "condition": "Measurement beyond what every store already has. Shopify Analytics — the pre-built reports, the dashboard and the ShopifyQL query editor — is on every plan, with more reports the higher the plan, and GA4 connects through the Google & YouTube channel with its ecommerce events tracked automatically. The gate opens past that: a third destination, a tag manager, custom events, server-side tagging or a third-party consent platform",
@@ -1611,6 +1633,42 @@
       "design_days": {
         "min": 2,
         "max": 3
+      }
+    },
+    {
+      "id": "+Promotions (standard)",
+      "gate": "custom_promotions",
+      "tier": "standard",
+      "description": "One rule Shopify’s own discounts cannot express — tiered or volume discounts for consumers — as a discount Function with its rule table, unit tests on cart fixtures, thresholds a marketer changes without a deploy, and the storefront messaging that explains it.",
+      "effort_weeks": {
+        "min": 1,
+        "max": 1.5
+      },
+      "price_add": {
+        "min": 6300,
+        "max": 9450
+      },
+      "design_days": {
+        "min": 1,
+        "max": 1
+      }
+    },
+    {
+      "id": "+Promotions (advanced)",
+      "gate": "custom_promotions",
+      "tier": "advanced",
+      "description": "Stacking rules of the business’s own across discounts: every rule written down against what the native combinations already cover, the remainder as a discount Function with its tests, configuration a marketer owns, and the cart and product-page messaging for each promotion.",
+      "effort_weeks": {
+        "min": 2,
+        "max": 3
+      },
+      "price_add": {
+        "min": 12600,
+        "max": 18900
+      },
+      "design_days": {
+        "min": 1,
+        "max": 2
       }
     },
     {
@@ -2705,6 +2763,23 @@
         }
       },
       {
+        "id": "promotions",
+        "what": "Promotions",
+        "gate": "custom_promotions",
+        "group": "Checkout and payments",
+        "shopify_limit": "Up to 5 product or order discount codes and 1 shipping code on an order; 25 active automatic discounts, app discounts included; several product discounts on the same item only on Shopify Plus",
+        "S": "Shopify’s own discounts: codes and automatic, amount or percentage off, buy X get Y, free shipping, scheduled sales, native combinations",
+        "M": "Shopify’s own discounts: codes and automatic, amount or percentage off, buy X get Y, free shipping, scheduled sales, native combinations",
+        "L": "Shopify’s own discounts: codes and automatic, amount or percentage off, buy X get Y, free shipping, scheduled sales, native combinations",
+        "note": "Set up in the admin with one example of each type and handed over, so merchandising runs promotions unaided. A rule Shopify’s own discounts cannot express is a discount Function — the custom promotions add-on.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Custom promotions"
+      },
+      {
         "id": "fulfilment",
         "what": "Fulfilment locations",
         "gate": null,
@@ -3060,6 +3135,18 @@
           "L"
         ],
         "note": "Blocks on the Thank you and Order status pages are already in Ecommerce Scale and Ecommerce Flagship. Inside the checkout steps is Shopify Plus only (rule 11.1), and a fully custom checkout UI is not sold at all (rule 11.6)."
+      },
+      {
+        "id": "custom_promotions",
+        "gate": "custom_promotions",
+        "what": "Custom promotions",
+        "description": "A promotion Shopify’s own discounts cannot express, built as a discount Function the client owns: tiered or volume discounts for consumers, or stacking rules of the business’s own across discounts. Shopify’s own discounts are in every pack.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "A custom app containing a Function needs Shopify Plus; below Plus the Function comes in a public App Store app, which runs on every plan. Several product discounts on the same item is Shopify Plus only, and a setting there rather than a Function."
       },
       {
         "id": "analytics_consent",

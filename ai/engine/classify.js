@@ -610,6 +610,32 @@ const GATE_EVALUATORS = {
    * server-side or a consent platform arrives — the reconciliation that proves
    * the numbers still agree with Shopify's.
    */
+  /*
+   * Promotions past Shopify's own discounts.
+   *
+   * Codes, automatic discounts, buy X get Y, free shipping, scheduled sales and
+   * the native combinations are an admin setting in every pack. A tiered or
+   * volume discount for consumers, or stacking rules of the business's own, is
+   * a discount Function — code that touches every order's price, tested and
+   * owned. Wholesale-only volume pricing is B2B quantity rules, not this.
+   */
+  custom_promotions: (doc) => {
+    const p = doc.promotions ?? {};
+    const types = (p.discount_types ?? []).filter((t) => t !== 'none' && t !== 'not_sure');
+    const wholesaleOnly = doc.meta?.client?.business_model === 'b2b';
+    const tiered = types.includes('volume_tiered') && !wholesaleOnly;
+    const custom = p.stacking === 'custom_logic_function';
+    const active = tiered || custom;
+    const tier = active ? (custom ? 'advanced' : 'standard') : null;
+    return {
+      active,
+      ...(tier ? { tier } : {}),
+      evidence: active
+        ? `Promotions past Shopify’s own discounts: ${[custom ? 'stacking rules of the business’s own' : null, tiered ? 'tiered or volume discounts for consumers' : null].filter(Boolean).join(', ')}`
+        : `Shopify’s own discounts${types.length ? `: ${types.join(', ').replace(/_/g, ' ')}` : ''} — in every pack`,
+    };
+  },
+
   analytics_consent: (doc) => {
     const a = doc.marketing?.analytics ?? {};
     const platforms = a.platforms ?? [];

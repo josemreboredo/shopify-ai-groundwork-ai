@@ -501,6 +501,9 @@
             "checkout_extensibility": {
               "$ref": "#/$defs/gate"
             },
+            "custom_promotions": {
+              "$ref": "#/$defs/gate"
+            },
             "analytics_consent": {
               "$ref": "#/$defs/gate"
             },
@@ -540,6 +543,8 @@
               "+Migration (light)",
               "+Migration (medium)",
               "+MultiCurrency",
+              "+Promotions (advanced)",
+              "+Promotions (standard)",
               "+Retail",
               "+SEO (large)",
               "+SEO (standard)",
@@ -589,6 +594,7 @@
                   "seo_continuity",
                   "subscriptions",
                   "checkout_extensibility",
+                  "custom_promotions",
                   "analytics_consent",
                   "post_launch_support"
                 ]

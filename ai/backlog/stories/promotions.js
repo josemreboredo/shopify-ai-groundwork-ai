@@ -39,7 +39,7 @@ export default [
   {
     key: 'LWC-PRM-002',
     epic: 'promotions',
-    title: 'Build a discount function for advanced stacking rules',
+    title: (doc) => (doc.promotions?.stacking === 'custom_logic_function' ? 'Build a discount function for advanced stacking rules' : 'Build a discount function for tiered discounts'),
     user_story: 'As a marketer, I want promotions to stack according to our rules, so that offers work as advertised without margin leaks.',
     acceptance_criteria: [
       'Given the documented stacking rules, when the discount function runs, then every rule has unit tests with passing and failing cart fixtures',
@@ -52,8 +52,9 @@ export default [
     depends_on: ['LWC-PRM-001', 'LWC-FND-002'],
     spec_refs: ['/promotions/stacking', '/promotions/discount_types'],
     security_flags: ['secrets'],
-    applies: (doc) => doc.promotions?.stacking === 'custom_logic_function',
-    agent_prompt: (doc) => `Write down every stacking rule for ${list(types(doc))} and mark which native combinations already cover. For the remainder, scaffold a Discount Function (Shopify Functions discount API, latest stable version) in the store's custom app with Shopify CLI, read configuration from the discount's metafield, add input-query fixtures and unit tests, and expose a simple admin UI extension or metafield editor for marketers. Deploy to the build store only after consultant review of the rule table.`,
+    gates: ['custom_promotions'],
+    applies: (doc) => doc.offer?.scope_gates?.custom_promotions?.active === true,
+    agent_prompt: (doc) => `Write down every stacking rule for ${list(types(doc))} and mark which native combinations already cover. For the remainder, scaffold a Discount Function (Shopify Functions discount API, latest stable version) with Shopify CLI — in the store's custom app on Shopify Plus, or delivered through a public App Store app below Plus, since only Plus stores can run custom apps that contain Functions — read configuration from the discount's metafield, add input-query fixtures and unit tests, and expose a simple admin UI extension or metafield editor for marketers. Deploy to the build store only after consultant review of the rule table.`,
   },
   {
     key: 'LWC-PRM-003',
