@@ -198,12 +198,30 @@ const GATE_EVALUATORS = {
      Shopify theme. The way a large, global set-up keeps its theme and still
      gets the pages it needs; a full template set designs every template and
      carries these (see `carried` below). */
+  /* The storefront built headless on Hydrogen instead of a Liquid theme. It
+     used to have no weeks of its own, so a headless quote was floored at L's
+     band; it is an add-on on L now, priced like any other gate. Content or a
+     front end outside Shopify is not this: that is rule 11.26 and Merkle Arc. */
+  hydrogen: (doc) => {
+    const required = doc.design?.headless_required === true;
+    return {
+      active: required,
+      evidence: required
+        ? 'A headless storefront on Hydrogen: an owned front end on Oxygen, built instead of a theme'
+        : 'A Liquid theme; no headless storefront',
+    };
+  },
+
   custom_templates: (doc) => {
     const n = doc.design?.custom_templates ?? 0;
+    // A headless storefront has no theme: every template is part of it.
+    const headless = doc.design?.headless_required === true;
     return {
-      active: n > 0,
+      active: n > 0 && !headless,
       evidence: n > 0
-        ? `${n} page template${n === 1 ? '' : 's'} designed and built new on a Shopify theme`
+        ? headless
+          ? 'A headless storefront has no theme: every template is built as part of it'
+          : `${n} page template${n === 1 ? '' : 's'} designed and built new on a Shopify theme`
         : 'No page template beyond the theme’s own',
     };
   },
@@ -418,13 +436,18 @@ const GATE_EVALUATORS = {
     const overSectionLine = sections > BESPOKE_SECTIONS_INCLUDED;
     // Bespoke is the full template set, and a mapped design system is the
     // signal that it is meant to be built as theme blocks rather than traced.
+    // A headless storefront has no theme to configure: every template is
+    // designed and built, which is the full set whatever the Figma file holds.
+    const headless = d.headless_required === true;
     const bespoke = completeness === 'all_templates'
       || (d.custom_design === true && d.figma?.design_system === true)
-      || overSectionLine;
+      || overSectionLine
+      || headless;
     const extended = completeness === 'key_screens' || d.custom_design === true || sections > 0;
     const tier = bespoke ? 'bespoke' : extended ? 'extended' : null;
     const why = bespoke
-      ? completeness === 'all_templates' ? 'a full template set in Figma'
+      ? headless ? 'a headless storefront, which designs and builds every template'
+        : completeness === 'all_templates' ? 'a full template set in Figma'
         : overSectionLine ? `${sections} bespoke sections, past the ${BESPOKE_SECTIONS_INCLUDED} an offer builds`
           : 'bespoke design with a design system'
       : extended
@@ -891,14 +914,11 @@ export function classifyOffer(doc) {
    * same one with a store more. The packs remain what the conversation opens
    * with; what a client is quoted is what the answers add up to.
    *
-   * A headless storefront is the one exception. Hydrogen has no modifier of its
-   * own yet, so its work cannot be summed like a gate; it is quoted at no less
-   * than its own floor. That floor was L's band until L came to hold nine
-   * markets, which a headless build does not get, so it is a value of its own
-   * rather than the band.
+   * A headless storefront was the one exception, floored at L's band while
+   * Hydrogen had no weeks of its own. It is an add-on on L now (the hydrogen
+   * gate), so every quote is the scope's sum and none is open-ended.
    */
   const S = offering.offers.S;
-  const L = offering.offers.L;
   /*
    * Design, by the design day.
    *
@@ -914,6 +934,11 @@ export function classifyOffer(doc) {
     min: a.min + (m.design_days?.min ?? 0), max: a.max + (m.design_days?.max ?? 0),
   }), { min: 0, max: 0 });
   const designDays = { min: design.foundation_days.min + gateDesign.min, max: design.foundation_days.max + gateDesign.max };
+  // The design system architect's days, on a storefront whose components are owned.
+  const systemDays = priced.reduce((a, { modifier: m }) => ({
+    min: a.min + (m.system_days?.min ?? 0), max: a.max + (m.system_days?.max ?? 0),
+  }), { min: 0, max: 0 });
+  const systemDay = design.system_architect.day_price;
   /*
    * Hypercare, by pack.
    *
@@ -941,8 +966,8 @@ export function classifyOffer(doc) {
   const foundation = hypercarePrice(S.hypercare_days);
   const scope = {
     price: {
-      min: S.price_band.min - foundation + gateTotals.price.min + gateDesign.min * design.day_price,
-      max: S.price_band.max - foundation + gateTotals.price.max + gateDesign.max * design.day_price,
+      min: S.price_band.min - foundation + gateTotals.price.min + gateDesign.min * design.day_price + systemDays.min * systemDay,
+      max: S.price_band.max - foundation + gateTotals.price.max + gateDesign.max * design.day_price + systemDays.max * systemDay,
     },
     weeks: { min: S.duration_weeks.min + gateTotals.weeks.min, max: S.duration_weeks.max + gateTotals.weeks.max },
   };
@@ -962,13 +987,7 @@ export function classifyOffer(doc) {
     const add = hypercarePrice(hypercareFor(code)) + (extraApps(code) + perStore) * offering.pricing.app_weeks * offering.pricing.weekly_rate;
     const priced = { min: scope.price.min + add, max: scope.price.max + add };
     const weeks = { min: scope.weeks.min + appWeeks, max: scope.weeks.max + appWeeks };
-    const floor = L.headless_floor;
-    return headless
-      ? {
-          price: { min: Math.max(priced.min, floor.price.min), max: Math.max(priced.max, floor.price.max) },
-          weeks: { min: Math.max(weeks.min, floor.weeks.min), max: Math.max(weeks.max, floor.weeks.max) },
-        }
-      : { price: priced, weeks };
+    return { price: priced, weeks };
   };
 
   const { code, addons } = packFor(priced, quoteFor, headless);
@@ -982,7 +1001,6 @@ export function classifyOffer(doc) {
         ? `${offer.name} plus ${addonLabels.join('; ')}`
         : `${offer.name} as packaged: ${activeGates.length ? `${activeGates.map((g) => g.label).join(', ')} — all inside what it includes` : 'no scope gates active'}`,
     `Quoted from the Foundation base plus each scope gate at its own weeks and price, with ${hypercareFor(code)} working days of hypercare after go-live${extraApps(code) ? ` and ${extraApps(code)} third-party app${extraApps(code) === 1 ? '' : 's'} past the ${offer.apps_included} it includes` : ''}${perStore ? `, each app set up again in every further store (${perStore})` : ''}`,
-    ...(headless ? [`and at no less than the floor a headless ${L.name} starts from, because Hydrogen has no modifier of its own yet`] : []),
   ].join('. ').replace(/\. and /, ' and ');
 
   /*
@@ -1009,13 +1027,13 @@ export function classifyOffer(doc) {
       min: toThousand(quote.price.min),
       max: toThousand(quote.price.max),
       currency: offering.currency,
-      // Open-ended only where the quote is a floor rather than a sum.
-      open_ended: headless,
+      // Never open-ended: every quote is the scope's sum, a headless one included.
+      open_ended: false,
     },
     duration_weeks: { min: toHalfWeek(quote.weeks.min), max: toHalfWeek(quote.weeks.max) },
     hypercare: { days: hypercareFor(code), included_days: offer.hypercare_days },
     // Design days: the Foundation brand adaptation plus every gate that needs design.
-    design: { days: designDays },
+    design: { days: designDays, ...(systemDays.max > 0 ? { system_days: systemDays } : {}) },
     apps: { count: apps, included: offer.apps_included, extra: extraApps(code), in_further_stores: perStore },
     // What the scope adds up to before any floor, kept so a reader can check
     // the quote against the scope rather than take it.

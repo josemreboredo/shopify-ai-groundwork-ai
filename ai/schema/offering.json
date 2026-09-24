@@ -51,7 +51,12 @@
         "min": 3,
         "max": 5
       },
-      "$comment": "Design is not part of the build week: most add-ons need none, so a designer inside the team would be charged on migrations, integrations and hypercare. It is priced by the design day instead — the Foundation brand adaptation in every quote, and the design days each design add-on carries on its modifier. day_price is what a design day is quoted at, in CHF, like weekly_rate for the build week. The packs come to S 3–5, M 8–12 and L 20–30 design days: S adapts the UI to the brand identity, M adds the custom templates, L designs the custom theme."
+      "system_architect": {
+        "role": "Design system architect",
+        "day_price": 750,
+        "does": "Creates the design system in Figma and tokenises it, alongside the experience designer, for a storefront whose components are owned rather than a theme’s"
+      },
+      "$comment": "Design is not part of the build week: most add-ons need none, so a designer inside the team would be charged on migrations, integrations and hypercare. It is priced by the design day instead — the Foundation brand adaptation in every quote, and the design days each design add-on carries on its modifier. day_price is what a design day is quoted at, in CHF, like weekly_rate for the build week. The packs come to S 3–5, M 8–12 and L 20–30 design days: S adapts the UI to the brand identity, M adds the custom templates, L designs the custom theme. A Hydrogen storefront adds a design system architect alongside the experience designer: the design system created in Figma and tokenised for owned components, priced by the design day on the Hydrogen modifier (system_days)."
     }
   },
   "estimate": {
@@ -507,13 +512,13 @@
       "name": "Ecommerce Flagship",
       "for_whom": "A brand already selling professionally across regions — often on an enterprise platform — that needs a store per region, a storefront built out template by template, and measurement that stands up. The move to Shopify has to land on a store that performs at least as well, and is measured to prove it; the replatform itself is quoted beside the pack, by the platform it comes from.",
       "delivery_track": "liquid",
-      "build_label": "Custom Liquid · Hydrogen",
+      "build_label": "Custom Liquid · Hydrogen add-on",
       "triggered_by": "A headless storefront, or an estimate from the Flagship floor — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 106000,
         "max": 214000,
-        "open_ended": true
+        "open_ended": false
       },
       "duration_weeks": {
         "min": 13,
@@ -521,17 +526,6 @@
       },
       "hypercare_days": 15,
       "apps_included": 10,
-      "headless_floor": {
-        "price": {
-          "min": 106000,
-          "max": 178000
-        },
-        "weeks": {
-          "min": 13,
-          "max": 24
-        },
-        "$comment": "What a headless storefront is quoted at the least. Hydrogen has no modifier of its own yet, so its work cannot be summed like a gate and the quote is floored instead. It was L’s own band until L came to hold nine markets across its three stores (2026-09-23); a headless build does not get those markets, so it keeps the floor it had rather than paying for them. It carries L’s design too (2026-09-24): a headless build designs the custom theme like any L."
-      },
       "phases": [
         {
           "id": "setup",
@@ -680,7 +674,7 @@
       ],
       "tracks": {
         "liquid": "One Shopify theme, built out: the design system as sections and blocks over one token layer, every template against it, and the merchant still able to rearrange them. The default, and the right answer more often than it is chosen.",
-        "hydrogen": "Not an extra on top — the same weeks spent differently. There is no theme to select, so the route structure, the rendering strategy and the caching model are the decision instead, and the component layer is owned rather than configured. Content stays in Shopify: metaobjects and metafields through the Storefront API, which is what keeps this a Shopify build. Content or a front end outside Shopify is Merkle Arc."
+        "hydrogen": "An add-on on this offer, not the same weeks spent differently: there is no theme to select, so the route structure, the rendering strategy and the caching model are built instead, the component layer is owned rather than configured, and a design system architect creates the design system in Figma and tokenises it. Content stays in Shopify: metaobjects and metafields through the Storefront API, which is what keeps this a Shopify build. Content or a front end outside Shopify is Merkle Arc."
       },
       "storefront": {
         "templates": [
@@ -908,6 +902,23 @@
       "modifier": "+Templates",
       "sources": [
         "https://shopify.dev/docs/storefronts/themes/architecture/templates"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "shopify.dev"
+      }
+    },
+    {
+      "id": "hydrogen",
+      "label": "Headless storefront on Hydrogen",
+      "condition": "A headless storefront is required and it is still a Shopify build: Hydrogen on the Storefront API, hosted on Oxygen, with content in Shopify. It is built instead of a Liquid theme and needs every template designed, so it carries the full template set with it; the design system is created in Figma and tokenised by a design system architect. Only Ecommerce Flagship builds one. Content or a front end outside Shopify is Merkle Arc (rule 11.26).",
+      "inputs": [
+        "/design/headless_required",
+        "/design/headless/framework"
+      ],
+      "modifier": "+Hydrogen",
+      "sources": [
+        "https://shopify.dev/docs/storefronts/headless/hydrogen/fundamentals"
       ],
       "verified": {
         "on": "2026-09-24",
@@ -1396,6 +1407,23 @@
       "max_units": {
         "value": 8,
         "why": "Past eight new templates the storefront is the full template set in all but name, and the bespoke tier of the storefront design gate prices it as one"
+      }
+    },
+    {
+      "id": "+Hydrogen",
+      "gate": "hydrogen",
+      "description": "The storefront built headless on Hydrogen instead of a Liquid theme: the route structure, the rendering and caching model, an owned component library over the design system’s tokens, the Storefront API queries per template, locale routing per market, and Oxygen environments with a deployment pipeline. On top of the storefront design, which it needs in full.",
+      "effort_weeks": {
+        "min": 4,
+        "max": 6
+      },
+      "price_add": {
+        "min": 25200,
+        "max": 37800
+      },
+      "system_days": {
+        "min": 10,
+        "max": 15
       }
     },
     {
@@ -2948,6 +2976,16 @@
           "L"
         ],
         "note": "A custom theme includes it: the full template set designs and builds every template, so this is priced only where the storefront stays on a Shopify theme — in L, instead of the custom theme. Past eight templates the full template set is the better buy. Shopify allows 1,000 JSON templates per theme."
+      },
+      {
+        "id": "hydrogen",
+        "gate": "hydrogen",
+        "what": "A headless storefront on Hydrogen",
+        "description": "The storefront built as an owned Hydrogen front end on Oxygen instead of a Liquid theme, with the design system created in Figma and tokenised by a design system architect alongside the experience designer. Content stays in Shopify, in metaobjects and metafields.",
+        "available_in": [
+          "L"
+        ],
+        "note": "Only Ecommerce Flagship builds one: a headless storefront names the engagement L. It needs every template designed, so it brings the full template set with it. Content or a front end outside Shopify is Merkle Arc (rule 11.26)."
       },
       {
         "id": "sku_complexity",

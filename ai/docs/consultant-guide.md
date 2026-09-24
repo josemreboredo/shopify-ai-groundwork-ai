@@ -3021,7 +3021,7 @@ Sources: https://shopify.dev/docs/storefronts/themes/architecture/templates
 ### 9.2 Storefront
 
 **Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required · client)*
-Drives: L trigger Headless storefront · rule 11.25 (FLAG)
+Drives: L trigger Headless storefront · gate Headless storefront on Hydrogen · rule 11.25 (FLAG)
 
 **Why it matters.** The largest architectural decision in the questionnaire. The commerce engine is identical either way; what changes is who owns the presentation layer. Headless removes the theme editor, so marketing can no longer restructure pages without a release.
 

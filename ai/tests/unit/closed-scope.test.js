@@ -331,17 +331,27 @@ describe('the closed scope each pack sells', () => {
     assert.equal(classifyOffer(engagementAt(limits.L)).addons.length, 0, 'and every one of them is inside L');
   });
 
-  test('a headless build keeps its own floor, whatever L comes to hold', () => {
-    /* Hydrogen has no modifier, so a headless quote is floored. The floor was
-       L's band, and L's band grew with nine markets a headless build does not
-       get — which would have raised every headless quote for nothing. */
-    const floor = offering.offers.L.headless_floor;
+  test('Hydrogen is an add-on on L, priced by its weeks and the design system days', () => {
+    /* It had no weeks of its own, so a headless quote was floored at L's band
+       and every L band carried a "+". It is a gate now: the owned front end in
+       build weeks, the design system in a design system architect's days. */
+    const m = offering.modifiers.find((x) => x.gate === 'hydrogen');
+    const l = classifyOffer(engagementAt(limits.L));
+    const h = classifyOffer(engagementAt({ ...limits.L, headless: true }));
+    assert.equal(h.code, 'L');
+    assert.equal(h.delivery_track, 'hydrogen');
+    assert.deepEqual(h.addons.map((a) => a.gate), ['hydrogen'], 'L plus the Hydrogen add-on');
+    assert.equal(h.scope_effort_weeks.max - l.scope_effort_weeks.max, m.effort_weeks.max);
+    assert.deepEqual(h.design.system_days, m.system_days);
+    const day = offering.pricing.design.system_architect.day_price;
+    assert.equal(h.price_band.max - l.price_band.max, Math.round((m.price_add.max + m.system_days.max * day) / 1000) * 1000);
+    assert.equal(h.price_band.open_ended, false, 'no quote is open-ended any more');
+    assert.equal(offering.offers.L.price_band.open_ended, false, 'nor is L’s band');
+    // Only L sells it, and a headless storefront designs every template.
+    assert.deepEqual(addons.find((a) => a.gate === 'hydrogen').available_in, ['L']);
     const bare = classifyOffer(engagementAt({ ...limits.S, headless: true }));
     assert.equal(bare.code, 'L');
-    assert.deepEqual([bare.price_band.min, bare.price_band.max], [floor.price.min, floor.price.max]);
-    assert.deepEqual(bare.duration_weeks, floor.weeks);
-    assert.equal(floor.price.min, offering.offers.L.price_band.min, 'it starts where L starts');
-    assert.ok(floor.price.max < offering.offers.L.price_band.max, 'and does not charge for L’s markets');
+    assert.equal(bare.scope_gates.storefront_design.tier, 'bespoke');
   });
 
   test('a row’s note never states a different number of days than its cells', () => {
@@ -518,6 +528,8 @@ describe('the quote is the scope, priced one way', () => {
     assert.deepEqual(five.design.days, { min: none.design.days.min + 5 * m.per_template_design_days.min, max: none.design.days.max + 5 * m.per_template_design_days.max });
     const custom = classifyOffer(engagementAt({ ...limits.L, custom_templates: 5 }));
     assert.deepEqual(custom.price_band, classifyOffer(engagementAt(limits.L)).price_band, 'the custom theme designs every template already');
+    const headless = classifyOffer(engagementAt({ ...limits.L, headless: true, custom_templates: 5 }));
+    assert.equal(headless.scope_gates.custom_templates.active, false, 'a headless storefront has no theme to add templates to');
   });
 
   test('design is priced by the design day, by pack and only on the add-ons that need it', () => {

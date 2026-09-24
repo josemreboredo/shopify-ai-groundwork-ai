@@ -122,17 +122,29 @@ describe('the add-on services, pack by pack', () => {
   test('every price is its weeks at the one weekly rate, and its design days at the design day', () => {
     const rate = offering.pricing.weekly_rate;
     const day = offering.pricing.design.day_price;
+    const systemDay = offering.pricing.design.system_architect.day_price;
     for (const a of all(priced)) {
       for (const r of a.rows) {
         for (const code of CODES) {
           const c = r.cells[code];
           if (c.state !== 'priced' || !c.weeks) continue;
           const d = c.design_days ?? { min: 0, max: 0 };
-          assert.equal(c.price.min, Math.round(c.weeks.min * rate + d.min * day), `${r.id} on ${code}`);
-          assert.equal(c.price.max, Math.round(c.weeks.max * rate + d.max * day), `${r.id} on ${code}`);
+          const sd = c.system_days ?? { min: 0, max: 0 };
+          assert.equal(c.price.min, Math.round(c.weeks.min * rate + d.min * day + sd.min * systemDay), `${r.id} on ${code}`);
+          assert.equal(c.price.max, Math.round(c.weeks.max * rate + d.max * day + sd.max * systemDay), `${r.id} on ${code}`);
         }
       }
     }
+  });
+
+  test('Hydrogen is sold in L only, with the design system architect’s days', () => {
+    assert.equal(cell(view, 'hydrogen', 'S').state, 'not_sold');
+    assert.equal(cell(view, 'hydrogen', 'M').state, 'not_sold');
+    const l = cell(priced, 'hydrogen', 'L');
+    const m = offering.modifiers.find((x) => x.gate === 'hydrogen');
+    assert.deepEqual(l.weeks, m.effort_weeks);
+    assert.deepEqual(l.system_days, m.system_days);
+    assert.equal(l.design_days, undefined, 'L designs every template already');
   });
 
   test('hypercare and apps: what each pack includes, and what one more costs', () => {

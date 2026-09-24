@@ -26,7 +26,7 @@ describe('how we estimate', () => {
 
   test('every worked example is the engine’s own quote, and its lines add up to it', () => {
     const limits = offering.closed_scope.limits;
-    const cases = [limits.S, limits.M, limits.L, { ...limits.M, stores: 2 }];
+    const cases = [limits.S, limits.M, limits.L, { ...limits.M, stores: 2 }, { ...limits.L, headless: true }];
     view.examples.forEach((x, i) => {
       const quote = classifyOffer(engagementAt(cases[i]));
       assert.equal(x.code, quote.code);

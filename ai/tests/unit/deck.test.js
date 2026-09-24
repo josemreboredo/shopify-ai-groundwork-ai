@@ -96,9 +96,12 @@ describe('client deck XML', () => {
     assert.match(xml, new RegExp(`<price-band currency="CHF" from="${doc.offer.price_band.min}" to="${doc.offer.price_band.max}"/>`));
     assert.ok(doc.offer.price_band.max < offering.offers.L.price_band.max, 'not a pack’s band');
 
-    // Only a headless storefront is quoted as a floor, and says so.
+    // A headless storefront is the scope's sum like any other since Hydrogen
+    // became an add-on: no floor, and nothing open-ended.
     const headless = recompute({ ...load('foundation-minimal.json'), design: { headless_required: true } });
-    assert.match(buildDeckXml(headless, backlogFor(headless)).xml, new RegExp(`<price-band currency="CHF" from="${offering.offers.L.price_band.min}" open-ended="true"/>`));
+    const h = headless.offer.price_band;
+    assert.equal(headless.offer.code, 'L');
+    assert.match(buildDeckXml(headless, backlogFor(headless)).xml, new RegExp(`<price-band currency="CHF" from="${h.min}" to="${h.max}"/>`));
   });
 
   test('client sections never contain modifiers, price adds, effort, story points or commercial warnings', () => {

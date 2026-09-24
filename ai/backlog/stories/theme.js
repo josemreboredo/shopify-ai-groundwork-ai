@@ -214,6 +214,7 @@ export default [
     owner: 'developer',
     depends_on: ['LWC-FND-002'],
     spec_refs: ['/design/headless_required', '/design/headless/reasons', '/design/headless/hosting', '/design/headless/content_source'],
+    gates: ['hydrogen'],
     applies: (doc) => !isLiquidTrack(doc),
     agent_prompt: (doc) => `Design the Hydrogen route structure for ${storeName(doc)} against the agreed template set. Decide and document the rendering strategy and cache policy per route, keeping buyer-specific routes uncached because their queries are personalised. Keep Shopify's /products/:handle pattern, or provide server-side 3XX redirects from it. Write the decision record: why headless, what it rules out, what it costs to keep, and what reverting would take.`,
   },
@@ -234,6 +235,7 @@ export default [
     owner: 'developer',
     depends_on: ['LWC-THM-010'],
     spec_refs: ['/design/headless/hosting', '/shopify/target_plan', '/compliance/consent_approach'],
+    gates: ['hydrogen'],
     applies: (doc) => !isLiquidTrack(doc),
     agent_prompt: (doc) => `Set up Oxygen environments (${doc.design?.headless?.hosting ?? 'confirm hosting first'}): production on the default branch, preview for the rest, and custom environments where the workstreams need them. Below Plus only one environment can be public, so agree explicitly who reviews where. Attach the custom domain before testing consent \u2014 Hydrogen's cookie banner does not work on default Oxygen URLs. Rehearse and time a rollback. Record who may deploy to production.`,
   },
@@ -302,8 +304,30 @@ export default [
     depends_on: ['LWC-THM-001'],
     spec_refs: ['/design/custom_templates'],
     gates: ['custom_templates'],
-    applies: (doc) => (doc.design?.custom_templates ?? 0) > 0 && doc.offer?.scope_gates?.storefront_design?.tier !== 'bespoke',
-    agent_prompt: (doc) => `Design and build ${doc.design?.custom_templates ?? 1} custom page template${(doc.design?.custom_templates ?? 1) === 1 ? '' : 's'} on the Shopify theme for ${storeName(doc)}. Each is an alternate JSON template of the theme — a template of its own for the products, collections or pages that need it — built from the theme's tokens, sections and blocks, so the merchant can still rearrange it. Shopify allows 1,000 JSON templates per theme. If the list grows past eight, stop and raise it: at that size the storefront is a full template set and is priced as one.`,
+    applies: (doc) => (doc.design?.custom_templates ?? 0) > 0 && isLiquidTrack(doc),
+    agent_prompt: (doc) => `Design and build ${doc.design?.custom_templates ?? 1} custom page template${(doc.design?.custom_templates ?? 1) === 1 ? '' : 's'} on the Shopify theme for ${storeName(doc)}. Each is an alternate JSON template of the theme — a template of its own for the products, collections or pages that need it — built from the theme's tokens, sections and blocks, so the merchant can still rearrange it. Shopify allows 1,000 JSON templates per theme. ${doc.offer?.scope_gates?.storefront_design?.tier === 'bespoke' ? 'They are part of the full template set, so they are designed with it rather than priced on their own.' : 'If the list grows past eight, stop and raise it: at that size the storefront is a full template set and is priced as one.'}`,
+  },
+  {
+    /* A Hydrogen storefront owns its components, so the design system is not a
+       theme's settings: it is created in Figma and tokenised, by a design
+       system architect working alongside the experience designer. */
+    key: 'LWC-THM-018',
+    epic: 'theme',
+    title: 'Create the design system in Figma and tokenise it for the Hydrogen components',
+    user_story: 'As the team building a headless storefront, I want one design system in Figma with its tokens exported, so that every component is built from the same values the design was drawn with',
+    acceptance_criteria: [
+      'Given the approved storefront design, when the design system is created, then colour, type, spacing, radius and motion are Figma variables and every component uses them rather than raw values',
+      'Given the variables, when they are exported, then the tokens land in the repository in one format the component library reads, and a change in Figma reaches the code through that export only',
+      'Given the component library, when it is reviewed against the design system, then each component names the tokens it uses and none introduces a value of its own',
+    ],
+    gaia_tier: 'T3',
+    points: 8,
+    owner: 'designer',
+    depends_on: ['LWC-THM-010'],
+    spec_refs: ['/design/headless_required', '/design/figma/design_system'],
+    gates: ['hydrogen'],
+    applies: (doc) => !isLiquidTrack(doc),
+    agent_prompt: (doc) => `Create the design system for ${storeName(doc)}'s Hydrogen storefront in Figma, alongside the experience designer: colour, type, spacing, radius and motion as Figma variables, every component built from them. Export the variables as tokens into the repository in one format the component library reads, so a design change reaches the code only through that export. Content stays in Shopify metaobjects; if the brief puts it in an external CMS, stop — that is Merkle Arc (rule 11.26).`,
   },
   {
     key: 'LWC-THM-013',

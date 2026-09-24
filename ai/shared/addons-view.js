@@ -80,6 +80,7 @@ export const ASKS = {
     limits: (l) => ({ ...(l.storefront === 'all_templates' ? { ...l, storefront: 'brand_only' } : l), custom_templates: (l.custom_templates ?? 0) + 1 }),
     instead: 'the custom theme',
   },
+  hydrogen: { limits: (l) => ({ ...l, headless: true }) },
   sku_complexity: {
     tiers: {
       standard: { label: '500 to 4,999 SKUs with complex variants, attributes or bundles', limits: (l) => ({ ...l, sku_count: Math.max(l.sku_count, 2000), variant_options: Math.max(l.variant_options ?? 1, 2) }) },
@@ -165,19 +166,28 @@ function cellFor(addon, ask, code, pricing) {
   const weeks = { min: exact(more.min - base.min), max: exact(more.max - base.max) };
   // Design is priced by the design day, apart from the build week.
   const design = { min: after.design.days.min - before.design.days.min, max: after.design.days.max - before.design.days.max };
-  if (weeks.max <= 0 && design.max <= 0) {
+  const sys = (q) => q.design.system_days ?? { min: 0, max: 0 };
+  const system = { min: sys(after).min - sys(before).min, max: sys(after).max - sys(before).max };
+  if (weeks.max <= 0 && design.max <= 0 && system.max <= 0) {
     const promised = classifyOffer(engagementAt(limits)).scope_gates[addon.gate];
     return promised?.active ? { state: 'included' } : { state: 'carried', by: ask.carried_by ?? null };
   }
   const rate = offering.pricing.weekly_rate;
   const day = offering.pricing.design.day_price;
+  const systemDay = offering.pricing.design.system_architect.day_price;
   const reshaped = JSON.stringify(build(ask.base, limits)) !== JSON.stringify(engagementAt(limits));
   const needsMore = ask.needs && reshaped;
   return {
     state: 'priced',
     weeks,
     ...(design.max > 0 ? { design_days: design } : {}),
-    ...(pricing ? { price: { min: Math.round(weeks.min * rate + design.min * day), max: Math.round(weeks.max * rate + design.max * day) } } : {}),
+    ...(system.max > 0 ? { system_days: system } : {}),
+    ...(pricing ? {
+      price: {
+        min: Math.round(weeks.min * rate + design.min * day + system.min * systemDay),
+        max: Math.round(weeks.max * rate + design.max * day + system.max * systemDay),
+      },
+    } : {}),
     ...(needsMore ? { on_top_of: ask.needs } : {}),
     ...(ask.instead && reshaped ? { instead_of: ask.instead } : {}),
   };
@@ -269,7 +279,7 @@ function countedAddons(pricing) {
  * sits with the migration it usually rides on.
  */
 const CHANNELS = 'Selling channels no pack includes';
-const GROUP = { b2b: CHANNELS, retail_pos: CHANNELS, subscriptions: CHANNELS, seo_continuity: 'Data and integrations', custom_templates: 'Storefront' };
+const GROUP = { b2b: CHANNELS, retail_pos: CHANNELS, subscriptions: CHANNELS, seo_continuity: 'Data and integrations', custom_templates: 'Storefront', hydrogen: 'Storefront' };
 const COUNTED_GROUP = 'Running the store';
 
 function grouped(addons) {

@@ -194,6 +194,7 @@ the engagement price; the client sees the estimate, never the modifiers.
 | `+Design (bespoke)` — a full template set from a mapped design system: every template, tokens wired to theme settings, motion and right-to-left where the markets need it | +3–5 wk | +CHF 18.9k–31.5k |
 | `+Theme design` — each further storefront design, built from the client’s second design against the same token layer: its own theme installed, configured and Theme Checked, every template built again — more of them when the first design is a full template set — and the theme kept in step with the first on every release | +2–31.5 wk | +CHF 12.6k–198.5k |
 | `+Templates` — each page template designed and built new on a Shopify theme: the layout designed against the brand, built as sections and blocks the merchant can still rearrange, and tested on the real catalogue. | +0.5–4 wk | +CHF 3.2k–25.2k |
+| `+Hydrogen` — the storefront built headless on Hydrogen instead of a Liquid theme: the route structure, the rendering and caching model, an owned component library over the design system’s tokens, the Storefront API queries per template, locale routing per market, and Oxygen environments with a deployment pipeline. On top of the storefront design, which it needs in full. | +4–6 wk | +CHF 25.2k–37.8k |
 | `+Integration` — each live connection to a counted system — ERP, PIM, CRM, OMS or 3PL | +1–3 wk | +CHF 6.3k–18.9k |
 | `+SKU (standard)` — 500 to 4,999 SKUs with complex variants, metafields or bundles: the product model designed once and applied | +0.5 wk | +CHF 3.2k |
 | `+SKU (large)` — 5,000 to 49,999 SKUs: the model is the same, the data is not — import batching, reconciliation per object, and the share of products that need a human before they load, with Search & Discovery set up for it | +1.5–2.5 wk | +CHF 9.5k–15.8k |
@@ -274,7 +275,7 @@ token application, boilerplate, automated QA (~60% of implementation)
 
 | Offer | Code | Triggered by | Scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Flagship** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally across regions that needs a store per region, a storefront built out and measurement that stands up. Up to three Shopify stores and nine markets across them · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 106–214k+ | 13–29 weeks |
+| **Ecommerce Flagship** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally across regions that needs a store per region, a storefront built out and measurement that stands up. Up to three Shopify stores and nine markets across them · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 106–214k | 13–29 weeks |
 
 L builds either way and spends the same weeks differently — as theme sections and
 blocks, or as owned components on Hydrogen — so the track follows the answers

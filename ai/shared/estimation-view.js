@@ -51,6 +51,12 @@ function example(title, lead, limits, pricing) {
       design: true,
       ...money({ min: days.min * d.day_price, max: days.max * d.day_price }),
     },
+    ...(quote.design.system_days ? [{
+      what: `Design system by the design system architect, ${quote.design.system_days.min}–${quote.design.system_days.max} days`,
+      weeks: null,
+      design: true,
+      ...money({ min: quote.design.system_days.min * d.system_architect.day_price, max: quote.design.system_days.max * d.system_architect.day_price }),
+    }] : []),
     {
       what: `Hypercare after go-live, ${quote.hypercare.days} working days`,
       weeks: null,
@@ -91,6 +97,7 @@ export function estimationView({ pricing = false } = {}) {
     person_days: Math.round(p.people_per_week * DAYS_PER_WEEK * 100) / 100,
     ...(pricing ? { weekly_cost: p.weekly_rate, hypercare_week: p.weekly_rate * p.hypercare_rate_share, app_cost: p.weekly_rate * p.app_weeks, design_day: p.design.day_price } : {}),
     designer: { role: p.design.role, sourcing: p.design.sourcing },
+    system_architect: { role: p.design.system_architect.role, does: p.design.system_architect.does },
     hypercare_share: p.hypercare_rate_share,
     app_weeks: p.app_weeks,
     packs: ['S', 'M', 'L'].map((code) => ({
@@ -107,6 +114,7 @@ export function estimationView({ pricing = false } = {}) {
       example(`${offering.offers.M.name}, as packaged`, 'Everything M promises — three markets, four languages, bespoke sections, one integration, a WooCommerce migration.', limits.M, pricing),
       example(`${offering.offers.L.name}, as packaged`, 'Everything L promises — three stores, nine markets across them, six languages, the full template set, blocks inside the checkout.', limits.L, pricing),
       example(`${offering.offers.M.name}, after discovery finds a second store`, 'The same M, re-estimated: the second store is one more line, not a different project.', { ...limits.M, stores: 2 }, pricing),
+      example(`${offering.offers.L.name} on Hydrogen`, 'Everything L promises, built headless: the Hydrogen add-on, and the design system created and tokenised by the design system architect.', { ...limits.L, headless: true }, pricing),
     ],
     calibration: p.calibration,
   };

@@ -116,7 +116,7 @@ function maximalEngagement() {
  */
 function maximalLiquidEngagement() {
   const doc = load('foundation-minimal.json');
-  doc.design = { ...doc.design, motion: true, custom_design: true, figma: { ...doc.design?.figma, exists: true, completeness: 'all_templates', mapped_to_sections: true } };
+  doc.design = { ...doc.design, motion: true, custom_design: true, custom_templates: 2, figma: { ...doc.design?.figma, exists: true, completeness: 'all_templates', mapped_to_sections: true } };
   doc.markets = { ...doc.markets, rtl_required: true };
   doc.offer = classifyOffer(doc);
   doc.exits = evaluateExits(doc);

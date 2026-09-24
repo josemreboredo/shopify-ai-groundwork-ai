@@ -338,7 +338,7 @@ function Arc({ view, segment }) {
           priced by this engine like any other build.
         </p>
         <ul className="ticks big ticks-no">
-          <li>Hydrogen with editorial content in Shopify metaobjects — that is <Link to="/offering/l">Ecommerce Flagship</Link> on the headless track</li>
+          <li>Hydrogen with editorial content in Shopify metaobjects — that is <Link to="/offering/l">Ecommerce Flagship</Link> with the Hydrogen add-on</li>
           <li>Two brands that share one design system — a store per brand, an add-on on <Link to="/offering/m">Ecommerce Scale</Link> and up to three in Ecommerce Flagship, and a further storefront design where a brand’s layout differs</li>
           <li>Blocks and fields inside the checkout steps — Shopify Plus permits them, and Ecommerce Flagship builds them</li>
           <li>Several markets, languages or stores, up to the offers’ limits — each one priced inside the offers</li>

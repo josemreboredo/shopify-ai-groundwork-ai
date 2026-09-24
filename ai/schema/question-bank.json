@@ -8825,6 +8825,7 @@
       ],
       "feeds": [
         "l_trigger:headless",
+        "gate:hydrogen",
         "exit:11.25"
       ],
       "shopify": {

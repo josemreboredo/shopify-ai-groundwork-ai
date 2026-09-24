@@ -474,6 +474,9 @@
             "custom_templates": {
               "$ref": "#/$defs/gate"
             },
+            "hydrogen": {
+              "$ref": "#/$defs/gate"
+            },
             "sku_complexity": {
               "$ref": "#/$defs/gate"
             },
@@ -532,6 +535,7 @@
               "+Checkout (post-purchase)",
               "+Design (bespoke)",
               "+Design (extended)",
+              "+Hydrogen",
               "+Integration",
               "+Languages",
               "+Markets",
@@ -579,6 +583,7 @@
                   "storefront_design",
                   "theme_design",
                   "custom_templates",
+                  "hydrogen",
                   "sku_complexity",
                   "search_merchandising",
                   "migration",
@@ -659,7 +664,7 @@
           "required": [
             "days"
           ],
-          "description": "Design days by Merkle’s experience designer: the Foundation brand adaptation plus every gate that needs design, priced into price_band at the design day and not counted in duration_weeks.",
+          "description": "Design days by Merkle’s experience designer (and, on a Hydrogen storefront, the design system architect’s): the Foundation brand adaptation plus every gate that needs design, priced into price_band at the design day and not counted in duration_weeks.",
           "properties": {
             "days": {
               "type": "object",
@@ -668,6 +673,25 @@
                 "min",
                 "max"
               ],
+              "properties": {
+                "min": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "max": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            },
+            "system_days": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "min",
+                "max"
+              ],
+              "description": "Design system days by the design system architect, on a Hydrogen storefront: the design system created in Figma and tokenised. Priced at the design day.",
               "properties": {
                 "min": {
                   "type": "number",

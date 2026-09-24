@@ -37,7 +37,7 @@ const APPROACH = {
     topology: 'Derived from the business facts: one store with Shopify Markets by default; a second store where the facts force one, as an add-on',
   },
   L: {
-    storefront: 'A Shopify theme built out template by template over one token layer; a headless Hydrogen storefront on Oxygen where the answers ask for one',
+    storefront: 'A Shopify theme built out template by template over one token layer; a headless Hydrogen storefront on Oxygen as an add-on where the answers ask for one',
     plan: 'Shopify Plus where up to three stores or blocks inside the checkout steps are used — the engine names the feature that forces it',
     build: 'A full design system over one token layer, motion and interaction as specified, one experiment live at launch — the commerce engine on Shopify either way',
     topology: 'Derived the same way; up to three stores and nine markets across them included, each further one an add-on',

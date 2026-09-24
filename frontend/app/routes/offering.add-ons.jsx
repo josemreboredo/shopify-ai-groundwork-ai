@@ -32,6 +32,7 @@ function asides(c) {
     c.included ? `past the ${c.included.count} ${c.included.noun} included` : null,
     c.on_top_of ? `on top of ${c.on_top_of}` : null,
     c.instead_of ? `instead of ${c.instead_of}` : null,
+    c.system_days ? `+ ${c.system_days.min === c.system_days.max ? c.system_days.min : `${c.system_days.min}–${c.system_days.max}`} design system days` : null,
     c.design_days ? `+ ${c.design_days.min === c.design_days.max ? c.design_days.min : `${c.design_days.min}–${c.design_days.max}`} design days` : null,
   ].filter(Boolean);
 }

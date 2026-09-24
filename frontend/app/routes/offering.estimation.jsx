@@ -105,7 +105,7 @@ export default function Estimation({ loaderData }) {
           <li>Developers build and configure: front end for templates, sections and the checkout, back end for integrations, data and apps.</li>
           <li>QA is part of the team, not a service added on top: test cases, regression and the release checks every pack carries.</li>
           <li>The project manager, business analyst and solution architect give a share of each week — enough to run it, specify it and decide its design, not a second team.</li>
-          <li>Design is not in the week. A {view.designer.sourcing} {view.designer.role.toLowerCase()} designs the storefront, priced by the design day, because most pieces of work need no design at all.</li>
+          <li>Design is not in the week. A {view.designer.sourcing} {view.designer.role.toLowerCase()} designs the storefront, priced by the design day, because most pieces of work need no design at all. On a Hydrogen storefront a {view.system_architect.role.toLowerCase()} works alongside: {view.system_architect.does.charAt(0).toLowerCase() + view.system_architect.does.slice(1)}.</li>
         </ul>
       </section>
 
@@ -122,7 +122,7 @@ export default function Estimation({ loaderData }) {
           </li>
           <li>
             <strong>{view.pricing ? `${currency} ${view.design_day}` : '1 day'}</strong>
-            <span>One design day of the {view.designer.sourcing} {view.designer.role.toLowerCase()}: S {view.packs[0].design_days.min}–{view.packs[0].design_days.max} days, M {view.packs[1].design_days.min}–{view.packs[1].design_days.max}, L {view.packs[2].design_days.min}–{view.packs[2].design_days.max}, and the days each design add-on carries</span>
+            <span>One design day, of the {view.designer.sourcing} {view.designer.role.toLowerCase()} or the {view.system_architect.role.toLowerCase()}: S {view.packs[0].design_days.min}–{view.packs[0].design_days.max} days, M {view.packs[1].design_days.min}–{view.packs[1].design_days.max}, L {view.packs[2].design_days.min}–{view.packs[2].design_days.max}, and the days each design add-on carries</span>
           </li>
           <li>
             <strong>{view.pricing ? chf(view.hypercare_week, currency) : pct(view.hypercare_share)}</strong>

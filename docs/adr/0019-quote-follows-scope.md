@@ -68,3 +68,9 @@ give the final figure, and the commercial team adds contingency and services suc
 - **Custom templates on a Shopify theme** (2026-09-24): a large, global set-up can keep a Shopify theme instead of the custom
   one, with each page template it needs designed and built new — half a build week and 2–3 design days each (gate
   `custom_templates`, question Q9.1.7). A full template set designs every template, so it carries them.
+- **Hydrogen is an add-on on L** (2026-09-24): it had no weeks of its own, so a headless quote was floored at L's band and
+  every L band carried a "+". It is a gate now (`hydrogen`, sold in L only): 4–6 build weeks for the owned front end on
+  Oxygen, and 10–15 days of a design system architect, who creates the design system in Figma and tokenises it alongside
+  the experience designer (`pricing.design.system_architect`, same design day). A headless storefront brings the full
+  template set with it, since there is no theme to configure. The headless floor is gone: every quote is the scope's sum,
+  none open-ended, and L's band is CHF 106–214k. L on Hydrogen comes to CHF 212–263k and 28.5–35 weeks.

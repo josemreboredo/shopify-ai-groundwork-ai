@@ -73,7 +73,7 @@ for (const { file, doc } of fixtures) {
       const def = offering.offers[offer.code];
       assert.equal(offer.name, def.name);
       assert.equal(offer.delivery_track, def.delivery_track);
-      assert.equal(offer.price_band.open_ended ?? false, false, 'only a headless floor is open-ended');
+      assert.equal(offer.price_band.open_ended ?? false, false, 'no quote is open-ended: every one is the scope’s sum');
       assert.equal(offer.price_band.currency, offering.currency);
       assert.deepEqual(offer.gate_capacity_weeks, {
         min: def.duration_weeks.min - offering.offers.S.duration_weeks.min,
