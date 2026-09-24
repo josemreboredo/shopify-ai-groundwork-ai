@@ -11,7 +11,11 @@ const stackingText = {
   multiple_discounts_same_item: 'several product discounts combine on the same item (Shopify Plus)',
   custom_logic_function: 'custom stacking logic beyond native combinations (delivered by a discount function)',
 };
-const loyaltyInScope = (doc) => ['launch', 'phase_2'].includes(doc.loyalty?.phase) && (doc.loyalty?.components?.length ?? 0) > 0;
+/* What a loyalty app is for: Shopify has no points programme, while store credit
+   is its own and a subscriber's discount belongs to the subscription app. */
+const appComponents = (doc) => (doc.loyalty?.components ?? []).filter((c) => !['store_credit', 'subscription_discount', 'none', 'not_sure'].includes(c));
+const later = (doc) => doc.loyalty?.phase === 'phase_2' || doc.loyalty?.phase === 'none';
+const onPos = (doc) => (doc.retail?.store_count ?? 0) > 0 && doc.retail?.pos === 'shopify_pos';
 
 /** @type {import('../model.js').StoryDefinition[]} */
 export default [
@@ -94,14 +98,16 @@ export default [
     agent_prompt: (doc) => `Prefer automatic discounts with start and end dates for sales (prices stay intact). Where compare-at price changes are required, build a Shopify Flow workflow with a scheduled trigger that sets and reverts compare-at and sale prices for a tagged collection, with a dry-run report first. Schedule storefront banners in ${themeName(doc)} with theme settings or a metaobject that has start and end dates. Test a sale starting and ending within one hour on the build store.`,
   },
   {
+    /* The loyalty add-on: an app for what Shopify's own rewards cannot do. */
     key: 'LWC-PRM-005',
     epic: 'promotions',
     title: (doc) => `Launch the loyalty programme with ${doc.loyalty?.app ?? 'the selected loyalty app'}`,
     user_story: 'As a loyal customer, I want to earn and redeem rewards, so that buying again feels worthwhile.',
-    description: (doc) => `Components: ${list((doc.loyalty?.components ?? []).map((c) => c.replace(/_/g, ' ')))}. Phase: ${doc.loyalty?.phase === 'phase_2' ? 'after launch' : 'launch'}.`,
+    description: (doc) => `Components: ${list(appComponents(doc).map((c) => c.replace(/_/g, ' ')))}. Phase: ${doc.loyalty?.phase === 'phase_2' ? 'after launch' : 'launch'}.`,
     acceptance_criteria: (doc) => [
-      ...(doc.loyalty?.components ?? []).map((c) => `Given the ${c.replace(/_/g, ' ')} component, when a test customer completes the qualifying action, then the reward is issued and visible in the loyalty widget and customer account`),
+      ...appComponents(doc).map((c) => `Given the ${c.replace(/_/g, ' ')} component, when a test customer completes the qualifying action, then the reward is issued and visible in the loyalty widget and customer account`),
       ...(doc.loyalty?.esp_sync ? [`Given loyalty events, when points or tiers change, then ${doc.marketing?.esp?.platform ?? 'the ESP'} receives the profile properties for flows`] : []),
+      ...(onPos(doc) ? ['Given a member in one of the client’s shops, when staff look them up on Shopify POS, then points are earned and spent on the in-store order as they are online'] : []),
       'Given the loyalty programme terms, when they are published, then they are translated and linked from the footer',
     ],
     gaia_tier: 'T2',
@@ -110,9 +116,11 @@ export default [
     depends_on: ['LWC-CUS-001', 'LWC-THM-001'],
     spec_refs: ['/loyalty/components', '/loyalty/phase', '/loyalty/app', '/loyalty/esp_sync'],
     security_flags: ['pii'],
+    gates: ['loyalty'],
     deferred: (doc) => doc.loyalty?.phase === 'phase_2',
-    applies: loyaltyInScope,
-    agent_prompt: (doc) => `Install ${doc.loyalty?.app ?? 'the approved loyalty app'} (check the plan fits the monthly app budget). Configure components: ${list((doc.loyalty?.components ?? []).map((c) => c.replace(/_/g, ' ')))}. Add the app's theme app extension blocks (launcher, points on product page, account panel) through the theme editor — no code snippets pasted into Liquid. ${doc.loyalty?.esp_sync ? `Connect the loyalty app to ${doc.marketing?.esp?.platform ?? 'the ESP'} for loyalty flows. ` : ''}Translate all loyalty texts. ${doc.loyalty?.phase === 'phase_2' ? 'This story is phase 2: do not install during the launch build; re-confirm scope and budget first.' : ''}`,
+    // Priced at launch; planned for later, it stays in the backlog as phase 2.
+    applies: (doc) => doc.offer?.scope_gates?.loyalty?.active === true || (doc.loyalty?.phase === 'phase_2' && appComponents(doc).length > 0),
+    agent_prompt: (doc) => `Install ${doc.loyalty?.app ?? 'the approved loyalty app'} (check the plan fits the monthly app budget). Configure components: ${list(appComponents(doc).map((c) => c.replace(/_/g, ' ')))}. Add the app's theme app extension blocks (launcher, points on product page, account panel) through the theme editor — no code snippets pasted into Liquid. ${doc.loyalty?.esp_sync ? `Connect the loyalty app to ${doc.marketing?.esp?.platform ?? 'the ESP'} for loyalty flows. ` : ''}${onPos(doc) ? 'Enable the app on Shopify POS and walk the shop staff through earning and redeeming. ' : ''}Translate all loyalty texts. ${doc.loyalty?.phase === 'phase_2' ? 'This story is phase 2: do not install during the launch build; re-confirm scope and budget first.' : ''}`,
   },
   {
     key: 'LWC-PRM-006',
@@ -149,5 +157,24 @@ export default [
     spec_refs: ['/promotions/campaigns/landing_pages', '/promotions/campaigns/countdown_timer', '/promotions/campaigns/market_specific'],
     applies: (doc) => doc.promotions?.campaigns?.landing_pages === true || doc.promotions?.campaigns?.countdown_timer === true,
     agent_prompt: (doc) => `${doc.promotions?.campaigns?.landing_pages ? `Create a campaign page template in ${themeName(doc)} composed of existing sections and theme blocks. ` : ''}${doc.promotions?.campaigns?.countdown_timer ? 'Build a countdown theme block with an end-date setting, server-rendered fallback text, a small deferred web component and aria-live off (announce only the end state). It must hide after the end date and never restart per visitor. ' : ''}${doc.promotions?.campaigns?.market_specific ? 'Allow the block or page to be shown only in selected markets using localization.market conditions. ' : ''}Validate with Theme Check.`,
+  },
+  {
+    /* In every pack: Shopify's own rewards are settings and templates, not a build. */
+    key: 'LWC-PRM-008',
+    epic: 'promotions',
+    title: 'Set up Shopify’s own rewards: store credit, a VIP segment and its discount',
+    user_story: 'As a returning customer, I want credit and perks for buying again, so that the store remembers I am a customer.',
+    acceptance_criteria: [
+      'Given the client’s reward rules, when store credit is issued to a test customer, then it shows in their account with its expiry and pays for an order at checkout',
+      'Given the VIP customer segment, when a customer who meets its rule signs in, then the discount limited to that segment applies and a first-time customer does not get it',
+      'Given Shopify Flow’s Welcome VIP customers, Celebrate customer birthday and Win back customers templates the client chose, when a test customer joins each segment, then the workflow runs',
+    ],
+    gaia_tier: 'T1',
+    points: 2,
+    owner: 'consultant',
+    depends_on: ['LWC-CUS-001'],
+    spec_refs: ['/loyalty/components', '/loyalty/phase', '/checkout/store_credit'],
+    applies: (doc) => (doc.loyalty?.components ?? []).includes('store_credit') && doc.offer?.scope_gates?.loyalty?.active !== true && !later(doc),
+    agent_prompt: () => 'Store credit needs the new customer accounts: confirm they are on. On stores created from 12 May 2025, orders paid with store credit carry third-party transaction fees unless the store is on Plus with Shopify Payments — tell the client before the programme is announced. Agree the credit rules and expiry, build the VIP segment and a discount limited to it (automatic discounts take up to 5 segments, codes up to 100), and switch on the Shopify Flow templates the client chose; the birthday template needs a birth date customer metafield. Test each with a test customer.',
   },
 ];

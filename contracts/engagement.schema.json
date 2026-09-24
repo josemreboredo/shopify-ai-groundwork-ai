@@ -528,6 +528,9 @@
             "custom_promotions": {
               "$ref": "#/$defs/gate"
             },
+            "loyalty": {
+              "$ref": "#/$defs/gate"
+            },
             "agentic_commerce": {
               "$ref": "#/$defs/gate"
             },
@@ -571,6 +574,8 @@
               "+Hydrogen",
               "+Integration",
               "+Languages",
+              "+Loyalty (advanced)",
+              "+Loyalty (standard)",
               "+Marketplaces",
               "+Markets",
               "+Messaging (advanced)",
@@ -636,6 +641,7 @@
                   "subscriptions",
                   "checkout_extensibility",
                   "custom_promotions",
+                  "loyalty",
                   "agentic_commerce",
                   "analytics_consent",
                   "messaging_platform",

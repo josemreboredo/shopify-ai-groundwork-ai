@@ -165,6 +165,13 @@ export const ASKS = {
       },
     },
   },
+  /* A loyalty app past Shopify's own rewards, which every pack sets up. */
+  loyalty: {
+    tiers: {
+      standard: { label: 'Points, VIP tiers, referrals or member early access', doc: merge('loyalty', { components: ['points_purchase', 'referral'], phase: 'launch' }) },
+      advanced: { label: 'Synced to the email platform or CRM, or on Shopify POS', doc: merge('loyalty', { components: ['points_purchase', 'referral'], phase: 'launch', esp_sync: true }) },
+    },
+  },
   /* Another platform in place of Shopify Messaging, which every pack sets up. */
   messaging_platform: {
     tiers: {

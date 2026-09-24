@@ -6774,6 +6774,7 @@
         "/loyalty/components"
       ],
       "feeds": [
+        "gate:loyalty",
         "app:loyalty_app"
       ],
       "shopify": {
@@ -6781,7 +6782,8 @@
           {
             "feature": "Store credit",
             "plan": "basic",
-            "docs": "https://help.shopify.com/en/manual/customers/store-credit"
+            "docs": "https://help.shopify.com/en/manual/customers/store-credit",
+            "plan_note": "New customer accounts only; on stores created from 12 May 2025, orders paid with store credit carry third-party transaction fees unless on Plus with Shopify Payments"
           }
         ],
         "app_category": {
@@ -6795,9 +6797,8 @@
           "rivo-loyalty"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -6817,6 +6818,9 @@
       "text": "Is loyalty needed at launch or in a later phase?",
       "maps_to": [
         "/loyalty/phase"
+      ],
+      "feeds": [
+        "gate:loyalty"
       ],
       "teach": {
         "why": "Loyalty is an app plus integration and storefront work, not a toggle, so it belongs to a phase. Deciding launch or later stops it being quietly assumed into the first release and keeps the launch scope honest.",
@@ -6846,6 +6850,9 @@
       "text": "Must loyalty status sync to the email platform or CRM?",
       "maps_to": [
         "/loyalty/esp_sync"
+      ],
+      "feeds": [
+        "gate:loyalty"
       ],
       "teach": {
         "why": "Loyalty status living in the app while campaigns live in the email platform or CRM means a sync to build, monitor and keep correct. It is integration scope with its own failure modes, and it is where loyalty work usually overruns."

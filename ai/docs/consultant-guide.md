@@ -2255,7 +2255,7 @@ Sources: https://help.shopify.com/en/manual/organization-settings/expansion-stor
 ### 6.3 Loyalty & segmentation
 
 **Q6.3.1** — Which loyalty components are planned? *(recommended · client)*
-Drives: app signal Loyalty programme
+Drives: gate Loyalty programme · app signal Loyalty programme
 Quick interview: ask if Q1.1.4 is Direct to consumer (DTC) or Hybrid (DTC and B2B)
 
 **Why it matters.** Shopify has no native points programme, so loyalty means an app. What is native is store credit, which can serve as the reward currency and shows in the customer account. Naming the components now sizes the app choice and its integration work.
@@ -2264,12 +2264,13 @@ Sources: https://help.shopify.com/en/manual/customers/store-credit · https://ap
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Store credit | Basic |  | https://help.shopify.com/en/manual/customers/store-credit |
+| Store credit | Basic | New customer accounts only; on stores created from 12 May 2025, orders paid with store credit carry third-party transaction fees unless on Plus with Shopify Payments | https://help.shopify.com/en/manual/customers/store-credit |
 
 If native is not enough: [Loyalty and rewards](https://apps.shopify.com/categories/marketing-and-conversion-customer-loyalty-loyalty-and-rewards/all) — [Smile: Loyalty Program Rewards](https://apps.shopify.com/smile-io), [LoyaltyLion Loyalty Program](https://apps.shopify.com/loyaltylion), [Yotpo: Loyalty Rewards Program](https://apps.shopify.com/swell), [Rivo: Loyalty Program, Rewards](https://apps.shopify.com/rivo-loyalty)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com.*
 
 **Q6.3.2** — Is loyalty needed at launch or in a later phase? *(recommended · client)*
+Drives: gate Loyalty programme
 
 **Why it matters.** Loyalty is an app plus integration and storefront work, not a toggle, so it belongs to a phase. Deciding launch or later stops it being quietly assumed into the first release and keeps the launch scope honest.
 
@@ -2280,6 +2281,7 @@ If native is not enough: [Loyalty and rewards](https://apps.shopify.com/categori
 **Why it matters.** If a loyalty app is already running, the job is migrating balances, tiers and history rather than selecting a vendor. If they only have a preference, it fixes the integration surface early. If neither, we shortlist from the App Store loyalty category.
 
 **Q6.3.4** — Must loyalty status sync to the email platform or CRM? *(optional · client)*
+Drives: gate Loyalty programme
 
 **Why it matters.** Loyalty status living in the app while campaigns live in the email platform or CRM means a sync to build, monitor and keep correct. It is integration scope with its own failure modes, and it is where loyalty work usually overruns.
 

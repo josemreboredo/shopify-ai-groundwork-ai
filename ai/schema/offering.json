@@ -157,7 +157,7 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Theme",
       "triggered_by": "An estimate below the Scale floor: the Foundation, with whatever goes past it as add-ons",
-      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
+      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · Rewards from Shopify’s own: store credit, VIP segments with their own discounts, and the VIP, birthday and win-back templates · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
         "min": 31000,
         "max": 38000,
@@ -330,7 +330,7 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Customisable",
       "triggered_by": "An estimate from the Scale floor, or a further store — the recommended start for a brand that already sells",
-      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
+      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · Rewards from Shopify’s own: store credit, VIP segments with their own discounts, and the VIP, birthday and win-back templates · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
         "min": 50000,
         "max": 105000,
@@ -520,7 +520,7 @@
       "delivery_track": "liquid",
       "build_label": "Custom Liquid",
       "triggered_by": "An estimate from the Flagship floor — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Email and SMS from Shopify Messaging: the abandoned checkout automation and Shopify’s lifecycle templates activated in the brand · Rewards from Shopify’s own: store credit, VIP segments with their own discounts, and the VIP, birthday and win-back templates · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 106000,
         "max": 214000,
@@ -1234,6 +1234,34 @@
       }
     },
     {
+      "id": "loyalty",
+      "label": "Loyalty programme",
+      "condition": "A loyalty programme at launch. Shopify has no points programme of its own; every pack sets up what it does have: store credit as a reward currency, VIP customer segments with discounts limited to them, and Shopify Flow’s Welcome VIP customers, Celebrate customer birthday and Win back customers templates. Standard is a loyalty app for what those cannot do — points for purchases and actions, VIP tiers, referrals, early access for members — with its launcher and account blocks added through the theme editor and every text translated. Advanced is that app reaching past the storefront: loyalty status synced to the email platform or CRM, or points earned and spent in the client’s own shops on Shopify POS. Loyalty planned for a later phase is not in this build and is priced when it is scoped.",
+      "inputs": [
+        "/loyalty/components",
+        "/loyalty/phase",
+        "/loyalty/esp_sync",
+        "/retail/store_count",
+        "/retail/pos"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "advanced"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/customers/store-credit",
+        "https://help.shopify.com/en/manual/discounts/discount-types/percentage-fixed-amount",
+        "https://help.shopify.com/en/manual/customers/customer-segmentation/create-customer-segments",
+        "https://help.shopify.com/en/manual/shopify-flow/reference/triggers/customer-joined-segment",
+        "https://help.shopify.com/en/manual/shopify-flow"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "help.shopify.com"
+      }
+    },
+    {
       "id": "agentic_commerce",
       "label": "Agentic commerce",
       "condition": "What takes a build past the AI every pack includes. Shopify’s agentic storefronts are active by default for eligible stores — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini and Shop read the products through Shopify Catalog — and every pack decides and sets them up, answers through the free Knowledge Base app and shows the team Shopify Magic and Sidekick. Standard is product data mapped from custom fields into the catalogue, and an AI crawler policy — robots.txt.liquid is an unsupported customisation where a mistake can lose all traffic. Advanced adds the store’s own shopping assistant or agent connection, on the store’s Storefront MCP endpoint and the Universal Commerce Protocol; the Universal Cart API is early access and is scoped, not promised.",
@@ -1868,6 +1896,42 @@
       "price_add": {
         "min": 12600,
         "max": 18900
+      },
+      "design_days": {
+        "min": 1,
+        "max": 2
+      }
+    },
+    {
+      "id": "+Loyalty (standard)",
+      "gate": "loyalty",
+      "tier": "standard",
+      "description": "A loyalty app for what Shopify’s own rewards cannot do: earning rules for purchases and actions, rewards as discounts or store credit, VIP tiers, referrals and member early access configured to the client’s programme; its launcher, product and account blocks added through the theme editor and branded; every text and the programme terms translated; tested with test customers and handed over with an owner.",
+      "effort_weeks": {
+        "min": 1,
+        "max": 1.5
+      },
+      "price_add": {
+        "min": 6300,
+        "max": 9450
+      },
+      "design_days": {
+        "min": 1,
+        "max": 1
+      }
+    },
+    {
+      "id": "+Loyalty (advanced)",
+      "gate": "loyalty",
+      "tier": "advanced",
+      "description": "The standard work, and the programme past the storefront — half a week more: points, tiers and rewards synced to the email platform or CRM as profile properties its flows can use, or earned and spent in the client’s own shops on Shopify POS, with the staff shown how.",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2
+      },
+      "price_add": {
+        "min": 9450,
+        "max": 12600
       },
       "design_days": {
         "min": 1,
@@ -3122,6 +3186,23 @@
         "addon_label": "Custom promotions"
       },
       {
+        "id": "loyalty",
+        "what": "Loyalty and rewards",
+        "gate": "loyalty",
+        "group": "Checkout and payments",
+        "shopify_limit": "Shopify has no points programme. Store credit needs the new customer accounts, and on stores created from 12 May 2025 orders paid with it carry third-party transaction fees unless the store is on Plus with Shopify Payments; an automatic discount can be limited to 5 customer segments, a discount code to 100",
+        "S": "Shopify’s own rewards: store credit, VIP customer segments with discounts of their own, and Shopify Flow’s VIP, birthday and win-back templates",
+        "M": "Shopify’s own rewards: store credit, VIP customer segments with discounts of their own, and Shopify Flow’s VIP, birthday and win-back templates",
+        "L": "Shopify’s own rewards: store credit, VIP customer segments with discounts of their own, and Shopify Flow’s VIP, birthday and win-back templates",
+        "note": "Set up in every pack from the client’s reward rules, because each is a Shopify setting or template rather than a build: the credit issued and its expiry, the VIP segment and its discount, the Flow templates switched on. A segment discount reaches customers who have ordered before, not a first order, and the birthday template needs a birth date stored on the customer. Points, VIP tiers, referrals and member early access need an app — the loyalty add-on.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "A loyalty app"
+      },
+      {
         "id": "fulfilment",
         "what": "Fulfilment locations",
         "gate": null,
@@ -3559,6 +3640,18 @@
           "L"
         ],
         "note": "A custom app containing a Function needs Shopify Plus; below Plus the Function comes in a public App Store app, which runs on every plan. Several product discounts on the same item is Shopify Plus only, and a setting there rather than a Function."
+      },
+      {
+        "id": "loyalty",
+        "gate": "loyalty",
+        "what": "A loyalty programme: points, VIP tiers and referrals",
+        "description": "A loyalty app where Shopify’s own rewards stop — points, VIP tiers, referrals, member early access — and, advanced, synced to the email platform or CRM, or running in the client’s shops on Shopify POS.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Shopify’s own rewards are in every pack: store credit, VIP customer segments with their own discounts, and Shopify Flow’s VIP, birthday and win-back templates. The app’s own monthly fee is the client’s."
       },
       {
         "id": "agentic_commerce",

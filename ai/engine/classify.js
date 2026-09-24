@@ -723,6 +723,35 @@ const GATE_EVALUATORS = {
   },
 
   /*
+   * A loyalty programme at launch.
+   *
+   * Shopify has no points programme. Store credit, VIP segments with their own
+   * discounts and Flow's VIP, birthday and win-back templates are settings, in
+   * every pack; points, tiers, referrals and member early access are an app.
+   * A subscriber's discount belongs to the subscription app, and loyalty
+   * planned for a later phase is not in this build.
+   */
+  loyalty: (doc) => {
+    const l = doc.loyalty ?? {};
+    const app = picked(l.components).filter((c) => !['store_credit', 'subscription_discount', 'none'].includes(c));
+    const later = l.phase === 'phase_2' || l.phase === 'none';
+    const active = app.length > 0 && !later;
+    const past = [
+      l.esp_sync === true ? 'synced to the email platform or CRM' : null,
+      retailLocations(doc) > 0 && doc.retail?.pos === 'shopify_pos' ? 'in the client’s shops on Shopify POS' : null,
+    ].filter(Boolean);
+    return {
+      active,
+      ...(active ? { tier: past.length ? 'advanced' : 'standard' } : {}),
+      evidence: active
+        ? `A loyalty app for ${app.join(', ').replace(/_/g, ' ')}${past.length ? `, ${past.join(' and ')}` : ''}`
+        : app.length && later
+          ? 'Loyalty in a later phase — not in this build, priced when it is scoped'
+          : 'Shopify’s own rewards: store credit, VIP segments and the Flow templates — in every pack',
+    };
+  },
+
+  /*
    * What takes a build past the AI every pack includes.
    *
    * Every pack decides and sets up Shopify's agentic storefronts, answers

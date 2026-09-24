@@ -636,6 +636,25 @@ describe('the quote is the scope, priced one way', () => {
     assert.equal(m.max_units.value, 4, 'Marketplace Connect lists on four');
   });
 
+  test('Shopify’s own rewards are in every pack; a loyalty app is the add-on, and a later phase is not this build', () => {
+    const row = offering.closed_scope.rows.find((r) => r.id === 'loyalty');
+    assert.ok(row.S === row.M && row.M === row.L, 'the same rewards in every pack');
+    for (const c of ['S', 'M', 'L']) assert.match(offering.offers[c].base_scope, /Rewards from Shopify’s own/);
+    const gate = (loyalty, extra = {}) => classifyOffer({ ...engagementAt(limits.S), loyalty, ...extra }).scope_gates.loyalty;
+
+    assert.equal(gate({ components: ['store_credit'], phase: 'launch' }).active, false, 'store credit is Shopify’s own');
+    assert.equal(gate({ components: ['subscription_discount'], phase: 'launch' }).active, false, 'a subscriber’s discount belongs to the subscription app');
+    assert.equal(gate({ components: ['points_purchase', 'vip_tiers'], phase: 'phase_2' }).active, false, 'a later phase is not this build');
+    assert.equal(gate({ components: ['points_purchase'], phase: 'none' }).active, false);
+    assert.equal(gate({ components: ['referral'] }).tier, 'standard', 'no phase recorded is launch');
+    assert.equal(gate({ components: ['points_purchase'], phase: 'launch', esp_sync: true }).tier, 'advanced', 'synced to the email platform');
+    assert.equal(gate({ components: ['points_purchase'], phase: 'launch' }, { retail: { store_count: 2, pos: 'shopify_pos' } }).tier, 'advanced', 'on Shopify POS');
+    assert.equal(gate({ components: ['points_purchase'], phase: 'launch' }, { retail: { store_count: 2, pos: 'other_pos_separate' } }).tier, 'standard', 'another POS is not ours to wire');
+
+    const [std, adv] = ['standard', 'advanced'].map((t) => offering.modifiers.find((x) => x.gate === 'loyalty' && x.tier === t));
+    assert.deepEqual([adv.effort_weeks.min - std.effort_weeks.min, adv.effort_weeks.max - std.effort_weeks.max], [0.5, 0.5], 'advanced is the standard work and half a week');
+  });
+
   test('Shopify Messaging is in every pack; another email or SMS platform is the add-on', () => {
     const row = offering.closed_scope.rows.find((r) => r.id === 'email');
     assert.ok(row.S === row.M && row.M === row.L, 'the same Shopify Messaging set-up in every pack');

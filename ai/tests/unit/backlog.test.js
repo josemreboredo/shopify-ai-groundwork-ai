@@ -122,6 +122,8 @@ function maximalLiquidEngagement() {
   doc.markets = { ...doc.markets, rtl_required: true };
   // And a small store sends its email from Shopify Messaging, which every pack sets up.
   doc.marketing = { ...doc.marketing, esp: { type: 'shopify_messaging', flows: ['Welcome', 'Abandoned checkout'] }, sms: { enabled: true, countries: ['GB'] } };
+  // And rewards it gives from Shopify's own store credit, with no loyalty app.
+  doc.loyalty = { components: ['store_credit'], phase: 'launch' };
   doc.offer = classifyOffer(doc);
   doc.exits = evaluateExits(doc);
   assert.notEqual(doc.offer.delivery_track, 'hydrogen', 'the point of this fixture is the Liquid track');
@@ -213,6 +215,7 @@ describe('story definitions', () => {
       'LWC-CAT-015': 'ai_content', 'LWC-PRM-002': 'custom_promotions', 'LWC-THM-017': 'custom_templates',
       'LWC-THM-010': 'hydrogen', 'LWC-THM-011': 'hydrogen', 'LWC-THM-018': 'hydrogen',
       'LWC-SHP-010': 'returns_post_purchase', 'LWC-MKG-007': 'marketplaces', 'LWC-MKG-004': 'messaging_platform',
+      // LWC-PRM-005 is not here: loyalty planned for later stays in the backlog, deferred and unpriced.
     };
     for (const doc of [...GO_FIXTURES, maximalEngagement(), maximalLiquidEngagement()]) {
       for (const story of selectStories(doc)) {
@@ -240,6 +243,22 @@ describe('story definitions', () => {
     assert.ok(selectStories(doc).some((x) => x.key === 'LWC-AI-003'), 'selective: built');
     doc.ai = { ...doc.ai, crawler_policy: 'allow_all' };
     assert.ok(!selectStories(doc).some((x) => x.key === 'LWC-AI-003'), 'allow all is the default, and every pack keeps it');
+  });
+
+  test('loyalty: Shopify’s own rewards, an app at launch, or an app deferred to phase 2 — never two of them', () => {
+    const stories = (loyalty) => {
+      const doc = load('foundation-minimal.json');
+      doc.loyalty = loyalty;
+      doc.offer = classifyOffer(doc);
+      return selectStories(doc).filter((x) => x.key === 'LWC-PRM-005' || x.key === 'LWC-PRM-008');
+    };
+    const keys = (loyalty) => stories(loyalty).map((x) => x.key);
+    assert.deepEqual(keys({ components: ['store_credit'], phase: 'launch' }), ['LWC-PRM-008']);
+    assert.deepEqual(keys({ components: ['store_credit', 'points_purchase'], phase: 'launch' }), ['LWC-PRM-005'], 'the app issues the credit');
+    const later = stories({ components: ['points_purchase', 'vip_tiers'], phase: 'phase_2' });
+    assert.deepEqual(later.map((x) => x.key), ['LWC-PRM-005']);
+    assert.equal(later[0].deferred, true, 'in the backlog as phase 2, and in no quote');
+    assert.deepEqual(keys({ components: ['store_credit'], phase: 'phase_2' }), [], 'nothing to build now');
   });
 
   test('Shopify Messaging is set up unless another platform replaces it, and never both', () => {

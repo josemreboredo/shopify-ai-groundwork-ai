@@ -127,6 +127,13 @@ give the final figure, and the commercial team adds contingency and services suc
   runs Klaviyo with five flows, so it rises from CHF 100–138k to 107–148k. Quoted with L’s own hypercare, that reaches the
   Flagship floor, and ACME is now named Ecommerce Flagship: by budget, not by shape (one store, three markets). The
   minimal Foundation fixture, which also runs Klaviyo, is Foundation plus that add-on at CHF 35–45k.
+- **Loyalty** (2026-09-24): a loyalty programme was one app counted at an eighth of a week. Shopify has no points
+  programme, so every pack sets up what it does have — store credit, VIP customer segments with discounts limited to them,
+  and Shopify Flow’s VIP, birthday and win-back templates (a Loyalty and rewards row, a line in each pack’s scope, story
+  LWC-PRM-008). Points, VIP tiers, referrals and member early access are the `loyalty` add-on, a loyalty app (standard, 1–1.5
+  weeks and a design day), synced to the email platform or CRM or running on Shopify POS (advanced, half a week more).
+  Loyalty planned for a later phase is not in this build: the story stays in the backlog, deferred, and no quote carries it
+  — which is ACME’s case, so its quote does not move.
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,
