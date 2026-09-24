@@ -283,6 +283,21 @@
         },
         "agentic": {
           "type": "boolean"
+        },
+        "marketplaces": {
+          "type": "array",
+          "uniqueItems": true,
+          "description": "The marketplaces the catalogue is listed on through Shopify Marketplace Connect. Target Plus and Walmart are United States only; new Etsy connections cannot be made.",
+          "items": {
+            "enum": [
+              "amazon",
+              "ebay",
+              "target_plus",
+              "walmart",
+              "other",
+              "not_sure"
+            ]
+          }
         }
       }
     },
@@ -456,6 +471,9 @@
             "store_estate": {
               "$ref": "#/$defs/gate"
             },
+            "marketplaces": {
+              "$ref": "#/$defs/gate"
+            },
             "multi_currency": {
               "$ref": "#/$defs/gate"
             },
@@ -550,6 +568,7 @@
               "+Hydrogen",
               "+Integration",
               "+Languages",
+              "+Marketplaces",
               "+Markets",
               "+Migration (heavy)",
               "+Migration (light)",
@@ -593,6 +612,7 @@
                 "enum": [
                   "markets",
                   "store_estate",
+                  "marketplaces",
                   "multi_currency",
                   "b2b",
                   "integration",

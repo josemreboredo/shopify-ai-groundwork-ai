@@ -613,6 +613,19 @@ describe('the quote is the scope, priced one way', () => {
     assert.ok(adv.effort_weeks.min > std.effort_weeks.min && adv.effort_weeks.max - std.effort_weeks.max <= 1);
   });
 
+  test('Shopify’s own sales channels are in every pack; each marketplace is the add-on', () => {
+    const row = offering.closed_scope.rows.find((r) => r.id === 'sales_channels');
+    assert.ok(row.S === row.M && row.M === row.L, 'the same channels in every pack');
+    for (const c of ['S', 'M', 'L']) assert.match(offering.offers[c].base_scope, /Sales channels connected/);
+    const at = (channels) => classifyOffer({ ...engagementAt(limits.S), channels });
+    assert.equal(at({ launch: ['online_store', 'shop_app', 'google_youtube', 'facebook_instagram', 'tiktok'] }).scope_gates.marketplaces.active, false, 'Shopify’s own channels are configuration');
+    const m = offering.modifiers.find((x) => x.gate === 'marketplaces');
+    const weeks = (q) => q.scope_effort_by_gate.find((g) => g.gate === 'marketplaces')?.weeks.max ?? 0;
+    assert.equal(weeks(at({ launch: ['marketplaces'] })), m.per_marketplace_weeks, 'a marketplace not yet named is priced as one');
+    assert.equal(weeks(at({ launch: ['marketplaces'], marketplaces: ['amazon', 'ebay'] })), 2 * m.per_marketplace_weeks, 'two marketplaces, twice the work');
+    assert.equal(m.max_units.value, 4, 'Marketplace Connect lists on four');
+  });
+
   test('design is priced by the design day, by pack and only on the add-ons that need it', () => {
     /* A designer inside the build week would be charged on a migration as much
        as on a template set. Design is its own line: S adapts the UI to the

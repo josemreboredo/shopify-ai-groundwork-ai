@@ -195,6 +195,18 @@
 - [ ] Keine
 - [ ] Noch unklar
 
+**Q1.1.9** — Auf welchen Marktplätzen soll der Katalog gelistet werden? *(recommended)*
+*Only if Q1.1.7 includes Marketplaces.*
+*Gelistet über Shopify Marketplace Connect; Bestellungen und Bestand bleiben mit Shopify abgeglichen.*
+
+*(tick all that apply)*
+- [ ] Amazon
+- [ ] eBay
+- [ ] Target Plus (nur USA)
+- [ ] Walmart (nur USA)
+- [ ] Anderes
+- [ ] Noch unklar
+
 **Q1.1.8** — Für wie viele eigenständige, kundenseitig erkennbare Marken benötigt dieses Engagement einen Shopify-Store? *(required)*
 *Eine Marke, die zwei Kundinnen als unterschiedlichen Namen, unterschiedliches Logo oder unterschiedliche Identität erkennen würden — nicht ein Markt oder eine Produktlinie unter derselben Marke.*
 

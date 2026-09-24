@@ -855,6 +855,53 @@
           "https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect",
           "https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/manage-headless-channels"
         ]
+      },
+      "feeds": [
+        "gate:marketplaces"
+      ]
+    },
+    {
+      "id": "Q1.1.9",
+      "subsection": "1.1",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "multi_enum",
+      "text": "Which marketplaces should the catalogue be listed on?",
+      "help": "Listed through Shopify Marketplace Connect, with orders and stock kept in step with Shopify.",
+      "maps_to": [
+        "/channels/marketplaces"
+      ],
+      "feeds": [
+        "gate:marketplaces"
+      ],
+      "only_if": [
+        {
+          "pointer": "/channels/launch",
+          "includes_any": [
+            "marketplaces"
+          ]
+        }
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Shopify Marketplace Connect: Amazon, eBay, Target Plus and Walmart",
+            "plan": "basic",
+            "plan_note": "Target Plus and Walmart are United States only; new Etsy connections cannot be made",
+            "docs": "https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
+        }
+      },
+      "teach": {
+        "why": "Each marketplace is its own listing work: products mapped to its categories and attributes, prices and rules per marketplace, and orders and stock tested both ways. Connecting Shopify’s own channels is configuration; a marketplace is not.",
+        "limits": "Marketplace Connect lists on Amazon and eBay, and on Target Plus and Walmart in the United States only; new connections to Etsy cannot be made. It sells in any region and currency the chosen marketplace offers.",
+        "sources": [
+          "https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect"
+        ]
       }
     },
     {

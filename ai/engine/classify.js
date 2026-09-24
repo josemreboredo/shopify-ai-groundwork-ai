@@ -110,6 +110,16 @@ export function storesBeyondTheFirst(doc) {
   return (t.separate_store_markets ?? []).length + (t.additional_channel_stores ?? []).length;
 }
 
+/**
+ * How many marketplaces the catalogue is listed on: the ones named, or one
+ * where marketplaces are a launch channel and none is named yet.
+ * @param {object} doc
+ */
+export function marketplaceCount(doc) {
+  const named = (doc.channels?.marketplaces ?? []).filter((x) => x !== 'not_sure').length;
+  return named || ((doc.channels?.launch ?? []).includes('marketplaces') ? 1 : 0);
+}
+
 /** Launch markets in the offering's scope (mainland China excluded). @param {object} doc */
 export const marketsOf = (doc) => (doc.markets?.list ?? []).filter((m) => m.code !== CHINA_MAINLAND);
 
@@ -172,6 +182,19 @@ const GATE_EVALUATORS = {
     return {
       active: true,
       evidence: `${t.recommendation.replace(/_/g, ' ')}: ${extra + 1} stores, ${extra} beyond the first`,
+    };
+  },
+
+  /* Marketplaces through Shopify Marketplace Connect, per marketplace. Shopify's
+     own channels — Shop, Google & YouTube, Facebook & Instagram, TikTok — are
+     configuration and in every pack; a marketplace is listing work. */
+  marketplaces: (doc) => {
+    const n = marketplaceCount(doc);
+    return {
+      active: n > 0,
+      evidence: n > 0
+        ? `${n} marketplace${n === 1 ? '' : 's'} through Marketplace Connect${(doc.channels?.marketplaces ?? []).length ? `: ${doc.channels.marketplaces.filter((x) => x !== 'not_sure').join(', ').replace(/_/g, ' ')}` : ''}`
+        : 'Shopify’s own channels only — in every pack',
     };
   },
 
@@ -867,6 +890,7 @@ function modifierFor(gate, evaluated, doc) {
     theme_design: { count: doc.design?.extra_theme_designs ?? 0, free: 0, weeks: 'per_theme_weeks', price: 'per_theme_price' },
     custom_templates: { count: doc.design?.custom_templates ?? 0, free: 0, weeks: 'per_template_weeks', price: 'per_template_price' },
     ai_content: { count: Math.ceil((doc.catalogue?.sku_count ?? 0) / 1000), free: 0, weeks: 'per_thousand_weeks', price: 'per_thousand_price' },
+    marketplaces: { count: marketplaceCount(doc), free: 0, weeks: 'per_marketplace_weeks', price: 'per_marketplace_price' },
   };
   const scale = SCALES[gate.id];
   if (!scale) return modifier;

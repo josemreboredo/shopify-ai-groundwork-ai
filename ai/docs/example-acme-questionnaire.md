@@ -191,6 +191,11 @@
 - [ ] ai agents
 - [ ] none other
 
+**Q1.1.9** — Which marketplaces should the catalogue be listed on? *(recommended)*
+*Listed through Shopify Marketplace Connect, with orders and stock kept in step with Shopify.*
+
+> Answer: Not applicable — ACME does not sell on marketplaces.
+
 **Q1.1.8** — How many distinct customer-facing brands does this engagement need a Shopify storefront for? *(required)*
 *A brand two customers would recognise as different names, logos or identities — not a market or a product line under the same brand.*
 

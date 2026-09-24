@@ -49,6 +49,7 @@ function maximalEngagement() {
   doc.catalogue.combined_listings = true;
   doc.catalogue.personalisation = ['text_engraving', 'file_upload', 'paid_add_ons'];
   doc.catalogue.ai_enrichment = ['product_descriptions', 'image_alt_text', 'seo_fields', 'attributes_from_supplier_data'];
+  doc.channels = { launch: ['online_store', 'shop_app', 'google_youtube', 'facebook_instagram', 'tiktok', 'marketplaces'], marketplaces: ['amazon', 'ebay'] };
   doc.catalogue.customs_data_source = 'in_pim';
   doc.catalogue.shipping_data_source = 'partial';
   doc.catalogue.storefront_filters = ['size', 'colour', 'material', 'movement'];
@@ -209,7 +210,7 @@ describe('story definitions', () => {
       'LWC-AI-003': 'agentic_commerce', 'LWC-AI-007': 'agentic_commerce', 'LWC-AI-008': 'agentic_commerce',
       'LWC-CAT-015': 'ai_content', 'LWC-PRM-002': 'custom_promotions', 'LWC-THM-017': 'custom_templates',
       'LWC-THM-010': 'hydrogen', 'LWC-THM-011': 'hydrogen', 'LWC-THM-018': 'hydrogen',
-      'LWC-SHP-010': 'returns_post_purchase',
+      'LWC-SHP-010': 'returns_post_purchase', 'LWC-MKG-007': 'marketplaces',
     };
     for (const doc of [...GO_FIXTURES, maximalEngagement(), maximalLiquidEngagement()]) {
       for (const story of selectStories(doc)) {

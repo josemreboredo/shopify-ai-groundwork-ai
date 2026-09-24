@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 130 of 318 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 131 of 319 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -238,6 +238,7 @@ Sources: https://help.shopify.com/en/manual/payments/shopify-payments/onboarding
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q1.1.7** — Where will you sell at launch? *(required · client)*
+Drives: gate Marketplaces
 
 **Why it matters.** Launch channels decide how much is built beyond the online store. Each channel is its own set-up and its own backlog: POS, Shop, Marketplace Connect, Facebook and Instagram, Google and YouTube, TikTok, or a headless front end on the Storefront API.
 
@@ -255,6 +256,21 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplaces/m
 | Sales channels (Online Store, POS, Shop, Marketplace Connect, Facebook & Instagram, Google & YouTube, TikTok) | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect |
 | Headless channel (Hydrogen / Storefront API) | Basic |  | https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/manage-headless-channels |
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
+
+**Q1.1.9** — Which marketplaces should the catalogue be listed on? *(recommended · client)*
+Drives: gate Marketplaces
+Asked only if Q1.1.7 includes Marketplaces
+
+**Why it matters.** Each marketplace is its own listing work: products mapped to its categories and attributes, prices and rules per marketplace, and orders and stock tested both ways. Connecting Shopify’s own channels is configuration; a marketplace is not.
+
+**Limits.** Marketplace Connect lists on Amazon and eBay, and on Target Plus and Walmart in the United States only; new connections to Etsy cannot be made. It sells in any region and currency the chosen marketplace offers.
+
+Sources: https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shopify Marketplace Connect: Amazon, eBay, Target Plus and Walmart | Basic | Target Plus and Walmart are United States only; new Etsy connections cannot be made | https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect |
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q1.1.8** — How many distinct customer-facing brands does this engagement need a Shopify storefront for? *(required · client)*
 Drives: gate More than one Shopify store · L trigger More than one Shopify store · rule 11.29 (STOP)

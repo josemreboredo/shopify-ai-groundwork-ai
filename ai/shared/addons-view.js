@@ -44,6 +44,7 @@ const merge = (section, values) => (doc) => ({ ...doc, [section]: { ...doc[secti
 export const ASKS = {
   markets: { limits: oneMore('markets') },
   store_estate: { limits: (l) => ({ ...l, stores: (l.stores ?? 1) + 1 }) },
+  marketplaces: { doc: merge('channels', { launch: ['online_store', 'marketplaces'], marketplaces: ['amazon'] }) },
   /* A second checkout currency exists only on a further market, and the
      market is priced with it — so it is asked against a further market that
      keeps the first market's currency. */

@@ -30,6 +30,7 @@
     "Q1.1.5": "1e12665bde34",
     "Q1.1.6": "ec6ff91982c0",
     "Q1.1.7": "717ee016ac92",
+    "Q1.1.9": "cc2460dfe7a3",
     "Q1.1.8": "14b2c583b63d",
     "Q1.2.1": "80ed02e82a2a",
     "Q1.2.2": "9afe7458d3ae",
@@ -797,7 +798,11 @@
     "product_descriptions": "Descriptions produits",
     "image_alt_text": "Textes alternatifs des images",
     "seo_fields": "Titre SEO et méta-description",
-    "attributes_from_supplier_data": "Attributs issus des données fournisseurs, en métachamps de catégorie"
+    "attributes_from_supplier_data": "Attributs issus des données fournisseurs, en métachamps de catégorie",
+    "amazon": "Amazon",
+    "ebay": "eBay",
+    "target_plus": "Target Plus (États-Unis uniquement)",
+    "walmart": "Walmart (États-Unis uniquement)"
   },
   "questions": {
     "Q0.1.1": {
@@ -1042,6 +1047,14 @@
           }
         ],
         "limits": "Les canaux de vente standard et le canal headless sont disponibles dès Basic. Les vitrines agentiques (ChatGPT, Google AI Mode et Gemini, Copilot, Meta) sont actives par défaut pour les boutiques éligibles : « agents d’achat IA » relève donc généralement d’une décision sur ce que l’on laisse activé, pas d’un développement."
+      }
+    },
+    "Q1.1.9": {
+      "text": "Sur quelles places de marché le catalogue doit-il être référencé ?",
+      "help": "Référencé via Shopify Marketplace Connect, avec les commandes et le stock synchronisés avec Shopify.",
+      "teach": {
+        "why": "Chaque place de marché est un travail de référencement à part : produits rattachés à ses catégories et attributs, prix et règles par place de marché, commandes et stock testés dans les deux sens. Connecter les canaux de Shopify relève de la configuration ; une place de marché, non.",
+        "limits": "Marketplace Connect référence sur Amazon et eBay, et sur Target Plus et Walmart aux États-Unis uniquement ; de nouvelles connexions à Etsy ne sont pas possibles. On vend dans toute région et devise proposées par la place de marché choisie."
       }
     },
     "Q1.1.8": {

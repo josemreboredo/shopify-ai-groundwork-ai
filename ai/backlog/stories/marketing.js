@@ -4,6 +4,10 @@
 
 import { list, listOr, languages, isMigration, recommendedApps, themeName } from './helpers.js';
 
+/** Shopify's own sales channels the client sells on, as a reader names them. */
+const CHANNEL = { shop_app: 'Shop', google_youtube: 'Google & YouTube', facebook_instagram: 'Facebook & Instagram', tiktok: 'TikTok' };
+const channels = (doc) => (doc.channels?.launch ?? []).filter((c) => CHANNEL[c]);
+
 const trackers = (doc) => [...(doc.marketing?.analytics?.platforms ?? []), ...(doc.marketing?.analytics?.pixels ?? [])];
 const reviewsApp = (doc) => doc.marketing?.reviews?.app ?? recommendedApps(doc).find((a) => /review/i.test(`${a.requirement ?? ''} ${a.name}`))?.name;
 
@@ -110,5 +114,42 @@ export default [
     security_flags: ['pii'],
     applies: (doc) => Boolean(reviewsApp(doc)),
     agent_prompt: (doc) => `Install ${reviewsApp(doc)} and add its theme app extension blocks (star rating on product cards and product page, review widget) through the theme editor — no pasted snippets. Configure review request timing after delivery, languages, moderation, verified-buyer badges and structured data (avoid duplicate Product schema with the theme).${doc.marketing?.reviews?.ugc ? ' Configure UGC collection with explicit rights consent.' : ''}${isMigration(doc) && (doc.migration?.data ?? []).includes('reviews') ? ' Historical reviews are imported in the migration epic.' : ''}${doc.marketing?.esp?.platform ? ` Connect review events to ${doc.marketing.esp.platform}.` : ''}`,
+  },
+  {
+    /* In every pack: Shopify's own channels are configuration, not a build. */
+    key: 'LWC-MKG-006',
+    epic: 'marketing',
+    title: (doc) => `Connect the sales channels: ${listOr(channels(doc).map((c) => CHANNEL[c]), 'the ones the client sells on')}`,
+    user_story: 'As the marketing lead, I want our products live on the channels we sell on from launch day, so that the store does not open on the web alone.',
+    acceptance_criteria: (doc) => [
+      `Given the channels in scope (${listOr(channels(doc).map((c) => CHANNEL[c]), 'to confirm')}), when each is connected, then its account is linked, the catalogue is synced and a sample of products is checked in the channel itself`,
+      'Given each channel, when it is handed over, then the client knows who owns it, what it costs them to run, and that the channel app is made by Google, Meta or TikTok rather than by Shopify where that is so',
+    ],
+    gaia_tier: 'T1',
+    points: 3,
+    owner: 'consultant',
+    depends_on: ['LWC-CAT-001'],
+    spec_refs: ['/channels/launch'],
+    applies: (doc) => channels(doc).length > 0,
+    agent_prompt: (doc) => `Connect ${listOr(channels(doc).map((c) => CHANNEL[c]), 'the agreed channels')} for ${doc.meta?.client?.name ?? 'the store'}: link each account, sync the catalogue and check a sample of products in the channel. Google & YouTube needs a Merchant Center account and is available only in some countries and currencies; Shop lists eligible stores automatically where Shopify Payments is supported. Hand each channel over with its owner.`,
+  },
+  {
+    /* The marketplaces add-on: listing work per marketplace. */
+    key: 'LWC-MKG-007',
+    epic: 'marketing',
+    title: 'List the catalogue on the marketplaces with Marketplace Connect',
+    user_story: 'As the ecommerce lead, I want our products sold on the marketplaces our customers use, with orders and stock kept in step with Shopify, so that we sell there without keeping a second catalogue.',
+    acceptance_criteria: (doc) => [
+      `Given each marketplace (${listOr((doc.channels?.marketplaces ?? []).filter((x) => x !== 'not_sure').map((x) => x.replace(/_/g, ' ')), 'to confirm')}), when the catalogue is listed, then every product is mapped to its categories and required attributes, and the ones that fail are listed with what they miss`,
+      'Given a test order on each marketplace, when it is placed, then it arrives in Shopify, stock moves on both sides, and a cancellation and a refund flow back correctly',
+    ],
+    gaia_tier: 'T2',
+    points: 5,
+    owner: 'developer',
+    depends_on: ['LWC-MKG-006'],
+    spec_refs: ['/channels/marketplaces'],
+    gates: ['marketplaces'],
+    applies: (doc) => doc.offer?.scope_gates?.marketplaces?.active === true,
+    agent_prompt: (doc) => `List the catalogue on ${listOr((doc.channels?.marketplaces ?? []).filter((x) => x !== 'not_sure').map((x) => x.replace(/_/g, ' ')), 'the agreed marketplaces')} with Shopify Marketplace Connect. Map products to each marketplace's categories and required attributes, set prices and rules per marketplace, and test orders, stock, cancellations and refunds both ways. Target Plus and Walmart are United States only, and new Etsy connections cannot be made.`,
   },
 ];

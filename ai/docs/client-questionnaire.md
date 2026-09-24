@@ -195,6 +195,18 @@
 - [ ] None
 - [ ] Not sure yet
 
+**Q1.1.9** — Which marketplaces should the catalogue be listed on? *(recommended)*
+*Only if Q1.1.7 includes Marketplaces.*
+*Listed through Shopify Marketplace Connect, with orders and stock kept in step with Shopify.*
+
+*(tick all that apply)*
+- [ ] Amazon
+- [ ] eBay
+- [ ] Target Plus (United States only)
+- [ ] Walmart (United States only)
+- [ ] Other
+- [ ] Not sure yet
+
 **Q1.1.8** — How many distinct customer-facing brands does this engagement need a Shopify storefront for? *(required)*
 *A brand two customers would recognise as different names, logos or identities — not a market or a product line under the same brand.*
 

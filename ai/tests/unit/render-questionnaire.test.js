@@ -41,7 +41,8 @@ test('answer options read as labels, not codes; none and not sure are standard',
   for (const label of options) {
     assert.doesNotMatch(label, /_/, label);
     assert.doesNotMatch(label, /\b(b2b|dtc|pos|erp|pim|oms|3pl|wfoe|kol|sms|url|api|us|uk|eu)\b/, `acronym not capitalised: ${label}`);
-    assert.match(label, /^([A-Z0-9i]|checkout\.liquid)/, `label must start with a capital: ${label}`);
+    // Brands keep their own spelling: iPhone, eBay.
+    assert.match(label, /^([A-Z0-9i]|eBay|checkout\.liquid)/, `label must start with a capital: ${label}`);
   }
   assert.doesNotMatch(client, /^- \[ \] (Unknown|Undecided|None other|None of these)$/m);
 });

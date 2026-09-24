@@ -195,6 +195,18 @@
 - [ ] Aucun
 - [ ] Pas encore certain
 
+**Q1.1.9** — Sur quelles places de marché le catalogue doit-il être référencé ? *(recommended)*
+*Only if Q1.1.7 includes Marketplaces.*
+*Référencé via Shopify Marketplace Connect, avec les commandes et le stock synchronisés avec Shopify.*
+
+*(tick all that apply)*
+- [ ] Amazon
+- [ ] eBay
+- [ ] Target Plus (États-Unis uniquement)
+- [ ] Walmart (États-Unis uniquement)
+- [ ] Autre
+- [ ] Pas encore certain
+
 **Q1.1.8** — Pour combien de marques distinctes, visibles par vos clients, cet engagement a-t-il besoin d’une boutique Shopify ? *(required)*
 *Une marque que deux clients reconnaîtraient comme des noms, logos ou identités différents — pas un marché ni une gamme de produits sous la même marque.*
 

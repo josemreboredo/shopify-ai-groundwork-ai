@@ -157,7 +157,7 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Theme",
       "triggered_by": "An estimate below the Scale floor: the Foundation, with whatever goes past it as add-ons",
-      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
+      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
         "min": 31000,
         "max": 38000,
@@ -184,7 +184,8 @@
             "The domain connected with SSL, and the redirect from whatever address customers use today",
             "Tax, duties and the shipping profile configured for the launch market",
             "Payment providers connected, tested with a real transaction, then switched live",
-            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team"
+            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team",
+            "The sales channels the client sells on connected — Shop, Google & YouTube, Facebook & Instagram, TikTok — with the catalogue synced and checked in each"
           ]
         },
         {
@@ -328,7 +329,7 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Customisable",
       "triggered_by": "An estimate from the Scale floor, or a further store — the recommended start for a brand that already sells",
-      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
+      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
         "min": 50000,
         "max": 105000,
@@ -354,7 +355,8 @@
             "The store topology derived from the business facts and written down with its assumptions — one store with Shopify Markets by default",
             "The selling entity per market and the tax-registration footprint, agreed before the catalogue is built",
             "A second store only where the business facts force one — an add-on here, priced per store — with what it costs to run",
-            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team"
+            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team",
+            "The sales channels the client sells on connected — Shop, Google & YouTube, Facebook & Instagram, TikTok — with the catalogue synced and checked in each"
           ]
         },
         {
@@ -516,7 +518,7 @@
       "delivery_track": "liquid",
       "build_label": "Custom Liquid",
       "triggered_by": "An estimate from the Flagship floor — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Sales channels connected: Shop, Google & YouTube, Facebook & Instagram and TikTok, with the catalogue synced, where each channel is available to the store · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 106000,
         "max": 214000,
@@ -541,7 +543,8 @@
             "The commerce engine on Shopify set up as in Ecommerce Scale: plan, topology, selling entity and tax footprint per market",
             "A staging store and a theme release path, with who may publish and how a change gets back out again",
             "Users, roles and permissions per market, agreed before anyone needs them rather than after",
-            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team"
+            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team",
+            "The sales channels the client sells on connected — Shop, Google & YouTube, Facebook & Instagram, TikTok — with the catalogue synced and checked in each"
           ]
         },
         {
@@ -768,6 +771,27 @@
         "merkle_line": 1,
         "source": "https://help.shopify.com/en/manual/organization-settings/expansion-stores",
         "note": "A Plus contract carries one main store and nine expansion stores at no extra licence cost, and every expansion store must be identical to the main brand. The cost of a second store is not the licence: apps are billed per store, theme licences cannot be shared, and expansion stores share no data, so every integration is wired again."
+      }
+    },
+    {
+      "id": "marketplaces",
+      "label": "Marketplaces",
+      "condition": "The catalogue listed on marketplaces through Shopify Marketplace Connect — Amazon and eBay, and Target Plus and Walmart in the United States only; new Etsy connections cannot be made. Each marketplace is its own listing work: products mapped to its categories and attributes, prices and rules per marketplace, orders and stock tested both ways. Shopify’s own channels — Shop, Google & YouTube, Facebook & Instagram, TikTok — are configuration and in every pack.",
+      "inputs": [
+        "/channels/launch",
+        "/channels/marketplaces"
+      ],
+      "modifier": "+Marketplaces",
+      "sources": [
+        "https://help.shopify.com/en/manual/online-sales-channels/shop",
+        "https://help.shopify.com/en/manual/online-sales-channels/google",
+        "https://help.shopify.com/en/manual/online-sales-channels/facebook-instagram-by-meta",
+        "https://help.shopify.com/en/manual/online-sales-channels/tiktok",
+        "https://help.shopify.com/en/manual/online-sales-channels/marketplaces/marketplace-connect"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "help.shopify.com"
       }
     },
     {
@@ -1375,6 +1399,25 @@
       "max_units": {
         "value": 9,
         "why": "A Shopify Plus contract carries nine expansion stores; every one is charged, with three counted integrations (rule 11.7 stops a fourth) and a bespoke template set to redeploy"
+      }
+    },
+    {
+      "id": "+Marketplaces",
+      "gate": "marketplaces",
+      "description": "Each marketplace listed through Shopify Marketplace Connect: products mapped to its categories and attributes, prices and listing rules per marketplace, and orders and stock tested both ways before it goes live.",
+      "effort_weeks": {
+        "min": 1,
+        "max": 4
+      },
+      "price_add": {
+        "min": 6300,
+        "max": 25200
+      },
+      "per_marketplace_weeks": 1,
+      "per_marketplace_price": 6300,
+      "max_units": {
+        "value": 4,
+        "why": "Marketplace Connect lists on four marketplaces: Amazon, eBay, Target Plus and Walmart"
       }
     },
     {
@@ -2734,6 +2777,23 @@
         "addon_label": "Each further store"
       },
       {
+        "id": "sales_channels",
+        "what": "Sales channels",
+        "gate": "marketplaces",
+        "group": "Markets and stores",
+        "shopify_limit": "Shop lists eligible stores where Shopify Payments is supported; Google & YouTube is available in certain countries and currencies and needs a Merchant Center account; Facebook & Instagram is free on every plan, subject to eligibility",
+        "S": "Shop, Google & YouTube, Facebook & Instagram and TikTok connected, with the catalogue synced",
+        "M": "Shop, Google & YouTube, Facebook & Instagram and TikTok connected, with the catalogue synced",
+        "L": "Shop, Google & YouTube, Facebook & Instagram and TikTok connected, with the catalogue synced",
+        "note": "Connected in every pack, because each is a channel app to configure rather than a build: the account linked, the catalogue synced and checked in the channel. The channel apps are made by Google, Meta and TikTok, and a channel’s own ads are the client’s. Marketplaces are listing work per marketplace — the marketplaces add-on.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Each marketplace"
+      },
+      {
         "id": "brands",
         "what": "Customer-facing brands",
         "gate": null,
@@ -3194,6 +3254,18 @@
           "L"
         ],
         "note": "Sold on M, and included in L up to three stores. One store already serves every market; a second is needed only when the requirements force it, which the engine derives from the market and brand answers. Each further store is its own set-up, users, domain, tax and payments, the theme deployed and kept in step, and every integration wired again — expansion stores share no data. Below Shopify Plus every store carries its own plan; a Plus contract includes nine expansion stores of the same brand. Every app the store runs is installed and configured again in each further store, priced per app and store."
+      },
+      {
+        "id": "marketplaces",
+        "gate": "marketplaces",
+        "what": "Each marketplace, through Marketplace Connect",
+        "description": "The catalogue listed on Amazon, eBay, Target Plus or Walmart through Shopify Marketplace Connect, mapped, priced and tested per marketplace.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Shopify’s own channels — Shop, Google & YouTube, Facebook & Instagram, TikTok — are in every pack. Target Plus and Walmart are United States only. The marketplaces’ and the app’s own fees are the client’s."
       },
       {
         "id": "multi_currency",

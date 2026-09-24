@@ -108,6 +108,11 @@ give the final figure, and the commercial team adds contingency and services suc
   on the carrier’s scan, customers editing orders, a branded tracking page, warranty claims) and that app reconciled with
   the warehouse and finance (advanced, 1.5–2.5 weeks). ACME, which runs Loop Returns with inspection and finance sync, rises
   from CHF 90–121k to 100–138k and stays an M.
+- **Sales channels in every pack** (2026-09-24): discovery asked where the client sells and no story delivered a channel.
+  Shopify’s own channels are configuration, so every pack connects them — Shop, Google & YouTube, Facebook & Instagram and
+  TikTok, with the catalogue synced (a Sales channels row, a line in each pack’s scope and a set-up deliverable). Marketplaces
+  are listing work per marketplace: the `marketplaces` add-on, a build week each through Marketplace Connect (Amazon, eBay,
+  and Target Plus and Walmart in the United States only), with question Q1.1.9 asking which.
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,
