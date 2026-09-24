@@ -89,8 +89,9 @@ describe('classification edge cases', () => {
     // Shopify build while Shopify holds the content — what leaves is exit rule
     // 11.26's business.
     const head = classifyOffer({ ...base(), design: { headless_required: true, headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects' } } });
-    assert.equal(head.code, 'M', 'one market on Hydrogen is a Scale budget, not a Flagship one');
-    assert.deepEqual(head.addons.map((a) => a.gate).sort(), ['hydrogen', 'storefront_design']);
+    assert.equal(head.code, 'L', 'a React front end designed in full reaches the Flagship budget, even on one market');
+    assert.ok(head.price_band.min >= offering.offers.L.price_band.min, 'by its budget, not by a rule that puts it there');
+    assert.deepEqual(head.addons.map((a) => a.gate), ['hydrogen'], 'L builds the full template set already');
     assert.equal(head.delivery_track, 'hydrogen');
     // And the same offer without it is the same offer, on a theme.
     assert.equal(classifyOffer(base()).delivery_track, 'liquid');

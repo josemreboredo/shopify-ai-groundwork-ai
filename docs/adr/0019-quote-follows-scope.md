@@ -78,6 +78,11 @@ give the final figure, and the commercial team adds contingency and services suc
   engagement L — the headless L trigger and the classification rule it drove are gone, and the name follows the budget like
   any other add-on. It brings the full template set with it, bought alongside it in S and M. L's build label is "Custom
   Liquid"; the track is still an answer (`offer.delivery_track`), read off the hydrogen gate.
+- **Hydrogen, challenged per pack** (2026-09-24): 5–7 build weeks in two parts — the React front end over a Liquid build
+  of the same templates (3–4) and the back end a theme never needs, API queries, hooks, content, cache revalidation and
+  events (2–3) — plus 10–15 design system days. Priced against each pack's own promise: in S it brings the full template
+  set designed (CHF 69–103k), in M it builds on M's template design days (61–88k), in L it only swaps the custom Liquid
+  theme (39–55k).
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,

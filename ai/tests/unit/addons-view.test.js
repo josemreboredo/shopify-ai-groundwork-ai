@@ -137,18 +137,20 @@ describe('the add-on services, pack by pack', () => {
     }
   });
 
-  test('Hydrogen is sold in every pack, the same line in each, with the design system architect’s days', () => {
+  test('Hydrogen costs what each pack does not already build: most in S, least in L', () => {
+    /* S goes from a configured theme to a React front end designed in full; M
+       builds on the template design days it has; L swaps its custom Liquid
+       theme, and its designer designs either way. */
     const m = offering.modifiers.find((x) => x.gate === 'hydrogen');
-    for (const code of CODES) {
-      const c = cell(priced, 'hydrogen', code);
-      assert.deepEqual(c.weeks, m.effort_weeks, code);
-      assert.deepEqual(c.system_days, m.system_days, code);
-      assert.equal(c.design_days, undefined, `${code}: the templates are the full set's, not Hydrogen's`);
-    }
-    // S and M buy the full template set with it; L has it already.
-    assert.equal(cell(view, 'hydrogen', 'S').on_top_of, 'the full template set');
-    assert.equal(cell(view, 'hydrogen', 'M').on_top_of, 'the full template set');
-    assert.equal(cell(view, 'hydrogen', 'L').on_top_of, undefined);
+    const [s, mm, l] = CODES.map((code) => cell(priced, 'hydrogen', code));
+    assert.ok(s.price.min > mm.price.min && mm.price.min > l.price.min, 'S > M > L');
+    assert.deepEqual(l.weeks, m.effort_weeks, 'in L it is the React front end and the back end alone');
+    assert.equal(l.design_days, undefined, 'L designs every template already');
+    for (const c of [s, mm, l]) assert.deepEqual(c.system_days, m.system_days, 'the design system is tokenised in every pack');
+    assert.ok(mm.design_days.max < s.design_days.max, 'M has design days for its templates already');
+    assert.equal(s.with, 'the full template set, designed');
+    assert.equal(mm.with, 'the full template set, designed');
+    assert.equal(l.with, undefined);
   });
 
   test('hypercare and apps: what each pack includes, and what one more costs', () => {

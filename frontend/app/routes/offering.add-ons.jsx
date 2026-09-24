@@ -35,6 +35,7 @@ function asides(c) {
     c.included ? `past the ${c.included.count} ${c.included.noun} included` : null,
     c.on_top_of ? `on top of ${c.on_top_of}` : null,
     c.instead_of ? `instead of ${c.instead_of}` : null,
+    c.with ? `with ${c.with}` : null,
     c.system_days ? dayCount(c.system_days, 'design system day') : null,
     c.design_days ? dayCount(c.design_days, 'design day') : null,
   ].filter(Boolean);
@@ -74,7 +75,8 @@ function Cells({ cell, pack, pricing, currency }) {
 /** What the add-on covers, its tiers and its conditions, shut until asked for. */
 function Covers({ addon }) {
   const tiers = addon.rows.filter((r) => r.tier);
-  if (!addon.description && !addon.note && !tiers.length) return null;
+  const parts = addon.parts ?? [];
+  if (!addon.description && !addon.note && !tiers.length && !parts.length) return null;
   return (
     <details className="pack-why">
       <summary>What this covers</summary>
@@ -85,6 +87,16 @@ function Covers({ addon }) {
             <div key={r.id}>
               <dt>{r.label}</dt>
               <dd>{r.description}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+      {parts.length ? (
+        <dl className="addon-tier-notes">
+          {parts.map((p) => (
+            <div key={p.what}>
+              <dt>+{weeksNear(p.weeks)} wk</dt>
+              <dd>{p.what}</dd>
             </div>
           ))}
         </dl>

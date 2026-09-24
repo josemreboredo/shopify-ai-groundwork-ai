@@ -336,6 +336,9 @@ describe('the closed scope each pack sells', () => {
        and every L band carried a "+". It is a gate now: the owned front end in
        build weeks, the design system in a design system architect's days. */
     const m = offering.modifiers.find((x) => x.gate === 'hydrogen');
+    // The weeks are their parts: the React front end and the back end a theme never needs.
+    for (const k of ['min', 'max']) assert.equal(m.parts.reduce((a, p) => a + p.weeks[k], 0), m.effort_weeks[k], `Hydrogen ${k}: the parts do not add up`);
+    assert.ok(m.parts.some((p) => /Back end/.test(p.what)), 'the back end is its own part');
     const l = classifyOffer(engagementAt(limits.L));
     const h = classifyOffer(engagementAt({ ...limits.L, headless: true }));
     assert.equal(h.code, 'L');
@@ -351,7 +354,10 @@ describe('the closed scope each pack sells', () => {
     assert.deepEqual(addons.find((a) => a.gate === 'hydrogen').available_in, ['S', 'M', 'L']);
     assert.ok(!offering.l_triggers.some((t) => t.id === 'headless'), 'it no longer names the pack');
     const bare = classifyOffer(engagementAt({ ...limits.S, headless: true }));
-    assert.notEqual(bare.code, 'L', 'one market on Hydrogen is named by its budget');
+    // Named by its budget, not forced: a React front end designed in full
+    // reaches the Flagship floor on its own, even on one market.
+    assert.equal(bare.code, 'L');
+    assert.ok(bare.price_band.min >= offering.offers.L.price_band.min, 'it reaches the Flagship budget rather than being put there');
     assert.ok(bare.addons.some((a) => a.gate === 'hydrogen'));
     assert.equal(bare.scope_gates.storefront_design.tier, 'bespoke');
   });

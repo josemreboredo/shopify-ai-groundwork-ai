@@ -901,7 +901,7 @@
     {
       "id": "hydrogen",
       "label": "Headless storefront on Hydrogen",
-      "condition": "A headless storefront is required and it is still a Shopify build: Hydrogen on the Storefront API, hosted on Oxygen, with content in Shopify. It is built instead of a Liquid theme and needs every template designed, so it carries the full template set with it; the design system is created in Figma and tokenised by a design system architect. It is sold in every pack, and the engagement is named after the pack its budget reaches like any other. Content or a front end outside Shopify is Merkle Arc (rule 11.26).",
+      "condition": "A headless storefront is required and it is still a Shopify build: Hydrogen on the Storefront API, hosted on Oxygen, with content in Shopify. It is built instead of a Liquid theme and needs every template designed, so it carries the full template set with it: in S it replaces a configured theme with a React front end designed in full, in M it builds on the design days M already has for its templates, and in L it replaces the custom Liquid theme L builds anyway. The design system is created in Figma and tokenised by a design system architect, and the back end wires every query, hook and event a theme never needs. It is sold in every pack, and the engagement is named after the pack its budget reaches like any other. Content or a front end outside Shopify is Merkle Arc (rule 11.26).",
       "inputs": [
         "/design/headless_required",
         "/design/headless/framework"
@@ -1417,19 +1417,35 @@
     {
       "id": "+Hydrogen",
       "gate": "hydrogen",
-      "description": "The storefront built headless on Hydrogen instead of a Liquid theme: the route structure, the rendering and caching model, an owned component library over the design system’s tokens, the Storefront API queries per template, locale routing per market, and Oxygen environments with a deployment pipeline. On top of the storefront design, which it needs in full.",
+      "description": "The storefront built as a React front end on Hydrogen instead of a Liquid theme, on top of the full template set it needs designed: the front end over a Liquid build of the same templates, and the back end a theme never needs — every query, hook and event wired to Shopify’s APIs.",
       "effort_weeks": {
-        "min": 4,
-        "max": 6
+        "min": 5,
+        "max": 7
       },
       "price_add": {
-        "min": 25200,
-        "max": 37800
+        "min": 31500,
+        "max": 44100
       },
       "system_days": {
         "min": 10,
         "max": 15
-      }
+      },
+      "parts": [
+        {
+          "what": "React front end, over a Liquid build of the same templates: the component library from the tokens, routes, server rendering and caching, locale routing per market, Oxygen environments and the deployment pipeline",
+          "weeks": {
+            "min": 3,
+            "max": 4
+          }
+        },
+        {
+          "what": "Back end: Storefront API queries per template, cart and Customer Account API hooks, the content model read from metaobjects, cache revalidation on webhooks, and analytics events",
+          "weeks": {
+            "min": 2,
+            "max": 3
+          }
+        }
+      ]
     },
     {
       "id": "+Integration",
@@ -3045,7 +3061,7 @@
           "M",
           "L"
         ],
-        "note": "Sold in every pack. It needs every template designed, so it brings the full template set with it — bought alongside it in S and M, already in L. The engagement is named after the pack its budget reaches. Content or a front end outside Shopify is Merkle Arc (rule 11.26)."
+        "note": "Sold in every pack, and not the same work in each: in S it replaces a configured theme with a React front end designed in full, in M it builds on the design days M already has, and in L it replaces the custom Liquid theme — the designer designs either way. It brings the full template set with it. The engagement is named after the pack its budget reaches. Content or a front end outside Shopify is Merkle Arc (rule 11.26)."
       },
       {
         "id": "sku_complexity",

@@ -80,12 +80,13 @@ export const ASKS = {
     limits: (l) => ({ ...(l.storefront === 'all_templates' ? { ...l, storefront: 'brand_only' } : l), custom_templates: (l.custom_templates ?? 0) + 1 }),
     instead: 'the custom theme',
   },
-  /* A headless storefront designs every template, so in S and M it is asked on
-     top of the full template set — the Hydrogen line is Hydrogen alone. */
+  /* Against each pack's own promise, because it is not the same work in each:
+     S goes from a configured theme to a React front end designed in full, M
+     builds on the template design days it has, L swaps its custom Liquid
+     theme. A headless storefront brings the full template set with it. */
   hydrogen: {
-    base: { limits: (l) => ({ ...l, storefront: 'all_templates' }) },
-    limits: (l) => ({ ...l, storefront: 'all_templates', headless: true }),
-    needs: 'the full template set',
+    limits: (l) => ({ ...l, headless: true }),
+    brings: { gate: 'storefront_design', tier: 'bespoke', text: 'the full template set, designed' },
   },
   sku_complexity: {
     tiers: {
@@ -188,6 +189,8 @@ function cellFor(addon, ask, code, pricing) {
   const day = offering.pricing.design.day_price;
   const systemDay = offering.pricing.design.system_architect.day_price;
   const reshaped = JSON.stringify(build(ask.base, limits)) !== JSON.stringify(engagementAt(limits));
+  // What the add-on brings with it, where the pack does not already hold it.
+  const brings = ask.brings && before.scope_gates[ask.brings.gate]?.tier !== ask.brings.tier ? ask.brings.text : null;
   const needsMore = ask.needs && reshaped;
   return {
     state: 'priced',
@@ -202,6 +205,7 @@ function cellFor(addon, ask, code, pricing) {
     } : {}),
     ...(needsMore ? { on_top_of: ask.needs } : {}),
     ...(ask.instead && reshaped ? { instead_of: ask.instead } : {}),
+    ...(brings ? { with: brings } : {}),
   };
 }
 
@@ -224,6 +228,8 @@ function gateAddon(addon, pricing) {
     gate: addon.gate,
     what: addon.what,
     description: addon.description ?? (mods.length === 1 ? mods[0].description : null),
+    // Where one modifier is built from parts, the parts, so a figure can be argued with.
+    ...(mods.length === 1 && mods[0].parts ? { parts: mods[0].parts.map((p) => ({ what: p.what, weeks: p.weeks })) } : {}),
     note: addon.note ?? null,
     rows,
   };
