@@ -17,6 +17,7 @@
  */
 
 import { offering } from '../schema/index.js';
+import { lowerFirst } from '../engine/text.js';
 
 const STAGES = {
   rfp: {
@@ -124,11 +125,10 @@ export function reestimate(before, after, { pricing = false } = {}) {
   const dropped = before.addons.filter((a) => !addonsNow.has(a.gate)).map((a) => a.label);
 
   const pack = before.code === after.code ? `Still ${after.name}` : `${before.name} → ${after.name}`;
-  const lower = (s) => s.charAt(0).toLowerCase() + s.slice(1);
   const headline = [
     pack,
-    ...(added.length ? [`plus ${added.map(lower).join(', ')}`] : []),
-    ...(dropped.length ? [`no longer ${dropped.map(lower).join(', ')}`] : []),
+    ...(added.length ? [`plus ${added.map(lowerFirst).join(', ')}`] : []),
+    ...(dropped.length ? [`no longer ${dropped.map(lowerFirst).join(', ')}`] : []),
   ].join(', ');
 
   return {

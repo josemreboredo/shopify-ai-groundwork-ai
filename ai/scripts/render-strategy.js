@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { offering } from '../schema/index.js';
+import { lowerFirst } from '../engine/text.js';
 
 const PATH = fileURLToPath(new URL('../../docs/strategy.md', import.meta.url));
 const k = (n) => `${Math.round(n / 100) / 10}k`.replace('.0k', 'k');
@@ -25,7 +26,7 @@ export function strategyBlocks(o = offering) {
     '',
     'Whatever goes past the named pack’s promise is listed as add-ons, so a re-estimate that finds a second store reads as the same pack with a store more. The packs are what a conversation opens with; the quote is what the answers add up to.',
   ].join('\n');
-  const rows = o.modifiers.map((m) => `| \`${m.id}\` — ${m.description.charAt(0).toLowerCase()}${m.description.slice(1)} | +${span(m.effort_weeks, ' wk')} | +CHF ${k(m.price_add.min)}${m.price_add.max === m.price_add.min ? '' : `–${k(m.price_add.max)}`} |`);
+  const rows = o.modifiers.map((m) => `| \`${m.id}\` — ${lowerFirst(m.description)} | +${span(m.effort_weeks, ' wk')} | +CHF ${k(m.price_add.min)}${m.price_add.max === m.price_add.min ? '' : `–${k(m.price_add.max)}`} |`);
   const modifiers = ['| Modifier | Effort add | Price add |', '|---|---|---|', ...rows].join('\n');
   return { classification, modifiers };
 }

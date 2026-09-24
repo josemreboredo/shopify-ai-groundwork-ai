@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { requireUser } from '../auth.server.js';
 import { offeringView } from '../../../ai/shared/offering-view.js';
 import { scopeCatalogue, scopeTotals } from '../../../ai/shared/scope-view.js';
+import { lowerFirst } from '../../../ai/engine/text.js';
 import { pageTitle } from '../brand.js';
 import { SEGMENTS, TRACK, band, segmentOf, weeks } from '../offering.js';
 import { Boundaries, Channels, OfferScale, ScopeLimits, ScopeTable } from '../components/diagram.jsx';
@@ -146,7 +147,7 @@ export default function OfferingSegment({ loaderData }) {
           <li><strong>{weeks(offer.duration_weeks)}</strong><span>weeks, end to end</span></li>
           {/* The team a build week pays for, so the band reads as people and
               weeks rather than as a package price. Acronyms keep their case. */}
-          <li><strong>≈{offer.team.people} people</strong><span>full time for those weeks, offshore: {offer.team.roles.map((r) => (/^[A-Z]{2,}/.test(r) ? r : r.charAt(0).toLowerCase() + r.slice(1))).join(', ')}</span></li>
+          <li><strong>≈{offer.team.people} people</strong><span>full time for those weeks, offshore: {offer.team.roles.map(lowerFirst).join(', ')}</span></li>
           {view.pricing && offer.price_band
             ? <li><strong>{band(offer.price_band, currency)}</strong><span>internal price band — never in a client document</span></li>
             : <li><strong>{TRACK[offer.delivery_track] ?? offer.delivery_track}</strong><span>how the storefront is built</span></li>}

@@ -27,6 +27,7 @@ import { statedAssumptions } from './assumptions.js';
 import { selectStories } from '../backlog/select.js';
 import { offering, questionBank } from '../schema/index.js';
 import { answeredAt } from '../engine/knowledge.js';
+import { lowerFirst } from '../engine/text.js';
 
 const SEVERITY = { STOP: 0, FLAG: 1, WARN: 2 };
 const SEVERITY_LABEL = {
@@ -220,9 +221,6 @@ function overflowOf(doc) {
   };
 }
 
-/** Evidence written as a clause inside a sentence, not as its own. */
-const lower = (text) => (text ? text.charAt(0).toLowerCase() + text.slice(1) : text);
-
 /**
  * Where the architect stands, and the facts he stands on.
  *
@@ -298,8 +296,8 @@ function recommend({ documents, answered, fromDocuments, unconfirmed, openTopics
     }
     if (overrun) {
       why.push(named.length
-        ? `On top of that, the scope as a whole outgrew the offers: ${lower(overrun.evidence)}.`
-        : `No single requirement is outside the offers — what stops the price is the shape of the whole: ${lower(overrun.evidence)}.`);
+        ? `On top of that, the scope as a whole outgrew the offers: ${lowerFirst(overrun.evidence)}.`
+        : `No single requirement is outside the offers — what stops the price is the shape of the whole: ${lowerFirst(overrun.evidence)}.`);
     }
     return said(
       'not a standard bid',

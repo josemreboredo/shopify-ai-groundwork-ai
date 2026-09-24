@@ -10,6 +10,7 @@
 import { offering } from '../schema/index.js';
 import { picked } from './values.js';
 import { promiseOf } from './promise.js';
+import { lowerFirst } from './text.js';
 
 const COUNTED = new Set(offering.integration_definition.counted_categories);
 const NON_MIGRATION_SOURCES = new Set(['none', 'shopify']);
@@ -1140,7 +1141,7 @@ export function classifyOffer(doc) {
   const { code, addons } = packFor(priced, quoteFor);
   const quote = quoteFor(code);
   const offer = offering.offers[code];
-  const addonLabels = addons.map((a) => a.label.charAt(0).toLowerCase() + a.label.slice(1));
+  const addonLabels = addons.map((a) => lowerFirst(a.label));
   const rationale = [
     addons.length
         ? `${offer.name} plus ${addonLabels.join('; ')}`

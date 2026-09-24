@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 
 import { requireUser } from '../auth.server.js';
 import { estimationView } from '../../../ai/shared/estimation-view.js';
+import { lowerFirst } from '../../../ai/engine/text.js';
 import { pageTitle } from '../brand.js';
 import { band, chf, chfSpan, weeks, weeksNear } from '../offering.js';
 import { OfferingNav } from '../components/offering-nav.jsx';
@@ -105,7 +106,7 @@ export default function Estimation({ loaderData }) {
           <li>Developers build and configure: front end for templates, sections and the checkout, back end for integrations, data and apps.</li>
           <li>QA is part of the team, not a service added on top: test cases, regression and the release checks every pack carries.</li>
           <li>The project manager, business analyst and solution architect give a share of each week — enough to run it, specify it and decide its design, not a second team.</li>
-          <li>Design is not in the week. A {view.designer.sourcing} {view.designer.role.toLowerCase()} designs the storefront, priced by the design day, because most pieces of work need no design at all. On a Hydrogen storefront a {view.system_architect.role.toLowerCase()} works alongside: {view.system_architect.does.charAt(0).toLowerCase() + view.system_architect.does.slice(1)}.</li>
+          <li>Design is not in the week. A {view.designer.sourcing} {view.designer.role.toLowerCase()} designs the storefront, priced by the design day, because most pieces of work need no design at all. On a Hydrogen storefront a {view.system_architect.role.toLowerCase()} works alongside: {lowerFirst(view.system_architect.does)}.</li>
         </ul>
       </section>
 
@@ -211,7 +212,7 @@ export default function Estimation({ loaderData }) {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th scope="row">{x.code} · {x.name}{x.addons.length ? ` + ${x.addons.map((a) => a.charAt(0).toLowerCase() + a.slice(1)).join(', ')}` : ''}</th>
+                    <th scope="row">{x.code} · {x.name}{x.addons.length ? ` + ${x.addons.map(lowerFirst).join(', ')}` : ''}</th>
                     <td data-label="Weeks">{weeks(x.weeks)}</td>
                     {view.pricing ? <td data-label={currency}>{band(x.price_band, currency)}</td> : null}
                   </tr>

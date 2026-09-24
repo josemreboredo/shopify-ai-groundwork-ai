@@ -14,6 +14,8 @@
  * @module ai/shared/moved
  */
 
+import { lowerFirst } from '../engine/text.js';
+
 const words = (id) => String(id ?? '').replace(/_/g, ' ');
 
 /* The preview reports each gate as { state, evidence }; older callers passed the
@@ -59,7 +61,7 @@ export function whatMoved(before, after) {
   // What now goes past the pack, by name — the re-estimate a client can follow.
   const had = new Set(before.offer?.addons ?? []);
   for (const label of after.offer?.addons ?? []) {
-    if (!had.has(label) && after.offer?.name) moved.push(`added ${label.charAt(0).toLowerCase()}${label.slice(1)} on top of ${after.offer.name}`);
+    if (!had.has(label) && after.offer?.name) moved.push(`added ${lowerFirst(label)} on top of ${after.offer.name}`);
   }
 
   const fired = new Set((before.exit_rules ?? []).map((r) => r.rule));
