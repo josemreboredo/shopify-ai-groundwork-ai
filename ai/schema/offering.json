@@ -2820,16 +2820,17 @@
         "what": "Selling entities",
         "gate": null,
         "group": "Markets and stores",
-        "shopify_limit": "Assigning a business entity per market is Shopify Plus only, and needs Shopify Payments and the new Markets",
+        "shopify_limit": "Selling as several entities from one store needs Shopify Plus, a Shopify Payments account per entity and the new Markets: each market is assigned one entity",
         "S": "Up to 1",
         "M": "Up to 1",
-        "L": "Up to 1",
-        "note": "Every pack assumes one selling entity, because a second is a plan decision before it is a scope one (rule 11.1). Past what Plus’s own per-market entity assignment covers, a further entity is a further store — the row above. Several markets with the entities and the tax footprint still unresolved is a flag of its own (rule 11.23).",
+        "L": "Up to 3, one per store",
+        "note": "The entities follow the stores. Each store is its own Shopify account with its own domain, tax and payments, so it can sell as its own entity: one in S and M, up to three in L, and a further store on M brings its entity with it. A second entity inside one store is a plan decision before it is a scope one (rule 11.1): it needs Plus, and it decides which entity processes a market’s payments and receives its payouts. Invoicing and the tax registrations behind each entity stay the client’s. Several markets with the entities and the tax footprint still unresolved is a flag of its own (rule 11.23).",
         "sources": [
-          "https://help.shopify.com/en/manual/payments/shopify-payments/onboarding/selling-with-multiple-entities"
+          "https://help.shopify.com/en/manual/payments/shopify-payments/onboarding/selling-with-multiple-entities",
+          "https://help.shopify.com/en/manual/markets/customizations/business-entities"
         ],
         "verified": {
-          "on": "2026-09-17",
+          "on": "2026-09-24",
           "source": "help.shopify.com"
         }
       },

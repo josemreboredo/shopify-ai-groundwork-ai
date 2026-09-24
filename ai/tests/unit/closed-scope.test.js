@@ -322,6 +322,16 @@ describe('the closed scope each pack sells', () => {
     assert.equal(classifyOffer(engagementAt(limits.L)).addons.length, 0, 'L includes three stores');
   });
 
+  test('the selling entities follow the stores: one per store the pack holds', () => {
+    /* Each store is its own Shopify account, with its own tax and payments, so
+       a pack that holds three stores holds three entities. A second entity in
+       one store is Plus's per-market assignment, and no pack assumes it. */
+    const row = rows.find((r) => r.id === 'entities');
+    for (const code of ['S', 'M', 'L']) {
+      assert.equal(Number(row[code].match(/Up to (\d+)/)?.[1]), limits[code].stores, `${code}: entities and stores disagree`);
+    }
+  });
+
   test('L sells across regions: more markets than M, spread over its stores', () => {
     /* Three stores are how a brand sells across regions, and L promised three
        markets — one per store, no more than M. The ladder has to climb on the

@@ -113,6 +113,10 @@ give the final figure, and the commercial team adds contingency and services suc
   TikTok, with the catalogue synced (a Sales channels row, a line in each pack’s scope and a set-up deliverable). Marketplaces
   are listing work per marketplace: the `marketplaces` add-on, a build week each through Marketplace Connect (Amazon, eBay,
   and Target Plus and Walmart in the United States only), with question Q1.1.9 asking which.
+- **Selling entities follow the stores** (2026-09-24): the pack table said L holds one selling entity while it holds three
+  stores, and each store is its own Shopify account with its own tax and payments. L now holds up to three, one per store,
+  and a further store on M brings its entity with it. A second entity inside one store stays Plus’s per-market assignment
+  (rule 11.1), which no pack assumes. The row is text only; the quote does not change.
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,
