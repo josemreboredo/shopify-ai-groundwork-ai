@@ -2661,6 +2661,7 @@ Sources: https://help.shopify.com/en/manual/markets/rollouts
 ### 7.7 AI & agentic commerce
 
 **Q7.7.1** — Do you want your products to be found and bought inside AI assistants such as ChatGPT, Google AI or Copilot? *(recommended · client)*
+Drives: gate Agentic commerce
 
 **Why it matters.** This decides whether a new sales channel is open or closed. Shopify enrols eligible stores automatically, so doing nothing is itself a decision — the channel is on.
 
@@ -2669,14 +2670,14 @@ Sources: https://help.shopify.com/en/manual/markets/rollouts
 | Sell through AI assistants | Reaches shoppers who start in an assistant instead of a search engine; no build work — Shopify feeds the catalogue | Less control over presentation; the assistant owns the conversation; customer data is shared when checkout happens inside it |
 | Stay out | Full control of the journey and the data | Invisible where a growing share of product research starts; competitors listed instead |
 
-**Limits.** Eligibility is decided by Shopify: Starter plan or higher, not a private store, and some channels only for merchants selling to US buyers. Business-to-business products are excluded automatically.
+**Limits.** Shopify switches eligible stores on by default and decides which channels a store has; its requirements page states no country or plan requirement. A product is listed only when its data is complete (question 7.7.7).
 
 Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home · https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Agentic storefronts (active by default for eligible stores) | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q7.7.2** — Should Shopify enrol you automatically in new AI channels as they appear, or do you want to approve each one? *(recommended · client)*
 
@@ -2712,20 +2713,20 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Direct checkout in agentic channels | Basic | Per channel; ChatGPT is referral only | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q7.7.4** — Do you sell to customers in the United States? *(recommended · client)*
 
 **Why it matters.** It decides which AI channels are available at all, so it decides whether this section matters for launch.
 
-**Limits.** ChatGPT and Copilot need US buyers; Google's AI channels are limited to selected US-based shops. A European merchant selling only in Europe may not be eligible today.
+**Limits.** Shopify’s agentic storefronts requirements page states no country or plan requirement; the channels a store actually has show in its settings. Some channels used to be limited to US buyers, so confirm per channel before promising one to a client that sells only in Europe.
 
 Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements
 
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
-| Agentic channel eligibility | Basic | Starter plan or higher; some channels need US buyers | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+| Agentic channel eligibility | Basic | No country or plan requirement stated on the requirements page | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements |
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q7.7.5** — Who can accept Shopify's additional terms for selling through AI channels? *(recommended · client)*
 
@@ -2756,7 +2757,7 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Customer data shared with agentic channels on direct checkout | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/data-privacy |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q7.7.7** — How complete is your product data — titles, images, prices, descriptions and variants? *(recommended · client)*
 
@@ -2772,6 +2773,7 @@ Sources: https://help.shopify.com/en/manual/shopify-catalog/requirements
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q7.7.8** — Is important product information kept in custom fields, separate records or inside the product title (for example “Steel 40mm — Automatic”)? *(optional · client)*
+Drives: gate Agentic commerce
 
 **Why it matters.** It decides whether there is a data workstream. Attributes that matter commercially — material, size, movement — are often in custom fields or packed into titles, where an assistant cannot read them reliably.
 
@@ -2782,9 +2784,10 @@ Sources: https://help.shopify.com/en/manual/online-sales-channels/agentic-storef
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Catalog mapping for custom data | Basic |  | https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q7.7.9** — Should AI crawlers be allowed, restricted or blocked on your website? *(optional · client)*
+Drives: gate Agentic commerce
 
 **Why it matters.** Brands often want to block AI crawlers to protect content, then find their products still appear — the two routes are separate.
 
@@ -2800,9 +2803,10 @@ Sources: https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robo
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | robots.txt through the theme (robots.txt.liquid) | Basic |  | https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q7.7.10** — Do you want to control the answers AI assistants give about shipping, returns and sizing? *(optional · client)*
+Drives: gate Agentic commerce
 
 **Why it matters.** Assistants answer service questions whether or not you supply the answers. Publishing them keeps the answers right and shows what customers actually ask.
 
@@ -2816,6 +2820,7 @@ Sources: https://help.shopify.com/en/manual/promoting-marketing/knowledge-base
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q7.7.11** — Do you plan to offer your own AI shopping assistant, or connect the store to agent platforms yourself? *(optional · client)*
+Drives: gate Agentic commerce
 
 **Why it matters.** It separates “be present where assistants already are” from “build your own assistant”. The second is a project in its own right and partly on pre-release technology.
 
@@ -2827,7 +2832,7 @@ Sources: https://shopify.dev/docs/agents · https://shopify.dev/docs/apps/build/
 |---|---|---|---|
 | Universal Commerce Protocol and agent interfaces | Basic | Universal Cart API is early access | https://shopify.dev/docs/agents |
 | Storefront MCP server | Basic |  | https://shopify.dev/docs/apps/build/storefront-mcp/servers/storefront |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against shopify.dev (undefined).*
 
 **Q7.7.12** — Which Shopify AI tools do you want your team to use in day-to-day work? *(optional · client)*
 

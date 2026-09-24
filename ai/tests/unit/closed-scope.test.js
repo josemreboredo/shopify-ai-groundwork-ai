@@ -558,6 +558,27 @@ describe('the quote is the scope, priced one way', () => {
     assert.equal(at({ discount_types: ['volume_tiered'] }, 'b2b').scope_gates.custom_promotions.active, false, 'wholesale volume pricing is B2B quantity rules');
   });
 
+  test('agentic commerce: Shopify’s defaults in every pack, taking the channel on or an own agent is the add-on', () => {
+    /* The discovery asked a whole section about it and the backlog delivered
+       it, and nothing priced it. Shopify's agentic storefronts on their
+       defaults cost nothing; deciding them, or building an assistant, does. */
+    const row = offering.closed_scope.rows.find((r) => r.id === 'ai_channels');
+    assert.ok(row.S === row.M && row.M === row.L, 'the same defaults in every pack');
+    const at = (ai) => classifyOffer({ ...engagementAt(limits.S), ai });
+    assert.equal(at({ merchant_ai_tools: ['sidekick'], agentic_enrolment: 'shopify_managed' }).scope_gates.agentic_commerce.active, false, 'the defaults, and the team’s own AI tools, are not the add-on');
+    assert.equal(at({ crawler_policy: 'allow_all' }).scope_gates.agentic_commerce.active, false, 'allowing every crawler is the default too');
+    for (const ai of [{ sell_through_agents: true }, { crawler_policy: 'block' }, { knowledge_base: true }, { catalog_mapping_needed: true }]) {
+      assert.equal(at(ai).scope_gates.agentic_commerce.tier, 'standard', JSON.stringify(ai));
+    }
+    const own = at({ sell_through_agents: true, own_agent_surface: 'now' });
+    assert.equal(own.scope_gates.agentic_commerce.tier, 'advanced');
+    assert.equal(at({ own_agent_surface: 'later' }).scope_gates.agentic_commerce.active, false, 'later is scoped, not built');
+    // Every Shopify fact on the gate is dated, and the early-access part is named as such.
+    const gate = offering.scope_gates.find((g) => g.id === 'agentic_commerce');
+    assert.match(gate.verified.on, /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(gate.condition, /early access/);
+  });
+
   test('design is priced by the design day, by pack and only on the add-ons that need it', () => {
     /* A designer inside the build week would be charged on a migration as much
        as on a template set. Design is its own line: S adapts the UI to the

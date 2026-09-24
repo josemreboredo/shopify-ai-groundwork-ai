@@ -240,10 +240,10 @@
     "Q7.6.6": "e25af8e2aa25",
     "Q7.6.7": "5ae1e30ee2c4",
     "Q7.6.9": "0ac567d7bbb3",
-    "Q7.7.1": "a12ead95afad",
+    "Q7.7.1": "decef337b4da",
     "Q7.7.2": "691c890c6ef0",
     "Q7.7.3": "dd415bfaf8a9",
-    "Q7.7.4": "6bc5153eb998",
+    "Q7.7.4": "5b55dd4bf6ad",
     "Q7.7.5": "82e6c662fe2d",
     "Q7.7.6": "958ba9d5729f",
     "Q7.7.7": "7bec8f79dc78",
@@ -3092,7 +3092,7 @@
       "help": "KI-Assistenten werden zu einem Verkaufskanal. Shopify schaltet geeignete Stores bereits standardmäßig frei — das ist also eine Entscheidung zu bestätigen oder zu widerrufen, keine zu vertagen.",
       "teach": {
         "why": "Das entscheidet, ob ein neuer Verkaufskanal offen oder geschlossen ist. Shopify meldet geeignete Stores automatisch an — nichts zu tun ist also selbst eine Entscheidung: Der Kanal ist an.",
-        "limits": "Über die Eignung entscheidet Shopify: Plan Starter oder höher, kein privater Store, und manche Kanäle nur für Händler, die an US-Käufer verkaufen. Reine Geschäftskundenprodukte sind automatisch ausgeschlossen.",
+        "limits": "Shopify schaltet geeignete Stores standardmäßig frei und entscheidet, welche Kanäle ein Store hat; die Seite zu den Voraussetzungen nennt keine Länder- oder Plananforderung. Ein Produkt wird nur mit vollständigen Daten gelistet (Frage 7.7.7).",
         "options": [
           {
             "option": "Über KI-Assistenten verkaufen",
@@ -3149,10 +3149,10 @@
     },
     "Q7.7.4": {
       "text": "Verkaufen Sie an Kundinnen und Kunden in den Vereinigten Staaten?",
-      "help": "Manche KI-Kanäle stehen nur Händlern offen, die an US-Käufer verkaufen, unabhängig vom Sitz des Unternehmens.",
+      "help": "Shopify hat manche KI-Kanäle früher nach Ländern begrenzt. Die Seite zu den Voraussetzungen nennt heute keine Länderbegrenzung — prüfen Sie daher in den Einstellungen des Stores, welche Kanäle er tatsächlich hat.",
       "teach": {
         "why": "Es entscheidet, welche KI-Kanäle überhaupt verfügbar sind — und damit, ob dieser Abschnitt für den Launch überhaupt eine Rolle spielt.",
-        "limits": "ChatGPT und Copilot brauchen US-Käufer; Googles KI-Kanäle sind auf ausgewählte Shops mit Sitz in den USA begrenzt. Ein europäischer Händler, der nur in Europa verkauft, ist heute womöglich nicht geeignet."
+        "limits": "Die Seite zu den Voraussetzungen für agentische Storefronts nennt keine Länder- oder Plananforderung; welche Kanäle ein Store tatsächlich hat, zeigen seine Einstellungen. Manche Kanäle waren früher auf US-Käufer begrenzt — bestätigen Sie das daher je Kanal, bevor Sie einem Kunden, der nur in Europa verkauft, einen Kanal zusagen."
       }
     },
     "Q7.7.5": {

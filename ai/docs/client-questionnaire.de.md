@@ -2028,7 +2028,7 @@
 - [ ] Noch unklar
 
 **Q7.7.4** — Verkaufen Sie an Kundinnen und Kunden in den Vereinigten Staaten? *(recommended)*
-*Manche KI-Kanäle stehen nur Händlern offen, die an US-Käufer verkaufen, unabhängig vom Sitz des Unternehmens.*
+*Shopify hat manche KI-Kanäle früher nach Ländern begrenzt. Die Seite zu den Voraussetzungen nennt heute keine Länderbegrenzung — prüfen Sie daher in den Einstellungen des Stores, welche Kanäle er tatsächlich hat.*
 
 - [ ] Yes
 - [ ] No

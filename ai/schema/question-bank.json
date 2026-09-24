@@ -7884,9 +7884,8 @@
           }
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -7903,12 +7902,15 @@
             "cons": "Invisible where a growing share of product research starts; competitors listed instead"
           }
         ],
-        "limits": "Eligibility is decided by Shopify: Starter plan or higher, not a private store, and some channels only for merchants selling to US buyers. Business-to-business products are excluded automatically.",
+        "limits": "Shopify switches eligible stores on by default and decides which channels a store has; its requirements page states no country or plan requirement. A product is listed only when its data is complete (question 7.7.7).",
         "sources": [
           "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home",
           "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements"
         ]
-      }
+      },
+      "feeds": [
+        "gate:agentic_commerce"
+      ]
     },
     {
       "id": "Q7.7.2",
@@ -7976,9 +7978,8 @@
           }
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -8010,7 +8011,7 @@
       "audience": "client",
       "answer_type": "boolean",
       "text": "Do you sell to customers in the United States?",
-      "help": "Some AI channels are only open to merchants selling to US buyers, wherever the business is based.",
+      "help": "Shopify has limited some AI channels by country before. Its requirements page states no country limit today, so check which channels the store actually has in its agentic storefront settings.",
       "maps_to": [
         "/ai/us_buyers"
       ],
@@ -8019,19 +8020,18 @@
           {
             "feature": "Agentic channel eligibility",
             "plan": "basic",
-            "plan_note": "Starter plan or higher; some channels need US buyers",
+            "plan_note": "No country or plan requirement stated on the requirements page",
             "docs": "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements"
           }
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
         "why": "It decides which AI channels are available at all, so it decides whether this section matters for launch.",
-        "limits": "ChatGPT and Copilot need US buyers; Google's AI channels are limited to selected US-based shops. A European merchant selling only in Europe may not be eligible today.",
+        "limits": "Shopify’s agentic storefronts requirements page states no country or plan requirement; the channels a store actually has show in its settings. Some channels used to be limited to US buyers, so confirm per channel before promising one to a client that sells only in Europe.",
         "sources": [
           "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements"
         ]
@@ -8090,9 +8090,8 @@
           }
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -8168,9 +8167,8 @@
           }
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -8179,7 +8177,10 @@
         "sources": [
           "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products"
         ]
-      }
+      },
+      "feeds": [
+        "gate:agentic_commerce"
+      ]
     },
     {
       "id": "Q7.7.9",
@@ -8201,9 +8202,8 @@
           }
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -8224,7 +8224,10 @@
         "sources": [
           "https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt"
         ]
-      }
+      },
+      "feeds": [
+        "gate:agentic_commerce"
+      ]
     },
     {
       "id": "Q7.7.10",
@@ -8257,7 +8260,10 @@
         "sources": [
           "https://help.shopify.com/en/manual/promoting-marketing/knowledge-base"
         ]
-      }
+      },
+      "feeds": [
+        "gate:agentic_commerce"
+      ]
     },
     {
       "id": "Q7.7.11",
@@ -8285,9 +8291,8 @@
           }
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "shopify.dev"
         }
       },
       "teach": {
@@ -8297,7 +8302,10 @@
           "https://shopify.dev/docs/agents",
           "https://shopify.dev/docs/apps/build/storefront-mcp/servers/storefront"
         ]
-      }
+      },
+      "feeds": [
+        "gate:agentic_commerce"
+      ]
     },
     {
       "id": "Q7.7.12",

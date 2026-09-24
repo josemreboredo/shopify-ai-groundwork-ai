@@ -83,6 +83,13 @@ give the final figure, and the commercial team adds contingency and services suc
   events (2–3) — plus 10–15 design system days. Priced against each pack's own promise: in S it brings the full template
   set designed (CHF 69–103k), in M it builds on M's template design days (61–88k), in L it only swaps the custom Liquid
   theme (39–55k).
+- **Agentic commerce** (2026-09-24): the discovery asked a whole section about selling through AI assistants and the
+  backlog delivered it, unpriced. The pack table has an AI channels row — Shopify’s agentic storefronts on their defaults,
+  in every pack — and the `agentic_commerce` add-on prices taking the channel on deliberately (standard, 1–1.5 weeks: terms,
+  customer data, settings, catalogue mapping, Knowledge Base answers, a crawler policy) or the store’s own assistant on its
+  Storefront MCP endpoint (advanced, 4–6 weeks and 3–5 design days). Every fact was checked on help.shopify.com and
+  shopify.dev that day; the check found questions 7.7.1 and 7.7.4 stale — the requirements page no longer states a
+  country or plan requirement — and they were corrected in English, German and French.
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,

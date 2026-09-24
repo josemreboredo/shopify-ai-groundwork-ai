@@ -1150,6 +1150,38 @@
       }
     },
     {
+      "id": "agentic_commerce",
+      "label": "Agentic commerce",
+      "condition": "Selling through AI assistants on purpose rather than on Shopify’s defaults, or the store’s own agent. Shopify’s agentic storefronts are active by default for eligible stores: ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini and Shop read the products through Shopify Catalog, which lists a product with a title, at least one image, a price above zero and a published URL — the catalogue every pack loads. Standard is taking the channel on deliberately: the supplemental terms and who accepts them, the customer data direct checkout shares (name, email, phone and address), the channel settings, catalogue mapping from custom fields, the answers agents give through the Knowledge Base app, and an AI crawler policy — robots.txt.liquid is an unsupported customisation where a mistake can lose all traffic. Advanced adds the store’s own shopping assistant or agent connection, on the store’s Storefront MCP endpoint and the Universal Commerce Protocol; the Universal Cart API is early access and is scoped, not promised.",
+      "inputs": [
+        "/ai/sell_through_agents",
+        "/ai/catalog_mapping_needed",
+        "/ai/crawler_policy",
+        "/ai/knowledge_base",
+        "/ai/own_agent_surface"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "advanced"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/agentic-home",
+        "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements",
+        "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/data-privacy",
+        "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products",
+        "https://help.shopify.com/en/manual/shopify-catalog/requirements",
+        "https://help.shopify.com/en/manual/promoting-marketing/knowledge-base",
+        "https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt",
+        "https://shopify.dev/docs/agents",
+        "https://shopify.dev/docs/apps/build/storefront-mcp/servers/storefront"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "help.shopify.com"
+      }
+    },
+    {
       "id": "analytics_consent",
       "label": "Analytics and consent",
       "condition": "Measurement beyond what every store already has. Shopify Analytics — the pre-built reports, the dashboard and the ShopifyQL query editor — is on every plan, with more reports the higher the plan, and GA4 connects through the Google & YouTube channel with its ecommerce events tracked automatically. The gate opens past that: a third destination, a tag manager, custom events, server-side tagging or a third-party consent platform",
@@ -1688,6 +1720,38 @@
       "design_days": {
         "min": 1,
         "max": 2
+      }
+    },
+    {
+      "id": "+Agentic (standard)",
+      "gate": "agentic_commerce",
+      "tier": "standard",
+      "description": "The AI channels taken on deliberately: the position decided and the supplemental terms accepted by whoever holds the authority, the customer data direct checkout shares reviewed against the privacy notice, the channel settings, the catalogue mapped from custom fields where it lives there, the answers agents give curated in the Knowledge Base app, and an AI crawler policy set and tested in robots.txt.liquid.",
+      "effort_weeks": {
+        "min": 1,
+        "max": 1.5
+      },
+      "price_add": {
+        "min": 6300,
+        "max": 9450
+      }
+    },
+    {
+      "id": "+Agentic (advanced)",
+      "gate": "agentic_commerce",
+      "tier": "advanced",
+      "description": "The store’s own shopping assistant, or the store connected to agent platforms, on top of the standard work: built on the store’s Storefront MCP endpoint — catalogue search, cart and the store’s policies — with the conversation designed, guardrails and an evaluation set the brand agreed, consent before any customer data reaches a model, and the model’s running cost named as the client’s, like an app’s fee.",
+      "effort_weeks": {
+        "min": 4,
+        "max": 6
+      },
+      "price_add": {
+        "min": 25200,
+        "max": 37800
+      },
+      "design_days": {
+        "min": 3,
+        "max": 5
       }
     },
     {
@@ -2684,6 +2748,23 @@
         "addon_label": "Past a documented Shopify limit"
       },
       {
+        "id": "ai_channels",
+        "what": "AI channels",
+        "gate": "agentic_commerce",
+        "group": "Catalogue and search",
+        "shopify_limit": "Active by default for eligible stores; Shopify Catalog lists a product with a title, at least one image, a price above zero and a published URL",
+        "S": "Shopify’s agentic storefronts on their defaults",
+        "M": "Shopify’s agentic storefronts on their defaults",
+        "L": "Shopify’s agentic storefronts on their defaults",
+        "note": "ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini and Shop read the products through Shopify Catalog by default, and every pack loads a catalogue complete enough to be listed. Taking the channel on deliberately — terms, customer data, settings, answers, crawler policy — or building the store’s own agent is the agentic commerce add-on.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Agentic commerce"
+      },
+      {
         "id": "design",
         "what": "Design",
         "gate": null,
@@ -3166,6 +3247,18 @@
           "L"
         ],
         "note": "A custom app containing a Function needs Shopify Plus; below Plus the Function comes in a public App Store app, which runs on every plan. Several product discounts on the same item is Shopify Plus only, and a setting there rather than a Function."
+      },
+      {
+        "id": "agentic_commerce",
+        "gate": "agentic_commerce",
+        "what": "Agentic commerce: selling through AI assistants",
+        "description": "Selling through AI assistants on purpose rather than on Shopify’s defaults — terms, customer data, channel settings, the answers agents give and a crawler policy — or the store’s own shopping assistant built on its Storefront MCP endpoint.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Shopify’s agentic storefronts on their defaults are in every pack. Parts of Shopify’s agent tooling are early access — the Universal Cart API — and are scoped rather than promised. A model’s running cost is the client’s, like an app’s fee."
       },
       {
         "id": "analytics_consent",

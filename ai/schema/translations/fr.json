@@ -240,10 +240,10 @@
     "Q7.6.6": "e25af8e2aa25",
     "Q7.6.7": "5ae1e30ee2c4",
     "Q7.6.9": "0ac567d7bbb3",
-    "Q7.7.1": "a12ead95afad",
+    "Q7.7.1": "decef337b4da",
     "Q7.7.2": "691c890c6ef0",
     "Q7.7.3": "dd415bfaf8a9",
-    "Q7.7.4": "6bc5153eb998",
+    "Q7.7.4": "5b55dd4bf6ad",
     "Q7.7.5": "82e6c662fe2d",
     "Q7.7.6": "958ba9d5729f",
     "Q7.7.7": "7bec8f79dc78",
@@ -3092,7 +3092,7 @@
       "help": "Les assistants IA deviennent un canal de vente. Shopify active déjà par défaut les boutiques éligibles : c'est donc une décision à confirmer ou à annuler, pas à repousser.",
       "teach": {
         "why": "Cela décide si un nouveau canal de vente est ouvert ou fermé. Shopify inscrit automatiquement les boutiques éligibles : ne rien faire est donc en soi une décision — le canal est actif.",
-        "limits": "L'éligibilité est décidée par Shopify : plan Starter ou supérieur, boutique non privée, et certains canaux réservés aux marchands vendant à des acheteurs américains. Les produits destinés aux professionnels sont exclus automatiquement.",
+        "limits": "Shopify active par défaut les boutiques éligibles et décide des canaux dont dispose une boutique ; sa page des conditions n’indique aucune exigence de pays ni de plan. Un produit n’est référencé que si ses données sont complètes (question 7.7.7).",
         "options": [
           {
             "option": "Vendre via les assistants IA",
@@ -3149,10 +3149,10 @@
     },
     "Q7.7.4": {
       "text": "Vendez-vous à des clients aux États-Unis ?",
-      "help": "Certains canaux IA ne sont ouverts qu'aux marchands vendant à des acheteurs américains, où que l'entreprise soit établie.",
+      "help": "Shopify a déjà limité certains canaux IA selon le pays. Sa page des conditions n’indique aujourd’hui aucune limite de pays : vérifiez donc dans les réglages de la boutique quels canaux elle a réellement.",
       "teach": {
         "why": "Cela décide quels canaux IA sont seulement disponibles, et donc si cette section compte pour le lancement.",
-        "limits": "ChatGPT et Copilot exigent des acheteurs américains ; les canaux IA de Google sont limités à certaines boutiques établies aux États-Unis. Un marchand européen qui ne vend qu'en Europe peut ne pas être éligible aujourd'hui."
+        "limits": "La page des conditions des vitrines agentiques n’indique aucune exigence de pays ni de plan ; les canaux dont dispose réellement une boutique figurent dans ses réglages. Certains canaux étaient auparavant réservés aux acheteurs américains : confirmez-le canal par canal avant d’en promettre un à un client qui ne vend qu’en Europe."
       }
     },
     "Q7.7.5": {

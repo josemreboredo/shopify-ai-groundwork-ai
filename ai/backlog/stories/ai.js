@@ -61,7 +61,7 @@ export default [
     title: 'Get the product data to Shopify Catalog standard',
     user_story: 'As a merchandiser, I want our products to meet the Catalog requirements, so that assistants show them correctly rather than skipping them.',
     acceptance_criteria: (doc) => [
-      'Given the Catalog requirements, when the catalogue is audited, then every product intended for agentic channels has a title, an image, a price and is published, and the ones that fail are listed with an owner',
+      'Given the Catalog requirements, when the catalogue is audited, then every product intended for agentic channels has a title, at least one image, a price above zero and a published product URL, is neither unlisted nor hidden from search engines, and the ones that fail are listed with an owner',
       ...(ai(doc).catalog_mapping_needed ? [
         'Given product data held in metafields, metaobjects or inside product titles, when Catalog Mapping is configured, then those attributes reach the Catalog as structured fields rather than as prose',
       ] : []),
@@ -72,8 +72,9 @@ export default [
     owner: 'agent',
     depends_on: ['LWC-AI-001', 'LWC-CAT-001'],
     spec_refs: ['/ai/catalog_readiness', '/ai/catalog_mapping_needed', '/catalogue/custom_attributes'],
+    gates: ['agentic_commerce'],
     applies: (doc) => inScope(doc) && sellsThroughAgents(doc),
-    agent_prompt: (doc) => `Audit the catalogue against Shopify Catalog requirements (title, image, price, published). Current readiness per the client: ${set(doc, 'catalog_readiness') ?? 'to confirm'}. Produce a list of ineligible products and what each is missing, with a named owner for fixing it.${ai(doc).catalog_mapping_needed ? ' Key attributes sit in custom fields, so configure Catalog Mapping so they arrive as structured data rather than buried in the title.' : ''} Report counts, not a sample.`,
+    agent_prompt: (doc) => `Audit the catalogue against Shopify Catalog requirements (a title, at least one image, a price above zero, published with a product URL, not unlisted and not hidden from search engines). Current readiness per the client: ${set(doc, 'catalog_readiness') ?? 'to confirm'}. Produce a list of ineligible products and what each is missing, with a named owner for fixing it.${ai(doc).catalog_mapping_needed ? ' Key attributes sit in custom fields, so configure Catalog Mapping so they arrive as structured data rather than buried in the title.' : ''} Report counts, not a sample.`,
   },
   {
     key: 'LWC-AI-003',
@@ -111,6 +112,7 @@ export default [
     owner: 'consultant',
     depends_on: ['LWC-AI-001'],
     spec_refs: ['/ai/knowledge_base', '/shipping/returns', '/compliance/legal_pages_status'],
+    gates: ['agentic_commerce'],
     applies: (doc) => inScope(doc) && ai(doc).knowledge_base === true,
     agent_prompt: () => 'Set up the Knowledge Base as the trusted source for agent answers. Draft FAQs from the real shipping, returns and warranty policies rather than from the site copy, have the policy owner approve each, and publish. Name the owner who keeps them true when a policy changes, and spot-check the answers assistants give before launch.',
   },
@@ -149,5 +151,27 @@ export default [
     spec_refs: ['/ai/own_agent_surface'],
     applies: (doc) => inScope(doc) && ['now', 'later'].includes(set(doc, 'own_agent_surface')),
     agent_prompt: (doc) => `Scope the store's own agent or MCP surface for ${storeName(doc)}: what it exposes, who may call it, how it authenticates and what it costs to run. Mark clearly anything that is pre-GA or unconfirmed rather than presenting it as available. Intent on record: ${set(doc, 'own_agent_surface') ?? 'to confirm'}. Present it as its own decision with its own price.`,
+  },
+  {
+    /* The advanced tier of the agentic commerce add-on: the store's own
+       assistant, built once the scope in LWC-AI-006 is agreed. */
+    key: 'LWC-AI-007',
+    epic: 'ai',
+    title: 'Build the store’s own shopping assistant on its Storefront MCP endpoint',
+    user_story: 'As a shopper, I want to ask the store for what I need in my own words, so that I find the right product and can buy it without searching page by page.',
+    acceptance_criteria: [
+      'Given the scope agreed in LWC-AI-006, when the assistant is built, then it searches the catalogue, manages the cart and answers policy questions through the store’s Storefront MCP endpoint and reaches nothing else',
+      'Given a shopper’s personal data, when the assistant would send it to a model, then it asks for consent first and the request is logged without the data',
+      'Given the evaluation set of questions the brand agreed, when the assistant is released, then every answer is checked against it and a wrong price, stock or policy answer blocks the release',
+    ],
+    gaia_tier: 'T3',
+    points: 13,
+    owner: 'developer',
+    depends_on: ['LWC-AI-006'],
+    spec_refs: ['/ai/own_agent_surface'],
+    security_flags: ['pii', 'secrets'],
+    gates: ['agentic_commerce'],
+    applies: (doc) => inScope(doc) && set(doc, 'own_agent_surface') === 'now',
+    agent_prompt: (doc) => `Build ${storeName(doc)}'s own shopping assistant on the store's Storefront MCP endpoint (https://{shop}.myshopify.com/api/mcp; catalogue search on /api/ucp/mcp): catalogue search, cart and the store's policies, nothing else. Design the conversation with the experience designer, agree an evaluation set of questions with the brand and block a release on any wrong price, stock or policy answer. Ask for consent before any shopper data reaches a model, and never log it. Name the model's running cost as the client's. The Universal Cart API is early access: scope it, do not promise it.`,
   },
 ];

@@ -504,6 +504,9 @@
             "custom_promotions": {
               "$ref": "#/$defs/gate"
             },
+            "agentic_commerce": {
+              "$ref": "#/$defs/gate"
+            },
             "analytics_consent": {
               "$ref": "#/$defs/gate"
             },
@@ -526,6 +529,8 @@
           "type": "array",
           "items": {
             "enum": [
+              "+Agentic (advanced)",
+              "+Agentic (standard)",
               "+Analytics (advanced)",
               "+Analytics (standard)",
               "+B2B (advanced)",
@@ -595,6 +600,7 @@
                   "subscriptions",
                   "checkout_extensibility",
                   "custom_promotions",
+                  "agentic_commerce",
                   "analytics_consent",
                   "post_launch_support"
                 ]

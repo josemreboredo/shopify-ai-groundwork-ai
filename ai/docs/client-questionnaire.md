@@ -2028,7 +2028,7 @@
 - [ ] Not sure yet
 
 **Q7.7.4** — Do you sell to customers in the United States? *(recommended)*
-*Some AI channels are only open to merchants selling to US buyers, wherever the business is based.*
+*Shopify has limited some AI channels by country before. Its requirements page states no country limit today, so check which channels the store actually has in its agentic storefront settings.*
 
 - [ ] Yes
 - [ ] No

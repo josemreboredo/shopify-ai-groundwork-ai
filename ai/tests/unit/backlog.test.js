@@ -88,7 +88,7 @@ function maximalEngagement() {
   // nothing delivering any of them.
   doc.ai = { sell_through_agents: true, agentic_enrolment: 'per_channel', direct_checkout: 'selected_channels',
     us_buyers: true, customer_data_sharing: 'approved', catalog_readiness: 'partial', catalog_mapping_needed: true,
-    crawler_policy: 'selective', knowledge_base: true, own_agent_surface: 'later',
+    crawler_policy: 'selective', knowledge_base: true, own_agent_surface: 'now',
     merchant_ai_tools: ['sidekick', 'shopify_magic', 'semantic_search'], terms_owner: 'Head of Ecommerce' };
   /* Headless, with content in Shopify.
      Headless was an L trigger, then an exit, then a trigger again, and this
@@ -197,6 +197,15 @@ describe('story definitions', () => {
         if (g.active) assert.ok(labels.has(`gate-${id.replace(/_/g, '-')}`), `${doc.meta.client.slug}: gate ${id} has no story`);
       }
     }
+  });
+
+  test('the store’s own assistant is built only when it is wanted now', () => {
+    const doc = maximalEngagement();
+    assert.ok(selectStories(doc).some((x) => x.key === 'LWC-AI-007'), 'now: built');
+    doc.ai = { ...doc.ai, own_agent_surface: 'later' };
+    const keys = selectStories(doc).map((x) => x.key);
+    assert.ok(keys.includes('LWC-AI-006'), 'later: scoped');
+    assert.ok(!keys.includes('LWC-AI-007'), 'and not built');
   });
 
   test('every epic has at least one story definition', () => {

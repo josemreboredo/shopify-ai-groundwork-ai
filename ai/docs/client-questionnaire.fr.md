@@ -2028,7 +2028,7 @@
 - [ ] Pas encore certain
 
 **Q7.7.4** — Vendez-vous à des clients aux États-Unis ? *(recommended)*
-*Certains canaux IA ne sont ouverts qu'aux marchands vendant à des acheteurs américains, où que l'entreprise soit établie.*
+*Shopify a déjà limité certains canaux IA selon le pays. Sa page des conditions n’indique aujourd’hui aucune limite de pays : vérifiez donc dans les réglages de la boutique quels canaux elle a réellement.*
 
 - [ ] Yes
 - [ ] No

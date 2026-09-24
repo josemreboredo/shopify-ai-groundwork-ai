@@ -636,6 +636,33 @@ const GATE_EVALUATORS = {
     };
   },
 
+  /*
+   * Selling through AI assistants on purpose, or the store's own agent.
+   *
+   * Shopify's agentic storefronts are on by default for eligible stores and
+   * read the catalogue every pack loads, so doing nothing is in every pack.
+   * Taking the channel on deliberately — terms, customer data, settings,
+   * mapping, the answers agents give, a crawler policy — is standard; the
+   * store's own assistant or agent connection is advanced.
+   */
+  agentic_commerce: (doc) => {
+    const a = doc.ai ?? {};
+    const own = a.own_agent_surface === 'now';
+    const reasons = [
+      a.sell_through_agents === true ? 'selling through AI assistants on purpose' : null,
+      a.catalog_mapping_needed === true ? 'product data mapped from custom fields' : null,
+      ['selective', 'block'].includes(a.crawler_policy) ? `an AI crawler policy (${a.crawler_policy})` : null,
+      a.knowledge_base === true ? 'the answers agents give, curated' : null,
+      own ? 'the store’s own agent, now' : null,
+    ].filter(Boolean);
+    const active = reasons.length > 0;
+    return {
+      active,
+      ...(active ? { tier: own ? 'advanced' : 'standard' } : {}),
+      evidence: active ? `Agentic commerce: ${reasons.join(', ')}` : 'Shopify’s agentic storefronts on their defaults — in every pack',
+    };
+  },
+
   analytics_consent: (doc) => {
     const a = doc.marketing?.analytics ?? {};
     const platforms = a.platforms ?? [];

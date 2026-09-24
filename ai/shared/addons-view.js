@@ -135,6 +135,12 @@ export const ASKS = {
       advanced: { label: 'Stacking rules of the business’s own across discounts', doc: merge('promotions', { stacking: 'custom_logic_function' }) },
     },
   },
+  agentic_commerce: {
+    tiers: {
+      standard: { label: 'The AI channels taken on deliberately', doc: merge('ai', { sell_through_agents: true }) },
+      advanced: { label: 'The store’s own shopping assistant or agent connection', doc: merge('ai', { sell_through_agents: true, own_agent_surface: 'now' }) },
+    },
+  },
   analytics_consent: {
     tiers: {
       standard: { label: 'Custom events, a tag manager or a third destination', limits: (l) => ({ ...l, analytics_custom_events: true }) },
