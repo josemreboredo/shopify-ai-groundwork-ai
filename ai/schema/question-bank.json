@@ -1928,6 +1928,50 @@
       ]
     },
     {
+      "id": "Q2.3.6",
+      "subsection": "2.3",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "multi_enum",
+      "text": "Which product content should Merkle write or enrich with AI across the whole catalogue before launch?",
+      "help": "Descriptions, image alt text, the SEO title and meta description, and attributes taken from supplier data — generated with AI, checked on a sample and approved by you before they load.",
+      "maps_to": [
+        "/catalogue/ai_enrichment"
+      ],
+      "feeds": [
+        "gate:ai_content"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Shopify Magic: product descriptions, and a suggested category with its category metafields",
+            "plan": "basic",
+            "plan_note": "Free, in the admin as products are created and edited",
+            "docs": "https://help.shopify.com/en/manual/products/details/product-category"
+          },
+          {
+            "feature": "Product CSV import: description, SEO title and description, image alt text, product category and metafields",
+            "plan": "basic",
+            "docs": "https://help.shopify.com/en/manual/products/import-export/using-csv"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
+        }
+      },
+      "teach": {
+        "why": "Shopify Magic already writes a description and suggests a category as each product is edited, and that is free. What is not free is the same work across thousands of products at once, in the brand’s voice, with the attributes the storefront filters on filled in — which is where launches stall.",
+        "limits": "Shopify keeps a product’s page title to 70 characters (60 advised) and recommends about 160 for the meta description. Descriptions, SEO fields, alt text, category and metafields all load by product CSV, so the work lands in one import rather than by hand.",
+        "sources": [
+          "https://help.shopify.com/en/manual/ai-powered-tools",
+          "https://help.shopify.com/en/manual/products/details/product-category",
+          "https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords",
+          "https://help.shopify.com/en/manual/products/import-export/using-csv"
+        ]
+      }
+    },
+    {
       "id": "Q2.4.1",
       "subsection": "2.4",
       "priority": "recommended",
@@ -7908,9 +7952,7 @@
           "https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/requirements"
         ]
       },
-      "feeds": [
-        "gate:agentic_commerce"
-      ]
+      "feeds": []
     },
     {
       "id": "Q7.7.2",
@@ -8246,12 +8288,17 @@
             "feature": "Shopify Knowledge Base app",
             "plan": "basic",
             "docs": "https://help.shopify.com/en/manual/promoting-marketing/knowledge-base"
+          },
+          {
+            "feature": "Shopify Knowledge Base app (free, by Shopify)",
+            "plan": "basic",
+            "plan_note": "Free; English",
+            "docs": "https://apps.shopify.com/shopify-knowledge-base"
           }
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "apps.shopify.com"
         }
       },
       "teach": {
@@ -8261,9 +8308,7 @@
           "https://help.shopify.com/en/manual/promoting-marketing/knowledge-base"
         ]
       },
-      "feeds": [
-        "gate:agentic_commerce"
-      ]
+      "feeds": []
     },
     {
       "id": "Q7.7.11",

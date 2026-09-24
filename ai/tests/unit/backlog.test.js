@@ -48,6 +48,7 @@ function maximalEngagement() {
   // product needs: asked in the bank, delivered by nothing until now.
   doc.catalogue.combined_listings = true;
   doc.catalogue.personalisation = ['text_engraving', 'file_upload', 'paid_add_ons'];
+  doc.catalogue.ai_enrichment = ['product_descriptions', 'image_alt_text', 'seo_fields', 'attributes_from_supplier_data'];
   doc.catalogue.customs_data_source = 'in_pim';
   doc.catalogue.shipping_data_source = 'partial';
   doc.catalogue.storefront_filters = ['size', 'colour', 'material', 'movement'];
@@ -199,6 +200,28 @@ describe('story definitions', () => {
     }
   });
 
+  test('a story that exists only for an add-on appears only with it', () => {
+    /* Most gated stories are base work that grows with a gate — the store set
+       up, with more stores — and carry the gate's label only when it is on.
+       These exist for the add-on alone: delivered without its gate, they are
+       work the quote never charged for, which is what an add-on prevents. */
+    const ADDON_ONLY = {
+      'LWC-AI-003': 'agentic_commerce', 'LWC-AI-007': 'agentic_commerce', 'LWC-AI-008': 'agentic_commerce',
+      'LWC-CAT-015': 'ai_content', 'LWC-PRM-002': 'custom_promotions', 'LWC-THM-017': 'custom_templates',
+      'LWC-THM-010': 'hydrogen', 'LWC-THM-011': 'hydrogen', 'LWC-THM-018': 'hydrogen',
+    };
+    for (const doc of [...GO_FIXTURES, maximalEngagement(), maximalLiquidEngagement()]) {
+      for (const story of selectStories(doc)) {
+        const gate = ADDON_ONLY[story.key];
+        if (!gate) continue;
+        const active = doc.offer.scope_gates?.[gate]?.active === true
+          // A full template set carries the custom templates, and their story still builds them.
+          || (gate === 'custom_templates' && doc.offer.scope_gates?.storefront_design?.tier === 'bespoke');
+        assert.ok(active, `${doc.meta.client.slug}: ${story.key} is delivered without ${gate}`);
+      }
+    }
+  });
+
   test('the store’s own assistant is built only when it is wanted now', () => {
     const doc = maximalEngagement();
     assert.ok(selectStories(doc).some((x) => x.key === 'LWC-AI-007'), 'now: built');
@@ -206,6 +229,13 @@ describe('story definitions', () => {
     const keys = selectStories(doc).map((x) => x.key);
     assert.ok(keys.includes('LWC-AI-006'), 'later: scoped');
     assert.ok(!keys.includes('LWC-AI-007'), 'and not built');
+  });
+
+  test('an AI crawler policy is built only when it departs from the default', () => {
+    const doc = maximalEngagement();
+    assert.ok(selectStories(doc).some((x) => x.key === 'LWC-AI-003'), 'selective: built');
+    doc.ai = { ...doc.ai, crawler_policy: 'allow_all' };
+    assert.ok(!selectStories(doc).some((x) => x.key === 'LWC-AI-003'), 'allow all is the default, and every pack keeps it');
   });
 
   test('every epic has at least one story definition', () => {

@@ -446,6 +446,17 @@
 
 > Answer:
 
+**Q2.3.6** — Which product content should Merkle write or enrich with AI across the whole catalogue before launch? *(recommended)*
+*Descriptions, image alt text, the SEO title and meta description, and attributes taken from supplier data — generated with AI, checked on a sample and approved by you before they load.*
+
+*(tick all that apply)*
+- [ ] Product descriptions
+- [ ] Image alt text
+- [ ] SEO title and meta description
+- [ ] Attributes from supplier data, into category metafields
+- [ ] None
+- [ ] Not sure yet
+
 ### 2.4 Pricing
 
 **Q2.4.1** — Are there special prices for consumer groups (VIP or member prices)? *(recommended)*

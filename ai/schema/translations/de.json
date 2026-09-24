@@ -59,6 +59,7 @@
     "Q2.3.3": "df95d99e9106",
     "Q2.3.4": "e698d7579fed",
     "Q2.3.5": "cc797d5445f6",
+    "Q2.3.6": "bf64b3452134",
     "Q2.4.1": "ed21b18fae8e",
     "Q2.4.2": "704f5a9aaa12",
     "Q2.4.3": "ab93e8aef492",
@@ -792,7 +793,11 @@
     "managed_markets": "Shopify Managed Markets (Global-e als Merchant of Record)",
     "third_party_mor_app": "Merchant-of-Record-App eines Drittanbieters",
     "shopify": "Shopify",
-    "esp": "E-Mail-Plattform (ESP)"
+    "esp": "E-Mail-Plattform (ESP)",
+    "product_descriptions": "Produktbeschreibungen",
+    "image_alt_text": "Alt-Texte für Bilder",
+    "seo_fields": "SEO-Titel und Meta-Beschreibung",
+    "attributes_from_supplier_data": "Attribute aus Lieferantendaten, in Kategorie-Metafelder"
   },
   "questions": {
     "Q0.1.1": {
@@ -1336,6 +1341,14 @@
             "cons": "Monatliche Lizenz, ein Katalogindex, der synchron gehalten werden muss, und Integrationsarbeit im Theme."
           }
         ]
+      }
+    },
+    "Q2.3.6": {
+      "text": "Welche Produktinhalte soll Merkle vor dem Launch für den ganzen Katalog mit KI schreiben oder anreichern?",
+      "help": "Beschreibungen, Alt-Texte für Bilder, SEO-Titel und Meta-Beschreibung sowie Attribute aus Lieferantendaten — mit KI erstellt, an einer Stichprobe geprüft und von Ihnen freigegeben, bevor sie geladen werden.",
+      "teach": {
+        "why": "Shopify Magic schreibt bereits eine Beschreibung und schlägt eine Kategorie vor, während ein Produkt bearbeitet wird — kostenlos. Nicht kostenlos ist dieselbe Arbeit für Tausende Produkte auf einmal, in der Tonalität der Marke und mit den Attributen, nach denen der Storefront filtert — genau dort stocken Launches.",
+        "limits": "Shopify begrenzt den Seitentitel eines Produkts auf 70 Zeichen (60 empfohlen) und empfiehlt rund 160 für die Meta-Beschreibung. Beschreibungen, SEO-Felder, Alt-Texte, Kategorie und Metafelder lassen sich per Produkt-CSV laden — die Arbeit landet also in einem Import statt von Hand."
       }
     },
     "Q2.4.1": {

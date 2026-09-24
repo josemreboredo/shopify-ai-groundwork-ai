@@ -558,16 +558,18 @@ describe('the quote is the scope, priced one way', () => {
     assert.equal(at({ discount_types: ['volume_tiered'] }, 'b2b').scope_gates.custom_promotions.active, false, 'wholesale volume pricing is B2B quantity rules');
   });
 
-  test('agentic commerce: Shopify’s defaults in every pack, taking the channel on or an own agent is the add-on', () => {
-    /* The discovery asked a whole section about it and the backlog delivered
-       it, and nothing priced it. Shopify's agentic storefronts on their
-       defaults cost nothing; deciding them, or building an assistant, does. */
+  test('AI is built into every pack; only what takes a build is the agentic commerce add-on', () => {
+    /* AI is part of what the offer sells: the products in AI assistants, the
+       Knowledge Base answers and Shopify's own AI tools cost a decision and a
+       configuration, not a build, so every pack carries them. */
     const row = offering.closed_scope.rows.find((r) => r.id === 'ai_channels');
-    assert.ok(row.S === row.M && row.M === row.L, 'the same defaults in every pack');
+    assert.ok(row.S === row.M && row.M === row.L, 'the same AI in every pack');
+    for (const c of ['S', 'M', 'L']) assert.match(offering.offers[c].base_scope, /AI built in/, `${c} names the AI it includes`);
     const at = (ai) => classifyOffer({ ...engagementAt(limits.S), ai });
-    assert.equal(at({ merchant_ai_tools: ['sidekick'], agentic_enrolment: 'shopify_managed' }).scope_gates.agentic_commerce.active, false, 'the defaults, and the team’s own AI tools, are not the add-on');
-    assert.equal(at({ crawler_policy: 'allow_all' }).scope_gates.agentic_commerce.active, false, 'allowing every crawler is the default too');
-    for (const ai of [{ sell_through_agents: true }, { crawler_policy: 'block' }, { knowledge_base: true }, { catalog_mapping_needed: true }]) {
+    for (const ai of [{ sell_through_agents: true }, { knowledge_base: true }, { merchant_ai_tools: ['sidekick', 'shopify_magic'] }, { agentic_enrolment: 'per_channel' }, { crawler_policy: 'allow_all' }]) {
+      assert.equal(at(ai).scope_gates.agentic_commerce.active, false, `${JSON.stringify(ai)} is in every pack`);
+    }
+    for (const ai of [{ crawler_policy: 'block' }, { crawler_policy: 'selective' }, { catalog_mapping_needed: true }]) {
       assert.equal(at(ai).scope_gates.agentic_commerce.tier, 'standard', JSON.stringify(ai));
     }
     const own = at({ sell_through_agents: true, own_agent_surface: 'now' });
@@ -577,6 +579,18 @@ describe('the quote is the scope, priced one way', () => {
     const gate = offering.scope_gates.find((g) => g.id === 'agentic_commerce');
     assert.match(gate.verified.on, /^\d{4}-\d{2}-\d{2}$/);
     assert.match(gate.condition, /early access/);
+  });
+
+  test('AI product content is priced per 1,000 SKUs, with a floor that covers setting it up', () => {
+    const m = offering.modifiers.find((x) => x.gate === 'ai_content');
+    const at = (sku_count, ai_enrichment) => classifyOffer({ ...engagementAt({ ...limits.M, sku_count }), catalogue: { ...engagementAt({ ...limits.M, sku_count }).catalogue, ai_enrichment } });
+    const weeks = (q) => q.scope_effort_by_gate.find((g) => g.gate === 'ai_content')?.weeks.max ?? 0;
+    assert.equal(at(2000, ['none']).scope_gates.ai_content.active, false, 'nothing asked, nothing priced');
+    assert.equal(weeks(at(1000, ['product_descriptions'])), m.effort_weeks.min, 'a small catalogue pays the set-up floor');
+    assert.equal(weeks(at(10000, ['product_descriptions', 'seo_fields'])), 10 * m.per_thousand_weeks, 'ten thousand SKUs, ten times the rate');
+    assert.ok(weeks(at(20000, ['image_alt_text'])) > weeks(at(10000, ['image_alt_text'])), 'more SKUs, more weeks');
+    // Shopify Magic does it product by product for free; the add-on says so.
+    assert.match(offering.scope_gates.find((g) => g.id === 'ai_content').condition, /Shopify Magic/);
   });
 
   test('design is priced by the design day, by pack and only on the add-ons that need it', () => {

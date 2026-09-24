@@ -446,6 +446,17 @@
 
 > Answer:
 
+**Q2.3.6** — Quels contenus produits Merkle doit-il rédiger ou enrichir avec l’IA pour tout le catalogue avant le lancement ? *(recommended)*
+*Descriptions, textes alternatifs des images, titre SEO et méta-description, et attributs issus des données fournisseurs — générés avec l’IA, vérifiés sur un échantillon et validés par vous avant leur import.*
+
+*(tick all that apply)*
+- [ ] Descriptions produits
+- [ ] Textes alternatifs des images
+- [ ] Titre SEO et méta-description
+- [ ] Attributs issus des données fournisseurs, en métachamps de catégorie
+- [ ] Aucun
+- [ ] Pas encore certain
+
 ### 2.4 Prix
 
 **Q2.4.1** — Existe-t-il des prix particuliers pour des groupes de clients particuliers (prix VIP ou adhérents) ? *(recommended)*

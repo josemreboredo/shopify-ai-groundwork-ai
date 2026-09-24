@@ -36,6 +36,7 @@ function asides(c) {
     c.on_top_of ? `on top of ${c.on_top_of}` : null,
     c.instead_of ? `instead of ${c.instead_of}` : null,
     c.with ? `with ${c.with}` : null,
+    c.explain ?? null,
     c.system_days ? dayCount(c.system_days, 'design system day') : null,
     c.design_days ? dayCount(c.design_days, 'design day') : null,
   ].filter(Boolean);

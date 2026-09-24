@@ -304,4 +304,26 @@ export default [
     applies: (doc) => (doc.catalogue?.storefront_filters ?? []).length > 0 || (doc.catalogue?.sku_count ?? 0) >= 5000,
     agent_prompt: (doc) => `Configure Shopify Search & Discovery: filters (${listOr(doc.catalogue?.storefront_filters, 'to confirm')}), boosts and synonyms. Check each filter is backed by product data that exists — a filter is a product-data decision before it is a storefront one. Stay inside the 25-filter limit and flag it early if the requirement is larger. ${(doc.catalogue?.sku_count ?? 0) >= 5000 ? 'This catalogue is large enough that collections may pass 5,000 products, where filters stop showing at all — check the biggest collections and tell the client what that means. ' : ''}Set synonyms from real no-result searches, and hand merchandising over so the client can change it themselves.`,
   },
+  {
+    /* The AI product content add-on: the whole catalogue at once, in the
+       brand's voice, reviewed before it loads. Product data only. */
+    key: 'LWC-CAT-015',
+    epic: 'catalogue',
+    title: 'Write and enrich the product content with AI, reviewed before it loads',
+    user_story: 'As a merchandiser, I want every product described, tagged and searchable in our own voice at launch, so that we do not launch with half the catalogue bare and fill it in by hand afterwards.',
+    acceptance_criteria: (doc) => [
+      `Given the content in scope (${(doc.catalogue?.ai_enrichment ?? []).filter((x) => x !== 'none' && x !== 'not_sure').join(', ').replace(/_/g, ' ') || 'to confirm'}), when it is generated, then it follows a brand-voice guide the client approved and uses only the product data supplied`,
+      'Given the generated content, when it is reviewed, then a sample from every product type is checked by people and approved by the client before anything loads',
+      'Given the SEO fields, when they are written, then every page title fits 70 characters and every meta description keeps to about 160',
+      'Given the approved content, when it is loaded, then it goes in through one product CSV import and a count of loaded, skipped and failed products is handed over',
+    ],
+    gaia_tier: 'T3',
+    points: 8,
+    owner: 'agent',
+    depends_on: ['LWC-CAT-001'],
+    spec_refs: ['/catalogue/ai_enrichment', '/catalogue/sku_count'],
+    gates: ['ai_content'],
+    applies: (doc) => doc.offer?.scope_gates?.ai_content?.active === true,
+    agent_prompt: (doc) => `Write or enrich the product content for ${doc.catalogue?.sku_count ?? 'every'} products with a model approved for client data: ${(doc.catalogue?.ai_enrichment ?? []).join(', ').replace(/_/g, ' ')}. Work from the product data and supplier data only — never customer data. Draft a brand-voice guide first and have the client approve it; map attributes to the category metafields of Shopify's Standard Product Taxonomy; keep page titles to 70 characters and meta descriptions to about 160. Review a sample of every product type with people, get the client's approval, and load everything through one product CSV import.`,
+  },
 ];

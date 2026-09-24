@@ -59,6 +59,7 @@
     "Q2.3.3": "df95d99e9106",
     "Q2.3.4": "e698d7579fed",
     "Q2.3.5": "cc797d5445f6",
+    "Q2.3.6": "bf64b3452134",
     "Q2.4.1": "ed21b18fae8e",
     "Q2.4.2": "704f5a9aaa12",
     "Q2.4.3": "ab93e8aef492",
@@ -792,7 +793,11 @@
     "managed_markets": "Shopify Managed Markets (Global-e comme merchant of record)",
     "third_party_mor_app": "Application tierce de merchant of record",
     "shopify": "Shopify",
-    "esp": "Plateforme d’e-mailing (ESP)"
+    "esp": "Plateforme d’e-mailing (ESP)",
+    "product_descriptions": "Descriptions produits",
+    "image_alt_text": "Textes alternatifs des images",
+    "seo_fields": "Titre SEO et méta-description",
+    "attributes_from_supplier_data": "Attributs issus des données fournisseurs, en métachamps de catégorie"
   },
   "questions": {
     "Q0.1.1": {
@@ -1336,6 +1341,14 @@
             "cons": "Licence mensuelle, un index de catalogue à maintenir synchronisé, et du travail d'intégration au thème."
           }
         ]
+      }
+    },
+    "Q2.3.6": {
+      "text": "Quels contenus produits Merkle doit-il rédiger ou enrichir avec l’IA pour tout le catalogue avant le lancement ?",
+      "help": "Descriptions, textes alternatifs des images, titre SEO et méta-description, et attributs issus des données fournisseurs — générés avec l’IA, vérifiés sur un échantillon et validés par vous avant leur import.",
+      "teach": {
+        "why": "Shopify Magic rédige déjà une description et suggère une catégorie à mesure qu’un produit est modifié, gratuitement. Ce qui ne l’est pas, c’est le même travail sur des milliers de produits à la fois, dans le ton de la marque, avec les attributs sur lesquels la boutique filtre — c’est là que les lancements prennent du retard.",
+        "limits": "Shopify limite le titre de page d’un produit à 70 caractères (60 conseillés) et recommande environ 160 pour la méta-description. Descriptions, champs SEO, textes alternatifs, catégorie et métachamps s’importent par CSV produits : le travail arrive en un seul import plutôt qu’à la main."
       }
     },
     "Q2.4.1": {

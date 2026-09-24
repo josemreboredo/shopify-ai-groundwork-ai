@@ -446,6 +446,17 @@
 
 > Answer:
 
+**Q2.3.6** — Welche Produktinhalte soll Merkle vor dem Launch für den ganzen Katalog mit KI schreiben oder anreichern? *(recommended)*
+*Beschreibungen, Alt-Texte für Bilder, SEO-Titel und Meta-Beschreibung sowie Attribute aus Lieferantendaten — mit KI erstellt, an einer Stichprobe geprüft und von Ihnen freigegeben, bevor sie geladen werden.*
+
+*(tick all that apply)*
+- [ ] Produktbeschreibungen
+- [ ] Alt-Texte für Bilder
+- [ ] SEO-Titel und Meta-Beschreibung
+- [ ] Attribute aus Lieferantendaten, in Kategorie-Metafelder
+- [ ] Keine
+- [ ] Noch unklar
+
 ### 2.4 Preise
 
 **Q2.4.1** — Gibt es Sonderpreise für Endkundengruppen (VIP- oder Mitgliederpreise)? *(recommended)*

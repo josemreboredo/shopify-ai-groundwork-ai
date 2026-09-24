@@ -301,6 +301,20 @@ const GATE_EVALUATORS = {
     };
   },
 
+  /* The catalogue's content written or enriched with AI, priced per 1,000
+     SKUs. Shopify Magic does it product by product in the admin, free; this
+     is the whole catalogue at once, in the brand's voice, reviewed. */
+  ai_content: (doc) => {
+    const scope = (doc.catalogue?.ai_enrichment ?? []).filter((x) => x !== 'none' && x !== 'not_sure');
+    const skus = doc.catalogue?.sku_count ?? 0;
+    return {
+      active: scope.length > 0,
+      evidence: scope.length
+        ? `AI product content for ${skus ? `${skus} SKUs` : 'a catalogue of a size still to confirm'}: ${scope.join(', ').replace(/_/g, ' ')}`
+        : 'Product content as the client supplies it; Shopify Magic in the admin',
+    };
+  },
+
   sku_complexity: (doc) => {
     const c = doc.catalogue ?? {};
     const skus = c.sku_count ?? 0;
@@ -637,29 +651,29 @@ const GATE_EVALUATORS = {
   },
 
   /*
-   * Selling through AI assistants on purpose, or the store's own agent.
+   * What takes a build past the AI every pack includes.
    *
-   * Shopify's agentic storefronts are on by default for eligible stores and
-   * read the catalogue every pack loads, so doing nothing is in every pack.
-   * Taking the channel on deliberately — terms, customer data, settings,
-   * mapping, the answers agents give, a crawler policy — is standard; the
-   * store's own assistant or agent connection is advanced.
+   * Every pack decides and sets up Shopify's agentic storefronts, answers
+   * through the Knowledge Base app and shows the team Shopify Magic and
+   * Sidekick: Shopify's own, a decision rather than a build, and part of what
+   * the offer sells. Mapping product data from custom fields and an AI crawler
+   * policy are standard; the store's own assistant is advanced.
    */
   agentic_commerce: (doc) => {
     const a = doc.ai ?? {};
     const own = a.own_agent_surface === 'now';
+    // Selling through the AI channels, the Knowledge Base answers and the
+    // team's own AI tools are in every pack; only what takes a build is here.
     const reasons = [
-      a.sell_through_agents === true ? 'selling through AI assistants on purpose' : null,
       a.catalog_mapping_needed === true ? 'product data mapped from custom fields' : null,
       ['selective', 'block'].includes(a.crawler_policy) ? `an AI crawler policy (${a.crawler_policy})` : null,
-      a.knowledge_base === true ? 'the answers agents give, curated' : null,
       own ? 'the store’s own agent, now' : null,
     ].filter(Boolean);
     const active = reasons.length > 0;
     return {
       active,
       ...(active ? { tier: own ? 'advanced' : 'standard' } : {}),
-      evidence: active ? `Agentic commerce: ${reasons.join(', ')}` : 'Shopify’s agentic storefronts on their defaults — in every pack',
+      evidence: active ? `Agentic commerce: ${reasons.join(', ')}` : 'AI channels, Knowledge Base answers and Shopify’s own AI tools — in every pack',
     };
   },
 
@@ -820,6 +834,7 @@ function modifierFor(gate, evaluated, doc) {
     store_estate: { count: storesBeyondTheFirst(doc), free: 0, weeks: 'per_store_weeks', price: 'per_store_price' },
     theme_design: { count: doc.design?.extra_theme_designs ?? 0, free: 0, weeks: 'per_theme_weeks', price: 'per_theme_price' },
     custom_templates: { count: doc.design?.custom_templates ?? 0, free: 0, weeks: 'per_template_weeks', price: 'per_template_price' },
+    ai_content: { count: Math.ceil((doc.catalogue?.sku_count ?? 0) / 1000), free: 0, weeks: 'per_thousand_weeks', price: 'per_thousand_price' },
   };
   const scale = SCALES[gate.id];
   if (!scale) return modifier;

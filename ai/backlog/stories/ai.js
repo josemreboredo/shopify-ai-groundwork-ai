@@ -22,7 +22,9 @@ import { list, listOr, storeName } from './helpers.js';
 const ai = (doc) => doc.ai ?? {};
 const sellsThroughAgents = (doc) => ai(doc).sell_through_agents === true;
 const set = (doc, key) => { const v = ai(doc)[key]; return v && v !== 'not_sure' ? v : null; };
-const tools = (doc) => (ai(doc).merchant_ai_tools ?? []).filter((t) => t !== 'none' && t !== 'not_sure');
+const chosen = (doc) => (ai(doc).merchant_ai_tools ?? []).filter((t) => t !== 'none' && t !== 'not_sure');
+/** The tools the team is shown: what the client chose, or Shopify Magic and Sidekick, which every pack sets up. */
+const tools = (doc) => (chosen(doc).length ? chosen(doc) : ['shopify_magic', 'sidekick']);
 /** Anything recorded in this area at all — the epic is opt-in, like the answers. */
 const inScope = (doc) => sellsThroughAgents(doc)
   || Boolean(set(doc, 'agentic_enrolment') || set(doc, 'crawler_policy') || set(doc, 'own_agent_surface'))
@@ -44,7 +46,7 @@ export default [
         'Given direct checkout, when a channel is activated, then the customer name, email, phone and address it receives are reconciled with the client’s own privacy notice before go-live',
       ] : []),
       'Given the policy pages, when the store is reviewed for eligibility, then Terms of service, Privacy policy and Return and refund policy are complete and published',
-      ...(ai(doc).us_buyers === false ? ['Given that the business does not sell to buyers in the United States, when channels are reviewed, then the ones limited to US buyers are excluded from scope and said so in writing'] : []),
+      'Given the channels the store’s agentic storefront settings show, when they are reviewed, then only the ones actually available to this store are promised, in writing',
     ],
     gaia_tier: 'T2',
     points: 3,
@@ -52,7 +54,8 @@ export default [
     depends_on: ['LWC-FND-001'],
     spec_refs: ['/ai/sell_through_agents', '/ai/agentic_enrolment', '/ai/direct_checkout', '/ai/customer_data_sharing', '/ai/terms_owner', '/ai/us_buyers'],
     security_flags: ['pii'],
-    applies: inScope,
+    // In every pack: the position is decided even when the answer is "off".
+    applies: () => true,
     agent_prompt: (doc) => `Write the agentic commerce decision record for ${storeName(doc)}: enrolment (${set(doc, 'agentic_enrolment') ?? 'to confirm'}), direct checkout (${set(doc, 'direct_checkout') ?? 'to confirm'}), and who accepts Shopify's Supplemental Terms (${ai(doc).terms_owner ?? 'to confirm — a role, never a name'}). Check the three policy pages are complete and published, because eligibility depends on them. Where direct checkout is on, list exactly which customer fields the channel receives and have the client's privacy owner confirm the privacy notice already covers it. Do not enrol anything before the decision is signed.`,
   },
   {
@@ -60,21 +63,17 @@ export default [
     epic: 'ai',
     title: 'Get the product data to Shopify Catalog standard',
     user_story: 'As a merchandiser, I want our products to meet the Catalog requirements, so that assistants show them correctly rather than skipping them.',
-    acceptance_criteria: (doc) => [
+    acceptance_criteria: [
       'Given the Catalog requirements, when the catalogue is audited, then every product intended for agentic channels has a title, at least one image, a price above zero and a published product URL, is neither unlisted nor hidden from search engines, and the ones that fail are listed with an owner',
-      ...(ai(doc).catalog_mapping_needed ? [
-        'Given product data held in metafields, metaobjects or inside product titles, when Catalog Mapping is configured, then those attributes reach the Catalog as structured fields rather than as prose',
-      ] : []),
       'Given the audit result, when it is handed over, then the client knows how many products are not eligible and what each one is missing',
     ],
     gaia_tier: 'T2',
     points: 5,
     owner: 'agent',
     depends_on: ['LWC-AI-001', 'LWC-CAT-001'],
-    spec_refs: ['/ai/catalog_readiness', '/ai/catalog_mapping_needed', '/catalogue/custom_attributes'],
-    gates: ['agentic_commerce'],
-    applies: (doc) => inScope(doc) && sellsThroughAgents(doc),
-    agent_prompt: (doc) => `Audit the catalogue against Shopify Catalog requirements (a title, at least one image, a price above zero, published with a product URL, not unlisted and not hidden from search engines). Current readiness per the client: ${set(doc, 'catalog_readiness') ?? 'to confirm'}. Produce a list of ineligible products and what each is missing, with a named owner for fixing it.${ai(doc).catalog_mapping_needed ? ' Key attributes sit in custom fields, so configure Catalog Mapping so they arrive as structured data rather than buried in the title.' : ''} Report counts, not a sample.`,
+    spec_refs: ['/ai/catalog_readiness', '/catalogue/custom_attributes'],
+    applies: (doc) => ai(doc).sell_through_agents !== false && set(doc, 'agentic_enrolment') !== 'off',
+    agent_prompt: (doc) => `Audit the catalogue against Shopify Catalog requirements (a title, at least one image, a price above zero, published with a product URL, not unlisted and not hidden from search engines). Current readiness per the client: ${set(doc, 'catalog_readiness') ?? 'to confirm'}. Produce a list of ineligible products and what each is missing, with a named owner for fixing it. Report counts, not a sample.`,
   },
   {
     key: 'LWC-AI-003',
@@ -94,7 +93,8 @@ export default [
     owner: 'developer',
     depends_on: ['LWC-AI-001'],
     spec_refs: ['/ai/crawler_policy', '/marketing/seo/priority_channel'],
-    applies: (doc) => inScope(doc) && Boolean(set(doc, 'crawler_policy')),
+    gates: ['agentic_commerce'],
+    applies: (doc) => ['selective', 'block'].includes(set(doc, 'crawler_policy')),
     agent_prompt: (doc) => `Implement the ${set(doc, 'crawler_policy') ?? 'agreed'} AI crawler policy in robots.txt.liquid. Shopify treats this as an unsupported customisation and incorrect use can lose all traffic, so change only what the policy requires, review the rendered /robots.txt before and after, and verify on the live domain. Also review /agents.md, /llms.txt and /llms-full.txt and agree whether they are left at Shopify's defaults or customised. Put in writing for the client that these rules are advisory and that they do not affect Shopify Catalog syndication to activated channels.`,
   },
   {
@@ -112,8 +112,7 @@ export default [
     owner: 'consultant',
     depends_on: ['LWC-AI-001'],
     spec_refs: ['/ai/knowledge_base', '/shipping/returns', '/compliance/legal_pages_status'],
-    gates: ['agentic_commerce'],
-    applies: (doc) => inScope(doc) && ai(doc).knowledge_base === true,
+    applies: (doc) => set(doc, 'agentic_enrolment') !== 'off',
     agent_prompt: () => 'Set up the Knowledge Base as the trusted source for agent answers. Draft FAQs from the real shipping, returns and warranty policies rather than from the site copy, have the policy owner approve each, and publish. Name the owner who keeps them true when a policy changes, and spot-check the answers assistants give before launch.',
   },
   {
@@ -131,7 +130,8 @@ export default [
     owner: 'consultant',
     depends_on: ['LWC-FND-001'],
     spec_refs: ['/ai/merchant_ai_tools', '/shopify/target_plan'],
-    applies: (doc) => tools(doc).length > 0,
+    // In every pack: Shopify Magic and Sidekick at the least.
+    applies: () => true,
     agent_prompt: (doc) => `Enable and demonstrate ${listOr(tools(doc).map((t) => t.replace(/_/g, ' ')), 'the agreed Shopify AI tools')} on the build store with the client's own products. Check plan and catalogue eligibility where the tool needs it rather than assuming. Agree who approves anything customer-facing that a tool generates, and include the tools in the training pack.`,
   },
   {
@@ -173,5 +173,25 @@ export default [
     gates: ['agentic_commerce'],
     applies: (doc) => inScope(doc) && set(doc, 'own_agent_surface') === 'now',
     agent_prompt: (doc) => `Build ${storeName(doc)}'s own shopping assistant on the store's Storefront MCP endpoint (https://{shop}.myshopify.com/api/mcp; catalogue search on /api/ucp/mcp): catalogue search, cart and the store's policies, nothing else. Design the conversation with the experience designer, agree an evaluation set of questions with the brand and block a release on any wrong price, stock or policy answer. Ask for consent before any shopper data reaches a model, and never log it. Name the model's running cost as the client's. The Universal Cart API is early access: scope it, do not promise it.`,
+  },
+  {
+    /* Agentic commerce, standard: the product data AI channels cannot read
+       where it lives, mapped into Shopify Catalog. */
+    key: 'LWC-AI-008',
+    epic: 'ai',
+    title: 'Map the product data held in custom fields into Shopify Catalog',
+    user_story: 'As a merchandiser, I want the attributes we keep in metafields and titles to reach AI channels as structured fields, so that assistants describe our products from our data rather than guessing.',
+    acceptance_criteria: [
+      'Given product data held in metafields, metaobjects or inside product titles, when Catalog Mapping is configured, then those attributes reach the Catalog as structured fields rather than as prose',
+      'Given the mapping, when a sample of products is checked in the channels, then each mapped field shows with its value and none is duplicated in the title',
+    ],
+    gaia_tier: 'T2',
+    points: 3,
+    owner: 'developer',
+    depends_on: ['LWC-AI-002'],
+    spec_refs: ['/ai/catalog_mapping_needed', '/catalogue/custom_attributes'],
+    gates: ['agentic_commerce'],
+    applies: (doc) => ai(doc).catalog_mapping_needed === true,
+    agent_prompt: (doc) => `Configure Shopify Catalog Mapping for ${storeName(doc)} so the attributes kept in metafields, metaobjects or product titles reach AI channels as structured fields. Check a sample of products in the channels afterwards and report which fields arrive and which do not.`,
   },
 ];

@@ -4,6 +4,7 @@
     "A": "A — Accountable", "R": "R — Responsible", "C": "C — Consulted", "I": "I — Informed",
     "dtc": "Direct to consumer (DTC)", "b2b": "Business to business (B2B)", "hybrid": "Hybrid (DTC and B2B)",
     "not_sure": "Not sure yet", "none": "None",
+    "product_descriptions": "Product descriptions", "image_alt_text": "Image alt text", "seo_fields": "SEO title and meta description", "attributes_from_supplier_data": "Attributes from supplier data, into category metafields",
     "100k_to_1m": "100,000 to 1 million", "under_100k": "Under 100,000", "over_1m": "Over 1 million",
     "15_minutes": "Within 15 minutes", "1_hour": "Within 1 hour", "24_hours": "Within 24 hours",
     "3pl": "Third-party logistics (3PL)", "3pl_system": "3PL system", "3pl_wms": "3PL / WMS",

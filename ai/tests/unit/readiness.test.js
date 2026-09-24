@@ -25,7 +25,7 @@ describe('can we price this yet', () => {
   test('the denominator is the engine’s own decisions, and it is a constant of the offering', () => {
     const r = readiness(acme(), state(acme()));
     assert.equal(r.decisions.total, offering.scope_gates.length + offering.l_triggers.length + offering.exit_rules.length);
-    assert.equal(r.decisions.total, 51, 'twenty-one gates, one L trigger, twenty-nine rules');
+    assert.equal(r.decisions.total, 52, 'twenty-two gates, one L trigger, twenty-nine rules');
     // A ratio of questions is not comparable between bids: only_if moves the
     // question count per client, and one question can drive six rules.
     for (const d of [...offering.scope_gates, ...offering.l_triggers, ...offering.exit_rules]) {
@@ -62,7 +62,7 @@ describe('can we price this yet', () => {
     // this fixture answers none of the new ones — so the bar is deliberately
     // loose. What it is testing is that a high ratio does not unblock a bid,
     // not the ratio itself.
-    assert.ok(r.decisions.settled / r.decisions.total > 0.7, 'well past any percentage threshold, and still blocked');
+    assert.ok(r.decisions.settled / r.decisions.total > 0.65, 'well past any percentage threshold, and still blocked');
   });
 
   test('a scope past the offers blocks the price without pretending to be a gap in the answers', () => {

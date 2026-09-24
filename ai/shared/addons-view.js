@@ -88,6 +88,11 @@ export const ASKS = {
     limits: (l) => ({ ...l, headless: true }),
     brings: { gate: 'storefront_design', tier: 'bespoke', text: 'the full template set, designed' },
   },
+  /* Priced on the pack's own catalogue: the least it costs, up to 3,000 SKUs. */
+  ai_content: {
+    doc: merge('catalogue', { ai_enrichment: ['product_descriptions', 'image_alt_text', 'seo_fields', 'attributes_from_supplier_data'] }),
+    explain: 'up to 3,000 SKUs; + ¼ wk per further 1,000',
+  },
   sku_complexity: {
     tiers: {
       standard: { label: '500 to 4,999 SKUs with complex variants, attributes or bundles', limits: (l) => ({ ...l, sku_count: Math.max(l.sku_count, 2000), variant_options: Math.max(l.variant_options ?? 1, 2) }) },
@@ -137,8 +142,8 @@ export const ASKS = {
   },
   agentic_commerce: {
     tiers: {
-      standard: { label: 'The AI channels taken on deliberately', doc: merge('ai', { sell_through_agents: true }) },
-      advanced: { label: 'The store’s own shopping assistant or agent connection', doc: merge('ai', { sell_through_agents: true, own_agent_surface: 'now' }) },
+      standard: { label: 'Product data mapped from custom fields, and an AI crawler policy', doc: merge('ai', { catalog_mapping_needed: true, crawler_policy: 'selective' }) },
+      advanced: { label: 'The store’s own shopping assistant or agent connection', doc: merge('ai', { own_agent_surface: 'now' }) },
     },
   },
   analytics_consent: {
@@ -212,6 +217,7 @@ function cellFor(addon, ask, code, pricing) {
     ...(needsMore ? { on_top_of: ask.needs } : {}),
     ...(ask.instead && reshaped ? { instead_of: ask.instead } : {}),
     ...(brings ? { with: brings } : {}),
+    ...(ask.explain ? { explain: ask.explain } : {}),
   };
 }
 
@@ -303,7 +309,7 @@ function countedAddons(pricing) {
  * sits with the migration it usually rides on.
  */
 const CHANNELS = 'Selling channels no pack includes';
-const GROUP = { b2b: CHANNELS, retail_pos: CHANNELS, subscriptions: CHANNELS, seo_continuity: 'Data and integrations', custom_templates: 'Storefront', hydrogen: 'Storefront' };
+const GROUP = { b2b: CHANNELS, retail_pos: CHANNELS, subscriptions: CHANNELS, seo_continuity: 'Data and integrations', custom_templates: 'Storefront', hydrogen: 'Storefront', ai_content: 'Catalogue and search' };
 const COUNTED_GROUP = 'Running the store';
 
 function grouped(addons) {

@@ -90,6 +90,16 @@ give the final figure, and the commercial team adds contingency and services suc
   Storefront MCP endpoint (advanced, 4–6 weeks and 3–5 design days). Every fact was checked on help.shopify.com and
   shopify.dev that day; the check found questions 7.7.1 and 7.7.4 stale — the requirements page no longer states a
   country or plan requirement — and they were corrected in English, German and French.
+- **AI built into every pack** (2026-09-24): AI is part of what the offer sells, so what costs no implementation — a decision
+  and a configuration of Shopify’s own — is in S, M and L: the products listed for AI assistants through Shopify Catalog, with
+  the position and the supplemental terms decided; the Knowledge Base app answering for the store; Shopify Magic and Sidekick
+  for the team. It sits in each pack’s set-up phase and adds no weeks. The agentic commerce add-on keeps what takes a build:
+  product data mapped from custom fields and an AI crawler policy (standard, 0.5–1 week), or the store’s own assistant
+  (advanced). Semantic search stays out of the packs: the only official source limits it to the Shopify and Advanced plans.
+- **AI product content** (2026-09-24): the catalogue’s content written or enriched with AI — descriptions, alt text, SEO fields,
+  attributes into category metafields — in the brand’s voice, sampled, approved and loaded by product CSV; a quarter of a build
+  week per 1,000 SKUs and three quarters at the least (gate `ai_content`, question Q2.3.6). Shopify Magic does it product by
+  product, free, and the add-on says so. Product data only: no customer data reaches a model.
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,

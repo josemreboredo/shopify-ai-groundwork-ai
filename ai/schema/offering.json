@@ -157,7 +157,7 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Theme",
       "triggered_by": "An estimate below the Scale floor: the Foundation, with whatever goes past it as add-ons",
-      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
+      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
         "min": 31000,
         "max": 38000,
@@ -183,7 +183,8 @@
             "Staff users and permissions, one set per role rather than one shared login",
             "The domain connected with SSL, and the redirect from whatever address customers use today",
             "Tax, duties and the shipping profile configured for the launch market",
-            "Payment providers connected, tested with a real transaction, then switched live"
+            "Payment providers connected, tested with a real transaction, then switched live",
+            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team"
           ]
         },
         {
@@ -327,7 +328,7 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Customisable",
       "triggered_by": "An estimate from the Scale floor, or a further store — the recommended start for a brand that already sells",
-      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
+      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
         "min": 50000,
         "max": 105000,
@@ -352,7 +353,8 @@
             "Everything Ecommerce Foundation sets up: the store on the right plan, users and permissions, domain and SSL, tax and the payment providers",
             "The store topology derived from the business facts and written down with its assumptions — one store with Shopify Markets by default",
             "The selling entity per market and the tax-registration footprint, agreed before the catalogue is built",
-            "A second store only where the business facts force one — an add-on here, priced per store — with what it costs to run"
+            "A second store only where the business facts force one — an add-on here, priced per store — with what it costs to run",
+            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team"
           ]
         },
         {
@@ -514,7 +516,7 @@
       "delivery_track": "liquid",
       "build_label": "Custom Liquid",
       "triggered_by": "An estimate from the Flagship floor — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · AI built in: the products listed for AI assistants — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini, and Shop — through Shopify Catalog, Shopify’s Knowledge Base app answering shoppers’ questions for the store, and Shopify Magic and Sidekick set up for the team · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections — or as owned components with the Hydrogen add-on · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
         "min": 106000,
         "max": 214000,
@@ -538,7 +540,8 @@
           "deliverables": [
             "The commerce engine on Shopify set up as in Ecommerce Scale: plan, topology, selling entity and tax footprint per market",
             "A staging store and a theme release path, with who may publish and how a change gets back out again",
-            "Users, roles and permissions per market, agreed before anyone needs them rather than after"
+            "Users, roles and permissions per market, agreed before anyone needs them rather than after",
+            "AI channels decided and set up: the position on Shopify’s agentic storefronts and who accepts the supplemental terms, the Knowledge Base answers from the store’s own policies, and Shopify Magic and Sidekick shown to the team"
           ]
         },
         {
@@ -941,6 +944,27 @@
       }
     },
     {
+      "id": "ai_content",
+      "label": "AI product content",
+      "condition": "Product content written or enriched with AI across the whole catalogue before launch — descriptions, image alt text, the SEO title and meta description, attributes from supplier data into category metafields — in the brand’s voice, checked on a sample, approved by the client and loaded by product CSV. Shopify Magic already writes a description and suggests a category with its metafields as each product is edited, free: this is the same work for the whole catalogue at once. Product data only; no customer data reaches a model.",
+      "inputs": [
+        "/catalogue/ai_enrichment",
+        "/catalogue/sku_count"
+      ],
+      "modifier": "+AI content",
+      "sources": [
+        "https://help.shopify.com/en/manual/ai-powered-tools",
+        "https://help.shopify.com/en/manual/products/details/product-category",
+        "https://help.shopify.com/en/manual/products/product-media/add-alt-text",
+        "https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords",
+        "https://help.shopify.com/en/manual/products/import-export/using-csv"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "help.shopify.com"
+      }
+    },
+    {
       "id": "search_merchandising",
       "label": "Search and merchandising",
       "condition": "Filtering and merchandising go past what Shopify Search & Discovery covers. Four documented limits, and the first two are the ones that decide scope: at most 25 filters per store, and a collection of more than 5,000 products shows no filters at all. The other two surface later and are the ones that surprise people — a single filter shows at most 100 values on the storefront, and a search returning more than 100,000 results shows no filters either",
@@ -1152,7 +1176,7 @@
     {
       "id": "agentic_commerce",
       "label": "Agentic commerce",
-      "condition": "Selling through AI assistants on purpose rather than on Shopify’s defaults, or the store’s own agent. Shopify’s agentic storefronts are active by default for eligible stores: ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini and Shop read the products through Shopify Catalog, which lists a product with a title, at least one image, a price above zero and a published URL — the catalogue every pack loads. Standard is taking the channel on deliberately: the supplemental terms and who accepts them, the customer data direct checkout shares (name, email, phone and address), the channel settings, catalogue mapping from custom fields, the answers agents give through the Knowledge Base app, and an AI crawler policy — robots.txt.liquid is an unsupported customisation where a mistake can lose all traffic. Advanced adds the store’s own shopping assistant or agent connection, on the store’s Storefront MCP endpoint and the Universal Commerce Protocol; the Universal Cart API is early access and is scoped, not promised.",
+      "condition": "What takes a build past the AI every pack includes. Shopify’s agentic storefronts are active by default for eligible stores — ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini and Shop read the products through Shopify Catalog — and every pack decides and sets them up, answers through the free Knowledge Base app and shows the team Shopify Magic and Sidekick. Standard is product data mapped from custom fields into the catalogue, and an AI crawler policy — robots.txt.liquid is an unsupported customisation where a mistake can lose all traffic. Advanced adds the store’s own shopping assistant or agent connection, on the store’s Storefront MCP endpoint and the Universal Commerce Protocol; the Universal Cart API is early access and is scoped, not promised.",
       "inputs": [
         "/ai/sell_through_agents",
         "/ai/catalog_mapping_needed",
@@ -1537,6 +1561,25 @@
       }
     },
     {
+      "id": "+AI content",
+      "gate": "ai_content",
+      "description": "The catalogue’s content written or enriched with AI: a brand-voice guide and the prompts built from it, the attributes mapped to category metafields, generation across every product, a sample checked by people and approved by the client, and one product CSV import. A quarter of a build week per 1,000 SKUs, and three quarters at the least, which covers setting it up.",
+      "effort_weeks": {
+        "min": 0.75,
+        "max": 12.5
+      },
+      "price_add": {
+        "min": 4725,
+        "max": 78750
+      },
+      "per_thousand_weeks": 0.25,
+      "per_thousand_price": 1575,
+      "max_units": {
+        "value": 50,
+        "why": "Fifty thousand SKUs is the very large catalogue tier; past it the content is a programme with its own owner, not a launch task"
+      }
+    },
+    {
       "id": "+Search (native)",
       "gate": "search_merchandising",
       "tier": "native",
@@ -1726,21 +1769,21 @@
       "id": "+Agentic (standard)",
       "gate": "agentic_commerce",
       "tier": "standard",
-      "description": "The AI channels taken on deliberately: the position decided and the supplemental terms accepted by whoever holds the authority, the customer data direct checkout shares reviewed against the privacy notice, the channel settings, the catalogue mapped from custom fields where it lives there, the answers agents give curated in the Knowledge Base app, and an AI crawler policy set and tested in robots.txt.liquid.",
+      "description": "Past the AI every pack includes: the product data that lives in metafields, metaobjects or titles mapped into Shopify Catalog as structured fields, and an AI crawler policy set in robots.txt.liquid, checked on the live domain before and after.",
       "effort_weeks": {
-        "min": 1,
-        "max": 1.5
+        "min": 0.5,
+        "max": 1
       },
       "price_add": {
-        "min": 6300,
-        "max": 9450
+        "min": 3150,
+        "max": 6300
       }
     },
     {
       "id": "+Agentic (advanced)",
       "gate": "agentic_commerce",
       "tier": "advanced",
-      "description": "The store’s own shopping assistant, or the store connected to agent platforms, on top of the standard work: built on the store’s Storefront MCP endpoint — catalogue search, cart and the store’s policies — with the conversation designed, guardrails and an evaluation set the brand agreed, consent before any customer data reaches a model, and the model’s running cost named as the client’s, like an app’s fee.",
+      "description": "The store’s own shopping assistant, or the store connected to agent platforms, on top of the AI every pack includes: built on the store’s Storefront MCP endpoint — catalogue search, cart and the store’s policies — with the conversation designed, guardrails and an evaluation set the brand agreed, consent before any customer data reaches a model, and the model’s running cost named as the client’s, like an app’s fee.",
       "effort_weeks": {
         "min": 4,
         "max": 6
@@ -2749,20 +2792,20 @@
       },
       {
         "id": "ai_channels",
-        "what": "AI channels",
+        "what": "AI built in",
         "gate": "agentic_commerce",
         "group": "Catalogue and search",
-        "shopify_limit": "Active by default for eligible stores; Shopify Catalog lists a product with a title, at least one image, a price above zero and a published URL",
-        "S": "Shopify’s agentic storefronts on their defaults",
-        "M": "Shopify’s agentic storefronts on their defaults",
-        "L": "Shopify’s agentic storefronts on their defaults",
-        "note": "ChatGPT, Microsoft Copilot, Meta, Google AI Mode and Gemini and Shop read the products through Shopify Catalog by default, and every pack loads a catalogue complete enough to be listed. Taking the channel on deliberately — terms, customer data, settings, answers, crawler policy — or building the store’s own agent is the agentic commerce add-on.",
+        "shopify_limit": "Agentic storefronts are active by default for eligible stores; Shopify Catalog lists a product with a title, at least one image, a price above zero and a published URL",
+        "S": "Products in AI assistants through Shopify Catalog, the Knowledge Base app answering for the store, Shopify Magic and Sidekick for the team",
+        "M": "Products in AI assistants through Shopify Catalog, the Knowledge Base app answering for the store, Shopify Magic and Sidekick for the team",
+        "L": "Products in AI assistants through Shopify Catalog, the Knowledge Base app answering for the store, Shopify Magic and Sidekick for the team",
+        "note": "In every pack, because it is Shopify’s own and costs a decision rather than a build: the position on AI channels and who accepts the supplemental terms, the customer data direct checkout shares, the channel settings, the catalogue to Shopify Catalog standard, the Knowledge Base answers written from the store’s own policies, and the team shown Shopify Magic and Sidekick. What takes a build is an add-on: product data mapped from custom fields, an AI crawler policy or the store’s own assistant (agentic commerce), and the catalogue’s content written with AI (AI product content).",
         "addon": [
           "S",
           "M",
           "L"
         ],
-        "addon_label": "Agentic commerce"
+        "addon_label": "Agentic commerce, AI product content"
       },
       {
         "id": "design",
@@ -3156,6 +3199,18 @@
         ]
       },
       {
+        "id": "ai_content",
+        "gate": "ai_content",
+        "what": "AI product content, per 1,000 SKUs",
+        "description": "Descriptions, image alt text, SEO fields and attributes from supplier data, written or enriched with AI for the whole catalogue in the brand’s voice, checked on a sample, approved by the client and loaded in one import.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Shopify Magic does this product by product in the admin, free, and stays available to the client’s team. Product data only: no customer data reaches a model. Translating the content is the languages add-on."
+      },
+      {
         "id": "search_merchandising",
         "gate": "search_merchandising",
         "what": "Search past a documented Shopify limit",
@@ -3251,14 +3306,14 @@
       {
         "id": "agentic_commerce",
         "gate": "agentic_commerce",
-        "what": "Agentic commerce: selling through AI assistants",
-        "description": "Selling through AI assistants on purpose rather than on Shopify’s defaults — terms, customer data, channel settings, the answers agents give and a crawler policy — or the store’s own shopping assistant built on its Storefront MCP endpoint.",
+        "what": "Agentic commerce: data mapping, a crawler policy, or the store’s own assistant",
+        "description": "What takes a build past the AI every pack includes: product data mapped from custom fields into Shopify Catalog, an AI crawler policy, or the store’s own shopping assistant built on its Storefront MCP endpoint.",
         "available_in": [
           "S",
           "M",
           "L"
         ],
-        "note": "Shopify’s agentic storefronts on their defaults are in every pack. Parts of Shopify’s agent tooling are early access — the Universal Cart API — and are scoped rather than promised. A model’s running cost is the client’s, like an app’s fee."
+        "note": "Products in AI assistants, the Knowledge Base answers and Shopify Magic and Sidekick are in every pack. Parts of Shopify’s agent tooling are early access — the Universal Cart API — and are scoped rather than promised. A model’s running cost is the client’s, like an app’s fee."
       },
       {
         "id": "analytics_consent",

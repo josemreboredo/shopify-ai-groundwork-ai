@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 129 of 317 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 130 of 318 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -605,6 +605,21 @@ Sources: https://help.shopify.com/en/manual/online-store/search-and-discovery/fi
 | Search & Discovery: storefront filters, up to 25 per store | Basic |  | https://help.shopify.com/en/manual/online-store/search-and-discovery/filters |
 | Predictive search, product boosts and synonyms | Basic |  | https://help.shopify.com/en/manual/online-store/search-and-discovery |
 *Verified 2026-09-21 against help.shopify.com (Spring '26).*
+
+**Q2.3.6** — Which product content should Merkle write or enrich with AI across the whole catalogue before launch? *(recommended · client)*
+Drives: gate AI product content
+
+**Why it matters.** Shopify Magic already writes a description and suggests a category as each product is edited, and that is free. What is not free is the same work across thousands of products at once, in the brand’s voice, with the attributes the storefront filters on filled in — which is where launches stall.
+
+**Limits.** Shopify keeps a product’s page title to 70 characters (60 advised) and recommends about 160 for the meta description. Descriptions, SEO fields, alt text, category and metafields all load by product CSV, so the work lands in one import rather than by hand.
+
+Sources: https://help.shopify.com/en/manual/ai-powered-tools · https://help.shopify.com/en/manual/products/details/product-category · https://help.shopify.com/en/manual/promoting-marketing/seo/adding-keywords · https://help.shopify.com/en/manual/products/import-export/using-csv
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shopify Magic: product descriptions, and a suggested category with its category metafields | Basic | Free, in the admin as products are created and edited | https://help.shopify.com/en/manual/products/details/product-category |
+| Product CSV import: description, SEO title and description, image alt text, product category and metafields | Basic |  | https://help.shopify.com/en/manual/products/import-export/using-csv |
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 ### 2.4 Pricing
 
@@ -2661,7 +2676,6 @@ Sources: https://help.shopify.com/en/manual/markets/rollouts
 ### 7.7 AI & agentic commerce
 
 **Q7.7.1** — Do you want your products to be found and bought inside AI assistants such as ChatGPT, Google AI or Copilot? *(recommended · client)*
-Drives: gate Agentic commerce
 
 **Why it matters.** This decides whether a new sales channel is open or closed. Shopify enrols eligible stores automatically, so doing nothing is itself a decision — the channel is on.
 
@@ -2806,7 +2820,6 @@ Sources: https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robo
 *Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q7.7.10** — Do you want to control the answers AI assistants give about shipping, returns and sizing? *(optional · client)*
-Drives: gate Agentic commerce
 
 **Why it matters.** Assistants answer service questions whether or not you supply the answers. Publishing them keeps the answers right and shows what customers actually ask.
 
@@ -2817,7 +2830,8 @@ Sources: https://help.shopify.com/en/manual/promoting-marketing/knowledge-base
 | Shopify feature | Minimum plan | Note | Docs |
 |---|---|---|---|
 | Shopify Knowledge Base app | Basic |  | https://help.shopify.com/en/manual/promoting-marketing/knowledge-base |
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+| Shopify Knowledge Base app (free, by Shopify) | Basic | Free; English | https://apps.shopify.com/shopify-knowledge-base |
+*Verified 2026-09-24 against apps.shopify.com (undefined).*
 
 **Q7.7.11** — Do you plan to offer your own AI shopping assistant, or connect the store to agent platforms yourself? *(optional · client)*
 Drives: gate Agentic commerce

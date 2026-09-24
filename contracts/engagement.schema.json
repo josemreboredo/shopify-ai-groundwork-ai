@@ -480,6 +480,9 @@
             "sku_complexity": {
               "$ref": "#/$defs/gate"
             },
+            "ai_content": {
+              "$ref": "#/$defs/gate"
+            },
             "search_merchandising": {
               "$ref": "#/$defs/gate"
             },
@@ -529,6 +532,7 @@
           "type": "array",
           "items": {
             "enum": [
+              "+AI content",
               "+Agentic (advanced)",
               "+Agentic (standard)",
               "+Analytics (advanced)",
@@ -592,6 +596,7 @@
                   "custom_templates",
                   "hydrogen",
                   "sku_complexity",
+                  "ai_content",
                   "search_merchandising",
                   "migration",
                   "retail_pos",
@@ -1541,6 +1546,21 @@
         },
         "custom_attributes": {
           "$ref": "#/$defs/strings"
+        },
+        "ai_enrichment": {
+          "type": "array",
+          "uniqueItems": true,
+          "description": "Which product content Merkle writes or enriches with AI across the catalogue before launch, reviewed before it loads. Product data only; no customer data reaches a model.",
+          "items": {
+            "enum": [
+              "product_descriptions",
+              "image_alt_text",
+              "seo_fields",
+              "attributes_from_supplier_data",
+              "none",
+              "not_sure"
+            ]
+          }
         },
         "data_source": {
           "enum": [
