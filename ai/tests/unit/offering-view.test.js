@@ -166,7 +166,6 @@ describe('the page explains the rule the engine actually follows', () => {
 
   /** One engagement per published rule, in the order the page prints them. */
   const CASES = [
-    ['a headless storefront', { ...base(), design: { headless_required: true, headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects' } } }, 'L'],
     ['a quote from the Flagship floor', {
       ...base(),
       ...markets('CH', 'DE', 'FR'),

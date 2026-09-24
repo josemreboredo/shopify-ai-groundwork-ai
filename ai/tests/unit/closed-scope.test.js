@@ -331,7 +331,7 @@ describe('the closed scope each pack sells', () => {
     assert.equal(classifyOffer(engagementAt(limits.L)).addons.length, 0, 'and every one of them is inside L');
   });
 
-  test('Hydrogen is an add-on on L, priced by its weeks and the design system days', () => {
+  test('Hydrogen is an add-on in every pack, priced by its weeks and the design system days', () => {
     /* It had no weeks of its own, so a headless quote was floored at L's band
        and every L band carried a "+". It is a gate now: the owned front end in
        build weeks, the design system in a design system architect's days. */
@@ -347,10 +347,12 @@ describe('the closed scope each pack sells', () => {
     assert.equal(h.price_band.max - l.price_band.max, Math.round((m.price_add.max + m.system_days.max * day) / 1000) * 1000);
     assert.equal(h.price_band.open_ended, false, 'no quote is open-ended any more');
     assert.equal(offering.offers.L.price_band.open_ended, false, 'nor is L’s band');
-    // Only L sells it, and a headless storefront designs every template.
-    assert.deepEqual(addons.find((a) => a.gate === 'hydrogen').available_in, ['L']);
+    // Every pack sells it, and a headless storefront designs every template.
+    assert.deepEqual(addons.find((a) => a.gate === 'hydrogen').available_in, ['S', 'M', 'L']);
+    assert.ok(!offering.l_triggers.some((t) => t.id === 'headless'), 'it no longer names the pack');
     const bare = classifyOffer(engagementAt({ ...limits.S, headless: true }));
-    assert.equal(bare.code, 'L');
+    assert.notEqual(bare.code, 'L', 'one market on Hydrogen is named by its budget');
+    assert.ok(bare.addons.some((a) => a.gate === 'hydrogen'));
     assert.equal(bare.scope_gates.storefront_design.tier, 'bespoke');
   });
 

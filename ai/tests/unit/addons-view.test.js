@@ -137,14 +137,18 @@ describe('the add-on services, pack by pack', () => {
     }
   });
 
-  test('Hydrogen is sold in L only, with the design system architect’s days', () => {
-    assert.equal(cell(view, 'hydrogen', 'S').state, 'not_sold');
-    assert.equal(cell(view, 'hydrogen', 'M').state, 'not_sold');
-    const l = cell(priced, 'hydrogen', 'L');
+  test('Hydrogen is sold in every pack, the same line in each, with the design system architect’s days', () => {
     const m = offering.modifiers.find((x) => x.gate === 'hydrogen');
-    assert.deepEqual(l.weeks, m.effort_weeks);
-    assert.deepEqual(l.system_days, m.system_days);
-    assert.equal(l.design_days, undefined, 'L designs every template already');
+    for (const code of CODES) {
+      const c = cell(priced, 'hydrogen', code);
+      assert.deepEqual(c.weeks, m.effort_weeks, code);
+      assert.deepEqual(c.system_days, m.system_days, code);
+      assert.equal(c.design_days, undefined, `${code}: the templates are the full set's, not Hydrogen's`);
+    }
+    // S and M buy the full template set with it; L has it already.
+    assert.equal(cell(view, 'hydrogen', 'S').on_top_of, 'the full template set');
+    assert.equal(cell(view, 'hydrogen', 'M').on_top_of, 'the full template set');
+    assert.equal(cell(view, 'hydrogen', 'L').on_top_of, undefined);
   });
 
   test('hypercare and apps: what each pack includes, and what one more costs', () => {

@@ -74,3 +74,7 @@ give the final figure, and the commercial team adds contingency and services suc
   the experience designer (`pricing.design.system_architect`, same design day). A headless storefront brings the full
   template set with it, since there is no theme to configure. The headless floor is gone: every quote is the scope's sum,
   none open-ended, and L's band is CHF 106–214k. L on Hydrogen comes to CHF 212–263k and 28.5–35 weeks.
+- **Hydrogen in every pack** (2026-09-24): the add-on is sold in S, M and L, and a headless storefront no longer names the
+  engagement L — the headless L trigger and the classification rule it drove are gone, and the name follows the budget like
+  any other add-on. It brings the full template set with it, bought alongside it in S and M. L's build label is "Custom
+  Liquid"; the track is still an answer (`offer.delivery_track`), read off the hydrogen gate.

@@ -8824,7 +8824,6 @@
         "/design/headless_required"
       ],
       "feeds": [
-        "l_trigger:headless",
         "gate:hydrogen",
         "exit:11.25"
       ],
@@ -9080,8 +9079,7 @@
         ]
       },
       "feeds": [
-        "exit:11.26",
-        "l_trigger:headless"
+        "exit:11.26"
       ]
     },
     {
@@ -9096,7 +9094,7 @@
       ],
       "feeds": [
         "exit:11.26",
-        "l_trigger:headless"
+        "gate:hydrogen"
       ],
       "skip_if": {
         "question": "Q9.2.1",

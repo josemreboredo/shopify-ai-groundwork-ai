@@ -100,7 +100,6 @@ describe('client deck XML', () => {
     // became an add-on: no floor, and nothing open-ended.
     const headless = recompute({ ...load('foundation-minimal.json'), design: { headless_required: true } });
     const h = headless.offer.price_band;
-    assert.equal(headless.offer.code, 'L');
     assert.match(buildDeckXml(headless, backlogFor(headless)).xml, new RegExp(`<price-band currency="CHF" from="${h.min}" to="${h.max}"/>`));
   });
 

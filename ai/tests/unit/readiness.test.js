@@ -25,7 +25,7 @@ describe('can we price this yet', () => {
   test('the denominator is the engine’s own decisions, and it is a constant of the offering', () => {
     const r = readiness(acme(), state(acme()));
     assert.equal(r.decisions.total, offering.scope_gates.length + offering.l_triggers.length + offering.exit_rules.length);
-    assert.equal(r.decisions.total, 50, 'nineteen gates, two L triggers, twenty-nine rules');
+    assert.equal(r.decisions.total, 49, 'nineteen gates, one L trigger, twenty-nine rules');
     // A ratio of questions is not comparable between bids: only_if moves the
     // question count per client, and one question can drive six rules.
     for (const d of [...offering.scope_gates, ...offering.l_triggers, ...offering.exit_rules]) {
@@ -206,7 +206,7 @@ describe('what the offer owes whatever its commercial shape', () => {
     assert.equal(technicalAnswer(doc).storefront.track, 'liquid');
     assert.match(technicalAnswer(doc).storefront.would_change_it, /second build stream/);
 
-    doc.offer.l_triggers.headless = { active: true, evidence: 'Q9.2.1: a headless storefront is required' };
+    doc.offer.scope_gates.hydrogen = { active: true, evidence: 'Q9.2.1: a headless storefront is required' };
     const headless = technicalAnswer(doc).storefront;
     assert.equal(headless.track, 'hydrogen');
     assert.match(headless.evidence, /Q9\.2\.1/, 'carrying the answer that decided it');

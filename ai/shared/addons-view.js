@@ -80,7 +80,13 @@ export const ASKS = {
     limits: (l) => ({ ...(l.storefront === 'all_templates' ? { ...l, storefront: 'brand_only' } : l), custom_templates: (l.custom_templates ?? 0) + 1 }),
     instead: 'the custom theme',
   },
-  hydrogen: { limits: (l) => ({ ...l, headless: true }) },
+  /* A headless storefront designs every template, so in S and M it is asked on
+     top of the full template set — the Hydrogen line is Hydrogen alone. */
+  hydrogen: {
+    base: { limits: (l) => ({ ...l, storefront: 'all_templates' }) },
+    limits: (l) => ({ ...l, storefront: 'all_templates', headless: true }),
+    needs: 'the full template set',
+  },
   sku_complexity: {
     tiers: {
       standard: { label: '500 to 4,999 SKUs with complex variants, attributes or bundles', limits: (l) => ({ ...l, sku_count: Math.max(l.sku_count, 2000), variant_options: Math.max(l.variant_options ?? 1, 2) }) },

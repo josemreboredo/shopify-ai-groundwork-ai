@@ -80,15 +80,17 @@ describe('classification edge cases', () => {
     // gate reads.
     const offer = classifyOffer({ ...base(), brand: { positioning: 'luxury' } });
     assert.equal(offer.code, 'S');
-    assert.equal(offer.l_triggers.headless.active, false);
+    assert.equal(offer.scope_gates.hydrogen.active, false);
   });
 
-  test('a headless storefront is Ecommerce Flagship, and the track follows the answer', () => {
-    // Headless is a floor, not a size: four weeks of Foundation cannot produce
-    // a headless storefront at any catalogue. It is still a Shopify build while
-    // Shopify holds the content — what leaves is exit rule 11.26's business.
+  test('a headless storefront is the Hydrogen add-on on the pack its budget reaches, and the track follows the answer', () => {
+    // It named the engagement L for a while; Hydrogen is an add-on in every
+    // pack now, and brings the full template set with it. It is still a
+    // Shopify build while Shopify holds the content — what leaves is exit rule
+    // 11.26's business.
     const head = classifyOffer({ ...base(), design: { headless_required: true, headless: { framework: 'hydrogen', content_source: 'shopify_metaobjects' } } });
-    assert.equal(head.code, 'L');
+    assert.equal(head.code, 'M', 'one market on Hydrogen is a Scale budget, not a Flagship one');
+    assert.deepEqual(head.addons.map((a) => a.gate).sort(), ['hydrogen', 'storefront_design']);
     assert.equal(head.delivery_track, 'hydrogen');
     // And the same offer without it is the same offer, on a theme.
     assert.equal(classifyOffer(base()).delivery_track, 'liquid');
@@ -326,7 +328,7 @@ describe('the offer follows the effort, not the gate count', () => {
     });
     assert.equal(heavy.code, 'L');
     assert.equal(heavy.delivery_track, 'liquid', 'nothing here asked for a headless storefront');
-    assert.equal(heavy.l_triggers.headless.active, false);
+    assert.equal(heavy.scope_gates.hydrogen.active, false);
     assert.ok(heavy.price_band.min >= offering.offers.L.price_band.min, 'it is in the Flagship budget');
   });
 

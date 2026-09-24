@@ -200,15 +200,18 @@ const GATE_EVALUATORS = {
      carries these (see `carried` below). */
   /* The storefront built headless on Hydrogen instead of a Liquid theme. It
      used to have no weeks of its own, so a headless quote was floored at L's
-     band; it is an add-on on L now, priced like any other gate. Content or a
+     band; it is an add-on in every pack now, priced like any other gate. Content or a
      front end outside Shopify is not this: that is rule 11.26 and Merkle Arc. */
   hydrogen: (doc) => {
-    const required = doc.design?.headless_required === true;
+    const h = doc.design ?? {};
+    const required = h.headless_required === true;
+    const framework = h.headless?.framework;
+    const source = h.headless?.content_source;
     return {
       active: required,
       evidence: required
-        ? 'A headless storefront on Hydrogen: an owned front end on Oxygen, built instead of a theme'
-        : 'A Liquid theme; no headless storefront',
+        ? `A headless storefront, built instead of a theme (${framework ? framework.replace(/_/g, ' ') : 'front end not recorded'}, content in ${source ? source.replace(/_/g, ' ') : 'a source not recorded'})`
+        : `A Liquid theme; headless storefront required: ${h.headless_required === undefined ? 'not recorded' : 'no'}`,
     };
   },
 
@@ -672,37 +675,13 @@ const GATE_EVALUATORS = {
 };
 
 /**
- * The one answer that cannot be a Foundation or a Scale.
- *
- * Headless was a trigger, then it was an exit, and it is a trigger again — the
- * line moved, not the mechanism. A headless storefront is still a Shopify build
- * while Shopify holds the content: Hydrogen on the Storefront API, metaobjects
- * and metafields, Oxygen underneath. What leaves is content or a front end that
- * lives outside Shopify — an external CMS, another framework, a native app,
- * several front ends on one backend — and that is exit rule 11.26 and Merkle
- * Arc, evaluated on its own answers rather than on this one.
- *
- * It is a trigger rather than a gate because it is a floor, not a size: four
- * weeks of Foundation cannot produce a headless storefront at any catalogue.
- * What it is not is an extra on the band — Ecommerce Flagship spends the same
- * weeks differently, which is what offers.L.tracks says.
+ * What still decides Ecommerce Flagship on its own. A headless storefront used
+ * to, and does not any more: Hydrogen is an add-on sold in every pack (the
+ * hydrogen gate), and the engagement is named after the budget it reaches.
  *
  * @type {Record<string, (doc: object) => Gate>}
  */
 const L_TRIGGER_EVALUATORS = {
-  headless: (doc) => {
-    const h = doc.design ?? {};
-    const required = h.headless_required === true;
-    const source = h.headless?.content_source;
-    const framework = h.headless?.framework;
-    return {
-      active: required,
-      evidence: required
-        ? `Headless storefront required (${framework ? framework.replace(/_/g, ' ') : 'front end not recorded'}, content in ${source ? source.replace(/_/g, ' ') : 'a source not recorded'})`
-        : `Headless storefront required: ${h.headless_required === undefined ? 'not recorded' : 'no'}`,
-    };
-  },
-
   /*
    * Global reach alone never forces this — Shopify documents no cap on how
    * many country or region markets one store can hold (topology.js). What
@@ -858,7 +837,8 @@ export function classifyOffer(doc) {
   );
 
   const activeGates = offering.scope_gates.filter((g) => scope_gates[g.id].active);
-  const headless = Boolean(l_triggers.headless?.active);
+  // Headless is the hydrogen gate now: an add-on in every pack, not a name.
+  const headless = Boolean(scope_gates.hydrogen?.active);
 
   /*
    * Each active gate with the modifier that prices it, kept together.
@@ -990,14 +970,12 @@ export function classifyOffer(doc) {
     return { price: priced, weeks };
   };
 
-  const { code, addons } = packFor(priced, quoteFor, headless);
+  const { code, addons } = packFor(priced, quoteFor);
   const quote = quoteFor(code);
   const offer = offering.offers[code];
   const addonLabels = addons.map((a) => a.label.charAt(0).toLowerCase() + a.label.slice(1));
   const rationale = [
-    headless
-      ? `${offer.name}: a headless storefront is built only in this pack${addons.length ? `, with ${addonLabels.join('; ')} on top` : ''}`
-      : addons.length
+    addons.length
         ? `${offer.name} plus ${addonLabels.join('; ')}`
         : `${offer.name} as packaged: ${activeGates.length ? `${activeGates.map((g) => g.label).join(', ')} — all inside what it includes` : 'no scope gates active'}`,
     `Quoted from the Foundation base plus each scope gate at its own weeks and price, with ${hypercareFor(code)} working days of hypercare after go-live${extraApps(code) ? ` and ${extraApps(code)} third-party app${extraApps(code) === 1 ? '' : 's'} past the ${offer.apps_included} it includes` : ''}${perStore ? `, each app set up again in every further store (${perStore})` : ''}`,
@@ -1006,10 +984,9 @@ export function classifyOffer(doc) {
   /*
    * The track is an answer, not a property of the offer.
    *
-   * Ecommerce Flagship builds either way and spends the same weeks differently,
+   * Every pack builds a theme, and any of them can take the Hydrogen add-on,
    * so reading the track off the offer would tell a Hydrogen engagement it was
-   * getting a theme. S and M have no headless variant: nothing there fires the
-   * trigger, so they resolve to their own track and stay Liquid.
+   * getting a theme.
    */
   const delivery_track = headless ? 'hydrogen' : offer.delivery_track;
   const toThousand = (n) => Math.round(n / 1000) * 1000;
@@ -1084,18 +1061,17 @@ function beyond({ gate, evaluated, modifier }, included) {
  * A pack can carry an engagement when everything past its promise is sold as an
  * add-on in that pack. Of those, the engagement is named after the largest one
  * whose floor its quote reaches — that is the budget the conversation is in —
- * and what goes past that pack's promise is listed as add-ons. A headless
- * storefront is only built in L. Nothing here moves the price: the quote is
- * the scope's sum whatever the name.
+ * and what goes past that pack's promise is listed as add-ons — a headless
+ * storefront included, since Hydrogen is an add-on in every pack. Nothing here
+ * moves the price: the quote is the scope's sum whatever the name.
  *
  * @param {object[]} priced  active gates with their evaluation and modifier
  * @param {(code: string) => object} quoteFor  the quote as that pack would price it (its hypercare included)
- * @param {boolean} headless whether a headless storefront is required
  * @returns {{ code: string, addons: object[] }}
  */
-function packFor(priced, quoteFor, headless) {
+function packFor(priced, quoteFor) {
   const addonOf = new Map(offering.closed_scope.addons.map((a) => [a.gate, a]));
-  const candidates = (headless ? ['L'] : ['S', 'M', 'L']).map((code) => {
+  const candidates = ['S', 'M', 'L'].map((code) => {
     const included = includedIn(code);
     const extra = priced.filter((p) => beyond(p, included[p.gate.id]));
     return { code, extra, sellable: extra.every((p) => addonOf.get(p.gate.id)?.available_in.includes(code)) };

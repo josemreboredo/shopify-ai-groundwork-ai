@@ -261,9 +261,9 @@ export function technicalAnswer(doc) {
   const stated = doc.shopify?.target_plan;
   const known = stated && stated !== 'not_sure' ? stated : null;
 
-  // The storefront is decided by the headless trigger, not by the offer code.
+  // The storefront is decided by the Hydrogen add-on, not by the offer code.
   // An engagement outside the offers has no offer code, and still has an answer.
-  const headless = doc.offer?.l_triggers?.headless;
+  const headless = doc.offer?.scope_gates?.hydrogen;
   const track = headless?.active ? 'hydrogen' : 'liquid';
 
   return {

@@ -159,11 +159,10 @@ creep post-signature.
 
 <!-- generated:classification -->
 **Classification rule** — the quote first, then the name. The quote is the Foundation base (4–5 weeks, CHF 31k–38k) plus every active scope gate at its own weeks, each week at one rate of CHF 6.3k, and the design each gate needs at CHF 750 a design day. The pack it is named after, in order:
-1. A headless storefront — only Ecommerce Flagship builds one → **L**
-2. The quote reaches Ecommerce Flagship’s floor, and everything past its promise is sold as an add-on to it → **L**
-3. The quote reaches Ecommerce Scale’s floor, and everything past its promise is sold as an add-on to it → **M**
-4. Below that, Ecommerce Foundation, with whatever goes past its promise as add-ons → **S**
-5. Below Ecommerce Scale’s floor but needing what only a larger pack sells — a further store — the smallest pack that sells it → **M**
+1. The quote reaches Ecommerce Flagship’s floor, and everything past its promise is sold as an add-on to it → **L**
+2. The quote reaches Ecommerce Scale’s floor, and everything past its promise is sold as an add-on to it → **M**
+3. Below that, Ecommerce Foundation, with whatever goes past its promise as add-ons → **S**
+4. Below Ecommerce Scale’s floor but needing what only a larger pack sells — a further store — the smallest pack that sells it → **M**
 
 Whatever goes past the named pack’s promise is listed as add-ons, so a re-estimate that finds a second store reads as the same pack with a store more. The packs are what a conversation opens with; the quote is what the answers add up to.
 <!-- /generated:classification -->
@@ -275,7 +274,7 @@ token application, boilerplate, automated QA (~60% of implementation)
 
 | Offer | Code | Triggered by | Scope | Typical value | Delivery |
 |---|---|---|---|---|---|
-| **Ecommerce Flagship** | L | A headless requirement, or a quote from the L floor | A brand already selling professionally across regions that needs a store per region, a storefront built out and measurement that stands up. Up to three Shopify stores and nine markets across them · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 106–214k | 13–29 weeks |
+| **Ecommerce Flagship** | L | A quote from the L floor | A brand already selling professionally across regions that needs a store per region, a storefront built out and measurement that stands up. Up to three Shopify stores and nine markets across them · six languages · the full template set over one token layer · blocks inside the checkout steps (Plus) · a custom GA4 event layer · one experiment live at launch. The replatform is quoted beside the pack, by source platform | CHF 106–214k | 13–29 weeks |
 
 L builds either way and spends the same weeks differently — as theme sections and
 blocks, or as owned components on Hydrogen — so the track follows the answers

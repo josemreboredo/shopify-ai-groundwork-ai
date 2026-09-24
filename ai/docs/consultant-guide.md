@@ -3021,7 +3021,7 @@ Sources: https://shopify.dev/docs/storefronts/themes/architecture/templates
 ### 9.2 Storefront
 
 **Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required · client)*
-Drives: L trigger Headless storefront · gate Headless storefront on Hydrogen · rule 11.25 (FLAG)
+Drives: gate Headless storefront on Hydrogen · rule 11.25 (FLAG)
 
 **Why it matters.** The largest architectural decision in the questionnaire. The commerce engine is identical either way; what changes is who owns the presentation layer. Headless removes the theme editor, so marketing can no longer restructure pages without a release.
 
@@ -3102,7 +3102,7 @@ Sources: https://shopify.dev/docs/storefronts/headless/hydrogen/environments · 
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q9.2.8** — Where is editorial content managed for the headless storefront? *(recommended · client)*
-Drives: rule 11.26 (STOP) · L trigger Headless storefront
+Drives: rule 11.26 (STOP)
 
 **Why it matters.** Headless removes the theme editor, so somebody has to own content editing: whatever you build inside the storefront, or a separate CMS the client licenses and you integrate. Decide it before the build, not after launch when marketing asks.
 
@@ -3116,7 +3116,7 @@ Drives: rule 11.26 (STOP) · L trigger Headless storefront
 Sources: https://shopify.dev/docs/storefronts/headless
 
 **Q9.2.11** — Which front end: Shopify Hydrogen, or another framework? *(recommended · consultant)*
-Drives: rule 11.26 (STOP) · L trigger Headless storefront
+Drives: rule 11.26 (STOP) · gate Headless storefront on Hydrogen
 
 **Why it matters.** This is the line between a Shopify engagement and a composable one. Hydrogen is Shopify’s own framework on the Storefront API, and with content in metaobjects it is still a Shopify build. Another framework, a native app, or several front ends on one backend is Merkle Arc, and these offers do not price it.
 

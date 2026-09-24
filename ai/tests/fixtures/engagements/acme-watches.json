@@ -214,10 +214,6 @@
       }
     },
     "l_triggers": {
-      "headless": {
-        "active": false,
-        "evidence": "Q9.2.1: no headless storefront required — Online Store with a Liquid theme."
-      },
       "multi_store": {
         "active": false,
         "evidence": "Q3.1.1: one store serves CH, DE and AT through Shopify Markets."
