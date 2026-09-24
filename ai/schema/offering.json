@@ -1127,7 +1127,7 @@
     {
       "id": "custom_promotions",
       "label": "Custom promotions",
-      "condition": "A promotion Shopify’s own discounts cannot express — tiered or volume discounts for consumers (standard), or stacking rules of the business’s own across discounts (advanced) — built as a discount Function and owned as code. Codes, automatic discounts, buy X get Y, free shipping, scheduled sales and the native combinations are in every pack and do not fire this. A custom app containing a Function needs Shopify Plus; below Plus the Function comes in a public App Store app.",
+      "condition": "A promotion Shopify’s own discounts cannot express — tiered or volume discounts for consumers (standard), or stacking rules of the business’s own across discounts (advanced) — built as a discount Function and owned as code. Codes, automatic discounts, buy X get Y, free shipping, scheduled sales and the native combinations are in every pack and do not fire this. Shopify documents tiered discounts, multi-step logic and custom eligibility as needing an App Store app, or on Shopify Plus a custom app of your own: a custom app containing a Function needs Plus, and a public App Store app runs on every plan.",
       "inputs": [
         "/promotions/discount_types",
         "/promotions/stacking"
@@ -1138,6 +1138,9 @@
         "advanced"
       ],
       "sources": [
+        "https://help.shopify.com/en/manual/discounts",
+        "https://help.shopify.com/en/manual/discounts/discount-types",
+        "https://help.shopify.com/en/manual/discounts/discount-methods/discount-codes",
         "https://help.shopify.com/en/manual/discounts/discount-combinations",
         "https://shopify.dev/docs/apps/build/functions"
       ],
