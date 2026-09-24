@@ -8777,6 +8777,42 @@
       }
     },
     {
+      "id": "Q9.1.7",
+      "subsection": "9.1",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "integer",
+      "text": "If the storefront stays on a Shopify theme, how many page templates must be designed and built new?",
+      "help": "A template is a page type with its own layout — a campaign landing page, a lookbook, a product page for one range. Count the distinct ones. Leave it at 0 if the whole storefront is custom-designed.",
+      "maps_to": [
+        "/design/custom_templates"
+      ],
+      "feeds": [
+        "gate:custom_templates"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Alternate templates in a theme",
+            "plan": "basic",
+            "plan_note": "Up to 1,000 JSON templates per theme, across all template types",
+            "docs": "https://shopify.dev/docs/storefronts/themes/architecture/templates"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-24",
+          "source": "shopify.dev"
+        }
+      },
+      "teach": {
+        "why": "A large storefront does not have to be a custom theme. A global brand can keep a Shopify theme and have a handful of templates designed and built for the pages that matter, each priced on its own — much less than designing every template.",
+        "limits": "Shopify allows up to 1,000 JSON templates per theme and several versions of the same page type, each assigned to the products, collections or pages that use it. Past about eight new templates, the full template set is the better buy.",
+        "sources": [
+          "https://shopify.dev/docs/storefronts/themes/architecture/templates"
+        ]
+      }
+    },
+    {
       "id": "Q9.2.1",
       "subsection": "9.2",
       "priority": "required",

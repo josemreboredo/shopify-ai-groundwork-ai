@@ -148,8 +148,8 @@
     "modifiers": [],
     "addons": [],
     "price_band": {
-      "min": 28000,
-      "max": 35000,
+      "min": 31000,
+      "max": 38000,
       "currency": "CHF",
       "open_ended": false
     },
@@ -160,6 +160,12 @@
     "hypercare": {
       "days": 5,
       "included_days": 5
+    },
+    "design": {
+      "days": {
+        "min": 3,
+        "max": 5
+      }
     },
     "apps": {
       "count": 0,

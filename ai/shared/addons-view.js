@@ -72,6 +72,14 @@ export const ASKS = {
     limits: (l) => ({ ...withAStore(l), extra_theme_designs: (l.extra_theme_designs ?? 0) + 1 }),
     needs: 'a further store',
   },
+  /* Priced where the storefront stays on a Shopify theme. L's promise is the
+     custom theme, which carries every template, so in L it is asked of L on a
+     Shopify theme — the global set-up that keeps its theme. */
+  custom_templates: {
+    base: { limits: (l) => (l.storefront === 'all_templates' ? { ...l, storefront: 'brand_only' } : l) },
+    limits: (l) => ({ ...(l.storefront === 'all_templates' ? { ...l, storefront: 'brand_only' } : l), custom_templates: (l.custom_templates ?? 0) + 1 }),
+    instead: 'the custom theme',
+  },
   sku_complexity: {
     tiers: {
       standard: { label: '500 to 4,999 SKUs with complex variants, attributes or bundles', limits: (l) => ({ ...l, sku_count: Math.max(l.sku_count, 2000), variant_options: Math.max(l.variant_options ?? 1, 2) }) },
@@ -150,20 +158,28 @@ const exact = (n) => Math.round(n * 1e4) / 1e4;
 function cellFor(addon, ask, code, pricing) {
   if (!addon.available_in.includes(code)) return { state: 'not_sold' };
   const limits = offering.closed_scope.limits[code];
-  const base = classifyOffer(build(ask.base, limits)).scope_effort_weeks;
-  const more = classifyOffer(build(ask, limits)).scope_effort_weeks;
+  const before = classifyOffer(build(ask.base, limits));
+  const after = classifyOffer(build(ask, limits));
+  const base = before.scope_effort_weeks;
+  const more = after.scope_effort_weeks;
   const weeks = { min: exact(more.min - base.min), max: exact(more.max - base.max) };
-  if (weeks.max <= 0) {
+  // Design is priced by the design day, apart from the build week.
+  const design = { min: after.design.days.min - before.design.days.min, max: after.design.days.max - before.design.days.max };
+  if (weeks.max <= 0 && design.max <= 0) {
     const promised = classifyOffer(engagementAt(limits)).scope_gates[addon.gate];
     return promised?.active ? { state: 'included' } : { state: 'carried', by: ask.carried_by ?? null };
   }
   const rate = offering.pricing.weekly_rate;
-  const needsMore = ask.needs && JSON.stringify(build(ask.base, limits)) !== JSON.stringify(engagementAt(limits));
+  const day = offering.pricing.design.day_price;
+  const reshaped = JSON.stringify(build(ask.base, limits)) !== JSON.stringify(engagementAt(limits));
+  const needsMore = ask.needs && reshaped;
   return {
     state: 'priced',
     weeks,
-    ...(pricing ? { price: { min: Math.round(weeks.min * rate), max: Math.round(weeks.max * rate) } } : {}),
+    ...(design.max > 0 ? { design_days: design } : {}),
+    ...(pricing ? { price: { min: Math.round(weeks.min * rate + design.min * day), max: Math.round(weeks.max * rate + design.max * day) } } : {}),
     ...(needsMore ? { on_top_of: ask.needs } : {}),
+    ...(ask.instead && reshaped ? { instead_of: ask.instead } : {}),
   };
 }
 
@@ -253,7 +269,7 @@ function countedAddons(pricing) {
  * sits with the migration it usually rides on.
  */
 const CHANNELS = 'Selling channels no pack includes';
-const GROUP = { b2b: CHANNELS, retail_pos: CHANNELS, subscriptions: CHANNELS, seo_continuity: 'Data and integrations' };
+const GROUP = { b2b: CHANNELS, retail_pos: CHANNELS, subscriptions: CHANNELS, seo_continuity: 'Data and integrations', custom_templates: 'Storefront' };
 const COUNTED_GROUP = 'Running the store';
 
 function grouped(addons) {

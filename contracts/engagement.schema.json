@@ -471,6 +471,9 @@
             "theme_design": {
               "$ref": "#/$defs/gate"
             },
+            "custom_templates": {
+              "$ref": "#/$defs/gate"
+            },
             "sku_complexity": {
               "$ref": "#/$defs/gate"
             },
@@ -549,6 +552,7 @@
               "+Subscriptions (standard)",
               "+Support (extended)",
               "+Support (standard)",
+              "+Templates",
               "+Theme design"
             ]
           },
@@ -574,6 +578,7 @@
                   "integration",
                   "storefront_design",
                   "theme_design",
+                  "custom_templates",
                   "sku_complexity",
                   "search_merchandising",
                   "migration",
@@ -645,6 +650,34 @@
             "included_days": {
               "type": "integer",
               "minimum": 0
+            }
+          }
+        },
+        "design": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "days"
+          ],
+          "description": "Design days by Merkle’s experience designer: the Foundation brand adaptation plus every gate that needs design, priced into price_band at the design day and not counted in duration_weeks.",
+          "properties": {
+            "days": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "min",
+                "max"
+              ],
+              "properties": {
+                "min": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "max": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
             }
           }
         },
@@ -3068,6 +3101,11 @@
           "type": "integer",
           "minimum": 0,
           "description": "How many bespoke sections or blocks the storefront needs beyond the theme's own — sections that are designed and built rather than configured. A handful is the extended design tier; past the line the offering sells, the work is effectively a full template set and prices as the bespoke tier. Shopify's own ceiling is 25 sections per template."
+        },
+        "custom_templates": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How many page templates are designed and built new while the storefront stays on a Shopify theme — a template with its own layout, such as a campaign landing page, a lookbook or a product page for one range. A full template set from a design system is the bespoke storefront tier and includes every template. Shopify allows 1,000 JSON templates per theme."
         },
         "headless_required": {
           "type": "boolean"

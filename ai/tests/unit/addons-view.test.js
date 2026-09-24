@@ -106,25 +106,30 @@ describe('the add-on services, pack by pack', () => {
     assert.equal(cell(priced, 'markets', 'S').price.max, mod.per_market_price);
   });
 
-  test('in S, which holds no gate, a tier costs exactly what its modifier sells it for', () => {
+  test('in S, which holds no gate, a tier costs exactly what its modifier sells it for, design included', () => {
+    const day = offering.pricing.design.day_price;
     for (const a of all(priced).filter((x) => x.gate && x.rows[0].tier)) {
       for (const r of a.rows) {
         const m = offering.modifiers.find((x) => x.gate === a.gate && x.tier === r.tier);
         assert.deepEqual(r.cells.S.weeks, m.effort_weeks, r.id);
-        assert.deepEqual(r.cells.S.price, m.price_add, r.id);
+        assert.deepEqual(r.cells.S.design_days, m.design_days, `${r.id}: design days`);
+        const design = m.design_days ?? { min: 0, max: 0 };
+        assert.deepEqual(r.cells.S.price, { min: m.price_add.min + design.min * day, max: m.price_add.max + design.max * day }, r.id);
       }
     }
   });
 
-  test('every price is its weeks at the one weekly rate', () => {
+  test('every price is its weeks at the one weekly rate, and its design days at the design day', () => {
     const rate = offering.pricing.weekly_rate;
+    const day = offering.pricing.design.day_price;
     for (const a of all(priced)) {
       for (const r of a.rows) {
         for (const code of CODES) {
           const c = r.cells[code];
           if (c.state !== 'priced' || !c.weeks) continue;
-          assert.equal(c.price.min, Math.round(c.weeks.min * rate), `${r.id} on ${code}`);
-          assert.equal(c.price.max, Math.round(c.weeks.max * rate), `${r.id} on ${code}`);
+          const d = c.design_days ?? { min: 0, max: 0 };
+          assert.equal(c.price.min, Math.round(c.weeks.min * rate + d.min * day), `${r.id} on ${code}`);
+          assert.equal(c.price.max, Math.round(c.weeks.max * rate + d.max * day), `${r.id} on ${code}`);
         }
       }
     }

@@ -2224,6 +2224,11 @@
 
 > Answer:
 
+**Q9.1.7** — Falls der Storefront auf einem Shopify-Theme bleibt: Wie viele Seiten-Templates müssen neu gestaltet und gebaut werden? *(recommended)*
+*Ein Template ist ein Seitentyp mit eigenem Layout — eine Kampagnen-Landingpage, ein Lookbook, eine Produktseite für eine Linie. Zählen Sie die unterschiedlichen. Lassen Sie 0 stehen, wenn der ganze Storefront individuell gestaltet wird.*
+
+> Answer:
+
 ### 9.2 Storefront
 
 **Q9.2.1** — Wird ein Headless-Storefront benötigt (Hydrogen, ein anderes Framework oder das Frontend einer nativen App)? *(required)*

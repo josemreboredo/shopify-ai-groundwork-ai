@@ -35,7 +35,7 @@ export default function Estimation({ loaderData }) {
   /* The five moves from the answers to a figure, in the order they happen. */
   const STEPS = [
     ['The Foundation build', `Every estimate starts here: the store, the theme configured, apps, catalogue, quality and launch — ${weeks(S.weeks)} weeks.`],
-    ['Each gate the answers open', 'A further market, an integration, a migration, bespoke sections: each is weeks of the team, at the weekly cost.'],
+    ['Each gate the answers open', 'A further market, an integration, a migration, bespoke sections: each is weeks of the team at the weekly cost, and the design it needs by the design day.'],
     ['The pack’s hypercare and apps', `${view.packs.map((p, i) => (i === 0 ? `${p.code} carries ${p.hypercare_days} days of hypercare and ${p.apps_included} apps` : `${p.code} ${p.hypercare_days} and ${p.apps_included}`)).join(', ')}. More of either is priced on top.`],
     ['The name', 'The largest pack whose budget the estimate reaches, plus what goes past its scope as add-ons: “Ecommerce Scale plus a further store”.'],
     ['The final figure', 'The delivery team estimates the approach from the closed scope; the commercial team adds contingency and design.'],
@@ -105,6 +105,7 @@ export default function Estimation({ loaderData }) {
           <li>Developers build and configure: front end for templates, sections and the checkout, back end for integrations, data and apps.</li>
           <li>QA is part of the team, not a service added on top: test cases, regression and the release checks every pack carries.</li>
           <li>The project manager, business analyst and solution architect give a share of each week — enough to run it, specify it and decide its design, not a second team.</li>
+          <li>Design is not in the week. A {view.designer.sourcing} {view.designer.role.toLowerCase()} designs the storefront, priced by the design day, because most pieces of work need no design at all.</li>
         </ul>
       </section>
 
@@ -114,10 +115,14 @@ export default function Estimation({ loaderData }) {
           One rate prices everything, so no piece of work is cheaper or dearer per week than another. Every add-on is
           its weeks at this cost.
         </p>
-        <ul className="stats kpis kpis-3">
+        <ul className="stats kpis kpis-4">
           <li>
             <strong>{view.pricing ? chf(view.weekly_cost, currency) : '1 week'}</strong>
             <span>One build week of the whole team{view.pricing ? ' — internal, never in a client document' : ''}</span>
+          </li>
+          <li>
+            <strong>{view.pricing ? `${currency} ${view.design_day}` : '1 day'}</strong>
+            <span>One design day of the {view.designer.sourcing} {view.designer.role.toLowerCase()}: S {view.packs[0].design_days.min}–{view.packs[0].design_days.max} days, M {view.packs[1].design_days.min}–{view.packs[1].design_days.max}, L {view.packs[2].design_days.min}–{view.packs[2].design_days.max}, and the days each design add-on carries</span>
           </li>
           <li>
             <strong>{view.pricing ? chf(view.hypercare_week, currency) : pct(view.hypercare_share)}</strong>
@@ -129,8 +134,8 @@ export default function Estimation({ loaderData }) {
           </li>
         </ul>
         <p className="muted small">
-          Not in the week, and added in the proposal: design creation (UX and UI in Figma), contingency, the Shopify
-          plan and every app&rsquo;s own monthly licence.
+          Added in the proposal, and in no estimate here: contingency, the Shopify plan and every app&rsquo;s own
+          monthly licence.
         </p>
       </section>
 
@@ -153,6 +158,7 @@ export default function Estimation({ loaderData }) {
                 <th scope="col">Pack</th>
                 <th scope="col">Weeks</th>
                 <th scope="col">Person-days</th>
+                <th scope="col">Design days</th>
                 <th scope="col">Hypercare</th>
                 <th scope="col">Apps included</th>
                 {view.pricing ? <th scope="col">Band</th> : null}
@@ -164,6 +170,7 @@ export default function Estimation({ loaderData }) {
                   <th scope="row">{p.code} · {p.name}</th>
                   <td data-label="Weeks">{weeks(p.weeks)}</td>
                   <td data-label="Person-days">{Math.round(p.weeks.min * view.person_days)}–{Math.round(p.weeks.max * view.person_days)}</td>
+                  <td data-label="Design days">{weeks(p.design_days)}</td>
                   <td data-label="Hypercare">{p.hypercare_days} days</td>
                   <td data-label="Apps included">{p.apps_included}</td>
                   {view.pricing ? <td data-label="Band">{band(p.price_band, currency)}</td> : null}
@@ -197,7 +204,7 @@ export default function Estimation({ loaderData }) {
                   {x.lines.map((l) => (
                     <tr key={l.what}>
                       <th scope="row">{l.what}</th>
-                      <td data-label="Weeks">{l.after_go_live ? 'after go-live' : weeksNear(l.weeks)}</td>
+                      <td data-label="Weeks">{l.after_go_live ? 'after go-live' : l.design ? 'alongside' : weeksNear(l.weeks)}</td>
                       {view.pricing ? <td data-label={currency}>{chfSpan(l.price, currency)}</td> : null}
                     </tr>
                   ))}

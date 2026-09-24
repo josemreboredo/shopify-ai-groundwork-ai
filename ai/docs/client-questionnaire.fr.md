@@ -2224,6 +2224,11 @@
 
 > Answer:
 
+**Q9.1.7** — Si la boutique reste sur un thème Shopify, combien de modèles de page faut-il concevoir et développer ? *(recommended)*
+*Un modèle est un type de page avec sa propre mise en page — une page de campagne, un lookbook, une page produit pour une gamme. Comptez les modèles distincts. Laissez 0 si toute la boutique est conçue sur mesure.*
+
+> Answer:
+
 ### 9.2 Vitrine
 
 **Q9.2.1** — Une vitrine headless est-elle exigée (Hydrogen, un autre framework, ou le front d'une application native) ? *(required)*

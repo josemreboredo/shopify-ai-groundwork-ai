@@ -486,18 +486,56 @@ describe('the quote is the scope, priced one way', () => {
     }
   });
 
-  test('the Foundation band and every floor are weeks at the rate, with the pack’s hypercare', () => {
+  test('the Foundation band and every floor are weeks at the rate, with the pack’s hypercare and design', () => {
     /* The bands are the week's price, not numbers of their own: when the rate
-       moves, a band left behind is a price the engine no longer charges. */
+       moves, a band left behind is a price the engine no longer charges. The
+       design a pack promises is priced at the design day on top of its weeks. */
     const care = (days) => (days / 5) * rate * offering.pricing.hypercare_rate_share;
+    const day = offering.pricing.design.day_price;
     const k1 = (n) => Math.round(n / 1000) * 1000;
     const S = offering.offers.S;
-    assert.equal(S.price_band.min, k1(S.duration_weeks.min * rate + care(S.hypercare_days)), 'S floor');
-    assert.equal(S.price_band.max, k1(S.duration_weeks.max * rate + care(S.hypercare_days)), 'S ceiling');
+    const f = offering.pricing.design.foundation_days;
+    assert.equal(S.price_band.min, k1(S.duration_weeks.min * rate + care(S.hypercare_days) + f.min * day), 'S floor');
+    assert.equal(S.price_band.max, k1(S.duration_weeks.max * rate + care(S.hypercare_days) + f.max * day), 'S ceiling');
     for (const code of ['M', 'L']) {
       const o = offering.offers[code];
-      assert.equal(o.price_band.min, k1(o.duration_weeks.min * rate + care(o.hypercare_days)), `${code}: its floor is its shortest engagement at the rate`);
+      const designed = classifyOffer(engagementAt(limits[code])).design.days.min;
+      assert.equal(o.price_band.min, k1(o.duration_weeks.min * rate + care(o.hypercare_days) + designed * day), `${code}: its floor is its shortest engagement at the rate, with its design`);
     }
+  });
+
+  test('custom templates are priced on a Shopify theme, and a custom theme carries them', () => {
+    /* A large, global set-up can keep a Shopify theme and buy the templates
+       it needs one by one. On the custom theme every template is designed
+       already, so the same answer adds nothing. */
+    const onTheme = { ...limits.L, storefront: 'brand_only' };
+    const none = classifyOffer(engagementAt(onTheme));
+    const five = classifyOffer(engagementAt({ ...onTheme, custom_templates: 5 }));
+    assert.equal(five.code, 'L', 'a global set-up on a Shopify theme is still an L');
+    assert.deepEqual(five.addons.map((x) => `${x.gate}×${x.units}`), ['custom_templates×5']);
+    const m = offering.modifiers.find((x) => x.gate === 'custom_templates');
+    assert.equal(five.scope_effort_weeks.max - none.scope_effort_weeks.max, 5 * m.per_template_weeks, 'five templates, five times the weeks');
+    assert.deepEqual(five.design.days, { min: none.design.days.min + 5 * m.per_template_design_days.min, max: none.design.days.max + 5 * m.per_template_design_days.max });
+    const custom = classifyOffer(engagementAt({ ...limits.L, custom_templates: 5 }));
+    assert.deepEqual(custom.price_band, classifyOffer(engagementAt(limits.L)).price_band, 'the custom theme designs every template already');
+  });
+
+  test('design is priced by the design day, by pack and only on the add-ons that need it', () => {
+    /* A designer inside the build week would be charged on a migration as much
+       as on a template set. Design is its own line: S adapts the UI to the
+       brand, M adds the custom templates, L designs the custom theme. */
+    const days = (code) => classifyOffer(engagementAt(limits[code])).design.days;
+    assert.deepEqual(days('S'), { min: 3, max: 5 });
+    assert.deepEqual(days('M'), { min: 8, max: 12 });
+    assert.deepEqual(days('L'), { min: 20, max: 30 });
+    assert.ok(!offering.pricing.team.some((t) => /design/i.test(t.role)), 'no designer in the build week');
+    for (const gate of ['migration', 'integration', 'markets', 'store_estate', 'retail_pos', 'languages', 'seo_continuity', 'sku_complexity']) {
+      for (const m of offering.modifiers.filter((x) => x.gate === gate)) assert.equal(m.design_days, undefined, `${m.id} needs no design`);
+    }
+    // And a further storefront design is designed, by the design.
+    const two = classifyOffer(engagementAt({ ...limits.L, extra_theme_designs: 2 })).design.days;
+    const one = classifyOffer(engagementAt({ ...limits.L, extra_theme_designs: 1 })).design.days;
+    assert.ok(two.min > one.min && one.min > days('L').min);
   });
 
   test('the week the rate prices is the team the pages show', () => {
@@ -540,10 +578,13 @@ describe('the quote is the scope, priced one way', () => {
       // S's band carries S's own hypercare; the named pack carries its own.
       const care = (days) => (days / 5) * rate * offering.pricing.hypercare_rate_share;
       const base = { min: S.price_band.min - care(S.hypercare_days), max: S.price_band.max - care(S.hypercare_days) };
+      // Design past the Foundation's own brand adaptation, at the design day.
+      const f = offering.pricing.design.foundation_days;
+      const designed = { min: (o.design.days.min - f.min) * offering.pricing.design.day_price, max: (o.design.days.max - f.max) * offering.pricing.design.day_price };
       assert.equal(o.hypercare.days, offering.offers[o.code].hypercare_days);
-      assert.equal(o.price_band.min, Math.round((base.min + weeks.min * rate + care(o.hypercare.days)) / 1000) * 1000,
+      assert.equal(o.price_band.min, Math.round((base.min + weeks.min * rate + designed.min + care(o.hypercare.days)) / 1000) * 1000,
         `${JSON.stringify(lim)}: the floor is not the base plus the gates and the hypercare`);
-      assert.equal(o.price_band.max, Math.round((base.max + weeks.max * rate + care(o.hypercare.days)) / 1000) * 1000,
+      assert.equal(o.price_band.max, Math.round((base.max + weeks.max * rate + designed.max + care(o.hypercare.days)) / 1000) * 1000,
         `${JSON.stringify(lim)}: the ceiling is not the base plus the gates and the hypercare`);
     }
   });

@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 128 of 316 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 129 of 317 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -3003,6 +3003,20 @@ Sources: https://shopify.dev/docs/storefronts/themes/architecture/sections
 |---|---|---|---|
 | Sections and blocks in a theme | Basic | 25 sections per template or section group, 50 blocks per section | https://shopify.dev/docs/storefronts/themes/architecture/sections |
 *Verified 2026-09-23 against shopify.dev (undefined).*
+
+**Q9.1.7** — If the storefront stays on a Shopify theme, how many page templates must be designed and built new? *(recommended · client)*
+Drives: gate Custom templates on a Shopify theme
+
+**Why it matters.** A large storefront does not have to be a custom theme. A global brand can keep a Shopify theme and have a handful of templates designed and built for the pages that matter, each priced on its own — much less than designing every template.
+
+**Limits.** Shopify allows up to 1,000 JSON templates per theme and several versions of the same page type, each assigned to the products, collections or pages that use it. Past about eight new templates, the full template set is the better buy.
+
+Sources: https://shopify.dev/docs/storefronts/themes/architecture/templates
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Alternate templates in a theme | Basic | Up to 1,000 JSON templates per theme, across all template types | https://shopify.dev/docs/storefronts/themes/architecture/templates |
+*Verified 2026-09-24 against shopify.dev (undefined).*
 
 ### 9.2 Storefront
 

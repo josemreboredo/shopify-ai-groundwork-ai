@@ -283,6 +283,29 @@ export default [
     agent_prompt: (doc) => `Build ${doc.design?.extra_theme_designs ?? 1} further storefront design${(doc.design?.extra_theme_designs ?? 1) === 1 ? '' : 's'} for ${storeName(doc)} against the token layer the first one already established. Reuse the tokens and the components; change the layout and the page structure, not the system. Each design is its own theme with its own settings — theme licences are not shared between stores — so plan how a shared component change reaches every one of them before the first is signed off. If what is being asked for is a second brand with its own full design system, stop: that is a design-system programme per brand and it leaves the offers (rule 11.29).`,
   },
   {
+    /* A page template designed and built new while the storefront stays on a
+       Shopify theme — how a large, global set-up keeps its theme and still
+       gets the pages it needs. A full template set builds every template and
+       carries this, so it never applies beside the bespoke tier. */
+    key: 'LWC-THM-017',
+    epic: 'theme',
+    title: 'Design and build each custom template on the Shopify theme',
+    user_story: 'As a brand that keeps a Shopify theme, I want the few pages that matter designed and built as templates of their own, so that they look like the brand without the whole storefront becoming a custom theme',
+    acceptance_criteria: [
+      'Given each custom template, when it is designed, then the design uses the theme\'s own tokens and components and names what is new in it',
+      'Given the design, when the template is built, then it is a JSON template of the theme composed of sections and blocks the merchant can still rearrange, and it passes Theme Check and the accessibility checks',
+      'Given the products, collections or pages that use it, when it is assigned, then each one renders with it on the real catalogue and the others keep the default',
+    ],
+    gaia_tier: 'T2',
+    points: 5,
+    owner: 'developer',
+    depends_on: ['LWC-THM-001'],
+    spec_refs: ['/design/custom_templates'],
+    gates: ['custom_templates'],
+    applies: (doc) => (doc.design?.custom_templates ?? 0) > 0 && doc.offer?.scope_gates?.storefront_design?.tier !== 'bespoke',
+    agent_prompt: (doc) => `Design and build ${doc.design?.custom_templates ?? 1} custom page template${(doc.design?.custom_templates ?? 1) === 1 ? '' : 's'} on the Shopify theme for ${storeName(doc)}. Each is an alternate JSON template of the theme — a template of its own for the products, collections or pages that need it — built from the theme's tokens, sections and blocks, so the merchant can still rearrange it. Shopify allows 1,000 JSON templates per theme. If the list grows past eight, stop and raise it: at that size the storefront is a full template set and is priced as one.`,
+  },
+  {
     key: 'LWC-THM-013',
     epic: 'theme',
     title: 'Render editorial content from Shopify metaobjects',

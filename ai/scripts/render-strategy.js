@@ -20,7 +20,7 @@ const span = (r, unit = '') => (r.min === r.max ? `${r.min}${unit}` : `${r.min}�
 export function strategyBlocks(o = offering) {
   const rate = o.pricing.weekly_rate;
   const classification = [
-    `**Classification rule** — the quote first, then the name. The quote is the Foundation base (${span(o.offers.S.duration_weeks, ' weeks')}, CHF ${k(o.offers.S.price_band.min)}–${k(o.offers.S.price_band.max)}) plus every active scope gate at its own weeks, each week at one rate of CHF ${k(rate)}. The pack it is named after, in order:`,
+    `**Classification rule** — the quote first, then the name. The quote is the Foundation base (${span(o.offers.S.duration_weeks, ' weeks')}, CHF ${k(o.offers.S.price_band.min)}–${k(o.offers.S.price_band.max)}) plus every active scope gate at its own weeks, each week at one rate of CHF ${k(rate)}, and the design each gate needs at CHF ${o.pricing.design.day_price} a design day. The pack it is named after, in order:`,
     ...o.classification.map((c) => `${c.order}. ${c.plain} → **${c.offer}**`),
     '',
     'Whatever goes past the named pack’s promise is listed as add-ons, so a re-estimate that finds a second store reads as the same pack with a store more. The packs are what a conversation opens with; the quote is what the answers add up to.',

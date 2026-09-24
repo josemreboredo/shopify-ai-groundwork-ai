@@ -171,6 +171,7 @@ describe('the page explains the rule the engine actually follows', () => {
       ...base(),
       ...markets('CH', 'DE', 'FR'),
       catalogue: { sku_count: 20000, variant_options_max: 3 },
+      design: { figma: { completeness: 'all_templates' } },
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },
       integrations: [{ category: 'erp', connector: 'custom' }, { category: 'pim', connector: 'custom' }],
@@ -222,7 +223,7 @@ describe('the packs as packaging for a conversation', () => {
     assert.equal(view.estimate, offering.estimate.line);
     assert.match(view.estimate, /first estimate/i);
     assert.match(view.estimate, /contingency/);
-    assert.match(view.estimate, /services such as Design/);
+    assert.match(view.estimate, /design by Merkle/, 'design is in the estimate, not added on top');
     assert.equal(view.after_launch.title, offering.after_launch.title);
     assert.match(view.after_launch.line, /price is kept open/);
   });

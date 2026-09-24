@@ -2224,6 +2224,11 @@
 
 > Answer:
 
+**Q9.1.7** — If the storefront stays on a Shopify theme, how many page templates must be designed and built new? *(recommended)*
+*A template is a page type with its own layout — a campaign landing page, a lookbook, a product page for one range. Count the distinct ones. Leave it at 0 if the whole storefront is custom-designed.*
+
+> Answer:
+
 ### 9.2 Storefront
 
 **Q9.2.1** — Is a headless storefront required (Hydrogen, another framework, or a native app front end)? *(required)*

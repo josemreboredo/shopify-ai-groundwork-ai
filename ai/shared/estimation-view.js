@@ -28,7 +28,15 @@ function example(title, lead, limits, pricing) {
   const quote = classifyOffer(engagementAt(limits));
   const S = offering.offers.S;
   const halfWeek = (days) => (days / DAYS_PER_WEEK) * rate * p.hypercare_rate_share;
-  const foundation = { min: S.price_band.min - halfWeek(S.hypercare_days), max: S.price_band.max - halfWeek(S.hypercare_days) };
+  const d = p.design;
+  // The Foundation build is S's band without S's own hypercare and design,
+  // which are lines of their own below.
+  const foundation = {
+    min: S.price_band.min - halfWeek(S.hypercare_days) - d.foundation_days.min * d.day_price,
+    max: S.price_band.max - halfWeek(S.hypercare_days) - d.foundation_days.max * d.day_price,
+  };
+  const days = quote.design.days;
+  const span = days.min === days.max ? `${days.min}` : `${days.min}–${days.max}`;
   const money = (r) => (pricing ? { price: r } : {});
   const lines = [
     { what: 'The Foundation build', weeks: S.duration_weeks, ...money(foundation) },
@@ -37,6 +45,12 @@ function example(title, lead, limits, pricing) {
       weeks: g.weeks,
       ...money({ min: g.weeks.min * rate, max: g.weeks.max * rate }),
     })),
+    {
+      what: `Design by the experience designer, ${span} days`,
+      weeks: null,
+      design: true,
+      ...money({ min: days.min * d.day_price, max: days.max * d.day_price }),
+    },
     {
       what: `Hypercare after go-live, ${quote.hypercare.days} working days`,
       weeks: null,
@@ -75,7 +89,8 @@ export function estimationView({ pricing = false } = {}) {
     team,
     people: p.people_per_week,
     person_days: Math.round(p.people_per_week * DAYS_PER_WEEK * 100) / 100,
-    ...(pricing ? { weekly_cost: p.weekly_rate, hypercare_week: p.weekly_rate * p.hypercare_rate_share, app_cost: p.weekly_rate * p.app_weeks } : {}),
+    ...(pricing ? { weekly_cost: p.weekly_rate, hypercare_week: p.weekly_rate * p.hypercare_rate_share, app_cost: p.weekly_rate * p.app_weeks, design_day: p.design.day_price } : {}),
+    designer: { role: p.design.role, sourcing: p.design.sourcing },
     hypercare_share: p.hypercare_rate_share,
     app_weeks: p.app_weeks,
     packs: ['S', 'M', 'L'].map((code) => ({
@@ -84,6 +99,7 @@ export function estimationView({ pricing = false } = {}) {
       weeks: offering.offers[code].duration_weeks,
       hypercare_days: offering.offers[code].hypercare_days,
       apps_included: offering.offers[code].apps_included,
+      design_days: classifyOffer(engagementAt(limits[code])).design.days,
       ...(pricing ? { price_band: { min: offering.offers[code].price_band.min, max: offering.offers[code].price_band.max, open_ended: Boolean(offering.offers[code].price_band.open_ended) } } : {}),
     })),
     examples: [

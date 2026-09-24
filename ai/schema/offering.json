@@ -42,10 +42,20 @@
       },
       "note": "A real Shopify B2C estimation, anonymised: 173 developer days (with code review, documentation, unit tests and bug fixing) and QA at 40% of them. Run on the same engagement’s recorded answers, the engine quotes 20–29.5 weeks, and the estimation at the team’s rate card falls inside that range."
     },
-    "$comment": "Internal and never client-facing. A build week is what the delivery team does in one calendar week: the team above, 2.5 people full time, delivered offshore — front-end and back-end developers, QA, a project manager, a business analyst and a solution architect. weekly_rate is that week at the offshore rate card, converted from EUR at the ECB rate of 2026-09-23 (1 EUR = 0.939 CHF), rounded down; the rate card itself is not written here, because this repository is public. The shape comes from a real estimation (a Shopify B2C build of 173 developer days with QA at 40% of them, whose recorded answers the engine quotes at 20–29.5 weeks): developers 1.4, QA 0.55, and a project manager, business analyst and architect at 10, 10 and 7.5% of the delivery. Every modifier’s price is its weeks at this rate, so the quote is the Foundation base plus weeks a client can see. hypercare_rate_share: a week of hypercare after go-live — a named channel, a response within one working day, defects triaged — costs half a build week; each pack carries its own days (S 5, M 10, L 15 working days). app_weeks: each third-party app past what the pack includes (S 3, M 6, L 10) is an eighth of a build week, set so that crossing into a bigger pack, which includes more apps and more hypercare, never makes a quote cheaper. QA is part of the team, so the commercial team no longer adds a separate QA service on top of these packs."
+    "$comment": "Internal and never client-facing. A build week is what the delivery team does in one calendar week: the team above, 2.5 people full time, delivered offshore — front-end and back-end developers, QA, a project manager, a business analyst and a solution architect. weekly_rate is that week at the offshore rate card, converted from EUR at the ECB rate of 2026-09-23 (1 EUR = 0.939 CHF), rounded down; the rate card itself is not written here, because this repository is public. The shape comes from a real estimation (a Shopify B2C build of 173 developer days with QA at 40% of them, whose recorded answers the engine quotes at 20–29.5 weeks): developers 1.4, QA 0.55, and a project manager, business analyst and architect at 10, 10 and 7.5% of the delivery. Every modifier’s price is its weeks at this rate, so the quote is the Foundation base plus weeks a client can see. hypercare_rate_share: a week of hypercare after go-live — a named channel, a response within one working day, defects triaged — costs half a build week; each pack carries its own days (S 5, M 10, L 15 working days). app_weeks: each third-party app past what the pack includes (S 3, M 6, L 10) is an eighth of a build week, set so that crossing into a bigger pack, which includes more apps and more hypercare, never makes a quote cheaper. QA is part of the team, so the commercial team no longer adds a separate QA service on top of these packs.",
+    "design": {
+      "role": "Experience designer",
+      "sourcing": "near-shore",
+      "day_price": 750,
+      "foundation_days": {
+        "min": 3,
+        "max": 5
+      },
+      "$comment": "Design is not part of the build week: most add-ons need none, so a designer inside the team would be charged on migrations, integrations and hypercare. It is priced by the design day instead — the Foundation brand adaptation in every quote, and the design days each design add-on carries on its modifier. day_price is what a design day is quoted at, in CHF, like weekly_rate for the build week. The packs come to S 3–5, M 8–12 and L 20–30 design days: S adapts the UI to the brand identity, M adds the custom templates, L designs the custom theme."
+    }
   },
   "estimate": {
-    "line": "A first estimate to open the conversation, built from the scope the answers describe and delivered by an offshore team with QA in it. The delivery team estimates the approach and gives the final figure; contingency and services such as Design are added in the proposal.",
+    "line": "A first estimate to open the conversation, built from the scope the answers describe and delivered by an offshore team with QA in it. The delivery team estimates the approach and gives the final figure; design by Merkle’s experience designer is in the estimate, and contingency is added in the proposal.",
     "$comment": "The tool’s purpose in the Lead Consultant’s words (2026-09-23): packs are what a conversation opens with; the RFP and its answers give an estimate of the scope identified; after discovery the scope is closed. The same sentence is on the offering pages and in the deck, so neither can drift into sounding like a fixed price."
   },
   "after_launch": {
@@ -142,10 +152,10 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Theme",
       "triggered_by": "An estimate below the Scale floor: the Foundation, with whatever goes past it as add-ons",
-      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
+      "base_scope": "A store that sells, on the shortest honest path · One market, one channel, one Shopify theme configured rather than rebuilt · The UI adapted to the brand identity by Merkle’s experience designer: tokens, typography, logo and the key screens · Native Shopify first, an app only where nothing native covers it · Core catalogue, standard checkout, the payment providers the market needs · A Merkle team with the quality gates of a larger build: accessibility and Core Web Vitals measured, not promised",
       "price_band": {
-        "min": 28000,
-        "max": 35000,
+        "min": 31000,
+        "max": 38000,
         "open_ended": false
       },
       "duration_weeks": {
@@ -287,7 +297,7 @@
         "Content production: copy, photography and video are the client’s, or a separate engagement. Nothing here writes them",
         "Running the store after handover. Hypercare and launch-day training are in; written SOPs or a handover into a retainer are a gate",
         "Running costs. The Shopify plan and every app subscription are billed to the client from the day they are installed — this offer selects and configures apps against the agreed monthly ceiling, it does not pay for them",
-        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top. This pack builds from the client’s design, and QA is part of its team"
+        "Brand creation — a new identity, logo, photography or copy. The design adapts the brand the client already has; creating one is a separate engagement"
       ],
       "assumes": [
         "Two rounds of feedback on the template set, then sign-off. A third round is a change request, not a revision",
@@ -312,10 +322,10 @@
       "delivery_track": "liquid",
       "build_label": "Liquid · Customisable",
       "triggered_by": "An estimate from the Scale floor, or a further store — the recommended start for a brand that already sells",
-      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
+      "base_scope": "Everything in Foundation, made to repeat · The scope gates that fired, each as its own workstream with its own weeks · The UI adapted to the brand identity, and the custom templates and bespoke sections designed, by Merkle’s experience designer · More markets, more languages, more catalogue, more systems behind it · The store topology derived from the business facts rather than chosen · A WooCommerce or Shopify migration where there is one to run; any other source is priced by platform",
       "price_band": {
-        "min": 44000,
-        "max": 96000,
+        "min": 50000,
+        "max": 105000,
         "open_ended": false
       },
       "duration_weeks": {
@@ -472,7 +482,7 @@
         "Custom checkout UI: Shopify’s checkout is extended through its own extension points or not at all (exit rule 11.6)",
         "Running the integrations after handover. Hypercare is in; the operating model past it is a gate, or a retainer",
         "Anything whose content or front end lives outside Shopify — an external CMS or a front end Shopify does not build is Merkle Arc, and no offer here prices it",
-        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top. This pack builds from the client’s design, and QA is part of its team"
+        "Brand creation — a new identity, logo, photography or copy. The design adapts the brand the client already has; creating one is a separate engagement"
       ],
       "assumes": [
         "Everything Ecommerce Foundation assumes, at this size",
@@ -488,7 +498,7 @@
         "A named owner per integrated system on the client side",
         "Market facts: selling entity, tax registrations and who runs each market day to day",
         "Translated copy, or approval of the translation route and its recurring cost",
-        "Where a further storefront design is bought, that design, complete enough to build from"
+        "Where a further storefront design is bought, the direction it differs by — the design itself is Merkle’s"
       ],
       "most_common": true,
       "$comment": "Marked as the recommended starting point for a brand that already sells — a positioning, like the middle tier every competitor marks, not a statistic. Only a count of real engagements could make it \"the most common\", and the page does not claim that."
@@ -499,10 +509,10 @@
       "delivery_track": "liquid",
       "build_label": "Custom Liquid · Hydrogen",
       "triggered_by": "A headless storefront, or an estimate from the Flagship floor — the largest of the three Shopify offers",
-      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
+      "base_scope": "A platform that has to perform from day one, because the one it replaces already did · Up to three Shopify stores and nine markets across them, each store with its own domain, tax and payments, and one design system kept in step across them · The custom theme designed by Merkle’s experience designer: the design system and the full template set · A GA4 event layer designed against what the client measures; more destinations, a tag manager, server-side tagging or a consent platform are added on top · Experimentation set up and one test live at launch · The design system built once over one token layer, as theme sections or as owned components — the track follows the answers, not the offer · Up to three stores and blocks inside the checkout steps need Shopify Plus, and L assumes Plus where they are used · The replatform is quoted beside the pack, by the platform it comes from · Content stays in Shopify either way; content or a front end outside it is Merkle Arc, and a different engagement",
       "price_band": {
-        "min": 91000,
-        "max": 192000,
+        "min": 106000,
+        "max": 214000,
         "open_ended": true
       },
       "duration_weeks": {
@@ -513,14 +523,14 @@
       "apps_included": 10,
       "headless_floor": {
         "price": {
-          "min": 91000,
-          "max": 155000
+          "min": 106000,
+          "max": 178000
         },
         "weeks": {
           "min": 13,
           "max": 24
         },
-        "$comment": "What a headless storefront is quoted at the least. Hydrogen has no modifier of its own yet, so its work cannot be summed like a gate and the quote is floored instead. It was L’s own band until L came to hold nine markets across its three stores (2026-09-23); a headless build does not get those markets, so it keeps the floor it had rather than paying for them."
+        "$comment": "What a headless storefront is quoted at the least. Hydrogen has no modifier of its own yet, so its work cannot be summed like a gate and the quote is floored instead. It was L’s own band until L came to hold nine markets across its three stores (2026-09-23); a headless build does not get those markets, so it keeps the floor it had rather than paying for them. It carries L’s design too (2026-09-24): a headless build designs the custom theme like any L."
       },
       "phases": [
         {
@@ -650,7 +660,7 @@
         "The commerce logic Shopify does not support natively and Functions cannot reach — a separate conversation, not a line in this offer",
         "Content production, photography and video, and the copy that goes on the templates this offer builds",
         "A Shop Mini — a presence inside Shopify’s Shop app. It stays inside Shopify, so it is not Merkle Arc; it is React SDK work built against the Shop Minis SDK, which no offer here estimates. It is scoped and priced on its own",
-        "Design creation — UX and UI design in Figma — is not in the base and no gate prices it: the commercial team quotes it on top. This pack builds from the client’s design, and QA is part of its team"
+        "Brand creation — a new identity, logo, photography or copy. The design adapts the brand the client already has; creating one is a separate engagement"
       ],
       "assumes": [
         "Everything Ecommerce Scale assumes, at this size",
@@ -663,10 +673,10 @@
       ],
       "client_provides": [
         "Everything Ecommerce Scale needs, including a non-production environment per connected system",
-        "The design, complete enough to build from: a template set with its states, not a set of key screens",
+        "The brand identity and its assets, and one approver for the design at every feedback round",
         "Whoever can approve a performance and accessibility target and then hold the project to it",
         "A decision on who owns the store after handover, taken before the build rather than at the end of it",
-        "Where a further storefront design is bought, that design too, complete enough to build from"
+        "Where a further storefront design is bought, the direction it differs by — the design itself is Merkle’s"
       ],
       "tracks": {
         "liquid": "One Shopify theme, built out: the design system as sections and blocks over one token layer, every template against it, and the merchant still able to rearrange them. The default, and the right answer more often than it is chosen.",
@@ -886,6 +896,22 @@
       "verified": {
         "on": "2026-09-23",
         "source": "help.shopify.com"
+      }
+    },
+    {
+      "id": "custom_templates",
+      "label": "Custom templates on a Shopify theme",
+      "condition": "The storefront stays on a Shopify theme and needs page templates designed and built new — a campaign landing page, a lookbook, a product page for one range. Each is priced. A full template set from a design system is the bespoke storefront tier, which already designs and builds every template, so this is not priced on top of it. It is how a large, global set-up keeps a Shopify theme and still gets the pages it needs.",
+      "inputs": [
+        "/design/custom_templates"
+      ],
+      "modifier": "+Templates",
+      "sources": [
+        "https://shopify.dev/docs/storefronts/themes/architecture/templates"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "shopify.dev"
       }
     },
     {
@@ -1258,6 +1284,10 @@
       "price_add": {
         "min": 6300,
         "max": 9450
+      },
+      "design_days": {
+        "min": 1,
+        "max": 2
       }
     },
     {
@@ -1272,6 +1302,10 @@
       "price_add": {
         "min": 12600,
         "max": 18900
+      },
+      "design_days": {
+        "min": 3,
+        "max": 4
       }
     },
     {
@@ -1286,6 +1320,10 @@
       "price_add": {
         "min": 6300,
         "max": 12600
+      },
+      "design_days": {
+        "min": 4,
+        "max": 6
       }
     },
     {
@@ -1300,6 +1338,10 @@
       "price_add": {
         "min": 18900,
         "max": 31500
+      },
+      "design_days": {
+        "min": 15,
+        "max": 22
       }
     },
     {
@@ -1327,6 +1369,33 @@
       "max_units": {
         "value": 9,
         "why": "Shopify publishes one theme per store, so there is never a further design without a further store — nine at most"
+      },
+      "per_theme_design_days": {
+        "min": 5,
+        "max": 8
+      }
+    },
+    {
+      "id": "+Templates",
+      "gate": "custom_templates",
+      "description": "Each page template designed and built new on a Shopify theme: the layout designed against the brand, built as sections and blocks the merchant can still rearrange, and tested on the real catalogue.",
+      "effort_weeks": {
+        "min": 0.5,
+        "max": 4
+      },
+      "price_add": {
+        "min": 3150,
+        "max": 25200
+      },
+      "per_template_weeks": 0.5,
+      "per_template_price": 3150,
+      "per_template_design_days": {
+        "min": 2,
+        "max": 3
+      },
+      "max_units": {
+        "value": 8,
+        "why": "Past eight new templates the storefront is the full template set in all but name, and the bespoke tier of the storefront design gate prices it as one"
       }
     },
     {
@@ -1412,6 +1481,10 @@
       "price_add": {
         "min": 9450,
         "max": 15750
+      },
+      "design_days": {
+        "min": 1,
+        "max": 2
       }
     },
     {
@@ -1454,6 +1527,10 @@
       "price_add": {
         "min": 3150,
         "max": 6300
+      },
+      "design_days": {
+        "min": 1,
+        "max": 2
       }
     },
     {
@@ -1468,6 +1545,10 @@
       "price_add": {
         "min": 9450,
         "max": 15750
+      },
+      "design_days": {
+        "min": 2,
+        "max": 3
       }
     },
     {
@@ -1482,6 +1563,10 @@
       "price_add": {
         "min": 3150,
         "max": 6300
+      },
+      "design_days": {
+        "min": 1,
+        "max": 1
       }
     },
     {
@@ -1496,6 +1581,10 @@
       "price_add": {
         "min": 6300,
         "max": 12600
+      },
+      "design_days": {
+        "min": 2,
+        "max": 3
       }
     },
     {
@@ -1510,6 +1599,10 @@
       "price_add": {
         "min": 9450,
         "max": 18900
+      },
+      "design_days": {
+        "min": 2,
+        "max": 3
       }
     },
     {
@@ -2506,6 +2599,19 @@
         "addon_label": "Past a documented Shopify limit"
       },
       {
+        "id": "design",
+        "what": "Design",
+        "gate": null,
+        "group": "Storefront",
+        "shopify_limit": null,
+        "shopify_fact": false,
+        "$comment": "A Merkle line, not a Shopify fact: how much of the storefront Merkle’s experience designer designs in each pack.",
+        "S": "The UI adapted to the brand identity",
+        "M": "The brand adaptation, plus the custom templates",
+        "L": "The custom theme, designed",
+        "note": "By a near-shore experience designer, priced by the design day and apart from the build week, because most add-ons need no design. The storefront, checkout, B2B, subscription and search add-ons carry their own design days."
+      },
+      {
         "id": "storefront_design",
         "what": "Templates and sections",
         "gate": "storefront_design",
@@ -2830,6 +2936,18 @@
           "L"
         ],
         "note": "Sold where a further store is: on M with the store add-on, and in L. Shopify publishes one theme per store, and per-market customisation reaches section content, block visibility and order, and section-level settings — never theme settings or Liquid templates — so a genuinely different layout is a second theme on a second store. Built from the client’s second design against the same token layer: the design system is not built twice. More than one brand, each with its own design system, is Merkle Arc instead (rule 11.29)."
+      },
+      {
+        "id": "custom_templates",
+        "gate": "custom_templates",
+        "what": "Each custom template on a Shopify theme",
+        "description": "A page template designed and built new — a campaign landing page, a lookbook, a product page for one range — while the storefront stays on a Shopify theme rather than a custom one. How a large, global set-up keeps its theme and still gets the pages it needs.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "A custom theme includes it: the full template set designs and builds every template, so this is priced only where the storefront stays on a Shopify theme — in L, instead of the custom theme. Past eight templates the full template set is the better buy. Shopify allows 1,000 JSON templates per theme."
       },
       {
         "id": "sku_complexity",

@@ -263,8 +263,8 @@
       }
     ],
     "price_band": {
-      "min": 85000,
-      "max": 114000,
+      "min": 90000,
+      "max": 121000,
       "currency": "CHF",
       "open_ended": false
     },
@@ -275,6 +275,12 @@
     "hypercare": {
       "days": 10,
       "included_days": 10
+    },
+    "design": {
+      "days": {
+        "min": 6,
+        "max": 10
+      }
     },
     "apps": {
       "count": 0,

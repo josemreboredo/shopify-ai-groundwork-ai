@@ -59,7 +59,7 @@ function maximalEngagement() {
   doc.b2b = { ...doc.b2b, volume_discounts: true, payment_terms: ['net_terms'] };
   // A second storefront design: one market that needs a different layout
   // rather than different content, which is a second theme to keep in step.
-  doc.design = { ...doc.design, extra_theme_designs: 1 };
+  doc.design = { ...doc.design, extra_theme_designs: 1, custom_templates: 2 };
   // Customer service: the bank had one question on it and that one was about
   // China, so a client running a helpdesk and taking phone orders was scope
   // nobody could see.

@@ -88,7 +88,8 @@ for (const { file, doc } of fixtures) {
       // catalogue of 5,000 SKUs or more carries Shopify's own search.
       const g = offer.scope_gates;
       const carried = (id) => (id === 'multi_currency' && g.markets?.active)
-        || (id === 'search_merchandising' && g.search_merchandising?.tier === 'native' && ['large', 'very_large'].includes(g.sku_complexity?.tier));
+        || (id === 'search_merchandising' && g.search_merchandising?.tier === 'native' && ['large', 'very_large'].includes(g.sku_complexity?.tier))
+        || (id === 'custom_templates' && g.storefront_design?.tier === 'bespoke');
       assert.deepEqual(quoted.map((m) => m.gate).sort(), gates.filter((id) => !carried(id)).sort(), 'every active gate is quoted, and only those');
       const weeks = (offer.scope_effort_by_gate ?? []).reduce((a, g) => ({ min: a.min + g.weeks.min, max: a.max + g.weeks.max }), { min: 0, max: 0 });
       const S = offering.offers.S;
@@ -100,8 +101,13 @@ for (const { file, doc } of fixtures) {
       const care = (days) => (days / 5) * rate * offering.pricing.hypercare_rate_share;
       const hypercare = Math.max(def.hypercare_days, doc.delivery?.hypercare_days ?? 0);
       assert.deepEqual(offer.hypercare, { days: hypercare, included_days: def.hypercare_days });
-      assert.equal(offer.price_band.min, Math.round((S.price_band.min - care(S.hypercare_days) + weeks.min * rate + care(hypercare)) / 1000) * 1000);
-      assert.equal(offer.price_band.max, Math.round((S.price_band.max - care(S.hypercare_days) + weeks.max * rate + care(hypercare)) / 1000) * 1000);
+      // Design: the Foundation's brand adaptation, in S's band, and each quoted
+      // gate's own design days at the design day.
+      const d = offering.pricing.design;
+      const gateDesign = quoted.reduce((a, m) => ({ min: a.min + (m.design_days?.min ?? 0), max: a.max + (m.design_days?.max ?? 0) }), { min: 0, max: 0 });
+      assert.deepEqual(offer.design, { days: { min: d.foundation_days.min + gateDesign.min, max: d.foundation_days.max + gateDesign.max } });
+      assert.equal(offer.price_band.min, Math.round((S.price_band.min - care(S.hypercare_days) + weeks.min * rate + gateDesign.min * d.day_price + care(hypercare)) / 1000) * 1000);
+      assert.equal(offer.price_band.max, Math.round((S.price_band.max - care(S.hypercare_days) + weeks.max * rate + gateDesign.max * d.day_price + care(hypercare)) / 1000) * 1000);
 
       // The name is a budget the quote reaches, with what goes past the pack
       // sold as add-ons in it.

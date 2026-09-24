@@ -315,8 +315,11 @@ describe('the offer follows the effort, not the gate count', () => {
       /* The catalogue is here so this stays past the M ceiling when that ceiling
          moves: at three markets alone it cleared 14 weeks by half a one, and when
          M grew to 15 this stopped being an L and the rule it proves stopped being
-         proved. Twenty thousand SKUs clears it by three. */
+         proved. Twenty thousand SKUs clears it by three. And the full template
+         set, since L's floor carries the design of its custom theme: without it
+         this came to an M plus add-ons once design was priced. */
       catalogue: { sku_count: 20000, variant_options_max: 3 },
+      design: { figma: { completeness: 'all_templates' } },
       migration: { source_platform: 'magento' },
       b2b: { enabled: true },
       integrations: [{ category: 'erp', connector: 'custom' }, { category: 'pim', connector: 'custom' }],

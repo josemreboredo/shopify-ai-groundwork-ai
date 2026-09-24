@@ -58,3 +58,13 @@ give the final figure, and the commercial team adds contingency and services suc
   its band is CHF 91–192k+ and 13–29 weeks, and rule 11.3's line moves from 19 to 24 gate-weeks. A headless build does
   not get those markets, so its floor stays where it was (CHF 91–155k, 13–24 weeks) as a value of its own
   (`offers.L.headless_floor`). No engagement's quote changes: the quote follows the scope, and only the promise moved.
+- **Design by the design day** (2026-09-24): Merkle designs the storefront, and it is no longer quoted on top. A near-shore
+  experience designer is not part of the build week — most add-ons need no design, and a designer in the team would be
+  charged on every migration and integration — so design is priced by the design day (`pricing.design`): S adapts the UI to
+  the brand identity (3–5 days), M adds the custom templates (8–12), L designs the custom theme (20–30). Each design add-on
+  carries its own days on its modifier: the storefront tiers, a further storefront design, checkout blocks, B2B, subscriptions
+  and a search app. Design runs alongside set-up, so it adds to the price and not to the weeks. Bands: S CHF 31–38k, M 50–105k,
+  L 106–214k+; the headless floor carries L's design too (CHF 106–178k).
+- **Custom templates on a Shopify theme** (2026-09-24): a large, global set-up can keep a Shopify theme instead of the custom
+  one, with each page template it needs designed and built new — half a build week and 2–3 design days each (gate
+  `custom_templates`, question Q9.1.7). A full template set designs every template, so it carries them.

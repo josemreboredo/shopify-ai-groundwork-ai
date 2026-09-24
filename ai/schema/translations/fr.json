@@ -267,6 +267,7 @@
     "Q9.1.4": "fa6b55ef043d",
     "Q9.1.5": "7d067caf1a34",
     "Q9.1.6": "e8ca15dbfd9c",
+    "Q9.1.7": "d018b5abc041",
     "Q9.2.1": "e046701406eb",
     "Q9.2.2": "1cf06cb38140",
     "Q9.2.3": "0088c055e7d4",
@@ -3386,6 +3387,14 @@
       "teach": {
         "why": "La seule question de cette section avec un nombre plutôt qu'un oui, et c'est elle qui décide du prix de la vitrine. Quelques sections sur mesure font une vitrine conçue sur un thème ; au-delà, le travail est l'ensemble complet des gabarits et se facture comme tel. Le plafond de Shopify est bien plus haut : cette limite est la nôtre, pas celle de la plateforme.",
         "limits": "Shopify autorise 25 sections par gabarit ou groupe de sections, et 50 blocs par section. Les sections déjà présentes dans un thème ne comptent pas ici ; seul compte ce qui est conçu et construit à neuf."
+      }
+    },
+    "Q9.1.7": {
+      "text": "Si la boutique reste sur un thème Shopify, combien de modèles de page faut-il concevoir et développer ?",
+      "help": "Un modèle est un type de page avec sa propre mise en page — une page de campagne, un lookbook, une page produit pour une gamme. Comptez les modèles distincts. Laissez 0 si toute la boutique est conçue sur mesure.",
+      "teach": {
+        "why": "Une grande boutique n’a pas besoin d’un thème sur mesure. Une marque internationale peut garder un thème Shopify et faire concevoir et développer quelques modèles pour les pages qui comptent, chacun chiffré à part — bien moins que de concevoir chaque modèle.",
+        "limits": "Shopify autorise jusqu’à 1 000 modèles JSON par thème et plusieurs versions d’un même type de page, chacune attribuée aux produits, collections ou pages qui l’utilisent. Au-delà d’environ huit nouveaux modèles, le jeu complet de modèles est le meilleur choix."
       }
     },
     "Q9.2.1": {

@@ -31,6 +31,8 @@ function asides(c) {
     c.after_go_live ? 'after go-live' : null,
     c.included ? `past the ${c.included.count} ${c.included.noun} included` : null,
     c.on_top_of ? `on top of ${c.on_top_of}` : null,
+    c.instead_of ? `instead of ${c.instead_of}` : null,
+    c.design_days ? `+ ${c.design_days.min === c.design_days.max ? c.design_days.min : `${c.design_days.min}–${c.design_days.max}`} design days` : null,
   ].filter(Boolean);
 }
 
@@ -186,8 +188,8 @@ export default function Addons({ loaderData }) {
         <h2>Every add-on, pack by pack</h2>
         <p className="lede">
           Time is build weeks of the team, added to the pack&rsquo;s own; hypercare runs after go-live and adds none.
-          {view.pricing ? ' Cost is those weeks at the one weekly rate.' : ''} Per-unit add-ons are priced for one more
-          unit; tiered ones for the case the client is in.
+          {view.pricing ? ' Cost is those weeks at the one weekly rate, plus the design days an add-on carries at the design day.' : ' An add-on that needs design says how many design days it carries.'}
+          {' '}Per-unit add-ons are priced for one more unit; tiered ones for the case the client is in.
         </p>
         <AddonMatrix view={view} />
         {view.pricing ? (

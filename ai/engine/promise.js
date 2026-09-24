@@ -58,6 +58,7 @@ export function engagementAt(limits) {
       figma: { completeness: limits.storefront },
       ...(limits.bespoke_sections === undefined ? {} : { bespoke_sections: limits.bespoke_sections }),
       ...(limits.extra_theme_designs ? { extra_theme_designs: limits.extra_theme_designs } : {}),
+      ...(limits.custom_templates ? { custom_templates: limits.custom_templates } : {}),
       ...(limits.headless ? { headless_required: true } : {}),
     },
     integrations: Array.from({ length: limits.integrations }, (_, i) => ({

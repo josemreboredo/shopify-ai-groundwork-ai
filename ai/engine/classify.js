@@ -194,6 +194,20 @@ const GATE_EVALUATORS = {
     };
   },
 
+  /* A page template designed and built new while the storefront stays on a
+     Shopify theme. The way a large, global set-up keeps its theme and still
+     gets the pages it needs; a full template set designs every template and
+     carries these (see `carried` below). */
+  custom_templates: (doc) => {
+    const n = doc.design?.custom_templates ?? 0;
+    return {
+      active: n > 0,
+      evidence: n > 0
+        ? `${n} page template${n === 1 ? '' : 's'} designed and built new on a Shopify theme`
+        : 'No page template beyond the theme’s own',
+    };
+  },
+
   languages: (doc) => {
     // Translate & Adapt auto-translates two, and a Swiss engagement is DE/FR/IT
     // as a matter of course — so three are included and the gate opens at the
@@ -750,6 +764,7 @@ function modifierFor(gate, evaluated, doc) {
     retail_pos: { count: retailLocations(doc), free: 0, weeks: 'per_location_weeks', price: 'per_location_price' },
     store_estate: { count: storesBeyondTheFirst(doc), free: 0, weeks: 'per_store_weeks', price: 'per_store_price' },
     theme_design: { count: doc.design?.extra_theme_designs ?? 0, free: 0, weeks: 'per_theme_weeks', price: 'per_theme_price' },
+    custom_templates: { count: doc.design?.custom_templates ?? 0, free: 0, weeks: 'per_template_weeks', price: 'per_template_price' },
   };
   const scale = SCALES[gate.id];
   if (!scale) return modifier;
@@ -794,10 +809,13 @@ function modifierFor(gate, evaluated, doc) {
   const perPrice = (modifier[scale.price] ?? 0) * (1 + uplift);
   const weeks = clamp(units * perWeek, modifier.effort_weeks);
   const price = clamp(units * perPrice, modifier.price_add);
+  // Design by the unit, where a unit is designed: a further storefront design.
+  const perDesign = Object.keys(modifier).find((k) => /^per_\w+_design_days$/.test(k));
   return {
     ...modifier,
     effort_weeks: { min: weeks, max: weeks },
     price_add: { min: price, max: price },
+    ...(perDesign ? { design_days: { min: units * modifier[perDesign].min, max: units * modifier[perDesign].max } } : {}),
     units: scale.count,
   };
 }
@@ -837,7 +855,9 @@ export function classifyOffer(doc) {
    */
   const carried = ({ gate, evaluated }) =>
     (gate.id === 'multi_currency' && scope_gates.markets?.active === true)
-    || (gate.id === 'search_merchandising' && evaluated.tier === 'native' && ['large', 'very_large'].includes(scope_gates.sku_complexity?.tier));
+    || (gate.id === 'search_merchandising' && evaluated.tier === 'native' && ['large', 'very_large'].includes(scope_gates.sku_complexity?.tier))
+    // A full template set designs and builds every template already.
+    || (gate.id === 'custom_templates' && scope_gates.storefront_design?.tier === 'bespoke');
   const priced = activeGates
     .map((gate) => ({ gate, evaluated: scope_gates[gate.id], modifier: modifierFor(gate, scope_gates[gate.id], doc) }))
     .filter((p) => p.modifier && !carried(p));
@@ -880,6 +900,21 @@ export function classifyOffer(doc) {
   const S = offering.offers.S;
   const L = offering.offers.L;
   /*
+   * Design, by the design day.
+   *
+   * Not part of the build week: most gates need none, and a designer inside
+   * the team would be charged on a migration as much as on a template set. The
+   * Foundation brand adaptation is in S's band like its build; every gate that
+   * needs design carries its own days, added at the design day's price. Design
+   * runs alongside set-up and template selection, so it adds to the price and
+   * not to the weeks.
+   */
+  const design = offering.pricing.design;
+  const gateDesign = priced.reduce((a, { modifier: m }) => ({
+    min: a.min + (m.design_days?.min ?? 0), max: a.max + (m.design_days?.max ?? 0),
+  }), { min: 0, max: 0 });
+  const designDays = { min: design.foundation_days.min + gateDesign.min, max: design.foundation_days.max + gateDesign.max };
+  /*
    * Hypercare, by pack.
    *
    * Every pack carried fifteen working days inside the Foundation base. Each
@@ -905,7 +940,10 @@ export function classifyOffer(doc) {
   const extraApps = (code) => Math.max(0, apps - offering.offers[code].apps_included);
   const foundation = hypercarePrice(S.hypercare_days);
   const scope = {
-    price: { min: S.price_band.min - foundation + gateTotals.price.min, max: S.price_band.max - foundation + gateTotals.price.max },
+    price: {
+      min: S.price_band.min - foundation + gateTotals.price.min + gateDesign.min * design.day_price,
+      max: S.price_band.max - foundation + gateTotals.price.max + gateDesign.max * design.day_price,
+    },
     weeks: { min: S.duration_weeks.min + gateTotals.weeks.min, max: S.duration_weeks.max + gateTotals.weeks.max },
   };
   /*
@@ -976,6 +1014,8 @@ export function classifyOffer(doc) {
     },
     duration_weeks: { min: toHalfWeek(quote.weeks.min), max: toHalfWeek(quote.weeks.max) },
     hypercare: { days: hypercareFor(code), included_days: offer.hypercare_days },
+    // Design days: the Foundation brand adaptation plus every gate that needs design.
+    design: { days: designDays },
     apps: { count: apps, included: offer.apps_included, extra: extraApps(code), in_further_stores: perStore },
     // What the scope adds up to before any floor, kept so a reader can check
     // the quote against the scope rather than take it.
