@@ -405,6 +405,38 @@ const GATE_EVALUATORS = {
     return { active, ...(tier ? { tier } : {}), evidence: why };
   },
 
+  /*
+   * What Shopify's own returns do not do.
+   *
+   * Self-serve requests, return rules, exchanges added on approval and
+   * refunds to the original payment or store credit are Shopify's and in every
+   * pack. An app starts where they stop — and return labels are the common
+   * case for a European client: Shopify sells them only from US locations.
+   */
+  returns_post_purchase: (doc) => {
+    const r = doc.shipping?.returns ?? {};
+    const pp = doc.post_purchase ?? {};
+    const app = [
+      r.portal === 'returns_app_needed' ? 'a returns app, Shopify’s own not being enough' : null,
+      ['prepaid_label', 'qr_drop_off', 'mixed'].includes(r.label) ? `return labels (${r.label.replace(/_/g, ' ')}), which Shopify sells only from US locations` : null,
+      pp.refunds?.trigger === 'on_carrier_scan' ? 'refunds on the carrier’s first scan' : null,
+      pp.cancellations?.order_editing === true ? 'customers editing their own orders' : null,
+      pp.tracking?.branded_tracking_page === true ? 'a branded tracking page' : null,
+      (pp.tracking?.proactive_channels ?? []).some((c) => c === 'whatsapp' || c === 'push') ? 'delivery updates by WhatsApp or push' : null,
+      pp.warranty_claims === true ? 'warranty and repair claims online' : null,
+    ].filter(Boolean);
+    const reconciled = [
+      r.inspection_required === true || pp.refunds?.trigger === 'after_inspection' ? 'items inspected before the refund' : null,
+      pp.refunds?.finance_sync === true ? 'returns and refunds passed to finance' : null,
+    ].filter(Boolean);
+    const active = app.length + reconciled.length > 0;
+    return {
+      active,
+      ...(active ? { tier: reconciled.length ? 'advanced' : 'standard' } : {}),
+      evidence: active ? `Past Shopify’s own returns: ${[...app, ...reconciled].join(', ')}` : 'Shopify’s own returns, cancellations and refunds — in every pack',
+    };
+  },
+
   retail_pos: (doc) => {
     const r = doc.retail ?? {};
     const stores = r.store_count ?? 0;

@@ -124,6 +124,7 @@ export default [
     depends_on: ['LWC-SHP-001'],
     spec_refs: ['/shipping/returns/policy', '/shipping/returns/portal', '/shipping/returns/exchanges', '/post_purchase/apps_preferred', '/shipping/returns/label', '/shipping/returns/exchange_types', '/shipping/returns/window_days', '/post_purchase/orders_per_month'],
     security_flags: ['pii'],
+    gates: ['returns_post_purchase'],
     applies: () => true,
     agent_prompt: (doc) => `Returns policy: ${doc.shipping?.returns?.policy ?? 'to confirm'}. Returns-platform signals: ${listOr(appSignals(doc).returns_platform, 'none — native Shopify returns are enough')}. ${returnsApp(doc)
       ? `Install and configure ${returnsApp(doc)}: return reasons, windows, fees per market, ${doc.shipping?.returns?.exchanges ? 'exchange-first flow, ' : ''}label generation and restock location. Link its portal from customer accounts and the footer.`
@@ -172,6 +173,7 @@ export default [
     depends_on: ['LWC-SHP-001'],
     spec_refs: ['/post_purchase/cancellations/self_service', '/post_purchase/cancellations/window', '/post_purchase/cancellations/partial', '/post_purchase/cancellations/order_editing'],
     security_flags: ['payments'],
+    gates: ['returns_post_purchase'],
     applies: (doc) => Object.keys(doc.post_purchase?.cancellations ?? {}).length > 0,
     agent_prompt: (doc) => {
       const signals = appSignals(doc).order_editing_app;
@@ -203,6 +205,7 @@ export default [
     depends_on: ['LWC-SHP-005'],
     spec_refs: ['/post_purchase/refunds/methods', '/post_purchase/refunds/trigger', '/post_purchase/refunds/shipping_refunded', '/post_purchase/refunds/restocking_fee', '/post_purchase/refunds/approval_required', '/post_purchase/refunds/finance_sync'],
     security_flags: ['payments'],
+    gates: ['returns_post_purchase'],
     applies: (doc) => Object.keys(doc.post_purchase?.refunds ?? {}).length > 0,
     agent_prompt: (doc) => {
       const r = doc.post_purchase?.refunds ?? {};
@@ -230,6 +233,7 @@ export default [
     depends_on: ['LWC-SHP-001'],
     spec_refs: ['/post_purchase/tracking/branded_tracking_page', '/post_purchase/tracking/proactive_channels', '/post_purchase/tracking/delivery_estimates', '/post_purchase/apps_preferred', '/shipping/carriers'],
     security_flags: ['pii'],
+    gates: ['returns_post_purchase'],
     applies: (doc) => appSignals(doc).post_purchase_platform.length > 0,
     agent_prompt: (doc) => `Post-purchase requirements beyond native Shopify: ${list(appSignals(doc).post_purchase_platform)}. ${trackingApp(doc) ? `Client platform preference (check it covers tracking, not only returns): ${trackingApp(doc)}. ` : 'Shortlist post-purchase platforms (for example AfterShip, parcelLab, Narvar) that support the carriers and markets, and present the choice for consultant approval. '}Carriers: ${listOr(doc.shipping?.carriers, 'to confirm')}. Configure the branded tracking page, notification templates per language and consent-aware channels; decide which system sends each shipping message so customers get no duplicates.`,
   },
@@ -249,6 +253,7 @@ export default [
     depends_on: ['LWC-CUS-001'],
     spec_refs: ['/post_purchase/warranty_claims', '/post_purchase/apps_preferred'],
     security_flags: ['pii'],
+    gates: ['returns_post_purchase'],
     applies: (doc) => doc.post_purchase?.warranty_claims === true,
     agent_prompt: (doc) => `Warranty, repair and servicing claims must be opened online. First check whether ${returnsApp(doc) ?? trackingApp(doc) ?? 'the chosen returns or post-purchase platform'} supports warranty or repair flows; otherwise design a claim form in customer accounts backed by a helpdesk app or a metaobject-based claim record with Shopify Flow notifications. Present the options with pros, cons and Gaia tier for consultant approval. Photos and customer details are personal data: store them only where the retention policy allows.`,
   },

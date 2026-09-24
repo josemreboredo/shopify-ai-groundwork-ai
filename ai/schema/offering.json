@@ -1018,6 +1018,39 @@
       }
     },
     {
+      "id": "returns_post_purchase",
+      "label": "Returns and post-purchase",
+      "condition": "What Shopify’s own returns do not do. Every pack sets up Shopify’s: customers request returns, and cancellations of items not yet shipped, from the order status page and staff approve them; return rules set the window, return shipping costs, a restocking fee and final-sale items, per market and per collection or product; staff add exchange items on approval; refunds go to the original payment or to store credit (new customer accounts only); delivery dates show at checkout. Standard is a returns or post-purchase app past that — return labels or QR drop-off outside the US (Shopify sells return labels only from US locations, for US domestic orders), refunds on the carrier’s first scan, customers editing their own orders, a branded tracking page with delivery updates by WhatsApp or push, warranty and repair claims. Advanced adds what the app has to reconcile with other systems: items inspected before the refund, and return and refund events passed to finance.",
+      "inputs": [
+        "/shipping/returns/portal",
+        "/shipping/returns/label",
+        "/shipping/returns/inspection_required",
+        "/post_purchase/refunds/trigger",
+        "/post_purchase/refunds/finance_sync",
+        "/post_purchase/cancellations/order_editing",
+        "/post_purchase/tracking/branded_tracking_page",
+        "/post_purchase/tracking/proactive_channels",
+        "/post_purchase/warranty_claims"
+      ],
+      "modifier": null,
+      "modifier_tiers": [
+        "standard",
+        "advanced"
+      ],
+      "sources": [
+        "https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/self-serve-returns",
+        "https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/return-rules",
+        "https://help.shopify.com/en/manual/fulfillment/fulfilling-orders/shipping-labels/buying-labels/return-labels",
+        "https://help.shopify.com/en/manual/fulfillment/managing-orders/editing-orders",
+        "https://help.shopify.com/en/manual/customers/store-credit",
+        "https://help.shopify.com/en/manual/fulfillment/setup/delivery-expectations/overview"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "help.shopify.com"
+      }
+    },
+    {
       "id": "retail_pos",
       "label": "Retail & POS",
       "condition": "One or more physical stores sell with Shopify POS or an integrated POS, or omnichannel services are needed (pickup in store, ship from store, in-store returns of online orders, endless aisle, stock transfers, retail catalogs)",
@@ -1851,6 +1884,42 @@
       "price_add": {
         "min": 6300,
         "max": 12600
+      }
+    },
+    {
+      "id": "+Returns (standard)",
+      "gate": "returns_post_purchase",
+      "tier": "standard",
+      "description": "A returns or post-purchase app past Shopify’s own returns: configured to the client’s policy, labels or QR drop-off with the carriers the client uses, the return portal and tracking page branded to the storefront, delivery updates on the channels asked for, warranty claims where they are in scope — tested on real orders and handed over with an owner.",
+      "effort_weeks": {
+        "min": 1,
+        "max": 1.5
+      },
+      "price_add": {
+        "min": 6300,
+        "max": 9450
+      },
+      "design_days": {
+        "min": 1,
+        "max": 1
+      }
+    },
+    {
+      "id": "+Returns (advanced)",
+      "gate": "returns_post_purchase",
+      "tier": "advanced",
+      "description": "The standard work, and the app reconciled with the systems around it — half a week to a week more: items inspected in the warehouse before the refund is released, and every return, refund and cancellation passed to finance with a daily check that the two agree. The connection to the ERP itself is the integration add-on.",
+      "effort_weeks": {
+        "min": 1.5,
+        "max": 2.5
+      },
+      "price_add": {
+        "min": 9450,
+        "max": 15750
+      },
+      "design_days": {
+        "min": 1,
+        "max": 2
       }
     },
     {
@@ -2960,6 +3029,23 @@
         }
       },
       {
+        "id": "returns",
+        "what": "Returns and refunds",
+        "gate": "returns_post_purchase",
+        "group": "Shipping and fulfilment",
+        "shopify_limit": "Return labels are sold in Shopify only from US fulfilment locations, for US domestic orders; store credit needs new customer accounts",
+        "S": "Shopify’s own returns: requests from the order status page approved by staff, return rules per market and product, exchanges added on approval, refunds to the original payment or store credit",
+        "M": "Shopify’s own returns: requests from the order status page approved by staff, return rules per market and product, exchanges added on approval, refunds to the original payment or store credit",
+        "L": "Shopify’s own returns: requests from the order status page approved by staff, return rules per market and product, exchanges added on approval, refunds to the original payment or store credit",
+        "note": "Set up in every pack from the client’s returns policy — windows, fees, final-sale items, market rules — and handed over. Past what Shopify’s own returns do, a returns or post-purchase app is the returns and post-purchase add-on.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "Returns and post-purchase"
+      },
+      {
         "id": "integrations",
         "what": "System integrations",
         "gate": "integration",
@@ -3232,6 +3318,18 @@
           "M",
           "L"
         ]
+      },
+      {
+        "id": "returns_post_purchase",
+        "gate": "returns_post_purchase",
+        "what": "Returns and post-purchase, past Shopify’s own",
+        "description": "A returns or post-purchase app where Shopify’s own returns stop — labels outside the US, refunds on the carrier’s scan, customers editing orders, a branded tracking page, warranty claims — and, advanced, reconciled with the warehouse and finance.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Shopify’s own returns are in every pack: requests from the order status page approved by staff, return rules per market and product, exchanges added on approval, refunds to the original payment or store credit. The app’s own monthly fee is the client’s."
       },
       {
         "id": "retail_pos",

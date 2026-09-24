@@ -209,6 +209,7 @@ describe('story definitions', () => {
       'LWC-AI-003': 'agentic_commerce', 'LWC-AI-007': 'agentic_commerce', 'LWC-AI-008': 'agentic_commerce',
       'LWC-CAT-015': 'ai_content', 'LWC-PRM-002': 'custom_promotions', 'LWC-THM-017': 'custom_templates',
       'LWC-THM-010': 'hydrogen', 'LWC-THM-011': 'hydrogen', 'LWC-THM-018': 'hydrogen',
+      'LWC-SHP-010': 'returns_post_purchase',
     };
     for (const doc of [...GO_FIXTURES, maximalEngagement(), maximalLiquidEngagement()]) {
       for (const story of selectStories(doc)) {

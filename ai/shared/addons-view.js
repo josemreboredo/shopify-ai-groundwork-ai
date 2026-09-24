@@ -113,6 +113,12 @@ export const ASKS = {
       heavy: { label: 'From Magento, Salesforce Commerce Cloud or a custom platform', limits: (l) => ({ ...l, migration: 'magento' }) },
     },
   },
+  returns_post_purchase: {
+    tiers: {
+      standard: { label: 'A returns or post-purchase app: labels, a tracking page, claims', doc: merge('post_purchase', { tracking: { branded_tracking_page: true } }) },
+      advanced: { label: 'The app reconciled with the warehouse and finance', doc: merge('shipping', { returns: { inspection_required: true } }) },
+    },
+  },
   retail_pos: { limits: oneMore('retail_locations') },
   languages: { limits: oneMore('languages') },
   seo_continuity: {

@@ -1646,6 +1646,7 @@ Sources: https://help.shopify.com/en/manual/checkout-settings/split-shipping
 **Why it matters.** The written policy is exactly what you configure as return rules — window, return fee, restocking fee, final sale — or what a returns app must reproduce. Capturing it early shows whether the native rules can express it at all.
 
 **Q5.2.2** — Shopify includes return requests in customer accounts, controlled by return rules (window, return fee, restocking fee, final sale). Is that enough? *(recommended · client)*
+Drives: gate Returns and post-purchase
 
 **Why it matters.** This is the question that settles the returns line in the proposal: native self-serve returns and return rules, or a paid returns platform. Everything else in this subsection is evidence feeding this single decision.
 
@@ -1663,7 +1664,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/
 | Self-serve returns and return rules | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/self-serve-returns |
 
 If native is not enough: [Returns and exchanges](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all) — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [AfterShip Returns & Exchanges](https://apps.shopify.com/returns-center-by-aftership), [Narvar Return and Exchange](https://apps.shopify.com/narvar-returns), [Redo](https://apps.shopify.com/redo)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q5.2.3** — Do you process exchanges (not only refunds)? *(optional · client)*
 
@@ -1697,10 +1698,10 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/
 | Return rules and self-serve returns | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/return-rules |
 
 If native is not enough: [Returns and exchanges](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all) — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [AfterShip Returns & Exchanges](https://apps.shopify.com/returns-center-by-aftership), [Narvar Return and Exchange](https://apps.shopify.com/narvar-returns), [Redo](https://apps.shopify.com/redo)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q5.2.7** — How do customers send items back: prepaid label, QR code drop-off, their own shipment, or mixed? *(recommended · client)*
-Drives: app signal Returns platform
+Drives: app signal Returns platform · gate Returns and post-purchase
 Quick interview: ask if Q0.2.6 is 500 or more
 
 **Why it matters.** Shopify buys return labels only for US fulfilment locations, and QR-code drop-off is not native at all. For a European or cross-border client, prepaid labels or QR drop-off mean a returns app — this question exists to detect that.
@@ -1719,7 +1720,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/fulfilling-orders/shippi
 | Return labels | Basic | US fulfilment locations only | https://help.shopify.com/en/manual/fulfillment/fulfilling-orders/shipping-labels/buying-labels/return-labels |
 
 If native is not enough: [Returns and exchanges](https://apps.shopify.com/categories/orders-and-shipping-returns-and-warranty-returns-and-exchanges/all) — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [AfterShip Returns & Exchanges](https://apps.shopify.com/returns-center-by-aftership)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q5.2.8** — Who pays return shipping: you, the customer, or it depends on the market? *(recommended · client)*
 
@@ -1738,7 +1739,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/
 | Exchanges added by staff on return approval | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/self-serve-returns |
 
 If native is not enough: App Store — [Loop Returns & Exchanges](https://apps.shopify.com/loop-returns), [Redo](https://apps.shopify.com/redo)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q5.2.10** — Do you accept international returns (including refunding duties)? *(optional · client)*
 Drives: app signal Returns platform
@@ -1758,6 +1759,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q5.2.11** — Must returned items be inspected before the refund or exchange is issued? *(recommended · client)*
+Drives: gate Returns and post-purchase
 
 **Why it matters.** Inspection puts a manual step between the parcel arriving and the money moving. It sets the refund trigger, who performs the check, where the result is recorded, and how long the customer waits — process and staffing as much as system.
 
@@ -1810,7 +1812,7 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/
 | Cancellation requests and cancellation rules | Basic | Requests need merchant approval | https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/return-rules |
 
 If native is not enough: [Order editing](https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all) — [Revize: Order Editing & Upsell](https://apps.shopify.com/revize), [OrderEditing.com](https://apps.shopify.com/order-editing), [Orderify ‑ Order Edit Cancel](https://apps.shopify.com/orderify)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q5.4.3** — Until when can an order be cancelled? *(recommended · client)*
 
@@ -1821,7 +1823,7 @@ If native is not enough: [Order editing](https://apps.shopify.com/categories/ord
 **Why it matters.** Cancelling part of an order touches the refund calculation, restocking and the message sent to the warehouse or 3PL. The answer tells you whether cancellation is one simple rule or a case-by-case admin process with integration behind it.
 
 **Q5.4.5** — Should customers be able to edit an order after placing it (address, items)? *(recommended · client)*
-Drives: app signal Order editing / cancellation app
+Drives: app signal Order editing / cancellation app · gate Returns and post-purchase
 Quick interview: ask if Q0.2.6 is 500 or more
 
 **Why it matters.** Staff can edit orders natively; customers editing their own order after checkout cannot. A yes here means an order-editing app, so treat this as an app detector rather than a configuration question.
@@ -1835,14 +1837,14 @@ Sources: https://help.shopify.com/en/manual/fulfillment/managing-orders/editing-
 | Staff order editing | Basic |  | https://help.shopify.com/en/manual/fulfillment/managing-orders/editing-orders |
 
 If native is not enough: [Order editing](https://apps.shopify.com/categories/orders-and-shipping-orders-order-editing/all) — [Revize: Order Editing & Upsell](https://apps.shopify.com/revize), [OrderEditing.com](https://apps.shopify.com/order-editing), [Orderify ‑ Order Edit Cancel](https://apps.shopify.com/orderify)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q5.4.6** — How are refunds paid: to the original payment method, as store credit, or as a gift card? *(recommended · client)*
 
 **Why it matters.** The refund method decides the finance trail: original payment method, store credit and gift cards each land differently in reconciliation and in the ERP feed. Store credit also changes what customer accounts must show.
 
 **Q5.4.7** — When is a refund issued: on request, when the carrier scans the return, on receipt, or after inspection? *(recommended · client)*
-Drives: app signal Returns platform
+Drives: app signal Returns platform · gate Returns and post-purchase
 Quick interview: ask if Q0.2.6 is 500 or more
 
 **Why it matters.** Refunding on request, on approval or on receipt is native. Refunding when the carrier scans the parcel needs a returns platform wired to carrier tracking — a clean single-answer app signal, and one clients ask for without knowing the cost.
@@ -1878,6 +1880,7 @@ If native is not enough: [Returns and exchanges](https://apps.shopify.com/catego
 **Why it matters.** An approval step decides who holds refund permissions, how long the customer waits, and whether a returns tool has to model an approval queue at all. It is also the first control the client's finance team will ask about.
 
 **Q5.4.12** — Must cancellations and refunds be passed to your ERP or finance system? *(recommended · client)*
+Drives: gate Returns and post-purchase
 
 **Why it matters.** Cancellations and refunds are the hardest events to keep consistent between Shopify and finance, because money has already moved. A yes adds integration work, failure handling and reconciliation testing — not just one more webhook.
 
@@ -1895,7 +1898,7 @@ If native is not enough: [Order editing](https://apps.shopify.com/categories/ord
 ### 5.5 Post-purchase experience
 
 **Q5.5.1** — Do you want a branded order-tracking page on your own site? *(recommended · client)*
-Drives: app signal Post-purchase tracking platform
+Drives: app signal Post-purchase tracking platform · gate Returns and post-purchase
 Quick interview: ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise
 
 **Why it matters.** Shopify gives an order status page and shipping notifications, not a branded tracking page on the client's own site. A yes is the main trigger for a post-purchase tracking app, so establish what "branded" actually has to include.
@@ -1915,7 +1918,7 @@ If native is not enough: [Order tracking](https://apps.shopify.com/categories/or
 *Verified 2026-09-17 against help.shopify.com (Spring '26).*
 
 **Q5.5.2** — On which channels should customers get proactive delivery updates (delays, out for delivery)? *(recommended · client)*
-Drives: app signal Post-purchase tracking platform
+Drives: app signal Post-purchase tracking platform · gate Returns and post-purchase
 Quick interview: ask if Q0.2.6 is 500 or more, or Q1.3.1 is Premium, Luxury or Enterprise
 
 **Why it matters.** Email and SMS shipping notifications are native. Proactive delay and out-for-delivery alerts come from a platform reading carrier events, so the channel list here is what decides whether a tracking app is in the recommendation.
@@ -1949,10 +1952,10 @@ Sources: https://help.shopify.com/en/manual/fulfillment/setup/delivery-expectati
 | Delivery dates at checkout | Basic | Automatic dates: US fulfilment locations only | https://help.shopify.com/en/manual/fulfillment/setup/delivery-expectations/overview |
 
 If native is not enough: [Delivery and pickup](https://apps.shopify.com/categories/orders-and-shipping-shipping-solutions-delivery-and-pickup/all) — [Estimated Delivery Date ‑ ETA](https://apps.shopify.com/estimated-delivery-days), [Essent Estimated Delivery Date](https://apps.shopify.com/essential-estimated-delivery)
-*Verified 2026-09-17 against help.shopify.com (Spring '26).*
+*Verified 2026-09-24 against help.shopify.com (undefined).*
 
 **Q5.5.4** — Do customers need to open warranty, repair or servicing claims online? *(recommended · client)*
-Drives: app signal Warranty claims solution
+Drives: app signal Warranty claims solution · gate Returns and post-purchase
 Quick interview: ask if Q1.1.3 mentions watch, jewel, electronic, appliance, furniture, bike, bicycle, tool, device or luxury
 
 **Why it matters.** Warranty, repair and servicing claims have no native Shopify flow. A yes means an app or a custom build plus an operational process behind it, so scope it as its own item rather than folding it into returns.

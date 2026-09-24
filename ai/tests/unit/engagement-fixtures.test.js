@@ -151,7 +151,7 @@ test('golden fixtures produce the expected outcomes', () => {
   const expected = {
     'acme-watches.json': {
       code: 'M', go: true,
-      gates: ['markets', 'multi_currency', 'b2b', 'integration', 'sku_complexity', 'migration', 'seo_continuity',
+      gates: ['markets', 'multi_currency', 'b2b', 'integration', 'sku_complexity', 'migration', 'seo_continuity', 'returns_post_purchase',
         'checkout_extensibility', 'analytics_consent', 'post_launch_support'],
       exits: ['11.10', '11.14', '11.23'],
     },

@@ -489,6 +489,9 @@
             "migration": {
               "$ref": "#/$defs/gate"
             },
+            "returns_post_purchase": {
+              "$ref": "#/$defs/gate"
+            },
             "retail_pos": {
               "$ref": "#/$defs/gate"
             },
@@ -555,6 +558,8 @@
               "+Promotions (advanced)",
               "+Promotions (standard)",
               "+Retail",
+              "+Returns (advanced)",
+              "+Returns (standard)",
               "+SEO (large)",
               "+SEO (standard)",
               "+SKU (large)",
@@ -599,6 +604,7 @@
                   "ai_content",
                   "search_merchandising",
                   "migration",
+                  "returns_post_purchase",
                   "retail_pos",
                   "languages",
                   "seo_continuity",

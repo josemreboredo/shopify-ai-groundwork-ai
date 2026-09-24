@@ -180,6 +180,11 @@
         "active": false,
         "evidence": "Storefront design: theme configuration only — Horizon with brand tokens is in every offer"
       },
+      "returns_post_purchase": {
+        "active": true,
+        "tier": "advanced",
+        "evidence": "Q5.2.7: prepaid return labels, which Shopify sells only from US locations; Q5.5.4: warranty claims online; Q5.2.11: items inspected before the refund; Q5.4.12: returns and refunds passed to finance — with Loop Returns (Q5.2.4)."
+      },
       "retail_pos": {
         "active": false,
         "evidence": "No retail stores"
@@ -225,6 +230,7 @@
       "+Integration",
       "+SKU (standard)",
       "+Migration (light)",
+      "+Returns (advanced)",
       "+SEO (standard)",
       "+Checkout (in-checkout)",
       "+Analytics (standard)",
@@ -243,6 +249,11 @@
         "included_units": 1
       },
       {
+        "gate": "returns_post_purchase",
+        "label": "Returns and post-purchase, past Shopify’s own",
+        "tier": "advanced"
+      },
+      {
         "gate": "seo_continuity",
         "label": "SEO continuity: a redirect estate of 1,000 URLs or more, or rankings the business runs on",
         "tier": "standard"
@@ -259,14 +270,14 @@
       }
     ],
     "price_band": {
-      "min": 90000,
-      "max": 121000,
+      "min": 100000,
+      "max": 138000,
       "currency": "CHF",
       "open_ended": false
     },
     "duration_weeks": {
-      "min": 12.5,
-      "max": 17
+      "min": 14,
+      "max": 19.5
     },
     "hypercare": {
       "days": 10,
@@ -274,8 +285,8 @@
     },
     "design": {
       "days": {
-        "min": 6,
-        "max": 10
+        "min": 7,
+        "max": 12
       }
     },
     "apps": {
@@ -286,14 +297,22 @@
     },
     "rationale": "Ten scope gates are active and they bring the build to 13–17.5 weeks. The engagement is named Ecommerce Scale, the largest pack whose floor the quote reaches, with what goes past its promise as add-ons: B2B alongside consumer, a second integration, SEO continuity, blocks inside the checkout steps and written SOPs after launch. Every offer is on the Liquid track; nothing here asks for a storefront that is not a Shopify theme. The quote is the Foundation base plus each gate at its own weeks and price.",
     "scope_effort_weeks": {
-      "min": 12.5,
-      "max": 17
+      "min": 14,
+      "max": 19.5
     },
     "gate_capacity_weeks": {
       "min": 2,
       "max": 10
     },
     "scope_effort_by_gate": [
+      {
+        "gate": "returns_post_purchase",
+        "label": "Returns and post-purchase",
+        "weeks": {
+          "min": 1.5,
+          "max": 2.5
+        }
+      },
       {
         "gate": "integration",
         "label": "Integration",

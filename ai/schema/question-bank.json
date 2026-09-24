@@ -4901,9 +4901,8 @@
           "redo"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -4924,7 +4923,10 @@
         "sources": [
           "https://help.shopify.com/en/manual/fulfillment/managing-orders/returns/self-serve-returns"
         ]
-      }
+      },
+      "feeds": [
+        "gate:returns_post_purchase"
+      ]
     },
     {
       "id": "Q5.2.3",
@@ -5044,9 +5046,8 @@
           "redo"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -5074,7 +5075,8 @@
         "/shipping/returns/label"
       ],
       "feeds": [
-        "app:returns_platform"
+        "app:returns_platform",
+        "gate:returns_post_purchase"
       ],
       "shopify": {
         "native": [
@@ -5094,9 +5096,8 @@
           "returns-center-by-aftership"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -5170,9 +5171,8 @@
           "redo"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -5244,7 +5244,10 @@
       ],
       "teach": {
         "why": "Inspection puts a manual step between the parcel arriving and the money moving. It sets the refund trigger, who performs the check, where the result is recorded, and how long the customer waits — process and staffing as much as system."
-      }
+      },
+      "feeds": [
+        "gate:returns_post_purchase"
+      ]
     },
     {
       "id": "Q5.2.12",
@@ -5370,9 +5373,8 @@
           "orderify"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -5441,7 +5443,8 @@
         "/post_purchase/cancellations/order_editing"
       ],
       "feeds": [
-        "app:order_editing_app"
+        "app:order_editing_app",
+        "gate:returns_post_purchase"
       ],
       "shopify": {
         "native": [
@@ -5461,9 +5464,8 @@
           "orderify"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -5506,7 +5508,8 @@
         "/post_purchase/refunds/trigger"
       ],
       "feeds": [
-        "app:returns_platform"
+        "app:returns_platform",
+        "gate:returns_post_purchase"
       ],
       "shopify": {
         "native": [
@@ -5618,7 +5621,10 @@
       ],
       "teach": {
         "why": "Cancellations and refunds are the hardest events to keep consistent between Shopify and finance, because money has already moved. A yes adds integration work, failure handling and reconciliation testing — not just one more webhook."
-      }
+      },
+      "feeds": [
+        "gate:returns_post_purchase"
+      ]
     },
     {
       "id": "Q5.4.13",
@@ -5691,7 +5697,8 @@
         "/post_purchase/tracking/branded_tracking_page"
       ],
       "feeds": [
-        "app:post_purchase_platform"
+        "app:post_purchase_platform",
+        "gate:returns_post_purchase"
       ],
       "shopify": {
         "native": [
@@ -5759,7 +5766,8 @@
         "/post_purchase/tracking/proactive_channels"
       ],
       "feeds": [
-        "app:post_purchase_platform"
+        "app:post_purchase_platform",
+        "gate:returns_post_purchase"
       ],
       "shopify": {
         "native": [
@@ -5836,9 +5844,8 @@
           "essential-estimated-delivery"
         ],
         "verified": {
-          "on": "2026-09-17",
-          "source": "help.shopify.com",
-          "edition": "Spring '26"
+          "on": "2026-09-24",
+          "source": "help.shopify.com"
         }
       },
       "teach": {
@@ -5878,7 +5885,8 @@
         "/post_purchase/warranty_claims"
       ],
       "feeds": [
-        "app:warranty_claims"
+        "app:warranty_claims",
+        "gate:returns_post_purchase"
       ],
       "shopify": {
         "native": [],

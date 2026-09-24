@@ -593,6 +593,26 @@ describe('the quote is the scope, priced one way', () => {
     assert.match(offering.scope_gates.find((g) => g.id === 'ai_content').condition, /Shopify Magic/);
   });
 
+  test('returns: Shopify’s own in every pack, an app past it is the add-on', () => {
+    /* Twenty-six questions and five stories on returns, cancellations and
+       refunds, and nothing priced them. Shopify's own returns are a
+       configuration; an app past them, and reconciling it, are work. */
+    const row = offering.closed_scope.rows.find((r) => r.id === 'returns');
+    assert.ok(row.S === row.M && row.M === row.L, 'the same native returns in every pack');
+    const at = (shipping, post_purchase) => classifyOffer({ ...engagementAt(limits.S), shipping, post_purchase });
+    const native = at({ returns: { portal: 'native_self_serve_returns', exchanges: true, exchange_types: ['same_product_variant'], rules_vary: true, label: 'customer_arranged' } },
+      { refunds: { methods: ['original_payment', 'store_credit'], trigger: 'on_receipt' }, tracking: { proactive_channels: ['email'] } });
+    assert.equal(native.scope_gates.returns_post_purchase.active, false, 'Shopify’s own returns, rules, exchanges and refunds are in every pack');
+    assert.equal(at({ returns: { label: 'qr_drop_off' } }).scope_gates.returns_post_purchase.tier, 'standard', 'labels outside the US need an app');
+    assert.equal(at({}, { warranty_claims: true }).scope_gates.returns_post_purchase.tier, 'standard');
+    assert.equal(at({}, { tracking: { proactive_channels: ['whatsapp'] } }).scope_gates.returns_post_purchase.tier, 'standard');
+    assert.equal(at({ returns: { inspection_required: true } }).scope_gates.returns_post_purchase.tier, 'advanced');
+    assert.equal(at({}, { refunds: { finance_sync: true } }).scope_gates.returns_post_purchase.tier, 'advanced');
+    // Advanced is the standard work and the reconciliation, not a second block of it.
+    const [std, adv] = ['standard', 'advanced'].map((t) => offering.modifiers.find((m) => m.gate === 'returns_post_purchase' && m.tier === t));
+    assert.ok(adv.effort_weeks.min > std.effort_weeks.min && adv.effort_weeks.max - std.effort_weeks.max <= 1);
+  });
+
   test('design is priced by the design day, by pack and only on the add-ons that need it', () => {
     /* A designer inside the build week would be charged on a migration as much
        as on a template set. Design is its own line: S adapts the UI to the

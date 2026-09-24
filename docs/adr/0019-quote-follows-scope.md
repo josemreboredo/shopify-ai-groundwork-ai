@@ -100,6 +100,14 @@ give the final figure, and the commercial team adds contingency and services suc
   attributes into category metafields — in the brand’s voice, sampled, approved and loaded by product CSV; a quarter of a build
   week per 1,000 SKUs and three quarters at the least (gate `ai_content`, question Q2.3.6). Shopify Magic does it product by
   product, free, and the add-on says so. Product data only: no customer data reaches a model.
+- **Returns and post-purchase** (2026-09-24): twenty-six questions and five stories on returns, cancellations and refunds
+  reached no price. The pack table has a Returns and refunds row — Shopify’s own returns, in every pack: requests from the
+  order status page approved by staff, return rules per market and product, exchanges added on approval, refunds to the
+  original payment or store credit. The `returns_post_purchase` add-on prices an app past it (standard, 1–1.5 weeks and a
+  design day: labels outside the US — Shopify sells return labels only from US locations, for US domestic orders — refunds
+  on the carrier’s scan, customers editing orders, a branded tracking page, warranty claims) and that app reconciled with
+  the warehouse and finance (advanced, 1.5–2.5 weeks). ACME, which runs Loop Returns with inspection and finance sync, rises
+  from CHF 90–121k to 100–138k and stays an M.
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,
