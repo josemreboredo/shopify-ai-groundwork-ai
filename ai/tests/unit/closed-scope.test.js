@@ -636,6 +636,21 @@ describe('the quote is the scope, priced one way', () => {
     assert.equal(m.max_units.value, 4, 'Marketplace Connect lists on four');
   });
 
+  test('every pack tests and fixes accessibility to the target; a formal conformance report is the add-on', () => {
+    const row = offering.closed_scope.rows.find((r) => r.id === 'accessibility');
+    assert.ok(row.S === row.M && row.M === row.L, 'the same accessibility pass in every pack');
+    const gate = (accessibility) => classifyOffer({ ...engagementAt(limits.S), design: { accessibility } }).scope_gates.accessibility_audit;
+    for (const target of ['wcag21_aa', 'wcag22_aa', 'en301549', 'section508']) {
+      assert.equal(gate({ target }).active, false, `${target}: tested and fixed in every pack`);
+    }
+    const report = gate({ target: 'en301549', conformance_report: true });
+    assert.equal(report.active, true, 'a report is asked for, not inferred from the standard');
+    assert.match(report.evidence, /EN 301 549/);
+    assert.match(gate({ conformance_report: true }).evidence, /the agreed standard/);
+    // Shopify's own reports are the facts the row stands on.
+    assert.match(row.shopify_limit, /checkout \(WCAG 2\.2 A\/AA\)/);
+  });
+
   test('Shopify’s own rewards are in every pack; a loyalty app is the add-on, and a later phase is not this build', () => {
     const row = offering.closed_scope.rows.find((r) => r.id === 'loyalty');
     assert.ok(row.S === row.M && row.M === row.L, 'the same rewards in every pack');

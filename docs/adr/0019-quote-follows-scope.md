@@ -134,6 +134,12 @@ give the final figure, and the commercial team adds contingency and services suc
   weeks and a design day), synced to the email platform or CRM or running on Shopify POS (advanced, half a week more).
   Loyalty planned for a later phase is not in this build: the story stays in the backlog, deferred, and no quote carries it
   — which is ACME’s case, so its quote does not move.
+- **Accessibility** (2026-09-24): every pack already tested the agreed target and fixed what it found; the pack table now
+  says so in an Accessibility row, with Shopify’s own facts beside it (conformance reports for checkout at WCAG 2.2 A/AA,
+  and for the admin and the Dawn theme at WCAG 2.1 A/AA; the theme a store runs and its apps are the merchant’s). A formal
+  conformance report — every template and state tested by hand against every success criterion, fixed, re-tested and
+  written up for a buyer or a regulator — is the `accessibility_audit` add-on, 1–2 weeks, asked for by question Q9.3.3
+  rather than inferred from the standard named.
 - **Promotions** (2026-09-24): the pack table has a Promotions row — Shopify’s own discounts (codes and automatic, amount
   or percentage off, buy X get Y, free shipping, scheduled sales, native combinations), the same in every pack. What they
   cannot express is the `custom_promotions` add-on, a discount Function: tiered or volume discounts for consumers (standard,

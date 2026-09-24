@@ -2388,6 +2388,12 @@
 - [ ] Yes
 - [ ] No
 
+**Q9.3.3** — Avez-vous besoin d’un rapport formel de conformité en matière d’accessibilité, par exemple pour des acheteurs du secteur public ou des entreprises ? *(recommended)*
+*Un rapport documente la conformité à chaque critère de succès de la norme retenue. Chaque offre teste déjà l’objectif et corrige ce qu’elle trouve.*
+
+- [ ] Yes
+- [ ] No
+
 ### 9.4 Performance
 
 **Q9.4.1** — Objectifs Core Web Vitals : LCP (secondes), CLS, INP (millisecondes). *(optional)*

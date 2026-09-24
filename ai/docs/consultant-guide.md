@@ -6,7 +6,7 @@
 >
 > **Consultant only.** Shopify plan requirements, docs links and app candidates behind each discovery question.
 > Use them to steer the conversation to what Shopify does natively; do not hand this guide to the client.
-> 132 of 319 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
+> 133 of 320 questions carry Shopify knowledge; facts are checked against Shopify documentation at each Edition.
 >
 > Apps marked ✓ are approved by a lead consultant after engagement work; all others are proposed candidates.
 
@@ -3266,6 +3266,18 @@ Sources: https://www.shopify.com/accessibility
 **Why it matters.** An existing audit turns accessibility from an unknown into a defect list you can size. No audit, on a site heading for a legal deadline, means remediation scope is open-ended - put the audit in the plan rather than discovering it at UAT.
 
 Sources: https://www.shopify.com/accessibility
+
+**Q9.3.3** — Do you need a formal accessibility conformance report, for example for public-sector or corporate buyers? *(recommended · client)*
+Drives: gate Accessibility conformance report
+
+**Why it matters.** Every offer tests the agreed target and fixes what it finds. A conformance report is a different deliverable: every template and state checked by hand against every success criterion, with screen readers, and written up so a buyer or a regulator can rely on it. It is weeks of specialist testing, priced only when someone needs the report.
+
+Sources: https://www.shopify.com/accessibility
+
+| Shopify feature | Minimum plan | Note | Docs |
+|---|---|---|---|
+| Shopify’s own conformance reports: checkout (WCAG 2.2 A/AA), admin and the Dawn theme (WCAG 2.1 A/AA) | Basic | The theme a store runs and its apps are the merchant’s | https://www.shopify.com/accessibility |
+*Verified 2026-09-24 against shopify.com.*
 
 ### 9.4 Performance
 

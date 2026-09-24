@@ -321,7 +321,8 @@
     "Q7.6.8": "2f68b27508c0",
     "Q10.2.4": "5dc23518880b",
     "Q10.3.7": "fc88af40f0fd",
-    "Q1.2.7": "d51368492bea"
+    "Q1.2.7": "d51368492bea",
+    "Q9.3.3": "e7d454bdded1"
   },
   "sections": {
     "0": "Objectifs business",
@@ -3892,6 +3893,13 @@
       "help": "Comptez les applications de l’App Store éditées par d’autres sociétés. Les applications de Shopify — Translate & Adapt, Search & Discovery, Flow, Forms, Subscriptions — ne comptent pas.",
       "teach": {
         "why": "Chaque application est installée, configurée, testée avec le thème et remise avec un responsable et un abonnement mensuel. Une boutique avec quinze applications n’est pas le même build qu’une boutique avec trois, et le client paie chaque licence tous les mois."
+      }
+    },
+    "Q9.3.3": {
+      "text": "Avez-vous besoin d’un rapport formel de conformité en matière d’accessibilité, par exemple pour des acheteurs du secteur public ou des entreprises ?",
+      "help": "Un rapport documente la conformité à chaque critère de succès de la norme retenue. Chaque offre teste déjà l’objectif et corrige ce qu’elle trouve.",
+      "teach": {
+        "why": "Chaque offre teste l’objectif convenu et corrige ce qu’elle trouve. Un rapport de conformité est un autre livrable : chaque gabarit et chaque état vérifiés à la main au regard de chaque critère de succès, avec des lecteurs d’écran, et rédigé pour qu’un acheteur ou une autorité puisse s’y fier. Ce sont des semaines de tests spécialisés, chiffrées seulement si quelqu’un a besoin du rapport."
       }
     }
   },

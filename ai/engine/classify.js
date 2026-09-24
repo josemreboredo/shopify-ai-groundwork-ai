@@ -234,10 +234,6 @@ const GATE_EVALUATORS = {
     };
   },
 
-  /* A page template designed and built new while the storefront stays on a
-     Shopify theme. The way a large, global set-up keeps its theme and still
-     gets the pages it needs; a full template set designs every template and
-     carries these (see `carried` below). */
   /* The storefront built headless on Hydrogen instead of a Liquid theme. It
      used to have no weeks of its own, so a headless quote was floored at L's
      band; it is an add-on in every pack now, priced like any other gate. Content or a
@@ -255,6 +251,25 @@ const GATE_EVALUATORS = {
     };
   },
 
+  /* A formal conformance report. Every pack tests the agreed target and fixes
+     what it finds; a report checks every success criterion by hand and writes
+     it up for a buyer or a regulator, which is weeks of specialist testing. */
+  accessibility_audit: (doc) => {
+    const a = doc.design?.accessibility ?? {};
+    const TARGET = { wcag21_aa: 'WCAG 2.1 AA', wcag22_aa: 'WCAG 2.2 AA', en301549: 'EN 301 549', section508: 'Section 508' };
+    const active = a.conformance_report === true;
+    return {
+      active,
+      evidence: active
+        ? `A conformance report against ${TARGET[a.target] ?? 'the agreed standard'}`
+        : `The agreed target${TARGET[a.target] ? ` (${TARGET[a.target]})` : ''} tested and fixed — in every pack`,
+    };
+  },
+
+  /* A page template designed and built new while the storefront stays on a
+     Shopify theme. The way a large, global set-up keeps its theme and still
+     gets the pages it needs; a full template set designs every template and
+     carries these (see `carried` below). */
   custom_templates: (doc) => {
     const n = doc.design?.custom_templates ?? 0;
     // A headless storefront has no theme: every template is part of it.

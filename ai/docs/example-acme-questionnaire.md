@@ -2225,6 +2225,11 @@ Answer: not applicable — one brand
 - [ ] Yes
 - [x] No
 
+**Q9.3.3** — Do you need a formal accessibility conformance report, for example for public-sector or corporate buyers? *(recommended)*
+
+- [ ] Yes
+- [x] No
+
 ### 9.4 Performance
 
 **Q9.4.1** — Core Web Vitals targets: LCP (seconds), CLS, INP (milliseconds). *(optional)*

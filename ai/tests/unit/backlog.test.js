@@ -61,7 +61,7 @@ function maximalEngagement() {
   doc.b2b = { ...doc.b2b, volume_discounts: true, payment_terms: ['net_terms'] };
   // A second storefront design: one market that needs a different layout
   // rather than different content, which is a second theme to keep in step.
-  doc.design = { ...doc.design, extra_theme_designs: 1, custom_templates: 2 };
+  doc.design = { ...doc.design, extra_theme_designs: 1, custom_templates: 2, accessibility: { target: 'wcag22_aa', conformance_report: true } };
   // Customer service: the bank had one question on it and that one was about
   // China, so a client running a helpdesk and taking phone orders was scope
   // nobody could see.
@@ -214,7 +214,7 @@ describe('story definitions', () => {
       'LWC-AI-003': 'agentic_commerce', 'LWC-AI-007': 'agentic_commerce', 'LWC-AI-008': 'agentic_commerce',
       'LWC-CAT-015': 'ai_content', 'LWC-PRM-002': 'custom_promotions', 'LWC-THM-017': 'custom_templates',
       'LWC-THM-010': 'hydrogen', 'LWC-THM-011': 'hydrogen', 'LWC-THM-018': 'hydrogen',
-      'LWC-SHP-010': 'returns_post_purchase', 'LWC-MKG-007': 'marketplaces', 'LWC-MKG-004': 'messaging_platform',
+      'LWC-SHP-010': 'returns_post_purchase', 'LWC-MKG-007': 'marketplaces', 'LWC-MKG-004': 'messaging_platform', 'LWC-QA-007': 'accessibility_audit',
       // LWC-PRM-005 is not here: loyalty planned for later stays in the backlog, deferred and unpriced.
     };
     for (const doc of [...GO_FIXTURES, maximalEngagement(), maximalLiquidEngagement()]) {

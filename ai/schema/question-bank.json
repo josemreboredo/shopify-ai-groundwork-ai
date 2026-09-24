@@ -9515,6 +9515,41 @@
       }
     },
     {
+      "id": "Q9.3.3",
+      "subsection": "9.3",
+      "priority": "recommended",
+      "audience": "client",
+      "answer_type": "boolean",
+      "text": "Do you need a formal accessibility conformance report, for example for public-sector or corporate buyers?",
+      "help": "A report documents conformance with each success criterion of the agreed standard. Every offer already tests and fixes to the target.",
+      "maps_to": [
+        "/design/accessibility/conformance_report"
+      ],
+      "feeds": [
+        "gate:accessibility_audit"
+      ],
+      "shopify": {
+        "native": [
+          {
+            "feature": "Shopify’s own conformance reports: checkout (WCAG 2.2 A/AA), admin and the Dawn theme (WCAG 2.1 A/AA)",
+            "plan": "basic",
+            "plan_note": "The theme a store runs and its apps are the merchant’s",
+            "docs": "https://www.shopify.com/accessibility"
+          }
+        ],
+        "verified": {
+          "on": "2026-09-24",
+          "source": "shopify.com"
+        }
+      },
+      "teach": {
+        "why": "Every offer tests the agreed target and fixes what it finds. A conformance report is a different deliverable: every template and state checked by hand against every success criterion, with screen readers, and written up so a buyer or a regulator can rely on it. It is weeks of specialist testing, priced only when someone needs the report.",
+        "sources": [
+          "https://www.shopify.com/accessibility"
+        ]
+      }
+    },
+    {
       "id": "Q9.4.1",
       "subsection": "9.4",
       "priority": "optional",

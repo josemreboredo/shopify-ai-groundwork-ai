@@ -946,6 +946,25 @@
       }
     },
     {
+      "id": "accessibility_audit",
+      "label": "Accessibility conformance report",
+      "condition": "A formal accessibility conformance report. Every pack tests the agreed target and fixes what it finds: automated checks on every template in every language, keyboard and screen-reader passes on the purchase journey, and an accessibility statement where the store sells in the EU. A report is a different deliverable: every template and state checked by hand against every success criterion of the standard, with screen readers on desktop and mobile and the app blocks included, what fails fixed and re-tested, and the result written up so a buyer or a regulator can rely on it. Shopify publishes its own conformance reports for checkout (WCAG 2.2 A/AA), the admin and the Dawn theme (WCAG 2.1 A/AA); the theme a store runs and its apps are the merchant’s.",
+      "inputs": [
+        "/design/accessibility/conformance_report",
+        "/design/accessibility/target"
+      ],
+      "modifier": "+Accessibility audit",
+      "sources": [
+        "https://www.shopify.com/accessibility",
+        "https://shopify.dev/docs/storefronts/themes/store/requirements",
+        "https://shopify.dev/docs/storefronts/themes/best-practices/accessibility"
+      ],
+      "verified": {
+        "on": "2026-09-24",
+        "source": "shopify.com"
+      }
+    },
+    {
       "id": "sku_complexity",
       "label": "Catalogue size and complexity",
       "condition": "Either arm fires it: 500 or more SKUs with complexity (two or more variant options, custom attributes, bundles or product sets), or 5,000 SKUs on their own whatever their shape — the point where Shopify stops showing filters on a collection and where the published benchmark moves from days of data work to weeks. Tiered by catalogue size, because the product model is built once and the data is handled per thousand",
@@ -1639,6 +1658,19 @@
           }
         }
       ]
+    },
+    {
+      "id": "+Accessibility audit",
+      "gate": "accessibility_audit",
+      "description": "A conformance audit against every success criterion of the agreed standard: every template and state of the storefront tested by hand with screen readers on desktop and mobile, the app blocks included; what fails fixed and re-tested; and the result written up as an accessibility conformance report the client can hand to a buyer or a regulator. Checkout is covered by Shopify’s own report.",
+      "effort_weeks": {
+        "min": 1,
+        "max": 2
+      },
+      "price_add": {
+        "min": 6300,
+        "max": 12600
+      }
     },
     {
       "id": "+Integration",
@@ -3128,6 +3160,23 @@
         "addon_label": "Each further storefront design"
       },
       {
+        "id": "accessibility",
+        "what": "Accessibility",
+        "gate": "accessibility_audit",
+        "group": "Storefront",
+        "shopify_limit": "Shopify publishes conformance reports for checkout (WCAG 2.2 A/AA), the admin and the Dawn theme (WCAG 2.1 A/AA); the theme a store runs and its apps are the merchant’s. Theme Store themes need an average Lighthouse accessibility score of 90",
+        "S": "The agreed target tested and fixed: automated checks on every template, keyboard and screen reader on the purchase journey, and an accessibility statement where the store sells in the EU",
+        "M": "The agreed target tested and fixed: automated checks on every template, keyboard and screen reader on the purchase journey, and an accessibility statement where the store sells in the EU",
+        "L": "The agreed target tested and fixed: automated checks on every template, keyboard and screen reader on the purchase journey, and an accessibility statement where the store sells in the EU",
+        "note": "In every pack, because a store that some customers cannot use is not finished: the target is agreed in discovery, tested on the real catalogue and fixed in the theme; issues in an app are reported to its vendor. A Lighthouse score is an automated check, not conformance. A formal report against every success criterion — for a buyer who asks for one, or a regulator — is the accessibility add-on.",
+        "addon": [
+          "S",
+          "M",
+          "L"
+        ],
+        "addon_label": "A conformance report"
+      },
+      {
         "id": "checkout",
         "what": "Checkout",
         "gate": "checkout_extensibility",
@@ -3512,6 +3561,18 @@
           "L"
         ],
         "note": "Sold in every pack, and not the same work in each: in S it replaces a configured theme with a React front end designed in full, in M it builds on the design days M already has, and in L it replaces the custom Liquid theme — the designer designs either way. It brings the full template set with it. The engagement is named after the pack its budget reaches. Content or a front end outside Shopify is Merkle Arc (rule 11.26)."
+      },
+      {
+        "id": "accessibility_audit",
+        "gate": "accessibility_audit",
+        "what": "A formal accessibility conformance audit and report",
+        "description": "Every template and state tested by hand against every success criterion of the agreed standard, fixed, re-tested and written up as a conformance report a buyer or a regulator can rely on.",
+        "available_in": [
+          "S",
+          "M",
+          "L"
+        ],
+        "note": "Every pack tests the agreed target and fixes what it finds, and publishes an accessibility statement where the store sells in the EU. Checkout is covered by Shopify’s own conformance report."
       },
       {
         "id": "sku_complexity",

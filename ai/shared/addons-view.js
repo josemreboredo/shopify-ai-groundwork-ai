@@ -165,6 +165,8 @@ export const ASKS = {
       },
     },
   },
+  /* A formal report, past the accessibility pass every pack runs. */
+  accessibility_audit: { doc: merge('design', { accessibility: { target: 'wcag22_aa', conformance_report: true } }) },
   /* A loyalty app past Shopify's own rewards, which every pack sets up. */
   loyalty: {
     tiers: {

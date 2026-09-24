@@ -2388,6 +2388,12 @@
 - [ ] Yes
 - [ ] No
 
+**Q9.3.3** — Brauchen Sie einen formellen Konformitätsbericht zur Barrierefreiheit, zum Beispiel für Käufer aus dem öffentlichen Sektor oder aus Unternehmen? *(recommended)*
+*Ein Bericht dokumentiert die Konformität mit jedem Erfolgskriterium des vereinbarten Standards. Jedes Angebot testet bereits auf das Ziel hin und behebt, was es findet.*
+
+- [ ] Yes
+- [ ] No
+
 ### 9.4 Performance
 
 **Q9.4.1** — Zielwerte für die Core Web Vitals: LCP (Sekunden), CLS, INP (Millisekunden). *(optional)*

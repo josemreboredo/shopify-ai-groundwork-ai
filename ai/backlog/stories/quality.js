@@ -128,4 +128,25 @@ export default [
     applies: (doc) => gate(doc, 'integration') && countedIntegrations(doc).length > 0,
     agent_prompt: (doc) => `Write and run end-to-end scenario tests for ${list(countedIntegrations(doc).map((i) => `${i.system} (${i.frequency ?? 'frequency to confirm'})`))} on the build store with sandbox instances of each system. Include failure scenarios and a peak-volume run. Set up monitoring and alerting (connector dashboard or logging platform) with named owners, and write the integration runbook. Logs must not contain personal data or secrets.`,
   },
+  {
+    /* The accessibility add-on: a formal conformance report, past the pass every pack runs. */
+    key: 'LWC-QA-007',
+    epic: 'quality',
+    title: (doc) => `Produce the accessibility conformance report against ${a11yTargets[doc.design?.accessibility?.target] ?? 'WCAG 2.2 AA'}`,
+    user_story: 'As the client’s legal and procurement lead, I want a conformance report we can hand to a buyer or a regulator, so that our accessibility is documented rather than asserted.',
+    acceptance_criteria: [
+      'Given every template and its states (empty, error, filtered, signed in), when each is tested by hand against every success criterion of the standard, then each criterion is recorded as supported, partially supported or not supported, with the evidence',
+      'Given VoiceOver and NVDA on desktop and VoiceOver and TalkBack on mobile, when the purchase journey and the account pages are used, then the results are in the report',
+      'Given what fails, when it is in the theme, then it is fixed and re-tested before the report is signed; when it is in an app, then it is in the report with the vendor’s answer',
+      'Given checkout, when the report is read, then it points to Shopify’s own checkout conformance report rather than re-testing what the client cannot change',
+    ],
+    gaia_tier: 'T2',
+    points: 8,
+    owner: 'developer',
+    depends_on: ['LWC-QA-001'],
+    spec_refs: ['/design/accessibility/conformance_report', '/design/accessibility/target'],
+    gates: ['accessibility_audit'],
+    applies: (doc) => gate(doc, 'accessibility_audit'),
+    agent_prompt: (doc) => `Build on the accessibility pass (LWC-QA-001). List every template and state of ${languages(doc).length > 1 ? `the storefront in ${list(languages(doc))}` : 'the storefront'}, test each by hand against every success criterion of ${a11yTargets[doc.design?.accessibility?.target] ?? 'WCAG 2.2 AA'} with VoiceOver and NVDA on desktop and VoiceOver and TalkBack on mobile, and record each criterion as supported, partially supported or not supported with its evidence. Fix theme issues and re-test; log app issues with the vendor. Refer to Shopify's published conformance report for checkout (https://www.shopify.com/accessibility) instead of re-testing it. Write the report in the VPAT structure the client's buyers expect, for legal review.`,
+  },
 ];
