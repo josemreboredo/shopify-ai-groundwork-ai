@@ -178,15 +178,18 @@ Write every question we need answered to price this properly — the Lead Consul
           <div className="start-head">
             <div>
               <p className="question">
-                {replies.all_back ? `All ${replies.asked} answered` : `${replies.back} of ${replies.asked} answered`}
+                {replies.all_back ? `All ${replies.asked} ${replies.no_longer_needed ? 'settled' : 'answered'}` : `${replies.back} of ${replies.asked} answered`}
+                {replies.no_longer_needed ? ` · ${replies.no_longer_needed} no longer needed` : ''}
               </p>
               <p className="muted">
                 {replies.all_back
-                  ? 'Everything Merkle asked has come back and is recorded against the questions it fills.'
+                  ? (replies.no_longer_needed
+                    ? 'Everything Merkle asked has come back or no longer applies: a question whose discovery questions were all marked not applicable, or settled by a comment, has nothing left for a reply to fill.'
+                    : 'Everything Merkle asked has come back and is recorded against the questions it fills.')
                   : 'When the client replies, read it in here. Each question names the discovery questions it fills, so the answers land where they belong instead of being typed in from memory — and anything the reply does not cover stays a stated assumption.'}
               </p>
             </div>
-            <span className={`badge ${replies.all_back ? 'go' : 'flag'}`}>{replies.back}/{replies.asked}</span>
+            <span className={`badge ${replies.all_back ? 'go' : 'flag'}`}>{replies.back + (replies.no_longer_needed ?? 0)}/{replies.asked}</span>
           </div>
           {!replies.all_back && replies.asked ? (
             <div className="actions">
@@ -238,7 +241,9 @@ Write every question we need answered to price this properly — the Lead Consul
                     <h3 className="q-text">{q.question}</h3>
                     <span className="q-badges">
                       {q.status === 'accepted' && replies.rows.find((r) => r.id === q.id)?.answered
-                        ? <span className="badge go">answered</span>
+                        ? (replies.rows.find((r) => r.id === q.id).no_longer_needed
+                          ? <span className="badge" title="Every discovery question it fills was marked not applicable or settled by a comment">no longer needed</span>
+                          : <span className="badge go">answered</span>)
                         : null}
                       {q.shape_changing ? <span className="badge flag">changes the shape</span> : null}
                     </span>

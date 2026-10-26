@@ -13,7 +13,7 @@ import fs from 'node:fs';
 
 import { clarificationTopics, clarificationBrief } from '../../bid/clarifications.js';
 import { renderClarificationsMarkdown } from '../../shared/clarifications-view.js';
-import { clarificationsFreshness, repliesReceived, replyPrompt, statedAssumptions, shapeChangingIds, changesShape } from '../../shared/assumptions.js';
+import { clarificationsFreshness, repliesReceived, replyPrompt, settledWithoutAnswer, statedAssumptions, shapeChangingIds, changesShape } from '../../shared/assumptions.js';
 import { createDiscoveryService, ServiceError } from '../../shared/index.js';
 import { createMemoryStore } from '../../shared/stores/memory-store.js';
 import { questionBank } from '../../schema/index.js';
@@ -390,6 +390,43 @@ describe('the questions come home', () => {
   test('with nothing outstanding it says so instead of asking for a reply', () => {
     const r = repliesReceived(acme(), { questions: [asked(['Q3.1.1'])] });
     assert.match(replyPrompt('ricola', r.rows), /has been answered/);
+  });
+
+  test('a question whose discovery questions no longer apply is no longer needed — not answered, and not waiting for ever', () => {
+    /* west-sicily-gate: a question about the client's own pages covered four
+       headless and Figma questions the engagement had marked not applicable, so
+       no reply could ever fill them and it sat at "waiting". */
+    const settled = { 'Q9.2.6': 'not_applicable', 'Q9.2.8': 'not_applicable', 'Q10.5.9': 'commented' };
+    const r = repliesReceived(acme(), {
+      questions: [asked(['Q9.2.6', 'Q9.2.8']), { ...asked(['Q3.1.1', 'Q10.5.9']), id: 'q2' }, { ...asked(['Q3.1.1', 'Q9.2.6', 'Q2.9.9']), id: 'q3' }],
+    }, { settled });
+    const row = (id) => r.rows.find((x) => x.id === id);
+    assert.deepEqual([row('q1').answered, row('q1').no_longer_needed, row('q1').outstanding], [true, true, []], 'nothing left to fill');
+    assert.deepEqual(row('q1').settled.map((s) => s.how), ['not_applicable', 'not_applicable']);
+    assert.deepEqual([row('q2').answered, row('q2').no_longer_needed], [true, false], 'answered, with the rest settled by a comment');
+    assert.deepEqual([row('q3').partial, row('q3').outstanding], [true, ['Q2.9.9']], 'only what can still be filled is outstanding');
+    assert.deepEqual([r.back, r.no_longer_needed, r.waiting.map((w) => w.id)], [1, 1, ['q3']], 'a question nobody answered is not counted as one that came back');
+    assert.doesNotMatch(replyPrompt('wsg', r.rows), /Q9\.2\.6/, 'and the reply is not asked to fill what no longer applies');
+  });
+
+  test('settled without an answer is a question marked not applicable, or clarified by a comment — never a TBC', () => {
+    const settled = settledWithoutAnswer({ skipped: { 'Q9.2.6': 'theme' }, commented: { 'Q0.6.1': 'no budget stated' }, tbc: { 'Q10.1.4': 'client to confirm' } });
+    assert.deepEqual(settled, { 'Q9.2.6': 'not_applicable', 'Q0.6.1': 'commented' }, 'a TBC is the client still owing us');
+    assert.deepEqual(settledWithoutAnswer(undefined), {});
+  });
+
+  test('the engagement says which questions are settled without an answer', async () => {
+    const svc = createDiscoveryService({ store: createMemoryStore(), today: () => TODAY });
+    await svc.startInterview(consultant, { client: 'demo-client', language: 'en', mode: 'quick' });
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q10.5.2', values: { '/meta/consent/llm_processing': ['true'] } });
+    // The engine decides once it has a name to put on the engagement.
+    await svc.answerQuestion(consultant, 'demo-client', { question_id: 'Q1.1.1', values: { '/meta/client/name': 'Demo client' } });
+    await svc.saveClarifications(consultant, 'demo-client', { questions: [{ ...QUESTION, covers: ['Q9.2.6'] }] }, { via: 'claude' });
+    await svc.decideClarifications(consultant, 'demo-client', { id: 'q1', status: 'accepted' });
+    assert.deepEqual((await svc.getClarifications(consultant, 'demo-client')).replies.waiting.map((w) => w.id), ['q1']);
+    await svc.markQuestion(consultant, 'demo-client', { question_id: 'Q9.2.6', as: 'skipped', note: 'A Shopify theme, not headless' });
+    const { replies } = await svc.getClarifications(consultant, 'demo-client');
+    assert.deepEqual([replies.all_back, replies.back, replies.no_longer_needed, replies.waiting.length], [true, 0, 1, 0]);
   });
 
   test('an assumption retires when the client answers it anyway', () => {

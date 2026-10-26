@@ -154,15 +154,26 @@ export function clarificationsFreshness(topics, clarifications) {
  * one. Each accepted question already names the discovery questions it covers,
  * so the tool knows exactly what a reply is supposed to fill.
  *
+ * A discovery question can also be settled without an answer: marked not
+ * applicable, or clarified by a comment. Counted as outstanding, it kept a
+ * question "waiting" for ever — on west-sicily-gate, the one about pages of the
+ * client's own covered four headless and Figma questions the engagement had
+ * marked not applicable, so no reply could ever fill them. Settled that way they
+ * are no longer outstanding, and a question whose every discovery question was
+ * settled that way is "no longer needed" rather than answered: nothing came back.
+ *
  * @param {object} doc  decided engagement
  * @param {{ questions?: object[] }|null} clarifications
+ * @param {{ settled?: Record<string, 'not_applicable'|'commented'> }} [state]  discovery questions closed without an answer
  */
-export function repliesReceived(doc, clarifications) {
+export function repliesReceived(doc, clarifications, { settled = {} } = {}) {
   const answered = new Set(answeredQuestions(doc ?? {}).map((q) => q.id));
   const asked = (clarifications?.questions ?? []).filter((q) => q.status === 'accepted');
   const rows = asked.map((q) => {
     const covers = q.covers ?? [];
     const back = covers.filter((c) => answered.has(c));
+    const closed = covers.filter((c) => !answered.has(c) && settled[c]);
+    const outstanding = covers.filter((c) => !answered.has(c) && !settled[c]);
     return {
       id: q.id,
       question: q.question,
@@ -170,20 +181,34 @@ export function repliesReceived(doc, clarifications) {
       // A question resting on nothing can never be satisfied, so it would sit in
       // "waiting" for ever and print "fills " with nothing after it.
       unanswerable: covers.length === 0,
-      answered: covers.length > 0 && back.length === covers.length,
-      partial: back.length > 0 && back.length < covers.length,
-      outstanding: covers.filter((c) => !answered.has(c)),
+      answered: covers.length > 0 && outstanding.length === 0,
+      no_longer_needed: covers.length > 0 && back.length === 0 && outstanding.length === 0,
+      partial: back.length > 0 && outstanding.length > 0,
+      outstanding,
+      settled: closed.map((c) => ({ question_id: c, how: settled[c] })),
     };
   });
-  const back = rows.filter((r) => r.answered).length;
+  const done = rows.filter((r) => r.answered);
   return {
     asked: rows.length,
-    back,
+    back: done.filter((r) => !r.no_longer_needed).length,
+    no_longer_needed: done.filter((r) => r.no_longer_needed).length,
     // Nothing asked is not everything answered. With no rows at all, "all back"
     // is true of the empty set and rendered as a green "All 0 answered".
-    all_back: rows.length > 0 && back === rows.length,
+    all_back: rows.length > 0 && done.length === rows.length,
     waiting: rows.filter((r) => !r.answered),
     rows,
+  };
+}
+
+/**
+ * Discovery questions closed without an answer, from an interview session.
+ * @param {{ skipped?: object, commented?: object }} session
+ */
+export function settledWithoutAnswer(session) {
+  return {
+    ...Object.fromEntries(Object.keys(session?.skipped ?? {}).map((id) => [id, 'not_applicable'])),
+    ...Object.fromEntries(Object.keys(session?.commented ?? {}).map((id) => [id, 'commented'])),
   };
 }
 

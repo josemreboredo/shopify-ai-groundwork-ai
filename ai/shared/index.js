@@ -38,7 +38,7 @@ import { processOf, processMeta, PROCESS_IDS } from './process.js';
 import { whatMoved } from './moved.js';
 import { estimateStage, estimateSnapshot, reestimate } from './estimate.js';
 import { handoverView, handoverFile, backlogBlocked } from './handover.js';
-import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, shapeChangingIds, changesShape } from './assumptions.js';
+import { statedAssumptions, triage, clarificationsFreshness, repliesReceived, replyPrompt, settledWithoutAnswer, shapeChangingIds, changesShape } from './assumptions.js';
 import { goNoGoView } from './go-no-go.js';
 import { readiness, openPoints, technicalAnswer } from './readiness.js';
 import { record as recordOutcomeEntry, ledger, OUTCOME_IDS } from './outcome.js';
@@ -893,8 +893,8 @@ export function createDiscoveryService({ store, today = isoToday, visibility = '
         freshness: clarificationsFreshness(topics, saved),
         // And the ones we sent have to come home. Each carries the discovery
         // questions it covers, so a reply is checkable rather than remembered.
-        replies: decided.ok ? repliesReceived(decided.doc, saved) : { asked: 0, back: 0, waiting: [], rows: [] },
-        reply_prompt: decided.ok ? replyPrompt(client, repliesReceived(decided.doc, saved).rows) : null,
+        replies: decided.ok ? repliesReceived(decided.doc, saved, { settled: settledWithoutAnswer(session) }) : { asked: 0, back: 0, no_longer_needed: 0, waiting: [], rows: [] },
+        reply_prompt: decided.ok ? replyPrompt(client, repliesReceived(decided.doc, saved, { settled: settledWithoutAnswer(session) }).rows) : null,
         // What the proposal will state because nobody told us otherwise — from the
         // engine, and from every question the consultant decided not to ask.
         assumptions: statedAssumptions(decided.ok ? decided.doc : null, saved),
