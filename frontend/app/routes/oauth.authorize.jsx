@@ -4,8 +4,23 @@ import { requireUser } from '../auth.server.js';
 import { oauth } from '../discovery.server.js';
 import { originOf } from '../origin.server.js';
 import { CONNECTOR, pageTitle } from '../brand.js';
+import { contentSecurityPolicy } from '../utils/security-headers.js';
 
 export const meta = () => [{ title: pageTitle('Connect Claude') }];
+
+/*
+ * Allow and Cancel post here, and the answer is a redirect to the client —
+ * https://claude.ai/api/mcp/auth_callback for Claude. The site's form-action
+ * allows only itself and GitHub, and a browser applies it to the redirect that
+ * follows a form, so the click went nowhere. This page alone also allows the
+ * one redirect origin the client registered, checked before the page renders.
+ */
+export function headers({ parentHeaders, loaderHeaders }) {
+  const headers = new Headers(parentHeaders);
+  const csp = loaderHeaders.get('Content-Security-Policy');
+  if (csp) headers.set('Content-Security-Policy', csp);
+  return headers;
+}
 
 const PARAMS = ['client_id', 'redirect_uri', 'response_type', 'code_challenge', 'code_challenge_method', 'scope', 'state', 'resource'];
 const pick = (source) => Object.fromEntries(PARAMS.map((k) => [k, source.get(k)]));
@@ -22,7 +37,11 @@ export async function loader({ request }) {
   const params = pick(new URL(request.url).searchParams);
   const { client, request: grant } = await validated(request, params);
   const user = await requireUser(request);
-  return { user, params, client: { name: client.client_name, id: client.client_id }, redirectHost: new URL(grant.redirect_uri).host, scope: grant.scope };
+  const redirectTo = new URL(grant.redirect_uri);
+  return data(
+    { user, params, client: { name: client.client_name, id: client.client_id }, redirectHost: redirectTo.host, scope: grant.scope },
+    { headers: { 'Content-Security-Policy': contentSecurityPolicy({ formAction: [redirectTo.origin] }) } },
+  );
 }
 
 export async function action({ request }) {
