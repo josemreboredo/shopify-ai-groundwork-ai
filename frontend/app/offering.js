@@ -16,8 +16,27 @@ export const SEGMENTS = ['s', 'm', 'l', 'arc'];
    weeks differently — the track follows the answers, not the offer. */
 export const TRACK = { liquid: 'Online Store · Horizon', hydrogen: 'Headless · Hydrogen on Oxygen' };
 
-/** "4" or "6–9". */
-export const weeks = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`) : '—');
+/* Weeks as a consultant says them. A surcharge lands on 0.8775 or 2.49 weeks,
+   which nobody reads out in a room; to the nearest twentieth it is 0.9 and 2.5,
+   and the quarter weeks the offering sells by (0.75, 2.25) survive exactly. An
+   eighth is the one smaller fraction it sells — one app — and keeps its name.
+   Sums of them are floating point: go/no-go printed a total of
+   "14.754999999999999–20.255 weeks". */
+const near = (n) => (n === 0.125 ? '⅛' : (Math.round(n * 20) / 20).toString());
+
+/** "4", "6–9", "0.75" or "⅛" — a span of weeks, rounded the one way everywhere. */
+export const weeks = (w) => (w
+  ? (near(w.min) === near(w.max) ? near(w.min) : `${near(w.min)}–${near(w.max)}`)
+  : '—');
+
+/** The same, under the name the offering pages already import. */
+export const weeksNear = weeks;
+
+/** "+1.75", "−2" or "+0.5 to +1": a change in weeks, rounded the same way. */
+export const signedWeeks = (w) => {
+  const one = (n) => `${n > 0 ? '+' : ''}${near(n)}`;
+  return near(w.min) === near(w.max) ? one(w.max) : `${one(w.min)} to ${one(w.max)}`;
+};
 
 const k = (n) => `${Math.round(n / 1000)}k`;
 
@@ -29,16 +48,6 @@ export const chfSpan = (r, currency) => (r.min === r.max
   ? chf(r.min, currency)
   : `${chf(r.min, currency)}–${(Math.round(r.max / 100) / 10).toString()}k`);
 
-/* Weeks as a consultant says them. A surcharge lands on 0.8775 or 2.49 weeks,
-   which nobody reads out in a room; to the nearest twentieth it is 0.9 and 2.5,
-   and the quarter weeks the offering sells by (0.75, 2.25) survive exactly. An
-   eighth is the one smaller fraction it sells — one app — and keeps its name. */
-const near = (n) => (n === 0.125 ? '⅛' : (Math.round(n * 20) / 20).toString());
-
-/** "0.75", "2.25–3.25" or "⅛" — a span of weeks, rounded the one way. */
-export const weeksNear = (w) => (w
-  ? (near(w.min) === near(w.max) ? near(w.min) : `${near(w.min)}–${near(w.max)}`)
-  : '—');
 
 /** "EUR 40k–65k". Internal: the engine keeps these out of anything client-facing. */
 // A fixed price is one figure: "CHF 5k", not "CHF 5k–5k".

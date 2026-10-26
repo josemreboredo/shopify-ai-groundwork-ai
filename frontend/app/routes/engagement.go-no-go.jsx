@@ -4,6 +4,7 @@ import { EngagementErrorBoundary, Blockers, EngagementHeader } from '../componen
 import { ServiceError } from '../../../ai/shared/index.js';
 import { Radar } from '../components/radar.jsx';
 import { pageTitle } from '../brand.js';
+import { weeks as span } from '../offering.js';
 
 export const meta = ({ params }) => [{ title: pageTitle('Go/No-Go support', params.client) }];
 
@@ -51,7 +52,6 @@ const OWNER = { agent: 'Claude Code agent', developer: 'Developer', consultant: 
 const money = (b) => (b ? `${b.currency ?? ''} ${Math.round(b.min / 1000)}k–${Math.round(b.max / 1000)}k${b.open_ended ? '+' : ''}`.trim() : null);
 
 /** "3" or "5–7". */
-const span = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}\u2013${w.max}`) : '—');
 
 export default function GoNoGo({ loaderData }) {
   const { engagement, go_no_go: g, blocked } = loaderData;
@@ -126,7 +126,11 @@ export default function GoNoGo({ loaderData }) {
             ))}
             <li className="outgrew-total">
               <span className="outgrew-what">Total</span>
-              <span className="outgrew-weeks">{span(g.outgrew.weeks)} weeks</span>
+              <span className="outgrew-weeks">
+                {span(g.outgrew.weeks)} weeks
+                {/* The lines add up exactly; the quote is rounded to the half week. */}
+                {span(g.outgrew.quoted) !== span(g.outgrew.weeks) ? <span className="muted"> · quoted as {span(g.outgrew.quoted)}</span> : null}
+              </span>
             </li>
           </ol>
         </section>

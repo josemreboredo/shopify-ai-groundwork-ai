@@ -4,6 +4,7 @@ import { requireUser } from '../auth.server.js';
 import { discovery, serviceFailure } from '../discovery.server.js';
 import { EngineReadout, EngagementErrorBoundary, Blockers, EngagementHeader } from '../components/question.jsx';
 import { pageTitle } from '../brand.js';
+import { weeks as span, signedWeeks as signed } from '../offering.js';
 import { offerStanding } from '../../../ai/shared/summary.js';
 import { processOf } from '../../../ai/shared/process.js';
 
@@ -38,7 +39,6 @@ function Bar({ settled, total }) {
 }
 
 /** "4" or "13–17.5". */
-const span = (w) => (w ? (w.min === w.max ? `${w.min}` : `${w.min}\u2013${w.max}`) : '—');
 const money = (b) => `${b.currency} ${Math.round(b.min / 1000)}k\u2013${Math.round(b.max / 1000)}k${b.open_ended ? '+' : ''}`;
 
 /**
@@ -121,7 +121,6 @@ function Quote({ q, estimate }) {
  */
 function SinceRfp({ since }) {
   if (!since) return null;
-  const signed = (w) => (w.min === w.max ? `${w.max > 0 ? '+' : ''}${w.max}` : `${w.min > 0 ? '+' : ''}${w.min} to ${w.max > 0 ? '+' : ''}${w.max}`);
   const chf = (p) => `CHF ${p.max >= 0 ? '+' : ''}${Math.round(p.min / 1000)}k${p.min === p.max ? '' : ` to ${p.max >= 0 ? '+' : ''}${Math.round(p.max / 1000)}k`}`;
   return (
     <div className="since-rfp">

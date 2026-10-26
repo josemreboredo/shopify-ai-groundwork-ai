@@ -25,6 +25,8 @@
  * @module components/diagram
  */
 
+import { weeks as weeksText } from '../offering.js';
+
 /**
  * Two ways in, one engine.
  *
@@ -227,7 +229,7 @@ export function OfferScale({ offers, pricing, currency, here }) {
             </span>
             <span className="scale-bar" role="cell">
               <span className="bar" style={{ marginInlineStart: pct(w.min - (w.min ? 1 : 0), max), inlineSize: pct(w.max - w.min + 1, max) }}>
-                <b>{w.min === w.max ? w.min : `${w.min}–${w.max}`}</b>
+                <b>{weeksText(w)}</b>
               </span>
             </span>
             {money ? (
@@ -266,7 +268,7 @@ export function OfferScale({ offers, pricing, currency, here }) {
 export function PhasePlan({ phases, weeks }) {
   if (!phases?.length) return null;
   const longest = Math.max(...phases.map((p) => p.weeks.max));
-  const span = (w) => (w.min === w.max ? `${w.min}` : `${w.min}–${w.max}`);
+  const span = weeksText;
 
   return (
     <ol className="phases" aria-label={`The ${phases.length} phases of this offer, ${span(weeks)} weeks end to end`}>
@@ -443,7 +445,7 @@ function Decided({ questions }) {
 }
 
 /** "+1–5 weeks", or nothing when a gate carries no modifier. */
-const gateWeeks = (w) => (w ? `+${w.min === w.max ? w.min : `${w.min}–${w.max}`} weeks` : null);
+const gateWeeks = (w) => (w ? `+${weeksText(w)} weeks` : null);
 
 /**
  * What an offer builds, epic by epic, as one table.
