@@ -24,6 +24,26 @@ export function contentSecurityPolicy({ formAction = [] } = {}) {
   ].join('; ');
 }
 
+/**
+ * A policy that also lets this one response's inline scripts run.
+ *
+ * React Router starts the app from inline scripts — the router context, the
+ * module import, the streamed data and the scroll restoration — and
+ * script-src 'self' blocked every one, so no page ever ran its JavaScript:
+ * buttons that only work in the browser, like Confirm all on Review, did
+ * nothing. A nonce made for each response lets exactly those scripts run, and
+ * nothing injected into the page can know it in advance.
+ *
+ * @param {string} csp
+ * @param {string} nonce
+ */
+export function withScriptNonce(csp, nonce) {
+  return csp
+    .split('; ')
+    .map((d) => (d.startsWith('script-src ') ? `${d} 'nonce-${nonce}'` : d))
+    .join('; ');
+}
+
 export function getSecurityHeaders() {
   const isProduction = process.env.NODE_ENV === 'production';
 
